@@ -1,0 +1,1 @@
+xst -intstyle ise -ifn "Z:/Documents/PhD/Code/OptoHybridv2/prj/optohybrid_top.xst" -ofn "Z:/Documents/PhD/Code/OptoHybridv2/prj/optohybrid_top.syr" 

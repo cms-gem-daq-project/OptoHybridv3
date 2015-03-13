@@ -1,0 +1,768 @@
+# This file constraints the VFAT2 signals
+#
+# The codes next to the constraints are indications relative to the schematic of the OptoHybrid given by Yifan. Do not remove them, they ease the pin matching process.
+
+## T1
+
+NET "vfat2_t1_p_o<0>"         LOC = ; # B19
+NET "vfat2_t1_n_o<0>"         LOC = ;
+
+NET "vfat2_t1_p_o<1>"         LOC = ; # A19
+NET "vfat2_t1_n_o<1>"         LOC = ;
+
+NET "vfat2_t1_p_o<2>"         LOC = ; # M3
+NET "vfat2_t1_n_o<2>"         LOC = ;
+
+## Clock
+
+NET "vfat2_mclk_p_o<0>"       LOC = ; # B7
+NET "vfat2_mclk_n_o<0>"       LOC = ;
+
+NET "vfat2_mclk_p_o<1>"       LOC = ; # N10
+NET "vfat2_mclk_n_o<1>"       LOC = ;
+
+NET "vfat2_mclk_p_o<2>"       LOC = ; # M7
+NET "vfat2_mclk_n_o<2>"       LOC = ;
+
+## Resets
+
+NET "vfat2_resb_o<0>"         LOC = ; # B15_P
+NET "vfat2_resb_o<1>"         LOC = ; # N2_N
+NET "vfat2_resb_o<2>"         LOC = ; # I12_N
+
+NET "vfat2_resh_o<0>"         LOC = ; # B15_N
+NET "vfat2_resh_o<1>"         LOC = ; # N2_P
+NET "vfat2_resh_o<2>"         LOC = ; # I12_P
+
+## DataValid
+
+NET "vfat2_data_valid_p_i<0>" LOC = ; # D12
+NET "vfat2_data_valid_n_i<0>" LOC = ;
+
+NET "vfat2_data_valid_p_i<1>" LOC = ; # G18
+NET "vfat2_data_valid_n_i<1>" LOC = ;
+
+NET "vfat2_data_valid_p_i<2>" LOC = ; # A2
+NET "vfat2_data_valid_n_i<2>" LOC = ;
+
+NET "vfat2_data_valid_p_i<3>" LOC = ; # G7
+NET "vfat2_data_valid_n_i<3>" LOC = ;
+
+NET "vfat2_data_valid_p_i<4>" LOC = ; # M10
+NET "vfat2_data_valid_n_i<4>" LOC = ;
+
+NET "vfat2_data_valid_p_i<5>" LOC = ; # H19
+NET "vfat2_data_valid_n_i<5>" LOC = ;
+
+## I2C
+
+NET "vfat2_scl_o<0>"          LOC = ; # J12_N 
+NET "vfat2_scl_o<1>"          LOC = ; # G16_N
+NET "vfat2_scl_o<2>"          LOC = ; # I17_P
+NET "vfat2_scl_o<3>"          LOC = ; # H18_N
+NET "vfat2_scl_o<4>"          LOC = ; # I5_N
+NET "vfat2_scl_o<5>"          LOC = ; # H20_P
+
+NET "vfat2_sda_io<0>"         LOC = ; # J12_P
+NET "vfat2_sda_io<1>"         LOC = ; # G16_P
+NET "vfat2_sda_io<2>"         LOC = ; # I17_N
+NET "vfat2_sda_io<3>"         LOC = ; # H18_P
+NET "vfat2_sda_io<4>"         LOC = ; # I5_P
+NET "vfat2_sda_io<5>"         LOC = ; # H20_N
+
+## VFAT2 0 
+
+NET "vfat2_0_sbits_p_i<0>"    LOC = AM10 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # K6
+NET "vfat2_0_sbits_n_i<0>"    LOC = AL10 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_0_sbits_p_i<1>"    LOC = AP11 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # K12
+NET "vfat2_0_sbits_n_i<1>"    LOC = AP12 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_0_sbits_p_i<2>"    LOC = AM12 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # K14
+NET "vfat2_0_sbits_n_i<2>"    LOC = AN12 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_0_sbits_p_i<3>"    LOC = AN13 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # K16
+NET "vfat2_0_sbits_n_i<3>"    LOC = AM13 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_0_sbits_p_i<4>"    LOC = AP14 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # K20
+NET "vfat2_0_sbits_n_i<4>"    LOC = AN14 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_0_sbits_p_i<5>"    LOC = AP16 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # J8
+NET "vfat2_0_sbits_n_i<5>"    LOC = AP15 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_0_sbits_p_i<6>"    LOC = AM17 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # J16
+NET "vfat2_0_sbits_n_i<6>"    LOC = AM16 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+ 
+NET "vfat2_0_sbits_p_i<7>"    LOC = AN17 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # J14
+NET "vfat2_0_sbits_n_i<7>"    LOC = AP17 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_0_data_out_p_i"    LOC = AM18 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # B2
+NET "vfat2_0_data_out_n_i"    LOC = AL18 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+## VFAT2 1 
+
+NET "vfat2_1_sbits_p_i<0>"    LOC = AP19 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # B4
+NET "vfat2_1_sbits_n_i<0>"    LOC = AN18 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_1_sbits_p_i<1>"    LOC = AN19 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # B6
+NET "vfat2_1_sbits_n_i<1>"    LOC = AN20 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+ 
+NET "vfat2_1_sbits_p_i<2>"    LOC = AP20 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # B10
+NET "vfat2_1_sbits_n_i<2>"    LOC = AP21 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_1_sbits_p_i<3>"    LOC = AM22 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # B18
+NET "vfat2_1_sbits_n_i<3>"    LOC = AN22 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_1_sbits_p_i<4>"    LOC = AP22 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # B20
+NET "vfat2_1_sbits_n_i<4>"    LOC = AN23 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_1_sbits_p_i<5>"    LOC = AM23 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # B16
+NET "vfat2_1_sbits_n_i<5>"    LOC = AL23 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_1_sbits_p_i<6>"    LOC = AP25 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # D20
+NET "vfat2_1_sbits_n_i<6>"    LOC = AP24 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_1_sbits_p_i<7>"    LOC = AL26 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # D14
+NET "vfat2_1_sbits_n_i<7>"    LOC = AM26 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_1_data_out_p_i"    LOC = AP27 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # D16
+NET "vfat2_1_data_out_n_i"    LOC = AP26 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+## VFAT2 2 
+
+NET "vfat2_2_sbits_p_i<0>"    LOC = AN28 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # D8
+NET "vfat2_2_sbits_n_i<0>"    LOC = AM28 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_2_sbits_p_i<1>"    LOC = AN29 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # D6
+NET "vfat2_2_sbits_n_i<1>"    LOC = AP29 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_2_sbits_p_i<2>"    LOC = AN33 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # F9
+NET "vfat2_2_sbits_n_i<2>"    LOC = AN34 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_2_sbits_p_i<3>"    LOC = AN32 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # F18
+NET "vfat2_2_sbits_n_i<3>"    LOC = AM32 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_2_sbits_p_i<4>"    LOC = AM33 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # F17
+NET "vfat2_2_sbits_n_i<4>"    LOC = AL33 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_2_sbits_p_i<5>"    LOC = AL34 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # F7
+NET "vfat2_2_sbits_n_i<5>"    LOC = AK34 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_2_sbits_p_i<6>"    LOC = AK33 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # F15
+NET "vfat2_2_sbits_n_i<6>"    LOC = AK32 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_2_sbits_p_i<7>"    LOC = AJ34 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # F5
+NET "vfat2_2_sbits_n_i<7>"    LOC = AH34 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_2_data_out_p_i"    LOC = AH33 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # F3
+NET "vfat2_2_data_out_n_i"    LOC = AH32 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+## VFAT2 3 
+
+NET "vfat2_3_sbits_p_i<0>"    LOC = AG33 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # G17
+NET "vfat2_3_sbits_n_i<0>"    LOC = AG32 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_3_sbits_p_i<1>"    LOC = AE34 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # G9
+NET "vfat2_3_sbits_n_i<1>"    LOC = AF34 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_3_sbits_p_i<2>"    LOC = AD32 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # G15
+NET "vfat2_3_sbits_n_i<2>"    LOC = AE32 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_3_sbits_p_i<3>"    LOC = AD34 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # G3
+NET "vfat2_3_sbits_n_i<3>"    LOC = AC34 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_3_sbits_p_i<4>"    LOC = AC33 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # G5
+NET "vfat2_3_sbits_n_i<4>"    LOC = AB33 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_3_sbits_p_i<5>"    LOC = AA34 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # G1
+NET "vfat2_3_sbits_n_i<5>"    LOC = AA33 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_3_sbits_p_i<6>"    LOC = Y33 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # H15
+NET "vfat2_3_sbits_n_i<6>"    LOC = Y34 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_3_sbits_p_i<7>"    LOC = V34 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # H11
+NET "vfat2_3_sbits_n_i<7>"    LOC = W34 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_3_data_out_p_i"    LOC = V32 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # H13
+NET "vfat2_3_data_out_n_i"    LOC = V33 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+## VFAT2 4 
+
+NET "vfat2_4_sbits_p_i<0>"    LOC = U28 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # H8
+NET "vfat2_4_sbits_n_i<0>"    LOC = V29 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_4_sbits_p_i<1>"    LOC = V30 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # H10
+NET "vfat2_4_sbits_n_i<1>"    LOC = W30 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_4_sbits_p_i<2>"    LOC = W31 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # H17
+NET "vfat2_4_sbits_n_i<2>"    LOC = W32 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_4_sbits_p_i<3>"    LOC = Y32 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # H14
+NET "vfat2_4_sbits_n_i<3>"    LOC = Y31 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_4_sbits_p_i<4>"    LOC = AB30 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # G4
+NET "vfat2_4_sbits_n_i<4>"    LOC = AB31 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_4_sbits_p_i<5>"    LOC = AB32 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # G13
+NET "vfat2_4_sbits_n_i<5>"    LOC = AC32 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_4_sbits_p_i<6>"    LOC = AD30 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # G10
+NET "vfat2_4_sbits_n_i<6>"    LOC = AC30 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_4_sbits_p_i<7>"    LOC = AE31 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # G6
+NET "vfat2_4_sbits_n_i<7>"    LOC = AD31 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_4_data_out_p_i"    LOC = AE33 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # G11
+NET "vfat2_4_data_out_n_i"    LOC = AF33 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+## VFAT2 5 
+
+NET "vfat2_5_sbits_p_i<0>"    LOC = AG31 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # G19
+NET "vfat2_5_sbits_n_i<0>"    LOC = AF31 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_5_sbits_p_i<1>"    LOC = AH29 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # F8
+NET "vfat2_5_sbits_n_i<1>"    LOC = AH30 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_5_sbits_p_i<2>"    LOC = AJ31 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # F13
+NET "vfat2_5_sbits_n_i<2>"    LOC = AJ32 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_5_sbits_p_i<3>"    LOC = AJ29 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # F14
+NET "vfat2_5_sbits_n_i<3>"    LOC = AJ30 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_5_sbits_p_i<4>"    LOC = AL31 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # F16
+NET "vfat2_5_sbits_n_i<4>"    LOC = AK31 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_5_sbits_p_i<5>"    LOC = AL30 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # F20
+NET "vfat2_5_sbits_n_i<5>"    LOC = AM31 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_5_sbits_p_i<6>"    LOC = AN30 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # D2
+NET "vfat2_5_sbits_n_i<6>"    LOC = AM30 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_5_sbits_p_i<7>"    LOC = AP32 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # F19
+NET "vfat2_5_sbits_n_i<7>"    LOC = AP33 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_5_data_out_p_i"    LOC = AP30 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # D4
+NET "vfat2_5_data_out_n_i"    LOC = AP31 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+## VFAT2 6 
+
+NET "vfat2_6_sbits_p_i<0>"    LOC = AL28 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # D7
+NET "vfat2_6_sbits_n_i<0>"    LOC = AK28 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_6_sbits_p_i<1>"    LOC = AK27 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # D11
+NET "vfat2_6_sbits_n_i<1>"    LOC = AJ27 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_6_sbits_p_i<2>"    LOC = AN27 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # D10
+NET "vfat2_6_sbits_n_i<2>"    LOC = AM27 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_6_sbits_p_i<3>"    LOC = AK26 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # D13
+NET "vfat2_6_sbits_n_i<3>"    LOC = AJ26 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_6_sbits_p_i<4>"    LOC = AN25 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # D18
+NET "vfat2_6_sbits_n_i<4>"    LOC = AN24 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_6_sbits_p_i<5>"    LOC = AK23 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # D19
+NET "vfat2_6_sbits_n_i<5>"    LOC = AL24 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_6_sbits_p_i<6>"    LOC = AK22 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # B5
+NET "vfat2_6_sbits_n_i<6>"    LOC = AJ22 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_6_sbits_p_i<7>"    LOC = AM21 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # B14
+NET "vfat2_6_sbits_n_i<7>"    LOC = AL21 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_6_data_out_p_i"    LOC = AM20 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # B8
+NET "vfat2_6_data_out_n_i"    LOC = AL20 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+## VFAT2 7 
+
+NET "vfat2_7_sbits_p_i<0>"    LOC = AK19 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # B11
+NET "vfat2_7_sbits_n_i<0>"    LOC = AL19 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_7_sbits_p_i<1>"    LOC = AJ19 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # J15
+NET "vfat2_7_sbits_n_i<1>"    LOC = AH19 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_7_sbits_p_i<2>"    LOC = AK18 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # J18
+NET "vfat2_7_sbits_n_i<2>"    LOC = AK17 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_7_sbits_p_i<3>"    LOC = AL16 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # J20
+NET "vfat2_7_sbits_n_i<3>"    LOC = AK16 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_7_sbits_p_i<4>"    LOC = AN15 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # J6
+NET "vfat2_7_sbits_n_i<4>"    LOC = AM15 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_7_sbits_p_i<5>"    LOC = AL15 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # J4
+NET "vfat2_7_sbits_n_i<5>"    LOC = AL14 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_7_sbits_p_i<6>"    LOC = AK13 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # K18
+NET "vfat2_7_sbits_n_i<6>"    LOC = AL13 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_7_sbits_p_i<7>"    LOC = AK12 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # K4
+NET "vfat2_7_sbits_n_i<7>"    LOC = AJ12 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_7_data_out_p_i"    LOC = AL11 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # K8
+NET "vfat2_7_data_out_n_i"    LOC = AM11 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+## VFAT2 8 
+
+NET "vfat2_8_sbits_p_i<0>"    LOC = M12 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # L11
+NET "vfat2_8_sbits_n_i<0>"    LOC = M11 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_8_sbits_p_i<1>"    LOC = G12 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # L5
+NET "vfat2_8_sbits_n_i<1>"    LOC = H13 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_8_sbits_p_i<2>"    LOC = G13 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # L1
+NET "vfat2_8_sbits_n_i<2>"    LOC = H14 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_8_sbits_p_i<3>"    LOC = K14 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # L9
+NET "vfat2_8_sbits_n_i<3>"    LOC = J14 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_8_sbits_p_i<4>"    LOC = H15 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # M19
+NET "vfat2_8_sbits_n_i<4>"    LOC = J15 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_8_sbits_p_i<5>"    LOC = F16 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # M13
+NET "vfat2_8_sbits_n_i<5>"    LOC = G16 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_8_sbits_p_i<6>"    LOC = F18 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # M1
+NET "vfat2_8_sbits_n_i<6>"    LOC = E17 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_8_sbits_p_i<7>"    LOC = G18 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # M9
+NET "vfat2_8_sbits_n_i<7>"    LOC = H18 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_8_data_out_p_i"    LOC = F19 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # I9
+NET "vfat2_8_data_out_n_i"    LOC = F20 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+## VFAT2 9 
+
+NET "vfat2_9_sbits_p_i<0>"    LOC = AH17 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # J9
+NET "vfat2_9_sbits_n_i<0>"    LOC = AG17 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_9_sbits_p_i<1>"    LOC = AJ17 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # J7
+NET "vfat2_9_sbits_n_i<1>"    LOC = AJ16 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_9_sbits_p_i<2>"    LOC = AJ15 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # J3
+NET "vfat2_9_sbits_n_i<2>"    LOC = AH15 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_9_sbits_p_i<3>"    LOC = AK14 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # J2
+NET "vfat2_9_sbits_n_i<3>"    LOC = AJ14 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_9_sbits_p_i<4>"    LOC = AH13 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # K19
+NET "vfat2_9_sbits_n_i<4>"    LOC = AH14 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_9_sbits_p_i<5>"    LOC = AG12 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # K17
+NET "vfat2_9_sbits_n_i<5>"    LOC = AH12 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_9_sbits_p_i<6>"    LOC = AJ11 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # K2
+NET "vfat2_9_sbits_n_i<6>"    LOC = AK11 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_9_sbits_p_i<7>"    LOC = AG11 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # K7
+NET "vfat2_9_sbits_n_i<7>"    LOC = AG10 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_9_data_out_p_i"    LOC = AJ10 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # K9
+NET "vfat2_9_data_out_n_i"    LOC = AH10 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+## VFAT2 10 
+
+NET "vfat2_10_sbits_p_i<0>"    LOC = F21 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # I11
+NET "vfat2_10_sbits_n_i<0>"    LOC = G20 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_10_sbits_p_i<1>"    LOC = G21 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # I3
+NET "vfat2_10_sbits_n_i<1>"    LOC = G22 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_10_sbits_p_i<2>"    LOC = H22 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # I15
+NET "vfat2_10_sbits_n_i<2>"    LOC = J22 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_10_sbits_p_i<3>"    LOC = T24 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # N9
+NET "vfat2_10_sbits_n_i<3>"    LOC = T23 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_10_sbits_p_i<4>"    LOC = N25 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # C2
+NET "vfat2_10_sbits_n_i<4>"    LOC = M25 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_10_sbits_p_i<5>"    LOC = F25 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # E12
+NET "vfat2_10_sbits_n_i<5>"    LOC = G25 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_10_sbits_p_i<6>"    LOC = A30 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # E16
+NET "vfat2_10_sbits_n_i<6>"    LOC = B30 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_10_sbits_p_i<7>"    LOC = K26 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # A10
+NET "vfat2_10_sbits_n_i<7>"    LOC = K27 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_10_data_out_p_i"    LOC = L20 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # I19
+NET "vfat2_10_data_out_n_i"    LOC = L21 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+## VFAT2 11 
+
+NET "vfat2_11_sbits_p_i<0>"    LOC = AG25 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # D3
+NET "vfat2_11_sbits_n_i<0>"    LOC = AG26 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_11_sbits_p_i<1>"    LOC = AM25 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # D17
+NET "vfat2_11_sbits_n_i<1>"    LOC = AL25 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_11_sbits_p_i<2>"    LOC = AJ24 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # D15
+NET "vfat2_11_sbits_n_i<2>"    LOC = AK24 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_11_sbits_p_i<3>"    LOC = AG22 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # B3
+NET "vfat2_11_sbits_n_i<3>"    LOC = AH22 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_11_sbits_p_i<4>"    LOC = AK21 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # B17
+NET "vfat2_11_sbits_n_i<4>"    LOC = AJ21 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_11_sbits_p_i<5>"    LOC = AJ20 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # B13
+NET "vfat2_11_sbits_n_i<5>"    LOC = AH20 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_11_sbits_p_i<6>"    LOC = AF19 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # B9
+NET "vfat2_11_sbits_n_i<6>"    LOC = AE19 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_11_sbits_p_i<7>"    LOC = AH18 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # J13
+NET "vfat2_11_sbits_n_i<7>"    LOC = AG18 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_11_data_out_p_i"    LOC = AE18 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # J19
+NET "vfat2_11_data_out_n_i"    LOC = AF18 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+## VFAT2 12 
+
+NET "vfat2_12_sbits_p_i<0>"    LOC = N27 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # C6
+NET "vfat2_12_sbits_n_i<0>"    LOC = P27 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_12_sbits_p_i<1>"    LOC = R26 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # C16
+NET "vfat2_12_sbits_n_i<1>"    LOC = T26 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_12_sbits_p_i<2>"    LOC = U25 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # H1
+NET "vfat2_12_sbits_n_i<2>"    LOC = T25 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_12_sbits_p_i<3>"    LOC = B31 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # E20
+NET "vfat2_12_sbits_n_i<3>"    LOC = A31 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_12_sbits_p_i<4>"    LOC = D31 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # A16
+NET "vfat2_12_sbits_n_i<4>"    LOC = D32 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_12_sbits_p_i<5>"    LOC = G26 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # E7
+NET "vfat2_12_sbits_n_i<5>"    LOC = G27 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_12_sbits_p_i<6>"    LOC = H27 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # E13
+NET "vfat2_12_sbits_n_i<6>"    LOC = G28 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_12_sbits_p_i<7>"    LOC = H28 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # E19
+NET "vfat2_12_sbits_n_i<7>"    LOC = H29 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_12_data_out_p_i"    LOC = K28 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # A8
+NET "vfat2_12_data_out_n_i"    LOC = J29 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+## VFAT2 13 
+
+NET "vfat2_13_sbits_p_i<0>"    LOC = AG27 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # F10
+NET "vfat2_13_sbits_n_i<0>"    LOC = AG28 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_13_sbits_p_i<1>"    LOC = AB25 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # G20
+NET "vfat2_13_sbits_n_i<1>"    LOC = AC25 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_13_sbits_p_i<2>"    LOC = AD25 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # F1
+NET "vfat2_13_sbits_n_i<2>"    LOC = AD26 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_13_sbits_p_i<3>"    LOC = AE21 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # B1
+NET "vfat2_13_sbits_n_i<3>"    LOC = AD21 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_13_sbits_p_i<4>"    LOC = AF20 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # B12
+NET "vfat2_13_sbits_n_i<4>"    LOC = AF21 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_13_sbits_p_i<5>"    LOC = AH25 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # D9
+NET "vfat2_13_sbits_n_i<5>"    LOC = AJ25 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_13_sbits_p_i<6>"    LOC = AL29 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # D5
+NET "vfat2_13_sbits_n_i<6>"    LOC = AK29 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_13_sbits_p_i<7>"    LOC = AH27 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # D1
+NET "vfat2_13_sbits_n_i<7>"    LOC = AH28 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_13_data_out_p_i"    LOC = AF26 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # F12
+NET "vfat2_13_data_out_n_i"    LOC = AE26 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+## VFAT2 14 
+
+NET "vfat2_14_sbits_p_i<0>"    LOC = L29 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # C12
+NET "vfat2_14_sbits_n_i<0>"    LOC = L30 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_14_sbits_p_i<1>"    LOC = L28 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # C8
+NET "vfat2_14_sbits_n_i<1>"    LOC = M28 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_14_sbits_p_i<2>"    LOC = M26 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # C4
+NET "vfat2_14_sbits_n_i<2>"    LOC = M27 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_14_sbits_p_i<3>"    LOC = N28 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # C10
+NET "vfat2_14_sbits_n_i<3>"    LOC = N29 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_14_sbits_p_i<4>"    LOC = P29 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # C20
+NET "vfat2_14_sbits_n_i<4>"    LOC = R29 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_14_sbits_p_i<5>"    LOC = R28 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # C14
+NET "vfat2_14_sbits_n_i<5>"    LOC = R27 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_14_sbits_p_i<6>"    LOC = T28 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # H2
+NET "vfat2_14_sbits_n_i<6>"    LOC = T29 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_14_sbits_p_i<7>"    LOC = U26 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # H6
+NET "vfat2_14_sbits_n_i<7>"    LOC = U27 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_14_data_out_p_i"    LOC = V28 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # H12
+NET "vfat2_14_data_out_n_i"    LOC = V27 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+## VFAT2 15 
+
+NET "vfat2_15_sbits_p_i<0>"    LOC = W29 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # H16
+NET "vfat2_15_sbits_n_i<0>"    LOC = Y29 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_15_sbits_p_i<1>"    LOC = AA28 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # G8
+NET "vfat2_15_sbits_n_i<1>"    LOC = AA29 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_15_sbits_p_i<2>"    LOC = AA30 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # G2
+NET "vfat2_15_sbits_n_i<2>"    LOC = AA31 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_15_sbits_p_i<3>"    LOC = AB28 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # G14
+NET "vfat2_15_sbits_n_i<3>"    LOC = AC28 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_15_sbits_p_i<4>"    LOC = AD29 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # G12
+NET "vfat2_15_sbits_n_i<4>"    LOC = AC29 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_15_sbits_p_i<5>"    LOC = AE27 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # F2
+NET "vfat2_15_sbits_n_i<5>"    LOC = AD27 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_15_sbits_p_i<6>"    LOC = AE28 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # F4
+NET "vfat2_15_sbits_n_i<6>"    LOC = AE29 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_15_sbits_p_i<7>"    LOC = AF30 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # F11
+NET "vfat2_15_sbits_n_i<7>"    LOC = AG30 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_15_data_out_p_i"    LOC = AF28 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # F6
+NET "vfat2_15_data_out_n_i"    LOC = AF29 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+## VFAT2 16 
+
+NET "vfat2_16_sbits_p_i<0>"    LOC = U33 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # H7
+NET "vfat2_16_sbits_n_i<0>"    LOC = U32 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_16_sbits_p_i<1>"    LOC = T33 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # H5
+NET "vfat2_16_sbits_n_i<1>"    LOC = T34 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_16_sbits_p_i<2>"    LOC = R33 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # H3
+NET "vfat2_16_sbits_n_i<2>"    LOC = R34 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_16_sbits_p_i<3>"    LOC = N34 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # C19
+NET "vfat2_16_sbits_n_i<3>"    LOC = P34 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_16_sbits_p_i<4>"    LOC = N33 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # C11
+NET "vfat2_16_sbits_n_i<4>"    LOC = M33 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_16_sbits_p_i<5>"    LOC = L33 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # C7
+NET "vfat2_16_sbits_n_i<5>"    LOC = M32 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_16_sbits_p_i<6>"    LOC = K34 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # C17
+NET "vfat2_16_sbits_n_i<6>"    LOC = L34 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_16_sbits_p_i<7>"    LOC = K33 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # A17
+NET "vfat2_16_sbits_n_i<7>"    LOC = J34 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_16_data_out_p_i"    LOC = J31 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # A20
+NET "vfat2_16_data_out_n_i"    LOC = J32 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+## VFAT2 17 
+
+NET "vfat2_17_sbits_p_i<0>"    LOC = H34 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # A15
+NET "vfat2_17_sbits_n_i<0>"    LOC = H33 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_17_sbits_p_i<1>"    LOC = F33 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # A11
+NET "vfat2_17_sbits_n_i<1>"    LOC = G33 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_17_sbits_p_i<2>"    LOC = E34 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # A13
+NET "vfat2_17_sbits_n_i<2>"    LOC = F34 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_17_sbits_p_i<3>"    LOC = E32 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # A3
+NET "vfat2_17_sbits_n_i<3>"    LOC = E33 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_17_sbits_p_i<4>"    LOC = D34 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # A9
+NET "vfat2_17_sbits_n_i<4>"    LOC = C34 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_17_sbits_p_i<5>"    LOC = C33 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # A7
+NET "vfat2_17_sbits_n_i<5>"    LOC = B34 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_17_sbits_p_i<6>"    LOC = A33 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # A5
+NET "vfat2_17_sbits_n_i<6>"    LOC = B33 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_17_sbits_p_i<7>"    LOC = A28 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # E14
+NET "vfat2_17_sbits_n_i<7>"    LOC = A29 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_17_data_out_p_i"    LOC = C28 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # E10
+NET "vfat2_17_data_out_n_i"    LOC = B28 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+## VFAT2 18 
+
+NET "vfat2_18_sbits_p_i<0>"    LOC = B27 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # E8
+NET "vfat2_18_sbits_n_i<0>"    LOC = C27 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_18_sbits_p_i<1>"    LOC = B26 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # E6
+NET "vfat2_18_sbits_n_i<1>"    LOC = A26 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_18_sbits_p_i<2>"    LOC = B25 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # E4
+NET "vfat2_18_sbits_n_i<2>"    LOC = A25 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_18_sbits_p_i<3>"    LOC = A23 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # I2
+NET "vfat2_18_sbits_n_i<3>"    LOC = A24 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_18_sbits_p_i<4>"    LOC = B23 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # I4
+NET "vfat2_18_sbits_n_i<4>"    LOC = C23 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_18_sbits_p_i<5>"    LOC = B21 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # I6
+NET "vfat2_18_sbits_n_i<5>"    LOC = B22 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_18_sbits_p_i<6>"    LOC = A20 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # I8
+NET "vfat2_18_sbits_n_i<6>"    LOC = A21 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_18_sbits_p_i<7>"    LOC = B20 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # I10
+NET "vfat2_18_sbits_n_i<7>"    LOC = C19 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_18_data_out_p_i"    LOC = A18 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # I16
+NET "vfat2_18_data_out_n_i"    LOC = A19 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+## VFAT2 19 
+
+NET "vfat2_19_sbits_p_i<0>"    LOC = B18 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # I18
+NET "vfat2_19_sbits_n_i<0>"    LOC = C18 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_19_sbits_p_i<1>"    LOC = C17 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # M6
+NET "vfat2_19_sbits_n_i<1>"    LOC = B17 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_19_sbits_p_i<2>"    LOC = A16 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # M12
+NET "vfat2_19_sbits_n_i<2>"    LOC = B16 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_19_sbits_p_i<3>"    LOC = D15 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # M20
+NET "vfat2_19_sbits_n_i<3>"    LOC = C15 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_19_sbits_p_i<4>"    LOC = A15 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # M16
+NET "vfat2_19_sbits_n_i<4>"    LOC = B15 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_19_sbits_p_i<5>"    LOC = D14 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # L2
+NET "vfat2_19_sbits_n_i<5>"    LOC = C14 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_19_sbits_p_i<6>"    LOC = C13 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # L12
+NET "vfat2_19_sbits_n_i<6>"    LOC = C12 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_19_sbits_p_i<7>"    LOC = D11 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # L20
+NET "vfat2_19_sbits_n_i<7>"    LOC = E11 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_19_data_out_p_i"    LOC = J11 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # L15
+NET "vfat2_19_data_out_n_i"    LOC = J10 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+## VFAT2 20 
+
+NET "vfat2_20_sbits_p_i<0>"    LOC = J30 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # A14
+NET "vfat2_20_sbits_n_i<0>"    LOC = K29 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_20_sbits_p_i<1>"    LOC = K32 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # C3
+NET "vfat2_20_sbits_n_i<1>"    LOC = K31 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_20_sbits_p_i<2>"    LOC = M31 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # C1
+NET "vfat2_20_sbits_n_i<2>"    LOC = L31 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_20_sbits_p_i<3>"    LOC = M30 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # C18
+NET "vfat2_20_sbits_n_i<3>"    LOC = N30 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_20_sbits_p_i<4>"    LOC = N32 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # C9
+NET "vfat2_20_sbits_n_i<4>"    LOC = P32 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_20_sbits_p_i<5>"    LOC = P31 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # C5
+NET "vfat2_20_sbits_n_i<5>"    LOC = P30 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_20_sbits_p_i<6>"    LOC = R31 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # C15
+NET "vfat2_20_sbits_n_i<6>"    LOC = R32 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_20_sbits_p_i<7>"    LOC = T30 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # H4
+NET "vfat2_20_sbits_n_i<7>"    LOC = T31 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_20_data_out_p_i"    LOC = U31 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # H9
+NET "vfat2_20_data_out_n_i"    LOC = U30 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+## VFAT2 21 
+
+NET "vfat2_21_sbits_p_i<0>"    LOC = F28 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # E15
+NET "vfat2_21_sbits_n_i<0>"    LOC = E28 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_21_sbits_p_i<1>"    LOC = C29 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # E11
+NET "vfat2_21_sbits_n_i<1>"    LOC = D29 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_21_sbits_p_i<2>"    LOC = C32 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # A1
+NET "vfat2_21_sbits_n_i<2>"    LOC = B32 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_21_sbits_p_i<3>"    LOC = C30 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # E18
+NET "vfat2_21_sbits_n_i<3>"    LOC = D30 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_21_sbits_p_i<4>"    LOC = E29 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # E17
+NET "vfat2_21_sbits_n_i<4>"    LOC = F29 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_21_sbits_p_i<5>"    LOC = F31 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # A12
+NET "vfat2_21_sbits_n_i<5>"    LOC = E31 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_21_sbits_p_i<6>"    LOC = F30 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # A4
+NET "vfat2_21_sbits_n_i<6>"    LOC = G30 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_21_sbits_p_i<7>"    LOC = G32 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # A18
+NET "vfat2_21_sbits_n_i<7>"    LOC = H32 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_21_data_out_p_i"    LOC = G31 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # A6
+NET "vfat2_21_data_out_n_i"    LOC = H30 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+## VFAT2 22 
+
+NET "vfat2_22_sbits_p_i<0>"    LOC = C20 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # I1
+NET "vfat2_22_sbits_n_i<0>"    LOC = D20 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_22_sbits_p_i<1>"    LOC = D21 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # I13
+NET "vfat2_22_sbits_n_i<1>"    LOC = E21 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_22_sbits_p_i<2>"    LOC = C22 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # I20
+NET "vfat2_22_sbits_n_i<2>"    LOC = D22 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_22_sbits_p_i<3>"    LOC = E22 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # I7
+NET "vfat2_22_sbits_n_i<3>"    LOC = E23 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_22_sbits_p_i<4>"    LOC = D24 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # E9
+NET "vfat2_22_sbits_n_i<4>"    LOC = E24 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_22_sbits_p_i<5>"    LOC = C24 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # E2
+NET "vfat2_22_sbits_n_i<5>"    LOC = C25 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_22_sbits_p_i<6>"    LOC = D25 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # E1
+NET "vfat2_22_sbits_n_i<6>"    LOC = D26 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_22_sbits_p_i<7>"    LOC = E26 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # E3
+NET "vfat2_22_sbits_n_i<7>"    LOC = F26 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_22_data_out_p_i"    LOC = D27 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # E5
+NET "vfat2_22_data_out_n_i"    LOC = E27 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+## VFAT2 23 
+
+NET "vfat2_23_sbits_p_i<0>"    LOC = K11 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # L17
+NET "vfat2_23_sbits_n_i<0>"    LOC = L11 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_23_sbits_p_i<1>"    LOC = G11 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # L3
+NET "vfat2_23_sbits_n_i<1>"    LOC = F11 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_23_sbits_p_i<2>"    LOC = D12 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # L18
+NET "vfat2_23_sbits_n_i<2>"    LOC = E12 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_23_sbits_p_i<3>"    LOC = E13 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # L16
+NET "vfat2_23_sbits_n_i<3>"    LOC = F13 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_23_sbits_p_i<4>"    LOC = F14 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # L6
+NET "vfat2_23_sbits_n_i<4>"    LOC = E14 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_23_sbits_p_i<5>"    LOC = G15 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # M17
+NET "vfat2_23_sbits_n_i<5>"    LOC = F15 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_23_sbits_p_i<6>"    LOC = E16 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # M14
+NET "vfat2_23_sbits_n_i<6>"    LOC = D16 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_23_sbits_p_i<7>"    LOC = E18 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # M2
+NET "vfat2_23_sbits_n_i<7>"    LOC = D17 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+
+NET "vfat2_23_data_out_p_i"    LOC = E19 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE; # I14
+NET "vfat2_23_data_out_n_i"    LOC = D19 | IOSTANDARD = LVCMOS25 | DIFF_TERM = TRUE;
+

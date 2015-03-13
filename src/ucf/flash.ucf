@@ -1,0 +1,56 @@
+# This file constraints the flash signals
+
+NET "flash_address_o<0>"        LOC = AL8;
+NET "flash_address_o<1>"        LOC = AK8;
+NET "flash_address_o<2>"        LOC = AC9;
+NET "flash_address_o<3>"        LOC = AD10;
+NET "flash_address_o<4>"        LOC = C8;
+NET "flash_address_o<5>"        LOC = B8;
+NET "flash_address_o<6>"        LOC = E9;
+NET "flash_address_o<7>"        LOC = E8;
+NET "flash_address_o<8>"        LOC = A8;
+NET "flash_address_o<9>"        LOC = A9;
+NET "flash_address_o<10>"       LOC = D9;
+NET "flash_address_o<11>"       LOC = C9;
+NET "flash_address_o<12>"       LOC = D10;
+NET "flash_address_o<13>"       LOC = C10;
+NET "flash_address_o<14>"       LOC = F10;
+NET "flash_address_o<15>"       LOC = F9;
+NET "flash_address_o<16>"       LOC = AH8;
+NET "flash_address_o<17>"       LOC = AG8;
+NET "flash_address_o<18>"       LOC = AP9;
+NET "flash_address_o<19>"       LOC = AN9;
+NET "flash_address_o<20>"       LOC = AF10;
+NET "flash_address_o<21>"       LOC = AF9;
+NET "flash_address_o<22>"       LOC = AL9;
+
+NET "flash_data_io<0>"          LOC = AF24;
+NET "flash_data_io<1>"          LOC = AF25;
+NET "flash_data_io<2>"          LOC = W24;
+NET "flash_data_io<3>"          LOC = V24;
+NET "flash_data_io<4>"          LOC = H24;
+NET "flash_data_io<5>"          LOC = H25;
+NET "flash_data_io<6>"          LOC = P24;
+NET "flash_data_io<7>"          LOC = R24;
+NET "flash_data_io<8>"          LOC = G23;
+NET "flash_data_io<9>"          LOC = H23;
+NET "flash_data_io<10>"         LOC = N24;
+NET "flash_data_io<11>"         LOC = N23;
+NET "flash_data_io<12>"         LOC = F23;
+NET "flash_data_io<13>"         LOC = F24;
+NET "flash_data_io<14>"         LOC = L24;
+NET "flash_data_io<15>"         LOC = M23;
+
+NET "flash_chip_enable_b_o"     LOC = Y24;
+
+NET "flash_out_enable_b_o"      LOC = AA24;
+
+NET "flash_write_enable_b_o"    LOC = AF23;
+
+NET "flash_reset_b_o"           LOC = L8;
+
+NET "flash_clock_o"             LOC = K8;
+
+NET "flash_latch_enable_b_o"    LOC = AC23;
+
+NET "flash_ready_wait_io"       LOC = P8;

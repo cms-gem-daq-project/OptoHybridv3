@@ -1,13 +1,10 @@
 ### Installation
 
-1. Clone the repository
-
+* Clone the repository
 ```sh
 git clone https://github.com/thomaslenzi/OptoHybridv2.git
 ```
-
-2. Once you cloned the repository, run the "install.sh" script in order to download all the dependencies
-
+* Once you cloned the repository, run the "install.sh" script in order to download all the dependencies
 ```sh
 ./install.sh
 ```

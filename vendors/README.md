@@ -1,1 +1,0 @@
-The "vendors" directory regroups all the firmwares/softwares developped by third-parties that are required by the OptoHybrid v2 projeft. This directory is initially empty and is populated by running the "install.sh" script. 
