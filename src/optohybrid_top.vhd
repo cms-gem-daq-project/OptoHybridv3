@@ -27,7 +27,7 @@ use work.vfat2_pkg.all;
 entity optohybrid_top is
 port(
 
-    -- VFAT2s Control
+    --== VFAT2s Control ==--
     
     vfat2_t1_p_o            : out std_logic_vector(2 downto 0);
     vfat2_t1_n_o            : out std_logic_vector(2 downto 0);
@@ -44,7 +44,12 @@ port(
     vfat2_scl_o             : out std_logic_vector(5 downto 0);
     vfat2_sda_io            : inout std_logic_vector(5 downto 0);
     
-    -- VFAT2s Data
+    --== VFAT2s DACs ==--
+    
+    vfat2_dac_i_i           : in std_logic_vector(2 downto 0);
+    vfat2_dac_v_i           : in std_logic_vector(2 downto 0);
+    
+    --== VFAT2s Data ==--
     
     vfat2_0_sbits_p_i       : in std_logic_vector(7 downto 0);
     vfat2_0_sbits_n_i       : in std_logic_vector(7 downto 0);
@@ -166,27 +171,24 @@ port(
     vfat2_23_data_out_p_i   : in std_logic;
     vfat2_23_data_out_n_i   : in std_logic;
     
-    -- Flash
+    --== Flash ==--
     
     flash_address_o         : out std_logic_vector(22 downto 0);
     flash_data_io           : inout std_logic_vector(15 downto 0);
     flash_chip_enable_b_o   : out std_logic;
     flash_out_enable_b_o    : out std_logic;
     flash_write_enable_b_o  : out std_logic;
-    flash_reset_b_o         : out std_logic;
-    flash_clock_o           : out std_logic;
     flash_latch_enable_b_o  : out std_logic;
-    flash_ready_wait_io     : inout std_logic
+    flash_rs_o              : out std_logic_vector(1 downto 0)
 
 );
 end optohybrid_top;
 
 architecture Behavioral of optohybrid_top is
 
-    signal vfat2_t1             : std_logic_vector(2 downto 0); 
-    signal vfat2_mclk           : std_logic_vector(2 downto 0); 
-    signal vfat2_resb           : std_logic_vector(2 downto 0); 
-    signal vfat2_resh           : std_logic_vector(2 downto 0); 
+    signal vfat2_t1             : std_logic; 
+    signal vfat2_mclk           : std_logic; 
+    signal vfat2_reset          : std_logic; 
     signal vfat2_data_valid     : std_logic_vector(5 downto 0); 
     signal vfat2_scl            : std_logic_vector(5 downto 0); 
     signal vfat2_sda_out        : std_logic_vector(5 downto 0); 
@@ -196,11 +198,9 @@ architecture Behavioral of optohybrid_top is
 
 begin
 
-    --==
-    --== VFAT2 Packer
-    --==
+    --== VFAT2 buffers ==--
     
-    vfat2_packer_inst : entity work.vfat2_packer
+    vfat2_buffers_inst : entity work.vfat2_buffers
     port map(
         vfat2_t1_p_o            => vfat2_t1_p_o,
         vfat2_t1_n_o            => vfat2_t1_n_o,
@@ -212,17 +212,14 @@ begin
         vfat2_data_valid_n_i    => vfat2_data_valid_n_i,
         vfat2_scl_o             => vfat2_scl_o,
         vfat2_sda_io            => vfat2_sda_io,
-        --
         vfat2_t1_i              => vfat2_t1,
         vfat2_mclk_i            => vfat2_mclk,
-        vfat2_resb_i            => vfat2_resb,
-        vfat2_resh_i            => vfat2_resh,
+        vfat2_reset_i           => vfat2_reset,
         vfat2_data_valid_o      => vfat2_data_valid,
         vfat2_scl_i             => vfat2_scl,
         vfat2_sda_i             => vfat2_sda_out,
         vfat2_sda_o             => vfat2_sda_in, 
         vfat2_sda_t             => vfat2_sda_tri,
-        --==
         vfat2_0_sbits_p_i		=> vfat2_0_sbits_p_i,
         vfat2_0_sbits_n_i		=> vfat2_0_sbits_p_i,
         vfat2_0_data_out_p_i	=> vfat2_0_data_out_p_i,
@@ -319,7 +316,6 @@ begin
         vfat2_23_sbits_n_i		=> vfat2_23_sbits_p_i,
         vfat2_23_data_out_p_i	=> vfat2_23_data_out_p_i,
         vfat2_23_data_out_n_i	=> vfat2_23_data_out_n_i,
-        --
         vfat2s_data_o           => vfat2_data
     );
 

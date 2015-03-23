@@ -47,10 +47,7 @@ NET "flash_out_enable_b_o"      LOC = AA24;
 
 NET "flash_write_enable_b_o"    LOC = AF23;
 
-NET "flash_reset_b_o"           LOC = L8;
-
-NET "flash_clock_o"             LOC = K8;
-
 NET "flash_latch_enable_b_o"    LOC = AC23;
 
-NET "flash_ready_wait_io"       LOC = P8;
+NET "flash_rs_o<0>"             LOC = AA23;
+NET "flash_rs_o<1>"             LOC = AG23;
