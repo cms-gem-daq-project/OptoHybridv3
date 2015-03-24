@@ -1,5 +1,12 @@
 # This file constraints the flash signals
 
+## Multiboot
+
+NET "multiboot_rs_o<0>"         LOC = AA23;
+NET "multiboot_rs_o<1>"         LOC = AG23;
+
+## Flash
+
 NET "flash_address_o<0>"        LOC = AL8;
 NET "flash_address_o<1>"        LOC = AK8;
 NET "flash_address_o<2>"        LOC = AC9;
@@ -49,5 +56,29 @@ NET "flash_write_enable_b_o"    LOC = AF23;
 
 NET "flash_latch_enable_b_o"    LOC = AC23;
 
-NET "flash_rs_o<0>"             LOC = AA23;
-NET "flash_rs_o<1>"             LOC = AG23;
+## EPROM
+
+#NET "eprom_data_i<0>"           LOC = G23; # FLASH D8
+#NET "eprom_data_i<1>"           LOC = N24; # FLASH D10
+#NET "eprom_data_i<2>"           LOC = AF25; # FLASH D1
+#NET "eprom_data_i<3>"           LOC = V24; # FLASH D3
+#NET "eprom_data_i<4>"           LOC = M23; # FLASH D15
+#NET "eprom_data_i<5>"           LOC = N23; # FLASH D11
+#NET "eprom_data_i<6>"           LOC = R24; # FLASH D7
+#NET "eprom_data_i<7>"           LOC = P24; # FLASH D6
+
+#NET "eprom_clk_o"               LOC = AF24; # FLASH D0
+
+NET "eprom_reset_b_o"           LOC = B10;
+
+NET "eprom_chip_enable_b_o"     LOC = A10;
+
+#NET "eprom_tdi_o"               LOC = F23; # FLASH D12
+
+#NET "eprom_tdo_i"               LOC = W24; # FLASH D2
+
+#NET "eprom_tms_o"               LOC = H25; # FLASH D5
+
+#NET "eprom_tck_o"               LOC = L24; # FLASH D14
+
+

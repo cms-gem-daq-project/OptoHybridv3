@@ -29,25 +29,20 @@ port(
 
     --== VFAT2s Control ==--
     
-    vfat2_t1_p_o            : out std_logic_vector(2 downto 0);
-    vfat2_t1_n_o            : out std_logic_vector(2 downto 0);
-    
     vfat2_mclk_p_o          : out std_logic_vector(2 downto 0);
     vfat2_mclk_n_o          : out std_logic_vector(2 downto 0);
     
     vfat2_resb_o            : out std_logic_vector(2 downto 0);
     vfat2_resh_o            : out std_logic_vector(2 downto 0);
     
-    vfat2_data_valid_p_i    : in std_logic_vector(5 downto 0);
-    vfat2_data_valid_n_i    : in std_logic_vector(5 downto 0);
+    vfat2_t1_p_o            : out std_logic_vector(2 downto 0);
+    vfat2_t1_n_o            : out std_logic_vector(2 downto 0);
     
     vfat2_scl_o             : out std_logic_vector(5 downto 0);
     vfat2_sda_io            : inout std_logic_vector(5 downto 0);
     
-    --== VFAT2s DACs ==--
-    
-    vfat2_dac_i_i           : in std_logic_vector(2 downto 0);
-    vfat2_dac_v_i           : in std_logic_vector(2 downto 0);
+    vfat2_data_valid_p_i    : in std_logic_vector(5 downto 0);
+    vfat2_data_valid_n_i    : in std_logic_vector(5 downto 0);
     
     --== VFAT2s Data ==--
     
@@ -171,7 +166,9 @@ port(
     vfat2_23_data_out_p_i   : in std_logic;
     vfat2_23_data_out_n_i   : in std_logic;
     
-    --== Flash ==--
+    --== Memory ==--
+    
+    multiboot_rs_o          : out std_logic_vector(1 downto 0);
     
     flash_address_o         : out std_logic_vector(22 downto 0);
     flash_data_io           : inout std_logic_vector(15 downto 0);
@@ -179,22 +176,115 @@ port(
     flash_out_enable_b_o    : out std_logic;
     flash_write_enable_b_o  : out std_logic;
     flash_latch_enable_b_o  : out std_logic;
-    flash_rs_o              : out std_logic_vector(1 downto 0)
+    
+--    eprom_data_i            : inout std_logic_vector(7 downto 0);
+--    eprom_clk_o             : out std_logic;
+    eprom_reset_b_o         : out std_logic;
+    eprom_chip_enable_b_o   : out std_logic;
+--    eprom_tdi_o             : out std_logic;
+--    eprom_tdo_i             : in std_logic;
+--    eprom_tms_o             : out std_logic;
+--    eprom_tck_o             : out std_logic;
+    
+    --== Clocking ==--
+    
+    clk_50MHz_i             : in std_logic;
+
+    qpll_ref_40MHz_o        : out std_logic;
+    qpll_reset_o            : out std_logic;
+    qpll_locked_i           : in std_logic;
+    qpll_error_i            : in std_logic;
+    qpll_clk_p_i            : in std_logic;
+    qpll_clk_n_i            : in std_logic;
+
+    cdce_aux_o              : out std_logic;
+    cdce_aux_i              : in std_logic;
+    cdce_ref_o              : out std_logic;
+    cdce_pwrdown_o          : out std_logic;
+    cdce_sync_o             : out std_logic;
+    cdce_locked_i           : in std_logic;
+    cdce_sck_o              : out std_logic;
+    cdce_mosi_o             : out std_logic;
+    cdce_le_o               : out std_logic;
+    cdce_miso_i             : in std_logic;
+    cdce_clk_p_i            : in std_logic;
+    cdce_clk_n_i            : in std_logic;
+    cdce_pri_p_o            : out std_logic;
+    cdce_pri_n_o            : out std_logic;
+    
+    --== Miscellaneous ==--
+    
+    hdmi_scl_io             : inout std_logic_vector(1 downto 0);
+    hdmi_sda_io             : inout std_logic_vector(1 downto 0);
+
+    tmds_d_p_io             : inout std_logic_vector(1 downto 0);
+    tmds_d_n_io             : inout std_logic_vector(1 downto 0);
+
+    tmds_clk_p_io           : inout std_logic;
+    tmds_clk_n_io           : inout std_logic;
+
+    adc_chip_select_o       : out std_logic;
+    adc_din_i               : in std_logic;
+    adc_dout_o              : out std_logic;
+    adc_clk_o               : out std_logic;
+    adc_eoc_i               : in std_logic;
+
+    temp_clk_o              : out std_logic;
+    temp_data_io            : inout std_logic;
+
+    chip_id_i               : in std_logic;
+    
+    --== GTX ==--
+    
+    mgt_112_clk0_p_i        : in std_logic;
+    mgt_112_clk0_n_i        : in std_logic;
+    
+    mgt_116_clk1_p_i        : in std_logic;
+    mgt_116_clk1_n_i        : in std_logic;
+    
+    mgt_112_rx_p_i          : in std_logic_vector(3 downto 0);
+    mgt_112_rx_n_i          : in std_logic_vector(3 downto 0);
+    mgt_112_tx_p_o          : out std_logic_vector(3 downto 0);
+    mgt_112_tx_n_o          : out std_logic_vector(3 downto 0);
+    
+    mgt_113_rx_p_i          : in std_logic_vector(3 downto 0);
+    mgt_113_rx_n_i          : in std_logic_vector(3 downto 0);
+    mgt_113_tx_p_o          : out std_logic_vector(3 downto 0);
+    mgt_113_tx_n_o          : out std_logic_vector(3 downto 0);
+    
+    mgt_114_rx_p_i          : in std_logic_vector(3 downto 0);
+    mgt_114_rx_n_i          : in std_logic_vector(3 downto 0);
+    mgt_114_tx_p_o          : out std_logic_vector(3 downto 0);
+    mgt_114_tx_n_o          : out std_logic_vector(3 downto 0);
+    
+    mgt_115_rx_p_i          : in std_logic_vector(3 downto 0);
+    mgt_115_rx_n_i          : in std_logic_vector(3 downto 0);
+    mgt_115_tx_p_o          : out std_logic_vector(3 downto 0);
+    mgt_115_tx_n_o          : out std_logic_vector(3 downto 0);
+    
+    mgt_116_rx_p_i          : in std_logic_vector(3 downto 0);
+    mgt_116_rx_n_i          : in std_logic_vector(3 downto 0);
+    mgt_116_tx_p_o          : out std_logic_vector(3 downto 0);
+    mgt_116_tx_n_o          : out std_logic_vector(3 downto 0)
 
 );
 end optohybrid_top;
 
 architecture Behavioral of optohybrid_top is
 
-    signal vfat2_t1             : std_logic; 
+    --== VFAT2 signals ==--
+
     signal vfat2_mclk           : std_logic; 
     signal vfat2_reset          : std_logic; 
-    signal vfat2_data_valid     : std_logic_vector(5 downto 0); 
+    signal vfat2_t1             : std_logic; 
     signal vfat2_scl            : std_logic_vector(5 downto 0); 
     signal vfat2_sda_out        : std_logic_vector(5 downto 0); 
     signal vfat2_sda_in         : std_logic_vector(5 downto 0); 
     signal vfat2_sda_tri        : std_logic_vector(5 downto 0); 
+    signal vfat2_data_valid     : std_logic_vector(5 downto 0); 
     signal vfat2_data           : vfat2s_data_t(23 downto 0);
+    
+    --== ==--
 
 begin
 
@@ -202,24 +292,27 @@ begin
     
     vfat2_buffers_inst : entity work.vfat2_buffers
     port map(
-        vfat2_t1_p_o            => vfat2_t1_p_o,
-        vfat2_t1_n_o            => vfat2_t1_n_o,
+        --
         vfat2_mclk_p_o          => vfat2_mclk_p_o,
         vfat2_mclk_n_o          => vfat2_mclk_n_o,
         vfat2_resb_o            => vfat2_resb_o,
         vfat2_resh_o            => vfat2_resh_o,
-        vfat2_data_valid_p_i    => vfat2_data_valid_p_i,
-        vfat2_data_valid_n_i    => vfat2_data_valid_n_i,
+        vfat2_t1_p_o            => vfat2_t1_p_o,
+        vfat2_t1_n_o            => vfat2_t1_n_o,
         vfat2_scl_o             => vfat2_scl_o,
         vfat2_sda_io            => vfat2_sda_io,
-        vfat2_t1_i              => vfat2_t1,
+        vfat2_data_valid_p_i    => vfat2_data_valid_p_i,
+        vfat2_data_valid_n_i    => vfat2_data_valid_n_i,
+        --
         vfat2_mclk_i            => vfat2_mclk,
         vfat2_reset_i           => vfat2_reset,
-        vfat2_data_valid_o      => vfat2_data_valid,
+        vfat2_t1_i              => vfat2_t1,
         vfat2_scl_i             => vfat2_scl,
         vfat2_sda_i             => vfat2_sda_out,
         vfat2_sda_o             => vfat2_sda_in, 
         vfat2_sda_t             => vfat2_sda_tri,
+        vfat2_data_valid_o      => vfat2_data_valid,
+        --
         vfat2_0_sbits_p_i		=> vfat2_0_sbits_p_i,
         vfat2_0_sbits_n_i		=> vfat2_0_sbits_p_i,
         vfat2_0_data_out_p_i	=> vfat2_0_data_out_p_i,
@@ -316,6 +409,7 @@ begin
         vfat2_23_sbits_n_i		=> vfat2_23_sbits_p_i,
         vfat2_23_data_out_p_i	=> vfat2_23_data_out_p_i,
         vfat2_23_data_out_n_i	=> vfat2_23_data_out_n_i,
+        --
         vfat2s_data_o           => vfat2_data
     );
 

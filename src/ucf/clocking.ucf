@@ -1,0 +1,48 @@
+# This file constraints the clocking signals
+
+## Single ended clocks
+
+NET "clk_50MHz_i"       LOC = A11; # L14_P
+
+## QPLL
+
+NET "qpll_ref_40MHz_o"  LOC = H9;
+
+NET "qpll_reset_o"      LOC = J9;
+
+NET "qpll_locked_i"     LOC = L9;
+
+NET "qpll_error_i"      LOC = K9;
+
+NET "qpll_clk_p_i"      LOC = L10; # 40 MHz
+NET "qpll_clk_n_i"      LOC = M10;
+
+## CDCE
+
+NET "cdce_aux_o"        LOC = AD16; # J11_N
+
+NET "cdce_aux_i"        LOC = AE13; # K1_P
+
+NET "cdce_ref_o"        LOC = AD17; # J17_P
+
+NET "cdce_pwrdown_o"    LOC = AE17; # J17_N
+
+NET "cdce_sync_o"       LOC = AF16; # J5_N
+
+NET "cdce_locked_i"     LOC = AE12; # K1_N
+
+
+NET "cdce_sck_o"        LOC = AG16; # J5_P
+
+NET "cdce_mosi_o"       LOC = AE16; # J11_P
+
+NET "cdce_le_o"         LOC = AG15; # J1_P
+
+NET "cdce_miso_i"       LOC = AC15; # J10_P
+
+
+NET "cdce_clk_p_i"      LOC = AH9; # Inverted
+NET "cdce_clk_n_i"      LOC = AJ9;
+
+NET "cdce_pri_p_o"      LOC = AN10;
+NET "cdce_pri_n_o"      LOC = AP10;

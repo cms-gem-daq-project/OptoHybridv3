@@ -1,0 +1,144 @@
+# This file constraints the GTX signals
+
+# Clocks
+
+#NET "mgt_112_clk0_p_i"      LOC = F6; 
+#NET "mgt_112_clk0_n_i"      LOC = F5;
+#
+#NET "mgt_116_clk1_p_i"      LOC = AK6; # 160 MHz
+#NET "mgt_116_clk1_n_i"      LOC = AK5;
+
+## 112
+#
+#NET "mgt_112_rx_p_i<0>"     LOC = AP5;
+#NET "mgt_112_rx_n_i<0>"     LOC = AP6;
+#
+#NET "mgt_112_rx_p_i<1>"     LOC = AM5;
+#NET "mgt_112_rx_n_i<1>"     LOC = AM6;
+#
+#NET "mgt_112_rx_p_i<2>"     LOC = AL3;
+#NET "mgt_112_rx_n_i<2>"     LOC = AL4;
+#
+#NET "mgt_112_rx_p_i<3>"     LOC = AJ3;
+#NET "mgt_112_rx_n_i<3>"     LOC = AJ4;
+#
+#
+#NET "mgt_112_tx_p_o<0>"     LOC = AP1;
+#NET "mgt_112_tx_n_o<0>"     LOC = AP2;
+#
+#NET "mgt_112_tx_p_o<1>"     LOC = AN3;
+#NET "mgt_112_tx_n_o<1>"     LOC = AN4;
+#
+#NET "mgt_112_tx_p_o<2>"     LOC = AM1;
+#NET "mgt_112_tx_n_o<2>"     LOC = AM2;
+#
+#NET "mgt_112_tx_p_o<3>"     LOC = AK1;
+#NET "mgt_112_tx_n_o<3>"     LOC = AK2;
+#
+## 113
+#
+#NET "mgt_113_rx_p_i<0>"     LOC = AG3;
+#NET "mgt_113_rx_n_i<0>"     LOC = AG4;
+#
+#NET "mgt_113_rx_p_i<1>"     LOC = AF5;
+#NET "mgt_113_rx_n_i<1>"     LOC = AF6;
+#
+#NET "mgt_113_rx_p_i<2>"     LOC = AE3;
+#NET "mgt_113_rx_n_i<2>"     LOC = AE4;
+#
+#NET "mgt_113_rx_p_i<3>"     LOC = AC3;
+#NET "mgt_113_rx_n_i<3>"     LOC = AC4;
+#
+#
+#NET "mgt_113_tx_p_o<0>"     LOC = AH1;
+#NET "mgt_113_tx_n_o<0>"     LOC = AH2;
+#
+#NET "mgt_113_tx_p_o<1>"     LOC = AF1;
+#NET "mgt_113_tx_n_o<1>"     LOC = AF2;
+#
+#NET "mgt_113_tx_p_o<2>"     LOC = AD1;
+#NET "mgt_113_tx_n_o<2>"     LOC = AD2;
+#
+#NET "mgt_113_tx_p_o<3>"     LOC = AB1;
+#NET "mgt_113_tx_n_o<3>"     LOC = AB2;
+#
+## 114
+#
+#NET "mgt_114_rx_p_i<0>"     LOC = AA3;
+#NET "mgt_114_rx_n_i<0>"     LOC = AA4;
+#
+#NET "mgt_114_rx_p_i<1>"     LOC = W3;
+#NET "mgt_114_rx_n_i<1>"     LOC = W4;
+#
+#NET "mgt_114_rx_p_i<2>"     LOC = U3;
+#NET "mgt_114_rx_n_i<2>"     LOC = U4;
+#
+#NET "mgt_114_rx_p_i<3>"     LOC = R3;
+#NET "mgt_114_rx_n_i<3>"     LOC = R4;
+#
+#
+#NET "mgt_114_tx_p_o<0>"     LOC = Y1;
+#NET "mgt_114_tx_n_o<0>"     LOC = Y2;
+#
+#NET "mgt_114_tx_p_o<1>"     LOC = V1;
+#NET "mgt_114_tx_n_o<1>"     LOC = V2;
+#
+#NET "mgt_114_tx_p_o<2>"     LOC = T1;
+#NET "mgt_114_tx_n_o<2>"     LOC = T2;
+#
+#NET "mgt_114_tx_p_o<3>"     LOC = P1;
+#NET "mgt_114_tx_n_o<3>"     LOC = P2;
+#
+## 115
+#
+#NET "mgt_115_rx_p_i<0>"     LOC = N3;
+#NET "mgt_115_rx_n_i<0>"     LOC = N4;
+#
+#NET "mgt_115_rx_p_i<1>"     LOC = L3;
+#NET "mgt_115_rx_n_i<1>"     LOC = L4;
+#
+#NET "mgt_115_rx_p_i<2>"     LOC = K5;
+#NET "mgt_115_rx_n_i<2>"     LOC = K6;
+#
+#NET "mgt_115_rx_p_i<3>"     LOC = J3;
+#NET "mgt_115_rx_n_i<3>"     LOC = J4;
+#
+#
+#NET "mgt_115_tx_p_o<0>"     LOC = M1;
+#NET "mgt_115_tx_n_o<0>"     LOC = M2;
+#
+#NET "mgt_115_tx_p_o<1>"     LOC = K1;
+#NET "mgt_115_tx_n_o<1>"     LOC = K2;
+#
+#NET "mgt_115_tx_p_o<2>"     LOC = H1;
+#NET "mgt_115_tx_n_o<2>"     LOC = H2;
+#
+#NET "mgt_115_tx_p_o<3>"     LOC = F1;
+#NET "mgt_115_tx_n_o<3>"     LOC = F2;
+#
+## 116
+#
+#NET "mgt_116_rx_p_i<0>"     LOC = G3;
+#NET "mgt_116_rx_n_i<0>"     LOC = G4;
+#
+#NET "mgt_116_rx_p_i<1>"     LOC = E3;
+#NET "mgt_116_rx_n_i<1>"     LOC = E4;
+#
+#NET "mgt_116_rx_p_i<2>"     LOC = D5;
+#NET "mgt_116_rx_n_i<2>"     LOC = D6;
+#
+#NET "mgt_116_rx_p_i<3>"     LOC = B5;
+#NET "mgt_116_rx_n_i<3>"     LOC = B6;
+#
+#
+#NET "mgt_116_tx_p_o<0>"     LOC = D1;
+#NET "mgt_116_tx_n_o<0>"     LOC = D2;
+#
+#NET "mgt_116_tx_p_o<1>"     LOC = C3;
+#NET "mgt_116_tx_n_o<1>"     LOC = C4;
+#
+#NET "mgt_116_tx_p_o<2>"     LOC = B1;
+#NET "mgt_116_tx_n_o<2>"     LOC = B2;
+#
+#NET "mgt_116_tx_p_o<3>"     LOC = A3;
+#NET "mgt_116_tx_n_o<3>"     LOC = A4;

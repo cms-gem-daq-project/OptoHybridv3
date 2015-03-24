@@ -34,35 +34,35 @@ port(
 
     --== VFAT2s raw control ==--
 
-    vfat2_t1_p_o            : out std_logic_vector(2 downto 0);
-    vfat2_t1_n_o            : out std_logic_vector(2 downto 0);
-
     vfat2_mclk_p_o          : out std_logic_vector(2 downto 0);
     vfat2_mclk_n_o          : out std_logic_vector(2 downto 0);
 
     vfat2_resb_o            : out std_logic_vector(2 downto 0);
     vfat2_resh_o            : out std_logic_vector(2 downto 0);
 
-    vfat2_data_valid_p_i    : in std_logic_vector(5 downto 0);
-    vfat2_data_valid_n_i    : in std_logic_vector(5 downto 0);
+    vfat2_t1_p_o            : out std_logic_vector(2 downto 0);
+    vfat2_t1_n_o            : out std_logic_vector(2 downto 0);
 
     vfat2_scl_o             : out std_logic_vector(5 downto 0);
     vfat2_sda_io            : inout std_logic_vector(5 downto 0);
 
-    --== VFAT2s packed control ==--
+    vfat2_data_valid_p_i    : in std_logic_vector(5 downto 0);
+    vfat2_data_valid_n_i    : in std_logic_vector(5 downto 0);
 
-    vfat2_t1_i              : in std_logic;
+    --== VFAT2s packed control ==--
 
     vfat2_mclk_i            : in std_logic;
 
     vfat2_reset_i           : in std_logic;
 
-    vfat2_data_valid_o      : out std_logic_vector(5 downto 0);
+    vfat2_t1_i              : in std_logic;
 
     vfat2_scl_i             : in std_logic_vector(5 downto 0);
     vfat2_sda_i             : in std_logic_vector(5 downto 0);
     vfat2_sda_o             : out std_logic_vector(5 downto 0);
     vfat2_sda_t             : in std_logic_vector(5 downto 0);
+
+    vfat2_data_valid_o      : out std_logic_vector(5 downto 0);
 
     --== VFAT2s raw data ==--
 
@@ -273,47 +273,6 @@ architecture Behavioral of vfat2_buffers is
 
 begin
 
-    --== T1 signals ==--
-
-    vfat2_t1_0_obufds_inst : obufds
-    generic map(
-        iostandard  => "lvds_25"
-    )
-    port map(
-        i   => vfat2_t1(0),
-        o   => vfat2_t1_p_o(0),
-        ob   => vfat2_t1_n_o(0)
-    );
-
-    vfat2_t1(0) <= not vfat2_t1_i;
-
-
-    vfat2_t1_1_obufds_inst : obufds
-    generic map(
-        iostandard  => "lvds_25"
-    )
-    port map(
-        i   => vfat2_t1(1),
-        o   => vfat2_t1_p_o(1),
-        ob   => vfat2_t1_n_o(1)
-    );
-
-    vfat2_t1(1) <= not vfat2_t1_i;
-
-
-    vfat2_t1_2_obufds_inst : obufds
-    generic map(
-        iostandard  => "lvds_25"
-    )
-    port map(
-        i   => vfat2_t1(2),
-        o   => vfat2_t1_p_o(2),
-        ob   => vfat2_t1_n_o(2)
-    );
-
-    vfat2_t1(2) <= not vfat2_t1_i;
-
-
     --== MCLK signals ==--
 
     vfat2_mclk_0_oddr_inst : oddr
@@ -468,90 +427,45 @@ begin
     );
 
 
-    --== Data valid signals ==--
+    --== T1 signals ==--
 
-    vfat2_data_valid_0_ibufds_inst : ibufds
+    vfat2_t1_0_obufds_inst : obufds
     generic map(
-        diff_term   => true,
         iostandard  => "lvds_25"
     )
     port map(
-        i   => vfat2_data_valid_p_i(0),
-        ib  => vfat2_data_valid_n_i(0),
-        o   => vfat2_data_valid(0)
+        i   => vfat2_t1(0),
+        o   => vfat2_t1_p_o(0),
+        ob   => vfat2_t1_n_o(0)
     );
 
-    vfat2_data_valid_o(0) <= not vfat2_data_valid(0);
+    vfat2_t1(0) <= not vfat2_t1_i;
 
 
-    vfat2_data_valid_1_ibufds_inst : ibufds
+    vfat2_t1_1_obufds_inst : obufds
     generic map(
-        diff_term   => true,
         iostandard  => "lvds_25"
     )
     port map(
-        i   => vfat2_data_valid_p_i(1),
-        ib  => vfat2_data_valid_n_i(1),
-        o   => vfat2_data_valid(1)
+        i   => vfat2_t1(1),
+        o   => vfat2_t1_p_o(1),
+        ob   => vfat2_t1_n_o(1)
     );
 
-    vfat2_data_valid_o(1) <= vfat2_data_valid(1);
+    vfat2_t1(1) <= not vfat2_t1_i;
 
 
-    vfat2_data_valid_2_ibufds_inst : ibufds
+    vfat2_t1_2_obufds_inst : obufds
     generic map(
-        diff_term   => true,
         iostandard  => "lvds_25"
     )
     port map(
-        i   => vfat2_data_valid_p_i(2),
-        ib  => vfat2_data_valid_n_i(2),
-        o   => vfat2_data_valid(2)
+        i   => vfat2_t1(2),
+        o   => vfat2_t1_p_o(2),
+        ob   => vfat2_t1_n_o(2)
     );
 
-    vfat2_data_valid_o(2) <= not vfat2_data_valid(2);
-
-
-    vfat2_data_valid_3_ibufds_inst : ibufds
-    generic map(
-        diff_term   => true,
-        iostandard  => "lvds_25"
-    )
-    port map(
-        i   => vfat2_data_valid_p_i(3),
-        ib  => vfat2_data_valid_n_i(3),
-        o   => vfat2_data_valid(3)
-    );
-
-    vfat2_data_valid_o(3) <= vfat2_data_valid(3);
-
-
-    vfat2_data_valid_4_ibufds_inst : ibufds
-    generic map(
-        diff_term   => true,
-        iostandard  => "lvds_25"
-    )
-    port map(
-        i   => vfat2_data_valid_p_i(4),
-        ib  => vfat2_data_valid_n_i(4),
-        o   => vfat2_data_valid(4)
-    );
-
-    vfat2_data_valid_o(4) <= vfat2_data_valid(4);
-
-
-    vfat2_data_valid_5_ibufds_inst : ibufds
-    generic map(
-        diff_term   => true,
-        iostandard  => "lvds_25"
-    )
-    port map(
-        i   => vfat2_data_valid_p_i(5),
-        ib  => vfat2_data_valid_n_i(5),
-        o   => vfat2_data_valid(5)
-    );
-
-    vfat2_data_valid_o(5) <= not vfat2_data_valid(5);
+    vfat2_t1(2) <= not vfat2_t1_i;
 
 
     --== I2C signals ==--
@@ -698,6 +612,92 @@ begin
         o => vfat2_scl_o(5),
         i => vfat2_scl_i(5)
     );
+
+
+    --== Data valid signals ==--
+
+    vfat2_data_valid_0_ibufds_inst : ibufds
+    generic map(
+        diff_term   => true,
+        iostandard  => "lvds_25"
+    )
+    port map(
+        i   => vfat2_data_valid_p_i(0),
+        ib  => vfat2_data_valid_n_i(0),
+        o   => vfat2_data_valid(0)
+    );
+
+    vfat2_data_valid_o(0) <= not vfat2_data_valid(0);
+
+
+    vfat2_data_valid_1_ibufds_inst : ibufds
+    generic map(
+        diff_term   => true,
+        iostandard  => "lvds_25"
+    )
+    port map(
+        i   => vfat2_data_valid_p_i(1),
+        ib  => vfat2_data_valid_n_i(1),
+        o   => vfat2_data_valid(1)
+    );
+
+    vfat2_data_valid_o(1) <= vfat2_data_valid(1);
+
+
+    vfat2_data_valid_2_ibufds_inst : ibufds
+    generic map(
+        diff_term   => true,
+        iostandard  => "lvds_25"
+    )
+    port map(
+        i   => vfat2_data_valid_p_i(2),
+        ib  => vfat2_data_valid_n_i(2),
+        o   => vfat2_data_valid(2)
+    );
+
+    vfat2_data_valid_o(2) <= not vfat2_data_valid(2);
+
+
+    vfat2_data_valid_3_ibufds_inst : ibufds
+    generic map(
+        diff_term   => true,
+        iostandard  => "lvds_25"
+    )
+    port map(
+        i   => vfat2_data_valid_p_i(3),
+        ib  => vfat2_data_valid_n_i(3),
+        o   => vfat2_data_valid(3)
+    );
+
+    vfat2_data_valid_o(3) <= vfat2_data_valid(3);
+
+
+    vfat2_data_valid_4_ibufds_inst : ibufds
+    generic map(
+        diff_term   => true,
+        iostandard  => "lvds_25"
+    )
+    port map(
+        i   => vfat2_data_valid_p_i(4),
+        ib  => vfat2_data_valid_n_i(4),
+        o   => vfat2_data_valid(4)
+    );
+
+    vfat2_data_valid_o(4) <= vfat2_data_valid(4);
+
+
+    vfat2_data_valid_5_ibufds_inst : ibufds
+    generic map(
+        diff_term   => true,
+        iostandard  => "lvds_25"
+    )
+    port map(
+        i   => vfat2_data_valid_p_i(5),
+        ib  => vfat2_data_valid_n_i(5),
+        o   => vfat2_data_valid(5)
+    );
+
+    vfat2_data_valid_o(5) <= not vfat2_data_valid(5);
 
 
     --== VFAT2 0 signals ==--
@@ -3770,5 +3770,6 @@ begin
     );
 
     vfat2s_data_o(23).data_out <= not vfat2_23_data_out;
+
 
 end Behavioral;

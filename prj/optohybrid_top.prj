@@ -1,0 +1,3 @@
+vhdl work "../src/packages/vfat2_pkg.vhd"
+vhdl work "../src/system/vfat2_buffers.vhd"
+vhdl work "../src/optohybrid_top.vhd"

@@ -1,0 +1,2059 @@
+Release 14.7 Map P.20131013 (nt64)
+Xilinx Mapping Report File for Design 'optohybrid_top'
+
+Design Information
+------------------
+Command Line   : map -intstyle ise -p xc6vlx130t-ff1156-1 -w -logic_opt off -ol
+high -t 1 -xt 0 -register_duplication off -r 4 -global_opt off -mt off -ir off
+-pr off -lc off -power off -o optohybrid_top_map.ncd optohybrid_top.ngd
+optohybrid_top.pcf 
+Target Device  : xc6vlx130t
+Target Package : ff1156
+Target Speed   : -1
+Mapper Version : virtex6 -- $Revision: 1.55 $
+Mapped Date    : Tue Mar 24 11:59:04 2015
+
+Design Summary
+--------------
+Number of errors:      0
+Number of warnings:  322
+Slice Logic Utilization:
+  Number of Slice Registers:                     0 out of 160,000    0%
+  Number of Slice LUTs:                          0 out of  80,000    0%
+
+Slice Logic Distribution:
+  Number of occupied Slices:                     0 out of  20,000    0%
+  Number of LUT Flip Flop pairs used:            0
+
+IO Utilization:
+  Number of bonded IOBs:                       308 out of     600   51%
+    Number of LOCed IOBs:                      308 out of     308  100%
+    IOB Flip Flops:                              3
+    IOB Master Pads:                             6
+    IOB Slave Pads:                              6
+
+Specific Feature Utilization:
+  Number of RAMB36E1/FIFO36E1s:                  0 out of     264    0%
+  Number of RAMB18E1/FIFO18E1s:                  0 out of     528    0%
+  Number of BUFG/BUFGCTRLs:                      0 out of      32    0%
+  Number of ILOGICE1/ISERDESE1s:                 0 out of     600    0%
+  Number of OLOGICE1/OSERDESE1s:                 3 out of     600    1%
+    Number used as OLOGICE1s:                    3
+    Number used as OSERDESE1s:                   0
+  Number of BSCANs:                              0 out of       4    0%
+  Number of BUFHCEs:                             0 out of     120    0%
+  Number of BUFIODQSs:                           0 out of      60    0%
+  Number of BUFRs:                               0 out of      30    0%
+  Number of CAPTUREs:                            0 out of       1    0%
+  Number of DSP48E1s:                            0 out of     480    0%
+  Number of EFUSE_USRs:                          0 out of       1    0%
+  Number of FRAME_ECCs:                          0 out of       1    0%
+  Number of GTXE1s:                              0 out of      20    0%
+  Number of IBUFDS_GTXE1s:                       0 out of      10    0%
+  Number of ICAPs:                               0 out of       2    0%
+  Number of IDELAYCTRLs:                         0 out of      15    0%
+  Number of IODELAYE1s:                          0 out of     600    0%
+  Number of MMCM_ADVs:                           0 out of      10    0%
+  Number of PCIE_2_0s:                           0 out of       2    0%
+  Number of STARTUPs:                            1 out of       1  100%
+  Number of SYSMONs:                             0 out of       1    0%
+  Number of TEMAC_SINGLEs:                       0 out of       4    0%
+
+Average Fanout of Non-Clock Nets:                0.20
+
+Peak Memory Usage:  587 MB
+Total REAL time to MAP completion:  31 secs 
+Total CPU time to MAP completion:   31 secs 
+
+Table of Contents
+-----------------
+Section 1 - Errors
+Section 2 - Warnings
+Section 3 - Informational
+Section 4 - Removed Logic Summary
+Section 5 - Removed Logic
+Section 6 - IOB Properties
+Section 7 - RPMs
+Section 8 - Guide Report
+Section 9 - Area Group and Partition Summary
+Section 10 - Timing Report
+Section 11 - Configuration String Information
+Section 12 - Control Set Information
+Section 13 - Utilization by Hierarchy
+
+Section 1 - Errors
+------------------
+
+Section 2 - Warnings
+--------------------
+WARNING:Security:42 - Your software subscription period has lapsed. Your current
+version of Xilinx tools will continue to function, but you no longer qualify for
+Xilinx software updates or new releases.
+WARNING:MapLib:793 - Bi-directional network vfat2_sda_io<5> is driven by a
+   constant.  This can result in a short.  This can be fixed by removing the
+   constant source or changing the bi-directional network.
+WARNING:MapLib:793 - Bi-directional network vfat2_sda_io<5> is driven by a
+   constant.  This can result in a short.  This can be fixed by removing the
+   constant source or changing the bi-directional network.
+WARNING:MapLib:793 - Bi-directional network vfat2_sda_io<4> is driven by a
+   constant.  This can result in a short.  This can be fixed by removing the
+   constant source or changing the bi-directional network.
+WARNING:MapLib:793 - Bi-directional network vfat2_sda_io<4> is driven by a
+   constant.  This can result in a short.  This can be fixed by removing the
+   constant source or changing the bi-directional network.
+WARNING:MapLib:793 - Bi-directional network vfat2_sda_io<3> is driven by a
+   constant.  This can result in a short.  This can be fixed by removing the
+   constant source or changing the bi-directional network.
+WARNING:MapLib:793 - Bi-directional network vfat2_sda_io<3> is driven by a
+   constant.  This can result in a short.  This can be fixed by removing the
+   constant source or changing the bi-directional network.
+WARNING:MapLib:793 - Bi-directional network vfat2_sda_io<2> is driven by a
+   constant.  This can result in a short.  This can be fixed by removing the
+   constant source or changing the bi-directional network.
+WARNING:MapLib:793 - Bi-directional network vfat2_sda_io<2> is driven by a
+   constant.  This can result in a short.  This can be fixed by removing the
+   constant source or changing the bi-directional network.
+WARNING:MapLib:793 - Bi-directional network vfat2_sda_io<1> is driven by a
+   constant.  This can result in a short.  This can be fixed by removing the
+   constant source or changing the bi-directional network.
+WARNING:MapLib:793 - Bi-directional network vfat2_sda_io<1> is driven by a
+   constant.  This can result in a short.  This can be fixed by removing the
+   constant source or changing the bi-directional network.
+WARNING:MapLib:793 - Bi-directional network vfat2_sda_io<0> is driven by a
+   constant.  This can result in a short.  This can be fixed by removing the
+   constant source or changing the bi-directional network.
+WARNING:MapLib:793 - Bi-directional network vfat2_sda_io<0> is driven by a
+   constant.  This can result in a short.  This can be fixed by removing the
+   constant source or changing the bi-directional network.
+WARNING:MapLib:793 - Bi-directional network vfat2_sda_io<5> is driven by a
+   constant.  This can result in a short.  This can be fixed by removing the
+   constant source or changing the bi-directional network.
+WARNING:MapLib:793 - Bi-directional network vfat2_sda_io<4> is driven by a
+   constant.  This can result in a short.  This can be fixed by removing the
+   constant source or changing the bi-directional network.
+WARNING:MapLib:793 - Bi-directional network vfat2_sda_io<3> is driven by a
+   constant.  This can result in a short.  This can be fixed by removing the
+   constant source or changing the bi-directional network.
+WARNING:MapLib:793 - Bi-directional network vfat2_sda_io<2> is driven by a
+   constant.  This can result in a short.  This can be fixed by removing the
+   constant source or changing the bi-directional network.
+WARNING:MapLib:793 - Bi-directional network vfat2_sda_io<1> is driven by a
+   constant.  This can result in a short.  This can be fixed by removing the
+   constant source or changing the bi-directional network.
+WARNING:MapLib:793 - Bi-directional network vfat2_sda_io<0> is driven by a
+   constant.  This can result in a short.  This can be fixed by removing the
+   constant source or changing the bi-directional network.
+WARNING:MapLib:793 - Bi-directional network vfat2_sda_io<5> is driven by a
+   constant.  This can result in a short.  This can be fixed by removing the
+   constant source or changing the bi-directional network.
+WARNING:MapLib:793 - Bi-directional network vfat2_sda_io<4> is driven by a
+   constant.  This can result in a short.  This can be fixed by removing the
+   constant source or changing the bi-directional network.
+WARNING:MapLib:793 - Bi-directional network vfat2_sda_io<3> is driven by a
+   constant.  This can result in a short.  This can be fixed by removing the
+   constant source or changing the bi-directional network.
+WARNING:MapLib:793 - Bi-directional network vfat2_sda_io<2> is driven by a
+   constant.  This can result in a short.  This can be fixed by removing the
+   constant source or changing the bi-directional network.
+WARNING:MapLib:793 - Bi-directional network vfat2_sda_io<1> is driven by a
+   constant.  This can result in a short.  This can be fixed by removing the
+   constant source or changing the bi-directional network.
+WARNING:MapLib:793 - Bi-directional network vfat2_sda_io<0> is driven by a
+   constant.  This can result in a short.  This can be fixed by removing the
+   constant source or changing the bi-directional network.
+WARNING:MapLib:701 - Signal vfat2_23_sbits_p_i<7> connected to top level port
+   vfat2_23_sbits_p_i<7> has been removed.
+WARNING:MapLib:701 - Signal vfat2_23_sbits_p_i<6> connected to top level port
+   vfat2_23_sbits_p_i<6> has been removed.
+WARNING:MapLib:701 - Signal vfat2_23_sbits_p_i<5> connected to top level port
+   vfat2_23_sbits_p_i<5> has been removed.
+WARNING:MapLib:701 - Signal vfat2_23_sbits_p_i<4> connected to top level port
+   vfat2_23_sbits_p_i<4> has been removed.
+WARNING:MapLib:701 - Signal vfat2_23_sbits_p_i<3> connected to top level port
+   vfat2_23_sbits_p_i<3> has been removed.
+WARNING:MapLib:701 - Signal vfat2_23_sbits_p_i<2> connected to top level port
+   vfat2_23_sbits_p_i<2> has been removed.
+WARNING:MapLib:701 - Signal vfat2_23_sbits_p_i<1> connected to top level port
+   vfat2_23_sbits_p_i<1> has been removed.
+WARNING:MapLib:701 - Signal vfat2_23_sbits_p_i<0> connected to top level port
+   vfat2_23_sbits_p_i<0> has been removed.
+WARNING:MapLib:701 - Signal vfat2_22_sbits_p_i<7> connected to top level port
+   vfat2_22_sbits_p_i<7> has been removed.
+WARNING:MapLib:701 - Signal vfat2_22_sbits_p_i<6> connected to top level port
+   vfat2_22_sbits_p_i<6> has been removed.
+WARNING:MapLib:701 - Signal vfat2_22_sbits_p_i<5> connected to top level port
+   vfat2_22_sbits_p_i<5> has been removed.
+WARNING:MapLib:701 - Signal vfat2_22_sbits_p_i<4> connected to top level port
+   vfat2_22_sbits_p_i<4> has been removed.
+WARNING:MapLib:701 - Signal vfat2_22_sbits_p_i<3> connected to top level port
+   vfat2_22_sbits_p_i<3> has been removed.
+WARNING:MapLib:701 - Signal vfat2_22_sbits_p_i<2> connected to top level port
+   vfat2_22_sbits_p_i<2> has been removed.
+WARNING:MapLib:701 - Signal vfat2_22_sbits_p_i<1> connected to top level port
+   vfat2_22_sbits_p_i<1> has been removed.
+WARNING:MapLib:701 - Signal vfat2_22_sbits_p_i<0> connected to top level port
+   vfat2_22_sbits_p_i<0> has been removed.
+WARNING:MapLib:701 - Signal vfat2_21_sbits_p_i<7> connected to top level port
+   vfat2_21_sbits_p_i<7> has been removed.
+WARNING:MapLib:701 - Signal vfat2_21_sbits_p_i<6> connected to top level port
+   vfat2_21_sbits_p_i<6> has been removed.
+WARNING:MapLib:701 - Signal vfat2_21_sbits_p_i<5> connected to top level port
+   vfat2_21_sbits_p_i<5> has been removed.
+WARNING:MapLib:701 - Signal vfat2_21_sbits_p_i<4> connected to top level port
+   vfat2_21_sbits_p_i<4> has been removed.
+WARNING:MapLib:701 - Signal vfat2_21_sbits_p_i<3> connected to top level port
+   vfat2_21_sbits_p_i<3> has been removed.
+WARNING:MapLib:701 - Signal vfat2_21_sbits_p_i<2> connected to top level port
+   vfat2_21_sbits_p_i<2> has been removed.
+WARNING:MapLib:701 - Signal vfat2_21_sbits_p_i<1> connected to top level port
+   vfat2_21_sbits_p_i<1> has been removed.
+WARNING:MapLib:701 - Signal vfat2_21_sbits_p_i<0> connected to top level port
+   vfat2_21_sbits_p_i<0> has been removed.
+WARNING:MapLib:701 - Signal vfat2_20_sbits_p_i<7> connected to top level port
+   vfat2_20_sbits_p_i<7> has been removed.
+WARNING:MapLib:701 - Signal vfat2_20_sbits_p_i<6> connected to top level port
+   vfat2_20_sbits_p_i<6> has been removed.
+WARNING:MapLib:701 - Signal vfat2_20_sbits_p_i<5> connected to top level port
+   vfat2_20_sbits_p_i<5> has been removed.
+WARNING:MapLib:701 - Signal vfat2_20_sbits_p_i<4> connected to top level port
+   vfat2_20_sbits_p_i<4> has been removed.
+WARNING:MapLib:701 - Signal vfat2_20_sbits_p_i<3> connected to top level port
+   vfat2_20_sbits_p_i<3> has been removed.
+WARNING:MapLib:701 - Signal vfat2_20_sbits_p_i<2> connected to top level port
+   vfat2_20_sbits_p_i<2> has been removed.
+WARNING:MapLib:701 - Signal vfat2_20_sbits_p_i<1> connected to top level port
+   vfat2_20_sbits_p_i<1> has been removed.
+WARNING:MapLib:701 - Signal vfat2_20_sbits_p_i<0> connected to top level port
+   vfat2_20_sbits_p_i<0> has been removed.
+WARNING:MapLib:701 - Signal vfat2_19_sbits_p_i<7> connected to top level port
+   vfat2_19_sbits_p_i<7> has been removed.
+WARNING:MapLib:701 - Signal vfat2_19_sbits_p_i<6> connected to top level port
+   vfat2_19_sbits_p_i<6> has been removed.
+WARNING:MapLib:701 - Signal vfat2_19_sbits_p_i<5> connected to top level port
+   vfat2_19_sbits_p_i<5> has been removed.
+WARNING:MapLib:701 - Signal vfat2_19_sbits_p_i<4> connected to top level port
+   vfat2_19_sbits_p_i<4> has been removed.
+WARNING:MapLib:701 - Signal vfat2_19_sbits_p_i<3> connected to top level port
+   vfat2_19_sbits_p_i<3> has been removed.
+WARNING:MapLib:701 - Signal vfat2_19_sbits_p_i<2> connected to top level port
+   vfat2_19_sbits_p_i<2> has been removed.
+WARNING:MapLib:701 - Signal vfat2_19_sbits_p_i<1> connected to top level port
+   vfat2_19_sbits_p_i<1> has been removed.
+WARNING:MapLib:701 - Signal vfat2_19_sbits_p_i<0> connected to top level port
+   vfat2_19_sbits_p_i<0> has been removed.
+WARNING:MapLib:701 - Signal vfat2_18_sbits_p_i<7> connected to top level port
+   vfat2_18_sbits_p_i<7> has been removed.
+WARNING:MapLib:701 - Signal vfat2_18_sbits_p_i<6> connected to top level port
+   vfat2_18_sbits_p_i<6> has been removed.
+WARNING:MapLib:701 - Signal vfat2_18_sbits_p_i<5> connected to top level port
+   vfat2_18_sbits_p_i<5> has been removed.
+WARNING:MapLib:701 - Signal vfat2_18_sbits_p_i<4> connected to top level port
+   vfat2_18_sbits_p_i<4> has been removed.
+WARNING:MapLib:701 - Signal vfat2_18_sbits_p_i<3> connected to top level port
+   vfat2_18_sbits_p_i<3> has been removed.
+WARNING:MapLib:701 - Signal vfat2_18_sbits_p_i<2> connected to top level port
+   vfat2_18_sbits_p_i<2> has been removed.
+WARNING:MapLib:701 - Signal vfat2_18_sbits_p_i<1> connected to top level port
+   vfat2_18_sbits_p_i<1> has been removed.
+WARNING:MapLib:701 - Signal vfat2_18_sbits_p_i<0> connected to top level port
+   vfat2_18_sbits_p_i<0> has been removed.
+WARNING:MapLib:701 - Signal vfat2_17_sbits_p_i<7> connected to top level port
+   vfat2_17_sbits_p_i<7> has been removed.
+WARNING:MapLib:701 - Signal vfat2_17_sbits_p_i<6> connected to top level port
+   vfat2_17_sbits_p_i<6> has been removed.
+WARNING:MapLib:701 - Signal vfat2_17_sbits_p_i<5> connected to top level port
+   vfat2_17_sbits_p_i<5> has been removed.
+WARNING:MapLib:701 - Signal vfat2_17_sbits_p_i<4> connected to top level port
+   vfat2_17_sbits_p_i<4> has been removed.
+WARNING:MapLib:701 - Signal vfat2_17_sbits_p_i<3> connected to top level port
+   vfat2_17_sbits_p_i<3> has been removed.
+WARNING:MapLib:701 - Signal vfat2_17_sbits_p_i<2> connected to top level port
+   vfat2_17_sbits_p_i<2> has been removed.
+WARNING:MapLib:701 - Signal vfat2_17_sbits_p_i<1> connected to top level port
+   vfat2_17_sbits_p_i<1> has been removed.
+WARNING:MapLib:701 - Signal vfat2_17_sbits_p_i<0> connected to top level port
+   vfat2_17_sbits_p_i<0> has been removed.
+WARNING:MapLib:701 - Signal vfat2_16_sbits_p_i<7> connected to top level port
+   vfat2_16_sbits_p_i<7> has been removed.
+WARNING:MapLib:701 - Signal vfat2_16_sbits_p_i<6> connected to top level port
+   vfat2_16_sbits_p_i<6> has been removed.
+WARNING:MapLib:701 - Signal vfat2_16_sbits_p_i<5> connected to top level port
+   vfat2_16_sbits_p_i<5> has been removed.
+WARNING:MapLib:701 - Signal vfat2_16_sbits_p_i<4> connected to top level port
+   vfat2_16_sbits_p_i<4> has been removed.
+WARNING:MapLib:701 - Signal vfat2_16_sbits_p_i<3> connected to top level port
+   vfat2_16_sbits_p_i<3> has been removed.
+WARNING:MapLib:701 - Signal vfat2_16_sbits_p_i<2> connected to top level port
+   vfat2_16_sbits_p_i<2> has been removed.
+WARNING:MapLib:701 - Signal vfat2_16_sbits_p_i<1> connected to top level port
+   vfat2_16_sbits_p_i<1> has been removed.
+WARNING:MapLib:701 - Signal vfat2_16_sbits_p_i<0> connected to top level port
+   vfat2_16_sbits_p_i<0> has been removed.
+WARNING:MapLib:701 - Signal vfat2_15_sbits_p_i<7> connected to top level port
+   vfat2_15_sbits_p_i<7> has been removed.
+WARNING:MapLib:701 - Signal vfat2_15_sbits_p_i<6> connected to top level port
+   vfat2_15_sbits_p_i<6> has been removed.
+WARNING:MapLib:701 - Signal vfat2_15_sbits_p_i<5> connected to top level port
+   vfat2_15_sbits_p_i<5> has been removed.
+WARNING:MapLib:701 - Signal vfat2_15_sbits_p_i<4> connected to top level port
+   vfat2_15_sbits_p_i<4> has been removed.
+WARNING:MapLib:701 - Signal vfat2_15_sbits_p_i<3> connected to top level port
+   vfat2_15_sbits_p_i<3> has been removed.
+WARNING:MapLib:701 - Signal vfat2_15_sbits_p_i<2> connected to top level port
+   vfat2_15_sbits_p_i<2> has been removed.
+WARNING:MapLib:701 - Signal vfat2_15_sbits_p_i<1> connected to top level port
+   vfat2_15_sbits_p_i<1> has been removed.
+WARNING:MapLib:701 - Signal vfat2_15_sbits_p_i<0> connected to top level port
+   vfat2_15_sbits_p_i<0> has been removed.
+WARNING:MapLib:701 - Signal vfat2_14_sbits_p_i<7> connected to top level port
+   vfat2_14_sbits_p_i<7> has been removed.
+WARNING:MapLib:701 - Signal vfat2_14_sbits_p_i<6> connected to top level port
+   vfat2_14_sbits_p_i<6> has been removed.
+WARNING:MapLib:701 - Signal vfat2_14_sbits_p_i<5> connected to top level port
+   vfat2_14_sbits_p_i<5> has been removed.
+WARNING:MapLib:701 - Signal vfat2_14_sbits_p_i<4> connected to top level port
+   vfat2_14_sbits_p_i<4> has been removed.
+WARNING:MapLib:701 - Signal vfat2_14_sbits_p_i<3> connected to top level port
+   vfat2_14_sbits_p_i<3> has been removed.
+WARNING:MapLib:701 - Signal vfat2_14_sbits_p_i<2> connected to top level port
+   vfat2_14_sbits_p_i<2> has been removed.
+WARNING:MapLib:701 - Signal vfat2_14_sbits_p_i<1> connected to top level port
+   vfat2_14_sbits_p_i<1> has been removed.
+WARNING:MapLib:701 - Signal vfat2_14_sbits_p_i<0> connected to top level port
+   vfat2_14_sbits_p_i<0> has been removed.
+WARNING:MapLib:701 - Signal vfat2_13_sbits_p_i<7> connected to top level port
+   vfat2_13_sbits_p_i<7> has been removed.
+WARNING:MapLib:701 - Signal vfat2_13_sbits_p_i<6> connected to top level port
+   vfat2_13_sbits_p_i<6> has been removed.
+WARNING:MapLib:701 - Signal vfat2_13_sbits_p_i<5> connected to top level port
+   vfat2_13_sbits_p_i<5> has been removed.
+WARNING:MapLib:701 - Signal vfat2_13_sbits_p_i<4> connected to top level port
+   vfat2_13_sbits_p_i<4> has been removed.
+WARNING:MapLib:701 - Signal vfat2_13_sbits_p_i<3> connected to top level port
+   vfat2_13_sbits_p_i<3> has been removed.
+WARNING:MapLib:701 - Signal vfat2_13_sbits_p_i<2> connected to top level port
+   vfat2_13_sbits_p_i<2> has been removed.
+WARNING:MapLib:701 - Signal vfat2_13_sbits_p_i<1> connected to top level port
+   vfat2_13_sbits_p_i<1> has been removed.
+WARNING:MapLib:701 - Signal vfat2_13_sbits_p_i<0> connected to top level port
+   vfat2_13_sbits_p_i<0> has been removed.
+WARNING:MapLib:701 - Signal vfat2_12_sbits_p_i<7> connected to top level port
+   vfat2_12_sbits_p_i<7> has been removed.
+WARNING:MapLib:701 - Signal vfat2_12_sbits_p_i<6> connected to top level port
+   vfat2_12_sbits_p_i<6> has been removed.
+WARNING:MapLib:701 - Signal vfat2_12_sbits_p_i<5> connected to top level port
+   vfat2_12_sbits_p_i<5> has been removed.
+WARNING:MapLib:701 - Signal vfat2_12_sbits_p_i<4> connected to top level port
+   vfat2_12_sbits_p_i<4> has been removed.
+WARNING:MapLib:701 - Signal vfat2_12_sbits_p_i<3> connected to top level port
+   vfat2_12_sbits_p_i<3> has been removed.
+WARNING:MapLib:701 - Signal vfat2_12_sbits_p_i<2> connected to top level port
+   vfat2_12_sbits_p_i<2> has been removed.
+WARNING:MapLib:701 - Signal vfat2_12_sbits_p_i<1> connected to top level port
+   vfat2_12_sbits_p_i<1> has been removed.
+WARNING:MapLib:701 - Signal vfat2_12_sbits_p_i<0> connected to top level port
+   vfat2_12_sbits_p_i<0> has been removed.
+WARNING:MapLib:701 - Signal vfat2_11_sbits_p_i<7> connected to top level port
+   vfat2_11_sbits_p_i<7> has been removed.
+WARNING:MapLib:701 - Signal vfat2_11_sbits_p_i<6> connected to top level port
+   vfat2_11_sbits_p_i<6> has been removed.
+WARNING:MapLib:701 - Signal vfat2_11_sbits_p_i<5> connected to top level port
+   vfat2_11_sbits_p_i<5> has been removed.
+WARNING:MapLib:701 - Signal vfat2_11_sbits_p_i<4> connected to top level port
+   vfat2_11_sbits_p_i<4> has been removed.
+WARNING:MapLib:701 - Signal vfat2_11_sbits_p_i<3> connected to top level port
+   vfat2_11_sbits_p_i<3> has been removed.
+WARNING:MapLib:701 - Signal vfat2_11_sbits_p_i<2> connected to top level port
+   vfat2_11_sbits_p_i<2> has been removed.
+WARNING:MapLib:701 - Signal vfat2_11_sbits_p_i<1> connected to top level port
+   vfat2_11_sbits_p_i<1> has been removed.
+WARNING:MapLib:701 - Signal vfat2_11_sbits_p_i<0> connected to top level port
+   vfat2_11_sbits_p_i<0> has been removed.
+WARNING:MapLib:701 - Signal vfat2_10_sbits_p_i<7> connected to top level port
+   vfat2_10_sbits_p_i<7> has been removed.
+WARNING:MapLib:701 - Signal vfat2_10_sbits_p_i<6> connected to top level port
+   vfat2_10_sbits_p_i<6> has been removed.
+WARNING:MapLib:701 - Signal vfat2_10_sbits_p_i<5> connected to top level port
+   vfat2_10_sbits_p_i<5> has been removed.
+WARNING:MapLib:701 - Signal vfat2_10_sbits_p_i<4> connected to top level port
+   vfat2_10_sbits_p_i<4> has been removed.
+WARNING:MapLib:701 - Signal vfat2_10_sbits_p_i<3> connected to top level port
+   vfat2_10_sbits_p_i<3> has been removed.
+WARNING:MapLib:701 - Signal vfat2_10_sbits_p_i<2> connected to top level port
+   vfat2_10_sbits_p_i<2> has been removed.
+WARNING:MapLib:701 - Signal vfat2_10_sbits_p_i<1> connected to top level port
+   vfat2_10_sbits_p_i<1> has been removed.
+WARNING:MapLib:701 - Signal vfat2_10_sbits_p_i<0> connected to top level port
+   vfat2_10_sbits_p_i<0> has been removed.
+WARNING:MapLib:701 - Signal vfat2_9_sbits_p_i<7> connected to top level port
+   vfat2_9_sbits_p_i<7> has been removed.
+WARNING:MapLib:701 - Signal vfat2_9_sbits_p_i<6> connected to top level port
+   vfat2_9_sbits_p_i<6> has been removed.
+WARNING:MapLib:701 - Signal vfat2_9_sbits_p_i<5> connected to top level port
+   vfat2_9_sbits_p_i<5> has been removed.
+WARNING:MapLib:701 - Signal vfat2_9_sbits_p_i<4> connected to top level port
+   vfat2_9_sbits_p_i<4> has been removed.
+WARNING:MapLib:701 - Signal vfat2_9_sbits_p_i<3> connected to top level port
+   vfat2_9_sbits_p_i<3> has been removed.
+WARNING:MapLib:701 - Signal vfat2_9_sbits_p_i<2> connected to top level port
+   vfat2_9_sbits_p_i<2> has been removed.
+WARNING:MapLib:701 - Signal vfat2_9_sbits_p_i<1> connected to top level port
+   vfat2_9_sbits_p_i<1> has been removed.
+WARNING:MapLib:701 - Signal vfat2_9_sbits_p_i<0> connected to top level port
+   vfat2_9_sbits_p_i<0> has been removed.
+WARNING:MapLib:701 - Signal vfat2_8_sbits_p_i<7> connected to top level port
+   vfat2_8_sbits_p_i<7> has been removed.
+WARNING:MapLib:701 - Signal vfat2_8_sbits_p_i<6> connected to top level port
+   vfat2_8_sbits_p_i<6> has been removed.
+WARNING:MapLib:701 - Signal vfat2_8_sbits_p_i<5> connected to top level port
+   vfat2_8_sbits_p_i<5> has been removed.
+WARNING:MapLib:701 - Signal vfat2_8_sbits_p_i<4> connected to top level port
+   vfat2_8_sbits_p_i<4> has been removed.
+WARNING:MapLib:701 - Signal vfat2_8_sbits_p_i<3> connected to top level port
+   vfat2_8_sbits_p_i<3> has been removed.
+WARNING:MapLib:701 - Signal vfat2_8_sbits_p_i<2> connected to top level port
+   vfat2_8_sbits_p_i<2> has been removed.
+WARNING:MapLib:701 - Signal vfat2_8_sbits_p_i<1> connected to top level port
+   vfat2_8_sbits_p_i<1> has been removed.
+WARNING:MapLib:701 - Signal vfat2_8_sbits_p_i<0> connected to top level port
+   vfat2_8_sbits_p_i<0> has been removed.
+WARNING:MapLib:701 - Signal vfat2_7_sbits_p_i<7> connected to top level port
+   vfat2_7_sbits_p_i<7> has been removed.
+WARNING:MapLib:701 - Signal vfat2_7_sbits_p_i<6> connected to top level port
+   vfat2_7_sbits_p_i<6> has been removed.
+WARNING:MapLib:701 - Signal vfat2_7_sbits_p_i<5> connected to top level port
+   vfat2_7_sbits_p_i<5> has been removed.
+WARNING:MapLib:701 - Signal vfat2_7_sbits_p_i<4> connected to top level port
+   vfat2_7_sbits_p_i<4> has been removed.
+WARNING:MapLib:701 - Signal vfat2_7_sbits_p_i<3> connected to top level port
+   vfat2_7_sbits_p_i<3> has been removed.
+WARNING:MapLib:701 - Signal vfat2_7_sbits_p_i<2> connected to top level port
+   vfat2_7_sbits_p_i<2> has been removed.
+WARNING:MapLib:701 - Signal vfat2_7_sbits_p_i<1> connected to top level port
+   vfat2_7_sbits_p_i<1> has been removed.
+WARNING:MapLib:701 - Signal vfat2_7_sbits_p_i<0> connected to top level port
+   vfat2_7_sbits_p_i<0> has been removed.
+WARNING:MapLib:701 - Signal vfat2_6_sbits_p_i<7> connected to top level port
+   vfat2_6_sbits_p_i<7> has been removed.
+WARNING:MapLib:701 - Signal vfat2_6_sbits_p_i<6> connected to top level port
+   vfat2_6_sbits_p_i<6> has been removed.
+WARNING:MapLib:701 - Signal vfat2_6_sbits_p_i<5> connected to top level port
+   vfat2_6_sbits_p_i<5> has been removed.
+WARNING:MapLib:701 - Signal vfat2_6_sbits_p_i<4> connected to top level port
+   vfat2_6_sbits_p_i<4> has been removed.
+WARNING:MapLib:701 - Signal vfat2_6_sbits_p_i<3> connected to top level port
+   vfat2_6_sbits_p_i<3> has been removed.
+WARNING:MapLib:701 - Signal vfat2_6_sbits_p_i<2> connected to top level port
+   vfat2_6_sbits_p_i<2> has been removed.
+WARNING:MapLib:701 - Signal vfat2_6_sbits_p_i<1> connected to top level port
+   vfat2_6_sbits_p_i<1> has been removed.
+WARNING:MapLib:701 - Signal vfat2_6_sbits_p_i<0> connected to top level port
+   vfat2_6_sbits_p_i<0> has been removed.
+WARNING:MapLib:701 - Signal vfat2_5_sbits_p_i<7> connected to top level port
+   vfat2_5_sbits_p_i<7> has been removed.
+WARNING:MapLib:701 - Signal vfat2_5_sbits_p_i<6> connected to top level port
+   vfat2_5_sbits_p_i<6> has been removed.
+WARNING:MapLib:701 - Signal vfat2_5_sbits_p_i<5> connected to top level port
+   vfat2_5_sbits_p_i<5> has been removed.
+WARNING:MapLib:701 - Signal vfat2_5_sbits_p_i<4> connected to top level port
+   vfat2_5_sbits_p_i<4> has been removed.
+WARNING:MapLib:701 - Signal vfat2_5_sbits_p_i<3> connected to top level port
+   vfat2_5_sbits_p_i<3> has been removed.
+WARNING:MapLib:701 - Signal vfat2_5_sbits_p_i<2> connected to top level port
+   vfat2_5_sbits_p_i<2> has been removed.
+WARNING:MapLib:701 - Signal vfat2_5_sbits_p_i<1> connected to top level port
+   vfat2_5_sbits_p_i<1> has been removed.
+WARNING:MapLib:701 - Signal vfat2_5_sbits_p_i<0> connected to top level port
+   vfat2_5_sbits_p_i<0> has been removed.
+WARNING:MapLib:701 - Signal vfat2_4_sbits_p_i<7> connected to top level port
+   vfat2_4_sbits_p_i<7> has been removed.
+WARNING:MapLib:701 - Signal vfat2_4_sbits_p_i<6> connected to top level port
+   vfat2_4_sbits_p_i<6> has been removed.
+WARNING:MapLib:701 - Signal vfat2_4_sbits_p_i<5> connected to top level port
+   vfat2_4_sbits_p_i<5> has been removed.
+WARNING:MapLib:701 - Signal vfat2_4_sbits_p_i<4> connected to top level port
+   vfat2_4_sbits_p_i<4> has been removed.
+WARNING:MapLib:701 - Signal vfat2_4_sbits_p_i<3> connected to top level port
+   vfat2_4_sbits_p_i<3> has been removed.
+WARNING:MapLib:701 - Signal vfat2_4_sbits_p_i<2> connected to top level port
+   vfat2_4_sbits_p_i<2> has been removed.
+WARNING:MapLib:701 - Signal vfat2_4_sbits_p_i<1> connected to top level port
+   vfat2_4_sbits_p_i<1> has been removed.
+WARNING:MapLib:701 - Signal vfat2_4_sbits_p_i<0> connected to top level port
+   vfat2_4_sbits_p_i<0> has been removed.
+WARNING:MapLib:701 - Signal vfat2_3_sbits_p_i<7> connected to top level port
+   vfat2_3_sbits_p_i<7> has been removed.
+WARNING:MapLib:701 - Signal vfat2_3_sbits_p_i<6> connected to top level port
+   vfat2_3_sbits_p_i<6> has been removed.
+WARNING:MapLib:701 - Signal vfat2_3_sbits_p_i<5> connected to top level port
+   vfat2_3_sbits_p_i<5> has been removed.
+WARNING:MapLib:701 - Signal vfat2_3_sbits_p_i<4> connected to top level port
+   vfat2_3_sbits_p_i<4> has been removed.
+WARNING:MapLib:701 - Signal vfat2_3_sbits_p_i<3> connected to top level port
+   vfat2_3_sbits_p_i<3> has been removed.
+WARNING:MapLib:701 - Signal vfat2_3_sbits_p_i<2> connected to top level port
+   vfat2_3_sbits_p_i<2> has been removed.
+WARNING:MapLib:701 - Signal vfat2_3_sbits_p_i<1> connected to top level port
+   vfat2_3_sbits_p_i<1> has been removed.
+WARNING:MapLib:701 - Signal vfat2_3_sbits_p_i<0> connected to top level port
+   vfat2_3_sbits_p_i<0> has been removed.
+WARNING:MapLib:701 - Signal vfat2_2_sbits_p_i<7> connected to top level port
+   vfat2_2_sbits_p_i<7> has been removed.
+WARNING:MapLib:701 - Signal vfat2_2_sbits_p_i<6> connected to top level port
+   vfat2_2_sbits_p_i<6> has been removed.
+WARNING:MapLib:701 - Signal vfat2_2_sbits_p_i<5> connected to top level port
+   vfat2_2_sbits_p_i<5> has been removed.
+WARNING:MapLib:701 - Signal vfat2_2_sbits_p_i<4> connected to top level port
+   vfat2_2_sbits_p_i<4> has been removed.
+WARNING:MapLib:701 - Signal vfat2_2_sbits_p_i<3> connected to top level port
+   vfat2_2_sbits_p_i<3> has been removed.
+WARNING:MapLib:701 - Signal vfat2_2_sbits_p_i<2> connected to top level port
+   vfat2_2_sbits_p_i<2> has been removed.
+WARNING:MapLib:701 - Signal vfat2_2_sbits_p_i<1> connected to top level port
+   vfat2_2_sbits_p_i<1> has been removed.
+WARNING:MapLib:701 - Signal vfat2_2_sbits_p_i<0> connected to top level port
+   vfat2_2_sbits_p_i<0> has been removed.
+WARNING:MapLib:701 - Signal vfat2_1_sbits_p_i<7> connected to top level port
+   vfat2_1_sbits_p_i<7> has been removed.
+WARNING:MapLib:701 - Signal vfat2_1_sbits_p_i<6> connected to top level port
+   vfat2_1_sbits_p_i<6> has been removed.
+WARNING:MapLib:701 - Signal vfat2_1_sbits_p_i<5> connected to top level port
+   vfat2_1_sbits_p_i<5> has been removed.
+WARNING:MapLib:701 - Signal vfat2_1_sbits_p_i<4> connected to top level port
+   vfat2_1_sbits_p_i<4> has been removed.
+WARNING:MapLib:701 - Signal vfat2_1_sbits_p_i<3> connected to top level port
+   vfat2_1_sbits_p_i<3> has been removed.
+WARNING:MapLib:701 - Signal vfat2_1_sbits_p_i<2> connected to top level port
+   vfat2_1_sbits_p_i<2> has been removed.
+WARNING:MapLib:701 - Signal vfat2_1_sbits_p_i<1> connected to top level port
+   vfat2_1_sbits_p_i<1> has been removed.
+WARNING:MapLib:701 - Signal vfat2_1_sbits_p_i<0> connected to top level port
+   vfat2_1_sbits_p_i<0> has been removed.
+WARNING:MapLib:701 - Signal vfat2_0_sbits_p_i<7> connected to top level port
+   vfat2_0_sbits_p_i<7> has been removed.
+WARNING:MapLib:701 - Signal vfat2_0_sbits_p_i<6> connected to top level port
+   vfat2_0_sbits_p_i<6> has been removed.
+WARNING:MapLib:701 - Signal vfat2_0_sbits_p_i<5> connected to top level port
+   vfat2_0_sbits_p_i<5> has been removed.
+WARNING:MapLib:701 - Signal vfat2_0_sbits_p_i<4> connected to top level port
+   vfat2_0_sbits_p_i<4> has been removed.
+WARNING:MapLib:701 - Signal vfat2_0_sbits_p_i<3> connected to top level port
+   vfat2_0_sbits_p_i<3> has been removed.
+WARNING:MapLib:701 - Signal vfat2_0_sbits_p_i<2> connected to top level port
+   vfat2_0_sbits_p_i<2> has been removed.
+WARNING:MapLib:701 - Signal vfat2_0_sbits_p_i<1> connected to top level port
+   vfat2_0_sbits_p_i<1> has been removed.
+WARNING:MapLib:701 - Signal vfat2_0_sbits_p_i<0> connected to top level port
+   vfat2_0_sbits_p_i<0> has been removed.
+WARNING:MapLib:701 - Signal vfat2_data_valid_p_i<5> connected to top level port
+   vfat2_data_valid_p_i<5> has been removed.
+WARNING:MapLib:701 - Signal vfat2_data_valid_n_i<5> connected to top level port
+   vfat2_data_valid_n_i<5> has been removed.
+WARNING:MapLib:701 - Signal vfat2_data_valid_p_i<4> connected to top level port
+   vfat2_data_valid_p_i<4> has been removed.
+WARNING:MapLib:701 - Signal vfat2_data_valid_n_i<4> connected to top level port
+   vfat2_data_valid_n_i<4> has been removed.
+WARNING:MapLib:701 - Signal vfat2_data_valid_p_i<3> connected to top level port
+   vfat2_data_valid_p_i<3> has been removed.
+WARNING:MapLib:701 - Signal vfat2_data_valid_n_i<3> connected to top level port
+   vfat2_data_valid_n_i<3> has been removed.
+WARNING:MapLib:701 - Signal vfat2_data_valid_p_i<2> connected to top level port
+   vfat2_data_valid_p_i<2> has been removed.
+WARNING:MapLib:701 - Signal vfat2_data_valid_n_i<2> connected to top level port
+   vfat2_data_valid_n_i<2> has been removed.
+WARNING:MapLib:701 - Signal vfat2_data_valid_p_i<1> connected to top level port
+   vfat2_data_valid_p_i<1> has been removed.
+WARNING:MapLib:701 - Signal vfat2_data_valid_n_i<1> connected to top level port
+   vfat2_data_valid_n_i<1> has been removed.
+WARNING:MapLib:701 - Signal vfat2_data_valid_p_i<0> connected to top level port
+   vfat2_data_valid_p_i<0> has been removed.
+WARNING:MapLib:701 - Signal vfat2_data_valid_n_i<0> connected to top level port
+   vfat2_data_valid_n_i<0> has been removed.
+WARNING:MapLib:701 - Signal vfat2_23_data_out_p_i connected to top level port
+   vfat2_23_data_out_p_i has been removed.
+WARNING:MapLib:701 - Signal vfat2_23_data_out_n_i connected to top level port
+   vfat2_23_data_out_n_i has been removed.
+WARNING:MapLib:701 - Signal vfat2_22_data_out_p_i connected to top level port
+   vfat2_22_data_out_p_i has been removed.
+WARNING:MapLib:701 - Signal vfat2_22_data_out_n_i connected to top level port
+   vfat2_22_data_out_n_i has been removed.
+WARNING:MapLib:701 - Signal vfat2_21_data_out_p_i connected to top level port
+   vfat2_21_data_out_p_i has been removed.
+WARNING:MapLib:701 - Signal vfat2_21_data_out_n_i connected to top level port
+   vfat2_21_data_out_n_i has been removed.
+WARNING:MapLib:701 - Signal vfat2_20_data_out_p_i connected to top level port
+   vfat2_20_data_out_p_i has been removed.
+WARNING:MapLib:701 - Signal vfat2_20_data_out_n_i connected to top level port
+   vfat2_20_data_out_n_i has been removed.
+WARNING:MapLib:701 - Signal vfat2_19_data_out_p_i connected to top level port
+   vfat2_19_data_out_p_i has been removed.
+WARNING:MapLib:701 - Signal vfat2_19_data_out_n_i connected to top level port
+   vfat2_19_data_out_n_i has been removed.
+WARNING:MapLib:701 - Signal vfat2_18_data_out_p_i connected to top level port
+   vfat2_18_data_out_p_i has been removed.
+WARNING:MapLib:701 - Signal vfat2_18_data_out_n_i connected to top level port
+   vfat2_18_data_out_n_i has been removed.
+WARNING:MapLib:701 - Signal vfat2_17_data_out_p_i connected to top level port
+   vfat2_17_data_out_p_i has been removed.
+WARNING:MapLib:701 - Signal vfat2_17_data_out_n_i connected to top level port
+   vfat2_17_data_out_n_i has been removed.
+WARNING:MapLib:701 - Signal vfat2_16_data_out_p_i connected to top level port
+   vfat2_16_data_out_p_i has been removed.
+WARNING:MapLib:701 - Signal vfat2_16_data_out_n_i connected to top level port
+   vfat2_16_data_out_n_i has been removed.
+WARNING:MapLib:701 - Signal vfat2_15_data_out_p_i connected to top level port
+   vfat2_15_data_out_p_i has been removed.
+WARNING:MapLib:701 - Signal vfat2_15_data_out_n_i connected to top level port
+   vfat2_15_data_out_n_i has been removed.
+WARNING:MapLib:701 - Signal vfat2_14_data_out_p_i connected to top level port
+   vfat2_14_data_out_p_i has been removed.
+WARNING:MapLib:701 - Signal vfat2_14_data_out_n_i connected to top level port
+   vfat2_14_data_out_n_i has been removed.
+WARNING:MapLib:701 - Signal vfat2_13_data_out_p_i connected to top level port
+   vfat2_13_data_out_p_i has been removed.
+WARNING:MapLib:701 - Signal vfat2_13_data_out_n_i connected to top level port
+   vfat2_13_data_out_n_i has been removed.
+WARNING:MapLib:701 - Signal vfat2_12_data_out_p_i connected to top level port
+   vfat2_12_data_out_p_i has been removed.
+WARNING:MapLib:701 - Signal vfat2_12_data_out_n_i connected to top level port
+   vfat2_12_data_out_n_i has been removed.
+WARNING:MapLib:701 - Signal vfat2_11_data_out_p_i connected to top level port
+   vfat2_11_data_out_p_i has been removed.
+WARNING:MapLib:701 - Signal vfat2_11_data_out_n_i connected to top level port
+   vfat2_11_data_out_n_i has been removed.
+WARNING:MapLib:701 - Signal vfat2_10_data_out_p_i connected to top level port
+   vfat2_10_data_out_p_i has been removed.
+WARNING:MapLib:701 - Signal vfat2_10_data_out_n_i connected to top level port
+   vfat2_10_data_out_n_i has been removed.
+WARNING:MapLib:701 - Signal vfat2_9_data_out_p_i connected to top level port
+   vfat2_9_data_out_p_i has been removed.
+WARNING:MapLib:701 - Signal vfat2_9_data_out_n_i connected to top level port
+   vfat2_9_data_out_n_i has been removed.
+WARNING:MapLib:701 - Signal vfat2_8_data_out_p_i connected to top level port
+   vfat2_8_data_out_p_i has been removed.
+WARNING:MapLib:701 - Signal vfat2_8_data_out_n_i connected to top level port
+   vfat2_8_data_out_n_i has been removed.
+WARNING:MapLib:701 - Signal vfat2_7_data_out_p_i connected to top level port
+   vfat2_7_data_out_p_i has been removed.
+WARNING:MapLib:701 - Signal vfat2_7_data_out_n_i connected to top level port
+   vfat2_7_data_out_n_i has been removed.
+WARNING:MapLib:701 - Signal vfat2_6_data_out_p_i connected to top level port
+   vfat2_6_data_out_p_i has been removed.
+WARNING:MapLib:701 - Signal vfat2_6_data_out_n_i connected to top level port
+   vfat2_6_data_out_n_i has been removed.
+WARNING:MapLib:701 - Signal vfat2_5_data_out_p_i connected to top level port
+   vfat2_5_data_out_p_i has been removed.
+WARNING:MapLib:701 - Signal vfat2_5_data_out_n_i connected to top level port
+   vfat2_5_data_out_n_i has been removed.
+WARNING:MapLib:701 - Signal vfat2_4_data_out_p_i connected to top level port
+   vfat2_4_data_out_p_i has been removed.
+WARNING:MapLib:701 - Signal vfat2_4_data_out_n_i connected to top level port
+   vfat2_4_data_out_n_i has been removed.
+WARNING:MapLib:701 - Signal vfat2_3_data_out_p_i connected to top level port
+   vfat2_3_data_out_p_i has been removed.
+WARNING:MapLib:701 - Signal vfat2_3_data_out_n_i connected to top level port
+   vfat2_3_data_out_n_i has been removed.
+WARNING:MapLib:701 - Signal vfat2_2_data_out_p_i connected to top level port
+   vfat2_2_data_out_p_i has been removed.
+WARNING:MapLib:701 - Signal vfat2_2_data_out_n_i connected to top level port
+   vfat2_2_data_out_n_i has been removed.
+WARNING:MapLib:701 - Signal vfat2_1_data_out_p_i connected to top level port
+   vfat2_1_data_out_p_i has been removed.
+WARNING:MapLib:701 - Signal vfat2_1_data_out_n_i connected to top level port
+   vfat2_1_data_out_n_i has been removed.
+WARNING:MapLib:701 - Signal vfat2_0_data_out_p_i connected to top level port
+   vfat2_0_data_out_p_i has been removed.
+WARNING:MapLib:701 - Signal vfat2_0_data_out_n_i connected to top level port
+   vfat2_0_data_out_n_i has been removed.
+WARNING:PhysDesignRules:368 - The signal <adc_clk_o_OBUF> is incomplete. The
+   signal is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <flash_address_o<0>_OBUF> is
+   incomplete. The signal is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <flash_address_o<1>_OBUF> is
+   incomplete. The signal is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <flash_address_o<2>_OBUF> is
+   incomplete. The signal is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <flash_address_o<3>_OBUF> is
+   incomplete. The signal is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <flash_address_o<4>_OBUF> is
+   incomplete. The signal is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <flash_address_o<5>_OBUF> is
+   incomplete. The signal is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <flash_address_o<6>_OBUF> is
+   incomplete. The signal is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <flash_address_o<7>_OBUF> is
+   incomplete. The signal is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <flash_address_o<8>_OBUF> is
+   incomplete. The signal is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <flash_address_o<9>_OBUF> is
+   incomplete. The signal is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <eprom_reset_b_o_OBUF> is incomplete.
+   The signal is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <flash_address_o<10>_OBUF> is
+   incomplete. The signal is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <flash_address_o<11>_OBUF> is
+   incomplete. The signal is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <flash_address_o<12>_OBUF> is
+   incomplete. The signal is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <flash_address_o<20>_OBUF> is
+   incomplete. The signal is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <flash_address_o<13>_OBUF> is
+   incomplete. The signal is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <flash_address_o<21>_OBUF> is
+   incomplete. The signal is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <flash_address_o<14>_OBUF> is
+   incomplete. The signal is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <flash_address_o<22>_OBUF> is
+   incomplete. The signal is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <flash_address_o<15>_OBUF> is
+   incomplete. The signal is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <flash_address_o<16>_OBUF> is
+   incomplete. The signal is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <flash_address_o<17>_OBUF> is
+   incomplete. The signal is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <flash_address_o<18>_OBUF> is
+   incomplete. The signal is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <flash_address_o<19>_OBUF> is
+   incomplete. The signal is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <adc_chip_select_o_OBUF> is incomplete.
+   The signal is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <adc_dout_o_OBUF> is incomplete. The
+   signal is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <flash_latch_enable_b_o_OBUF> is
+   incomplete. The signal is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <cdce_le_o_OBUF> is incomplete. The
+   signal is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <flash_chip_enable_b_o_OBUF> is
+   incomplete. The signal is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <cdce_aux_o_OBUF> is incomplete. The
+   signal is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <cdce_ref_o_OBUF> is incomplete. The
+   signal is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <cdce_sck_o_OBUF> is incomplete. The
+   signal is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <cdce_pwrdown_o_OBUF> is incomplete.
+   The signal is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <temp_clk_o_OBUF> is incomplete. The
+   signal is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <flash_write_enable_b_o_OBUF> is
+   incomplete. The signal is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <cdce_mosi_o_OBUF> is incomplete. The
+   signal is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <multiboot_rs_o<0>_OBUF> is incomplete.
+   The signal is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <multiboot_rs_o<1>_OBUF> is incomplete.
+   The signal is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <cdce_sync_o_OBUF> is incomplete. The
+   signal is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <qpll_reset_o_OBUF> is incomplete. The
+   signal is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <flash_out_enable_b_o_OBUF> is
+   incomplete. The signal is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <eprom_chip_enable_b_o_OBUF> is
+   incomplete. The signal is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <cdce_pri_n_o_OBUF> is incomplete. The
+   signal is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <cdce_pri_p_o_OBUF> is incomplete. The
+   signal is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <qpll_ref_40MHz_o_OBUF> is incomplete.
+   The signal is not driven by any source pin in the design.
+
+Section 3 - Informational
+-------------------------
+INFO:Security:56 - Part 'xc6vlx130t' is not a WebPack part.
+INFO:LIT:243 - Logical network mgt_112_rx_p_i<3> has no load.
+INFO:LIT:395 - The above info message is repeated 321 more times for the
+   following (max. 5 shown):
+   mgt_112_rx_p_i<2>,
+   mgt_112_rx_p_i<1>,
+   mgt_112_rx_p_i<0>,
+   mgt_112_rx_n_i<3>,
+   mgt_112_rx_n_i<2>
+   To see the details of these info messages, please use the -detail switch.
+INFO:MapLib:562 - No environment variables are currently set.
+INFO:LIT:244 - All of the single ended outputs in this design are using slew
+   rate limited output drivers. The delay on speed critical single ended outputs
+   can be dramatically reduced by designating them as fast outputs.
+INFO:Pack:1716 - Initializing temperature to 85.000 Celsius. (default - Range:
+   0.000 to 85.000 Celsius)
+INFO:Pack:1720 - Initializing voltage to 0.950 Volts. (default - Range: 0.950 to
+   1.050 Volts)
+INFO:Map:215 - The Interim Design Summary has been generated in the MAP Report
+   (.mrp).
+INFO:Pack:1650 - Map created a placed design.
+
+Section 4 - Removed Logic Summary
+---------------------------------
+ 480 block(s) removed
+   2 block(s) optimized away
+ 258 signal(s) removed
+
+Section 5 - Removed Logic
+-------------------------
+
+The trimmed logic report below shows the logic removed from your design due to
+sourceless or loadless signals, and VCC or ground connections.  If the removal
+of a signal or symbol results in the subsequent removal of an additional signal
+or symbol, the message explaining that second removal will be indented.  This
+indentation will be repeated as a chain of related logic is removed.
+
+To quickly locate the original cause for the removal of a chain of logic, look
+above the place where that logic is listed in the trimming report, then locate
+the lines that are least indented (begin at the leftmost edge).
+
+Loadless block "vfat2_buffers_inst/vfat2_0_data_out_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_0_data_out_p_i" is loadless and has been removed.
+  Loadless block "vfat2_0_data_out_p_i" (PAD) removed.
+ The signal "vfat2_0_data_out_n_i" is loadless and has been removed.
+  Loadless block "vfat2_0_data_out_n_i" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_0_sbit_0_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_0_sbits_p_i<0>" is loadless and has been removed.
+  Loadless block "vfat2_0_sbits_p_i<0>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_0_sbit_1_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_0_sbits_p_i<1>" is loadless and has been removed.
+  Loadless block "vfat2_0_sbits_p_i<1>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_0_sbit_2_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_0_sbits_p_i<2>" is loadless and has been removed.
+  Loadless block "vfat2_0_sbits_p_i<2>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_0_sbit_3_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_0_sbits_p_i<3>" is loadless and has been removed.
+  Loadless block "vfat2_0_sbits_p_i<3>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_0_sbit_4_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_0_sbits_p_i<4>" is loadless and has been removed.
+  Loadless block "vfat2_0_sbits_p_i<4>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_0_sbit_5_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_0_sbits_p_i<5>" is loadless and has been removed.
+  Loadless block "vfat2_0_sbits_p_i<5>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_0_sbit_6_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_0_sbits_p_i<6>" is loadless and has been removed.
+  Loadless block "vfat2_0_sbits_p_i<6>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_0_sbit_7_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_0_sbits_p_i<7>" is loadless and has been removed.
+  Loadless block "vfat2_0_sbits_p_i<7>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_10_data_out_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_10_data_out_p_i" is loadless and has been removed.
+  Loadless block "vfat2_10_data_out_p_i" (PAD) removed.
+ The signal "vfat2_10_data_out_n_i" is loadless and has been removed.
+  Loadless block "vfat2_10_data_out_n_i" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_10_sbit_0_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_10_sbits_p_i<0>" is loadless and has been removed.
+  Loadless block "vfat2_10_sbits_p_i<0>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_10_sbit_1_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_10_sbits_p_i<1>" is loadless and has been removed.
+  Loadless block "vfat2_10_sbits_p_i<1>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_10_sbit_2_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_10_sbits_p_i<2>" is loadless and has been removed.
+  Loadless block "vfat2_10_sbits_p_i<2>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_10_sbit_3_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_10_sbits_p_i<3>" is loadless and has been removed.
+  Loadless block "vfat2_10_sbits_p_i<3>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_10_sbit_4_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_10_sbits_p_i<4>" is loadless and has been removed.
+  Loadless block "vfat2_10_sbits_p_i<4>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_10_sbit_5_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_10_sbits_p_i<5>" is loadless and has been removed.
+  Loadless block "vfat2_10_sbits_p_i<5>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_10_sbit_6_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_10_sbits_p_i<6>" is loadless and has been removed.
+  Loadless block "vfat2_10_sbits_p_i<6>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_10_sbit_7_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_10_sbits_p_i<7>" is loadless and has been removed.
+  Loadless block "vfat2_10_sbits_p_i<7>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_11_data_out_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_11_data_out_p_i" is loadless and has been removed.
+  Loadless block "vfat2_11_data_out_p_i" (PAD) removed.
+ The signal "vfat2_11_data_out_n_i" is loadless and has been removed.
+  Loadless block "vfat2_11_data_out_n_i" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_11_sbit_0_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_11_sbits_p_i<0>" is loadless and has been removed.
+  Loadless block "vfat2_11_sbits_p_i<0>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_11_sbit_1_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_11_sbits_p_i<1>" is loadless and has been removed.
+  Loadless block "vfat2_11_sbits_p_i<1>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_11_sbit_2_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_11_sbits_p_i<2>" is loadless and has been removed.
+  Loadless block "vfat2_11_sbits_p_i<2>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_11_sbit_3_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_11_sbits_p_i<3>" is loadless and has been removed.
+  Loadless block "vfat2_11_sbits_p_i<3>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_11_sbit_4_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_11_sbits_p_i<4>" is loadless and has been removed.
+  Loadless block "vfat2_11_sbits_p_i<4>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_11_sbit_5_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_11_sbits_p_i<5>" is loadless and has been removed.
+  Loadless block "vfat2_11_sbits_p_i<5>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_11_sbit_6_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_11_sbits_p_i<6>" is loadless and has been removed.
+  Loadless block "vfat2_11_sbits_p_i<6>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_11_sbit_7_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_11_sbits_p_i<7>" is loadless and has been removed.
+  Loadless block "vfat2_11_sbits_p_i<7>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_12_data_out_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_12_data_out_p_i" is loadless and has been removed.
+  Loadless block "vfat2_12_data_out_p_i" (PAD) removed.
+ The signal "vfat2_12_data_out_n_i" is loadless and has been removed.
+  Loadless block "vfat2_12_data_out_n_i" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_12_sbit_0_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_12_sbits_p_i<0>" is loadless and has been removed.
+  Loadless block "vfat2_12_sbits_p_i<0>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_12_sbit_1_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_12_sbits_p_i<1>" is loadless and has been removed.
+  Loadless block "vfat2_12_sbits_p_i<1>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_12_sbit_2_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_12_sbits_p_i<2>" is loadless and has been removed.
+  Loadless block "vfat2_12_sbits_p_i<2>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_12_sbit_3_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_12_sbits_p_i<3>" is loadless and has been removed.
+  Loadless block "vfat2_12_sbits_p_i<3>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_12_sbit_4_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_12_sbits_p_i<4>" is loadless and has been removed.
+  Loadless block "vfat2_12_sbits_p_i<4>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_12_sbit_5_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_12_sbits_p_i<5>" is loadless and has been removed.
+  Loadless block "vfat2_12_sbits_p_i<5>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_12_sbit_6_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_12_sbits_p_i<6>" is loadless and has been removed.
+  Loadless block "vfat2_12_sbits_p_i<6>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_12_sbit_7_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_12_sbits_p_i<7>" is loadless and has been removed.
+  Loadless block "vfat2_12_sbits_p_i<7>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_13_data_out_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_13_data_out_p_i" is loadless and has been removed.
+  Loadless block "vfat2_13_data_out_p_i" (PAD) removed.
+ The signal "vfat2_13_data_out_n_i" is loadless and has been removed.
+  Loadless block "vfat2_13_data_out_n_i" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_13_sbit_0_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_13_sbits_p_i<0>" is loadless and has been removed.
+  Loadless block "vfat2_13_sbits_p_i<0>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_13_sbit_1_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_13_sbits_p_i<1>" is loadless and has been removed.
+  Loadless block "vfat2_13_sbits_p_i<1>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_13_sbit_2_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_13_sbits_p_i<2>" is loadless and has been removed.
+  Loadless block "vfat2_13_sbits_p_i<2>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_13_sbit_3_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_13_sbits_p_i<3>" is loadless and has been removed.
+  Loadless block "vfat2_13_sbits_p_i<3>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_13_sbit_4_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_13_sbits_p_i<4>" is loadless and has been removed.
+  Loadless block "vfat2_13_sbits_p_i<4>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_13_sbit_5_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_13_sbits_p_i<5>" is loadless and has been removed.
+  Loadless block "vfat2_13_sbits_p_i<5>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_13_sbit_6_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_13_sbits_p_i<6>" is loadless and has been removed.
+  Loadless block "vfat2_13_sbits_p_i<6>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_13_sbit_7_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_13_sbits_p_i<7>" is loadless and has been removed.
+  Loadless block "vfat2_13_sbits_p_i<7>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_14_data_out_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_14_data_out_p_i" is loadless and has been removed.
+  Loadless block "vfat2_14_data_out_p_i" (PAD) removed.
+ The signal "vfat2_14_data_out_n_i" is loadless and has been removed.
+  Loadless block "vfat2_14_data_out_n_i" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_14_sbit_0_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_14_sbits_p_i<0>" is loadless and has been removed.
+  Loadless block "vfat2_14_sbits_p_i<0>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_14_sbit_1_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_14_sbits_p_i<1>" is loadless and has been removed.
+  Loadless block "vfat2_14_sbits_p_i<1>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_14_sbit_2_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_14_sbits_p_i<2>" is loadless and has been removed.
+  Loadless block "vfat2_14_sbits_p_i<2>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_14_sbit_3_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_14_sbits_p_i<3>" is loadless and has been removed.
+  Loadless block "vfat2_14_sbits_p_i<3>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_14_sbit_4_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_14_sbits_p_i<4>" is loadless and has been removed.
+  Loadless block "vfat2_14_sbits_p_i<4>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_14_sbit_5_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_14_sbits_p_i<5>" is loadless and has been removed.
+  Loadless block "vfat2_14_sbits_p_i<5>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_14_sbit_6_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_14_sbits_p_i<6>" is loadless and has been removed.
+  Loadless block "vfat2_14_sbits_p_i<6>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_14_sbit_7_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_14_sbits_p_i<7>" is loadless and has been removed.
+  Loadless block "vfat2_14_sbits_p_i<7>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_15_data_out_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_15_data_out_p_i" is loadless and has been removed.
+  Loadless block "vfat2_15_data_out_p_i" (PAD) removed.
+ The signal "vfat2_15_data_out_n_i" is loadless and has been removed.
+  Loadless block "vfat2_15_data_out_n_i" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_15_sbit_0_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_15_sbits_p_i<0>" is loadless and has been removed.
+  Loadless block "vfat2_15_sbits_p_i<0>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_15_sbit_1_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_15_sbits_p_i<1>" is loadless and has been removed.
+  Loadless block "vfat2_15_sbits_p_i<1>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_15_sbit_2_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_15_sbits_p_i<2>" is loadless and has been removed.
+  Loadless block "vfat2_15_sbits_p_i<2>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_15_sbit_3_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_15_sbits_p_i<3>" is loadless and has been removed.
+  Loadless block "vfat2_15_sbits_p_i<3>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_15_sbit_4_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_15_sbits_p_i<4>" is loadless and has been removed.
+  Loadless block "vfat2_15_sbits_p_i<4>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_15_sbit_5_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_15_sbits_p_i<5>" is loadless and has been removed.
+  Loadless block "vfat2_15_sbits_p_i<5>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_15_sbit_6_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_15_sbits_p_i<6>" is loadless and has been removed.
+  Loadless block "vfat2_15_sbits_p_i<6>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_15_sbit_7_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_15_sbits_p_i<7>" is loadless and has been removed.
+  Loadless block "vfat2_15_sbits_p_i<7>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_16_data_out_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_16_data_out_p_i" is loadless and has been removed.
+  Loadless block "vfat2_16_data_out_p_i" (PAD) removed.
+ The signal "vfat2_16_data_out_n_i" is loadless and has been removed.
+  Loadless block "vfat2_16_data_out_n_i" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_16_sbit_0_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_16_sbits_p_i<0>" is loadless and has been removed.
+  Loadless block "vfat2_16_sbits_p_i<0>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_16_sbit_1_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_16_sbits_p_i<1>" is loadless and has been removed.
+  Loadless block "vfat2_16_sbits_p_i<1>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_16_sbit_2_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_16_sbits_p_i<2>" is loadless and has been removed.
+  Loadless block "vfat2_16_sbits_p_i<2>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_16_sbit_3_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_16_sbits_p_i<3>" is loadless and has been removed.
+  Loadless block "vfat2_16_sbits_p_i<3>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_16_sbit_4_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_16_sbits_p_i<4>" is loadless and has been removed.
+  Loadless block "vfat2_16_sbits_p_i<4>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_16_sbit_5_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_16_sbits_p_i<5>" is loadless and has been removed.
+  Loadless block "vfat2_16_sbits_p_i<5>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_16_sbit_6_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_16_sbits_p_i<6>" is loadless and has been removed.
+  Loadless block "vfat2_16_sbits_p_i<6>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_16_sbit_7_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_16_sbits_p_i<7>" is loadless and has been removed.
+  Loadless block "vfat2_16_sbits_p_i<7>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_17_data_out_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_17_data_out_p_i" is loadless and has been removed.
+  Loadless block "vfat2_17_data_out_p_i" (PAD) removed.
+ The signal "vfat2_17_data_out_n_i" is loadless and has been removed.
+  Loadless block "vfat2_17_data_out_n_i" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_17_sbit_0_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_17_sbits_p_i<0>" is loadless and has been removed.
+  Loadless block "vfat2_17_sbits_p_i<0>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_17_sbit_1_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_17_sbits_p_i<1>" is loadless and has been removed.
+  Loadless block "vfat2_17_sbits_p_i<1>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_17_sbit_2_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_17_sbits_p_i<2>" is loadless and has been removed.
+  Loadless block "vfat2_17_sbits_p_i<2>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_17_sbit_3_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_17_sbits_p_i<3>" is loadless and has been removed.
+  Loadless block "vfat2_17_sbits_p_i<3>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_17_sbit_4_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_17_sbits_p_i<4>" is loadless and has been removed.
+  Loadless block "vfat2_17_sbits_p_i<4>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_17_sbit_5_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_17_sbits_p_i<5>" is loadless and has been removed.
+  Loadless block "vfat2_17_sbits_p_i<5>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_17_sbit_6_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_17_sbits_p_i<6>" is loadless and has been removed.
+  Loadless block "vfat2_17_sbits_p_i<6>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_17_sbit_7_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_17_sbits_p_i<7>" is loadless and has been removed.
+  Loadless block "vfat2_17_sbits_p_i<7>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_18_data_out_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_18_data_out_p_i" is loadless and has been removed.
+  Loadless block "vfat2_18_data_out_p_i" (PAD) removed.
+ The signal "vfat2_18_data_out_n_i" is loadless and has been removed.
+  Loadless block "vfat2_18_data_out_n_i" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_18_sbit_0_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_18_sbits_p_i<0>" is loadless and has been removed.
+  Loadless block "vfat2_18_sbits_p_i<0>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_18_sbit_1_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_18_sbits_p_i<1>" is loadless and has been removed.
+  Loadless block "vfat2_18_sbits_p_i<1>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_18_sbit_2_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_18_sbits_p_i<2>" is loadless and has been removed.
+  Loadless block "vfat2_18_sbits_p_i<2>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_18_sbit_3_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_18_sbits_p_i<3>" is loadless and has been removed.
+  Loadless block "vfat2_18_sbits_p_i<3>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_18_sbit_4_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_18_sbits_p_i<4>" is loadless and has been removed.
+  Loadless block "vfat2_18_sbits_p_i<4>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_18_sbit_5_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_18_sbits_p_i<5>" is loadless and has been removed.
+  Loadless block "vfat2_18_sbits_p_i<5>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_18_sbit_6_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_18_sbits_p_i<6>" is loadless and has been removed.
+  Loadless block "vfat2_18_sbits_p_i<6>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_18_sbit_7_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_18_sbits_p_i<7>" is loadless and has been removed.
+  Loadless block "vfat2_18_sbits_p_i<7>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_19_data_out_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_19_data_out_p_i" is loadless and has been removed.
+  Loadless block "vfat2_19_data_out_p_i" (PAD) removed.
+ The signal "vfat2_19_data_out_n_i" is loadless and has been removed.
+  Loadless block "vfat2_19_data_out_n_i" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_19_sbit_0_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_19_sbits_p_i<0>" is loadless and has been removed.
+  Loadless block "vfat2_19_sbits_p_i<0>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_19_sbit_1_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_19_sbits_p_i<1>" is loadless and has been removed.
+  Loadless block "vfat2_19_sbits_p_i<1>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_19_sbit_2_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_19_sbits_p_i<2>" is loadless and has been removed.
+  Loadless block "vfat2_19_sbits_p_i<2>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_19_sbit_3_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_19_sbits_p_i<3>" is loadless and has been removed.
+  Loadless block "vfat2_19_sbits_p_i<3>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_19_sbit_4_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_19_sbits_p_i<4>" is loadless and has been removed.
+  Loadless block "vfat2_19_sbits_p_i<4>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_19_sbit_5_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_19_sbits_p_i<5>" is loadless and has been removed.
+  Loadless block "vfat2_19_sbits_p_i<5>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_19_sbit_6_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_19_sbits_p_i<6>" is loadless and has been removed.
+  Loadless block "vfat2_19_sbits_p_i<6>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_19_sbit_7_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_19_sbits_p_i<7>" is loadless and has been removed.
+  Loadless block "vfat2_19_sbits_p_i<7>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_1_data_out_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_1_data_out_p_i" is loadless and has been removed.
+  Loadless block "vfat2_1_data_out_p_i" (PAD) removed.
+ The signal "vfat2_1_data_out_n_i" is loadless and has been removed.
+  Loadless block "vfat2_1_data_out_n_i" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_1_sbit_0_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_1_sbits_p_i<0>" is loadless and has been removed.
+  Loadless block "vfat2_1_sbits_p_i<0>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_1_sbit_1_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_1_sbits_p_i<1>" is loadless and has been removed.
+  Loadless block "vfat2_1_sbits_p_i<1>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_1_sbit_2_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_1_sbits_p_i<2>" is loadless and has been removed.
+  Loadless block "vfat2_1_sbits_p_i<2>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_1_sbit_3_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_1_sbits_p_i<3>" is loadless and has been removed.
+  Loadless block "vfat2_1_sbits_p_i<3>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_1_sbit_4_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_1_sbits_p_i<4>" is loadless and has been removed.
+  Loadless block "vfat2_1_sbits_p_i<4>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_1_sbit_5_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_1_sbits_p_i<5>" is loadless and has been removed.
+  Loadless block "vfat2_1_sbits_p_i<5>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_1_sbit_6_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_1_sbits_p_i<6>" is loadless and has been removed.
+  Loadless block "vfat2_1_sbits_p_i<6>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_1_sbit_7_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_1_sbits_p_i<7>" is loadless and has been removed.
+  Loadless block "vfat2_1_sbits_p_i<7>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_20_data_out_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_20_data_out_p_i" is loadless and has been removed.
+  Loadless block "vfat2_20_data_out_p_i" (PAD) removed.
+ The signal "vfat2_20_data_out_n_i" is loadless and has been removed.
+  Loadless block "vfat2_20_data_out_n_i" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_20_sbit_0_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_20_sbits_p_i<0>" is loadless and has been removed.
+  Loadless block "vfat2_20_sbits_p_i<0>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_20_sbit_1_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_20_sbits_p_i<1>" is loadless and has been removed.
+  Loadless block "vfat2_20_sbits_p_i<1>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_20_sbit_2_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_20_sbits_p_i<2>" is loadless and has been removed.
+  Loadless block "vfat2_20_sbits_p_i<2>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_20_sbit_3_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_20_sbits_p_i<3>" is loadless and has been removed.
+  Loadless block "vfat2_20_sbits_p_i<3>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_20_sbit_4_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_20_sbits_p_i<4>" is loadless and has been removed.
+  Loadless block "vfat2_20_sbits_p_i<4>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_20_sbit_5_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_20_sbits_p_i<5>" is loadless and has been removed.
+  Loadless block "vfat2_20_sbits_p_i<5>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_20_sbit_6_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_20_sbits_p_i<6>" is loadless and has been removed.
+  Loadless block "vfat2_20_sbits_p_i<6>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_20_sbit_7_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_20_sbits_p_i<7>" is loadless and has been removed.
+  Loadless block "vfat2_20_sbits_p_i<7>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_21_data_out_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_21_data_out_p_i" is loadless and has been removed.
+  Loadless block "vfat2_21_data_out_p_i" (PAD) removed.
+ The signal "vfat2_21_data_out_n_i" is loadless and has been removed.
+  Loadless block "vfat2_21_data_out_n_i" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_21_sbit_0_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_21_sbits_p_i<0>" is loadless and has been removed.
+  Loadless block "vfat2_21_sbits_p_i<0>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_21_sbit_1_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_21_sbits_p_i<1>" is loadless and has been removed.
+  Loadless block "vfat2_21_sbits_p_i<1>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_21_sbit_2_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_21_sbits_p_i<2>" is loadless and has been removed.
+  Loadless block "vfat2_21_sbits_p_i<2>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_21_sbit_3_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_21_sbits_p_i<3>" is loadless and has been removed.
+  Loadless block "vfat2_21_sbits_p_i<3>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_21_sbit_4_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_21_sbits_p_i<4>" is loadless and has been removed.
+  Loadless block "vfat2_21_sbits_p_i<4>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_21_sbit_5_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_21_sbits_p_i<5>" is loadless and has been removed.
+  Loadless block "vfat2_21_sbits_p_i<5>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_21_sbit_6_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_21_sbits_p_i<6>" is loadless and has been removed.
+  Loadless block "vfat2_21_sbits_p_i<6>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_21_sbit_7_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_21_sbits_p_i<7>" is loadless and has been removed.
+  Loadless block "vfat2_21_sbits_p_i<7>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_22_data_out_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_22_data_out_p_i" is loadless and has been removed.
+  Loadless block "vfat2_22_data_out_p_i" (PAD) removed.
+ The signal "vfat2_22_data_out_n_i" is loadless and has been removed.
+  Loadless block "vfat2_22_data_out_n_i" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_22_sbit_0_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_22_sbits_p_i<0>" is loadless and has been removed.
+  Loadless block "vfat2_22_sbits_p_i<0>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_22_sbit_1_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_22_sbits_p_i<1>" is loadless and has been removed.
+  Loadless block "vfat2_22_sbits_p_i<1>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_22_sbit_2_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_22_sbits_p_i<2>" is loadless and has been removed.
+  Loadless block "vfat2_22_sbits_p_i<2>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_22_sbit_3_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_22_sbits_p_i<3>" is loadless and has been removed.
+  Loadless block "vfat2_22_sbits_p_i<3>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_22_sbit_4_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_22_sbits_p_i<4>" is loadless and has been removed.
+  Loadless block "vfat2_22_sbits_p_i<4>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_22_sbit_5_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_22_sbits_p_i<5>" is loadless and has been removed.
+  Loadless block "vfat2_22_sbits_p_i<5>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_22_sbit_6_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_22_sbits_p_i<6>" is loadless and has been removed.
+  Loadless block "vfat2_22_sbits_p_i<6>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_22_sbit_7_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_22_sbits_p_i<7>" is loadless and has been removed.
+  Loadless block "vfat2_22_sbits_p_i<7>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_23_data_out_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_23_data_out_p_i" is loadless and has been removed.
+  Loadless block "vfat2_23_data_out_p_i" (PAD) removed.
+ The signal "vfat2_23_data_out_n_i" is loadless and has been removed.
+  Loadless block "vfat2_23_data_out_n_i" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_23_sbit_0_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_23_sbits_p_i<0>" is loadless and has been removed.
+  Loadless block "vfat2_23_sbits_p_i<0>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_23_sbit_1_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_23_sbits_p_i<1>" is loadless and has been removed.
+  Loadless block "vfat2_23_sbits_p_i<1>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_23_sbit_2_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_23_sbits_p_i<2>" is loadless and has been removed.
+  Loadless block "vfat2_23_sbits_p_i<2>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_23_sbit_3_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_23_sbits_p_i<3>" is loadless and has been removed.
+  Loadless block "vfat2_23_sbits_p_i<3>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_23_sbit_4_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_23_sbits_p_i<4>" is loadless and has been removed.
+  Loadless block "vfat2_23_sbits_p_i<4>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_23_sbit_5_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_23_sbits_p_i<5>" is loadless and has been removed.
+  Loadless block "vfat2_23_sbits_p_i<5>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_23_sbit_6_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_23_sbits_p_i<6>" is loadless and has been removed.
+  Loadless block "vfat2_23_sbits_p_i<6>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_23_sbit_7_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_23_sbits_p_i<7>" is loadless and has been removed.
+  Loadless block "vfat2_23_sbits_p_i<7>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_2_data_out_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_2_data_out_p_i" is loadless and has been removed.
+  Loadless block "vfat2_2_data_out_p_i" (PAD) removed.
+ The signal "vfat2_2_data_out_n_i" is loadless and has been removed.
+  Loadless block "vfat2_2_data_out_n_i" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_2_sbit_0_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_2_sbits_p_i<0>" is loadless and has been removed.
+  Loadless block "vfat2_2_sbits_p_i<0>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_2_sbit_1_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_2_sbits_p_i<1>" is loadless and has been removed.
+  Loadless block "vfat2_2_sbits_p_i<1>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_2_sbit_2_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_2_sbits_p_i<2>" is loadless and has been removed.
+  Loadless block "vfat2_2_sbits_p_i<2>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_2_sbit_3_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_2_sbits_p_i<3>" is loadless and has been removed.
+  Loadless block "vfat2_2_sbits_p_i<3>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_2_sbit_4_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_2_sbits_p_i<4>" is loadless and has been removed.
+  Loadless block "vfat2_2_sbits_p_i<4>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_2_sbit_5_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_2_sbits_p_i<5>" is loadless and has been removed.
+  Loadless block "vfat2_2_sbits_p_i<5>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_2_sbit_6_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_2_sbits_p_i<6>" is loadless and has been removed.
+  Loadless block "vfat2_2_sbits_p_i<6>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_2_sbit_7_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_2_sbits_p_i<7>" is loadless and has been removed.
+  Loadless block "vfat2_2_sbits_p_i<7>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_3_data_out_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_3_data_out_p_i" is loadless and has been removed.
+  Loadless block "vfat2_3_data_out_p_i" (PAD) removed.
+ The signal "vfat2_3_data_out_n_i" is loadless and has been removed.
+  Loadless block "vfat2_3_data_out_n_i" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_3_sbit_0_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_3_sbits_p_i<0>" is loadless and has been removed.
+  Loadless block "vfat2_3_sbits_p_i<0>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_3_sbit_1_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_3_sbits_p_i<1>" is loadless and has been removed.
+  Loadless block "vfat2_3_sbits_p_i<1>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_3_sbit_2_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_3_sbits_p_i<2>" is loadless and has been removed.
+  Loadless block "vfat2_3_sbits_p_i<2>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_3_sbit_3_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_3_sbits_p_i<3>" is loadless and has been removed.
+  Loadless block "vfat2_3_sbits_p_i<3>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_3_sbit_4_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_3_sbits_p_i<4>" is loadless and has been removed.
+  Loadless block "vfat2_3_sbits_p_i<4>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_3_sbit_5_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_3_sbits_p_i<5>" is loadless and has been removed.
+  Loadless block "vfat2_3_sbits_p_i<5>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_3_sbit_6_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_3_sbits_p_i<6>" is loadless and has been removed.
+  Loadless block "vfat2_3_sbits_p_i<6>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_3_sbit_7_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_3_sbits_p_i<7>" is loadless and has been removed.
+  Loadless block "vfat2_3_sbits_p_i<7>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_4_data_out_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_4_data_out_p_i" is loadless and has been removed.
+  Loadless block "vfat2_4_data_out_p_i" (PAD) removed.
+ The signal "vfat2_4_data_out_n_i" is loadless and has been removed.
+  Loadless block "vfat2_4_data_out_n_i" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_4_sbit_0_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_4_sbits_p_i<0>" is loadless and has been removed.
+  Loadless block "vfat2_4_sbits_p_i<0>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_4_sbit_1_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_4_sbits_p_i<1>" is loadless and has been removed.
+  Loadless block "vfat2_4_sbits_p_i<1>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_4_sbit_2_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_4_sbits_p_i<2>" is loadless and has been removed.
+  Loadless block "vfat2_4_sbits_p_i<2>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_4_sbit_3_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_4_sbits_p_i<3>" is loadless and has been removed.
+  Loadless block "vfat2_4_sbits_p_i<3>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_4_sbit_4_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_4_sbits_p_i<4>" is loadless and has been removed.
+  Loadless block "vfat2_4_sbits_p_i<4>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_4_sbit_5_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_4_sbits_p_i<5>" is loadless and has been removed.
+  Loadless block "vfat2_4_sbits_p_i<5>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_4_sbit_6_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_4_sbits_p_i<6>" is loadless and has been removed.
+  Loadless block "vfat2_4_sbits_p_i<6>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_4_sbit_7_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_4_sbits_p_i<7>" is loadless and has been removed.
+  Loadless block "vfat2_4_sbits_p_i<7>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_5_data_out_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_5_data_out_p_i" is loadless and has been removed.
+  Loadless block "vfat2_5_data_out_p_i" (PAD) removed.
+ The signal "vfat2_5_data_out_n_i" is loadless and has been removed.
+  Loadless block "vfat2_5_data_out_n_i" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_5_sbit_0_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_5_sbits_p_i<0>" is loadless and has been removed.
+  Loadless block "vfat2_5_sbits_p_i<0>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_5_sbit_1_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_5_sbits_p_i<1>" is loadless and has been removed.
+  Loadless block "vfat2_5_sbits_p_i<1>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_5_sbit_2_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_5_sbits_p_i<2>" is loadless and has been removed.
+  Loadless block "vfat2_5_sbits_p_i<2>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_5_sbit_3_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_5_sbits_p_i<3>" is loadless and has been removed.
+  Loadless block "vfat2_5_sbits_p_i<3>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_5_sbit_4_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_5_sbits_p_i<4>" is loadless and has been removed.
+  Loadless block "vfat2_5_sbits_p_i<4>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_5_sbit_5_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_5_sbits_p_i<5>" is loadless and has been removed.
+  Loadless block "vfat2_5_sbits_p_i<5>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_5_sbit_6_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_5_sbits_p_i<6>" is loadless and has been removed.
+  Loadless block "vfat2_5_sbits_p_i<6>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_5_sbit_7_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_5_sbits_p_i<7>" is loadless and has been removed.
+  Loadless block "vfat2_5_sbits_p_i<7>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_6_data_out_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_6_data_out_p_i" is loadless and has been removed.
+  Loadless block "vfat2_6_data_out_p_i" (PAD) removed.
+ The signal "vfat2_6_data_out_n_i" is loadless and has been removed.
+  Loadless block "vfat2_6_data_out_n_i" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_6_sbit_0_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_6_sbits_p_i<0>" is loadless and has been removed.
+  Loadless block "vfat2_6_sbits_p_i<0>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_6_sbit_1_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_6_sbits_p_i<1>" is loadless and has been removed.
+  Loadless block "vfat2_6_sbits_p_i<1>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_6_sbit_2_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_6_sbits_p_i<2>" is loadless and has been removed.
+  Loadless block "vfat2_6_sbits_p_i<2>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_6_sbit_3_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_6_sbits_p_i<3>" is loadless and has been removed.
+  Loadless block "vfat2_6_sbits_p_i<3>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_6_sbit_4_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_6_sbits_p_i<4>" is loadless and has been removed.
+  Loadless block "vfat2_6_sbits_p_i<4>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_6_sbit_5_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_6_sbits_p_i<5>" is loadless and has been removed.
+  Loadless block "vfat2_6_sbits_p_i<5>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_6_sbit_6_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_6_sbits_p_i<6>" is loadless and has been removed.
+  Loadless block "vfat2_6_sbits_p_i<6>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_6_sbit_7_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_6_sbits_p_i<7>" is loadless and has been removed.
+  Loadless block "vfat2_6_sbits_p_i<7>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_7_data_out_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_7_data_out_p_i" is loadless and has been removed.
+  Loadless block "vfat2_7_data_out_p_i" (PAD) removed.
+ The signal "vfat2_7_data_out_n_i" is loadless and has been removed.
+  Loadless block "vfat2_7_data_out_n_i" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_7_sbit_0_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_7_sbits_p_i<0>" is loadless and has been removed.
+  Loadless block "vfat2_7_sbits_p_i<0>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_7_sbit_1_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_7_sbits_p_i<1>" is loadless and has been removed.
+  Loadless block "vfat2_7_sbits_p_i<1>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_7_sbit_2_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_7_sbits_p_i<2>" is loadless and has been removed.
+  Loadless block "vfat2_7_sbits_p_i<2>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_7_sbit_3_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_7_sbits_p_i<3>" is loadless and has been removed.
+  Loadless block "vfat2_7_sbits_p_i<3>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_7_sbit_4_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_7_sbits_p_i<4>" is loadless and has been removed.
+  Loadless block "vfat2_7_sbits_p_i<4>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_7_sbit_5_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_7_sbits_p_i<5>" is loadless and has been removed.
+  Loadless block "vfat2_7_sbits_p_i<5>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_7_sbit_6_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_7_sbits_p_i<6>" is loadless and has been removed.
+  Loadless block "vfat2_7_sbits_p_i<6>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_7_sbit_7_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_7_sbits_p_i<7>" is loadless and has been removed.
+  Loadless block "vfat2_7_sbits_p_i<7>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_8_data_out_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_8_data_out_p_i" is loadless and has been removed.
+  Loadless block "vfat2_8_data_out_p_i" (PAD) removed.
+ The signal "vfat2_8_data_out_n_i" is loadless and has been removed.
+  Loadless block "vfat2_8_data_out_n_i" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_8_sbit_0_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_8_sbits_p_i<0>" is loadless and has been removed.
+  Loadless block "vfat2_8_sbits_p_i<0>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_8_sbit_1_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_8_sbits_p_i<1>" is loadless and has been removed.
+  Loadless block "vfat2_8_sbits_p_i<1>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_8_sbit_2_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_8_sbits_p_i<2>" is loadless and has been removed.
+  Loadless block "vfat2_8_sbits_p_i<2>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_8_sbit_3_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_8_sbits_p_i<3>" is loadless and has been removed.
+  Loadless block "vfat2_8_sbits_p_i<3>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_8_sbit_4_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_8_sbits_p_i<4>" is loadless and has been removed.
+  Loadless block "vfat2_8_sbits_p_i<4>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_8_sbit_5_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_8_sbits_p_i<5>" is loadless and has been removed.
+  Loadless block "vfat2_8_sbits_p_i<5>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_8_sbit_6_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_8_sbits_p_i<6>" is loadless and has been removed.
+  Loadless block "vfat2_8_sbits_p_i<6>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_8_sbit_7_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_8_sbits_p_i<7>" is loadless and has been removed.
+  Loadless block "vfat2_8_sbits_p_i<7>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_9_data_out_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_9_data_out_p_i" is loadless and has been removed.
+  Loadless block "vfat2_9_data_out_p_i" (PAD) removed.
+ The signal "vfat2_9_data_out_n_i" is loadless and has been removed.
+  Loadless block "vfat2_9_data_out_n_i" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_9_sbit_0_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_9_sbits_p_i<0>" is loadless and has been removed.
+  Loadless block "vfat2_9_sbits_p_i<0>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_9_sbit_1_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_9_sbits_p_i<1>" is loadless and has been removed.
+  Loadless block "vfat2_9_sbits_p_i<1>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_9_sbit_2_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_9_sbits_p_i<2>" is loadless and has been removed.
+  Loadless block "vfat2_9_sbits_p_i<2>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_9_sbit_3_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_9_sbits_p_i<3>" is loadless and has been removed.
+  Loadless block "vfat2_9_sbits_p_i<3>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_9_sbit_4_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_9_sbits_p_i<4>" is loadless and has been removed.
+  Loadless block "vfat2_9_sbits_p_i<4>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_9_sbit_5_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_9_sbits_p_i<5>" is loadless and has been removed.
+  Loadless block "vfat2_9_sbits_p_i<5>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_9_sbit_6_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_9_sbits_p_i<6>" is loadless and has been removed.
+  Loadless block "vfat2_9_sbits_p_i<6>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_9_sbit_7_ibufds_inst" (IBUFDS) removed.
+ The signal "vfat2_9_sbits_p_i<7>" is loadless and has been removed.
+  Loadless block "vfat2_9_sbits_p_i<7>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_data_valid_0_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_data_valid_p_i<0>" is loadless and has been removed.
+  Loadless block "vfat2_data_valid_p_i<0>" (PAD) removed.
+ The signal "vfat2_data_valid_n_i<0>" is loadless and has been removed.
+  Loadless block "vfat2_data_valid_n_i<0>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_data_valid_1_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_data_valid_p_i<1>" is loadless and has been removed.
+  Loadless block "vfat2_data_valid_p_i<1>" (PAD) removed.
+ The signal "vfat2_data_valid_n_i<1>" is loadless and has been removed.
+  Loadless block "vfat2_data_valid_n_i<1>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_data_valid_2_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_data_valid_p_i<2>" is loadless and has been removed.
+  Loadless block "vfat2_data_valid_p_i<2>" (PAD) removed.
+ The signal "vfat2_data_valid_n_i<2>" is loadless and has been removed.
+  Loadless block "vfat2_data_valid_n_i<2>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_data_valid_3_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_data_valid_p_i<3>" is loadless and has been removed.
+  Loadless block "vfat2_data_valid_p_i<3>" (PAD) removed.
+ The signal "vfat2_data_valid_n_i<3>" is loadless and has been removed.
+  Loadless block "vfat2_data_valid_n_i<3>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_data_valid_4_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_data_valid_p_i<4>" is loadless and has been removed.
+  Loadless block "vfat2_data_valid_p_i<4>" (PAD) removed.
+ The signal "vfat2_data_valid_n_i<4>" is loadless and has been removed.
+  Loadless block "vfat2_data_valid_n_i<4>" (PAD) removed.
+Loadless block "vfat2_buffers_inst/vfat2_data_valid_5_ibufds_inst" (IBUFDS)
+removed.
+ The signal "vfat2_data_valid_p_i<5>" is loadless and has been removed.
+  Loadless block "vfat2_data_valid_p_i<5>" (PAD) removed.
+ The signal "vfat2_data_valid_n_i<5>" is loadless and has been removed.
+  Loadless block "vfat2_data_valid_n_i<5>" (PAD) removed.
+The signal "vfat2_buffers_inst/vfat2_sda_5_iobuf_inst/O" is sourceless and has
+been removed.
+The signal "vfat2_buffers_inst/vfat2_sda_4_iobuf_inst/O" is sourceless and has
+been removed.
+The signal "vfat2_buffers_inst/vfat2_sda_3_iobuf_inst/O" is sourceless and has
+been removed.
+The signal "vfat2_buffers_inst/vfat2_sda_2_iobuf_inst/O" is sourceless and has
+been removed.
+The signal "vfat2_buffers_inst/vfat2_sda_1_iobuf_inst/O" is sourceless and has
+been removed.
+The signal "vfat2_buffers_inst/vfat2_sda_0_iobuf_inst/O" is sourceless and has
+been removed.
+Unused block "vfat2_buffers_inst/vfat2_sda_0_iobuf_inst/IBUF" (BUF) removed.
+Unused block "vfat2_buffers_inst/vfat2_sda_1_iobuf_inst/IBUF" (BUF) removed.
+Unused block "vfat2_buffers_inst/vfat2_sda_2_iobuf_inst/IBUF" (BUF) removed.
+Unused block "vfat2_buffers_inst/vfat2_sda_3_iobuf_inst/IBUF" (BUF) removed.
+Unused block "vfat2_buffers_inst/vfat2_sda_4_iobuf_inst/IBUF" (BUF) removed.
+Unused block "vfat2_buffers_inst/vfat2_sda_5_iobuf_inst/IBUF" (BUF) removed.
+
+Optimized Block(s):
+TYPE 		BLOCK
+GND 		XST_GND
+VCC 		XST_VCC
+
+Section 6 - IOB Properties
+--------------------------
+
++---------------------------------------------------------------------------------------------------------------------------------------------------------+
+| IOB Name                           | Type             | Direction | IO Standard          | Diff  | Drive    | Slew | Reg (s)      | Resistor | IOB      |
+|                                    |                  |           |                      | Term  | Strength | Rate |              |          | Delay    |
++---------------------------------------------------------------------------------------------------------------------------------------------------------+
+| adc_chip_select_o                  | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| adc_clk_o                          | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| adc_din_i                          | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| adc_dout_o                         | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| adc_eoc_i                          | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| cdce_aux_i                         | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| cdce_aux_o                         | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| cdce_clk_n_i                       | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| cdce_clk_p_i                       | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| cdce_le_o                          | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| cdce_locked_i                      | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| cdce_miso_i                        | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| cdce_mosi_o                        | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| cdce_pri_n_o                       | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| cdce_pri_p_o                       | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| cdce_pwrdown_o                     | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| cdce_ref_o                         | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| cdce_sck_o                         | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| cdce_sync_o                        | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| chip_id_i                          | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| clk_50MHz_i                        | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| eprom_chip_enable_b_o              | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| eprom_reset_b_o                    | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| flash_address_o<0>                 | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| flash_address_o<1>                 | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| flash_address_o<2>                 | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| flash_address_o<3>                 | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| flash_address_o<4>                 | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| flash_address_o<5>                 | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| flash_address_o<6>                 | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| flash_address_o<7>                 | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| flash_address_o<8>                 | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| flash_address_o<9>                 | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| flash_address_o<10>                | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| flash_address_o<11>                | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| flash_address_o<12>                | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| flash_address_o<13>                | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| flash_address_o<14>                | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| flash_address_o<15>                | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| flash_address_o<16>                | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| flash_address_o<17>                | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| flash_address_o<18>                | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| flash_address_o<19>                | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| flash_address_o<20>                | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| flash_address_o<21>                | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| flash_address_o<22>                | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| flash_chip_enable_b_o              | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| flash_data_io<0>                   | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| flash_data_io<1>                   | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| flash_data_io<2>                   | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| flash_data_io<3>                   | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| flash_data_io<4>                   | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| flash_data_io<5>                   | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| flash_data_io<6>                   | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| flash_data_io<7>                   | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| flash_data_io<8>                   | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| flash_data_io<9>                   | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| flash_data_io<10>                  | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| flash_data_io<11>                  | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| flash_data_io<12>                  | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| flash_data_io<13>                  | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| flash_data_io<14>                  | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| flash_data_io<15>                  | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| flash_latch_enable_b_o             | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| flash_out_enable_b_o               | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| flash_write_enable_b_o             | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| hdmi_scl_io<0>                     | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| hdmi_scl_io<1>                     | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| hdmi_sda_io<0>                     | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| hdmi_sda_io<1>                     | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| multiboot_rs_o<0>                  | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| multiboot_rs_o<1>                  | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| qpll_clk_n_i                       | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| qpll_clk_p_i                       | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| qpll_error_i                       | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| qpll_locked_i                      | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| qpll_ref_40MHz_o                   | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| qpll_reset_o                       | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| temp_clk_o                         | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| temp_data_io                       | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| tmds_clk_n_io                      | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| tmds_clk_p_io                      | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| tmds_d_n_io<0>                     | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| tmds_d_n_io<1>                     | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| tmds_d_p_io<0>                     | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| tmds_d_p_io<1>                     | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_0_sbits_n_i<0>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_0_sbits_n_i<1>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_0_sbits_n_i<2>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_0_sbits_n_i<3>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_0_sbits_n_i<4>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_0_sbits_n_i<5>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_0_sbits_n_i<6>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_0_sbits_n_i<7>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_10_sbits_n_i<0>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_10_sbits_n_i<1>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_10_sbits_n_i<2>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_10_sbits_n_i<3>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_10_sbits_n_i<4>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_10_sbits_n_i<5>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_10_sbits_n_i<6>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_10_sbits_n_i<7>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_11_sbits_n_i<0>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_11_sbits_n_i<1>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_11_sbits_n_i<2>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_11_sbits_n_i<3>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_11_sbits_n_i<4>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_11_sbits_n_i<5>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_11_sbits_n_i<6>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_11_sbits_n_i<7>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_12_sbits_n_i<0>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_12_sbits_n_i<1>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_12_sbits_n_i<2>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_12_sbits_n_i<3>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_12_sbits_n_i<4>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_12_sbits_n_i<5>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_12_sbits_n_i<6>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_12_sbits_n_i<7>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_13_sbits_n_i<0>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_13_sbits_n_i<1>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_13_sbits_n_i<2>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_13_sbits_n_i<3>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_13_sbits_n_i<4>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_13_sbits_n_i<5>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_13_sbits_n_i<6>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_13_sbits_n_i<7>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_14_sbits_n_i<0>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_14_sbits_n_i<1>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_14_sbits_n_i<2>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_14_sbits_n_i<3>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_14_sbits_n_i<4>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_14_sbits_n_i<5>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_14_sbits_n_i<6>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_14_sbits_n_i<7>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_15_sbits_n_i<0>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_15_sbits_n_i<1>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_15_sbits_n_i<2>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_15_sbits_n_i<3>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_15_sbits_n_i<4>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_15_sbits_n_i<5>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_15_sbits_n_i<6>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_15_sbits_n_i<7>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_16_sbits_n_i<0>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_16_sbits_n_i<1>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_16_sbits_n_i<2>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_16_sbits_n_i<3>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_16_sbits_n_i<4>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_16_sbits_n_i<5>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_16_sbits_n_i<6>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_16_sbits_n_i<7>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_17_sbits_n_i<0>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_17_sbits_n_i<1>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_17_sbits_n_i<2>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_17_sbits_n_i<3>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_17_sbits_n_i<4>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_17_sbits_n_i<5>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_17_sbits_n_i<6>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_17_sbits_n_i<7>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_18_sbits_n_i<0>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_18_sbits_n_i<1>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_18_sbits_n_i<2>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_18_sbits_n_i<3>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_18_sbits_n_i<4>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_18_sbits_n_i<5>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_18_sbits_n_i<6>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_18_sbits_n_i<7>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_19_sbits_n_i<0>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_19_sbits_n_i<1>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_19_sbits_n_i<2>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_19_sbits_n_i<3>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_19_sbits_n_i<4>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_19_sbits_n_i<5>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_19_sbits_n_i<6>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_19_sbits_n_i<7>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_1_sbits_n_i<0>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_1_sbits_n_i<1>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_1_sbits_n_i<2>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_1_sbits_n_i<3>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_1_sbits_n_i<4>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_1_sbits_n_i<5>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_1_sbits_n_i<6>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_1_sbits_n_i<7>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_20_sbits_n_i<0>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_20_sbits_n_i<1>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_20_sbits_n_i<2>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_20_sbits_n_i<3>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_20_sbits_n_i<4>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_20_sbits_n_i<5>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_20_sbits_n_i<6>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_20_sbits_n_i<7>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_21_sbits_n_i<0>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_21_sbits_n_i<1>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_21_sbits_n_i<2>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_21_sbits_n_i<3>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_21_sbits_n_i<4>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_21_sbits_n_i<5>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_21_sbits_n_i<6>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_21_sbits_n_i<7>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_22_sbits_n_i<0>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_22_sbits_n_i<1>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_22_sbits_n_i<2>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_22_sbits_n_i<3>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_22_sbits_n_i<4>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_22_sbits_n_i<5>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_22_sbits_n_i<6>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_22_sbits_n_i<7>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_23_sbits_n_i<0>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_23_sbits_n_i<1>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_23_sbits_n_i<2>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_23_sbits_n_i<3>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_23_sbits_n_i<4>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_23_sbits_n_i<5>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_23_sbits_n_i<6>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_23_sbits_n_i<7>              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_2_sbits_n_i<0>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_2_sbits_n_i<1>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_2_sbits_n_i<2>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_2_sbits_n_i<3>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_2_sbits_n_i<4>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_2_sbits_n_i<5>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_2_sbits_n_i<6>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_2_sbits_n_i<7>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_3_sbits_n_i<0>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_3_sbits_n_i<1>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_3_sbits_n_i<2>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_3_sbits_n_i<3>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_3_sbits_n_i<4>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_3_sbits_n_i<5>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_3_sbits_n_i<6>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_3_sbits_n_i<7>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_4_sbits_n_i<0>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_4_sbits_n_i<1>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_4_sbits_n_i<2>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_4_sbits_n_i<3>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_4_sbits_n_i<4>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_4_sbits_n_i<5>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_4_sbits_n_i<6>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_4_sbits_n_i<7>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_5_sbits_n_i<0>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_5_sbits_n_i<1>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_5_sbits_n_i<2>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_5_sbits_n_i<3>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_5_sbits_n_i<4>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_5_sbits_n_i<5>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_5_sbits_n_i<6>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_5_sbits_n_i<7>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_6_sbits_n_i<0>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_6_sbits_n_i<1>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_6_sbits_n_i<2>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_6_sbits_n_i<3>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_6_sbits_n_i<4>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_6_sbits_n_i<5>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_6_sbits_n_i<6>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_6_sbits_n_i<7>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_7_sbits_n_i<0>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_7_sbits_n_i<1>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_7_sbits_n_i<2>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_7_sbits_n_i<3>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_7_sbits_n_i<4>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_7_sbits_n_i<5>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_7_sbits_n_i<6>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_7_sbits_n_i<7>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_8_sbits_n_i<0>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_8_sbits_n_i<1>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_8_sbits_n_i<2>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_8_sbits_n_i<3>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_8_sbits_n_i<4>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_8_sbits_n_i<5>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_8_sbits_n_i<6>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_8_sbits_n_i<7>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_9_sbits_n_i<0>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_9_sbits_n_i<1>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_9_sbits_n_i<2>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_9_sbits_n_i<3>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_9_sbits_n_i<4>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_9_sbits_n_i<5>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_9_sbits_n_i<6>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_9_sbits_n_i<7>               | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| vfat2_mclk_n_o<0>                  | IOBS             | OUTPUT    | LVDS_25              |       |          |      |              |          |          |
+| vfat2_mclk_n_o<1>                  | IOBS             | OUTPUT    | LVDS_25              |       |          |      |              |          |          |
+| vfat2_mclk_n_o<2>                  | IOBS             | OUTPUT    | LVDS_25              |       |          |      |              |          |          |
+| vfat2_mclk_p_o<0>                  | IOBM             | OUTPUT    | LVDS_25              |       |          |      | ODDR         |          |          |
+| vfat2_mclk_p_o<1>                  | IOBM             | OUTPUT    | LVDS_25              |       |          |      | ODDR         |          |          |
+| vfat2_mclk_p_o<2>                  | IOBM             | OUTPUT    | LVDS_25              |       |          |      | ODDR         |          |          |
+| vfat2_resb_o<0>                    | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| vfat2_resb_o<1>                    | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| vfat2_resb_o<2>                    | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| vfat2_resh_o<0>                    | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| vfat2_resh_o<1>                    | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| vfat2_resh_o<2>                    | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| vfat2_scl_o<0>                     | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| vfat2_scl_o<1>                     | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| vfat2_scl_o<2>                     | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| vfat2_scl_o<3>                     | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| vfat2_scl_o<4>                     | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| vfat2_scl_o<5>                     | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| vfat2_sda_io<0>                    | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| vfat2_sda_io<1>                    | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| vfat2_sda_io<2>                    | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| vfat2_sda_io<3>                    | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| vfat2_sda_io<4>                    | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| vfat2_sda_io<5>                    | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| vfat2_t1_n_o<0>                    | IOBS             | OUTPUT    | LVDS_25              |       |          |      |              |          |          |
+| vfat2_t1_n_o<1>                    | IOBS             | OUTPUT    | LVDS_25              |       |          |      |              |          |          |
+| vfat2_t1_n_o<2>                    | IOBS             | OUTPUT    | LVDS_25              |       |          |      |              |          |          |
+| vfat2_t1_p_o<0>                    | IOBM             | OUTPUT    | LVDS_25              |       |          |      |              |          |          |
+| vfat2_t1_p_o<1>                    | IOBM             | OUTPUT    | LVDS_25              |       |          |      |              |          |          |
+| vfat2_t1_p_o<2>                    | IOBM             | OUTPUT    | LVDS_25              |       |          |      |              |          |          |
++---------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+Section 7 - RPMs
+----------------
+
+Section 8 - Guide Report
+------------------------
+Guide not run on this design.
+
+Section 9 - Area Group and Partition Summary
+--------------------------------------------
+
+Partition Implementation Status
+-------------------------------
+
+  No Partitions were found in this design.
+
+-------------------------------
+
+Area Group Information
+----------------------
+
+  No area groups were found in this design.
+
+----------------------
+
+Section 10 - Timing Report
+--------------------------
+A logic-level (pre-route) timing report can be generated by using Xilinx static
+timing analysis tools, Timing Analyzer (GUI) or TRCE (command line), with the
+mapped NCD and PCF files. Please note that this timing report will be generated
+using estimated delay information. For accurate numbers, please generate a
+timing report with the post Place and Route NCD file.
+
+For more information about the Timing Analyzer, consult the Xilinx Timing
+Analyzer Reference Manual; for more information about TRCE, consult the Xilinx
+Command Line Tools User Guide "TRACE" chapter.
+
+Section 11 - Configuration String Details
+-----------------------------------------
+Use the "-detail" map option to print out Configuration Strings
+
+Section 12 - Control Set Information
+------------------------------------
+Use the "-detail" map option to print out Control Set Information.
+
+Section 13 - Utilization by Hierarchy
+-------------------------------------
+Use the "-detail" map option to print out the Utilization by Hierarchy section.

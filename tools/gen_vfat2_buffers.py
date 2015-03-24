@@ -71,35 +71,35 @@ print "port("
 print ""
 print "    --== VFAT2s raw control ==--"
 print ""
-print "    vfat2_t1_p_o            : out std_logic_vector(2 downto 0);"
-print "    vfat2_t1_n_o            : out std_logic_vector(2 downto 0);"
-print ""
 print "    vfat2_mclk_p_o          : out std_logic_vector(2 downto 0);"
 print "    vfat2_mclk_n_o          : out std_logic_vector(2 downto 0);"
 print ""
 print "    vfat2_resb_o            : out std_logic_vector(2 downto 0);"
 print "    vfat2_resh_o            : out std_logic_vector(2 downto 0);"
 print ""
-print "    vfat2_data_valid_p_i    : in std_logic_vector(5 downto 0);"
-print "    vfat2_data_valid_n_i    : in std_logic_vector(5 downto 0);"
+print "    vfat2_t1_p_o            : out std_logic_vector(2 downto 0);"
+print "    vfat2_t1_n_o            : out std_logic_vector(2 downto 0);"
 print ""
 print "    vfat2_scl_o             : out std_logic_vector(5 downto 0);"
 print "    vfat2_sda_io            : inout std_logic_vector(5 downto 0);"
 print ""
-print "    --== VFAT2s packed control ==--"
+print "    vfat2_data_valid_p_i    : in std_logic_vector(5 downto 0);"
+print "    vfat2_data_valid_n_i    : in std_logic_vector(5 downto 0);"
 print ""
-print "    vfat2_t1_i              : in std_logic;"
+print "    --== VFAT2s packed control ==--"
 print ""
 print "    vfat2_mclk_i            : in std_logic;"
 print ""
 print "    vfat2_reset_i           : in std_logic;"
 print ""
-print "    vfat2_data_valid_o      : out std_logic_vector(5 downto 0);"
+print "    vfat2_t1_i              : in std_logic;"
 print ""
 print "    vfat2_scl_i             : in std_logic_vector(5 downto 0);"
 print "    vfat2_sda_i             : in std_logic_vector(5 downto 0);" 
 print "    vfat2_sda_o             : out std_logic_vector(5 downto 0);" 
 print "    vfat2_sda_t             : in std_logic_vector(5 downto 0);"
+print ""
+print "    vfat2_data_valid_o      : out std_logic_vector(5 downto 0);"
 print ""
 print "    --== VFAT2s raw data ==--"
 print ""
@@ -133,30 +133,8 @@ for i in range(24):
 print "begin"
 print ""
 
-print "    --== T1 signals ==--"
-print ""
-
-for i in range(3):
-    print "    vfat2_t1_" + str(i) + "_obufds_inst : obufds"
-    print "    generic map("
-    print "        iostandard  => \"lvds_25\""
-    print "    )"
-    print "    port map("
-    print "        i   => vfat2_t1(" + str(i) + "),"
-    print "        o   => vfat2_t1_p_o(" + str(i) + "),"
-    print "        ob   => vfat2_t1_n_o(" + str(i) + ")"
-    print "    );"
-    print ""
-    if t1s[i] == 1:
-        print "    vfat2_t1(" + str(i) + ") <= not vfat2_t1_i;"
-    else: 
-        print "    vfat2_t1(" + str(i) + ") <= vfat2_t1_i;"
-    print ""
-    print ""
-
 print "    --== MCLK signals ==--"
 print ""
-
 for i in range(3):
     if mclks[i] == 1:
         print "    vfat2_mclk_" + str(i) + "_oddr_inst : oddr"
@@ -205,7 +183,6 @@ for i in range(3):
 
 print "    --== Reset signals ==--"
 print ""
-
 for i in range(3):
     print "    vfat2_resb_" + str(i) + "_obuf_inst : obuf"
     print "    generic map("
@@ -231,31 +208,28 @@ for i in range(3):
     print ""
     print ""
 
-print "    --== Data valid signals ==--"
+print "    --== T1 signals ==--"
 print ""
-
-for i in range(6):
-    print "    vfat2_data_valid_" + str(i) + "_ibufds_inst : ibufds"
+for i in range(3):
+    print "    vfat2_t1_" + str(i) + "_obufds_inst : obufds"
     print "    generic map("
-    print "        diff_term   => true,"
     print "        iostandard  => \"lvds_25\""
     print "    )"
     print "    port map("
-    print "        i   => vfat2_data_valid_p_i(" + str(i) + "),"
-    print "        ib  => vfat2_data_valid_n_i(" + str(i) + "),"
-    print "        o   => vfat2_data_valid(" + str(i) + ")"
+    print "        i   => vfat2_t1(" + str(i) + "),"
+    print "        o   => vfat2_t1_p_o(" + str(i) + "),"
+    print "        ob   => vfat2_t1_n_o(" + str(i) + ")"
     print "    );"
     print ""
-    if data_valids[i] == 1:
-        print "    vfat2_data_valid_o(" + str(i) + ") <= not vfat2_data_valid(" + str(i) + ");"
+    if t1s[i] == 1:
+        print "    vfat2_t1(" + str(i) + ") <= not vfat2_t1_i;"
     else: 
-        print "    vfat2_data_valid_o(" + str(i) + ") <= vfat2_data_valid(" + str(i) + ");"
+        print "    vfat2_t1(" + str(i) + ") <= vfat2_t1_i;"
     print ""
     print ""
 
 print "    --== I2C signals ==--"
 print ""
-
 for i in range(6):
     print "    vfat2_sda_" + str(i) + "_iobuf_inst : iobuf"
     print "    generic map ("
@@ -279,6 +253,27 @@ for i in range(6):
     print "        o => vfat2_scl_o(" + str(i) + "),"
     print "        i => vfat2_scl_i(" + str(i) + ")"
     print "    );"    
+    print ""
+    print ""
+
+print "    --== Data valid signals ==--"
+print ""
+for i in range(6):
+    print "    vfat2_data_valid_" + str(i) + "_ibufds_inst : ibufds"
+    print "    generic map("
+    print "        diff_term   => true,"
+    print "        iostandard  => \"lvds_25\""
+    print "    )"
+    print "    port map("
+    print "        i   => vfat2_data_valid_p_i(" + str(i) + "),"
+    print "        ib  => vfat2_data_valid_n_i(" + str(i) + "),"
+    print "        o   => vfat2_data_valid(" + str(i) + ")"
+    print "    );"
+    print ""
+    if data_valids[i] == 1:
+        print "    vfat2_data_valid_o(" + str(i) + ") <= not vfat2_data_valid(" + str(i) + ");"
+    else: 
+        print "    vfat2_data_valid_o(" + str(i) + ") <= vfat2_data_valid(" + str(i) + ");"
     print ""
     print ""
 

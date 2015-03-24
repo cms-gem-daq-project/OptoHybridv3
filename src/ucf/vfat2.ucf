@@ -1,19 +1,9 @@
 # This file constraints the VFAT2 signals
-#
-# The codes next to the constraints are indications relative to the schematic of the OptoHybrid given by Yifan. Do not remove them, they ease the pin matching process.
 
-## T1
+# The codes next to the constraints are indications relative to the schematic 
+# of the OptoHybrid given by Yifan. Do not remove them, they ease the pin matching process.
 
-NET "vfat2_t1_p_o<0>"         LOC = AG20; # B19
-NET "vfat2_t1_n_o<0>"         LOC = AG21;
-
-NET "vfat2_t1_p_o<1>"         LOC = L25; # A19
-NET "vfat2_t1_n_o<1>"         LOC = L26;
-
-NET "vfat2_t1_p_o<2>"         LOC = K18; # M3
-NET "vfat2_t1_n_o<2>"         LOC = K17;
-
-## Clock
+## Clocks
 
 NET "vfat2_mclk_p_o<0>"       LOC = AC20; # B7
 NET "vfat2_mclk_n_o<0>"       LOC = AD20;
@@ -34,7 +24,34 @@ NET "vfat2_resh_o<0>"         LOC = AD19; # B15_N
 NET "vfat2_resh_o<1>"         LOC = K24; # N2_P
 NET "vfat2_resh_o<2>"         LOC = H19; # I12_P
 
-## DataValid
+## T1s
+
+NET "vfat2_t1_p_o<0>"         LOC = AG20; # B19
+NET "vfat2_t1_n_o<0>"         LOC = AG21;
+
+NET "vfat2_t1_p_o<1>"         LOC = L25; # A19
+NET "vfat2_t1_n_o<1>"         LOC = L26;
+
+NET "vfat2_t1_p_o<2>"         LOC = K18; # M3
+NET "vfat2_t1_n_o<2>"         LOC = K17;
+
+## I2Cs
+
+NET "vfat2_scl_o<0>"          LOC = AC17; # J12_N 
+NET "vfat2_scl_o<1>"          LOC = AC27; # G16_N
+NET "vfat2_scl_o<2>"          LOC = K21; # I17_P
+NET "vfat2_scl_o<3>"          LOC = Y27; # H18_N
+NET "vfat2_scl_o<4>"          LOC = J21; # I5_N
+NET "vfat2_scl_o<5>"          LOC = W27; # H20_P
+
+NET "vfat2_sda_io<0>"         LOC = AC18; # J12_P
+NET "vfat2_sda_io<1>"         LOC = AB27; # G16_P
+NET "vfat2_sda_io<2>"         LOC = K22; # I17_N
+NET "vfat2_sda_io<3>"         LOC = Y28; # H18_P
+NET "vfat2_sda_io<4>"         LOC = J20; # I5_P
+NET "vfat2_sda_io<5>"         LOC = W26; # H20_N
+
+## DataValids
 
 NET "vfat2_data_valid_p_i<0>" LOC = AH23; # D12
 NET "vfat2_data_valid_n_i<0>" LOC = AH24;
@@ -53,32 +70,6 @@ NET "vfat2_data_valid_n_i<4>" LOC = L16;
 
 NET "vfat2_data_valid_p_i<5>" LOC = W25; # H19
 NET "vfat2_data_valid_n_i<5>" LOC = V25;
-
-## I2C
-
-NET "vfat2_scl_o<0>"          LOC = AC17; # J12_N 
-NET "vfat2_scl_o<1>"          LOC = AC27; # G16_N
-NET "vfat2_scl_o<2>"          LOC = K21; # I17_P
-NET "vfat2_scl_o<3>"          LOC = Y27; # H18_N
-NET "vfat2_scl_o<4>"          LOC = J21; # I5_N
-NET "vfat2_scl_o<5>"          LOC = W27; # H20_P
-
-NET "vfat2_sda_io<0>"         LOC = AC18; # J12_P
-NET "vfat2_sda_io<1>"         LOC = AB27; # G16_P
-NET "vfat2_sda_io<2>"         LOC = K22; # I17_N
-NET "vfat2_sda_io<3>"         LOC = Y28; # H18_P
-NET "vfat2_sda_io<4>"         LOC = J20; # I5_P
-NET "vfat2_sda_io<5>"         LOC = W26; # H20_N
-
-## DACs
-
-NET "vfat2_dac_i_i<0>"        LOC = P25; # C13
-NET "vfat2_dac_i_i<1>"        LOC = A13; # L4
-NET "vfat2_dac_i_i<2>"        LOC = A11; # L14
-
-#NET "vfat2_dac_v_i<0>"        LOC = U18; # This pin must not be defined. It is automatically connected to the XADC
-NET "vfat2_dac_v_i<1>"        LOC = H12; # L13
-NET "vfat2_dac_v_i<2>"        LOC = B12; # L8
 
 ## VFAT2 0 
 

@@ -238,8 +238,17 @@
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="56"/>
       <association xil_pn:name="Implementation" xil_pn:seqID="1"/>
     </file>
-    <file xil_pn:name="../src/ucf/flash.ucf" xil_pn:type="FILE_UCF">
+    <file xil_pn:name="../src/ucf/memory.ucf" xil_pn:type="FILE_UCF">
       <association xil_pn:name="Implementation" xil_pn:seqID="0"/>
+    </file>
+    <file xil_pn:name="../src/ucf/clocking.ucf" xil_pn:type="FILE_UCF">
+      <association xil_pn:name="Implementation" xil_pn:seqID="0"/>
+    </file>
+    <file xil_pn:name="../src/ucf/misc.ucf" xil_pn:type="FILE_UCF">
+      <association xil_pn:name="Implementation" xil_pn:seqID="0"/>
+    </file>
+    <file xil_pn:name="../src/ucf/gtx.ucf" xil_pn:type="FILE_UCF">
+      <association xil_pn:name="Implementation" xil_pn:seqID="103"/>
     </file>
   </files>
 
@@ -570,7 +579,10 @@
 
   <bindings>
     <binding xil_pn:location="/optohybrid_top" xil_pn:name="../src/ucf/vfat2.ucf"/>
-    <binding xil_pn:location="/optohybrid_top" xil_pn:name="../src/ucf/flash.ucf"/>
+    <binding xil_pn:location="/optohybrid_top" xil_pn:name="../src/ucf/memory.ucf"/>
+    <binding xil_pn:location="/optohybrid_top" xil_pn:name="../src/ucf/clocking.ucf"/>
+    <binding xil_pn:location="/optohybrid_top" xil_pn:name="../src/ucf/misc.ucf"/>
+    <binding xil_pn:location="/optohybrid_top" xil_pn:name="../src/ucf/gtx.ucf"/>
   </bindings>
 
   <libraries/>

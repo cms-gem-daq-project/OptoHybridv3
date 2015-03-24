@@ -6,6 +6,25 @@ def chr2int(c):
 def int2chr(i):
     return chr(i + 65)
 
+def getLOC(str):
+    bank = chr2int(str[0])
+    val = int(str[1:]) - 1
+    return diffs[bank][val * 2]
+
+def getLOC_N(str):
+    bank = chr2int(str[0])
+    val = int(str[1:]) - 1
+    return diffs[bank][val * 2 + 1]
+
+def getLOC_S(str):
+    bank = chr2int(str[0])
+    val = int(str[1:-2]) - 1
+    pol = str[-1:]
+    if (pol == 'P'): 
+        return diffs[bank][val * 2]
+    else: 
+        return diffs[bank][val * 2 + 1]
+
 # Differential pairs to FPGA pins: p1, n1, p2, n2, ...
 
 diffs = [[] for x in range(14)] 
@@ -54,164 +73,73 @@ vfat2s[21] = ["E15", "E11", "A1", "E18", "E17", "A12", "A4", "A18", "A6"]
 vfat2s[22] = ["I1", "I13", "I20", "I7", "E9", "E2", "E1", "E3", "E5"]
 vfat2s[23] = ["L17", "L3", "L18", "L16", "L6", "M17", "M14", "M2", "I14"]
 
-# Control signals
+mclk = ["B7", "N10", "M7"]
 
-# Test arrays lengths
+resb = ["B15_P", "N2_N", "I12_N"]
+resh = ["B15_N", "N2_P", "I12_P"]
 
-for i in range(0, 14):
-    if (len(diffs[i]) != 40): 
-        print "Bank " + int2chr(i) + " does not contain 40 elements!"
-        sys.exit(0)
+t1 = ["B19", "A19", "M3"]
 
-for i in range(0, 24):
-    if (len(vfat2s[i]) != 9): 
-        print "VFAT2 " + str(i) + " does not contain 9 elements!"
-        sys.exit(0)
+scl = ["J12_N", "G16_N", "I17_P", "H18_N", "I5_N", "H20_P"]
+sda = ["J12_P", "G16_P", "I17_N", "H18_P", "I5_P", "H20_N"]
 
-for i in range(0, 24):
-    if (len(vfat2s_inv[i]) != 9): 
-        print "VFAT2 INV " + str(i) + " does not contain 9 elements!"
-        sys.exit(0)
+valid = ["D12", "G18", "A2", "G7", "M10", "H19"]
 
-# Generate the VHDL file
+#####
 
-print "----------------------------------------------------------------------------------"
-print "-- Company:        IIHE - ULB"
-print "-- Engineer:       Thomas Lenzi (thomas.lenzi@cern.ch)"
-print "-- "
-print "-- Create Date:    11:15:06 03/13/2015"
-print "-- Design Name:    OptoHybrid v2"
-print "-- Module Name:    vfat2_packer - Behavioral"
-print "-- Project Name:   OptoHybrid v2"
-print "-- Target Devices: xc6vlx130t-1ff1156"
-print "-- Tool versions:  ISE  P.20131013"
-print "-- Description:    This entity adds differential input buffers to all VFAT2 Sbits and DataOut signals"
-print "--                 and packes them inside an array."
-print "--                  This file is generated automatically by tools/gen_vhdl_vfat2.py"
-print "--"
-print "-- Dependencies:"
-print "--"
-print "-- Revision:"
-print "-- Revision 0.01 - File Created"
-print "-- Additional Comments:"
-print "--"
-print "----------------------------------------------------------------------------------"
+print "# This file constraints the VFAT2 signals"
 print ""
-print "library ieee;"
-print "use ieee.std_logic_1164.all;"
-print ""
-print "library unisim;"
-print "use unisim.vcomponents.all;"
-print ""
-print "library work;"
-print "use work.vfat2_pkg.all;"
-print ""
-print "entity vfat2_packer is"
-print "port("
-print ""
-print "    --== VFAT2s control ==--"
-print ""
-print "    vfat2_t1_p_o            : out std_logic_vector(2 downto 0);"
-print "    vfat2_t1_n_o            : out std_logic_vector(2 downto 0);"
-print ""
-print "    vfat2_mclk_p_o          : out std_logic_vector(2 downto 0);"
-print "    vfat2_mclk_n_o          : out std_logic_vector(2 downto 0);"
-print ""
-print "    vfat2_resb_o            : out std_logic_vector(2 downto 0);"
-print "    vfat2_resh_o            : out std_logic_vector(2 downto 0);"
-print ""
-print "    vfat2_data_valid_p_i    : in std_logic_vector(5 downto 0);"
-print "    vfat2_data_valid_n_i    : in std_logic_vector(5 downto 0);"
-print ""
-print "    vfat2_scl_o             : out std_logic_vector(5 downto 0);"
-print "    vfat2_sda_io            : inout std_logic_vector(5 downto 0);"
-print ""
-print "    --"
-print ""
-print "    vfat2_t1_i              : in std_logic_vector(2 downto 0);"
-print ""
-print "    vfat2_mclk_i            : in std_logic_vector(2 downto 0);"
-print ""
-print "    vfat2_resb_i            : in std_logic_vector(2 downto 0);"
-print "    vfat2_resh_i            : in std_logic_vector(2 downto 0);"
-print ""
-print "    vfat2_data_valid_o      : out std_logic_vector(5 downto 0);"
-print ""
-print "    vfat2_scl_i             : in std_logic_vector(5 downto 0);"
-print "    vfat2_sda_i             : in std_logic_vector(5 downto 0);" 
-print "    vfat2_sda_o             : out std_logic_vector(5 downto 0);" 
-print "    vfat2_sda_t             : in std_logic_vector(5 downto 0);"
-print ""
-print ""
-print "    --== VFAT2s raw data ==--"
+print "# The codes next to the constraints are indications relative to the schematic"
+print "# of the OptoHybrid given by Yifan. Do not remove them, they ease the pin matching process."
 print ""
 
-for i in range(24):
-    print ("    vfat2_" + str(i) + "_sbits_p_i").ljust(28) + ": in std_logic_vector(7 downto 0);"
-    print ("    vfat2_" + str(i) + "_sbits_n_i").ljust(28) + ": in std_logic_vector(7 downto 0);"
-    print ("    vfat2_" + str(i) + "_data_out_p_i").ljust(28) + ": in std_logic;"
-    print ("    vfat2_" + str(i) + "_data_out_n_i").ljust(28) + ": in std_logic;"
+print "## Clocks"
+print ""
+for i in range(3):
+    print ("NET \"vfat2_mclk_p_o<" + str(i) + ">\"").ljust(32) + "LOC = " + getLOC(mclk[i]) + "; # " + mclk[i]
+    print ("NET \"vfat2_mclk_n_o<" + str(i) + ">\"").ljust(32) + "LOC = " + getLOC_N(mclk[i]) + ";"
     print ""
 
-print "    --== VFAT2s packed data ==--"
+print "## Resets"
 print ""
-print "    vfat2s_data_o           : out vfat2s_data_t(23 downto 0)"
+for i in range(3):
+    print ("NET \"vfat2_resb_o<" + str(i) + ">\"").ljust(32) + "LOC = " + getLOC_S(resb[i]) + "; # " + resb[i]
 print ""
-print ");"
-print "end vfat2_packer;"
-print ""
-print "architecture Behavioral of vfat2_packer is"
+for i in range(3):
+    print ("NET \"vfat2_resh_o<" + str(i) + ">\"").ljust(32) + "LOC = " + getLOC_S(resh[i]) + "; # " + resh[i]
 print ""
 
-for i in range(24):
-    print ("    signal vfat2_" + str(i) + "_sbits").ljust(32) + ": std_logic_vector(23 downto 0);"
-    print ("    signal vfat2_" + str(i) + "_data_out").ljust(32) + ": std_logic;"
+print "## T1s"
+print ""
+for i in range(3):
+    print ("NET \"vfat2_t1_p_o<" + str(i) + ">\"").ljust(32) + "LOC = " + getLOC(t1[i]) + "; # " + t1[i]
+    print ("NET \"vfat2_t1_n_o<" + str(i) + ">\"").ljust(32) + "LOC = " + getLOC_N(t1[i]) + ";"
     print ""
 
-print "begin"
+print "## I2Cs"
+print ""
+for i in range(6):
+    print ("NET \"vfat2_scl_o<" + str(i) + ">\"").ljust(32) + "LOC = " + getLOC_S(scl[i]) + "; # " + scl[i]
+print ""
+for i in range(6):
+    print ("NET \"vfat2_sda_io<" + str(i) + ">\"").ljust(32) + "LOC = " + getLOC_S(sda[i]) + "; # " + sda[i]
 print ""
 
-for i in range(24):
-    print "    --== VFAT2 " + str(i) + " ==--"
+print "## DataValids"
+print ""
+for i in range(6):
+    print ("NET \"vfat2_data_valid_p_i<" + str(i) + ">\"").ljust(32) + "LOC = " + getLOC(valid[i]) + "; # " + valid[i]
+    print ("NET \"vfat2_data_valid_n_i<" + str(i) + ">\"").ljust(32) + "LOC = " + getLOC_N(valid[i]) + ";"
     print ""
 
+for i in range(24):
+    print "## VFAT2 " + str(i)
+    print ""
     for j in range(8):
-        print "    vfat2_" + str(i) + "_sbit_" + str(j) + "_ibufds_inst : ibufds"
-        print "    generic map("
-        print "        diff_term   => true,"
-        print "        iostandard  => \"lvds_25\""
-        print "    )"
-        print "    port map("
-        print "        i   => vfat2_" + str(i) + "_sbits_p_i(" + str(j) + "),"
-        print "        ib  => vfat2_" + str(i) + "_sbits_n_i(" + str(j) + "),"
-        print "        o   => vfat2_" + str(i) + "_sbits(" + str(j) + ")"
-        print "    );"
+        print ("NET \"vfat2_" + str(i) + "_sbits_p_i<" + str(j) + ">\"").ljust(32) + "LOC = " + getLOC(vfat2s[i][j]) + "; # " + vfat2s[i][j]
+        print ("NET \"vfat2_" + str(i) + "_sbits_n_i<" + str(j) + ">\"").ljust(32) + "LOC = " + getLOC_N(vfat2s[i][j]) + ";"
         print ""
-        if vfat2s_inv[i][j] == 1:
-            print "    vfat2s_data_o(" + str(i) + ").sbits(" + str(j) + ") <= not vfat2_" + str(i) + "_sbits(" + str(j) + ");"
-        else: 
-            print "    vfat2s_data_o(" + str(i) + ").sbits(" + str(j) + ") <= vfat2_" + str(i) + "_sbits(" + str(j) + ");"
-        print ""
-        print ""
-
-    print "    vfat2_" + str(i) + "_data_out_ibufds_inst : ibufds"
-    print "    generic map("
-    print "        diff_term   => true,"
-    print "        iostandard  => \"lvds_25\""
-    print "    )"
-    print "    port map("
-    print "        i   => vfat2_" + str(i) + "_data_out_p_i,"
-    print "        ib  => vfat2_" + str(i) + "_data_out_n_i,"
-    print "        o   => vfat2_" + str(i) + "_data_out"
-    print "    );"
-    print ""
-    if vfat2s_inv[i][j] == 1:
-        print "    vfat2s_data_o(" + str(i) + ").data_out <= not vfat2_" + str(i) + "_data_out;"
-    else: 
-        print "    vfat2s_data_o(" + str(i) + ").data_out <= vfat2_" + str(i) + "_data_out;"
-    print ""  
-    print ""      
-
-print "end Behavioral;"
-print ""
+    print ("NET \"vfat2_" + str(i) + "_data_out_p_i\"").ljust(32) + "LOC = " + getLOC(vfat2s[i][8]) + "; # " + vfat2s[i][8]
+    print ("NET \"vfat2_" + str(i) + "_data_out_n_i\"").ljust(32) + "LOC = " + getLOC_N(vfat2s[i][8]) + ";"
+    print ""        
 

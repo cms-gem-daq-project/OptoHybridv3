@@ -1,0 +1,42 @@
+# This file constraints miscellaneous signals
+
+## HDMI
+
+NET "hdmi_scl_io<0>"    LOC = AF15; # J1_N
+NET "hdmi_scl_io<1>"    LOC = AG13; # K13_N
+
+NET "hdmi_sda_io<0>"    LOC = AD15; # J10_N
+NET "hdmi_sda_io<1>"    LOC = AF13; # K13_P
+
+## TMDS
+
+NET "tmds_d_p_io<0>"    LOC = AC13; # K10
+NET "tmds_d_n_io<0>"    LOC = AC12;
+
+NET "tmds_d_p_io<1>"    LOC = AD12; # K11
+NET "tmds_d_n_io<1>"    LOC = AD11;
+
+NET "tmds_clk_p_io"     LOC = AF11; # K5
+NET "tmds_clk_n_io"     LOC = AE11;
+
+## ADC
+
+NET "adc_chip_select_o" LOC = L23; # N1_P
+
+NET "adc_din_i"         LOC = U23; # N11_P
+
+NET "adc_dout_o"        LOC = A13; # L4_P
+
+NET "adc_clk_o"         LOC = AB23; # N18_P
+
+NET "adc_eoc_i"         LOC = B11; # L14_N
+
+## Temperature sensor
+
+NET "temp_clk_o"        LOC = A14; # L4_N
+
+NET "temp_data_io"      LOC = AE24; # N12_N
+
+##
+
+NET "chip_id_i"         LOC = AE23; # N18_N

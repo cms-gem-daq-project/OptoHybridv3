@@ -1,0 +1,432 @@
+Release 14.7 - xst P.20131013 (nt64)
+Copyright (c) 1995-2013 Xilinx, Inc.  All rights reserved.
+--> Parameter TMPDIR set to xst/projnav.tmp
+
+
+Total REAL time to Xst completion: 0.00 secs
+Total CPU time to Xst completion: 0.11 secs
+ 
+--> Parameter xsthdpdir set to xst
+
+
+Total REAL time to Xst completion: 0.00 secs
+Total CPU time to Xst completion: 0.11 secs
+ 
+--> Reading design: optohybrid_top.prj
+
+TABLE OF CONTENTS
+  1) Synthesis Options Summary
+  2) HDL Parsing
+  3) HDL Elaboration
+  4) HDL Synthesis
+       4.1) HDL Synthesis Report
+  5) Advanced HDL Synthesis
+       5.1) Advanced HDL Synthesis Report
+  6) Low Level Synthesis
+  7) Partition Report
+  8) Design Summary
+       8.1) Primitive and Black Box Usage
+       8.2) Device utilization summary
+       8.3) Partition Resource Summary
+       8.4) Timing Report
+            8.4.1) Clock Information
+            8.4.2) Asynchronous Control Signals Information
+            8.4.3) Timing Summary
+            8.4.4) Timing Details
+            8.4.5) Cross Clock Domains Report
+
+
+=========================================================================
+*                      Synthesis Options Summary                        *
+=========================================================================
+---- Source Parameters
+Input File Name                    : "optohybrid_top.prj"
+Ignore Synthesis Constraint File   : NO
+
+---- Target Parameters
+Output File Name                   : "optohybrid_top"
+Output Format                      : NGC
+Target Device                      : xc6vlx130t-1-ff1156
+
+---- Source Options
+Top Module Name                    : optohybrid_top
+Automatic FSM Extraction           : YES
+FSM Encoding Algorithm             : Auto
+Safe Implementation                : No
+FSM Style                          : LUT
+RAM Extraction                     : Yes
+RAM Style                          : Auto
+ROM Extraction                     : Yes
+Shift Register Extraction          : YES
+ROM Style                          : Auto
+Resource Sharing                   : YES
+Asynchronous To Synchronous        : NO
+Shift Register Minimum Size        : 2
+Use DSP Block                      : Auto
+Automatic Register Balancing       : No
+
+---- Target Options
+LUT Combining                      : Auto
+Reduce Control Sets                : Auto
+Add IO Buffers                     : YES
+Global Maximum Fanout              : 100000
+Add Generic Clock Buffer(BUFG)     : 32
+Register Duplication               : YES
+Optimize Instantiated Primitives   : NO
+Use Clock Enable                   : Auto
+Use Synchronous Set                : Auto
+Use Synchronous Reset              : Auto
+Pack IO Registers into IOBs        : Auto
+Equivalent register Removal        : YES
+
+---- General Options
+Optimization Goal                  : Speed
+Optimization Effort                : 1
+Power Reduction                    : NO
+Keep Hierarchy                     : No
+Netlist Hierarchy                  : As_Optimized
+RTL Output                         : Yes
+Global Optimization                : AllClockNets
+Read Cores                         : YES
+Write Timing Constraints           : NO
+Cross Clock Analysis               : NO
+Hierarchy Separator                : /
+Bus Delimiter                      : <>
+Case Specifier                     : Maintain
+Slice Utilization Ratio            : 100
+BRAM Utilization Ratio             : 100
+DSP48 Utilization Ratio            : 100
+Auto BRAM Packing                  : NO
+Slice Utilization Ratio Delta      : 5
+
+---- Other Options
+Cores Search Directories           : {"../vendors/gbt-fpga/tags/gbt_fpga_3_1_0/gbt_bank/xilinx_v6/gbt_rx/rx_dpram" "../vendors/gbt-fpga/tags/gbt_fpga_3_1_0/gbt_bank/xilinx_v6/gbt_tx/tx_dpram"  }
+
+=========================================================================
+
+
+=========================================================================
+*                          HDL Parsing                                  *
+=========================================================================
+Parsing VHDL file "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\packages\vfat2_pkg.vhd" into library work
+Parsing package <vfat2_pkg>.
+Parsing package body <vfat2_pkg>.
+Parsing VHDL file "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\system\vfat2_buffers.vhd" into library work
+Parsing entity <vfat2_buffers>.
+Parsing architecture <Behavioral> of entity <vfat2_buffers>.
+WARNING:HDLCompiler:946 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\system\vfat2_buffers.vhd" Line 369: Actual for formal port i is neither a static name nor a globally static expression
+WARNING:HDLCompiler:946 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\system\vfat2_buffers.vhd" Line 380: Actual for formal port i is neither a static name nor a globally static expression
+WARNING:HDLCompiler:946 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\system\vfat2_buffers.vhd" Line 392: Actual for formal port i is neither a static name nor a globally static expression
+WARNING:HDLCompiler:946 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\system\vfat2_buffers.vhd" Line 403: Actual for formal port i is neither a static name nor a globally static expression
+WARNING:HDLCompiler:946 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\system\vfat2_buffers.vhd" Line 415: Actual for formal port i is neither a static name nor a globally static expression
+WARNING:HDLCompiler:946 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\system\vfat2_buffers.vhd" Line 426: Actual for formal port i is neither a static name nor a globally static expression
+Parsing VHDL file "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" into library work
+Parsing entity <optohybrid_top>.
+Parsing architecture <Behavioral> of entity <optohybrid_top>.
+
+=========================================================================
+*                            HDL Elaboration                            *
+=========================================================================
+
+Elaborating entity <optohybrid_top> (architecture <Behavioral>) from library <work>.
+
+Elaborating entity <vfat2_buffers> (architecture <Behavioral>) from library <work>.
+WARNING:HDLCompiler:634 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" Line 277: Net <vfat2_mclk> does not have a driver.
+WARNING:HDLCompiler:634 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" Line 278: Net <vfat2_reset> does not have a driver.
+WARNING:HDLCompiler:634 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" Line 279: Net <vfat2_t1> does not have a driver.
+WARNING:HDLCompiler:634 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" Line 280: Net <vfat2_scl[5]> does not have a driver.
+WARNING:HDLCompiler:634 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" Line 281: Net <vfat2_sda_out[5]> does not have a driver.
+WARNING:HDLCompiler:634 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" Line 283: Net <vfat2_sda_tri[5]> does not have a driver.
+
+=========================================================================
+*                           HDL Synthesis                               *
+=========================================================================
+
+Synthesizing Unit <optohybrid_top>.
+    Related source file is "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd".
+WARNING:Xst:647 - Input <vfat2_0_sbits_n_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <vfat2_1_sbits_n_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <vfat2_2_sbits_n_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <vfat2_3_sbits_n_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <vfat2_4_sbits_n_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <vfat2_5_sbits_n_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <vfat2_6_sbits_n_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <vfat2_7_sbits_n_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <vfat2_8_sbits_n_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <vfat2_9_sbits_n_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <vfat2_10_sbits_n_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <vfat2_11_sbits_n_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <vfat2_12_sbits_n_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <vfat2_13_sbits_n_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <vfat2_14_sbits_n_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <vfat2_15_sbits_n_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <vfat2_16_sbits_n_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <vfat2_17_sbits_n_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <vfat2_18_sbits_n_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <vfat2_19_sbits_n_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <vfat2_20_sbits_n_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <vfat2_21_sbits_n_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <vfat2_22_sbits_n_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <vfat2_23_sbits_n_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <mgt_112_rx_p_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <mgt_112_rx_n_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <mgt_113_rx_p_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <mgt_113_rx_n_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <mgt_114_rx_p_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <mgt_114_rx_n_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <mgt_115_rx_p_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <mgt_115_rx_n_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <mgt_116_rx_p_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <mgt_116_rx_n_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <clk_50MHz_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <qpll_locked_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <qpll_error_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <qpll_clk_p_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <qpll_clk_n_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <cdce_aux_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <cdce_locked_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <cdce_miso_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <cdce_clk_p_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <cdce_clk_n_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <adc_din_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <adc_eoc_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <chip_id_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <mgt_112_clk0_p_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <mgt_112_clk0_n_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <mgt_116_clk1_p_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <mgt_116_clk1_n_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+INFO:Xst:3210 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" line 293: Output port <vfat2_sda_o> of the instance <vfat2_buffers_inst> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" line 293: Output port <vfat2_data_valid_o> of the instance <vfat2_buffers_inst> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" line 293: Output port <vfat2s_data_o[23]_sbits> of the instance <vfat2_buffers_inst> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" line 293: Output port <vfat2s_data_o[22]_sbits> of the instance <vfat2_buffers_inst> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" line 293: Output port <vfat2s_data_o[21]_sbits> of the instance <vfat2_buffers_inst> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" line 293: Output port <vfat2s_data_o[20]_sbits> of the instance <vfat2_buffers_inst> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" line 293: Output port <vfat2s_data_o[19]_sbits> of the instance <vfat2_buffers_inst> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" line 293: Output port <vfat2s_data_o[18]_sbits> of the instance <vfat2_buffers_inst> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" line 293: Output port <vfat2s_data_o[17]_sbits> of the instance <vfat2_buffers_inst> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" line 293: Output port <vfat2s_data_o[16]_sbits> of the instance <vfat2_buffers_inst> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" line 293: Output port <vfat2s_data_o[15]_sbits> of the instance <vfat2_buffers_inst> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" line 293: Output port <vfat2s_data_o[14]_sbits> of the instance <vfat2_buffers_inst> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" line 293: Output port <vfat2s_data_o[13]_sbits> of the instance <vfat2_buffers_inst> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" line 293: Output port <vfat2s_data_o[12]_sbits> of the instance <vfat2_buffers_inst> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" line 293: Output port <vfat2s_data_o[11]_sbits> of the instance <vfat2_buffers_inst> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" line 293: Output port <vfat2s_data_o[10]_sbits> of the instance <vfat2_buffers_inst> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" line 293: Output port <vfat2s_data_o[9]_sbits> of the instance <vfat2_buffers_inst> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" line 293: Output port <vfat2s_data_o[8]_sbits> of the instance <vfat2_buffers_inst> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" line 293: Output port <vfat2s_data_o[7]_sbits> of the instance <vfat2_buffers_inst> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" line 293: Output port <vfat2s_data_o[6]_sbits> of the instance <vfat2_buffers_inst> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" line 293: Output port <vfat2s_data_o[5]_sbits> of the instance <vfat2_buffers_inst> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" line 293: Output port <vfat2s_data_o[4]_sbits> of the instance <vfat2_buffers_inst> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" line 293: Output port <vfat2s_data_o[3]_sbits> of the instance <vfat2_buffers_inst> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" line 293: Output port <vfat2s_data_o[2]_sbits> of the instance <vfat2_buffers_inst> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" line 293: Output port <vfat2s_data_o[1]_sbits> of the instance <vfat2_buffers_inst> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" line 293: Output port <vfat2s_data_o[0]_sbits> of the instance <vfat2_buffers_inst> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" line 293: Output port <vfat2s_data_o[23]_data_out> of the instance <vfat2_buffers_inst> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" line 293: Output port <vfat2s_data_o[22]_data_out> of the instance <vfat2_buffers_inst> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" line 293: Output port <vfat2s_data_o[21]_data_out> of the instance <vfat2_buffers_inst> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" line 293: Output port <vfat2s_data_o[20]_data_out> of the instance <vfat2_buffers_inst> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" line 293: Output port <vfat2s_data_o[19]_data_out> of the instance <vfat2_buffers_inst> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" line 293: Output port <vfat2s_data_o[18]_data_out> of the instance <vfat2_buffers_inst> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" line 293: Output port <vfat2s_data_o[17]_data_out> of the instance <vfat2_buffers_inst> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" line 293: Output port <vfat2s_data_o[16]_data_out> of the instance <vfat2_buffers_inst> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" line 293: Output port <vfat2s_data_o[15]_data_out> of the instance <vfat2_buffers_inst> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" line 293: Output port <vfat2s_data_o[14]_data_out> of the instance <vfat2_buffers_inst> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" line 293: Output port <vfat2s_data_o[13]_data_out> of the instance <vfat2_buffers_inst> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" line 293: Output port <vfat2s_data_o[12]_data_out> of the instance <vfat2_buffers_inst> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" line 293: Output port <vfat2s_data_o[11]_data_out> of the instance <vfat2_buffers_inst> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" line 293: Output port <vfat2s_data_o[10]_data_out> of the instance <vfat2_buffers_inst> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" line 293: Output port <vfat2s_data_o[9]_data_out> of the instance <vfat2_buffers_inst> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" line 293: Output port <vfat2s_data_o[8]_data_out> of the instance <vfat2_buffers_inst> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" line 293: Output port <vfat2s_data_o[7]_data_out> of the instance <vfat2_buffers_inst> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" line 293: Output port <vfat2s_data_o[6]_data_out> of the instance <vfat2_buffers_inst> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" line 293: Output port <vfat2s_data_o[5]_data_out> of the instance <vfat2_buffers_inst> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" line 293: Output port <vfat2s_data_o[4]_data_out> of the instance <vfat2_buffers_inst> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" line 293: Output port <vfat2s_data_o[3]_data_out> of the instance <vfat2_buffers_inst> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" line 293: Output port <vfat2s_data_o[2]_data_out> of the instance <vfat2_buffers_inst> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" line 293: Output port <vfat2s_data_o[1]_data_out> of the instance <vfat2_buffers_inst> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\optohybrid_top.vhd" line 293: Output port <vfat2s_data_o[0]_data_out> of the instance <vfat2_buffers_inst> is unconnected or connected to loadless signal.
+WARNING:Xst:653 - Signal <vfat2_scl> is used but never assigned. This sourceless signal will be automatically connected to value GND.
+WARNING:Xst:653 - Signal <vfat2_sda_out> is used but never assigned. This sourceless signal will be automatically connected to value GND.
+WARNING:Xst:653 - Signal <vfat2_sda_tri> is used but never assigned. This sourceless signal will be automatically connected to value GND.
+WARNING:Xst:653 - Signal <vfat2_mclk> is used but never assigned. This sourceless signal will be automatically connected to value GND.
+WARNING:Xst:653 - Signal <vfat2_reset> is used but never assigned. This sourceless signal will be automatically connected to value GND.
+WARNING:Xst:653 - Signal <vfat2_t1> is used but never assigned. This sourceless signal will be automatically connected to value GND.
+    Summary:
+	no macro.
+Unit <optohybrid_top> synthesized.
+
+Synthesizing Unit <vfat2_buffers>.
+    Related source file is "\\psf\home\Documents\PhD\Code\OptoHybridv2\src\system\vfat2_buffers.vhd".
+    Summary:
+	no macro.
+Unit <vfat2_buffers> synthesized.
+
+=========================================================================
+HDL Synthesis Report
+
+Found no macro
+=========================================================================
+
+=========================================================================
+*                       Advanced HDL Synthesis                          *
+=========================================================================
+
+
+=========================================================================
+Advanced HDL Synthesis Report
+
+Found no macro
+=========================================================================
+
+=========================================================================
+*                         Low Level Synthesis                           *
+=========================================================================
+
+Optimizing unit <optohybrid_top> ...
+
+Optimizing unit <vfat2_buffers> ...
+
+Mapping all equations...
+Building and optimizing final netlist ...
+Found area constraint ratio of 100 (+ 5) on block optohybrid_top, actual ratio is 0.
+
+Final Macro Processing ...
+
+=========================================================================
+Final Register Report
+
+Found no macro
+=========================================================================
+
+=========================================================================
+*                           Partition Report                            *
+=========================================================================
+
+Partition Implementation Status
+-------------------------------
+
+  No Partitions were found in this design.
+
+-------------------------------
+
+=========================================================================
+*                            Design Summary                             *
+=========================================================================
+
+Top Level Output File Name         : optohybrid_top.ngc
+
+Primitive and Black Box Usage:
+------------------------------
+# BELS                             : 2
+#      GND                         : 1
+#      VCC                         : 1
+# FlipFlops/Latches                : 3
+#      ODDR                        : 3
+# IO Buffers                       : 246
+#      IBUFDS                      : 222
+#      IOBUF                       : 6
+#      OBUF                        : 12
+#      OBUFDS                      : 6
+
+Device utilization summary:
+---------------------------
+
+Selected Device : 6vlx130tff1156-1 
+
+
+Slice Logic Utilization: 
+ Number of Slice Registers:               3  out of  160000     0%  
+
+Slice Logic Distribution: 
+ Number of LUT Flip Flop pairs used:      3
+   Number with an unused Flip Flop:       0  out of      3     0%  
+   Number with an unused LUT:             3  out of      3   100%  
+   Number of fully used LUT-FF pairs:     0  out of      3     0%  
+   Number of unique control sets:         0
+
+IO Utilization: 
+ Number of IOs:                         644
+ Number of bonded IOBs:                  90  out of    600    15%  
+
+Specific Feature Utilization:
+
+---------------------------
+Partition Resource Summary:
+---------------------------
+
+  No Partitions were found in this design.
+
+---------------------------
+
+
+=========================================================================
+Timing Report
+
+NOTE: THESE TIMING NUMBERS ARE ONLY A SYNTHESIS ESTIMATE.
+      FOR ACCURATE TIMING INFORMATION PLEASE REFER TO THE TRACE REPORT
+      GENERATED AFTER PLACE-and-ROUTE.
+
+Clock Information:
+------------------
+-----------------------------------+------------------------------------------------+-------+
+Clock Signal                       | Clock buffer(FF name)                          | Load  |
+-----------------------------------+------------------------------------------------+-------+
+vfat2_sda_tri<1>                   | NONE(vfat2_buffers_inst/vfat2_mclk_2_oddr_inst)| 3     |
+-----------------------------------+------------------------------------------------+-------+
+INFO:Xst:2169 - HDL ADVISOR - Some clock signals were not automatically buffered by XST with BUFG/BUFR resources. Please use the buffer_type constraint in order to insert these buffers to the clock signals to help prevent skew problems.
+
+Asynchronous Control Signals Information:
+----------------------------------------
+No asynchronous control signals found in this design
+
+Timing Summary:
+---------------
+Speed Grade: -1
+
+   Minimum period: No path found
+   Minimum input arrival time before clock: No path found
+   Maximum output required time after clock: 1.009ns
+   Maximum combinational path delay: No path found
+
+Timing Details:
+---------------
+All values displayed in nanoseconds (ns)
+
+=========================================================================
+Timing constraint: Default OFFSET OUT AFTER for Clock 'vfat2_sda_tri<1>'
+  Total number of paths / destination ports: 6 / 6
+-------------------------------------------------------------------------
+Offset:              1.009ns (Levels of Logic = 1)
+  Source:            vfat2_buffers_inst/vfat2_mclk_2_oddr_inst (FF)
+  Destination:       vfat2_mclk_p_o<2> (PAD)
+  Source Clock:      vfat2_sda_tri<1> rising
+
+  Data Path: vfat2_buffers_inst/vfat2_mclk_2_oddr_inst to vfat2_mclk_p_o<2>
+                                Gate     Net
+    Cell:in->out      fanout   Delay   Delay  Logical Name (Net Name)
+    ----------------------------------------  ------------
+     ODDR:C->Q             1   0.607   0.399  vfat2_buffers_inst/vfat2_mclk_2_oddr_inst (vfat2_buffers_inst/vfat2_mclk<2>)
+     OBUFDS:I->O               0.003          vfat2_buffers_inst/vfat2_mclk_2_obufds_inst (vfat2_mclk_p_o<2>)
+    ----------------------------------------
+    Total                      1.009ns (0.610ns logic, 0.399ns route)
+                                       (60.5% logic, 39.5% route)
+
+=========================================================================
+
+Cross Clock Domains Report:
+--------------------------
+
+=========================================================================
+
+
+Total REAL time to Xst completion: 10.00 secs
+Total CPU time to Xst completion: 10.25 secs
+ 
+--> 
+
+Total memory usage is 267232 kilobytes
+
+Number of errors   :    0 (   0 filtered)
+Number of warnings :   69 (   0 filtered)
+Number of infos    :   51 (   0 filtered)
+
