@@ -11,6 +11,8 @@ git clone https://github.com/thomaslenzi/OptoHybridv2.git
 
 ### Project structure
 
+- doc       Documentation
 - prj       ISE project files
 - src       VHDL & Verilog source files
+- tools     Scripts that help the development process
 - vendors   Third-party firmware/software
