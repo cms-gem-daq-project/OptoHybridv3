@@ -1,3 +1,10 @@
+# Ignore OS files
 .DS_Store
+
+# Ignore `vendors` (installed locally by users)
 vendors/*
-*.bit
+
+# Only keep important files in the `prj`directory
+prj/*
+!prj/OptoHybrid_v2.gise
+!prj/OptoHybrid_v2.xise
