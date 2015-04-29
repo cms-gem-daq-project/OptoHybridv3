@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <report-views version="2.0" >
  <header>
-  <DateModified>2015-03-24T08:43:25</DateModified>
+  <DateModified>2015-04-29T11:06:30</DateModified>
   <ModuleName>optohybrid_top</ModuleName>
   <SummaryTimeStamp>2015-03-23T14:25:28</SummaryTimeStamp>
-  <SavedFilePath>Z:/Documents/PhD/Code/OptoHybridv2/prj/iseconfig/optohybrid_top.xreport</SavedFilePath>
-  <ImplementationReportsDirectory>Z:/Documents/PhD/Code/OptoHybridv2/prj\</ImplementationReportsDirectory>
+  <SavedFilePath>Z:/Documents/PhD/Code/OptoHybrid_v2/prj/iseconfig/optohybrid_top.xreport</SavedFilePath>
+  <ImplementationReportsDirectory>Z:/Documents/PhD/Code/OptoHybrid_v2/prj\</ImplementationReportsDirectory>
   <DateInitialized>2015-03-13T11:09:57</DateInitialized>
   <EnableMessageFiltering>false</EnableMessageFiltering>
  </header>
