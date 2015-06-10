@@ -953,7 +953,7 @@ begin
         o   => vfat2_21_data_out
     );
 
-    vfat2s_data_o(21).data_out <= vfat2_21_data_out;
+    vfat2s_data_o(21).data_out <= not vfat2_21_data_out;
 
 
     --== VFAT2 22 signals ==--
@@ -1337,7 +1337,7 @@ begin
         o   => vfat2_19_data_out
     );
 
-    vfat2s_data_o(19).data_out <= not vfat2_19_data_out;
+    vfat2s_data_o(19).data_out <= vfat2_19_data_out;
 
 
     --== VFAT2 18 signals ==--
@@ -1721,7 +1721,7 @@ begin
         o   => vfat2_16_data_out
     );
 
-    vfat2s_data_o(16).data_out <= not vfat2_16_data_out;
+    vfat2s_data_o(16).data_out <= vfat2_16_data_out;
 
 
     --== VFAT2 11 signals ==--
@@ -2105,7 +2105,7 @@ begin
         o   => vfat2_10_data_out
     );
 
-    vfat2s_data_o(10).data_out <= vfat2_10_data_out;
+    vfat2s_data_o(10).data_out <= not vfat2_10_data_out;
 
 
     --== VFAT2 13 signals ==--
@@ -2617,7 +2617,7 @@ begin
         o   => vfat2_8_data_out
     );
 
-    vfat2s_data_o(8).data_out <= not vfat2_8_data_out;
+    vfat2s_data_o(8).data_out <= vfat2_8_data_out;
 
 
     --== VFAT2 15 signals ==--
@@ -2745,7 +2745,7 @@ begin
         o   => vfat2_15_data_out
     );
 
-    vfat2s_data_o(15).data_out <= vfat2_15_data_out;
+    vfat2s_data_o(15).data_out <= not vfat2_15_data_out;
 
 
     --== VFAT2 7 signals ==--
@@ -2873,7 +2873,7 @@ begin
         o   => vfat2_7_data_out
     );
 
-    vfat2s_data_o(7).data_out <= vfat2_7_data_out;
+    vfat2s_data_o(7).data_out <= not vfat2_7_data_out;
 
 
     --== VFAT2 6 signals ==--
@@ -3129,7 +3129,7 @@ begin
         o   => vfat2_5_data_out
     );
 
-    vfat2s_data_o(5).data_out <= vfat2_5_data_out;
+    vfat2s_data_o(5).data_out <= not vfat2_5_data_out;
 
 
     --== VFAT2 4 signals ==--
@@ -3257,7 +3257,7 @@ begin
         o   => vfat2_4_data_out
     );
 
-    vfat2s_data_o(4).data_out <= not vfat2_4_data_out;
+    vfat2s_data_o(4).data_out <= vfat2_4_data_out;
 
 
     --== VFAT2 3 signals ==--
@@ -3385,7 +3385,7 @@ begin
         o   => vfat2_3_data_out
     );
 
-    vfat2s_data_o(3).data_out <= not vfat2_3_data_out;
+    vfat2s_data_o(3).data_out <= vfat2_3_data_out;
 
 
     --== VFAT2 2 signals ==--
@@ -3769,7 +3769,7 @@ begin
         o   => vfat2_0_data_out
     );
 
-    vfat2s_data_o(0).data_out <= not vfat2_0_data_out;
+    vfat2s_data_o(0).data_out <= vfat2_0_data_out;
 
 
 end Behavioral;

@@ -415,7 +415,7 @@ for i in range(24):
     f.write("        o   => vfat2_" + str(vfat2s_name[i]) + "_data_out\n")
     f.write("    );\n")
     f.write("\n")
-    if vfat2s_ord[i][j] == 1:
+    if vfat2s_ord[i][8] == 1:
         f.write("    vfat2s_data_o(" + str(vfat2s_name[i]) + ").data_out <= not vfat2_" + str(vfat2s_name[i]) + "_data_out;\n")
     else: 
         f.write("    vfat2s_data_o(" + str(vfat2s_name[i]) + ").data_out <= vfat2_" + str(vfat2s_name[i]) + "_data_out;\n")
