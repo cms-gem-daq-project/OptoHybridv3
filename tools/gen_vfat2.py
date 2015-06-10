@@ -1,9 +1,8 @@
 import sys
 
-##############################################################################################################################
+# Differential pain names to FPGA pins
 
 diffs = [[] for x in range(14)] 
-
 diffs[0] = ["C32", "B32", "J26", "J27", "E32", "E33", "F30", "G30", "A33", "B33", "G31", "H30", "C33", "B34", "K28", "J29", "D34", "C34", "K26", "K27", "F33", "G33", "F31", "E31", "E34", "F34", "J30", "K29", "H34", "H33", "D31", "D32", "K33", "J34", "G32", "H32", "L25", "L26", "J31", "J32"]
 diffs[1] = ["AE21", "AD21", "AM18", "AL18", "AG22", "AH22", "AP19", "AN18", "AK22", "AJ22", "AN19", "AN20", "AC20", "AD20", "AM20", "AL20", "AF19", "AE19", "AP20", "AP21", "AK19", "AL19", "AF20", "AF21", "AJ20", "AH20", "AM21", "AL21", "AC19", "AD19", "AM23", "AL23", "AK21", "AJ21", "AM22", "AN22", "AG20", "AG21", "AP22", "AN23"]
 diffs[2] = ["M31", "L31", "N25", "M25", "K32", "K31", "M26", "M27", "P31", "P30", "N27", "P27", "L33", "M32", "L28", "M28", "N32", "P32", "N28", "N29", "N33", "M33", "L29", "L30", "P25", "P26", "R28", "R27", "R31", "R32", "R26", "T26", "K34", "L34", "M30", "N30", "N34", "P34", "P29", "R29"]
@@ -19,8 +18,9 @@ diffs[11] = ["G13", "H14", "D14", "C14", "G11", "F11", "A13", "A14", "G12", "H13
 diffs[12] = ["F18", "E17", "E18", "D17", "K18", "K17", "H17", "G17", "L19", "L18", "C17", "B17", "K19", "J19", "M18", "M17", "G18", "H18", "K16", "L16", "L15", "L14", "A16", "B16", "F16", "G16", "E16", "D16", "J17", "J16", "A15", "B15", "G15", "F15", "M16", "M15", "H15", "J15", "D15", "C15"]
 diffs[13] = ["L23", "M22", "K24", "K23", "M23", "L24", "F24", "F23", "N23", "N24", "H23", "G23", "R24", "P24", "H25", "H24", "T24", "T23", "J25", "J24", "U23", "V23", "AD24", "AE24", "V24", "W24", "AF25", "AF24", "Y24", "AA24", "AF23", "AG23", "AA23", "AB23", "AE23", "AE22", "AC23", "AC24", "AC22", "AD22"]
 
-vfat2s = [[] for x in range(24)] 
+# OH naming convention for VFAT2s (not the real order on the GEB)
 
+vfat2s = [[] for x in range(24)] 
 vfat2s[0] = ["K6", "K12", "K14", "K16", "K20", "J8", "J16", "J14", "B2"]
 vfat2s[1] = ["B4", "B6", "B10", "B18", "B20", "B16", "D20", "D14", "D16"]
 vfat2s[2] = ["D8", "D6", "F9", "F18", "F17", "F7", "F15", "F5", "F3"]
@@ -46,8 +46,9 @@ vfat2s[21] = ["E15", "E11", "A1", "E18", "E17", "A12", "A4", "A18", "A6"]
 vfat2s[22] = ["I1", "I13", "I20", "I7", "E9", "E2", "E1", "E3", "E5"]
 vfat2s[23] = ["L17", "L3", "L18", "L16", "L6", "M17", "M14", "M2", "I14"]
 
-vfat2s_ord = [[] for x in range(24)]
+# Differential pair inversion
 
+vfat2s_ord = [[] for x in range(24)]
 vfat2s_ord[0] = [0, 0, 1, 0, 0, 1, 1, 1, 1]
 vfat2s_ord[1] = [1, 0, 0, 0, 0, 0, 1, 0, 1]
 vfat2s_ord[2] = [1, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -73,23 +74,39 @@ vfat2s_ord[21] = [1, 0, 1, 0, 0, 1, 0, 0, 0]
 vfat2s_ord[22] = [1, 1, 1, 0, 1, 0, 0, 0, 0]
 vfat2s_ord[23] = [1, 1, 0, 0, 1, 1, 1, 1, 0]
 
-mclk = ["B7", "N10", "M7"]
+# Conversion between OH name and real name 
 
+vfat2s_name = [20, 21, 22, 23, 19, 18, 17, 16, 11, 12, 10, 13, 9, 14, 8, 15, 7, 6, 5, 4, 3, 2, 1, 0]
+
+# MCLK differential pairs + Inversion + renaming
+
+mclk = ["B7", "N10", "M7"]
 mclk_ord = [1, 0, 0]
+mclk_name = [2, 0, 1]
+
+# T1 differential pairs + Inversion + renaming
 
 t1 = ["B19", "A19", "M3"]
-
 t1_ord = [1, 1, 1]
+t1_name = [2, 0, 1]
 
-valid = ["D12", "G18", "A2", "G7", "M10", "H19"]
+# Data Valid differential pairs + Inversion + renaming
 
-valid_ord = [1, 0, 1, 0, 0, 1]
+valid = ["D12", "G16", "A2", "H18", "M10", "H20"]
+valid_ord = [1, 1, 1, 1, 0, 0]
+valid_name = [5, 4, 1, 2, 3, 0]
+
+# Resets + Inversion + renaming
 
 resb = ["B15_P", "N2_N", "I12_N"]
 resh = ["B15_N", "N2_P", "I12_P"]
+res_name = [2, 0, 1]
 
-scl = ["J12_N", "G16_N", "I17_P", "H18_N", "I5_N", "H20_P"]
-sda = ["J12_P", "G16_P", "I17_N", "H18_P", "I5_P", "H20_N"]
+# I2C + Inversion + renaming
+
+scl = ["J12_N", "G18_P", "I17_P", "G7_P", "I5_N", "H19_N"]
+sda = ["J12_P", "G18_N", "I17_N", "G7_N", "I5_P", "H19_P"]
+i2c_name = [5, 4, 1, 2, 3, 0]
 
 ##############################################################################################################################
 
@@ -213,7 +230,7 @@ f.write("    signal vfat2_data_valid     : std_logic_vector(5 downto 0); \n")
 f.write("\n")
 
 for i in range(24):
-    f.write(("    signal vfat2_" + str(i) + "_sbits").ljust(32) + ": std_logic_vector(23 downto 0);\n")
+    f.write(("    signal vfat2_" + str(i) + "_sbits").ljust(32) + ": std_logic_vector(7 downto 0);\n")
     f.write(("    signal vfat2_" + str(i) + "_data_out").ljust(32) + ": std_logic;\n")
     f.write("\n")
 
@@ -224,14 +241,14 @@ f.write("    --== MCLK signals ==--\n")
 f.write("\n")
 for i in range(3):
     if mclk_ord[i] == 1:
-        f.write("    vfat2_mclk_" + str(i) + "_oddr_inst : oddr\n")
+        f.write("    vfat2_mclk_" + str(mclk_name[i]) + "_oddr_inst : oddr\n")
         f.write("    generic map(\n")
         f.write("        ddr_clk_edge => \"opposite_edge\",\n")
         f.write("        init => '0',\n")
         f.write("        srtype => \"sync\"\n")
         f.write("    )\n")
         f.write("    port map (\n")
-        f.write("        q   => vfat2_mclk(" + str(i) + "),\n")
+        f.write("        q   => vfat2_mclk(" + str(mclk_name[i]) + "),\n")
         f.write("        c   => vfat2_mclk_i,\n")
         f.write("        ce  => '1',\n")
         f.write("        d1  => '1',\n")
@@ -240,14 +257,14 @@ for i in range(3):
         f.write("        s   => '0'\n")
         f.write("    );\n")
     else:
-        f.write("    vfat2_mclk_" + str(i) + "_oddr_inst : oddr\n")
+        f.write("    vfat2_mclk_" + str(mclk_name[i]) + "_oddr_inst : oddr\n")
         f.write("    generic map(\n")
         f.write("        ddr_clk_edge => \"opposite_edge\",\n")
         f.write("        init => '0',\n")
         f.write("        srtype => \"sync\"\n")
         f.write("    )\n")
         f.write("    port map (\n")
-        f.write("        q   => vfat2_mclk(" + str(i) + "),\n")
+        f.write("        q   => vfat2_mclk(" + str(mclk_name[i]) + "),\n")
         f.write("        c   => vfat2_mclk_i,\n")
         f.write("        ce  => '1',\n")
         f.write("        d1  => '0',\n")
@@ -256,14 +273,14 @@ for i in range(3):
         f.write("        s   => '0'\n")
         f.write("    );\n")
     f.write("\n")
-    f.write("    vfat2_mclk_" + str(i) + "_obufds_inst : obufds\n")
+    f.write("    vfat2_mclk_" + str(mclk_name[i]) + "_obufds_inst : obufds\n")
     f.write("    generic map(\n")
     f.write("        iostandard  => \"lvds_25\"\n")
     f.write("    )\n")
     f.write("    port map (\n")
-    f.write("        i   => vfat2_mclk(" + str(i) + "),\n")
-    f.write("        o   => vfat2_mclk_p_o(" + str(i) + "),\n")
-    f.write("        ob  => vfat2_mclk_n_o(" + str(i) + ")\n")
+    f.write("        i   => vfat2_mclk(" + str(mclk_name[i]) + "),\n")
+    f.write("        o   => vfat2_mclk_p_o(" + str(mclk_name[i]) + "),\n")
+    f.write("        ob  => vfat2_mclk_n_o(" + str(mclk_name[i]) + ")\n")
     f.write("    );\n")
     f.write("\n")
     f.write("\n")
@@ -271,25 +288,25 @@ for i in range(3):
 f.write("    --== Reset signals ==--\n")
 f.write("\n")
 for i in range(3):
-    f.write("    vfat2_resb_" + str(i) + "_obuf_inst : obuf\n")
+    f.write("    vfat2_resb_" + str(res_name[i]) + "_obuf_inst : obuf\n")
     f.write("    generic map(\n")
     f.write("        drive => 12,\n")
     f.write("        iostandard => \"lvcmos25\",\n")
     f.write("        slew => \"slow\"\n")
     f.write("    )\n")
     f.write("    port map(\n")
-    f.write("        o => vfat2_resb_o(" + str(i) + "),\n")
+    f.write("        o => vfat2_resb_o(" + str(res_name[i]) + "),\n")
     f.write("        i => not vfat2_reset_i\n")
     f.write("    );\n")
     f.write("\n")
-    f.write("    vfat2_resh_" + str(i) + "_obuf_inst : obuf\n")
+    f.write("    vfat2_resh_" + str(res_name[i]) + "_obuf_inst : obuf\n")
     f.write("    generic map(\n")
     f.write("        drive => 12,\n")
     f.write("        iostandard => \"lvcmos25\",\n")
     f.write("        slew => \"slow\"\n")
     f.write("    )\n")
     f.write("    port map(\n")
-    f.write("        o => vfat2_resh_o(" + str(i) + "),\n")
+    f.write("        o => vfat2_resh_o(" + str(res_name[i]) + "),\n")
     f.write("        i => not vfat2_reset_i\n")
     f.write("    );\n")
     f.write("\n")
@@ -298,47 +315,47 @@ for i in range(3):
 f.write("    --== T1 signals ==--\n")
 f.write("\n")
 for i in range(3):
-    f.write("    vfat2_t1_" + str(i) + "_obufds_inst : obufds\n")
+    f.write("    vfat2_t1_" + str(t1_name[i]) + "_obufds_inst : obufds\n")
     f.write("    generic map(\n")
     f.write("        iostandard  => \"lvds_25\"\n")
     f.write("    )\n")
     f.write("    port map(\n")
-    f.write("        i   => vfat2_t1(" + str(i) + "),\n")
-    f.write("        o   => vfat2_t1_p_o(" + str(i) + "),\n")
-    f.write("        ob   => vfat2_t1_n_o(" + str(i) + ")\n")
+    f.write("        i   => vfat2_t1(" + str(t1_name[i]) + "),\n")
+    f.write("        o   => vfat2_t1_p_o(" + str(t1_name[i]) + "),\n")
+    f.write("        ob   => vfat2_t1_n_o(" + str(t1_name[i]) + ")\n")
     f.write("    );\n")
     f.write("\n")
     if t1_ord[i] == 1:
-        f.write("    vfat2_t1(" + str(i) + ") <= not vfat2_t1_i;\n")
+        f.write("    vfat2_t1(" + str(t1_name[i]) + ") <= not vfat2_t1_i;\n")
     else: 
-        f.write("    vfat2_t1(" + str(i) + ") <= vfat2_t1_i;\n")
+        f.write("    vfat2_t1(" + str(t1_name[i]) + ") <= vfat2_t1_i;\n")
     f.write("\n")
     f.write("\n")
 
 f.write("    --== I2C signals ==--\n")
 f.write("\n")
 for i in range(6):
-    f.write("    vfat2_sda_" + str(i) + "_iobuf_inst : iobuf\n")
+    f.write("    vfat2_sda_" + str(i2c_name[i]) + "_iobuf_inst : iobuf\n")
     f.write("    generic map (\n")
     f.write("        drive => 12,\n")
     f.write("        slew => \"slow\"\n")
     f.write("    )\n")
     f.write("    port map (\n")
-    f.write("        o => vfat2_sda_o(" + str(i) + "),\n")
-    f.write("        io => vfat2_sda_io(" + str(i) + "),\n")
-    f.write("        i => vfat2_sda_i(" + str(i) + "),\n")
-    f.write("        t => vfat2_sda_t(" + str(i) + ")\n")
+    f.write("        o => vfat2_sda_o(" + str(i2c_name[i]) + "),\n")
+    f.write("        io => vfat2_sda_io(" + str(i2c_name[i]) + "),\n")
+    f.write("        i => vfat2_sda_i(" + str(i2c_name[i]) + "),\n")
+    f.write("        t => vfat2_sda_t(" + str(i2c_name[i]) + ")\n")
     f.write("    );\n")
     f.write("\n")
-    f.write("    vfat2_scl_" + str(i) + "_obuf_inst : obuf\n")
+    f.write("    vfat2_scl_" + str(i2c_name[i]) + "_obuf_inst : obuf\n")
     f.write("    generic map(\n")
     f.write("        drive => 12,\n")
     f.write("        iostandard => \"lvcmos25\",\n")
     f.write("        slew => \"slow\"\n")
     f.write("    )\n")
     f.write("    port map(\n")
-    f.write("        o => vfat2_scl_o(" + str(i) + "),\n")
-    f.write("        i => vfat2_scl_i(" + str(i) + ")\n")
+    f.write("        o => vfat2_scl_o(" + str(i2c_name[i]) + "),\n")
+    f.write("        i => vfat2_scl_i(" + str(i2c_name[i]) + ")\n")
     f.write("    );\n")
     f.write("\n")
     f.write("\n")
@@ -346,62 +363,62 @@ for i in range(6):
 f.write("    --== Data valid signals ==--\n")
 f.write("\n")
 for i in range(6):
-    f.write("    vfat2_data_valid_" + str(i) + "_ibufds_inst : ibufds\n")
+    f.write("    vfat2_data_valid_" + str(valid_name[i]) + "_ibufds_inst : ibufds\n")
     f.write("    generic map(\n")
     f.write("        diff_term   => true,\n")
     f.write("        iostandard  => \"lvds_25\"\n")
     f.write("    )\n")
     f.write("    port map(\n")
-    f.write("        i   => vfat2_data_valid_p_i(" + str(i) + "),\n")
-    f.write("        ib  => vfat2_data_valid_n_i(" + str(i) + "),\n")
-    f.write("        o   => vfat2_data_valid(" + str(i) + ")\n")
+    f.write("        i   => vfat2_data_valid_p_i(" + str(valid_name[i]) + "),\n")
+    f.write("        ib  => vfat2_data_valid_n_i(" + str(valid_name[i]) + "),\n")
+    f.write("        o   => vfat2_data_valid(" + str(valid_name[i]) + ")\n")
     f.write("    );\n")
     f.write("\n")
     if valid_ord[i] == 1:
-        f.write("    vfat2_data_valid_o(" + str(i) + ") <= not vfat2_data_valid(" + str(i) + ");\n")
+        f.write("    vfat2_data_valid_o(" + str(valid_name[i]) + ") <= not vfat2_data_valid(" + str(valid_name[i]) + ");\n")
     else: 
-        f.write("    vfat2_data_valid_o(" + str(i) + ") <= vfat2_data_valid(" + str(i) + ");\n")
+        f.write("    vfat2_data_valid_o(" + str(valid_name[i]) + ") <= vfat2_data_valid(" + str(valid_name[i]) + ");\n")
     f.write("\n")
     f.write("\n")
 
 for i in range(24):
-    f.write("    --== VFAT2 " + str(i) + " signals ==--\n")
+    f.write("    --== VFAT2 " + str(vfat2s_name[i]) + " signals ==--\n")
     f.write("\n")
 
     for j in range(8):
-        f.write("    vfat2_" + str(i) + "_sbit_" + str(j) + "_ibufds_inst : ibufds\n")
+        f.write("    vfat2_" + str(vfat2s_name[i]) + "_sbit_" + str(j) + "_ibufds_inst : ibufds\n")
         f.write("    generic map(\n")
         f.write("        diff_term   => true,\n")
         f.write("        iostandard  => \"lvds_25\"\n")
         f.write("    )\n")
         f.write("    port map(\n")
-        f.write("        i   => vfat2_" + str(i) + "_sbits_p_i(" + str(j) + "),\n")
-        f.write("        ib  => vfat2_" + str(i) + "_sbits_n_i(" + str(j) + "),\n")
-        f.write("        o   => vfat2_" + str(i) + "_sbits(" + str(j) + ")\n")
+        f.write("        i   => vfat2_" + str(vfat2s_name[i]) + "_sbits_p_i(" + str(j) + "),\n")
+        f.write("        ib  => vfat2_" + str(vfat2s_name[i]) + "_sbits_n_i(" + str(j) + "),\n")
+        f.write("        o   => vfat2_" + str(vfat2s_name[i]) + "_sbits(" + str(j) + ")\n")
         f.write("    );\n")
         f.write("\n")
         if vfat2s_ord[i][j] == 1:
-            f.write("    vfat2s_data_o(" + str(i) + ").sbits(" + str(j) + ") <= not vfat2_" + str(i) + "_sbits(" + str(j) + ");\n")
+            f.write("    vfat2s_data_o(" + str(vfat2s_name[i]) + ").sbits(" + str(j) + ") <= not vfat2_" + str(vfat2s_name[i]) + "_sbits(" + str(j) + ");\n")
         else: 
-            f.write("    vfat2s_data_o(" + str(i) + ").sbits(" + str(j) + ") <= vfat2_" + str(i) + "_sbits(" + str(j) + ");\n")
+            f.write("    vfat2s_data_o(" + str(vfat2s_name[i]) + ").sbits(" + str(j) + ") <= vfat2_" + str(vfat2s_name[i]) + "_sbits(" + str(j) + ");\n")
         f.write("\n")
         f.write("\n")
 
-    f.write("    vfat2_" + str(i) + "_data_out_ibufds_inst : ibufds\n")
+    f.write("    vfat2_" + str(vfat2s_name[i]) + "_data_out_ibufds_inst : ibufds\n")
     f.write("    generic map(\n")
     f.write("        diff_term   => true,\n")
     f.write("        iostandard  => \"lvds_25\"\n")
     f.write("    )\n")
     f.write("    port map(\n")
-    f.write("        i   => vfat2_" + str(i) + "_data_out_p_i,\n")
-    f.write("        ib  => vfat2_" + str(i) + "_data_out_n_i,\n")
-    f.write("        o   => vfat2_" + str(i) + "_data_out\n")
+    f.write("        i   => vfat2_" + str(vfat2s_name[i]) + "_data_out_p_i,\n")
+    f.write("        ib  => vfat2_" + str(vfat2s_name[i]) + "_data_out_n_i,\n")
+    f.write("        o   => vfat2_" + str(vfat2s_name[i]) + "_data_out\n")
     f.write("    );\n")
     f.write("\n")
     if vfat2s_ord[i][j] == 1:
-        f.write("    vfat2s_data_o(" + str(i) + ").data_out <= not vfat2_" + str(i) + "_data_out;\n")
+        f.write("    vfat2s_data_o(" + str(vfat2s_name[i]) + ").data_out <= not vfat2_" + str(vfat2s_name[i]) + "_data_out;\n")
     else: 
-        f.write("    vfat2s_data_o(" + str(i) + ").data_out <= vfat2_" + str(i) + "_data_out;\n")
+        f.write("    vfat2s_data_o(" + str(vfat2s_name[i]) + ").data_out <= vfat2_" + str(vfat2s_name[i]) + "_data_out;\n")
     f.write("\n")  
     f.write("\n")
 
@@ -422,51 +439,51 @@ f.write("\n")
 f.write("## Clocks\n")
 f.write("\n")
 for i in range(3):
-    f.write(("NET \"vfat2_mclk_p_o<" + str(i) + ">\"").ljust(32) + "LOC = " + getLOC(mclk[i]) + "; # " + mclk[i] + "\n")
-    f.write(("NET \"vfat2_mclk_n_o<" + str(i) + ">\"").ljust(32) + "LOC = " + getLOC_N(mclk[i]) + ";\n")
+    f.write(("NET \"vfat2_mclk_p_o<" + str(mclk_name[i]) + ">\"").ljust(32) + "LOC = " + getLOC(mclk[i]) + "; # " + mclk[i] + "\n")
+    f.write(("NET \"vfat2_mclk_n_o<" + str(mclk_name[i]) + ">\"").ljust(32) + "LOC = " + getLOC_N(mclk[i]) + ";\n")
     f.write("\n")
 
 f.write("## Resets\n")
 f.write("\n")
 for i in range(3):
-    f.write(("NET \"vfat2_resb_o<" + str(i) + ">\"").ljust(32) + "LOC = " + getLOC_S(resb[i]) + "; # " + resb[i] + "\n")
+    f.write(("NET \"vfat2_resb_o<" + str(res_name[i]) + ">\"").ljust(32) + "LOC = " + getLOC_S(resb[i]) + "; # " + resb[i] + "\n")
 f.write("\n")
 for i in range(3):
-    f.write(("NET \"vfat2_resh_o<" + str(i) + ">\"").ljust(32) + "LOC = " + getLOC_S(resh[i]) + "; # " + resh[i] + "\n")
+    f.write(("NET \"vfat2_resh_o<" + str(res_name[i]) + ">\"").ljust(32) + "LOC = " + getLOC_S(resh[i]) + "; # " + resh[i] + "\n")
 f.write("\n")
 
 f.write("## T1s\n")
 f.write("\n")
 for i in range(3):
-    f.write(("NET \"vfat2_t1_p_o<" + str(i) + ">\"").ljust(32) + "LOC = " + getLOC(t1[i]) + "; # " + t1[i] + "\n")
-    f.write(("NET \"vfat2_t1_n_o<" + str(i) + ">\"").ljust(32) + "LOC = " + getLOC_N(t1[i]) + ";\n")
+    f.write(("NET \"vfat2_t1_p_o<" + str(t1_name[i]) + ">\"").ljust(32) + "LOC = " + getLOC(t1[i]) + "; # " + t1[i] + "\n")
+    f.write(("NET \"vfat2_t1_n_o<" + str(t1_name[i]) + ">\"").ljust(32) + "LOC = " + getLOC_N(t1[i]) + ";\n")
     f.write("\n")
 
 f.write("## I2Cs\n")
 f.write("\n")
 for i in range(6):
-    f.write(("NET \"vfat2_scl_o<" + str(i) + ">\"").ljust(32) + "LOC = " + getLOC_S(scl[i]) + "; # " + scl[i] + "\n")
+    f.write(("NET \"vfat2_scl_o<" + str(i2c_name[i]) + ">\"").ljust(32) + "LOC = " + getLOC_S(scl[i]) + "; # " + scl[i] + "\n")
 f.write("\n")
 for i in range(6):
-    f.write(("NET \"vfat2_sda_io<" + str(i) + ">\"").ljust(32) + "LOC = " + getLOC_S(sda[i]) + "; # " + sda[i] + "\n")
+    f.write(("NET \"vfat2_sda_io<" + str(i2c_name[i]) + ">\"").ljust(32) + "LOC = " + getLOC_S(sda[i]) + "; # " + sda[i] + "\n")
 f.write("\n")
 
 f.write("## DataValids\n")
 f.write("\n")
 for i in range(6):
-    f.write(("NET \"vfat2_data_valid_p_i<" + str(i) + ">\"").ljust(32) + "LOC = " + getLOC(valid[i]) + "; # " + valid[i] + "\n")
-    f.write(("NET \"vfat2_data_valid_n_i<" + str(i) + ">\"").ljust(32) + "LOC = " + getLOC_N(valid[i]) + ";\n")
+    f.write(("NET \"vfat2_data_valid_p_i<" + str(valid_name[i]) + ">\"").ljust(32) + "LOC = " + getLOC(valid[i]) + "; # " + valid[i] + "\n")
+    f.write(("NET \"vfat2_data_valid_n_i<" + str(valid_name[i]) + ">\"").ljust(32) + "LOC = " + getLOC_N(valid[i]) + ";\n")
     f.write("\n")
 
 for i in range(24):
-    f.write("## VFAT2 " + str(i) + "\n")
+    f.write("## VFAT2 " + str(vfat2s_name[i]) + "\n")
     f.write("\n")
     for j in range(8):
-        f.write(("NET \"vfat2_" + str(i) + "_sbits_p_i<" + str(j) + ">\"").ljust(32) + "LOC = " + getLOC(vfat2s[i][j]) + "; # " + vfat2s[i][j] + "\n")
-        f.write(("NET \"vfat2_" + str(i) + "_sbits_n_i<" + str(j) + ">\"").ljust(32) + "LOC = " + getLOC_N(vfat2s[i][j]) + ";\n")
+        f.write(("NET \"vfat2_" + str(vfat2s_name[i]) + "_sbits_p_i<" + str(j) + ">\"").ljust(32) + "LOC = " + getLOC(vfat2s[i][j]) + "; # " + vfat2s[i][j] + "\n")
+        f.write(("NET \"vfat2_" + str(vfat2s_name[i]) + "_sbits_n_i<" + str(j) + ">\"").ljust(32) + "LOC = " + getLOC_N(vfat2s[i][j]) + ";\n")
         f.write("\n")
-    f.write(("NET \"vfat2_" + str(i) + "_data_out_p_i\"").ljust(32) + "LOC = " + getLOC(vfat2s[i][8]) + "; # " + vfat2s[i][8] + "\n")
-    f.write(("NET \"vfat2_" + str(i) + "_data_out_n_i\"").ljust(32) + "LOC = " + getLOC_N(vfat2s[i][8]) + ";\n")
+    f.write(("NET \"vfat2_" + str(vfat2s_name[i]) + "_data_out_p_i\"").ljust(32) + "LOC = " + getLOC(vfat2s[i][8]) + "; # " + vfat2s[i][8] + "\n")
+    f.write(("NET \"vfat2_" + str(vfat2s_name[i]) + "_data_out_n_i\"").ljust(32) + "LOC = " + getLOC_N(vfat2s[i][8]) + ";\n")
     f.write("\n")
 
 f.close()
