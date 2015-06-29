@@ -169,7 +169,7 @@ f.write("library unisim;\n")
 f.write("use unisim.vcomponents.all;\n")
 f.write("\n")
 f.write("library work;\n")
-f.write("use work.vfat2_pkg.all;\n")
+f.write("use work.types_pkg.all;\n")
 f.write("\n")
 f.write("entity vfat2_buffers is\n")
 f.write("port(\n")
@@ -218,7 +218,8 @@ for i in range(24):
 
 f.write("    --== VFAT2s packed data ==--\n")
 f.write("\n")
-f.write("    vfat2s_data_o           : out vfat2s_data_t(23 downto 0)\n")
+f.write("    vfat2_data_out_o        : out std_logic_vector(23 downto 0);\n")
+f.write("    vfat2_sbits_o           : out array24x8\n")
 f.write("\n")
 f.write(");\n")
 f.write("end vfat2_buffers;\n")
@@ -399,9 +400,9 @@ for i in range(24):
         f.write("    );\n")
         f.write("\n")
         if vfat2s_ord[i][j] == 1:
-            f.write("    vfat2s_data_o(" + str(vfat2s_name[i]) + ").sbits(" + str(j) + ") <= not vfat2_" + str(vfat2s_name[i]) + "_sbits(" + str(j) + ");\n")
+            f.write("    vfat2_sbits_o(" + str(vfat2s_name[i]) + ")(" + str(j) + ") <= not vfat2_" + str(vfat2s_name[i]) + "_sbits(" + str(j) + ");\n")
         else: 
-            f.write("    vfat2s_data_o(" + str(vfat2s_name[i]) + ").sbits(" + str(j) + ") <= vfat2_" + str(vfat2s_name[i]) + "_sbits(" + str(j) + ");\n")
+            f.write("    vfat2_sbits_o(" + str(vfat2s_name[i]) + ")(" + str(j) + ") <= vfat2_" + str(vfat2s_name[i]) + "_sbits(" + str(j) + ");\n")
         f.write("\n")
         f.write("\n")
 
@@ -417,9 +418,9 @@ for i in range(24):
     f.write("    );\n")
     f.write("\n")
     if vfat2s_ord[i][8] == 1:
-        f.write("    vfat2s_data_o(" + str(vfat2s_name[i]) + ").data_out <= not vfat2_" + str(vfat2s_name[i]) + "_data_out;\n")
+        f.write("    vfat2_data_out_o(" + str(vfat2s_name[i]) + ") <= not vfat2_" + str(vfat2s_name[i]) + "_data_out;\n")
     else: 
-        f.write("    vfat2s_data_o(" + str(vfat2s_name[i]) + ").data_out <= vfat2_" + str(vfat2s_name[i]) + "_data_out;\n")
+        f.write("    vfat2_data_out_o(" + str(vfat2s_name[i]) + ") <= vfat2_" + str(vfat2s_name[i]) + "_data_out;\n")
     f.write("\n")  
     f.write("\n")
 
