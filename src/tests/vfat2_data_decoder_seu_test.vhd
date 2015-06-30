@@ -23,10 +23,10 @@ use ieee.std_logic_1164.all;
 
 library work;
  
-entity vfat2_data_decoder_test is
-end vfat2_data_decoder_test;
+entity vfat2_data_decoder_seu_test is
+end vfat2_data_decoder_seu_test;
  
-architecture behavior of vfat2_data_decoder_test is     
+architecture behavior of vfat2_data_decoder_seu_test is     
 
     --Inputs
     signal vfat2_mclk_i         : std_logic;
@@ -54,7 +54,7 @@ architecture behavior of vfat2_data_decoder_test is
 begin
  
     -- Instantiate the Unit Under Test (UUT)
-    uut : entity work.vfat2_data_decoder 
+    uut : entity work.vfat2_data_decoder_seu
     port map(
         vfat2_mclk_i    => vfat2_mclk_i,
         reset_i         => reset_i,

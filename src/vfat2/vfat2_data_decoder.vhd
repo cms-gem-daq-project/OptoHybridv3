@@ -152,7 +152,7 @@ begin
         end if;
     end process;
     
-    --== Validation 3 : regroup tests ==--
+    --== Validation 3 : regroup tests (CRC ignored for now) ==--
     
     process(vfat2_mclk_i)
     begin
@@ -176,13 +176,7 @@ begin
                         strips_o <= data_3(143 downto 16);
                         crc_o <= data_3(15 downto 0);
                     when others => 
-                        valid_o <= '0';          
-                        bc_o <= (others => '0');
-                        ec_o <= (others => '0');
-                        flags_o <= (others => '0');
-                        chip_id_o <= (others => '0');
-                        strips_o <= (others => '0');
-                        crc_o <= (others => '0');
+                        valid_o <= '0';
                 end case;
             end if;
         end if;        

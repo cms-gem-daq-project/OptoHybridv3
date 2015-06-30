@@ -69,13 +69,30 @@
     <file xil_pn:fileType="FILE_FITTER_REPORT" xil_pn:name="optohybrid_top_summary.xml"/>
     <file xil_pn:fileType="FILE_WEBTALK" xil_pn:name="optohybrid_top_usage.xml"/>
     <file xil_pn:fileType="FILE_XRPT" xil_pn:name="optohybrid_top_xst.xrpt"/>
+    <file xil_pn:fileType="FILE_XST_PROJECT" xil_pn:name="seu_voter.prj"/>
+    <file xil_pn:fileType="FILE_XST_STX" xil_pn:name="seu_voter.stx"/>
+    <file xil_pn:fileType="FILE_XST" xil_pn:name="seu_voter.xst"/>
+    <file xil_pn:fileType="FILE_XST_PROJECT" xil_pn:name="seu_voter_bit.prj"/>
+    <file xil_pn:fileType="FILE_XST_STX" xil_pn:name="seu_voter_bit.stx"/>
+    <file xil_pn:fileType="FILE_XST" xil_pn:name="seu_voter_bit.xst"/>
+    <file xil_pn:branch="BehavioralSim" xil_pn:fileType="FILE_ISIM_EXE" xil_pn:name="seu_voter_bit_isim_beh.exe"/>
+    <file xil_pn:fileType="FILE_XST_PROJECT" xil_pn:name="seu_voter_vector.prj"/>
+    <file xil_pn:fileType="FILE_XST_STX" xil_pn:name="seu_voter_vector.stx"/>
+    <file xil_pn:fileType="FILE_XST" xil_pn:name="seu_voter_vector.xst"/>
+    <file xil_pn:branch="BehavioralSim" xil_pn:fileType="FILE_ISIM_EXE" xil_pn:name="seu_voter_vector_test_isim_beh.exe"/>
     <file xil_pn:fileType="FILE_XST_PROJECT" xil_pn:name="vfat2_data_decoder.prj"/>
     <file xil_pn:fileType="FILE_XST_STX" xil_pn:name="vfat2_data_decoder.stx"/>
     <file xil_pn:fileType="FILE_XST" xil_pn:name="vfat2_data_decoder.xst"/>
     <file xil_pn:branch="BehavioralSim" xil_pn:fileType="FILE_ISIM_EXE" xil_pn:name="vfat2_data_decoder_isim_beh.exe"/>
-    <file xil_pn:fileType="FILE_XST_PROJECT" xil_pn:name="vfat2_data_decoder_test_beh.prj"/>
+    <file xil_pn:fileType="FILE_XST_PROJECT" xil_pn:name="vfat2_data_decoder_seu.prj"/>
+    <file xil_pn:fileType="FILE_XST_STX" xil_pn:name="vfat2_data_decoder_seu.stx"/>
+    <file xil_pn:fileType="FILE_XST" xil_pn:name="vfat2_data_decoder_seu.xst"/>
+    <file xil_pn:fileType="FILE_XST_PROJECT" xil_pn:name="vfat2_data_decoder_seu_test_beh.prj"/>
+    <file xil_pn:branch="BehavioralSim" xil_pn:fileType="FILE_ISIM_EXE" xil_pn:name="vfat2_data_decoder_seu_test_isim_beh.exe"/>
+    <file xil_pn:fileType="FILE_ISIM_MISC" xil_pn:name="vfat2_data_decoder_seu_test_isim_beh.wdb"/>
+    <file xil_pn:fileType="FILE_XST_PROJECT" xil_pn:name="vfat2_data_decoder_seu_test_stx_beh.prj"/>
+    <file xil_pn:fileType="FILE_XST_PROJECT" xil_pn:name="vfat2_data_decoder_stx_beh.prj"/>
     <file xil_pn:branch="BehavioralSim" xil_pn:fileType="FILE_ISIM_EXE" xil_pn:name="vfat2_data_decoder_test_isim_beh.exe"/>
-    <file xil_pn:fileType="FILE_ISIM_MISC" xil_pn:name="vfat2_data_decoder_test_isim_beh.wdb"/>
     <file xil_pn:fileType="FILE_XST_PROJECT" xil_pn:name="vfat2_data_decoder_test_stx_beh.prj"/>
     <file xil_pn:fileType="FILE_FITTER_REPORT" xil_pn:name="webtalk_pn.xml"/>
     <file xil_pn:branch="BehavioralSim" xil_pn:fileType="FILE_INI" xil_pn:name="xilinxsim.ini"/>
@@ -84,22 +101,25 @@
   </files>
 
   <transforms xmlns="http://www.xilinx.com/XMLSchema">
-    <transform xil_pn:end_ts="1435578660" xil_pn:name="TRAN_copyInitialToAbstractSimulation" xil_pn:start_ts="1435578660">
+    <transform xil_pn:end_ts="1435651973" xil_pn:name="TRAN_copyInitialToAbstractSimulation" xil_pn:start_ts="1435651973">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
     </transform>
-    <transform xil_pn:end_ts="1435579399" xil_pn:in_ck="4966286063539673452" xil_pn:name="TRAN_copyAbstractToPostAbstractSimulation" xil_pn:start_ts="1435579399">
+    <transform xil_pn:end_ts="1435655170" xil_pn:in_ck="6275919792618626433" xil_pn:name="TRAN_copyAbstractToPostAbstractSimulation" xil_pn:start_ts="1435655170">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
-      <status xil_pn:value="OutOfDateForInputs"/>
-      <status xil_pn:value="OutOfDateForOutputs"/>
-      <status xil_pn:value="InputChanged"/>
-      <status xil_pn:value="OutputChanged"/>
       <outfile xil_pn:name="../src/optohybrid_top.vhd"/>
       <outfile xil_pn:name="../src/packages/types_pkg.vhd"/>
+      <outfile xil_pn:name="../src/seu/seu_voter_bit.vhd"/>
+      <outfile xil_pn:name="../src/seu/seu_voter_vector.vhd"/>
+      <outfile xil_pn:name="../src/tests/seu_voter_vector_test.vhd"/>
+      <outfile xil_pn:name="../src/tests/vfat2_data_decoder_seu_test.vhd"/>
       <outfile xil_pn:name="../src/tests/vfat2_data_decoder_test.vhd"/>
       <outfile xil_pn:name="../src/vfat2/vfat2_buffers.vhd"/>
       <outfile xil_pn:name="../src/vfat2/vfat2_data_decoder.vhd"/>
+      <outfile xil_pn:name="../src/vfat2/vfat2_data_decoder_seu.vhd"/>
+      <outfile xil_pn:name="../src/vfat2/vfat2_data_switch.vhd"/>
+      <outfile xil_pn:name="../src/vfat2/vfat2_event_builder.vhd"/>
       <outfile xil_pn:name="../vendors/gbt-fpga/tags/gbt_fpga_3_1_0/gbt_bank/core_sources/gbt_bank.vhd"/>
       <outfile xil_pn:name="../vendors/gbt-fpga/tags/gbt_fpga_3_1_0/gbt_bank/core_sources/gbt_bank_package.vhd"/>
       <outfile xil_pn:name="../vendors/gbt-fpga/tags/gbt_fpga_3_1_0/gbt_bank/core_sources/gbt_rx/gbt_rx.vhd"/>
@@ -151,31 +171,33 @@
       <outfile xil_pn:name="../vendors/gbt-fpga/tags/gbt_fpga_3_1_0/gbt_bank/xilinx_v6/xlx_v6_gbt_bank_package.vhd"/>
       <outfile xil_pn:name="../vendors/gbt-fpga/tags/gbt_fpga_3_1_0/gbt_bank/xilinx_v6/xlx_v6_gbt_banks_user_setup.vhd"/>
     </transform>
-    <transform xil_pn:end_ts="1435578660" xil_pn:name="TRAN_xawsToSimhdl" xil_pn:prop_ck="4799294717966883142" xil_pn:start_ts="1435578660">
+    <transform xil_pn:end_ts="1435655035" xil_pn:name="TRAN_xawsToSimhdl" xil_pn:prop_ck="-3187413453057845646" xil_pn:start_ts="1435655035">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
     </transform>
-    <transform xil_pn:end_ts="1435578660" xil_pn:name="TRAN_schematicsToHdlSim" xil_pn:prop_ck="-1937819486584312106" xil_pn:start_ts="1435578660">
+    <transform xil_pn:end_ts="1435655035" xil_pn:name="TRAN_schematicsToHdlSim" xil_pn:prop_ck="8703643703631808770" xil_pn:start_ts="1435655035">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
     </transform>
-    <transform xil_pn:end_ts="1435578660" xil_pn:in_ck="892031283956655308" xil_pn:name="TRAN_regenerateCoresSim" xil_pn:prop_ck="-615284182773514060" xil_pn:start_ts="1435578660">
+    <transform xil_pn:end_ts="1435651973" xil_pn:in_ck="892031283956655308" xil_pn:name="TRAN_regenerateCoresSim" xil_pn:prop_ck="-615284182773514060" xil_pn:start_ts="1435651973">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
     </transform>
-    <transform xil_pn:end_ts="1435579399" xil_pn:in_ck="4966286063539673452" xil_pn:name="TRAN_copyPostAbstractToPreSimulation" xil_pn:start_ts="1435579399">
+    <transform xil_pn:end_ts="1435655170" xil_pn:in_ck="6275919792618626433" xil_pn:name="TRAN_copyPostAbstractToPreSimulation" xil_pn:start_ts="1435655170">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
-      <status xil_pn:value="OutOfDateForInputs"/>
-      <status xil_pn:value="OutOfDateForPredecessor"/>
-      <status xil_pn:value="OutOfDateForOutputs"/>
-      <status xil_pn:value="InputChanged"/>
-      <status xil_pn:value="OutputChanged"/>
       <outfile xil_pn:name="../src/optohybrid_top.vhd"/>
       <outfile xil_pn:name="../src/packages/types_pkg.vhd"/>
+      <outfile xil_pn:name="../src/seu/seu_voter_bit.vhd"/>
+      <outfile xil_pn:name="../src/seu/seu_voter_vector.vhd"/>
+      <outfile xil_pn:name="../src/tests/seu_voter_vector_test.vhd"/>
+      <outfile xil_pn:name="../src/tests/vfat2_data_decoder_seu_test.vhd"/>
       <outfile xil_pn:name="../src/tests/vfat2_data_decoder_test.vhd"/>
       <outfile xil_pn:name="../src/vfat2/vfat2_buffers.vhd"/>
       <outfile xil_pn:name="../src/vfat2/vfat2_data_decoder.vhd"/>
+      <outfile xil_pn:name="../src/vfat2/vfat2_data_decoder_seu.vhd"/>
+      <outfile xil_pn:name="../src/vfat2/vfat2_data_switch.vhd"/>
+      <outfile xil_pn:name="../src/vfat2/vfat2_event_builder.vhd"/>
       <outfile xil_pn:name="../vendors/gbt-fpga/tags/gbt_fpga_3_1_0/gbt_bank/core_sources/gbt_bank.vhd"/>
       <outfile xil_pn:name="../vendors/gbt-fpga/tags/gbt_fpga_3_1_0/gbt_bank/core_sources/gbt_bank_package.vhd"/>
       <outfile xil_pn:name="../vendors/gbt-fpga/tags/gbt_fpga_3_1_0/gbt_bank/core_sources/gbt_rx/gbt_rx.vhd"/>
@@ -227,30 +249,29 @@
       <outfile xil_pn:name="../vendors/gbt-fpga/tags/gbt_fpga_3_1_0/gbt_bank/xilinx_v6/xlx_v6_gbt_bank_package.vhd"/>
       <outfile xil_pn:name="../vendors/gbt-fpga/tags/gbt_fpga_3_1_0/gbt_bank/xilinx_v6/xlx_v6_gbt_banks_user_setup.vhd"/>
     </transform>
-    <transform xil_pn:end_ts="1435579402" xil_pn:in_ck="4966286063539673452" xil_pn:name="TRAN_ISimulateBehavioralModelRunFuse" xil_pn:prop_ck="-1827568787108519883" xil_pn:start_ts="1435579399">
+    <transform xil_pn:end_ts="1435655174" xil_pn:in_ck="6275919792618626433" xil_pn:name="TRAN_ISimulateBehavioralModelRunFuse" xil_pn:prop_ck="-7038834192025601011" xil_pn:start_ts="1435655170">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
-      <status xil_pn:value="OutOfDateForInputs"/>
-      <status xil_pn:value="OutOfDateForPredecessor"/>
+      <status xil_pn:value="OutOfDateForProperties"/>
       <status xil_pn:value="OutOfDateForOutputs"/>
-      <status xil_pn:value="InputChanged"/>
       <status xil_pn:value="OutputChanged"/>
       <outfile xil_pn:name="fuse.log"/>
       <outfile xil_pn:name="isim"/>
       <outfile xil_pn:name="isim.log"/>
-      <outfile xil_pn:name="vfat2_data_decoder_test_beh.prj"/>
-      <outfile xil_pn:name="vfat2_data_decoder_test_isim_beh.exe"/>
+      <outfile xil_pn:name="vfat2_data_decoder_seu_test_beh.prj"/>
+      <outfile xil_pn:name="vfat2_data_decoder_seu_test_isim_beh.exe"/>
       <outfile xil_pn:name="xilinxsim.ini"/>
     </transform>
-    <transform xil_pn:end_ts="1435579402" xil_pn:in_ck="-7284590548594852225" xil_pn:name="TRAN_ISimulateBehavioralModel" xil_pn:prop_ck="549591943957049154" xil_pn:start_ts="1435579402">
+    <transform xil_pn:end_ts="1435655174" xil_pn:in_ck="-5442205665111563921" xil_pn:name="TRAN_ISimulateBehavioralModel" xil_pn:prop_ck="-4228110805744949478" xil_pn:start_ts="1435655174">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
+      <status xil_pn:value="OutOfDateForProperties"/>
       <status xil_pn:value="OutOfDateForPredecessor"/>
       <status xil_pn:value="OutOfDateForOutputs"/>
       <status xil_pn:value="OutputChanged"/>
       <outfile xil_pn:name="isim.cmd"/>
       <outfile xil_pn:name="isim.log"/>
-      <outfile xil_pn:name="vfat2_data_decoder_test_isim_beh.wdb"/>
+      <outfile xil_pn:name="vfat2_data_decoder_seu_test_isim_beh.wdb"/>
     </transform>
     <transform xil_pn:end_ts="1435566821" xil_pn:name="TRAN_copyInitialToXSTAbstractSynthesis" xil_pn:start_ts="1435566821">
       <status xil_pn:value="SuccessfullyRun"/>
@@ -288,18 +309,9 @@
       <status xil_pn:value="OutOfDateForOutputs"/>
       <status xil_pn:value="InputAdded"/>
       <status xil_pn:value="InputChanged"/>
+      <status xil_pn:value="InputRemoved"/>
       <status xil_pn:value="OutputChanged"/>
-      <outfile xil_pn:name="_xmsgs/xst.xmsgs"/>
-      <outfile xil_pn:name="optohybrid_top.lso"/>
-      <outfile xil_pn:name="optohybrid_top.ngc"/>
-      <outfile xil_pn:name="optohybrid_top.ngr"/>
-      <outfile xil_pn:name="optohybrid_top.prj"/>
-      <outfile xil_pn:name="optohybrid_top.stx"/>
-      <outfile xil_pn:name="optohybrid_top.syr"/>
-      <outfile xil_pn:name="optohybrid_top.xst"/>
-      <outfile xil_pn:name="optohybrid_top_xst.xrpt"/>
-      <outfile xil_pn:name="webtalk_pn.xml"/>
-      <outfile xil_pn:name="xst"/>
+      <status xil_pn:value="OutputRemoved"/>
     </transform>
     <transform xil_pn:end_ts="1435566851" xil_pn:in_ck="2761394116288472684" xil_pn:name="TRAN_compileBCD2" xil_pn:prop_ck="-4183344616116911730" xil_pn:start_ts="1435566851">
       <status xil_pn:value="SuccessfullyRun"/>
@@ -310,72 +322,55 @@
     <transform xil_pn:end_ts="1435566992" xil_pn:in_ck="-2787793267947767960" xil_pn:name="TRANEXT_ngdbuild_FPGA" xil_pn:prop_ck="3656075267350965320" xil_pn:start_ts="1435566979">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
-      <status xil_pn:value="ReadyToRun"/>
-      <status xil_pn:value="OutOfDateForInputs"/>
-      <status xil_pn:value="OutOfDateForPredecessor"/>
-      <status xil_pn:value="InputChanged"/>
-      <outfile xil_pn:name="_ngo"/>
-      <outfile xil_pn:name="_xmsgs/ngdbuild.xmsgs"/>
-      <outfile xil_pn:name="optohybrid_top.bld"/>
-      <outfile xil_pn:name="optohybrid_top.ngd"/>
-      <outfile xil_pn:name="optohybrid_top_ngdbuild.xrpt"/>
-    </transform>
-    <transform xil_pn:end_ts="1435567052" xil_pn:in_ck="-2787793267947767959" xil_pn:name="TRANEXT_map_virtex6" xil_pn:prop_ck="4272752396906822564" xil_pn:start_ts="1435566992">
-      <status xil_pn:value="SuccessfullyRun"/>
-      <status xil_pn:value="WarningsGenerated"/>
-      <status xil_pn:value="ReadyToRun"/>
+      <status xil_pn:value="NotReadyToRun"/>
       <status xil_pn:value="OutOfDateForInputs"/>
       <status xil_pn:value="OutOfDateForPredecessor"/>
       <status xil_pn:value="OutOfDateForOutputs"/>
       <status xil_pn:value="InputChanged"/>
+      <status xil_pn:value="InputRemoved"/>
+      <status xil_pn:value="OutputRemoved"/>
+    </transform>
+    <transform xil_pn:end_ts="1435567052" xil_pn:in_ck="-2787793267947767959" xil_pn:name="TRANEXT_map_virtex6" xil_pn:prop_ck="4272752396906822564" xil_pn:start_ts="1435566992">
+      <status xil_pn:value="SuccessfullyRun"/>
+      <status xil_pn:value="WarningsGenerated"/>
+      <status xil_pn:value="NotReadyToRun"/>
+      <status xil_pn:value="OutOfDateForInputs"/>
+      <status xil_pn:value="OutOfDateForPredecessor"/>
+      <status xil_pn:value="OutOfDateForOutputs"/>
+      <status xil_pn:value="InputChanged"/>
+      <status xil_pn:value="InputRemoved"/>
       <status xil_pn:value="OutputChanged"/>
-      <outfile xil_pn:name="_xmsgs/map.xmsgs"/>
-      <outfile xil_pn:name="optohybrid_top.pcf"/>
-      <outfile xil_pn:name="optohybrid_top_map.map"/>
-      <outfile xil_pn:name="optohybrid_top_map.mrp"/>
-      <outfile xil_pn:name="optohybrid_top_map.ncd"/>
-      <outfile xil_pn:name="optohybrid_top_map.ngm"/>
-      <outfile xil_pn:name="optohybrid_top_map.xrpt"/>
-      <outfile xil_pn:name="optohybrid_top_summary.xml"/>
-      <outfile xil_pn:name="optohybrid_top_usage.xml"/>
+      <status xil_pn:value="OutputRemoved"/>
     </transform>
     <transform xil_pn:end_ts="1435567176" xil_pn:in_ck="-3320249277453446398" xil_pn:name="TRANEXT_par_virtex5" xil_pn:prop_ck="-1516496383113795543" xil_pn:start_ts="1435567052">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
-      <status xil_pn:value="ReadyToRun"/>
+      <status xil_pn:value="NotReadyToRun"/>
       <status xil_pn:value="OutOfDateForInputs"/>
       <status xil_pn:value="OutOfDateForPredecessor"/>
+      <status xil_pn:value="OutOfDateForOutputs"/>
       <status xil_pn:value="InputChanged"/>
-      <outfile xil_pn:name="_xmsgs/par.xmsgs"/>
-      <outfile xil_pn:name="optohybrid_top.ncd"/>
-      <outfile xil_pn:name="optohybrid_top.pad"/>
-      <outfile xil_pn:name="optohybrid_top.par"/>
-      <outfile xil_pn:name="optohybrid_top.ptwx"/>
-      <outfile xil_pn:name="optohybrid_top.unroutes"/>
-      <outfile xil_pn:name="optohybrid_top.xpi"/>
-      <outfile xil_pn:name="optohybrid_top_pad.csv"/>
-      <outfile xil_pn:name="optohybrid_top_pad.txt"/>
-      <outfile xil_pn:name="optohybrid_top_par.xrpt"/>
+      <status xil_pn:value="InputRemoved"/>
+      <status xil_pn:value="OutputRemoved"/>
     </transform>
     <transform xil_pn:end_ts="1435567190" xil_pn:in_ck="-7825079040843944583" xil_pn:name="TRANEXT_bitFile_virtex6" xil_pn:prop_ck="-3618303722886493866" xil_pn:start_ts="1435567176">
       <status xil_pn:value="FailedRun"/>
-      <status xil_pn:value="ReadyToRun"/>
+      <status xil_pn:value="NotReadyToRun"/>
+      <status xil_pn:value="OutOfDateForInputs"/>
       <status xil_pn:value="OutOfDateForPredecessor"/>
-      <outfile xil_pn:name="_xmsgs/bitgen.xmsgs"/>
-      <outfile xil_pn:name="optohybrid_top.bgn"/>
-      <outfile xil_pn:name="optohybrid_top.drc"/>
-      <outfile xil_pn:name="optohybrid_top.ut"/>
-      <outfile xil_pn:name="webtalk_pn.xml"/>
+      <status xil_pn:value="OutOfDateForOutputs"/>
+      <status xil_pn:value="InputRemoved"/>
+      <status xil_pn:value="OutputRemoved"/>
     </transform>
     <transform xil_pn:end_ts="1435567176" xil_pn:in_ck="-2787793267947768091" xil_pn:name="TRAN_postRouteTrce" xil_pn:prop_ck="445577401284416183" xil_pn:start_ts="1435567147">
       <status xil_pn:value="SuccessfullyRun"/>
-      <status xil_pn:value="ReadyToRun"/>
+      <status xil_pn:value="NotReadyToRun"/>
       <status xil_pn:value="OutOfDateForInputs"/>
       <status xil_pn:value="OutOfDateForPredecessor"/>
+      <status xil_pn:value="OutOfDateForOutputs"/>
       <status xil_pn:value="InputChanged"/>
-      <outfile xil_pn:name="_xmsgs/trce.xmsgs"/>
-      <outfile xil_pn:name="optohybrid_top.twr"/>
-      <outfile xil_pn:name="optohybrid_top.twx"/>
+      <status xil_pn:value="InputRemoved"/>
+      <status xil_pn:value="OutputRemoved"/>
     </transform>
   </transforms>
 
