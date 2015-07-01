@@ -24,21 +24,19 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
+library work;
+use work.types_pkg.all;
+
 entity vfat2_data_decoder is
 port(
 
-    vfat2_mclk_i    : in std_logic;
-    reset_i         : in std_logic;
+    ref_clk_i   : in std_logic;
+    reset_i     : in std_logic;
     
-    data_i          : in std_logic;
+    data_i      : in std_logic;
     
-    valid_o         : out std_logic;
-    bc_o            : out std_logic_vector(11 downto 0);
-    ec_o            : out std_logic_vector(7 downto 0);
-    flags_o         : out std_logic_vector(3 downto 0);
-    chip_id_o       : out std_logic_vector(11 downto 0);
-    strips_o        : out std_logic_vector(127 downto 0);
-    crc_o           : out std_logic_vector(15 downto 0)
+    valid_o     : out std_logic;
+    data_o      : out tk_data_t
     
 );
 end vfat2_data_decoder;
@@ -63,9 +61,9 @@ begin
 
     --== Data deserializer ==--
 
-    process(vfat2_mclk_i)    
+    process(ref_clk_i)    
     begin
-        if (rising_edge(vfat2_mclk_i)) then
+        if (rising_edge(ref_clk_i)) then
             if (reset_i = '1') then
                 data <= (others => '0');
             else
@@ -77,9 +75,9 @@ begin
     
     --== Validation 0 : fixed bits and first CRC computation ==--
     
-    process(vfat2_mclk_i)
+    process(ref_clk_i)
     begin
-        if (rising_edge(vfat2_mclk_i)) then
+        if (rising_edge(ref_clk_i)) then
             if (reset_i = '1') then
                 tests_0 <= (others => '0');
                 crc_0 <= (others => '0');
@@ -112,9 +110,9 @@ begin
     
     --== Validation 1 : second CRC computation ==--
     
-    process(vfat2_mclk_i)
+    process(ref_clk_i)
     begin
-        if (rising_edge(vfat2_mclk_i)) then
+        if (rising_edge(ref_clk_i)) then
             if (reset_i = '1') then
                 tests_1 <= (others => '0');
                 crc_1 <= (others => '0');
@@ -134,9 +132,9 @@ begin
     
     --== Validation 2 : compare the CRC ==--
     
-    process(vfat2_mclk_i)
+    process(ref_clk_i)
     begin
-        if (rising_edge(vfat2_mclk_i)) then
+        if (rising_edge(ref_clk_i)) then
             if (reset_i = '1') then
                 tests_2 <= (others => '0');
             else           
@@ -154,27 +152,22 @@ begin
     
     --== Validation 3 : regroup tests (CRC ignored for now) ==--
     
-    process(vfat2_mclk_i)
+    process(ref_clk_i)
     begin
-        if (rising_edge(vfat2_mclk_i)) then
+        if (rising_edge(ref_clk_i)) then
             if (reset_i = '1') then
                 valid_o <= '0';                    
-                bc_o <= (others => '0');
-                ec_o <= (others => '0');
-                flags_o <= (others => '0');
-                chip_id_o <= (others => '0');
-                strips_o <= (others => '0');
-                crc_o <= (others => '0');
+                data_o <= (others => (others => '0'));
             else
                 case tests_2(2 downto 0) is
                     when "111" => 
                         valid_o <= '1';       
-                        bc_o <= data_3(187 downto 176);
-                        ec_o <= data_3(171 downto 164);
-                        flags_o <= data_3(163 downto 160);
-                        chip_id_o <= data_3(155 downto 144);
-                        strips_o <= data_3(143 downto 16);
-                        crc_o <= data_3(15 downto 0);
+                        data_o <= (bc => data_3(187 downto 176),
+                                   ec => data_3(171 downto 164),
+                                   flags => data_3(163 downto 160), 
+                                   chip_id => data_3(155 downto 144),
+                                   strips => data_3(143 downto 16),
+                                   crc => data_3(15 downto 0));
                     when others => 
                         valid_o <= '0';
                 end case;

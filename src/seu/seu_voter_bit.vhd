@@ -42,11 +42,14 @@ architecture Behavioral of seu_voter_bit is
 
 begin
 
+    --== Reformat data ==--
+    
+    comp <= data_2_i & data_1_i & data_0_i;
+        
     --== Asynchronous voter ==--
     
     async_gen : if ASYNC = true generate
     begin
-        comp <= data_2_i & data_1_i & data_0_i;
         with comp select data_o <= 
             '0' when "000" | "001" | "010" | "100",
             '1' when "111" | "110" | "101" | "011",
@@ -63,7 +66,6 @@ begin
                 if (reset_i = '1') then
                     data_o <= '0';
                 else
-                    comp <= data_2_i & data_1_i & data_0_i;
                     case comp is
                         when "000" | "001" | "010" | "100" => data_o <= '0';
                         when "111" | "110" | "101" | "011" => data_o <= '1';

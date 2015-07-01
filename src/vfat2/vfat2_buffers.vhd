@@ -54,11 +54,11 @@ port(
 
     --== VFAT2s packed control ==--
 
-    vfat2_mclk_i            : in std_logic;
+    vfat2_mclk_i            : in std_logic_vector(2 downto 0);
 
-    vfat2_reset_i           : in std_logic;
+    vfat2_reset_i           : in std_logic_vector(2 downto 0);
 
-    vfat2_t1_i              : in std_logic;
+    vfat2_t1_i              : in std_logic_vector(2 downto 0);
 
     vfat2_scl_i             : in std_logic_vector(5 downto 0);
     vfat2_sda_i             : in std_logic_vector(5 downto 0);
@@ -192,7 +192,7 @@ port(
     --== VFAT2s packed data ==--
 
     vfat2_data_out_o        : out std_logic_vector(23 downto 0);
-    vfat2_sbits_o           : out array24x8
+    vfat2_sbits_o           : out sbits_collection_t
 
 );
 end vfat2_buffers;
@@ -287,7 +287,7 @@ begin
     )
     port map (
         q   => vfat2_mclk(2),
-        c   => vfat2_mclk_i,
+        c   => vfat2_mclk_i(2),
         ce  => '1',
         d1  => '1',
         d2  => '0',
@@ -314,7 +314,7 @@ begin
     )
     port map (
         q   => vfat2_mclk(0),
-        c   => vfat2_mclk_i,
+        c   => vfat2_mclk_i(0),
         ce  => '1',
         d1  => '0',
         d2  => '1',
@@ -341,7 +341,7 @@ begin
     )
     port map (
         q   => vfat2_mclk(1),
-        c   => vfat2_mclk_i,
+        c   => vfat2_mclk_i(1),
         ce  => '1',
         d1  => '0',
         d2  => '1',
@@ -370,7 +370,7 @@ begin
     )
     port map(
         o => vfat2_resb_o(2),
-        i => not vfat2_reset_i
+        i => not vfat2_reset_i(2)
     );
 
     vfat2_resh_2_obuf_inst : obuf
@@ -381,7 +381,7 @@ begin
     )
     port map(
         o => vfat2_resh_o(2),
-        i => not vfat2_reset_i
+        i => not vfat2_reset_i(2)
     );
 
 
@@ -393,7 +393,7 @@ begin
     )
     port map(
         o => vfat2_resb_o(0),
-        i => not vfat2_reset_i
+        i => not vfat2_reset_i(0)
     );
 
     vfat2_resh_0_obuf_inst : obuf
@@ -404,7 +404,7 @@ begin
     )
     port map(
         o => vfat2_resh_o(0),
-        i => not vfat2_reset_i
+        i => not vfat2_reset_i(0)
     );
 
 
@@ -416,7 +416,7 @@ begin
     )
     port map(
         o => vfat2_resb_o(1),
-        i => not vfat2_reset_i
+        i => not vfat2_reset_i(1)
     );
 
     vfat2_resh_1_obuf_inst : obuf
@@ -427,7 +427,7 @@ begin
     )
     port map(
         o => vfat2_resh_o(1),
-        i => not vfat2_reset_i
+        i => not vfat2_reset_i(1)
     );
 
 
@@ -443,7 +443,7 @@ begin
         ob   => vfat2_t1_n_o(2)
     );
 
-    vfat2_t1(2) <= not vfat2_t1_i;
+    vfat2_t1(2) <= not vfat2_t1_i(2);
 
 
     vfat2_t1_0_obufds_inst : obufds
@@ -456,7 +456,7 @@ begin
         ob   => vfat2_t1_n_o(0)
     );
 
-    vfat2_t1(0) <= not vfat2_t1_i;
+    vfat2_t1(0) <= not vfat2_t1_i(0);
 
 
     vfat2_t1_1_obufds_inst : obufds
@@ -469,7 +469,7 @@ begin
         ob   => vfat2_t1_n_o(1)
     );
 
-    vfat2_t1(1) <= not vfat2_t1_i;
+    vfat2_t1(1) <= not vfat2_t1_i(1);
 
 
     --== I2C signals ==--

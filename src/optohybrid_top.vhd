@@ -274,18 +274,25 @@ architecture Behavioral of optohybrid_top is
 
     --== VFAT2 signals ==--
 
-    signal vfat2_mclk           : std_logic; 
-    signal vfat2_reset          : std_logic; 
-    signal vfat2_t1             : std_logic; 
+    signal vfat2_mclk           : std_logic_vector(2 downto 0); 
+    signal vfat2_reset          : std_logic_vector(2 downto 0); 
+    signal vfat2_t1             : std_logic_vector(2 downto 0); 
     signal vfat2_scl            : std_logic_vector(5 downto 0); 
     signal vfat2_sda_out        : std_logic_vector(5 downto 0); 
     signal vfat2_sda_in         : std_logic_vector(5 downto 0); 
     signal vfat2_sda_tri        : std_logic_vector(5 downto 0); 
     signal vfat2_data_valid     : std_logic_vector(5 downto 0); 
     signal vfat2_data_out       : std_logic_vector(23 downto 0);
-    signal vfat2_sbits          : array24x8;
+    signal vfat2_sbits          : sbits_collection_t;
     
-    --== ==--
+    --== Clock signals ==--
+
+    signal ref_clk              : std_logic; -- LHC reference clock used for the whole system (some parts might run at higher speeds)
+                                             -- also used as GBT RX clock which simplifies operations
+
+    --== Reset signals ==--
+
+    signal reset                : std_logic;
 
 begin
 
@@ -414,6 +421,53 @@ begin
         vfat2_data_out_o        => vfat2_data_out,
         vfat2_sbits_o           => vfat2_sbits
     );
+    
+    --== Tracking links ==--
+    
+    tk_link_0_inst : entity work.tk_link
+    port map(
+        ref_clk_i           => ref_clk,
+        reset_i             => reset,
+        vfat2_mclk_o        => vfat2_mclk(0),
+        vfat2_reset_o       => vfat2_reset(0),
+        vfat2_t1_o          => vfat2_t1(0),
+        vfat2_scl_o         => vfat2_scl(1 downto 0),
+        vfat2_sda_o         => vfat2_sda_out(1 downto 0),
+        vfat2_sda_i         => vfat2_sda_in(1 downto 0),
+        vfat2_sda_t         => vfat2_sda_tri(1 downto 0),
+        vfat2_data_valid_i  => vfat2_data_valid(1 downto 0),
+        vfat2_data_out_i    => vfat2_data_out(7 downto 0)
+    );   
+    
+--    tk_link_1_inst : entity work.tk_link
+--    port map(
+--        ref_clk_i           => ref_clk,
+--        reset_i             => reset,
+--        vfat2_mclk_o        => vfat2_mclk(1),
+--        vfat2_reset_o       => vfat2_reset(1),
+--        vfat2_t1_o          => vfat2_t1(1),
+--        vfat2_scl_o         => vfat2_scl(3 downto 2),
+--        vfat2_sda_o         => vfat2_sda_out(3 downto 2),
+--        vfat2_sda_i         => vfat2_sda_in(3 downto 2),
+--        vfat2_sda_t         => vfat2_sda_tri(3 downto 2),
+--        vfat2_data_valid_i  => vfat2_data_valid(3 downto 2),
+--        vfat2_data_out_i    => vfat2_data_out(15 downto 8)
+--    );    
+--    
+--    tk_link_2_inst : entity work.tk_link
+--    port map(
+--        ref_clk_i           => ref_clk,
+--        reset_i             => reset,
+--        vfat2_mclk_o        => vfat2_mclk(2),
+--        vfat2_reset_o       => vfat2_reset(2),
+--        vfat2_t1_o          => vfat2_t1(2),
+--        vfat2_scl_o         => vfat2_scl(5 downto 4),
+--        vfat2_sda_o         => vfat2_sda_out(5 downto 4),
+--        vfat2_sda_i         => vfat2_sda_in(5 downto 4),
+--        vfat2_sda_t         => vfat2_sda_tri(5 downto 4),
+--        vfat2_data_valid_i  => vfat2_data_valid(5 downto 4),
+--        vfat2_data_out_i    => vfat2_data_out(23 downto 16)
+--    );     
 
 end Behavioral;
 

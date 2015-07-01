@@ -44,13 +44,19 @@ architecture Behavioral of seu_voter_vector is
 
 begin
 
+    --== Reformat data ==--
+    
+    format_loop : for I in 0 to (WIDTH - 1) generate
+    begin
+        comp(I) <= data_2_i(I) & data_1_i(I) & data_0_i(I);
+    end generate;    
+
     --== Asynchronous voter ==--
     
     async_gen : if ASYNC = true generate
     begin
         async_loop : for I in 0 to (WIDTH - 1) generate
         begin
-            comp(I) <= data_2_i(I) & data_1_i(I) & data_0_i(I);
             with comp(I) select data_o(I) <= 
                 '0' when "000" | "001" | "010" | "100",
                 '1' when "111" | "110" | "101" | "011",
@@ -69,7 +75,6 @@ begin
                     data_o <= (others => '0');
                 else  
                     sync_loop : for I in 0 to (WIDTH - 1) loop
-                        comp(I) <= data_2_i(I) & data_1_i(I) & data_0_i(I);
                         case comp(I) is
                             when "000" | "001" | "010" | "100" => data_o(I) <= '0';
                             when "111" | "110" | "101" | "011" => data_o(I) <= '1';
