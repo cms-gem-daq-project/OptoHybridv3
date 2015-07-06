@@ -239,8 +239,8 @@ port(
     
     --== GTX ==--
     
---    mgt_112_clk0_p_i        : in std_logic;
---    mgt_112_clk0_n_i        : in std_logic;
+    mgt_112_clk0_p_i        : in std_logic;
+    mgt_112_clk0_n_i        : in std_logic;
     
 --    mgt_116_clk1_p_i        : in std_logic;
 --    mgt_116_clk1_n_i        : in std_logic;
@@ -317,7 +317,9 @@ architecture Behavioral of optohybrid_top is
 
 begin
 
+    --===================--
     --== VFAT2 buffers ==--
+    --===================--
     
     vfat2_buffers_inst : entity work.vfat2_buffers
     port map(
@@ -443,7 +445,9 @@ begin
         vfat2_sbits_o           => vfat2_sbits
     );
     
+    --=========--
     --== GBT ==--
+    --=========--
            
 --    mgt_refclk_ibufs_gtxe1 : ibufds_gtxe1
 --    port map (
@@ -453,7 +457,7 @@ begin
 --        ceb => '0'
 --    );
     
-    gbt_instantiation_inst : entity work.gbt_instantiation   
+    gbt_instantiation_inst : entity work.gbt_instantiation
     port map(
         mgt_refclk_i            => mgt_refclk,
         general_reset_i         => reset,
@@ -479,7 +483,9 @@ begin
         rx_wordclk_ready_o      => gbt_rx_wordclk_ready
     );
     
+    --====================--
     --== Tracking links ==--
+    --====================--
     
 --    tk_link_loop : for I in 0 to 2 generate
 --    begin
@@ -496,7 +502,9 @@ begin
 --            vfat2_sda_i         => vfat2_sda_in((I * 2 + 1) downto (I * 2)),
 --            vfat2_sda_t         => vfat2_sda_tri((I * 2 + 1) downto (I * 2)),
 --            vfat2_data_valid_i  => vfat2_data_valid((I * 2 + 1) downto (I * 2)),
---            vfat2_data_out_i    => vfat2_data_out((I * 8 + 7) downto (I * 8))
+--            vfat2_data_out_i    => vfat2_data_out((I * 8 + 7) downto (I * 8)),
+--            gbt_rx_i            => gbt_rx(I),
+--            gbt_tx_o            => gbt_tx(I)
 --        );   
 --        
 --    end generate;   

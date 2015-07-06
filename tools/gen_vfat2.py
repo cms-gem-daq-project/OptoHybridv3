@@ -241,7 +241,9 @@ for i in range(24):
 f.write("begin\n")
 f.write("\n")
 
+f.write("    --==================--\n")
 f.write("    --== MCLK signals ==--\n")
+f.write("    --==================--\n")
 f.write("\n")
 for i in range(3):
     if mclk_ord[i] == 1:
@@ -287,9 +289,10 @@ for i in range(3):
     f.write("        ob  => vfat2_mclk_n_o(" + str(mclk_name[i]) + ")\n")
     f.write("    );\n")
     f.write("\n")
-    f.write("\n")
 
+f.write("    --===================--\n")
 f.write("    --== Reset signals ==--\n")
+f.write("    --===================--\n")
 f.write("\n")
 for i in range(3):
     f.write("    vfat2_resb_" + str(res_name[i]) + "_obuf_inst : obuf\n")
@@ -314,9 +317,10 @@ for i in range(3):
     f.write("        i => not vfat2_reset_i(" + str(res_name[i]) + ")\n")
     f.write("    );\n")
     f.write("\n")
-    f.write("\n")
 
+f.write("    --================--\n")
 f.write("    --== T1 signals ==--\n")
+f.write("    --================--\n")
 f.write("\n")
 for i in range(3):
     f.write("    vfat2_t1_" + str(t1_name[i]) + "_obufds_inst : obufds\n")
@@ -334,9 +338,10 @@ for i in range(3):
     else: 
         f.write("    vfat2_t1(" + str(t1_name[i]) + ") <= vfat2_t1_i(" + str(t1_name[i]) + ");\n")
     f.write("\n")
-    f.write("\n")
 
+f.write("    --=================--\n")
 f.write("    --== I2C signals ==--\n")
+f.write("    --=================--\n")
 f.write("\n")
 for i in range(6):
     f.write("    vfat2_sda_" + str(i2c_name[i]) + "_iobuf_inst : iobuf\n")
@@ -362,9 +367,10 @@ for i in range(6):
     f.write("        i => vfat2_scl_i(" + str(i2c_name[i]) + ")\n")
     f.write("    );\n")
     f.write("\n")
-    f.write("\n")
 
+f.write("    --========================--\n")
 f.write("    --== Data valid signals ==--\n")
+f.write("    --========================--\n")
 f.write("\n")
 for i in range(6):
     f.write("    vfat2_data_valid_" + str(valid_name[i]) + "_ibufds_inst : ibufds\n")
@@ -383,10 +389,11 @@ for i in range(6):
     else: 
         f.write("    vfat2_data_valid_o(" + str(valid_name[i]) + ") <= vfat2_data_valid(" + str(valid_name[i]) + ");\n")
     f.write("\n")
-    f.write("\n")
 
 for i in range(24):
+    f.write("    --======================--\n")
     f.write("    --== VFAT2 " + str(vfat2s_name[i]) + " signals ==--\n")
+    f.write("    --======================--\n")
     f.write("\n")
 
     for j in range(8):
@@ -406,7 +413,6 @@ for i in range(24):
         else: 
             f.write("    vfat2_sbits_o(" + str(vfat2s_name[i]) + ")(" + str(j) + ") <= vfat2_" + str(vfat2s_name[i]) + "_sbits(" + str(j) + ");\n")
         f.write("\n")
-        f.write("\n")
 
     f.write("    vfat2_" + str(vfat2s_name[i]) + "_data_out_ibufds_inst : ibufds\n")
     f.write("    generic map(\n")
@@ -424,7 +430,6 @@ for i in range(24):
     else: 
         f.write("    vfat2_data_out_o(" + str(vfat2s_name[i]) + ") <= vfat2_" + str(vfat2s_name[i]) + "_data_out;\n")
     f.write("\n")  
-    f.write("\n")
 
 f.write("end Behavioral;\n")
 

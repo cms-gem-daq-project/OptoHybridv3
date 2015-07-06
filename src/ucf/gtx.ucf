@@ -2,8 +2,8 @@
 
 # Clocks
 
-#NET "mgt_112_clk0_p_i"      LOC = AK6; 
-#NET "mgt_112_clk0_n_i"      LOC = AK5;
+NET "mgt_112_clk0_p_i"      LOC = AK6; 
+NET "mgt_112_clk0_n_i"      LOC = AK5;
 
 #NET "mgt_116_clk1_p_i"      LOC = F6; # 160 MHz
 #NET "mgt_116_clk1_n_i"      LOC = F5;

@@ -40,7 +40,10 @@ port(
     vfat2_sda_i         : in std_logic_vector(1 downto 0);
     vfat2_sda_t         : out std_logic_vector(1 downto 0);
     vfat2_data_valid_i  : in std_logic_vector(1 downto 0);
-    vfat2_data_out_i    : in std_logic_vector(7 downto 0)
+    vfat2_data_out_i    : in std_logic_vector(7 downto 0);
+    
+    gbt_rx_i            : in gbt_data_t;
+    gbt_tx_o            : out gbt_data_t
     
 );
 end tk_link;
@@ -58,20 +61,27 @@ architecture Behavioral of tk_link is
                                           -- 1 : software triggers
                                           -- 2 : latency scan
                                           -- 3 : threshold scan
+                                          
     signal t1_switched      : t1_t;
     signal t1_src_select    : std_logic_vector(3 downto 0);
     
 begin
 
+    --==============--
     --== Clocking ==--
+    --==============--
     
     vfat2_mclk_o <= ref_clk_i;
     
+    --===========--
     --== Reset ==--
+    --===========--
     
     vfat2_reset_o <= reset_i;
     
+    --=======================--
     --== Tracking decoders ==--
+    --=======================--
     
     vfat2_data_decoder_loop : for I in 0 to 7 generate
     begin
@@ -87,7 +97,9 @@ begin
         
     end generate;
     
+    --=================--
     --== T1 switches ==--
+    --=================--
     
     t1_switch_inst : entity work.t1_switch
     generic map(
@@ -102,7 +114,9 @@ begin
         t1_o        => t1_switched
     );    
     
+    --=================--
     --== T1 encoders ==--
+    --=================--
     
     vfat2_t1_encoder_seu_inst : entity work.vfat2_t1_encoder_seu
     port map(
@@ -112,7 +126,9 @@ begin
         t1_o        => vfat2_t1_o
     );
     
+    --===================--
     --== Event builder ==--
+    --===================--
    
     event_builder_inst : entity work.event_builder
     port map(
@@ -122,7 +138,9 @@ begin
         tk_data_i   => tk_data
     );    
     
+    --==================--
     --== Latency scan ==--
+    --==================--
     
     latency_scan_inst : entity work.latency_scan
     port map(
@@ -133,7 +151,9 @@ begin
         tk_data_i   => tk_data
     );    
     
+    --====================--
     --== Threshold scan ==--
+    --====================--
     
     threshold_scan_inst : entity work.threshold_scan
     port map(

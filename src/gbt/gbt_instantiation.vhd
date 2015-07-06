@@ -37,11 +37,6 @@ use work.gbt_banks_user_setup.all;
 use work.types_pkg.all;
 
 entity gbt_instantiation is   
-generic (
-
-    GBTBANK_RESET_CLK_FREQ  : integer := 125e6 
-
-);
 port (   
 
     mgt_refclk_i            : in  std_logic;
@@ -112,7 +107,9 @@ architecture structural of gbt_instantiation is
    
 begin      
 
+    --=========================--
     --== MGT reference clock ==--
+    --=========================--
 
     to_gbt_bank_clks.mgt_clks.tx_refClk <= mgt_refclk_i;
     to_gbt_bank_clks.mgt_clks.rx_refClk <= mgt_refclk_i; 
@@ -123,7 +120,9 @@ begin
         o => mgt_clk_buffered
     );     
 
+    --===================--
     --== TX word clock ==--
+    --===================--
 
     tx_word_clk_bufg_inst : bufg
     port map (
@@ -138,7 +137,9 @@ begin
     
     tx_wordclk_o <= tx_word_clk; 
 
+    --====================--
     --== TX frame clock ==--
+    --====================--
     
     tx_pll_inst: entity work.xlx_v6_tx_mmcm
     port map (
@@ -155,12 +156,14 @@ begin
 
     tx_frameclk_o <= tx_frame_clk;
 
+    --===================--
     --== RX word clock ==--
+    --===================--
     
     rx_word_clk_loop : for I in 1 to 4 generate
     begin
     
-        rx_word_clk_bufg_inst: bufg
+        rx_word_diff_clk_bufg_inst: bufg
         port map (
             i   => from_gbt_bank_clks.mgt_clks.rx_wordClk_noBuff(I),
             o   => rx_word_clk(I)
@@ -172,12 +175,14 @@ begin
         
     end generate;
     
+    --====================--
     --== RX frame clock ==--
-    
+    --====================--
+
     rx_frameclk_loop : for I in 1 to 4 generate
     begin
 
-        rx_frameclk_phalgnr_inst : entity work.gbt_rx_frameclk_phalgnr
+        rx_frameclk_diff_phalgnr_inst : entity work.gbt_rx_frameclk_phalgnr
         port map (
             reset_i         => gbt_rx_reset,
             rx_wordclk_i    => to_gbt_bank_clks.mgt_clks.rx_wordClk(I),
@@ -197,8 +202,10 @@ begin
         rx_frameclk_ready_o(I - 1) <= rx_frame_align_done(I); 
 
     end generate;
-    
+
+    --==============--
     --== GBT bank ==--
+    --==============--
     
     gbt_bank_inst : entity work.gbt_bank
     generic map (
@@ -215,7 +222,9 @@ begin
         GBT_RX_O    => from_gbt_bank_gbt_rx         
     ); 
     
+    --===========--
     --== Links ==--
+    --===========--
     
     links_loop : for I in 0 to 3 generate
     begin
@@ -227,7 +236,9 @@ begin
         
     end generate;
 
+    --=============--
     --== TX data ==--
+    --=============--
     
     tx_data_loop : for I in 0 to 3 generate
     begin
@@ -237,7 +248,9 @@ begin
     
     end generate;
    
+    --============--
    --== RX data ==--
+    --============--
    
     rx_data_loop : for I in 0 to 3 generate
     begin
@@ -247,7 +260,9 @@ begin
 
     end generate;
  
-    --== Control ==--         
+    --=================--
+    --== MGT control ==--   
+    --=================--      
 
     to_gbt_bank_clks.mgt_clks.drp_dClk <= '0';    
 
@@ -287,7 +302,9 @@ begin
 
     end generate;
     
+    --===========--
     --== Reset ==--
+    --===========--
     
     gbt_bank_reset_inst : entity work.gbt_bank_reset    
     generic map(
