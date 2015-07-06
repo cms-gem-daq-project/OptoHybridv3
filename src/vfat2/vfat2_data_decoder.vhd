@@ -19,6 +19,8 @@
 -- Revision 0.01 - File Created
 -- Additional Comments: 
 --
+-- If the clock speed allows it, multiple tests could be done in one clock cycle (maybe all).
+--
 ----------------------------------------------------------------------------------
 
 library ieee;

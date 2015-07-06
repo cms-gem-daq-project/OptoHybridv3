@@ -192,7 +192,7 @@ port(
     --== VFAT2s packed data ==--
 
     vfat2_data_out_o        : out std_logic_vector(23 downto 0);
-    vfat2_sbits_o           : out sbits_collection_t
+    vfat2_sbits_o           : out sbits_array_t(23 downto 0)
 
 );
 end vfat2_buffers;

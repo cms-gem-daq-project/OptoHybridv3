@@ -23,16 +23,22 @@ use ieee.std_logic_1164.all;
 
 entity seu_voter_vector is
 generic(
+
     ASYNC       : boolean := true;
     WIDTH       : integer := 32
+    
 );
 port(
+
     clk_i       : in std_logic;
     reset_i     : in std_logic;
+    
     data_0_i    : in std_logic_vector((WIDTH - 1) downto 0);
     data_1_i    : in std_logic_vector((WIDTH - 1) downto 0);
     data_2_i    : in std_logic_vector((WIDTH - 1) downto 0);
+    
     data_o      : out std_logic_vector((WIDTH - 1) downto 0)
+    
 );
 end seu_voter_vector;
 

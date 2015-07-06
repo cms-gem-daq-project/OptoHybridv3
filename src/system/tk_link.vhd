@@ -47,15 +47,19 @@ end tk_link;
 
 architecture Behavioral of tk_link is
 
-    signal tk_valid_0, tk_valid_1, tk_valid_2, tk_valid_3   : std_logic;
-    signal tk_valid_4, tk_valid_5, tk_valid_6, tk_valid_7   : std_logic;
+    --== Tracking data signals ==--
 
-    signal tk_data_0, tk_data_1, tk_data_2, tk_data_3       : tk_data_t;
-    signal tk_data_4, tk_data_5, tk_data_6, tk_data_7       : tk_data_t;
+    signal tk_valid         : std_logic_vector(7 downto 0);
+    signal tk_data          : tk_data_array_t(7 downto 0);
 
-    signal t1_0, t1_1, t1_2, t1_3                           : t1_t;
-    signal t1_switched                                      : t1_t;
-    signal t1_src_select                                    : std_logic_vector(1 downto 0);
+    --== T1 signals ==--
+
+    signal t1_array         : t1_array_t; -- 0 : AMC13 triggers
+                                          -- 1 : software triggers
+                                          -- 2 : latency scan
+                                          -- 3 : threshold scan
+    signal t1_switched      : t1_t;
+    signal t1_src_select    : std_logic_vector(3 downto 0);
     
 begin
 
@@ -69,93 +73,33 @@ begin
     
     --== Tracking decoders ==--
     
-    vfat2_data_decoder_seu_0_inst : entity work.vfat2_data_decoder_seu
-    port map(
-        ref_clk_i   => ref_clk_i,
-        reset_i     => reset_i,
-        data_i      => vfat2_data_out_i(0),
-        valid_o     => tk_valid_0,
-        data_o      => tk_data_0
-    );    
+    vfat2_data_decoder_loop : for I in 0 to 7 generate
+    begin
     
---    vfat2_data_decoder_seu_1_inst : entity work.vfat2_data_decoder_seu
---    port map(
---        ref_clk_i   => ref_clk_i,
---        reset_i     => reset_i,
---        data_i      => vfat2_data_out_i(1),
---        valid_o     => tk_valid_1,
---        data_o      => tk_data_1
---    );    
---    
---    vfat2_data_decoder_seu_2_inst : entity work.vfat2_data_decoder_seu
---    port map(
---        ref_clk_i   => ref_clk_i,
---        reset_i     => reset_i,
---        data_i      => vfat2_data_out_i(2),
---        valid_o     => tk_valid_2,
---        data_o      => tk_data_2
---    );    
---    
---    vfat2_data_decoder_seu_3_inst : entity work.vfat2_data_decoder_seu
---    port map(
---        ref_clk_i   => ref_clk_i,
---        reset_i     => reset_i,
---        data_i      => vfat2_data_out_i(3),
---        valid_o     => tk_valid_3,
---        data_o      => tk_data_3
---    );    
---    
---    vfat2_data_decoder_seu_4_inst : entity work.vfat2_data_decoder_seu
---    port map(
---        ref_clk_i   => ref_clk_i,
---        reset_i     => reset_i,
---        data_i      => vfat2_data_out_i(4),
---        valid_o     => tk_valid_4,
---        data_o      => tk_data_4
---    );    
---    
---    vfat2_data_decoder_seu_5_inst : entity work.vfat2_data_decoder_seu
---    port map(
---        ref_clk_i   => ref_clk_i,
---        reset_i     => reset_i,
---        data_i      => vfat2_data_out_i(5),
---        valid_o     => tk_valid_5,
---        data_o      => tk_data_5
---    );    
---    
---    vfat2_data_decoder_seu_6_inst : entity work.vfat2_data_decoder_seu
---    port map(
---        ref_clk_i   => ref_clk_i,
---        reset_i     => reset_i,
---        data_i      => vfat2_data_out_i(6),
---        valid_o     => tk_valid_6,
---        data_o      => tk_data_6
---    );    
---    
---    vfat2_data_decoder_seu_7_inst : entity work.vfat2_data_decoder_seu
---    port map(
---        ref_clk_i   => ref_clk_i,
---        reset_i     => reset_i,
---        data_i      => vfat2_data_out_i(7),
---        valid_o     => tk_valid_7,
---        data_o      => tk_data_7
---    );    
+        vfat2_data_decoder_seu_inst : entity work.vfat2_data_decoder_seu
+        port map(
+            ref_clk_i   => ref_clk_i,
+            reset_i     => reset_i,
+            data_i      => vfat2_data_out_i(I),
+            valid_o     => tk_valid(I),
+            data_o      => tk_data(I)
+        );    
+        
+    end generate;
     
     --== T1 switches ==--
     
-    vfat2_t1_switch_inst : entity work.vfat2_t1_switch
+    t1_switch_inst : entity work.t1_switch
     generic map(
-        ASYNC           => false
+        ASYNC       => false,
+        WIDTH       => 4
     )
     port map(
-        ref_clk_i       => ref_clk_i,
-        reset_i         => reset_i,
-        t1_0_i          => t1_0, -- From AMC 13
-        t1_1_i          => t1_1, -- From Software
-        t1_2_i          => t1_2, -- From Firmware
-        t1_3_i          => t1_3,
-        src_select_i    => t1_src_select,
-        t1_o            => t1_switched
+        ref_clk_i   => ref_clk_i,
+        reset_i     => reset_i,
+        t1_i        => t1_amc13,
+        mask_i      => t1_src_select,
+        t1_o        => t1_switched
     );    
     
     --== T1 encoders ==--
@@ -167,5 +111,37 @@ begin
         t1_i        => t1_switched,
         t1_o        => vfat2_t1_o
     );
+    
+    --== Event builder ==--
+   
+    event_builder_inst : entity work.event_builder
+    port map(
+        ref_clk_i   => ref_clk_i,
+        reset_i     => reset_i,
+        tk_valid_i  => tk_valid,
+        tk_data_i   => tk_data
+    );    
+    
+    --== Latency scan ==--
+    
+    latency_scan_inst : entity work.latency_scan
+    port map(
+        ref_clk_i   => ref_clk_i,
+        reset_i     => reset_i,
+        t1_o        => t1_array(2),
+        tk_valid_i  => tk_valid,
+        tk_data_i   => tk_data
+    );    
+    
+    --== Threshold scan ==--
+    
+    threshold_scan_inst : entity work.threshold_scan
+    port map(
+        ref_clk_i   => ref_clk_i,
+        reset_i     => reset_i,
+        t1_o        => t1_array(3),
+        tk_valid_i  => tk_valid,
+        tk_data_i   => tk_data
+    );   
 
 end Behavioral;

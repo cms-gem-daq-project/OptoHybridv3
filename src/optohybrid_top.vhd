@@ -21,6 +21,9 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
+library unisim;
+use unisim.vcomponents.all;
+
 library work;
 use work.types_pkg.all;
 
@@ -168,19 +171,19 @@ port(
     
     --== Memory ==--
     
-    multiboot_rs_o          : out std_logic_vector(1 downto 0);
+--    multiboot_rs_o          : out std_logic_vector(1 downto 0);
     
-    flash_address_o         : out std_logic_vector(22 downto 0);
-    flash_data_io           : inout std_logic_vector(15 downto 0);
-    flash_chip_enable_b_o   : out std_logic;
-    flash_out_enable_b_o    : out std_logic;
-    flash_write_enable_b_o  : out std_logic;
-    flash_latch_enable_b_o  : out std_logic;
+--    flash_address_o         : out std_logic_vector(22 downto 0);
+--    flash_data_io           : inout std_logic_vector(15 downto 0);
+--    flash_chip_enable_b_o   : out std_logic;
+--    flash_out_enable_b_o    : out std_logic;
+--    flash_write_enable_b_o  : out std_logic;
+--    flash_latch_enable_b_o  : out std_logic;
     
 --    eprom_data_i            : inout std_logic_vector(7 downto 0);
 --    eprom_clk_o             : out std_logic;
-    eprom_reset_b_o         : out std_logic;
-    eprom_chip_enable_b_o   : out std_logic;
+--    eprom_reset_b_o         : out std_logic;
+--    eprom_chip_enable_b_o   : out std_logic;
 --    eprom_tdi_o             : out std_logic;
 --    eprom_tdo_i             : in std_logic;
 --    eprom_tms_o             : out std_logic;
@@ -190,82 +193,82 @@ port(
     
     clk_50MHz_i             : in std_logic;
 
-    qpll_ref_40MHz_o        : out std_logic;
-    qpll_reset_o            : out std_logic;
-    qpll_locked_i           : in std_logic;
-    qpll_error_i            : in std_logic;
-    qpll_clk_p_i            : in std_logic;
-    qpll_clk_n_i            : in std_logic;
+--    qpll_ref_40MHz_o        : out std_logic;
+--    qpll_reset_o            : out std_logic;
+--    qpll_locked_i           : in std_logic;
+--    qpll_error_i            : in std_logic;
+--    qpll_clk_p_i            : in std_logic;
+--    qpll_clk_n_i            : in std_logic;
 
-    cdce_aux_o              : out std_logic;
-    cdce_aux_i              : in std_logic;
-    cdce_ref_o              : out std_logic;
-    cdce_pwrdown_o          : out std_logic;
-    cdce_sync_o             : out std_logic;
-    cdce_locked_i           : in std_logic;
-    cdce_sck_o              : out std_logic;
-    cdce_mosi_o             : out std_logic;
-    cdce_le_o               : out std_logic;
-    cdce_miso_i             : in std_logic;
-    cdce_clk_p_i            : in std_logic;
-    cdce_clk_n_i            : in std_logic;
-    cdce_pri_p_o            : out std_logic;
-    cdce_pri_n_o            : out std_logic;
+--    cdce_aux_o              : out std_logic;
+--    cdce_aux_i              : in std_logic;
+--    cdce_ref_o              : out std_logic;
+--    cdce_pwrdown_o          : out std_logic;
+--    cdce_sync_o             : out std_logic;
+--    cdce_locked_i           : in std_logic;
+--    cdce_sck_o              : out std_logic;
+--    cdce_mosi_o             : out std_logic;
+--    cdce_le_o               : out std_logic;
+--    cdce_miso_i             : in std_logic;
+--    cdce_clk_p_i            : in std_logic;
+--    cdce_clk_n_i            : in std_logic;
+--    cdce_pri_p_o            : out std_logic;
+--    cdce_pri_n_o            : out std_logic;
     
     --== Miscellaneous ==--
     
-    hdmi_scl_io             : inout std_logic_vector(1 downto 0);
-    hdmi_sda_io             : inout std_logic_vector(1 downto 0);
+--    hdmi_scl_io             : inout std_logic_vector(1 downto 0);
+--    hdmi_sda_io             : inout std_logic_vector(1 downto 0);
 
-    tmds_d_p_io             : inout std_logic_vector(1 downto 0);
-    tmds_d_n_io             : inout std_logic_vector(1 downto 0);
+--    tmds_d_p_io             : inout std_logic_vector(1 downto 0);
+--    tmds_d_n_io             : inout std_logic_vector(1 downto 0);
 
-    tmds_clk_p_io           : inout std_logic;
-    tmds_clk_n_io           : inout std_logic;
+--    tmds_clk_p_io           : inout std_logic;
+--    tmds_clk_n_io           : inout std_logic;
 
-    adc_chip_select_o       : out std_logic;
-    adc_din_i               : in std_logic;
-    adc_dout_o              : out std_logic;
-    adc_clk_o               : out std_logic;
-    adc_eoc_i               : in std_logic;
+--    adc_chip_select_o       : out std_logic;
+--    adc_din_i               : in std_logic;
+--    adc_dout_o              : out std_logic;
+--    adc_clk_o               : out std_logic;
+--    adc_eoc_i               : in std_logic;
 
-    temp_clk_o              : out std_logic;
-    temp_data_io            : inout std_logic;
+--    temp_clk_o              : out std_logic;
+--    temp_data_io            : inout std_logic;
 
-    chip_id_i               : in std_logic;
+--    chip_id_i               : in std_logic;
     
     --== GTX ==--
     
-    mgt_112_clk0_p_i        : in std_logic;
-    mgt_112_clk0_n_i        : in std_logic;
+--    mgt_112_clk0_p_i        : in std_logic;
+--    mgt_112_clk0_n_i        : in std_logic;
     
-    mgt_116_clk1_p_i        : in std_logic;
-    mgt_116_clk1_n_i        : in std_logic;
+--    mgt_116_clk1_p_i        : in std_logic;
+--    mgt_116_clk1_n_i        : in std_logic;
     
     mgt_112_rx_p_i          : in std_logic_vector(3 downto 0);
     mgt_112_rx_n_i          : in std_logic_vector(3 downto 0);
     mgt_112_tx_p_o          : out std_logic_vector(3 downto 0);
-    mgt_112_tx_n_o          : out std_logic_vector(3 downto 0);
+    mgt_112_tx_n_o          : out std_logic_vector(3 downto 0)
     
-    mgt_113_rx_p_i          : in std_logic_vector(3 downto 0);
-    mgt_113_rx_n_i          : in std_logic_vector(3 downto 0);
-    mgt_113_tx_p_o          : out std_logic_vector(3 downto 0);
-    mgt_113_tx_n_o          : out std_logic_vector(3 downto 0);
+--    mgt_113_rx_p_i          : in std_logic_vector(3 downto 0);
+--    mgt_113_rx_n_i          : in std_logic_vector(3 downto 0);
+--    mgt_113_tx_p_o          : out std_logic_vector(3 downto 0);
+--    mgt_113_tx_n_o          : out std_logic_vector(3 downto 0);
     
-    mgt_114_rx_p_i          : in std_logic_vector(3 downto 0);
-    mgt_114_rx_n_i          : in std_logic_vector(3 downto 0);
-    mgt_114_tx_p_o          : out std_logic_vector(3 downto 0);
-    mgt_114_tx_n_o          : out std_logic_vector(3 downto 0);
+--    mgt_114_rx_p_i          : in std_logic_vector(3 downto 0);
+--    mgt_114_rx_n_i          : in std_logic_vector(3 downto 0);
+--    mgt_114_tx_p_o          : out std_logic_vector(3 downto 0);
+--    mgt_114_tx_n_o          : out std_logic_vector(3 downto 0);
     
-    mgt_115_rx_p_i          : in std_logic_vector(3 downto 0);
-    mgt_115_rx_n_i          : in std_logic_vector(3 downto 0);
-    mgt_115_tx_p_o          : out std_logic_vector(3 downto 0);
-    mgt_115_tx_n_o          : out std_logic_vector(3 downto 0);
+--    mgt_115_rx_p_i          : in std_logic_vector(3 downto 0);
+--    mgt_115_rx_n_i          : in std_logic_vector(3 downto 0);
+--    mgt_115_tx_p_o          : out std_logic_vector(3 downto 0);
+--    mgt_115_tx_n_o          : out std_logic_vector(3 downto 0);
     
-    mgt_116_rx_p_i          : in std_logic_vector(3 downto 0);
-    mgt_116_rx_n_i          : in std_logic_vector(3 downto 0);
-    mgt_116_tx_p_o          : out std_logic_vector(3 downto 0);
-    mgt_116_tx_n_o          : out std_logic_vector(3 downto 0)
+--    mgt_116_rx_p_i          : in std_logic_vector(3 downto 0);
+--    mgt_116_rx_n_i          : in std_logic_vector(3 downto 0);
+--    mgt_116_tx_p_o          : out std_logic_vector(3 downto 0);
+--    mgt_116_tx_n_o          : out std_logic_vector(3 downto 0)
 
 );
 end optohybrid_top;
@@ -274,25 +277,43 @@ architecture Behavioral of optohybrid_top is
 
     --== VFAT2 signals ==--
 
-    signal vfat2_mclk           : std_logic_vector(2 downto 0); 
-    signal vfat2_reset          : std_logic_vector(2 downto 0); 
-    signal vfat2_t1             : std_logic_vector(2 downto 0); 
-    signal vfat2_scl            : std_logic_vector(5 downto 0); 
-    signal vfat2_sda_out        : std_logic_vector(5 downto 0); 
-    signal vfat2_sda_in         : std_logic_vector(5 downto 0); 
-    signal vfat2_sda_tri        : std_logic_vector(5 downto 0); 
-    signal vfat2_data_valid     : std_logic_vector(5 downto 0); 
-    signal vfat2_data_out       : std_logic_vector(23 downto 0);
-    signal vfat2_sbits          : sbits_collection_t;
+    signal vfat2_mclk               : std_logic_vector(2 downto 0); 
+    signal vfat2_reset              : std_logic_vector(2 downto 0); 
+    signal vfat2_t1                 : std_logic_vector(2 downto 0); 
+    signal vfat2_scl                : std_logic_vector(5 downto 0); 
+    signal vfat2_sda_out            : std_logic_vector(5 downto 0); 
+    signal vfat2_sda_in             : std_logic_vector(5 downto 0); 
+    signal vfat2_sda_tri            : std_logic_vector(5 downto 0); 
+    signal vfat2_data_valid         : std_logic_vector(5 downto 0); 
+    signal vfat2_data_out           : std_logic_vector(23 downto 0);
+    signal vfat2_sbits              : sbits_array_t(23 downto 0);
     
     --== Clock signals ==--
 
-    signal ref_clk              : std_logic; -- LHC reference clock used for the whole system (some parts might run at higher speeds)
-                                             -- also used as GBT RX clock which simplifies operations
+    signal ref_clk                  : std_logic; -- LHC reference clock used for the whole system (some parts might run at higher speeds)
+                                                 -- also used as GBT RX clock which simplifies operations
+                                             
+    signal mgt_refclk               : std_logic; -- MGT reference clock at 240 MHz comming from the CDCE
+
+    signal gbt_tx_wordclk           : std_logic; -- 240 MHz clock
+    signal gbt_tx_frameclk          : std_logic; -- 40 MHz clock (use to send data)
+    
+    signal gbt_rx_wordclk           : std_logic_vector(3 downto 0); -- 240 MHz clock
+    signal gbt_rx_frameclk          : std_logic_vector(3 downto 0); -- 40 MHz clock (use to receive data)
 
     --== Reset signals ==--
 
-    signal reset                : std_logic;
+    signal reset                    : std_logic;
+    
+    --== GBT signals ==--
+    
+    signal gbt_tx                   : gbt_data_array_t(3 downto 0);
+    signal gbt_rx                   : gbt_data_array_t(3 downto 0);
+    signal mgt_ready                : std_logic_vector(3 downto 0); 
+    signal gbt_tx_frame_pll_locked  : std_logic;  
+    signal gbt_rx_ready             : std_logic_vector(3 downto 0);  
+    signal gbt_rx_frameclk_ready    : std_logic_vector(3 downto 0); 
+    signal gbt_rx_wordclk_ready     : std_logic_vector(3 downto 0);
 
 begin
 
@@ -422,52 +443,63 @@ begin
         vfat2_sbits_o           => vfat2_sbits
     );
     
+    --== GBT ==--
+           
+--    mgt_refclk_ibufs_gtxe1 : ibufds_gtxe1
+--    port map (
+--        i   => mgt_112_clk0_p_i,
+--        ib  => mgt_112_clk0_n_i,
+--        o   => mgt_refclk,
+--        ceb => '0'
+--    );
+    
+    gbt_instantiation_inst : entity work.gbt_instantiation   
+    port map(
+        mgt_refclk_i            => mgt_refclk,
+        general_reset_i         => reset,
+        manual_reset_tx_i       => '0',
+        manual_reset_rx_i       => '0',
+        mgt_tx_p_o              => mgt_112_tx_p_o, 
+        mgt_tx_n_o              => mgt_112_tx_n_o,
+        mgt_rx_p_i              => mgt_112_rx_p_i,
+        mgt_rx_n_i              => mgt_112_rx_n_i,     
+        tx_data_i               => gbt_tx,
+        rx_data_o               => gbt_rx,
+        
+        tx_frameclk_o           => gbt_tx_frameclk,
+        tx_wordclk_o            => gbt_tx_wordclk,
+        
+        rx_frameclk_o           => gbt_rx_frameclk,                 
+        rx_wordclk_o            => gbt_rx_wordclk,
+        
+        tx_frame_pll_locked_o   => gbt_tx_frame_pll_locked,
+        mgt_ready_o             => mgt_ready,
+        gbt_rx_ready_o          => gbt_rx_ready,  
+        rx_frameclk_ready_o     => gbt_rx_frameclk_ready,
+        rx_wordclk_ready_o      => gbt_rx_wordclk_ready
+    );
+    
     --== Tracking links ==--
     
-    tk_link_0_inst : entity work.tk_link
-    port map(
-        ref_clk_i           => ref_clk,
-        reset_i             => reset,
-        vfat2_mclk_o        => vfat2_mclk(0),
-        vfat2_reset_o       => vfat2_reset(0),
-        vfat2_t1_o          => vfat2_t1(0),
-        vfat2_scl_o         => vfat2_scl(1 downto 0),
-        vfat2_sda_o         => vfat2_sda_out(1 downto 0),
-        vfat2_sda_i         => vfat2_sda_in(1 downto 0),
-        vfat2_sda_t         => vfat2_sda_tri(1 downto 0),
-        vfat2_data_valid_i  => vfat2_data_valid(1 downto 0),
-        vfat2_data_out_i    => vfat2_data_out(7 downto 0)
-    );   
-    
---    tk_link_1_inst : entity work.tk_link
---    port map(
---        ref_clk_i           => ref_clk,
---        reset_i             => reset,
---        vfat2_mclk_o        => vfat2_mclk(1),
---        vfat2_reset_o       => vfat2_reset(1),
---        vfat2_t1_o          => vfat2_t1(1),
---        vfat2_scl_o         => vfat2_scl(3 downto 2),
---        vfat2_sda_o         => vfat2_sda_out(3 downto 2),
---        vfat2_sda_i         => vfat2_sda_in(3 downto 2),
---        vfat2_sda_t         => vfat2_sda_tri(3 downto 2),
---        vfat2_data_valid_i  => vfat2_data_valid(3 downto 2),
---        vfat2_data_out_i    => vfat2_data_out(15 downto 8)
---    );    
+--    tk_link_loop : for I in 0 to 2 generate
+--    begin
 --    
---    tk_link_2_inst : entity work.tk_link
---    port map(
---        ref_clk_i           => ref_clk,
---        reset_i             => reset,
---        vfat2_mclk_o        => vfat2_mclk(2),
---        vfat2_reset_o       => vfat2_reset(2),
---        vfat2_t1_o          => vfat2_t1(2),
---        vfat2_scl_o         => vfat2_scl(5 downto 4),
---        vfat2_sda_o         => vfat2_sda_out(5 downto 4),
---        vfat2_sda_i         => vfat2_sda_in(5 downto 4),
---        vfat2_sda_t         => vfat2_sda_tri(5 downto 4),
---        vfat2_data_valid_i  => vfat2_data_valid(5 downto 4),
---        vfat2_data_out_i    => vfat2_data_out(23 downto 16)
---    );     
+--        tk_link_inst : entity work.tk_link
+--        port map(
+--            ref_clk_i           => ref_clk,
+--            reset_i             => reset,
+--            vfat2_mclk_o        => vfat2_mclk(I),
+--            vfat2_reset_o       => vfat2_reset(I),
+--            vfat2_t1_o          => vfat2_t1(I),
+--            vfat2_scl_o         => vfat2_scl((I * 2 + 1) downto (I * 2)),
+--            vfat2_sda_o         => vfat2_sda_out((I * 2 + 1) downto (I * 2)),
+--            vfat2_sda_i         => vfat2_sda_in((I * 2 + 1) downto (I * 2)),
+--            vfat2_sda_t         => vfat2_sda_tri((I * 2 + 1) downto (I * 2)),
+--            vfat2_data_valid_i  => vfat2_data_valid((I * 2 + 1) downto (I * 2)),
+--            vfat2_data_out_i    => vfat2_data_out((I * 8 + 7) downto (I * 8))
+--        );   
+--        
+--    end generate;   
 
 end Behavioral;
 

@@ -23,16 +23,22 @@ use ieee.std_logic_1164.all;
 
 entity seu_voter_bit is
 generic(
+
     ASYNC       : boolean := true;
     WIDTH       : integer := 1 -- for implementation compatibility with seu_voter_vector
+    
 );
 port(
+
     clk_i       : in std_logic;
     reset_i     : in std_logic;
+    
     data_0_i    : in std_logic;
     data_1_i    : in std_logic;
     data_2_i    : in std_logic;
+    
     data_o      : out std_logic
+    
 );
 end seu_voter_bit;
 

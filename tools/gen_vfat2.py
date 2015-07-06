@@ -221,7 +221,7 @@ for i in range(24):
 f.write("    --== VFAT2s packed data ==--\n")
 f.write("\n")
 f.write("    vfat2_data_out_o        : out std_logic_vector(23 downto 0);\n")
-f.write("    vfat2_sbits_o           : out sbits_collection_t\n")
+f.write("    vfat2_sbits_o           : out sbits_array_t(23 downto 0)\n")
 f.write("\n")
 f.write(");\n")
 f.write("end vfat2_buffers;\n")

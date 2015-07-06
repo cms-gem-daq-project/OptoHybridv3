@@ -1,0 +1,49 @@
+# This file constraints the GBT signals
+
+# Resets
+
+#NET "gbt_instantiation_inst/mgt_tx_reset" MAXDELAY = 3 ns;
+#NET "gbt_instantiation_inst/mgt_rx_reset" MAXDELAY = 3 ns;
+
+# TX word clock
+
+NET "gbt_instantiation_inst/from_gbt_bank_clks_mgt_clks_tx_wordClk_noBuff<1>" TNM_NET = gbt_instantiation_inst/from_gbt_bank_clks_mgt_clks_tx_wordClk_noBuff<1>;
+TIMESPEC TS_gbt_instantiation_inst_from_gbt_bank_clks_mgt_clks_tx_wordClk_noBuff_1 = PERIOD "gbt_instantiation_inst/from_gbt_bank_clks_mgt_clks_tx_wordClk_noBuff<1>" 4.1667 ns HIGH 50%;
+
+# RX word clock
+
+NET "gbt_instantiation_inst/from_gbt_bank_clks_mgt_clks_rx_wordClk_noBuff<1>"    TNM_NET = gbt_instantiation_inst/from_gbt_bank_clks_mgt_clks_rx_wordClk_noBuff<1>;
+TIMESPEC TS_gbt_instantiation_inst_from_gbt_bank_clks_mgt_clks_rx_wordClk_noBuff_1 = PERIOD "gbt_instantiation_inst/from_gbt_bank_clks_mgt_clks_rx_wordClk_noBuff<1>" 4.1667 ns HIGH 50%;
+
+NET "gbt_instantiation_inst/from_gbt_bank_clks_mgt_clks_rx_wordClk_noBuff<2>"    TNM_NET = gbt_instantiation_inst/from_gbt_bank_clks_mgt_clks_rx_wordClk_noBuff<2>;
+TIMESPEC TS_gbt_instantiation_inst_from_gbt_bank_clks_mgt_clks_rx_wordClk_noBuff_2 = PERIOD "gbt_instantiation_inst/from_gbt_bank_clks_mgt_clks_rx_wordClk_noBuff<2>" 4.1667 ns HIGH 50%;
+
+NET "gbt_instantiation_inst/from_gbt_bank_clks_mgt_clks_rx_wordClk_noBuff<3>"    TNM_NET = gbt_instantiation_inst/from_gbt_bank_clks_mgt_clks_rx_wordClk_noBuff<3>;
+TIMESPEC TS_gbt_instantiation_inst_from_gbt_bank_clks_mgt_clks_rx_wordClk_noBuff_3 = PERIOD "gbt_instantiation_inst/from_gbt_bank_clks_mgt_clks_rx_wordClk_noBuff<3>" 4.1667 ns HIGH 50%;
+
+NET "gbt_instantiation_inst/from_gbt_bank_clks_mgt_clks_rx_wordClk_noBuff<4>"    TNM_NET = gbt_instantiation_inst/from_gbt_bank_clks_mgt_clks_rx_wordClk_noBuff<4>;
+TIMESPEC TS_gbt_instantiation_inst_from_gbt_bank_clks_mgt_clks_rx_wordClk_noBuff_4 = PERIOD "gbt_instantiation_inst/from_gbt_bank_clks_mgt_clks_rx_wordClk_noBuff<4>" 4.1667 ns HIGH 50%;
+
+# Delays
+
+#INST "gbt_instantiation_inst/gbt_bank_inst/gbtTx_gen[1].gbtTx/scrambler" TNM = "GBT_TX_SCRAMBLER";
+#INST "gbt_instantiation_inst/gbt_bank_inst/gbtTx_gen[1].gbtTx/txGearbox" TNM = "GBT_TX_GEARBOX";
+#TIMESPEC TS_GBTTX_SCRAMBLER_TO_GEARBOX = FROM "GBT_TX_SCRAMBLER" TO "GBT_TX_GEARBOX" 20 ns DATAPATHONLY;
+
+#INST "gbt_instantiation_inst/gbt_bank_inst/gbtRx_gen[1].gbtRx/rxGearbox" TNM = "GBT_RX_GEARBOX";
+#INST "gbt_instantiation_inst/gbt_bank_inst/gbtRx_gen[1].gbtRx/descrambler" TNM = "GBT_RX_DESCRAMBLER";
+#TIMESPEC TS_GBTRX_GEARBOX_TO_DESCRAMBLER = FROM  "GBT_RX_GEARBOX" TO "GBT_RX_DESCRAMBLER" 20 ns DATAPATHONLY;
+
+# Floorplaning
+
+INST "gbt_instantiation_inst" AREA_GROUP = "gbt_core";
+AREA_GROUP "gbt_core" RANGE = CLOCKREGION_X1Y0:CLOCKREGION_X1Y0;
+     
+INST "gbt_instantiation_inst/tx_pll_inst/mmcm_adv_inst" LOC = MMCM_ADV_X0Y1;
+
+#INST "gbt_instantiation_inst/rxFrmClkPhAlgnr/pllCtrl/pll/mmcm_adv_inst"   LOC = MMCM_ADV_X0Y0;
+
+INST "gbt_instantiation_inst/gbt_bank_inst/mgt/mgtLatOpt_gen.mgtLatOpt/gtxLatOpt_gen[1].gtxLatOpt/gtxe1_i" LOC = GTXE1_X0Y0;
+INST "gbt_instantiation_inst/gbt_bank_inst/mgt/mgtLatOpt_gen.mgtLatOpt/gtxLatOpt_gen[2].gtxLatOpt/gtxe1_i" LOC = GTXE1_X0Y1;
+INST "gbt_instantiation_inst/gbt_bank_inst/mgt/mgtLatOpt_gen.mgtLatOpt/gtxLatOpt_gen[3].gtxLatOpt/gtxe1_i" LOC = GTXE1_X0Y2;
+INST "gbt_instantiation_inst/gbt_bank_inst/mgt/mgtLatOpt_gen.mgtLatOpt/gtxLatOpt_gen[4].gtxLatOpt/gtxe1_i" LOC = GTXE1_X0Y3;
