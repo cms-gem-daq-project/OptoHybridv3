@@ -4,7 +4,7 @@
 -- 
 -- Create Date:    10:15:19 06/03/2015 
 -- Design Name:    OptoHybrid v2
--- Module Name:    gbt_instantiation - Behavioral 
+-- Module Name:    gbt - Behavioral 
 -- Project Name:   OptoHybrid v2
 -- Target Devices: xc6vlx130t-1ff1156
 -- Tool versions:  ISE  P.20131013
@@ -36,10 +36,11 @@ use work.vendor_specific_gbt_bank_package.all;
 use work.gbt_banks_user_setup.all;
 use work.types_pkg.all;
 
-entity gbt_instantiation is   
+entity gbt is   
 port (   
 
-    mgt_refclk_i            : in  std_logic;
+    mgt_refclk_p_i          : in  std_logic;
+    mgt_refclk_n_i          : in  std_logic;
 
     general_reset_i         : in std_logic;
     manual_reset_tx_i       : in std_logic;
@@ -61,20 +62,23 @@ port (
     rx_frameclk_o           : out std_logic_vector(3 downto 0);                           
     rx_wordclk_o            : out std_logic_vector(3 downto 0); 
     
+    rx_frameclk_ready_o     : out std_logic_vector(3 downto 0); 
+    rx_wordclk_ready_o      : out std_logic_vector(3 downto 0);
+    
     mgt_ready_o             : out std_logic_vector(3 downto 0); 
     tx_frame_pll_locked_o   : out std_logic;  
-    gbt_rx_ready_o          : out std_logic_vector(3 downto 0);  
-    rx_frameclk_ready_o     : out std_logic_vector(3 downto 0); 
-    rx_wordclk_ready_o      : out std_logic_vector(3 downto 0) 
+    gbt_rx_ready_o          : out std_logic_vector(3 downto 0)  
 
 );
-end gbt_instantiation;
+end gbt;
 
-architecture structural of gbt_instantiation is  
+architecture structural of gbt is  
 
     --== Clock signals ==--
+    
+    signal mgt_refclk               : std_logic;
 
-    signal mgt_clk_buffered         : std_logic;
+    signal mgt_refclk_buffered      : std_logic;
     
     signal tx_word_clk              : std_logic;
     signal tx_frame_clk             : std_logic;
@@ -110,14 +114,22 @@ begin
     --=========================--
     --== MGT reference clock ==--
     --=========================--
+           
+    mgt_refclk_ibufs_gtxe1 : ibufds_gtxe1
+    port map (
+        i   => mgt_refclk_p_i,
+        ib  => mgt_refclk_n_i,
+        o   => mgt_refclk,
+        ceb => '0'
+    );
 
-    to_gbt_bank_clks.mgt_clks.tx_refClk <= mgt_refclk_i;
-    to_gbt_bank_clks.mgt_clks.rx_refClk <= mgt_refclk_i; 
+    to_gbt_bank_clks.mgt_clks.tx_refClk <= mgt_refclk;
+    to_gbt_bank_clks.mgt_clks.rx_refClk <= mgt_refclk; 
     
     mgt_clk_bufg_inst : bufg
     port map (
-        i => mgt_refclk_i,
-        o => mgt_clk_buffered
+        i => mgt_refclk,
+        o => mgt_refclk_buffered
     );     
 
     --===================--
@@ -143,7 +155,7 @@ begin
     
     tx_pll_inst: entity work.xlx_v6_tx_mmcm
     port map (
-        clk_in1     => mgt_clk_buffered,               
+        clk_in1     => mgt_refclk_buffered,               
         clk_out1    => tx_frame_clk,    
         reset       => '0',
         locked      => tx_frame_pll_locked_o

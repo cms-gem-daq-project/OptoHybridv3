@@ -43,7 +43,14 @@ port(
     vfat2_data_out_i    : in std_logic_vector(7 downto 0);
     
     gbt_rx_i            : in gbt_data_t;
-    gbt_tx_o            : out gbt_data_t
+    gbt_tx_o            : out gbt_data_t;
+    
+    gbt_tx_frameclk_i   : in std_logic;
+    gbt_tx_wordclk_i    : in std_logic;
+    gbt_rx_frameclk_i   : in std_logic;
+    gbt_rx_wordclk_i    : in std_logic;
+    gbt_rx_ready_i      : in std_logic;
+    mgt_ready_i         : in std_logic
     
 );
 end tk_link;
@@ -57,10 +64,10 @@ architecture Behavioral of tk_link is
 
     --== T1 signals ==--
 
-    signal t1_array         : t1_array_t; -- 0 : AMC13 triggers
-                                          -- 1 : software triggers
-                                          -- 2 : latency scan
-                                          -- 3 : threshold scan
+    signal t1_array         : t1_array_t(3 downto 0); -- 0 : AMC13 triggers
+                                                      -- 1 : software triggers
+                                                      -- 2 : latency scan
+                                                      -- 3 : threshold scan
                                           
     signal t1_switched      : t1_t;
     signal t1_src_select    : std_logic_vector(3 downto 0);
@@ -109,7 +116,7 @@ begin
     port map(
         ref_clk_i   => ref_clk_i,
         reset_i     => reset_i,
-        t1_i        => t1_amc13,
+        t1_i        => t1_array,
         mask_i      => t1_src_select,
         t1_o        => t1_switched
     );    

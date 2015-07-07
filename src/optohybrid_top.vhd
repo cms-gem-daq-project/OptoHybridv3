@@ -193,47 +193,47 @@ port(
     
     clk_50MHz_i             : in std_logic;
 
---    qpll_ref_40MHz_o        : out std_logic;
---    qpll_reset_o            : out std_logic;
---    qpll_locked_i           : in std_logic;
---    qpll_error_i            : in std_logic;
---    qpll_clk_p_i            : in std_logic;
---    qpll_clk_n_i            : in std_logic;
+    qpll_ref_40MHz_o        : out std_logic;
+    qpll_reset_o            : out std_logic;
+    qpll_locked_i           : in std_logic;
+    qpll_error_i            : in std_logic;
+    qpll_clk_p_i            : in std_logic;
+    qpll_clk_n_i            : in std_logic;
 
---    cdce_aux_o              : out std_logic;
---    cdce_aux_i              : in std_logic;
---    cdce_ref_o              : out std_logic;
---    cdce_pwrdown_o          : out std_logic;
---    cdce_sync_o             : out std_logic;
---    cdce_locked_i           : in std_logic;
---    cdce_sck_o              : out std_logic;
---    cdce_mosi_o             : out std_logic;
---    cdce_le_o               : out std_logic;
---    cdce_miso_i             : in std_logic;
---    cdce_clk_p_i            : in std_logic;
---    cdce_clk_n_i            : in std_logic;
---    cdce_pri_p_o            : out std_logic;
---    cdce_pri_n_o            : out std_logic;
+    cdce_clk_p_i            : in std_logic;
+    cdce_clk_n_i            : in std_logic;
+    cdce_clk_pri_p_o        : out std_logic;
+    cdce_clk_pri_n_o        : out std_logic;
+    cdce_aux_o              : out std_logic;
+    cdce_aux_i              : in std_logic;
+    cdce_ref_o              : out std_logic;
+    cdce_pwrdown_o          : out std_logic;
+    cdce_sync_o             : out std_logic;
+    cdce_locked_i           : in std_logic;
+    cdce_sck_o              : out std_logic;
+    cdce_mosi_o             : out std_logic;
+    cdce_le_o               : out std_logic;
+    cdce_miso_i             : in std_logic;
     
     --== Miscellaneous ==--
     
 --    hdmi_scl_io             : inout std_logic_vector(1 downto 0);
 --    hdmi_sda_io             : inout std_logic_vector(1 downto 0);
-
+--
 --    tmds_d_p_io             : inout std_logic_vector(1 downto 0);
 --    tmds_d_n_io             : inout std_logic_vector(1 downto 0);
-
+--
 --    tmds_clk_p_io           : inout std_logic;
 --    tmds_clk_n_io           : inout std_logic;
 
---    adc_chip_select_o       : out std_logic;
---    adc_din_i               : in std_logic;
---    adc_dout_o              : out std_logic;
---    adc_clk_o               : out std_logic;
---    adc_eoc_i               : in std_logic;
+    adc_chip_select_o       : out std_logic;
+    adc_din_i               : in std_logic;
+    adc_dout_o              : out std_logic;
+    adc_clk_o               : out std_logic;
+    adc_eoc_i               : in std_logic;
 
---    temp_clk_o              : out std_logic;
---    temp_data_io            : inout std_logic;
+    temp_clk_o              : out std_logic;
+    temp_data_io            : inout std_logic;
 
 --    chip_id_i               : in std_logic;
     
@@ -448,18 +448,11 @@ begin
     --=========--
     --== GBT ==--
     --=========--
-           
---    mgt_refclk_ibufs_gtxe1 : ibufds_gtxe1
---    port map (
---        i   => mgt_112_clk0_p_i,
---        ib  => mgt_112_clk0_n_i,
---        o   => mgt_refclk,
---        ceb => '0'
---    );
-    
-    gbt_instantiation_inst : entity work.gbt_instantiation
+
+    gbt_inst : entity work.gbt
     port map(
-        mgt_refclk_i            => mgt_refclk,
+        mgt_refclk_p_i          => mgt_112_clk0_p_i,
+        mgt_refclk_n_i          => mgt_112_clk0_n_i,
         general_reset_i         => reset,
         manual_reset_tx_i       => '0',
         manual_reset_rx_i       => '0',
@@ -469,45 +462,106 @@ begin
         mgt_rx_n_i              => mgt_112_rx_n_i,     
         tx_data_i               => gbt_tx,
         rx_data_o               => gbt_rx,
-        
         tx_frameclk_o           => gbt_tx_frameclk,
         tx_wordclk_o            => gbt_tx_wordclk,
-        
         rx_frameclk_o           => gbt_rx_frameclk,                 
         rx_wordclk_o            => gbt_rx_wordclk,
-        
+        rx_frameclk_ready_o     => gbt_rx_frameclk_ready,
+        rx_wordclk_ready_o      => gbt_rx_wordclk_ready,
         tx_frame_pll_locked_o   => gbt_tx_frame_pll_locked,
         mgt_ready_o             => mgt_ready,
-        gbt_rx_ready_o          => gbt_rx_ready,  
-        rx_frameclk_ready_o     => gbt_rx_frameclk_ready,
-        rx_wordclk_ready_o      => gbt_rx_wordclk_ready
+        gbt_rx_ready_o          => gbt_rx_ready 
     );
     
     --====================--
     --== Tracking links ==--
     --====================--
     
---    tk_link_loop : for I in 0 to 2 generate
---    begin
---    
---        tk_link_inst : entity work.tk_link
---        port map(
---            ref_clk_i           => ref_clk,
---            reset_i             => reset,
---            vfat2_mclk_o        => vfat2_mclk(I),
---            vfat2_reset_o       => vfat2_reset(I),
---            vfat2_t1_o          => vfat2_t1(I),
---            vfat2_scl_o         => vfat2_scl((I * 2 + 1) downto (I * 2)),
---            vfat2_sda_o         => vfat2_sda_out((I * 2 + 1) downto (I * 2)),
---            vfat2_sda_i         => vfat2_sda_in((I * 2 + 1) downto (I * 2)),
---            vfat2_sda_t         => vfat2_sda_tri((I * 2 + 1) downto (I * 2)),
---            vfat2_data_valid_i  => vfat2_data_valid((I * 2 + 1) downto (I * 2)),
---            vfat2_data_out_i    => vfat2_data_out((I * 8 + 7) downto (I * 8)),
---            gbt_rx_i            => gbt_rx(I),
---            gbt_tx_o            => gbt_tx(I)
---        );   
---        
---    end generate;   
-
+    tk_link_loop : for I in 0 to 2 generate
+    begin
+    
+        tk_link_inst : entity work.tk_link
+        port map(
+            ref_clk_i           => ref_clk,
+            reset_i             => reset,
+            vfat2_mclk_o        => vfat2_mclk(I),
+            vfat2_reset_o       => vfat2_reset(I),
+            vfat2_t1_o          => vfat2_t1(I),
+            vfat2_scl_o         => vfat2_scl((I * 2 + 1) downto (I * 2)),
+            vfat2_sda_o         => vfat2_sda_out((I * 2 + 1) downto (I * 2)),
+            vfat2_sda_i         => vfat2_sda_in((I * 2 + 1) downto (I * 2)),
+            vfat2_sda_t         => vfat2_sda_tri((I * 2 + 1) downto (I * 2)),
+            vfat2_data_valid_i  => vfat2_data_valid((I * 2 + 1) downto (I * 2)),
+            vfat2_data_out_i    => vfat2_data_out((I * 8 + 7) downto (I * 8)),
+            gbt_rx_i            => gbt_rx(I),
+            gbt_tx_o            => gbt_tx(I),
+            gbt_tx_frameclk_i   => gbt_tx_frameclk,
+            gbt_tx_wordclk_i    => gbt_tx_wordclk,
+            gbt_rx_frameclk_i   => gbt_rx_frameclk(I),
+            gbt_rx_wordclk_i    => gbt_rx_wordclk(I),
+            gbt_rx_ready_i      => gbt_rx_ready(I),
+            mgt_ready_i         => mgt_ready(I)
+        );   
+        
+    end generate;   
+    
+    --==========--
+    --== QPLL ==--
+    --==========--
+    
+    qpll_inst : entity work.qpll
+    port map(
+        qpll_ref_40MHz_o    => qpll_ref_40MHz_o,
+        qpll_reset_o        => qpll_reset_o,
+        qpll_locked_i       => qpll_locked_i,
+        qpll_error_i        => qpll_error_i,
+        qpll_clk_p_i        => qpll_clk_p_i,
+        qpll_clk_n_i        => qpll_clk_n_i
+    );     
+    
+    --==========--
+    --== CDCE ==--
+    --==========--
+    
+    cdce_inst : entity work.cdce
+    port map( 
+        cdce_clk_p_i        => cdce_clk_p_i,
+        cdce_clk_n_i        => cdce_clk_n_i,
+        cdce_clk_pri_p_o    => cdce_clk_pri_p_o,
+        cdce_clk_pri_n_o    => cdce_clk_pri_n_o,
+        cdce_aux_o          => cdce_aux_o,
+        cdce_aux_i          => cdce_aux_i,
+        cdce_ref_o          => cdce_ref_o,
+        cdce_pwrdown_o      => cdce_pwrdown_o,
+        cdce_sync_o         => cdce_sync_o,
+        cdce_locked_i       => cdce_locked_i,
+        cdce_sck_o          => cdce_sck_o,
+        cdce_mosi_o         => cdce_mosi_o,
+        cdce_le_o           => cdce_le_o,
+        cdce_miso_i         => cdce_miso_i
+    );
+    
+    --=========--
+    --== ADC ==--
+    --=========--
+    
+    adc_inst : entity work.adc
+    port map(
+        adc_io_clk_o    => adc_clk_o,
+        adc_cs_n_o      => adc_chip_select_o,
+        adc_data_o      => adc_dout_o,
+        adc_data_i      => adc_din_i,
+        adc_eoc_i       => adc_eoc_i
+    );   
+    
+    --========================--
+    --== Temperature sensor ==--
+    --========================--
+    
+    temperature_inst : entity work.temperature
+    port map(
+        temp_clk_o      => temp_clk_o,
+        temp_data_io    => temp_data_io
+    );
+        
 end Behavioral;
-

@@ -3,6 +3,17 @@
 - doc       Documentation
 - prj       ISE project files
 - src       VHDL & Verilog source files
+---- gbt        GBT source files 
+-------- vendor     GBT-FPGA project files
+---- ics        Interfaces to ICs on the OptoHybrid
+---- ipcores    Xilinx cores 
+---- packages   Types & constants definition
+---- routines   High-level software routines implemented in firmware
+---- seu        SEU tools
+---- system     Functions that compose the backbone of the architecture
+---- tests      Test benches
+---- ucf        User Constraints Files
+---- vfat2      Low-level VFAT2 functions
 - tools     Scripts that help the development process
 
 ### Design guidelines

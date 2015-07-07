@@ -49,11 +49,8 @@
 #NET "flash_data_io<15>"         LOC = M23;
 
 #NET "flash_chip_enable_b_o"     LOC = Y24;
-
 #NET "flash_out_enable_b_o"      LOC = AA24;
-
 #NET "flash_write_enable_b_o"    LOC = AF23;
-
 #NET "flash_latch_enable_b_o"    LOC = AC23;
 
 ## EPROM
@@ -68,17 +65,11 @@
 #NET "eprom_data_i<7>"           LOC = P24; # FLASH D6
 
 #NET "eprom_clk_o"               LOC = AF24; # FLASH D0
-
 #NET "eprom_reset_b_o"           LOC = B10;
-
 #NET "eprom_chip_enable_b_o"     LOC = A10;
-
 #NET "eprom_tdi_o"               LOC = F23; # FLASH D12
-
 #NET "eprom_tdo_i"               LOC = W24; # FLASH D2
-
 #NET "eprom_tms_o"               LOC = H25; # FLASH D5
-
 #NET "eprom_tck_o"               LOC = L24; # FLASH D14
 
 

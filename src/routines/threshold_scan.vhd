@@ -35,7 +35,7 @@ port(
     t1_o                : out t1_t;
     
     tk_valid_i          : in std_logic_vector(7 downto 0);
-    tk_data_i           : tk_data_array_t(7 downto 0)
+    tk_data_i           : in tk_data_array_t(7 downto 0)
     
 );
 end threshold_scan;

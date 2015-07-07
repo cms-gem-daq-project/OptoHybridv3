@@ -2,13 +2,15 @@
 -- Company:        IIHE - ULB
 -- Engineer:       Thomas Lenzi (thomas.lenzi@cern.ch)
 -- 
--- Create Date:    08:40:27 07/02/2015 
+-- Create Date:    08:37:20 07/07/2015 
 -- Design Name:    OptoHybrid v2
--- Module Name:    event_builder - Behavioral 
+-- Module Name:    adc - Behavioral 
 -- Project Name:   OptoHybrid v2
 -- Target Devices: xc6vlx130t-1ff1156
 -- Tool versions:  ISE  P.20131013
 -- Description: 
+--
+-- Interfaces with the ADC to readout the values 
 --
 -- Dependencies: 
 --
@@ -21,25 +23,26 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
-library work;
-use work.types_pkg.all;
-
-entity event_builder is
+entity adc is
 port(
-
-    ref_clk_i           : in std_logic;
-    reset_i             : in std_logic;
     
-    tk_valid_i          : in std_logic_vector(7 downto 0);
-    tk_data_i           : in tk_data_array_t(7 downto 0)
+    adc_io_clk_o    : out std_logic;
+    adc_cs_n_o      : out std_logic;
+    adc_data_o      : out std_logic;
+    
+    adc_data_i      : in std_logic;
+    adc_eoc_i       : in std_logic
     
 );
-end event_builder;
+end adc;
 
-architecture Behavioral of event_builder is
+architecture Behavioral of adc is
 
 begin
 
+    adc_io_clk_o <= '0';
+    adc_cs_n_o <= '1';
+    adc_data_o <= '0';
 
 end Behavioral;
 

@@ -43,7 +43,7 @@ end vfat2_data_decoder_seu;
 architecture Behavioral of vfat2_data_decoder_seu is
 
     signal valid    : std_logic_vector(2 downto 0);
-    signal data     : tk_data_array_t;
+    signal data     : tk_data_array_t(2 downto 0);
   
 begin
     

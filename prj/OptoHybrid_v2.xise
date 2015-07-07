@@ -17,18 +17,18 @@
   <files>
     <file xil_pn:name="../src/optohybrid_top.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="0"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="61"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="72"/>
     </file>
     <file xil_pn:name="../src/ucf/vfat2.ucf" xil_pn:type="FILE_UCF">
       <association xil_pn:name="Implementation" xil_pn:seqID="0"/>
     </file>
     <file xil_pn:name="../src/vfat2/vfat2_buffers.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="0"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="59"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="69"/>
     </file>
     <file xil_pn:name="../src/packages/types_pkg.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="1"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="54"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="39"/>
     </file>
     <file xil_pn:name="../src/ucf/memory.ucf" xil_pn:type="FILE_UCF">
       <association xil_pn:name="Implementation" xil_pn:seqID="0"/>
@@ -44,7 +44,7 @@
     </file>
     <file xil_pn:name="../src/vfat2/vfat2_data_decoder.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="0"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="0"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="52"/>
     </file>
     <file xil_pn:name="../src/tests/vfat2_data_decoder_test.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="0"/>
@@ -54,15 +54,15 @@
     </file>
     <file xil_pn:name="../src/seu/seu_voter_bit.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="0"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="0"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="54"/>
     </file>
     <file xil_pn:name="../src/vfat2/vfat2_data_decoder_seu.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="0"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="0"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="60"/>
     </file>
     <file xil_pn:name="../src/seu/seu_voter_vector.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="0"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="0"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="53"/>
     </file>
     <file xil_pn:name="../src/tests/vfat2_data_decoder_seu_test.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="0"/>
@@ -78,11 +78,11 @@
     </file>
     <file xil_pn:name="../src/vfat2/vfat2_t1_encoder.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="0"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="0"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="51"/>
     </file>
     <file xil_pn:name="../src/vfat2/vfat2_t1_encoder_seu.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="0"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="0"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="59"/>
     </file>
     <file xil_pn:name="../src/vfat2/vfat2_i2c_base.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="0"/>
@@ -90,23 +90,23 @@
     </file>
     <file xil_pn:name="../src/system/t1_switch.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="2"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="0"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="61"/>
     </file>
     <file xil_pn:name="../src/system/tk_link.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="0"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="0"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="70"/>
     </file>
     <file xil_pn:name="../src/routines/threshold_scan.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="0"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="0"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="63"/>
     </file>
     <file xil_pn:name="../src/routines/latency_scan.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="0"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="0"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="64"/>
     </file>
     <file xil_pn:name="../src/system/event_builder.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="0"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="0"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="62"/>
     </file>
     <file xil_pn:name="../src/tests/t1_switch_test.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="3"/>
@@ -114,240 +114,260 @@
       <association xil_pn:name="PostRouteSimulation" xil_pn:seqID="82"/>
       <association xil_pn:name="PostTranslateSimulation" xil_pn:seqID="82"/>
     </file>
-    <file xil_pn:name="../src/gbt/xlx_v6_gbt_bank_package.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="39"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="1"/>
-    </file>
-    <file xil_pn:name="../src/gbt/xlx_v6_gbt_banks_user_setup.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="40"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="2"/>
-    </file>
-    <file xil_pn:name="../src/gbt/gbt_instantiation.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="41"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="60"/>
-    </file>
-    <file xil_pn:name="../src/gbt/gbt_rx/gbt_rx.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="45"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="53"/>
-    </file>
-    <file xil_pn:name="../src/gbt/gbt_rx/gbt_rx_decoder.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="46"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="49"/>
-    </file>
-    <file xil_pn:name="../src/gbt/gbt_rx/gbt_rx_decoder_gbtframe_chnsrch.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="47"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="17"/>
-    </file>
-    <file xil_pn:name="../src/gbt/gbt_rx/gbt_rx_decoder_gbtframe_deintlver.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="48"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="38"/>
-    </file>
-    <file xil_pn:name="../src/gbt/gbt_rx/gbt_rx_decoder_gbtframe_elpeval.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="49"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="6"/>
-    </file>
-    <file xil_pn:name="../src/gbt/gbt_rx/gbt_rx_decoder_gbtframe_errlcpoly.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="50"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="16"/>
-    </file>
-    <file xil_pn:name="../src/gbt/gbt_rx/gbt_rx_decoder_gbtframe_lmbddet.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="51"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="15"/>
-    </file>
-    <file xil_pn:name="../src/gbt/gbt_rx/gbt_rx_decoder_gbtframe_rs2errcor.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="52"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="14"/>
-    </file>
-    <file xil_pn:name="../src/gbt/gbt_rx/gbt_rx_decoder_gbtframe_rsdec.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="53"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="37"/>
-    </file>
-    <file xil_pn:name="../src/gbt/gbt_rx/gbt_rx_decoder_gbtframe_syndrom.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="54"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="13"/>
-    </file>
-    <file xil_pn:name="../src/gbt/gbt_rx/gbt_rx_descrambler.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="55"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="48"/>
-    </file>
-    <file xil_pn:name="../src/gbt/gbt_rx/gbt_rx_descrambler_16bit.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="56"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="36"/>
-    </file>
-    <file xil_pn:name="../src/gbt/gbt_rx/gbt_rx_descrambler_21bit.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="57"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="35"/>
-    </file>
-    <file xil_pn:name="../src/gbt/gbt_rx/gbt_rx_framealigner.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="58"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="47"/>
-    </file>
-    <file xil_pn:name="../src/gbt/gbt_rx/gbt_rx_framealigner_bscounter.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="59"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="34"/>
-    </file>
-    <file xil_pn:name="../src/gbt/gbt_rx/gbt_rx_framealigner_pattsearch.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="60"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="33"/>
-    </file>
-    <file xil_pn:name="../src/gbt/gbt_rx/gbt_rx_framealigner_rightshift.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="61"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="32"/>
-    </file>
-    <file xil_pn:name="../src/gbt/gbt_rx/gbt_rx_framealigner_wraddr.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="62"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="31"/>
-    </file>
-    <file xil_pn:name="../src/gbt/gbt_rx/gbt_rx_gearbox.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="63"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="46"/>
-    </file>
-    <file xil_pn:name="../src/gbt/gbt_rx/gbt_rx_gearbox_latopt.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="64"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="30"/>
-    </file>
-    <file xil_pn:name="../src/gbt/gbt_rx/gbt_rx_gearbox_std.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="65"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="29"/>
-    </file>
-    <file xil_pn:name="../src/gbt/gbt_rx/gbt_rx_gearbox_std_rdctrl.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="66"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="12"/>
-    </file>
-    <file xil_pn:name="../src/gbt/gbt_rx/gbt_rx_status.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="67"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="45"/>
-    </file>
-    <file xil_pn:name="../src/gbt/gbt_rx/xlx_v6_gbt_rx_gearbox_std_dpram.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="68"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="11"/>
-    </file>
-    <file xil_pn:name="../src/gbt/gbt_rx/rx_dpram/xlx_v6_rx_dpram.xco" xil_pn:type="FILE_COREGEN">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="70"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="5"/>
-    </file>
-    <file xil_pn:name="../src/gbt/gbt_rx_frameclk_phalgnr/xlx_v6_gbt_rx_frameclk_phalgnr.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="71"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="56"/>
-    </file>
-    <file xil_pn:name="../src/gbt/gbt_rx_frameclk_phalgnr/xlx_v6_gbt_rx_frameclk_phalgnr_ctrl.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="72"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="52"/>
-    </file>
-    <file xil_pn:name="../src/gbt/gbt_rx_frameclk_phalgnr/xlx_v6_gbt_rx_frameclk_phalgnr_mmcm.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="73"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="44"/>
-    </file>
-    <file xil_pn:name="../src/gbt/gbt_tx/gbt_tx.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="74"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="51"/>
-    </file>
-    <file xil_pn:name="../src/gbt/gbt_tx/gbt_tx_encoder.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="75"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="43"/>
-    </file>
-    <file xil_pn:name="../src/gbt/gbt_tx/gbt_tx_encoder_gbtframe_intlver.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="76"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="28"/>
-    </file>
-    <file xil_pn:name="../src/gbt/gbt_tx/gbt_tx_encoder_gbtframe_polydiv.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="77"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="10"/>
-    </file>
-    <file xil_pn:name="../src/gbt/gbt_tx/gbt_tx_encoder_gbtframe_rsencode.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="78"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="27"/>
-    </file>
-    <file xil_pn:name="../src/gbt/gbt_tx/gbt_tx_gearbox.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="79"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="42"/>
-    </file>
-    <file xil_pn:name="../src/gbt/gbt_tx/gbt_tx_gearbox_latopt.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="80"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="26"/>
-    </file>
-    <file xil_pn:name="../src/gbt/gbt_tx/gbt_tx_gearbox_std.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="81"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="25"/>
-    </file>
-    <file xil_pn:name="../src/gbt/gbt_tx/gbt_tx_gearbox_std_rdwrctrl.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="82"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="9"/>
-    </file>
-    <file xil_pn:name="../src/gbt/gbt_tx/gbt_tx_scrambler.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="83"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="41"/>
-    </file>
-    <file xil_pn:name="../src/gbt/gbt_tx/gbt_tx_scrambler_16bit.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="84"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="24"/>
-    </file>
-    <file xil_pn:name="../src/gbt/gbt_tx/gbt_tx_scrambler_21bit.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="85"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="23"/>
-    </file>
-    <file xil_pn:name="../src/gbt/gbt_tx/xlx_v6_gbt_tx_gearbox_std_dpram.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="86"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="8"/>
-    </file>
-    <file xil_pn:name="../src/gbt/gbt_tx/tx_dpram/xlx_v6_tx_dpram.xco" xil_pn:type="FILE_COREGEN">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="87"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="4"/>
-    </file>
-    <file xil_pn:name="../src/gbt/mgt/mgt_latopt_bitslipctrl.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="88"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="22"/>
-    </file>
-    <file xil_pn:name="../src/gbt/mgt/multi_gigabit_transceivers.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="89"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="50"/>
-    </file>
-    <file xil_pn:name="../src/gbt/mgt/xlx_v6_gtx_latopt.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="90"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="21"/>
-    </file>
-    <file xil_pn:name="../src/gbt/mgt/xlx_v6_gtx_latopt_rx_sync.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="91"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="20"/>
-    </file>
-    <file xil_pn:name="../src/gbt/mgt/xlx_v6_gtx_latopt_tx_sync.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="92"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="19"/>
-    </file>
-    <file xil_pn:name="../src/gbt/mgt/xlx_v6_gtx_std.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="93"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="18"/>
-    </file>
-    <file xil_pn:name="../src/gbt/mgt/xlx_v6_gtx_std_double_reset.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="94"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="7"/>
-    </file>
-    <file xil_pn:name="../src/gbt/mgt/xlx_v6_mgt_latopt.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="95"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="40"/>
-    </file>
-    <file xil_pn:name="../src/gbt/mgt/xlx_v6_mgt_std.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="96"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="39"/>
-    </file>
-    <file xil_pn:name="../src/gbt/tx_mmcm/xlx_v6_tx_mmcm.xco" xil_pn:type="FILE_COREGEN">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="97"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="55"/>
-    </file>
-    <file xil_pn:name="../src/gbt/gbt_bank.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="98"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="58"/>
-    </file>
-    <file xil_pn:name="../src/gbt/gbt_bank_package.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="99"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="3"/>
-    </file>
     <file xil_pn:name="../src/ucf/gbt.ucf" xil_pn:type="FILE_UCF">
       <association xil_pn:name="Implementation" xil_pn:seqID="0"/>
     </file>
-    <file xil_pn:name="../src/gbt/gbt_bank_reset.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="101"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="57"/>
+    <file xil_pn:name="../src/gbt/gbt.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="145"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="145"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/gbt_bank.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="146"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="146"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/gbt_bank_package.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="147"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="147"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/gbt_bank_reset.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="148"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="148"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/xlx_v6_gbt_bank_package.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="149"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="149"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/xlx_v6_gbt_banks_user_setup.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="150"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="150"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/gbt_rx/gbt_rx.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="151"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="151"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/gbt_rx/gbt_rx_decoder.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="152"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="152"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/gbt_rx/gbt_rx_decoder_gbtframe_chnsrch.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="153"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="153"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/gbt_rx/gbt_rx_decoder_gbtframe_deintlver.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="154"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="154"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/gbt_rx/gbt_rx_decoder_gbtframe_elpeval.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="155"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="155"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/gbt_rx/gbt_rx_decoder_gbtframe_errlcpoly.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="156"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="156"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/gbt_rx/gbt_rx_decoder_gbtframe_lmbddet.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="157"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="157"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/gbt_rx/gbt_rx_decoder_gbtframe_rs2errcor.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="158"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="158"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/gbt_rx/gbt_rx_decoder_gbtframe_rsdec.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="159"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="159"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/gbt_rx/gbt_rx_decoder_gbtframe_syndrom.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="160"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="160"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/gbt_rx/gbt_rx_descrambler.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="161"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="161"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/gbt_rx/gbt_rx_descrambler_16bit.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="162"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="162"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/gbt_rx/gbt_rx_descrambler_21bit.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="163"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="163"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/gbt_rx/gbt_rx_framealigner.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="164"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="164"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/gbt_rx/gbt_rx_framealigner_bscounter.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="165"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="165"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/gbt_rx/gbt_rx_framealigner_pattsearch.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="166"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="166"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/gbt_rx/gbt_rx_framealigner_rightshift.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="167"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="167"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/gbt_rx/gbt_rx_framealigner_wraddr.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="168"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="168"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/gbt_rx/gbt_rx_gearbox.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="169"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="169"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/gbt_rx/gbt_rx_gearbox_latopt.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="170"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="170"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/gbt_rx/gbt_rx_gearbox_std.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="171"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="171"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/gbt_rx/gbt_rx_gearbox_std_rdctrl.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="172"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="172"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/gbt_rx/gbt_rx_status.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="173"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="173"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/gbt_rx/xlx_v6_gbt_rx_gearbox_std_dpram.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="174"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="174"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/gbt_rx/rx_dpram/xlx_v6_rx_dpram.xco" xil_pn:type="FILE_COREGEN">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="175"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="175"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/gbt_rx_frameclk_phalgnr/xlx_v6_gbt_rx_frameclk_phalgnr.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="176"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="176"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/gbt_rx_frameclk_phalgnr/xlx_v6_gbt_rx_frameclk_phalgnr_ctrl.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="177"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="177"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/gbt_rx_frameclk_phalgnr/xlx_v6_gbt_rx_frameclk_phalgnr_mmcm.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="178"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="178"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/gbt_tx/gbt_tx.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="179"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="179"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/gbt_tx/gbt_tx_encoder.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="180"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="180"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/gbt_tx/gbt_tx_encoder_gbtframe_intlver.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="181"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="181"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/gbt_tx/gbt_tx_encoder_gbtframe_polydiv.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="182"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="182"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/gbt_tx/gbt_tx_encoder_gbtframe_rsencode.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="183"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="183"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/gbt_tx/gbt_tx_gearbox.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="184"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="184"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/gbt_tx/gbt_tx_gearbox_latopt.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="185"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="185"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/gbt_tx/gbt_tx_gearbox_std.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="186"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="186"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/gbt_tx/gbt_tx_gearbox_std_rdwrctrl.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="187"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="187"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/gbt_tx/gbt_tx_scrambler.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="188"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="188"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/gbt_tx/gbt_tx_scrambler_16bit.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="189"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="189"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/gbt_tx/gbt_tx_scrambler_21bit.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="190"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="190"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/gbt_tx/xlx_v6_gbt_tx_gearbox_std_dpram.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="191"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="191"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/gbt_tx/tx_dpram/xlx_v6_tx_dpram.xco" xil_pn:type="FILE_COREGEN">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="192"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="192"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/mgt/mgt_latopt_bitslipctrl.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="193"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="193"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/mgt/multi_gigabit_transceivers.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="194"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="194"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/mgt/xlx_v6_gtx_latopt.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="195"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="195"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/mgt/xlx_v6_gtx_latopt_rx_sync.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="196"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="196"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/mgt/xlx_v6_gtx_latopt_tx_sync.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="197"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="197"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/mgt/xlx_v6_gtx_std.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="198"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="198"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/mgt/xlx_v6_gtx_std_double_reset.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="199"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="199"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/mgt/xlx_v6_mgt_latopt.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="200"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="200"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/mgt/xlx_v6_mgt_std.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="201"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="201"/>
+    </file>
+    <file xil_pn:name="../src/gbt/vendor/tx_mmcm/xlx_v6_tx_mmcm.xco" xil_pn:type="FILE_COREGEN">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="202"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="202"/>
+    </file>
+    <file xil_pn:name="../src/ics/adc.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="203"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="203"/>
+    </file>
+    <file xil_pn:name="../src/ics/cdce.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="204"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="204"/>
+    </file>
+    <file xil_pn:name="../src/ics/temperature.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="207"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="207"/>
+    </file>
+    <file xil_pn:name="../src/ics/qpll.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="208"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="208"/>
+    </file>
+    <file xil_pn:name="../src/ics/hdmi.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="209"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="209"/>
     </file>
   </files>
 
