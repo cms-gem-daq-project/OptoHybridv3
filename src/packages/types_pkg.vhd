@@ -2,6 +2,12 @@ library ieee;
 use ieee.std_logic_1164.all;
 
 package types_pkg is
+
+    --== Common ==--
+    
+    type int_array_t is array(integer range <>) of integer;
+    
+    type std_array_t is array(integer range <>) of std_logic;
     
     --== Trigger data ==--
  
@@ -39,7 +45,33 @@ package types_pkg is
     end record;
     
     type gbt_data_array_t is array(integer range <>) of gbt_data_t;
+    
+    --== Wishbone ==--
+    
+    type wb_req_t is record
+        stb     : std_logic;
+        we      : std_logic;
+        addr    : std_logic_vector(31 downto 0);
+        data    : std_logic_vector(31 downto 0);
+    end record;
+    
+    type wb_req_array_t is array(integer range <>) of wb_req_t;
+    
+    type wb_res_t is record
+        ack     : std_logic;
+        stat    : std_logic_vector(1 downto 0);
+        data    : std_logic_vector(31 downto 0);
+    end record;
+    
+    type wb_res_array_t is array(integer range <>) of wb_res_t;
 
+    --== Registers ==--
+    
+    subtype register_t is std_logic_vector(31 downto 0);
+ 
+    type register_array_t is array(integer range <>) of register_t;
+    
+    
 end types_pkg;
 
 package body types_pkg is 

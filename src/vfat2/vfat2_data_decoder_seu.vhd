@@ -47,7 +47,9 @@ architecture Behavioral of vfat2_data_decoder_seu is
   
 begin
     
+    --====================--
     --== VFAT2 decoders ==--
+    --====================--
     
     vfat2_data_decoder_loop : for I in 0 to 2 generate
     begin
@@ -63,7 +65,9 @@ begin
     
     end generate;
     
+    --================--
     --== SEU voters ==--
+    --================--
     
     valid_seu_voter : entity work.seu_voter_bit
     generic map(

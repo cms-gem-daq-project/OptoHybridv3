@@ -41,37 +41,30 @@ end vfat2_t1_encoder_seu;
 
 architecture Behavioral of vfat2_t1_encoder_seu is
 
-    signal t1_0, t1_1, t1_2 : std_logic;
+    signal t1   : std_logic_vector(2 downto 0);
 
 begin
     
+    --=================--
     --== T1 encoders ==--
-
-    vfat2_t1_encoder_0_inst : entity work.vfat2_t1_encoder
-    port map(
-        ref_clk_i   => ref_clk_i,
-        reset_i     => reset_i,
-        t1_i        => t1_i,
-        t1_o        => t1_0
-    );
-
-    vfat2_t1_encoder_1_inst : entity work.vfat2_t1_encoder
-    port map(
-        ref_clk_i   => ref_clk_i,
-        reset_i     => reset_i,
-        t1_i        => t1_i,
-        t1_o        => t1_1
-    );
-
-    vfat2_t1_encoder_2_inst : entity work.vfat2_t1_encoder
-    port map(
-        ref_clk_i   => ref_clk_i,
-        reset_i     => reset_i,
-        t1_i        => t1_i,
-        t1_o        => t1_2
-    );  
+    --=================--
     
+    vfat2_t1_encoder_loop : for I in 0 to 2 generate
+    begin
+
+        vfat2_t1_encoder_inst : entity work.vfat2_t1_encoder
+        port map(
+            ref_clk_i   => ref_clk_i,
+            reset_i     => reset_i,
+            t1_i        => t1_i,
+            t1_o        => t1(I)
+        );
+        
+    end generate;
+    
+    --===============--
     --== SEU voter ==--
+    --===============--
     
     t1_seu_voter : entity work.seu_voter_bit
     generic map(
@@ -81,9 +74,9 @@ begin
     port map(
         clk_i       => ref_clk_i, 
         reset_i     => reset_i, 
-        data_0_i    => t1_0, 
-        data_1_i    => t1_1, 
-        data_2_i    => t1_2, 
+        data_0_i    => t1(0), 
+        data_1_i    => t1(1), 
+        data_2_i    => t1(2), 
         data_o      => t1_o
     );  
     

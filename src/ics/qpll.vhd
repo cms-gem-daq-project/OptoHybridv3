@@ -23,6 +23,9 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
+library unisim;
+use unisim.vcomponents.all;
+
 entity qpll is
 port(
 
@@ -40,9 +43,45 @@ end qpll;
 
 architecture Behavioral of qpll is
 
-begin
+    signal qpll_ref_clk : std_logic;
 
-    qpll_ref_40MHz_o <= '0';
+begin    
+
+    --==========================--
+    --== Output clock buffers ==--
+    --==========================--
+    
+    cdce_clk_pri_oddr : oddr
+    generic map(
+        ddr_clk_edge    => "opposite_edge",
+        init            => '0',
+        srtype          => "sync"
+    )
+    port map (
+        q               => qpll_ref_clk,
+        c               => '0', -- clock
+        ce              => '1',
+        d1              => '1',
+        d2              => '0',
+        r               => '0',
+        s               => '0'
+    );    
+
+    cdce_clk_pri_obuf : obuf
+    generic map(
+        drive       => 12,
+        iostandard  => "lvcmos25",
+        slew        => "fast"
+    )
+    port map(
+        i           => qpll_ref_clk,
+        o           => qpll_ref_40MHz_o
+    );
+
+    --================--
+    --== NULL logic ==--
+    --================--
+
     qpll_reset_o <= '0';
 
 end Behavioral;

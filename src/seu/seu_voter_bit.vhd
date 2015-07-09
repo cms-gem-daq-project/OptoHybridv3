@@ -48,11 +48,15 @@ architecture Behavioral of seu_voter_bit is
 
 begin
 
+    --===================--
     --== Reformat data ==--
+    --===================--
     
     comp <= data_2_i & data_1_i & data_0_i;
         
+    --========================--
     --== Asynchronous voter ==--
+    --========================--
     
     async_gen : if ASYNC = true generate
     begin
@@ -62,7 +66,9 @@ begin
             '0' when others;
     end generate;
     
+    --=======================--
     --== Synchronous voter ==--
+    --=======================--
     
     sync_gen : if ASYNC = false generate
     begin

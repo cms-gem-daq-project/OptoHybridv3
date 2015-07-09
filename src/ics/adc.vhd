@@ -37,9 +37,12 @@ port(
 end adc;
 
 architecture Behavioral of adc is
-
 begin
-
+    
+    --================--
+    --== NULL logic ==--
+    --================--
+    
     adc_io_clk_o <= '0';
     adc_cs_n_o <= '1';
     adc_data_o <= '0';

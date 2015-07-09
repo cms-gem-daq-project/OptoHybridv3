@@ -23,6 +23,9 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
+library unisim;
+use unisim.vcomponents.all;
+
 entity temperature is
 port(
 
@@ -34,10 +37,38 @@ end temperature;
 
 architecture Behavioral of temperature is
 
+    --== I2C lines ==--
+
+    signal sda_mosi : std_logic;
+    signal sda_miso : std_logic;
+    signal sda_tri  : std_logic;
+
 begin
 
+    --======================--
+    --== Tri-state buffer ==--
+    --======================--
+    
+    temp_data_iobuf : iobuf
+    generic map (
+        drive       => 12,
+        iostandard  => "lvcmos25",
+        slew        => "slow"
+    )
+    port map (
+        o           => sda_miso,
+        io          => temp_data_io,
+        i           => sda_mosi,
+        t           => sda_tri
+    );
+    
+    --================--
+    --== NULL logic ==--
+    --================--
+    
     temp_clk_o <= '0';
-
+    sda_mosi <= '0';
+    sda_tri <= '0';
 
 end Behavioral;
 

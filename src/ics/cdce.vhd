@@ -23,6 +23,9 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
+library unisim;
+use unisim.vcomponents.all;
+
 entity cdce is
 port(
     
@@ -53,40 +56,45 @@ architecture Behavioral of cdce is
 
 begin
 
-    --== CDCE primary clock ==--
+    --==========================--
+    --== Output clock buffers ==--
+    --==========================--
     
     cdce_clk_pri_oddr : oddr
     generic map(
-        ddr_clk_edge => "opposite_edge",
-        init => '0',
-        srtype => "sync"
+        ddr_clk_edge    => "opposite_edge",
+        init            => '0',
+        srtype          => "sync"
     )
     port map (
-        q   => cdce_clk_pri,
-        c   => '0', -- clock
-        ce  => '1',
-        d1  => '1',
-        d2  => '0',
-        r   => '0',
-        s   => '0'
+        q               => cdce_clk_pri,
+        c               => '0', -- clock
+        ce              => '1',
+        d1              => '1',
+        d2              => '0',
+        r               => '0',
+        s               => '0'
     );    
 
     cdce_clk_pri_obufds : obufds
+    generic map(
+        iostandard  => "lvds_25"
+    )
     port map(
-        i   => cdce_clk_pri,
-        o   => cdce_clk_pri_p_o,
-        ob  => cdce_clk_pri_n_o
+        i           => cdce_clk_pri,
+        o           => cdce_clk_pri_p_o,
+        ob          => cdce_clk_pri_n_o
     );
-
-    --== ==--
+    
+    --================--
+    --== NULL logic ==--
+    --================--
     
     cdce_aux_o <= '1';
     cdce_ref_o <= '1';
     cdce_pwrdown_o <= '1';
     cdce_sync_o <= '1';
-    
-    --== SPI ==--
-
+   
     cdce_sck_o <= '1';
     cdce_mosi_o <= '1';
     cdce_le_o <= '1';

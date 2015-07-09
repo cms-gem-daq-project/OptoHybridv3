@@ -49,7 +49,9 @@ end t1_switch;
 architecture Behavioral of t1_switch is
 begin
 
+    --=========================--
     --== Asynchronous switch ==--
+    --=========================--
     
     async_gen : if ASYNC = true generate
     
@@ -82,7 +84,9 @@ begin
             
     end generate;
     
+    --========================--
     --== Synchronous switch ==--
+    --========================--
     
     sync_gen : if ASYNC = false generate
     begin

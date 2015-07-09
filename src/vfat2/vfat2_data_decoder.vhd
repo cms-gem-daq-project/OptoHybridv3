@@ -61,7 +61,9 @@ architecture Behavioral of vfat2_data_decoder is
 
 begin
 
+    --=======================--
     --== Data deserializer ==--
+    --=======================--
 
     process(ref_clk_i)    
     begin
@@ -75,7 +77,9 @@ begin
         end if;
     end process;
     
+    --=========================================================--
     --== Validation 0 : fixed bits and first CRC computation ==--
+    --=========================================================--
     
     process(ref_clk_i)
     begin
@@ -110,7 +114,9 @@ begin
         end if;
     end process;
     
+    --===========================================--
     --== Validation 1 : second CRC computation ==--
+    --===========================================--
     
     process(ref_clk_i)
     begin
@@ -132,7 +138,9 @@ begin
         end if;
     end process;    
     
+    --====================================--
     --== Validation 2 : compare the CRC ==--
+    --====================================--
     
     process(ref_clk_i)
     begin
@@ -152,7 +160,9 @@ begin
         end if;
     end process;
     
+    --========================================================--
     --== Validation 3 : regroup tests (CRC ignored for now) ==--
+    --========================================================--
     
     process(ref_clk_i)
     begin

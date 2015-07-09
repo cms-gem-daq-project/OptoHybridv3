@@ -50,14 +50,18 @@ architecture Behavioral of seu_voter_vector is
 
 begin
 
+    --===================--
     --== Reformat data ==--
+    --===================--
     
     format_loop : for I in 0 to (WIDTH - 1) generate
     begin
         comp(I) <= data_2_i(I) & data_1_i(I) & data_0_i(I);
     end generate;    
 
+    --========================--
     --== Asynchronous voter ==--
+    --========================--
     
     async_gen : if ASYNC = true generate
     begin
@@ -70,7 +74,9 @@ begin
         end generate;
     end generate;
     
+    --=======================--
     --== Synchronous voter ==--
+    --=======================--
     
     sync_gen : if ASYNC = false generate
     begin        

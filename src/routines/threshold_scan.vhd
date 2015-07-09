@@ -29,21 +29,25 @@ use work.types_pkg.all;
 entity threshold_scan is
 port(
 
-    ref_clk_i           : in std_logic;
-    reset_i             : in std_logic;
+    ref_clk_i   : in std_logic;
+    reset_i     : in std_logic;
     
-    t1_o                : out t1_t;
+    t1_o        : out t1_t;
     
-    tk_valid_i          : in std_logic_vector(7 downto 0);
-    tk_data_i           : in tk_data_array_t(7 downto 0)
+    tk_valid_i  : in std_logic_vector(7 downto 0);
+    tk_data_i   : in tk_data_array_t(7 downto 0)
     
 );
 end threshold_scan;
 
 architecture Behavioral of threshold_scan is
-
 begin
 
+    --================--
+    --== NULL logic ==--
+    --================--
+    
+    t1_o <= (others => '0');
 
 end Behavioral;
 

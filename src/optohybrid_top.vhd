@@ -21,9 +21,6 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
-library unisim;
-use unisim.vcomponents.all;
-
 library work;
 use work.types_pkg.all;
 
@@ -281,8 +278,8 @@ architecture Behavioral of optohybrid_top is
     signal vfat2_reset              : std_logic_vector(2 downto 0); 
     signal vfat2_t1                 : std_logic_vector(2 downto 0); 
     signal vfat2_scl                : std_logic_vector(5 downto 0); 
-    signal vfat2_sda_out            : std_logic_vector(5 downto 0); 
-    signal vfat2_sda_in             : std_logic_vector(5 downto 0); 
+    signal vfat2_sda_mosi           : std_logic_vector(5 downto 0); 
+    signal vfat2_sda_miso           : std_logic_vector(5 downto 0); 
     signal vfat2_sda_tri            : std_logic_vector(5 downto 0); 
     signal vfat2_data_valid         : std_logic_vector(5 downto 0); 
     signal vfat2_data_out           : std_logic_vector(23 downto 0);
@@ -317,6 +314,20 @@ architecture Behavioral of optohybrid_top is
 
 begin
 
+    --==================--
+    --== Introduction ==--
+    --==================--
+    
+    -- Entities 
+    ---- VFAT2 buffers
+    ---- GBT
+    ---- 3x Tracking links 
+    ---- 1x Trigger link
+    ---- QPLL
+    ---- CDCE 
+    ---- ADC 
+    ---- Temperature sensor
+
     --===================--
     --== VFAT2 buffers ==--
     --===================--
@@ -339,9 +350,9 @@ begin
         vfat2_reset_i           => vfat2_reset,
         vfat2_t1_i              => vfat2_t1,
         vfat2_scl_i             => vfat2_scl,
-        vfat2_sda_i             => vfat2_sda_out,
-        vfat2_sda_o             => vfat2_sda_in, 
-        vfat2_sda_t             => vfat2_sda_tri,
+        vfat2_sda_miso_o        => vfat2_sda_miso, 
+        vfat2_sda_mosi_i        => vfat2_sda_mosi,
+        vfat2_sda_tri_i         => vfat2_sda_tri,
         vfat2_data_valid_o      => vfat2_data_valid,
         --
         vfat2_0_sbits_p_i		=> vfat2_0_sbits_p_i,
@@ -477,10 +488,10 @@ begin
     --== Tracking links ==--
     --====================--
     
-    tk_link_loop : for I in 0 to 2 generate
+    tracking_link_loop : for I in 0 to 2 generate
     begin
     
-        tk_link_inst : entity work.tk_link
+        tracking_link_inst : entity work.tracking_link
         port map(
             ref_clk_i           => ref_clk,
             reset_i             => reset,
@@ -488,9 +499,9 @@ begin
             vfat2_reset_o       => vfat2_reset(I),
             vfat2_t1_o          => vfat2_t1(I),
             vfat2_scl_o         => vfat2_scl((I * 2 + 1) downto (I * 2)),
-            vfat2_sda_o         => vfat2_sda_out((I * 2 + 1) downto (I * 2)),
-            vfat2_sda_i         => vfat2_sda_in((I * 2 + 1) downto (I * 2)),
-            vfat2_sda_t         => vfat2_sda_tri((I * 2 + 1) downto (I * 2)),
+            vfat2_sda_miso_i    => vfat2_sda_miso((I * 2 + 1) downto (I * 2)),
+            vfat2_sda_mosi_o    => vfat2_sda_mosi((I * 2 + 1) downto (I * 2)),
+            vfat2_sda_tri_o     => vfat2_sda_tri((I * 2 + 1) downto (I * 2)),
             vfat2_data_valid_i  => vfat2_data_valid((I * 2 + 1) downto (I * 2)),
             vfat2_data_out_i    => vfat2_data_out((I * 8 + 7) downto (I * 8)),
             gbt_rx_i            => gbt_rx(I),
@@ -505,6 +516,25 @@ begin
         
     end generate;   
     
+    --==================--
+    --== Trigger link ==--
+    --==================--
+    
+    trigger_link_inst : entity work.trigger_link
+    port map(
+        ref_clk_i           => ref_clk,
+        reset_i             => reset,
+        vfat2_sbits_i       => vfat2_sbits,
+        gbt_rx_i            => gbt_rx(3),
+        gbt_tx_o            => gbt_tx(3),
+        gbt_tx_frameclk_i   => gbt_tx_frameclk,
+        gbt_tx_wordclk_i    => gbt_tx_wordclk,
+        gbt_rx_frameclk_i   => gbt_rx_frameclk(3),
+        gbt_rx_wordclk_i    => gbt_rx_wordclk(3),
+        gbt_rx_ready_i      => gbt_rx_ready(3),
+        mgt_ready_i         => mgt_ready(3)
+    );    
+        
     --==========--
     --== QPLL ==--
     --==========--
