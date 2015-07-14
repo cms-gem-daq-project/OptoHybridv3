@@ -34,4 +34,4 @@ NET "temp_data_io"      LOC = AE24; # N12_N
 
 ##
 
-#NET "chip_id_i"         LOC = AE23; # N18_N
+NET "chip_id_io"        LOC = AE23; # N18_N

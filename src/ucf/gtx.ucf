@@ -1,41 +1,41 @@
 # This file constraints the GTX signals
 
-# Clocks
+## Clocks
 
-NET "mgt_112_clk0_p_i"      LOC = AK6; 
-NET "mgt_112_clk0_n_i"      LOC = AK5;
+#NET "mgt_112_clk0_p_i"      LOC = AK6; 
+#NET "mgt_112_clk0_n_i"      LOC = AK5;
 
 #NET "mgt_116_clk1_p_i"      LOC = F6; # 160 MHz
 #NET "mgt_116_clk1_n_i"      LOC = F5;
 
 ## 112
 
-NET "mgt_112_rx_p_i<0>"     LOC = AP5;
-NET "mgt_112_rx_n_i<0>"     LOC = AP6;
+#NET "mgt_112_rx_p_i<0>"     LOC = AP5;
+#NET "mgt_112_rx_n_i<0>"     LOC = AP6;
 
-NET "mgt_112_rx_p_i<1>"     LOC = AM5;
-NET "mgt_112_rx_n_i<1>"     LOC = AM6;
+#NET "mgt_112_rx_p_i<1>"     LOC = AM5;
+#NET "mgt_112_rx_n_i<1>"     LOC = AM6;
 
-NET "mgt_112_rx_p_i<2>"     LOC = AL3;
-NET "mgt_112_rx_n_i<2>"     LOC = AL4;
+#NET "mgt_112_rx_p_i<2>"     LOC = AL3;
+#NET "mgt_112_rx_n_i<2>"     LOC = AL4;
 
-NET "mgt_112_rx_p_i<3>"     LOC = AJ3;
-NET "mgt_112_rx_n_i<3>"     LOC = AJ4;
+#NET "mgt_112_rx_p_i<3>"     LOC = AJ3;
+#NET "mgt_112_rx_n_i<3>"     LOC = AJ4;
 
 
-NET "mgt_112_tx_p_o<0>"     LOC = AP1;
-NET "mgt_112_tx_n_o<0>"     LOC = AP2;
+#NET "mgt_112_tx_p_o<0>"     LOC = AP1;
+#NET "mgt_112_tx_n_o<0>"     LOC = AP2;
 
-NET "mgt_112_tx_p_o<1>"     LOC = AN3;
-NET "mgt_112_tx_n_o<1>"     LOC = AN4;
+#NET "mgt_112_tx_p_o<1>"     LOC = AN3;
+#NET "mgt_112_tx_n_o<1>"     LOC = AN4;
 
-NET "mgt_112_tx_p_o<2>"     LOC = AM1;
-NET "mgt_112_tx_n_o<2>"     LOC = AM2;
+#NET "mgt_112_tx_p_o<2>"     LOC = AM1;
+#NET "mgt_112_tx_n_o<2>"     LOC = AM2;
 
-NET "mgt_112_tx_p_o<3>"     LOC = AK1;
-NET "mgt_112_tx_n_o<3>"     LOC = AK2;
+#NET "mgt_112_tx_p_o<3>"     LOC = AK1;
+#NET "mgt_112_tx_n_o<3>"     LOC = AK2;
 
-# 113
+## 113
 
 #NET "mgt_113_rx_p_i<0>"     LOC = AG3;
 #NET "mgt_113_rx_n_i<0>"     LOC = AG4;
@@ -62,7 +62,7 @@ NET "mgt_112_tx_n_o<3>"     LOC = AK2;
 #NET "mgt_113_tx_p_o<3>"     LOC = AB1;
 #NET "mgt_113_tx_n_o<3>"     LOC = AB2;
 
-# 114
+## 114
 
 #NET "mgt_114_rx_p_i<0>"     LOC = AA3;
 #NET "mgt_114_rx_n_i<0>"     LOC = AA4;
@@ -89,7 +89,7 @@ NET "mgt_112_tx_n_o<3>"     LOC = AK2;
 #NET "mgt_114_tx_p_o<3>"     LOC = P1;
 #NET "mgt_114_tx_n_o<3>"     LOC = P2;
 
-# 115
+## 115
 
 #NET "mgt_115_rx_p_i<0>"     LOC = N3;
 #NET "mgt_115_rx_n_i<0>"     LOC = N4;
@@ -116,7 +116,7 @@ NET "mgt_112_tx_n_o<3>"     LOC = AK2;
 #NET "mgt_115_tx_p_o<3>"     LOC = F1;
 #NET "mgt_115_tx_n_o<3>"     LOC = F2;
 
-# 116
+## 116
 
 #NET "mgt_116_rx_p_i<0>"     LOC = G3;
 #NET "mgt_116_rx_n_i<0>"     LOC = G4;

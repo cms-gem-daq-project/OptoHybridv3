@@ -29,82 +29,66 @@ use work.types_pkg.all;
 entity vfat2_t1_encoder is
 port(
 
-    ref_clk_i   : in std_logic;
-    reset_i     : in std_logic;
+    vfat2_mclk_i    : in std_logic;
+    reset_i         : in std_logic;
     
-    t1_i        : in t1_t;
+    t1_i            : in t1_t;
     
-    t1_o        : out std_logic
+    vfat2_t1_o      : out std_logic
     
 );
 end vfat2_t1_encoder;
 
 architecture Behavioral of vfat2_t1_encoder is
    
-    type states is (IDLE, LV1A_0, LV1A_1, CALPULSE_0, CALPULSE_1, RESYNC_0, RESYNC_1, BC0_0, BC0_1);
+    type state_t is (IDLE, BIT_2, BIT_1, BIT_0);
     
-    signal state : states;
+    signal state    : state_t;
+    signal t1_data  : std_logic_vector(2 downto 0);
 
 begin
 
-    process(ref_clk_i)
+    process(vfat2_mclk_i)
     begin    
-        if (rising_edge(ref_clk_i)) then
+        if (rising_edge(vfat2_mclk_i)) then
             if (reset_i = '1') then
+                vfat2_t1_o <= '0';
                 state <= IDLE;
-                t1_o <= '0';
+                t1_data <= (others => '0');
             else
                 case state is
                     -- IDLE
                     when IDLE =>
+                        vfat2_t1_o <= '0';
                         if (t1_i.lv1a = '1') then
-                            state <= LV1A_0;
-                            t1_o <= '1';
+                            state <= BIT_2;
+                            t1_data <= "100";
                         elsif (t1_i.calpulse = '1') then 
-                            state <= CALPULSE_0;
-                            t1_o <= '1';
+                            state <= BIT_2;
+                            t1_data <= "111";
                         elsif (t1_i.resync = '1') then  
-                            state <= RESYNC_0;
-                            t1_o <= '1';
+                            state <= BIT_2;
+                            t1_data <= "110";
                         elsif (t1_i.bc0 = '1') then 
-                            state <= BC0_0;
-                            t1_o <= '1';
-                        else
-                            state <= IDLE;
-                            t1_o <= '0';
+                            state <= BIT_2;
+                            t1_data <= "101";
                         end if;  
-                    -- LV1A
-                    when LV1A_0 =>
-                        state <= LV1A_1;
-                        t1_o <= '0';
-                    when LV1A_1 =>
+                    -- BIT_2
+                    when BIT_2 =>
+                        vfat2_t1_o <= t1_data(2);
+                        state <= BIT_1;
+                    -- BIT_1
+                    when BIT_1 =>
+                        vfat2_t1_o <= t1_data(1);
+                        state <= BIT_0;
+                    -- BIT_0
+                    when BIT_0 =>
+                        vfat2_t1_o <= t1_data(0);
                         state <= IDLE;
-                        t1_o <= '0';
-                    -- CALPULSE
-                    when CALPULSE_0 =>
-                        state <= CALPULSE_1;
-                        t1_o <= '1';
-                    when CALPULSE_1 =>
-                        state <= IDLE;
-                        t1_o <= '1';
-                    -- RESYNC
-                    when RESYNC_0 =>
-                        state <= RESYNC_1;
-                        t1_o <= '1';
-                    when RESYNC_1 =>
-                        state <= IDLE;
-                        t1_o <= '0';
-                    -- BC0
-                    when BC0_0 =>
-                        state <= BC0_1;
-                        t1_o <= '0';
-                    when BC0_1 =>
-                        state <= IDLE;
-                        t1_o <= '1';
                     --
                     when others => 
+                        vfat2_t1_o <= '0';
                         state <= IDLE;
-                        t1_o <= '0';
                 end case;  
             end if;
         end if;

@@ -19,8 +19,6 @@
 -- Revision 0.01 - File Created
 -- Additional Comments: 
 --
--- If the clock speed allows it, multiple tests could be done in one clock cycle (maybe all).
---
 ----------------------------------------------------------------------------------
 
 library ieee;
@@ -32,32 +30,20 @@ use work.types_pkg.all;
 entity vfat2_data_decoder is
 port(
 
-    ref_clk_i   : in std_logic;
-    reset_i     : in std_logic;
+    vfat2_mclk_i        : in std_logic;
+    reset_i             : in std_logic;
     
-    data_i      : in std_logic;
-    
-    valid_o     : out std_logic;
-    data_o      : out tk_data_t
+    vfat2_data_out_i    : in std_logic;
+   
+    tk_data_o           : out tk_data_t
     
 );
 end vfat2_data_decoder;
 
 architecture Behavioral of vfat2_data_decoder is
 
-    signal data     : std_logic_vector(196 downto 0); -- The data packet is 192 bits wide but we include the two IDLE bits in front of each packet 
-                                                      -- and the computation time for the algorithm (the data will be shifted while computing)
-                    
-    alias data_0    : std_logic_vector(193 downto 0) is data(193 downto 0); -- Data in the first computation cycle  
-    alias data_1    : std_logic_vector(193 downto 0) is data(194 downto 1); -- Data in the second computation cycle  
-    alias data_2    : std_logic_vector(193 downto 0) is data(195 downto 2); -- Data in the third computation cycle  
-    alias data_3    : std_logic_vector(193 downto 0) is data(196 downto 3); -- Data in the fourth computation cycle  
-
-    signal tests_0  : std_logic_vector(2 downto 0);
-    signal crc_0    : std_logic_vector(15 downto 0);
-    signal tests_1  : std_logic_vector(2 downto 0);
-    signal crc_1    : std_logic_vector(15 downto 0);
-    signal tests_2  : std_logic_vector(3 downto 0);
+    signal data : std_logic_vector(194 downto 0); -- The data packet is 192 bits wide but we include the two IDLE bits in front of each packet 
+                                                  -- and the computation time for the algorithm (the data will be shifted while computing)
 
 begin
 
@@ -65,126 +51,66 @@ begin
     --== Data deserializer ==--
     --=======================--
 
-    process(ref_clk_i)    
+    process(vfat2_mclk_i)    
     begin
-        if (rising_edge(ref_clk_i)) then
+        if (rising_edge(vfat2_mclk_i)) then
             if (reset_i = '1') then
                 data <= (others => '0');
             else
-                data(196 downto 1) <= data(195 downto 0);
-                data(0) <= data_i;
+                data(194 downto 1) <= data(193 downto 0);
+                data(0) <= vfat2_data_out_i;
             end if;
         end if;
     end process;
     
-    --=========================================================--
-    --== Validation 0 : fixed bits and first CRC computation ==--
-    --=========================================================--
+    --================--
+    --== Validation ==--
+    --================--
     
-    process(ref_clk_i)
+    process(vfat2_mclk_i)
+        variable tests  : std_logic_vector(2 downto 0);
     begin
-        if (rising_edge(ref_clk_i)) then
+        if (rising_edge(vfat2_mclk_i)) then
             if (reset_i = '1') then
-                tests_0 <= (others => '0');
-                crc_0 <= (others => '0');
+                tk_data_o <= (valid     => '0',
+                              bc        => (others => '0'),
+                              ec        => (others => '0'),
+                              flags     => (others => '0'),
+                              chip_id   => (others => '0'),
+                              strips    => (others => '0'),
+                              crc       => (others => '0'));
+                tests := (others => '0');
             else
                 -- 6 fixed bits 
-                case data_0(193 downto 188) is
-                    when "001010" => tests_0(0) <= '1';
-                    when others => tests_0(0) <= '0';
+                case data(193 downto 188) is
+                    when "001010" => tests(0) := '1';
+                    when others => tests(0) := '0';
                 end case;
                 -- 4 next fixed bits
-                case data_0(175 downto 172) is
-                    when "1100" => tests_0(1) <= '1';
-                    when others => tests_0(1) <= '0';
+                case data(175 downto 172) is
+                    when "1100" => tests(1) := '1';
+                    when others => tests(1) := '0';
                 end case;
                 -- 4 next fixed bits
-                case data_0(159 downto 156) is
-                    when "1110" => tests_0(2) <= '1';
-                    when others => tests_0(2) <= '0';
+                case data(159 downto 156) is
+                    when "1110" => tests(2) := '1';
+                    when others => tests(2) := '0';
                 end case;
-                -- Compute the first part of the CRC
-                crc_0 <= data_0(191 downto 176) xor 
-                         data_0(175 downto 160) xor 
-                         data_0(159 downto 144) xor 
-                         data_0(143 downto 128) xor
-                         data_0(127 downto 112) xor
-                         data_0(111 downto 96);
-            end if;
-        end if;
-    end process;
-    
-    --===========================================--
-    --== Validation 1 : second CRC computation ==--
-    --===========================================--
-    
-    process(ref_clk_i)
-    begin
-        if (rising_edge(ref_clk_i)) then
-            if (reset_i = '1') then
-                tests_1 <= (others => '0');
-                crc_1 <= (others => '0');
-            else           
-                -- Propagate test results
-                tests_1 <= tests_0;
-                -- Compute the next part of the CRC
-                crc_1 <= crc_0 xor
-                         data_1(95 downto 80) xor
-                         data_1(79 downto 64) xor
-                         data_1(63 downto 48) xor
-                         data_1(47 downto 32) xor
-                         data_1(31 downto 16);
-            end if;
-        end if;
-    end process;    
-    
-    --====================================--
-    --== Validation 2 : compare the CRC ==--
-    --====================================--
-    
-    process(ref_clk_i)
-    begin
-        if (rising_edge(ref_clk_i)) then
-            if (reset_i = '1') then
-                tests_2 <= (others => '0');
-            else           
-                -- Propagate test results
-                tests_2(2 downto 0) <= tests_1;
-                -- Compute the next part of the CRC
-                if (crc_1 = data_2(15 downto 0)) then
-                    tests_2(3) <= '1';
-                else
-                    tests_2(3) <= '0';
-                end if;
-            end if;
-        end if;
-    end process;
-    
-    --========================================================--
-    --== Validation 3 : regroup tests (CRC ignored for now) ==--
-    --========================================================--
-    
-    process(ref_clk_i)
-    begin
-        if (rising_edge(ref_clk_i)) then
-            if (reset_i = '1') then
-                valid_o <= '0';                    
-                data_o <= (others => (others => '0'));
-            else
-                case tests_2(2 downto 0) is
-                    when "111" => 
-                        valid_o <= '1';       
-                        data_o <= (bc => data_3(187 downto 176),
-                                   ec => data_3(171 downto 164),
-                                   flags => data_3(163 downto 160), 
-                                   chip_id => data_3(155 downto 144),
-                                   strips => data_3(143 downto 16),
-                                   crc => data_3(15 downto 0));
+                -- Verification
+                case tests is
+                    when "111" =>      
+                        tk_data_o <= (valid     => '1',
+                                      bc        => data(187 downto 176),
+                                      ec        => data(171 downto 164),
+                                      flags     => data(163 downto 160), 
+                                      chip_id   => data(155 downto 144),
+                                      strips    => data(143 downto 16),
+                                      crc       => data(15 downto 0));
                     when others => 
-                        valid_o <= '0';
-                end case;
+                        tk_data_o.valid <= '0';
+                end case;                
             end if;
-        end if;        
-    end process;                
-    
+        end if;
+    end process;
+   
 end Behavioral;

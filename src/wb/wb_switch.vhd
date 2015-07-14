@@ -28,31 +28,27 @@ use work.types_pkg.all;
 use work.wb_pkg.all;
 
 entity wb_switch is
-generic(
-    N_MASTERS   : integer := 2;
-    N_SLAVES    : integer := 4
-);
 port(
 
     wb_clk_i    : in std_logic;
     reset_i     : in std_logic;
    
-    wb_m_req_i  : in wb_req_array_t((N_MASTERS - 1) downto 0);
-    wb_s_req_o  : out wb_req_array_t((N_SLAVES - 1) downto 0);
+    wb_m_req_i  : in wb_req_array_t((WB_N_MASTERS - 1) downto 0);
+    wb_s_req_o  : out wb_req_array_t((WB_N_SLAVES - 1) downto 0);
     
-    wb_s_res_i  : in wb_res_array_t((N_SLAVES - 1) downto 0);
-    wb_m_res_o  : out wb_res_array_t((N_MASTERS - 1) downto 0)
+    wb_s_res_i  : in wb_res_array_t((WB_N_SLAVES - 1) downto 0);
+    wb_m_res_o  : out wb_res_array_t((WB_N_MASTERS - 1) downto 0)
     
 );
 end wb_switch;
 
 architecture Behavioral of wb_switch is
 
-    signal wb_from_m_req    : wb_req_array_t((N_MASTERS - 1) downto 0);
-    signal wb_to_m_res      : wb_res_array_t((N_MASTERS - 1) downto 0);
+    signal wb_from_m_req    : wb_req_array_t((WB_N_MASTERS - 1) downto 0);
+    signal wb_to_m_res      : wb_res_array_t((WB_N_MASTERS - 1) downto 0);
     
-    signal wb_from_arb_req  : wb_req_array_t((N_SLAVES - 1) downto 0); 
-    signal wb_to_arb_res    : wb_res_array_t((N_SLAVES - 1) downto 0);
+    signal wb_from_arb_req  : wb_req_array_t((WB_N_SLAVES - 1) downto 0); 
+    signal wb_to_arb_res    : wb_res_array_t((WB_N_SLAVES - 1) downto 0);
 
 begin
 
@@ -60,7 +56,7 @@ begin
     --== Master interfaces ==--
     --=======================--
 
-    wb_master_gen : for M in 0 to (N_MASTERS - 1) generate
+    wb_master_gen : for M in 0 to (WB_N_MASTERS - 1) generate
     begin
 
         wb_master_interface_inst : entity work.wb_master_interface
@@ -80,10 +76,6 @@ begin
     --==============--
     
     wb_arbitrer_inst : entity work.wb_arbitrer
-    generic map(
-        N_MASTERS   => N_MASTERS,
-        N_SLAVES    => N_SLAVES
-    )
     port map(
         wb_clk_i    => wb_clk_i,
         reset_i     => reset_i,
@@ -97,14 +89,10 @@ begin
     --== Slave interfaces ==--
     --======================--
 
-    wb_slave_gen : for S in 0 to (N_SLAVES - 1) generate
+    wb_slave_gen : for S in 0 to (WB_N_SLAVES - 1) generate
     begin
 
         wb_slave_interface_inst : entity work.wb_slave_interface
-        generic map(
-            N_MASTERS   => N_MASTERS,
-            N_SLAVES    => N_SLAVES
-        )
         port map(
             wb_clk_i    => wb_clk_i,
             reset_i     => reset_i,

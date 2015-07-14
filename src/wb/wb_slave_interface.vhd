@@ -29,10 +29,6 @@ use work.types_pkg.all;
 use work.wb_pkg.all;
 
 entity wb_slave_interface is
-generic(
-    N_MASTERS   : integer := 2;
-    N_SLAVES    : integer := 4
-);
 port(
 
     wb_clk_i    : in std_logic;
@@ -52,7 +48,7 @@ architecture Behavioral of wb_slave_interface is
     type state_t is (IDLE, ACK_WAIT, MONO);
     
     signal state    : state_t;
-    signal cnt      : integer range 0 to N_MASTERS;
+    signal cnt      : integer range 0 to WB_N_MASTERS;
 
 begin
 
@@ -83,7 +79,7 @@ begin
                         wb_req_o.stb <= '0';
                         if (wb_res_i.ack = '1') then
                             wb_res_o <= wb_res_i;
-                            cnt <= N_MASTERS - 1;
+                            cnt <= WB_N_MASTERS - 1;
                             state <= MONO;
                         end if;
                     when MONO =>

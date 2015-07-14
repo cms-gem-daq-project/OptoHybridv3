@@ -28,20 +28,16 @@ use work.types_pkg.all;
 use work.wb_pkg.all;
 
 entity wb_arbitrer is
-generic(
-    N_MASTERS   : integer := 2;
-    N_SLAVES    : integer := 4
-);
 port(
 
     wb_clk_i    : in std_logic;
     reset_i     : in std_logic;
    
-    wb_req_i    : in wb_req_array_t((N_MASTERS - 1) downto 0);
-    wb_req_o    : out wb_req_array_t((N_SLAVES - 1) downto 0);
+    wb_req_i    : in wb_req_array_t((WB_N_MASTERS - 1) downto 0);
+    wb_req_o    : out wb_req_array_t((WB_N_SLAVES - 1) downto 0);
     
-    wb_res_i    : in wb_res_array_t((N_SLAVES - 1) downto 0);
-    wb_res_o    : out wb_res_array_t((N_MASTERS - 1) downto 0)
+    wb_res_i    : in wb_res_array_t((WB_N_SLAVES - 1) downto 0);
+    wb_res_o    : out wb_res_array_t((WB_N_MASTERS - 1) downto 0)
     
 );
 end wb_arbitrer;
@@ -51,13 +47,13 @@ architecture Behavioral of wb_arbitrer is
     type state_t is (IDLE, WAITING, ACK_WAIT);
     type state_array_t is array(integer range <>) of state_t;
     
-    signal states       : state_array_t((N_MASTERS - 1) downto 0);
+    signal states       : state_array_t((WB_N_MASTERS - 1) downto 0);
     
-    signal ctrl_master  : integer range 0 to (N_MASTERS - 1);
+    signal ctrl_master  : integer range 0 to (WB_N_MASTERS - 1);
    
-    signal sel_slave    : int_array_t((N_MASTERS - 1) downto 0);
-    signal sel_master   : int_array_t((N_SLAVES - 1) downto 0);
-    signal wb_req       : wb_req_array_t((N_MASTERS - 1) downto 0);
+    signal sel_slave    : int_array_t((WB_N_MASTERS - 1) downto 0);
+    signal sel_master   : int_array_t((WB_N_SLAVES - 1) downto 0);
+    signal wb_req       : wb_req_array_t((WB_N_MASTERS - 1) downto 0);
     
 begin
     
@@ -71,7 +67,7 @@ begin
             if (reset_i = '1') then
                 ctrl_master <= 0;
             else
-                if (ctrl_master = (N_MASTERS - 1)) then
+                if (ctrl_master = (WB_N_MASTERS - 1)) then
                     ctrl_master <= 0;
                 else
                     ctrl_master <= ctrl_master + 1;

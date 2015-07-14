@@ -2,9 +2,9 @@
 -- Company:        IIHE - ULB
 -- Engineer:       Thomas Lenzi (thomas.lenzi@cern.ch)
 -- 
--- Create Date:    13:13:21 03/12/2015 
+-- Create Date:    13:30:05 07/13/2015 
 -- Design Name:    OptoHybrid v2
--- Module Name:    optohybrid_top - Behavioral 
+-- Module Name:    vfat2 - Behavioral 
 -- Project Name:   OptoHybrid v2
 -- Target Devices: xc6vlx130t-1ff1156
 -- Tool versions:  ISE  P.20131013
@@ -23,30 +23,29 @@ use ieee.std_logic_1164.all;
 
 library work;
 use work.types_pkg.all;
-use work.wb_pkg.all;
 
-entity optohybrid_top is
+entity vfat2 is
 port(
-
-    --== VFAT2s Control ==--
     
+    --== VFAT2s raw control ==--
+
     vfat2_mclk_p_o          : out std_logic_vector(2 downto 0);
     vfat2_mclk_n_o          : out std_logic_vector(2 downto 0);
-    
+
     vfat2_resb_o            : out std_logic_vector(2 downto 0);
     vfat2_resh_o            : out std_logic_vector(2 downto 0);
-    
+
     vfat2_t1_p_o            : out std_logic_vector(2 downto 0);
     vfat2_t1_n_o            : out std_logic_vector(2 downto 0);
-    
+
     vfat2_scl_o             : out std_logic_vector(5 downto 0);
     vfat2_sda_io            : inout std_logic_vector(5 downto 0);
-    
+
     vfat2_data_valid_p_i    : in std_logic_vector(5 downto 0);
     vfat2_data_valid_n_i    : in std_logic_vector(5 downto 0);
-    
-    --== VFAT2s Data ==--
-    
+
+    --== VFAT2s raw data ==--
+
     vfat2_0_sbits_p_i       : in std_logic_vector(7 downto 0);
     vfat2_0_sbits_n_i       : in std_logic_vector(7 downto 0);
     vfat2_0_data_out_p_i    : in std_logic;
@@ -101,7 +100,7 @@ port(
     vfat2_10_sbits_n_i      : in std_logic_vector(7 downto 0);
     vfat2_10_data_out_p_i   : in std_logic;
     vfat2_10_data_out_n_i   : in std_logic;
-    
+
     vfat2_11_sbits_p_i      : in std_logic_vector(7 downto 0);
     vfat2_11_sbits_n_i      : in std_logic_vector(7 downto 0);
     vfat2_11_data_out_p_i   : in std_logic;
@@ -166,156 +165,36 @@ port(
     vfat2_23_sbits_n_i      : in std_logic_vector(7 downto 0);
     vfat2_23_data_out_p_i   : in std_logic;
     vfat2_23_data_out_n_i   : in std_logic;
-    
-    --== Memory ==--
-    
---    multiboot_rs_o          : out std_logic_vector(1 downto 0);
-    
---    flash_address_o         : out std_logic_vector(22 downto 0);
---    flash_data_io           : inout std_logic_vector(15 downto 0);
---    flash_chip_enable_b_o   : out std_logic;
---    flash_out_enable_b_o    : out std_logic;
---    flash_write_enable_b_o  : out std_logic;
---    flash_latch_enable_b_o  : out std_logic;
-    
---    eprom_data_i            : inout std_logic_vector(7 downto 0);
---    eprom_clk_o             : out std_logic;
---    eprom_reset_b_o         : out std_logic;
---    eprom_chip_enable_b_o   : out std_logic;
---    eprom_tdi_o             : out std_logic;
---    eprom_tdo_i             : in std_logic;
---    eprom_tms_o             : out std_logic;
---    eprom_tck_o             : out std_logic;
-    
-    --== Clocking ==--
-    
-    clk_50MHz_i             : in std_logic;
 
-    qpll_ref_40MHz_o        : out std_logic;
-    qpll_reset_o            : out std_logic;
-    qpll_locked_i           : in std_logic;
-    qpll_error_i            : in std_logic;
-    qpll_clk_p_i            : in std_logic;
-    qpll_clk_n_i            : in std_logic;
-
-    cdce_clk_p_i            : in std_logic;
-    cdce_clk_n_i            : in std_logic;
-    cdce_clk_pri_p_o        : out std_logic;
-    cdce_clk_pri_n_o        : out std_logic;
-    cdce_aux_out_o          : out std_logic;
-    cdce_aux_in_i           : in std_logic;
-    cdce_ref_o              : out std_logic;
-    cdce_pwrdown_o          : out std_logic;
-    cdce_sync_o             : out std_logic;
-    cdce_locked_i           : in std_logic;
-    cdce_sck_o              : out std_logic;
-    cdce_mosi_o             : out std_logic;
-    cdce_le_o               : out std_logic;
-    cdce_miso_i             : in std_logic;
+    --== VFAT2 packed ==--
     
-    --== Miscellaneous ==--
-    
---    hdmi_scl_io             : inout std_logic_vector(1 downto 0);
---    hdmi_sda_io             : inout std_logic_vector(1 downto 0);
---
---    tmds_d_p_io             : inout std_logic_vector(1 downto 0);
---    tmds_d_n_io             : inout std_logic_vector(1 downto 0);
---
---    tmds_clk_p_io           : inout std_logic;
---    tmds_clk_n_io           : inout std_logic;
-
-    adc_chip_select_o       : out std_logic;
-    adc_din_i               : in std_logic;
-    adc_dout_o              : out std_logic;
-    adc_clk_o               : out std_logic;
-    adc_eoc_i               : in std_logic;
-
-    temp_clk_o              : out std_logic;
-    temp_data_io            : inout std_logic;
-
-    chip_id_io              : inout std_logic
-    
-    --== GTX ==--
-    
---    mgt_112_clk0_p_i        : in std_logic;
---    mgt_112_clk0_n_i        : in std_logic;
-    
---    mgt_116_clk1_p_i        : in std_logic;
---    mgt_116_clk1_n_i        : in std_logic;
-    
---    mgt_112_rx_p_i          : in std_logic_vector(3 downto 0);
---    mgt_112_rx_n_i          : in std_logic_vector(3 downto 0);
---    mgt_112_tx_p_o          : out std_logic_vector(3 downto 0);
---    mgt_112_tx_n_o          : out std_logic_vector(3 downto 0)
-    
---    mgt_113_rx_p_i          : in std_logic_vector(3 downto 0);
---    mgt_113_rx_n_i          : in std_logic_vector(3 downto 0);
---    mgt_113_tx_p_o          : out std_logic_vector(3 downto 0);
---    mgt_113_tx_n_o          : out std_logic_vector(3 downto 0);
-    
---    mgt_114_rx_p_i          : in std_logic_vector(3 downto 0);
---    mgt_114_rx_n_i          : in std_logic_vector(3 downto 0);
---    mgt_114_tx_p_o          : out std_logic_vector(3 downto 0);
---    mgt_114_tx_n_o          : out std_logic_vector(3 downto 0);
-    
---    mgt_115_rx_p_i          : in std_logic_vector(3 downto 0);
---    mgt_115_rx_n_i          : in std_logic_vector(3 downto 0);
---    mgt_115_tx_p_o          : out std_logic_vector(3 downto 0);
---    mgt_115_tx_n_o          : out std_logic_vector(3 downto 0);
-    
---    mgt_116_rx_p_i          : in std_logic_vector(3 downto 0);
---    mgt_116_rx_n_i          : in std_logic_vector(3 downto 0);
---    mgt_116_tx_p_o          : out std_logic_vector(3 downto 0);
---    mgt_116_tx_n_o          : out std_logic_vector(3 downto 0)
-
+    vfat2_mclk_i            : in std_logic;
+    vfat2_reset_i           : in std_logic;
+    vfat2_t1_i              : in t1_t;
+    wb_req_i                : in wb_req_array_t(2 downto 0);
+    wb_res_o                : out wb_res_array_t(2 downto 0);
+    vfat2_tk_data_o         : out tk_data_array_t(23 downto 0);
+    vfat2_sbits_o           : out sbits_array_t(23 downto 0)
+ 
 );
-end optohybrid_top;
+end vfat2;
 
-architecture Behavioral of optohybrid_top is
+architecture Behavioral of vfat2 is
 
-    --== Clock signals ==--
-    
-    signal lhc_clk          : std_logic; -- The system reference clock is the LHC clock
-    
-    --== Resets signals ==--
+    signal vfat2_t1         : std_logic; 
+    signal vfat2_scl        : std_logic_vector(5 downto 0); 
+    signal vfat2_sda_mosi   : std_logic_vector(5 downto 0); 
+    signal vfat2_sda_miso   : std_logic_vector(5 downto 0); 
+    signal vfat2_sda_tri    : std_logic_vector(5 downto 0); 
+    signal vfat2_data_out   : std_logic_vector(23 downto 0);
 
-    signal reset_i          : std_logic;
-
-    --== VFAT2 signals ==--
-
-    signal vfat2_mclk       : std_logic;
-    signal vfat2_reset      : std_logic;
-    signal vfat2_t1         : t1_t;
-    signal wb_vfat2_i2c_req : wb_req_array_t(2 downto 0);
-    signal wb_vfat2_i2c_res : wb_res_array_t(2 downto 0);    
-    signal vfat2_tk_data    : tk_data_array_t(23 downto 0);
-    signal vfat2_sbits      : sbits_array_t(23 downto 0);
-    
-    --== ADC signals ==--
-    
-    --== CDCE signals ==--
-    
-    --== Chip ID signals ==--
-    
-    --== QPLL signals ==--
-    
-    --== Temperature signals ==--
-    
-    --== Wishbone busses ==--
-    
-    signal wb_m_req         : wb_req_array_t((WB_N_MASTERS - 1) downto 0);
-    signal wb_m_res         : wb_res_array_t((WB_N_MASTERS - 1) downto 0);
-    
-    signal wb_s_req         : wb_req_array_t((WB_N_SLAVES - 1) downto 0);
-    signal wb_s_res         : wb_res_array_t((WB_N_SLAVES - 1) downto 0);
-    
 begin
 
-    --============--
-    --== VFAT2s ==--
-    --============--
+    --===================--
+    --== VFAT2 buffers ==--
+    --===================--
     
-    vfat2_inst : entity work.vfat2
+    vfat2_buffers_inst : entity work.vfat2_buffers
     port map(
         -- Raw
         vfat2_mclk_p_o          => vfat2_mclk_p_o,
@@ -424,100 +303,57 @@ begin
         vfat2_23_sbits_n_i		=> vfat2_23_sbits_n_i,
         vfat2_23_data_out_p_i	=> vfat2_23_data_out_p_i,
         vfat2_23_data_out_n_i	=> vfat2_23_data_out_n_i,
-        -- Packed
-        vfat2_mclk_i            => vfat2_mclk,
-        vfat2_reset_i           => vfat2_reset,
+        -- Buffered
+        vfat2_mclk_i            => vfat2_mclk_i,
+        vfat2_reset_i           => vfat2_reset_i,
         vfat2_t1_i              => vfat2_t1,
-        wb_req_i                => wb_vfat2_i2c_req,
-        wb_res_o                => wb_vfat2_i2c_res,
-        vfat2_tk_data_o         => vfat2_tk_data,
-        vfat2_sbits_o           => vfat2_sbits
+        vfat2_scl_i             => vfat2_scl,
+        vfat2_sda_miso_o        => vfat2_sda_miso, 
+        vfat2_sda_mosi_i        => vfat2_sda_mosi,
+        vfat2_sda_tri_i         => vfat2_sda_tri,
+        vfat2_data_valid_o      => open,
+        vfat2_data_out_o        => vfat2_data_out,
+        vfat2_sbits_o           => vfat2_sbits_o
     );
     
-    wb_vfat2_i2c_req <= wb_s_req(WB_S_VFAT2_I2C_2) & wb_s_req(WB_S_VFAT2_I2C_1) & wb_s_req(WB_S_VFAT2_I2C_0);
+    --================--
+    --== T1 Encoder ==--
+    --================--
     
-    wb_s_res(WB_S_VFAT2_I2C_2) <= wb_vfat2_i2c_res(2);
-    wb_s_res(WB_S_VFAT2_I2C_1) <= wb_vfat2_i2c_res(1);
-    wb_s_res(WB_S_VFAT2_I2C_0) <= wb_vfat2_i2c_res(0);
+    vfat2_t1_encoder_inst : entity work.vfat2_t1_encoder
+    port map(
+        vfat2_mclk_i    => vfat2_mclk_i,
+        reset_i         => vfat2_reset_i,
+        t1_i            => vfat2_t1_i,
+        vfat2_t1_o      => vfat2_t1
+    ); 
     
     --=========--
-    --== ADC ==--
+    --== I2C ==--
     --=========--
     
-    adc_inst : entity work.adc
-    port map(
-        -- Raw
-        adc_clk_o           => adc_clk_o,
-        adc_chip_select_o   => adc_chip_select_o,
-        adc_dout_o          => adc_dout_o,
-        adc_din_i           => adc_din_i,
-        adc_eoc_i           => adc_eoc_i,
-        -- Packed
-        wb_req_i            => wb_s_req(WB_S_ADC),
-        wb_res_o            => wb_s_res(WB_S_ADC)
-    );
+    vfat2_i2c_gen : for I in 0 to 2 generate
+    begin
+    
+        -- I2C
+    
+    end generate;
+    
+    --===========================--
+    --== Tracking data decoder ==--
+    --===========================--
 
-    --==========--
-    --== CDCE ==--
-    --==========--
+    vfat2_data_decoder_gen : for I in 0 to 23 generate
+    begin
     
-    cdce_inst : entity work.cdce
-    port map(
-        -- Raw
-        cdce_clk_p_i        => cdce_clk_p_i,
-        cdce_clk_n_i        => cdce_clk_n_i,
-        cdce_clk_pri_p_o    => cdce_clk_pri_p_o,
-        cdce_clk_pri_n_o    => cdce_clk_pri_n_o,
-        cdce_aux_out_o      => cdce_aux_out_o,
-        cdce_aux_in_i       => cdce_aux_in_i,
-        cdce_ref_o          => cdce_ref_o,
-        cdce_pwrdown_o      => cdce_pwrdown_o,
-        cdce_sync_o         => cdce_sync_o,
-        cdce_locked_i       => cdce_locked_i,
-        cdce_sck_o          => cdce_sck_o,
-        cdce_mosi_o         => cdce_mosi_o,
-        cdce_le_o           => cdce_le_o,
-        cdce_miso_i         => cdce_miso_i,
-        -- Packed
-        wb_req_i            => wb_s_req(WB_S_CDCE),
-        wb_res_o            => wb_s_res(WB_S_CDCE)
-    );
+        vfat2_data_decoder_inst : entity work.vfat2_data_decoder
+        port map(
+            vfat2_mclk_i        => vfat2_mclk_i,
+            reset_i             => vfat2_reset_i,
+            vfat2_data_out_i    => vfat2_data_out(I),
+            tk_data_o           => vfat2_tk_data_o(I)
+        );
+        
+    end generate;
 
-    --=============--
-    --== Chip ID ==--
-    --=============--
-    
-    chipid_inst : entity work.chipid
-    port map(
-        chip_id_io  => chip_id_io,
-        wb_req_i    => wb_s_req(WB_S_CHIPID),
-        wb_res_o    => wb_s_res(WB_S_CHIPID)
-    );
-
-    --==========--
-    --== QPLL ==--
-    --==========--
-    
-    qpll_inst : entity work.qpll
-    port map(
-        qpll_ref_40MHz_o    => qpll_ref_40MHz_o,
-        qpll_reset_o        => qpll_reset_o,
-        qpll_locked_i       => qpll_locked_i,
-        qpll_error_i        => qpll_error_i,
-        qpll_clk_p_i        => qpll_clk_p_i,
-        qpll_clk_n_i        => qpll_clk_n_i
-    );
-    
-    --=================--
-    --== Temperature ==--
-    --=================--
-    
-    temp_inst : entity work.temp
-    port map(
-        temp_clk_o      => temp_clk_o,
-        temp_data_io    => temp_data_io,
-        wb_req_i        => wb_s_req(WB_S_TEMP),
-        wb_res_o        => wb_s_res(WB_S_TEMP)
-    );
-    
 end Behavioral;

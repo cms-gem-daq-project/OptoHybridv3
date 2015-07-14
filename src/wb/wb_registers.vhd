@@ -28,8 +28,10 @@ use work.wb_pkg.all;
 
 entity wb_registers is
 generic(
-    BASE        : std_logic_vector(31 downto 0) := x"00000000";
-    SIZE        : integer := 8
+    BASE        : std_logic_vector(31 downto 0) := (others => '0');
+    SIZE        : integer := 8;
+    WB_MASK     : std_logic_vector := (others => '1');
+    WE_MASK     : std_logic_vector := (others => '1') 
 );
 port(
 
@@ -39,8 +41,12 @@ port(
     wb_req_i    : in wb_req_t;
     wb_res_o    : out wb_res_t;
     
-    regs_o      : out register_array_t((SIZE - 1) downto 0)
+    stb_i       : in std_logic_vector((SIZE - 1) downto 0);
+    data_i      : in register_array_t((SIZE - 1) downto 0);
     
+    valid_o     : out std_logic_vector((SIZE - 1) downto 0);
+    data_o      : out register_array_t((SIZE - 1) downto 0)
+
 );
 end wb_registers;
 
@@ -59,8 +65,22 @@ begin
     begin
         if (rising_edge(wb_clk_i)) then
             if (reset_i = '1') then
+                valid_o <= (others => '0');
                 registers <= (others => (others => '0'));
             else
+                
+                --== Logic RD/WR ==--
+            
+                for I in 0 to (SIZE - 1) loop
+                    if (WE_MASK(I) = '1' and stb_i(I) = '1') then
+                        registers(I) <= data_i(I);
+                    end if;
+                end loop;
+                
+                --== Wishbone RD/WR ==--
+            
+                valid_o <= (others => '0');
+                
                 if (wb_req_i.stb = '1') then
                     sel := to_integer(unsigned(wb_req_i.addr)) - base_int;
                     if (sel >= SIZE or sel < 0) then
@@ -68,7 +88,8 @@ begin
                                      stat   => "01",
                                      data   => (others => '0'));
                     else
-                        if (wb_req_i.we = '1') then
+                        if (WB_MASK(sel) = '1' and wb_req_i.we = '1') then
+                            valid_o(sel) <= '1';
                             registers(sel) <= wb_req_i.data;
                         end if;
                         wb_res_o <= (ack    => '1',
@@ -78,11 +99,12 @@ begin
                 else
                     wb_res_o.ack <= '0';
                 end if;
+                
             end if;
         end if;
     end process;
     
-    regs_o <= registers;
+    data_o <= registers;
 
 end Behavioral;
 
