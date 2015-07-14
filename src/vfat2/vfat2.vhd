@@ -168,11 +168,14 @@ port(
 
     --== VFAT2 packed ==--
     
+    wb_clk_i                : in std_logic;
+    reset_i                 : in std_logic;
+    wb_req_i                : in wb_req_array_t(5 downto 0);
+    wb_res_o                : out wb_res_array_t(5 downto 0);
+    
     vfat2_mclk_i            : in std_logic;
     vfat2_reset_i           : in std_logic;
     vfat2_t1_i              : in t1_t;
-    wb_req_i                : in wb_req_array_t(2 downto 0);
-    wb_res_o                : out wb_res_array_t(2 downto 0);
     vfat2_tk_data_o         : out tk_data_array_t(23 downto 0);
     vfat2_sbits_o           : out sbits_array_t(23 downto 0)
  
@@ -324,7 +327,7 @@ begin
     port map(
         vfat2_mclk_i    => vfat2_mclk_i,
         reset_i         => vfat2_reset_i,
-        t1_i            => vfat2_t1_i,
+        vfat2_t1_i      => vfat2_t1_i,
         vfat2_t1_o      => vfat2_t1
     ); 
     
@@ -332,10 +335,20 @@ begin
     --== I2C ==--
     --=========--
     
-    vfat2_i2c_gen : for I in 0 to 2 generate
+    vfat2_i2c_gen : for I in 0 to 5 generate
     begin
     
-        -- I2C
+        vfat2_i2c_inst : entity work.vfat2_i2c
+        port map(
+            wb_clk_i            => wb_clk_i,
+            reset_i             => reset_i,
+            wb_req_i            => wb_req_i(I),
+            wb_res_o            => wb_res_o(I),
+            vfat2_scl_o         => vfat2_scl(I),
+            vfat2_sda_miso_i    => vfat2_sda_miso(I),
+            vfat2_sda_mosi_o    => vfat2_sda_mosi(I),
+            vfat2_sda_tri_o     => vfat2_sda_tri(I)
+        );
     
     end generate;
     

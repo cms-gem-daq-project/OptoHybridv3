@@ -68,7 +68,9 @@ begin
     --================--
     
     process(vfat2_mclk_i)
+    
         variable tests  : std_logic_vector(2 downto 0);
+        
     begin
         if (rising_edge(vfat2_mclk_i)) then
             if (reset_i = '1') then

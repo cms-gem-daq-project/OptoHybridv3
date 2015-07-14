@@ -32,7 +32,7 @@ port(
     vfat2_mclk_i    : in std_logic;
     reset_i         : in std_logic;
     
-    t1_i            : in t1_t;
+    vfat2_t1_i      : in t1_t;
     
     vfat2_t1_o      : out std_logic
     
@@ -60,16 +60,16 @@ begin
                     -- IDLE
                     when IDLE =>
                         vfat2_t1_o <= '0';
-                        if (t1_i.lv1a = '1') then
+                        if (vfat2_t1_i.lv1a = '1') then
                             state <= BIT_2;
                             t1_data <= "100";
-                        elsif (t1_i.calpulse = '1') then 
+                        elsif (vfat2_t1_i.calpulse = '1') then 
                             state <= BIT_2;
                             t1_data <= "111";
-                        elsif (t1_i.resync = '1') then  
+                        elsif (vfat2_t1_i.resync = '1') then  
                             state <= BIT_2;
                             t1_data <= "110";
-                        elsif (t1_i.bc0 = '1') then 
+                        elsif (vfat2_t1_i.bc0 = '1') then 
                             state <= BIT_2;
                             t1_data <= "101";
                         end if;  
@@ -89,6 +89,7 @@ begin
                     when others => 
                         vfat2_t1_o <= '0';
                         state <= IDLE;
+                        t1_data <= (others => '0');
                 end case;  
             end if;
         end if;

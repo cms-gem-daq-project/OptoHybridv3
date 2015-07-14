@@ -6,7 +6,7 @@ package wb_pkg is
     
     --== Wishbone slaves ==--
     
-	constant WB_N_SLAVES        : positive := 7;
+	constant WB_N_SLAVES        : positive := 10;
 	constant WB_N_MASTERS       : positive := 2;
     
     constant WB_S_ADC           : integer := 0;
@@ -17,6 +17,9 @@ package wb_pkg is
     constant WB_S_VFAT2_I2C_0   : integer := 4;
     constant WB_S_VFAT2_I2C_1   : integer := 5;
     constant WB_S_VFAT2_I2C_2   : integer := 6;
+    constant WB_S_VFAT2_I2C_3   : integer := 7;
+    constant WB_S_VFAT2_I2C_4   : integer := 8;
+    constant WB_S_VFAT2_I2C_5   : integer := 9;
         
     --== Wishbone address selection ==--
     

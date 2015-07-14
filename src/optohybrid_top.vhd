@@ -276,18 +276,17 @@ architecture Behavioral of optohybrid_top is
     --== Clock signals ==--
     
     signal lhc_clk          : std_logic; -- The system reference clock is the LHC clock
+    signal wb_clk           : std_logic; -- Wishbone reference clock (should be the same as the LHC clock)
+    signal vfat2_mclk       : std_logic; -- VFAT2 refenrece clock (should be the same as the LHC clock)
     
     --== Resets signals ==--
 
-    signal reset_i          : std_logic;
+    signal reset            : std_logic;
+    signal vfat2_reset      : std_logic;
 
     --== VFAT2 signals ==--
-
-    signal vfat2_mclk       : std_logic;
-    signal vfat2_reset      : std_logic;
+    
     signal vfat2_t1         : t1_t;
-    signal wb_vfat2_i2c_req : wb_req_array_t(2 downto 0);
-    signal wb_vfat2_i2c_res : wb_res_array_t(2 downto 0);    
     signal vfat2_tk_data    : tk_data_array_t(23 downto 0);
     signal vfat2_sbits      : sbits_array_t(23 downto 0);
     
@@ -303,11 +302,15 @@ architecture Behavioral of optohybrid_top is
     
     --== Wishbone busses ==--
     
+    
     signal wb_m_req         : wb_req_array_t((WB_N_MASTERS - 1) downto 0);
     signal wb_m_res         : wb_res_array_t((WB_N_MASTERS - 1) downto 0);
     
     signal wb_s_req         : wb_req_array_t((WB_N_SLAVES - 1) downto 0);
     signal wb_s_res         : wb_res_array_t((WB_N_SLAVES - 1) downto 0);
+    
+    alias wb_vfat2_i2c_req  : wb_req_array_t(5 downto 0) is wb_s_req(WB_S_VFAT2_I2C_5 downto WB_S_VFAT2_I2C_0);
+    alias wb_vfat2_i2c_res  : wb_res_array_t(5 downto 0) is wb_s_res(WB_S_VFAT2_I2C_5 downto WB_S_VFAT2_I2C_0);
     
 begin
 
@@ -425,20 +428,16 @@ begin
         vfat2_23_data_out_p_i	=> vfat2_23_data_out_p_i,
         vfat2_23_data_out_n_i	=> vfat2_23_data_out_n_i,
         -- Packed
+        wb_clk_i                => wb_clk,
+        reset_i                 => reset,
+        wb_req_i                => wb_vfat2_i2c_req,
+        wb_res_o                => wb_vfat2_i2c_res,
         vfat2_mclk_i            => vfat2_mclk,
         vfat2_reset_i           => vfat2_reset,
         vfat2_t1_i              => vfat2_t1,
-        wb_req_i                => wb_vfat2_i2c_req,
-        wb_res_o                => wb_vfat2_i2c_res,
         vfat2_tk_data_o         => vfat2_tk_data,
         vfat2_sbits_o           => vfat2_sbits
-    );
-    
-    wb_vfat2_i2c_req <= wb_s_req(WB_S_VFAT2_I2C_2) & wb_s_req(WB_S_VFAT2_I2C_1) & wb_s_req(WB_S_VFAT2_I2C_0);
-    
-    wb_s_res(WB_S_VFAT2_I2C_2) <= wb_vfat2_i2c_res(2);
-    wb_s_res(WB_S_VFAT2_I2C_1) <= wb_vfat2_i2c_res(1);
-    wb_s_res(WB_S_VFAT2_I2C_0) <= wb_vfat2_i2c_res(0);
+    ); 
     
     --=========--
     --== ADC ==--

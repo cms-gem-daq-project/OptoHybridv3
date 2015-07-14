@@ -4,13 +4,13 @@
 -- 
 -- Create Date:    11:22:49 06/30/2015 
 -- Design Name:    OptoHybrid v2
--- Module Name:    vfat2_i2c_base - Behavioral 
+-- Module Name:    i2c - Behavioral 
 -- Project Name:   OptoHybrid v2
 -- Target Devices: xc6vlx130t-1ff1156
 -- Tool versions:  ISE  P.20131013
 -- Description: 
 --
--- Handles I2C communications with the VFAT2
+-- Handles basic I2C communications
 --
 -- Dependencies: 
 --
@@ -23,35 +23,37 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
-entity vfat2_i2c_base is
+entity i2c is
 generic(
-    CLK_DIV             : integer := 400
+
+    CLK_DIV     : integer := 400
+
 );
 port(
 
-    clk_i               : in std_logic;
-    reset_i             : in std_logic;
+    clk_i       : in std_logic;
+    reset_i     : in std_logic;
     
-    i2c_en_i            : in std_logic;
-    i2c_address_i       : in std_logic_vector(6 downto 0);
-    i2c_rw_i            : in std_logic;
-    i2c_data_i          : in std_logic_vector(7 downto 0);
+    en_i        : in std_logic;
+    address_i   : in std_logic_vector(6 downto 0);
+    rw_i        : in std_logic;
+    data_i      : in std_logic_vector(7 downto 0);
     
-    i2c_valid_o         : out std_logic;
-    i2c_error_o         : out std_logic;
-    i2c_data_o          : out std_logic_vector(7 downto 0);
+    valid_o     : out std_logic;
+    error_o     : out std_logic;
+    data_o      : out std_logic_vector(7 downto 0);
     
-    vfat2_scl_o         : out std_logic;
-    vfat2_sda_miso_i    : in std_logic;
-    vfat2_sda_mosi_o    : out std_logic;
-    vfat2_sda_tri_o     : out std_logic
+    scl_o       : out std_logic;
+    sda_miso_i  : in std_logic;
+    sda_mosi_o  : out std_logic;
+    sda_tri_o   : out std_logic
     
 );
-end vfat2_i2c_base;
+end i2c;
 
-architecture Behavioral of vfat2_i2c_base is
+architecture Behavioral of i2c is
     
-    type state_t is (IDLE, START, ADDR, RW, RST_0, ACK_0, RD, ACK_1, RST_1, WR, RST_2, ACK_2, STOP, ERROR);
+    type state_t is (IDLE, START, ADDR, RW, WAIT_0, ACK_0, RD, ACK_1, WR, RST_2, ACK_2, ENDING, STOP, ERROR);
     
     signal state            : state_t;
     
@@ -77,7 +79,7 @@ begin
     begin
         if (rising_edge(clk_i)) then
             if (reset_i = '1') then
-                vfat2_scl_o <= '0';
+                scl_o <= '0';
                 clk_divider <= 0;
                 high_clk_pulse <= '0';
                 low_clk_pulse <= '0';
@@ -90,17 +92,17 @@ begin
                 end if;
                 -- SCK generation
                 if (clk_divider < (CLK_DIV - 1) / 2) then
-                    vfat2_scl_o <= '1';
+                    scl_o <= '1';
                 else
-                    vfat2_scl_o <= '0';
+                    scl_o <= '0';
                 end if;
-                -- Start / Stop pulse & Read pulse
+                -- High clock pulse (start/stop & read)
                 if (clk_divider = (CLK_DIV - 1) / 4) then
                     high_clk_pulse <= '1';
                 else
                     high_clk_pulse <= '0';
                 end if;
-                -- Data pulse
+                -- Low clock pulse (write & ack)
                 if (clk_divider = (CLK_DIV - 1) * 3 / 4) then
                     low_clk_pulse <= '1';
                 else
@@ -113,44 +115,50 @@ begin
     --=========--
     --== SDA ==--
     --=========--
-
+    
     process(clk_i)
     begin    
         if (rising_edge(clk_i)) then
             if (reset_i = '1') then
-                vfat2_sda_mosi_o <= '1';
-                vfat2_sda_tri_o <= '1';
-                i2c_valid_o <= '0';
-                i2c_error_o <= '0';
-                i2c_data_o <= (others => '0');
+                valid_o <= '0';
+                error_o <= '0';
+                data_o <= (others => '0');
+                sda_mosi_o <= '1';
+                sda_tri_o <= '1';
                 state <= IDLE;
+                address <= (others => '0');
+                rw_n <= '0';
+                din <= (others => '0');
+                dout <= (others => '0');
+                address_cnt <= 0;
+                data_cnt <= 0;
             else
                 case state is
                     -- IDLE
                     when IDLE =>
-                        vfat2_sda_mosi_o <= '1';
-                        vfat2_sda_tri_o <= '0';
-                        i2c_valid_o <= '0';
-                        i2c_error_o <= '0';
-                        if (i2c_en_i = '1') then
+                        valid_o <= '0';
+                        error_o <= '0';
+                        sda_mosi_o <= '1';
+                        sda_tri_o <= '0';
+                        if (en_i = '1') then
                             state <= START;
-                            address <= i2c_address_i;
-                            rw_n <= i2c_rw_i;
-                            din <= i2c_data_i;
+                            address <= address_i;
+                            rw_n <= rw_i;
+                            din <= data_i;
                         end if;
                     -- Start
                     when START =>
                         if (high_clk_pulse = '1') then
-                            vfat2_sda_mosi_o <= '0';
-                            vfat2_sda_tri_o <= '0';
+                            sda_mosi_o <= '0';
+                            sda_tri_o <= '0';
                             state <= ADDR;
                             address_cnt <= 6;
                         end if;
                     -- Address
                     when ADDR => 
                         if (low_clk_pulse = '1') then
-                            vfat2_sda_mosi_o <= address(address_cnt);
-                            vfat2_sda_tri_o <= '0';
+                            sda_mosi_o <= address(address_cnt);
+                            sda_tri_o <= '0';
                             if (address_cnt = 0) then
                                 state <= RW;
                             else
@@ -160,24 +168,24 @@ begin
                     -- RW bit
                     when RW => 
                         if (low_clk_pulse = '1') then
-                            vfat2_sda_mosi_o <= rw_n;
-                            vfat2_sda_tri_o <= '0';
-                            state <= RST_0;
+                            sda_mosi_o <= rw_n;
+                            sda_tri_o <= '0';
+                            state <= WAIT_0;
                         end if;
-                    -- Wait
-                    when RST_0 => 
+                    -- Wait (free the bus for slave to write)
+                    when WAIT_0 => 
                         if (low_clk_pulse = '1') then
-                            vfat2_sda_mosi_o <= '1';
-                            vfat2_sda_tri_o <= '1';
+                            sda_mosi_o <= '1';
+                            sda_tri_o <= '1';
                             state <= ACK_0;
                         end if;
-                    -- Ackownledgment
+                    -- Ackownledgment (to be read)
                     when ACK_0 =>
                         if (high_clk_pulse = '1') then
-                            vfat2_sda_mosi_o <= '1';
-                            vfat2_sda_tri_o <= '1';
-                            if (vfat2_sda_miso_i = '1') then
-                                data_cnt <= 7;
+                            sda_mosi_o <= '1';
+                            sda_tri_o <= '1';
+                            data_cnt <= 7;
+                            if (sda_miso_i = '0') then
                                 case rw_n is
                                     when '1' => state <= RD;
                                     when others => state <= WR;
@@ -189,89 +197,95 @@ begin
                     -- Read
                     when RD => 
                         if (high_clk_pulse = '1') then
-                            dout(data_cnt) <= vfat2_sda_miso_i;
-                            vfat2_sda_mosi_o <= '1';
-                            vfat2_sda_tri_o <= '1';
+                            dout(data_cnt) <= sda_miso_i;
+                            sda_mosi_o <= '1';
+                            sda_tri_o <= '1';
                             if (data_cnt = 7) then
                                 state <= ACK_1;
                             else
                                 data_cnt <= data_cnt - 1;
                             end if;
                         end if;
-                    -- Read Ackownledgment 
+                    -- Read Ackownledgment (to be written) 
                     when ACK_1 => 
                         if (low_clk_pulse = '1') then
-                            vfat2_sda_mosi_o <= '1';
-                            vfat2_sda_tri_o <= '0';
-                            state <= RST_1;
-                        end if;
-                    -- Wait
-                    when RST_1 => 
-                        if (high_clk_pulse = '1') then
-                            vfat2_sda_mosi_o <= '1';
-                            vfat2_sda_tri_o <= '0';
-                            state <= STOP;
+                            sda_mosi_o <= '0';
+                            sda_tri_o <= '0';
+                            state <= ENDING;
                         end if;
                     -- Write
                     when WR => 
                         if (low_clk_pulse = '1') then
-                            vfat2_sda_mosi_o <= dout(data_cnt);
-                            vfat2_sda_tri_o <= '0';
+                            sda_mosi_o <= dout(data_cnt);
+                            sda_tri_o <= '0';
                             if (data_cnt = 7) then
                                 state <= RST_2;
                             else
                                 data_cnt <= data_cnt - 1;
                             end if;
                         end if;
-                    -- Wait
+                    -- Wait (free the bus for slave to write)
                     when RST_2 => 
                         if (low_clk_pulse = '1') then
-                            vfat2_sda_mosi_o <= '1';
-                            vfat2_sda_tri_o <= '1';
+                            sda_mosi_o <= '1';
+                            sda_tri_o <= '1';
                             state <= ACK_2;
                         end if;
-                    -- Write Ackownledgment 
+                    -- Write Ackownledgment (to be read)
                     when ACK_2 => 
                         if (high_clk_pulse = '1') then
-                            vfat2_sda_mosi_o <= '1';
-                            vfat2_sda_tri_o <= '1';
-                            if (vfat2_sda_miso_i = '1') then
-                                state <= STOP;
+                            sda_mosi_o <= '1';
+                            sda_tri_o <= '1';
+                            if (sda_miso_i = '0') then
+                                state <= ENDING;
                             else
                                 state <= ERROR;
                             end if;
                         end if;
+                    -- ENDING
+                    when ENDING => 
+                        if (low_clk_pulse = '1') then
+                            sda_mosi_o <= '0';
+                            sda_tri_o <= '0';
+                            state <= STOP;
+                        end if;
                     -- STOP
                     when STOP => 
                         if (high_clk_pulse = '1') then
-                            vfat2_sda_mosi_o <= '1';
-                            vfat2_sda_tri_o <= '0';
-                            i2c_valid_o <= '1';
-                            i2c_error_o <= '0';
+                            valid_o <= '1';
+                            error_o <= '0';
                             case rw_n is
-                                when '1' => i2c_data_o <= dout;
-                                when others => i2c_data_o <= (others => '0');
+                                when '1' => data_o <= dout;
+                                when others => data_o <= (others => '0');
                             end case;
+                            sda_mosi_o <= '1';
+                            sda_tri_o <= '0';
                             state <= IDLE;
                         end if;
                     -- ERROR
                     when ERROR => 
                         if (high_clk_pulse = '1') then
-                            vfat2_sda_mosi_o <= '1';
-                            vfat2_sda_tri_o <= '0';
-                            i2c_valid_o <= '0';
-                            i2c_error_o <= '1';
-                            i2c_data_o <= (others => '0');
+                            valid_o <= '0';
+                            error_o <= '1';
+                            data_o <= (others => '0');
+                            sda_mosi_o <= '1';
+                            sda_tri_o <= '0';
                             state <= IDLE;
                         end if;
                     --
                     when others => 
-                        vfat2_sda_mosi_o <= '1';
-                        vfat2_sda_tri_o <= '1';
-                        i2c_valid_o <= '0';
-                        i2c_error_o <= '0';
-                        i2c_data_o <= (others => '0');
+                        valid_o <= '0';
+                        error_o <= '0';
+                        data_o <= (others => '0');
+                        sda_mosi_o <= '1';
+                        sda_tri_o <= '1';
                         state <= IDLE;
+                        address <= (others => '0');
+                        rw_n <= '0';
+                        din <= (others => '0');
+                        dout <= (others => '0');
+                        address_cnt <= 0;
+                        data_cnt <= 0;
                 end case;  
             end if;
         end if;
