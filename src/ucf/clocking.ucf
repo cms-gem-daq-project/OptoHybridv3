@@ -23,8 +23,8 @@ NET "cdce_clk_n_i"      LOC = AJ9;
 NET "cdce_clk_pri_p_o"  LOC = AN10;
 NET "cdce_clk_pri_n_o"  LOC = AP10;
 
-NET "cdce_aux_o"        LOC = AD16; # J11_N
-NET "cdce_aux_i"        LOC = AE13; # K1_P
+NET "cdce_aux_out_o"    LOC = AD16; # J11_N
+NET "cdce_aux_in_i"     LOC = AE13; # K1_P
 NET "cdce_ref_o"        LOC = AD17; # J17_P
 NET "cdce_pwrdown_o"    LOC = AE17; # J17_N
 NET "cdce_sync_o"       LOC = AF16; # J5_N

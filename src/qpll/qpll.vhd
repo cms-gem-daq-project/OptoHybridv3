@@ -10,8 +10,6 @@
 -- Tool versions:  ISE  P.20131013
 -- Description: 
 --
--- Controls the QPLL
---
 -- Dependencies: 
 --
 -- Revision: 
@@ -26,6 +24,8 @@ use ieee.std_logic_1164.all;
 entity qpll is
 port(
 
+    --== QPLL raw ==--
+
     qpll_ref_40MHz_o    : out std_logic;
     qpll_reset_o        : out std_logic;
     
@@ -34,16 +34,42 @@ port(
     
     qpll_clk_p_i        : in std_logic;
     qpll_clk_n_i        : in std_logic
+
+    --== QPLL packed ==--
     
 );
 end qpll;
 
 architecture Behavioral of qpll is
 
-begin
+    signal qpll_ref_40MHz   : std_logic;
+    signal qpll_reset       : std_logic;
+    signal qpll_locked      : std_logic;
+    signal qpll_error       : std_logic;
+    signal qpll_clk         : std_logic;
 
-    qpll_ref_40MHz_o <= '0';
-    qpll_reset_o <= '0';
+begin    
+
+    --==================--
+    --== QPLL buffers ==--
+    --==================--
+    
+    qpll_buffers_inst : entity work.qpll_buffers
+    port map(
+        -- Raw
+        qpll_ref_40MHz_o    => qpll_ref_40MHz_o,
+        qpll_reset_o        => qpll_reset_o,
+        qpll_locked_i       => qpll_locked_i,
+        qpll_error_i        => qpll_error_i,
+        qpll_clk_p_i        => qpll_clk_p_i,
+        qpll_clk_n_i        => qpll_clk_n_i,
+        -- Buffered
+        qpll_ref_40MHz_i    => qpll_ref_40MHz,
+        qpll_reset_i        => qpll_reset,
+        qpll_locked_o       => qpll_locked,
+        qpll_error_o        => qpll_error,
+        qpll_clk_o          => qpll_clk
+    );
 
 end Behavioral;
 
