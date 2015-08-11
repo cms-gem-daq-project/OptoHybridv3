@@ -371,7 +371,7 @@ begin
     )
     port map(
         o           => vfat2_resb_o(2),
-        i           => not vfat2_reset_i
+        i           => vfat2_reset_i
     );
 
     vfat2_resh_2_obuf : obuf
@@ -382,7 +382,7 @@ begin
     )
     port map(
         o           => vfat2_resh_o(2),
-        i           => not vfat2_reset_i
+        i           => vfat2_reset_i
     );
 
     vfat2_resb_0_obuf : obuf
@@ -393,7 +393,7 @@ begin
     )
     port map(
         o           => vfat2_resb_o(0),
-        i           => not vfat2_reset_i
+        i           => vfat2_reset_i
     );
 
     vfat2_resh_0_obuf : obuf
@@ -404,7 +404,7 @@ begin
     )
     port map(
         o           => vfat2_resh_o(0),
-        i           => not vfat2_reset_i
+        i           => vfat2_reset_i
     );
 
     vfat2_resb_1_obuf : obuf
@@ -415,7 +415,7 @@ begin
     )
     port map(
         o           => vfat2_resb_o(1),
-        i           => not vfat2_reset_i
+        i           => vfat2_reset_i
     );
 
     vfat2_resh_1_obuf : obuf
@@ -426,7 +426,7 @@ begin
     )
     port map(
         o           => vfat2_resh_o(1),
-        i           => not vfat2_reset_i
+        i           => vfat2_reset_i
     );
 
     --================--

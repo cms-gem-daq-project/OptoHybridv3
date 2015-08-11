@@ -233,7 +233,7 @@ port(
     temp_clk_o              : out std_logic;
     temp_data_io            : inout std_logic;
 
-    chip_id_io              : inout std_logic
+    chipid_io               : inout std_logic
     
     --== GTX ==--
     
@@ -273,54 +273,265 @@ end optohybrid_top;
 
 architecture Behavioral of optohybrid_top is
 
-    --== Clock signals ==--
-    
-    signal lhc_clk          : std_logic; -- The system reference clock is the LHC clock
-    signal wb_clk           : std_logic; -- Wishbone reference clock (should be the same as the LHC clock)
-    signal vfat2_mclk       : std_logic; -- VFAT2 refenrece clock (should be the same as the LHC clock)
-    
-    --== Resets signals ==--
+    --== Global signals ==--
 
-    signal reset            : std_logic;
-    signal vfat2_reset      : std_logic;
+    signal ref_clk              : std_logic;
+    signal reset                : std_logic;
 
     --== VFAT2 signals ==--
     
-    signal vfat2_t1         : t1_t;
-    signal vfat2_tk_data    : tk_data_array_t(23 downto 0);
-    signal vfat2_sbits      : sbits_array_t(23 downto 0);
+    signal vfat2_mclk           : std_logic; -- VFAT2 refenrece clock (should be the same as the LHC clock)
+    signal vfat2_reset          : std_logic;
+    signal vfat2_t1             : std_logic; 
+    signal vfat2_scl            : std_logic_vector(5 downto 0); 
+    signal vfat2_sda_mosi       : std_logic_vector(5 downto 0); 
+    signal vfat2_sda_miso       : std_logic_vector(5 downto 0); 
+    signal vfat2_sda_tri        : std_logic_vector(5 downto 0); 
+    signal vfat2_data_valid     : std_logic_vector(5 downto 0);
+    signal vfat2_data_out       : std_logic_vector(23 downto 0);
+    signal vfat2_sbits          : sbits_array_t(23 downto 0);
     
     --== ADC signals ==--
     
+    signal adc_clk              : std_logic;
+    signal adc_chip_select      : std_logic;
+    signal adc_dout             : std_logic;
+    signal adc_din              : std_logic;
+    signal adc_eoc              : std_logic;    
+    
     --== CDCE signals ==--
+
+    signal cdce_clk             : std_logic;
+    signal cdce_clk_pri         : std_logic;
+    signal cdce_aux_out         : std_logic;
+    signal cdce_aux_in          : std_logic;
+    signal cdce_ref             : std_logic;
+    signal cdce_pwrdown         : std_logic;
+    signal cdce_sync            : std_logic;
+    signal cdce_locked          : std_logic;
+    signal cdce_sck             : std_logic;
+    signal cdce_mosi            : std_logic;
+    signal cdce_le              : std_logic;
+    signal cdce_miso            : std_logic;    
     
     --== Chip ID signals ==--
+
+    signal chipid_mosi          : std_logic;
+    signal chipid_miso          : std_logic;
+    signal chipid_tri           : std_logic;
+
     
     --== QPLL signals ==--
+
+    signal qpll_ref_40MHz       : std_logic;
+    signal qpll_reset           : std_logic;
+    signal qpll_locked          : std_logic;
+    signal qpll_error           : std_logic;
+    signal qpll_clk             : std_logic;
     
     --== Temperature signals ==--
+
+    signal temp_clk             : std_logic;
+    signal temp_data_mosi       : std_logic;
+    signal temp_data_miso       : std_logic;
+    signal temp_data_tri        : std_logic;
     
-    --== Wishbone busses ==--
+    --== Wishbone signals ==--
     
+    signal wb_clk               : std_logic;
     
-    signal wb_m_req         : wb_req_array_t((WB_N_MASTERS - 1) downto 0);
-    signal wb_m_res         : wb_res_array_t((WB_N_MASTERS - 1) downto 0);
+    -- Masters
+    signal wb_m_req             : wb_req_array_t((WB_MASTERS - 1) downto 0);
+    signal wb_m_res             : wb_res_array_t((WB_MASTERS - 1) downto 0);
     
-    signal wb_s_req         : wb_req_array_t((WB_N_SLAVES - 1) downto 0);
-    signal wb_s_res         : wb_res_array_t((WB_N_SLAVES - 1) downto 0);
+    alias wb_mst_gtx_req        : wb_req_array_t(2 downto 0) is wb_m_req(WB_MST_GTX_2 downto WB_MST_GTX_0);
+    alias wb_mst_gtx_res        : wb_res_array_t(2 downto 0) is wb_m_res(WB_MST_GTX_2 downto WB_MST_GTX_0);
+    alias wb_mst_thr_req        : wb_req_array_t(5 downto 0) is wb_m_req(WB_MST_THR_5 downto WB_MST_THR_0);
+    alias wb_mst_thr_res        : wb_res_array_t(5 downto 0) is wb_m_res(WB_MST_THR_5 downto WB_MST_THR_0);
     
-    alias wb_vfat2_i2c_req  : wb_req_array_t(5 downto 0) is wb_s_req(WB_S_VFAT2_I2C_5 downto WB_S_VFAT2_I2C_0);
-    alias wb_vfat2_i2c_res  : wb_res_array_t(5 downto 0) is wb_s_res(WB_S_VFAT2_I2C_5 downto WB_S_VFAT2_I2C_0);
+    -- Slaves
+    signal wb_s_req             : wb_req_array_t((WB_SLAVES - 1) downto 0);
+    signal wb_s_res             : wb_res_array_t((WB_SLAVES - 1) downto 0);
+    
+    alias wb_slv_i2c_req        : wb_req_array_t(5 downto 0) is wb_s_req(WB_SLV_I2C_5 downto WB_SLV_I2C_0);
+    alias wb_slv_i2c_res        : wb_res_array_t(5 downto 0) is wb_s_res(WB_SLV_I2C_5 downto WB_SLV_I2C_0);
+    alias wb_slv_threshold_req  : wb_req_array_t(5 downto 0) is wb_s_req(WB_SLV_THRESHOLD_5 downto WB_SLV_THRESHOLD_0);
+    alias wb_slv_threshold_res  : wb_res_array_t(5 downto 0) is wb_s_res(WB_SLV_THRESHOLD_5 downto WB_SLV_THRESHOLD_0);
+    
+    --== Chipscope signals ==--
+    
+    signal cs_clk               : std_logic; -- ChipScope clock
+    signal cs_ctrl0             : std_logic_vector(35 downto 0);
+    signal cs_ctrl1             : std_logic_vector(35 downto 0); 
+    signal cs_sync_in           : std_logic_vector(34 downto 0);
+    signal cs_sync_out          : std_logic_vector(65 downto 0);
+    signal cs_trig0             : std_logic_vector(31 downto 0);
     
 begin
+
+    reset <= '0';
+    vfat2_reset <= '1';
+    
+    ref_clk <= qpll_clk;
+    wb_clk <= qpll_clk;
+    vfat2_mclk <= qpll_clk;
+    
+    --=====================--
+    --== Wishbone switch ==--
+    --=====================--
+    
+    wb_switch_inst : entity work.wb_switch
+    port map(
+        wb_clk_i    => wb_clk,
+        reset_i     => reset,
+        wb_m_req_i  => wb_m_req,
+        wb_s_req_o  => wb_s_req,
+        wb_s_res_i  => wb_s_res,
+        wb_m_res_o  => wb_m_res
+    );
+
+    --===================--
+    --== VFAT2 sectors ==--
+    --===================--
+        
+    vfat2_sector_inst : entity work.vfat2_sector      
+    port map(        
+        ref_clk_i               => ref_clk,
+        reset_i                 => reset,
+        wb_slv_i2c_req_i        => wb_slv_i2c_req(0),
+        wb_slv_i2c_res_o        => wb_slv_i2c_res(0),
+        wb_slv_threshold_req_i  => wb_slv_threshold_req(0),
+        wb_slv_threshold_res_o  => wb_slv_threshold_res(0),
+        wb_mst_thr_req_o        => wb_mst_thr_req(0),
+        wb_mst_thr_res_i        => wb_mst_thr_res(0),
+        vfat2_data_out_i        => vfat2_data_out(3 downto 0),
+        vfat2_sbits_i           => vfat2_sbits(3 downto 0),
+        vfat2_scl_o             => vfat2_scl(0),
+        vfat2_sda_miso_i        => vfat2_sda_miso(0),
+        vfat2_sda_mosi_o        => vfat2_sda_mosi(0),
+        vfat2_sda_tri_o         => vfat2_sda_tri(0)
+    );    
+     
+--    vfat2_i2c_inst : entity work.vfat2_i2c
+--    port map(
+--        wb_clk_i            => wb_clk,
+--        reset_i             => reset,
+--        wb_req_i            => wb_vfat2_i2c_req,
+--        wb_res_o            => wb_vfat2_i2c_res,
+--        vfat2_scl_o         => vfat2_scl,
+--        vfat2_sda_miso_i    => vfat2_sda_miso_i,
+--        vfat2_sda_mosi_o    => vfat2_sda_mosi_o,
+--        vfat2_sda_tri_o     => vfat2_sda_tri_o
+--    );
 
     --============--
     --== VFAT2s ==--
     --============--
     
-    vfat2_inst : entity work.vfat2
+--    vfat2_inst : entity work.vfat2
+--    port map(     
+--    ); 
+    
+    --=========--
+    --== ADC ==--
+    --=========--
+    
+--    adc_inst : entity work.adc
+--    port map(
+--    );
+
+    --==========--
+    --== CDCE ==--
+    --==========--
+    
+--    cdce_inst : entity work.cdce
+--    port map(
+--    );
+
+    --=============--
+    --== Chip ID ==--
+    --=============--
+    
+--    chipid_inst : entity work.chipid
+--    port map(
+--    );
+
+    --==========--
+    --== QPLL ==--
+    --==========--
+    
+--    qpll_inst : entity work.qpll
+--    port map(
+--    );
+    
+    --=================--
+    --== Temperature ==--
+    --=================--
+    
+--    temp_inst : entity work.temp
+--    port map(
+--    );
+    
+    --===============--
+    --== ChipScope ==--
+    --===============--
+    
+    cs_clk <= qpll_clk;
+    
+    chipscope_icon_inst : entity work.chipscope_icon
     port map(
-        -- Raw
+        control0    => cs_ctrl0,
+        control1    => cs_ctrl1
+    );
+    
+    chipscope_vio_inst : entity work.chipscope_vio
+    port map(
+        control     => cs_ctrl0,
+        clk         => cs_clk,
+        sync_in     => cs_sync_in,
+        sync_out    => cs_sync_out
+    );
+    
+    chipscope_ila_inst : entity work.chipscope_ila
+    port map(
+        control => cs_ctrl1,
+        clk     => cs_clk,
+        trig0   => cs_trig0
+    );
+    
+    process(qpll_clk)
+        variable s : std_logic;
+    begin
+        if (rising_edge(qpll_clk)) then
+            if (reset = '1') then
+                s := '0';
+                wb_mst_gtx_req(0).stb <= '0'; 
+            else
+                if (s = '0' and cs_sync_out(65) = '1') then
+                    wb_mst_gtx_req(0) <= (stb   => cs_sync_out(65),
+                                          we    => cs_sync_out(64),
+                                          addr  => cs_sync_out(31 downto 0),
+                                          data  => cs_sync_out(63 downto 32));
+                else
+                    wb_mst_gtx_req(0).stb <= '0'; 
+                end if;
+                s := cs_sync_out(65);
+            end if;
+        end if; 
+    end process;
+    
+    cs_sync_in <= wb_mst_gtx_res(0).ack & wb_mst_gtx_res(0).stat & wb_mst_gtx_res(0).data;
+
+    
+    --=============--
+    --== Buffers ==--
+    --=============--
+    
+    -- This entity is placed at the end of the file for readability reasons
+    
+    buffers_inst: entity work.buffers 
+    port map(
+        -- VFAT2
         vfat2_mclk_p_o          => vfat2_mclk_p_o,
         vfat2_mclk_n_o          => vfat2_mclk_n_o,
         vfat2_resb_o            => vfat2_resb_o,
@@ -427,96 +638,84 @@ begin
         vfat2_23_sbits_n_i		=> vfat2_23_sbits_n_i,
         vfat2_23_data_out_p_i	=> vfat2_23_data_out_p_i,
         vfat2_23_data_out_n_i	=> vfat2_23_data_out_n_i,
-        -- Packed
-        wb_clk_i                => wb_clk,
-        reset_i                 => reset,
-        wb_req_i                => wb_vfat2_i2c_req,
-        wb_res_o                => wb_vfat2_i2c_res,
+        --
         vfat2_mclk_i            => vfat2_mclk,
         vfat2_reset_i           => vfat2_reset,
         vfat2_t1_i              => vfat2_t1,
-        vfat2_tk_data_o         => vfat2_tk_data,
-        vfat2_sbits_o           => vfat2_sbits
-    ); 
-    
-    --=========--
-    --== ADC ==--
-    --=========--
-    
-    adc_inst : entity work.adc
-    port map(
-        -- Raw
-        adc_clk_o           => adc_clk_o,
-        adc_chip_select_o   => adc_chip_select_o,
-        adc_dout_o          => adc_dout_o,
-        adc_din_i           => adc_din_i,
-        adc_eoc_i           => adc_eoc_i,
-        -- Packed
-        wb_req_i            => wb_s_req(WB_S_ADC),
-        wb_res_o            => wb_s_res(WB_S_ADC)
-    );
-
-    --==========--
-    --== CDCE ==--
-    --==========--
-    
-    cdce_inst : entity work.cdce
-    port map(
-        -- Raw
-        cdce_clk_p_i        => cdce_clk_p_i,
-        cdce_clk_n_i        => cdce_clk_n_i,
-        cdce_clk_pri_p_o    => cdce_clk_pri_p_o,
-        cdce_clk_pri_n_o    => cdce_clk_pri_n_o,
-        cdce_aux_out_o      => cdce_aux_out_o,
-        cdce_aux_in_i       => cdce_aux_in_i,
-        cdce_ref_o          => cdce_ref_o,
-        cdce_pwrdown_o      => cdce_pwrdown_o,
-        cdce_sync_o         => cdce_sync_o,
-        cdce_locked_i       => cdce_locked_i,
-        cdce_sck_o          => cdce_sck_o,
-        cdce_mosi_o         => cdce_mosi_o,
-        cdce_le_o           => cdce_le_o,
-        cdce_miso_i         => cdce_miso_i,
-        -- Packed
-        wb_req_i            => wb_s_req(WB_S_CDCE),
-        wb_res_o            => wb_s_res(WB_S_CDCE)
-    );
-
-    --=============--
-    --== Chip ID ==--
-    --=============--
-    
-    chipid_inst : entity work.chipid
-    port map(
-        chip_id_io  => chip_id_io,
-        wb_req_i    => wb_s_req(WB_S_CHIPID),
-        wb_res_o    => wb_s_res(WB_S_CHIPID)
-    );
-
-    --==========--
-    --== QPLL ==--
-    --==========--
-    
-    qpll_inst : entity work.qpll
-    port map(
-        qpll_ref_40MHz_o    => qpll_ref_40MHz_o,
-        qpll_reset_o        => qpll_reset_o,
-        qpll_locked_i       => qpll_locked_i,
-        qpll_error_i        => qpll_error_i,
-        qpll_clk_p_i        => qpll_clk_p_i,
-        qpll_clk_n_i        => qpll_clk_n_i
-    );
-    
-    --=================--
-    --== Temperature ==--
-    --=================--
-    
-    temp_inst : entity work.temp
-    port map(
-        temp_clk_o      => temp_clk_o,
-        temp_data_io    => temp_data_io,
-        wb_req_i        => wb_s_req(WB_S_TEMP),
-        wb_res_o        => wb_s_res(WB_S_TEMP)
+        vfat2_scl_i             => vfat2_scl,
+        vfat2_sda_miso_o        => vfat2_sda_miso, 
+        vfat2_sda_mosi_i        => vfat2_sda_mosi,
+        vfat2_sda_tri_i         => vfat2_sda_tri,
+        vfat2_data_valid_o      => vfat2_data_valid,
+        vfat2_data_out_o        => vfat2_data_out,
+        vfat2_sbits_o           => vfat2_sbits,
+        -- ADC
+        adc_clk_o               => adc_clk_o,
+        adc_chip_select_o       => adc_chip_select_o,
+        adc_dout_o              => adc_dout_o,
+        adc_din_i               => adc_din_i,
+        adc_eoc_i               => adc_eoc_i,
+        --
+        adc_clk_i               => adc_clk,
+        adc_chip_select_i       => adc_chip_select,
+        adc_dout_i              => adc_dout,
+        adc_din_o               => adc_din,
+        adc_eoc_o               => adc_eoc,
+        -- CDCE
+        cdce_clk_p_i            => cdce_clk_p_i,
+        cdce_clk_n_i            => cdce_clk_n_i,
+        cdce_clk_pri_p_o        => cdce_clk_pri_p_o,
+        cdce_clk_pri_n_o        => cdce_clk_pri_n_o,
+        cdce_aux_out_o          => cdce_aux_out_o,
+        cdce_aux_in_i           => cdce_aux_in_i,
+        cdce_ref_o              => cdce_ref_o,
+        cdce_pwrdown_o          => cdce_pwrdown_o,
+        cdce_sync_o             => cdce_sync_o,
+        cdce_locked_i           => cdce_locked_i,
+        cdce_sck_o              => cdce_sck_o,
+        cdce_mosi_o             => cdce_mosi_o,
+        cdce_le_o               => cdce_le_o,
+        cdce_miso_i             => cdce_miso_i,
+        -- 
+        cdce_clk_o              => cdce_clk,
+        cdce_clk_pri_i          => cdce_clk_pri,
+        cdce_aux_out_i          => cdce_aux_out,
+        cdce_aux_in_o           => cdce_aux_in,
+        cdce_ref_i              => cdce_ref,
+        cdce_pwrdown_i          => cdce_pwrdown,
+        cdce_sync_i             => cdce_sync,
+        cdce_locked_o           => cdce_locked,
+        cdce_sck_i              => cdce_sck,
+        cdce_mosi_i             => cdce_mosi,
+        cdce_le_i               => cdce_le,
+        cdce_miso_o             => cdce_miso,
+        -- ChipID
+        chipid_io               => chipid_io,
+        -- 
+        chipid_mosi_i           => chipid_mosi,
+        chipid_miso_o           => chipid_miso,
+        chipid_tri_i            => chipid_tri,
+        -- QPLL
+        qpll_ref_40MHz_o        => qpll_ref_40MHz_o,
+        qpll_reset_o            => qpll_reset_o,
+        qpll_locked_i           => qpll_locked_i,
+        qpll_error_i            => qpll_error_i,
+        qpll_clk_p_i            => qpll_clk_p_i,
+        qpll_clk_n_i            => qpll_clk_n_i,
+        --
+        qpll_ref_40MHz_i        => qpll_ref_40MHz,
+        qpll_reset_i            => qpll_reset,
+        qpll_locked_o           => qpll_locked,
+        qpll_error_o            => qpll_error,
+        qpll_clk_o              => qpll_clk,
+        -- Temperature
+        temp_clk_o              => temp_clk_o,
+        temp_data_io            => temp_data_io,
+        --
+        temp_clk_i              => temp_clk,
+        temp_data_mosi_i        => temp_data_mosi,
+        temp_data_miso_o        => temp_data_miso,
+        temp_data_tri_i         => temp_data_tri
     );
     
 end Behavioral;

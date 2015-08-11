@@ -29,22 +29,23 @@ use work.types_pkg.all;
 
 entity vfat2_data_decoder is
 port(
-
+    -- VFAT2 reference clock
     vfat2_mclk_i        : in std_logic;
+    -- System reset
     reset_i             : in std_logic;
-    
+    -- VFAT2 data out
     vfat2_data_out_i    : in std_logic;
-   
+    -- Output packet
     tk_data_o           : out tk_data_t
-    
 );
 end vfat2_data_decoder;
 
 architecture Behavioral of vfat2_data_decoder is
 
-    signal data : std_logic_vector(194 downto 0); -- The data packet is 192 bits wide but we include the two IDLE bits in front of each packet 
-                                                  -- and the computation time for the algorithm (the data will be shifted while computing)
-
+    -- The data packet is 192 bits wide but we include the two IDLE bits in front of each packet 
+    -- and the computation time for the algorithm (the data will be shifted while computing)
+    signal data : std_logic_vector(194 downto 0); 
+    
 begin
 
     --=======================--
@@ -54,9 +55,11 @@ begin
     process(vfat2_mclk_i)    
     begin
         if (rising_edge(vfat2_mclk_i)) then
+            -- Reset & default value
             if (reset_i = '1') then
                 data <= (others => '0');
             else
+                -- Shift the data in the register
                 data(194 downto 1) <= data(193 downto 0);
                 data(0) <= vfat2_data_out_i;
             end if;
@@ -68,11 +71,11 @@ begin
     --================--
     
     process(vfat2_mclk_i)
-    
+        -- Holds the results of the tests
         variable tests  : std_logic_vector(2 downto 0);
-        
     begin
         if (rising_edge(vfat2_mclk_i)) then
+            -- Reset & default value 
             if (reset_i = '1') then
                 tk_data_o <= (valid     => '0',
                               bc        => (others => '0'),
@@ -83,22 +86,22 @@ begin
                               crc       => (others => '0'));
                 tests := (others => '0');
             else
-                -- 6 fixed bits 
+                -- Check the 6 fixed bits 
                 case data(193 downto 188) is
                     when "001010" => tests(0) := '1';
                     when others => tests(0) := '0';
                 end case;
-                -- 4 next fixed bits
+                -- Check the 4 next fixed bits
                 case data(175 downto 172) is
                     when "1100" => tests(1) := '1';
                     when others => tests(1) := '0';
                 end case;
-                -- 4 next fixed bits
+                -- Check the 4 next fixed bits
                 case data(159 downto 156) is
                     when "1110" => tests(2) := '1';
                     when others => tests(2) := '0';
                 end case;
-                -- Verification
+                -- Combine the tests and assert the packet if it is valid
                 case tests is
                     when "111" =>      
                         tk_data_o <= (valid     => '1',

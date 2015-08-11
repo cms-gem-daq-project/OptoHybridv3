@@ -4,46 +4,68 @@ use ieee.numeric_std.all;
 
 package wb_pkg is
     
+    --== Wishbone masters ==--
+    
+	constant WB_MASTERS             : positive := 9;
+    
+    constant WB_MST_GTX_0           : integer := 0;
+    constant WB_MST_GTX_1           : integer := 1;
+    constant WB_MST_GTX_2           : integer := 2;
+    
+    constant WB_MST_THR_0           : integer := 3;
+    constant WB_MST_THR_1           : integer := 4;
+    constant WB_MST_THR_2           : integer := 5;
+    constant WB_MST_THR_3           : integer := 6;
+    constant WB_MST_THR_4           : integer := 7;
+    constant WB_MST_THR_5           : integer := 8;
+    
     --== Wishbone slaves ==--
     
-	constant WB_N_SLAVES        : positive := 10;
-	constant WB_N_MASTERS       : positive := 2;
+	constant WB_SLAVES              : positive := 12;
     
-    constant WB_S_ADC           : integer := 0;
-    constant WB_S_CDCE          : integer := 1;
-    constant WB_S_CHIPID        : integer := 2;
-    constant WB_S_TEMP          : integer := 3;
+    constant WB_SLV_I2C_0           : integer := 0;
+    constant WB_SLV_I2C_1           : integer := 1;
+    constant WB_SLV_I2C_2           : integer := 2;
+    constant WB_SLV_I2C_3           : integer := 3;
+    constant WB_SLV_I2C_4           : integer := 4;
+    constant WB_SLV_I2C_5           : integer := 5;
     
-    constant WB_S_VFAT2_I2C_0   : integer := 4;
-    constant WB_S_VFAT2_I2C_1   : integer := 5;
-    constant WB_S_VFAT2_I2C_2   : integer := 6;
-    constant WB_S_VFAT2_I2C_3   : integer := 7;
-    constant WB_S_VFAT2_I2C_4   : integer := 8;
-    constant WB_S_VFAT2_I2C_5   : integer := 9;
-        
-    --== Wishbone address selection ==--
+    constant WB_SLV_THRESHOLD_0     : integer := 6;
+    constant WB_SLV_THRESHOLD_1     : integer := 7;
+    constant WB_SLV_THRESHOLD_2     : integer := 8;
+    constant WB_SLV_THRESHOLD_3     : integer := 9;
+    constant WB_SLV_THRESHOLD_4     : integer := 10;
+    constant WB_SLV_THRESHOLD_5     : integer := 11;
+   
+    --== Wishbone address selection & generation ==--
     
-	function wb_addr_sel(signal addr : in std_logic_vector(31 downto 0)) return integer;
+	function wb_addr_sel(signal addr : std_logic_vector(31 downto 0)) return integer;
     
 end wb_pkg;
 
 package body wb_pkg is
 
-    --== Address decoder ==--
-
+    --== Address decoder ==--   
+    
     function wb_addr_sel(signal addr : in std_logic_vector(31 downto 0)) return integer is
         variable sel : integer;
     begin
-        if    (std_match(addr, "00000000000000000000000000000000")) then 
-            sel := WB_S_ADC;
-        elsif (std_match(addr, "00000000000000000000000000000001")) then 
-            sel := WB_S_ADC;
-        elsif (std_match(addr, "00000000000000000000000000000010")) then 
-            sel := WB_S_ADC;
-        elsif (std_match(addr, "00000000000000000000000000000011")) then 
-            sel := WB_S_ADC;
-        else 
-            sel := 99;
+        -- VFAT2 I2C                               |ID || REGS |
+        if    (std_match(addr, "0000000000000000000000----------")) then sel := WB_SLV_I2C_0;
+        elsif (std_match(addr, "0000000000000000000001----------")) then sel := WB_SLV_I2C_1;
+        elsif (std_match(addr, "0000000000000000000010----------")) then sel := WB_SLV_I2C_2;
+        elsif (std_match(addr, "0000000000000000000011----------")) then sel := WB_SLV_I2C_3;
+        elsif (std_match(addr, "0000000000000000000100----------")) then sel := WB_SLV_I2C_4;
+        elsif (std_match(addr, "0000000000000000000101----------")) then sel := WB_SLV_I2C_5;
+        -- VFAT2 Threshold                         |ID || REGS |            
+        elsif (std_match(addr, "0001000000000000000000--00000---")) then sel := WB_SLV_THRESHOLD_0;
+        elsif (std_match(addr, "0001000000000000000001--00000---")) then sel := WB_SLV_THRESHOLD_1;
+        elsif (std_match(addr, "0001000000000000000010--00000---")) then sel := WB_SLV_THRESHOLD_2;
+        elsif (std_match(addr, "0001000000000000000011--00000---")) then sel := WB_SLV_THRESHOLD_3;
+        elsif (std_match(addr, "0001000000000000000100--00000---")) then sel := WB_SLV_THRESHOLD_4;
+        elsif (std_match(addr, "0001000000000000000101--00000---")) then sel := WB_SLV_THRESHOLD_5;
+        --
+        else sel := 99;
         end if;
         return sel;
     end wb_addr_sel;

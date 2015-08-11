@@ -27,10 +27,6 @@ use work.types_pkg.all;
 use work.wb_pkg.all;
 
 entity wb_switch_test is
-generic(
-    N_MASTERS   : integer := 4;
-    N_SLAVES    : integer := 4
-);
 end wb_switch_test;
  
 architecture behavior of wb_switch_test is 
@@ -38,12 +34,12 @@ architecture behavior of wb_switch_test is
     --Inputs
     signal wb_clk_i         : std_logic := '0';
     signal reset_i          : std_logic := '0';
-    signal wb_m_req_i       : wb_req_array_t((N_MASTERS - 1) downto 0);
-    signal wb_s_res_i       : wb_res_array_t((N_SLAVES - 1) downto 0);
+    signal wb_m_req_i       : wb_req_array_t((WB_MASTERS - 1) downto 0);
+    signal wb_s_res_i       : wb_res_array_t((WB_SLAVES - 1) downto 0);
 
     --Outputs
-    signal wb_s_req_o       : wb_req_array_t((N_SLAVES - 1) downto 0);
-    signal wb_m_res_o       : wb_res_array_t((N_MASTERS - 1) downto 0);
+    signal wb_s_req_o       : wb_req_array_t((WB_SLAVES - 1) downto 0);
+    signal wb_m_res_o       : wb_res_array_t((WB_MASTERS - 1) downto 0);
 
     constant wb_clk_period  : time := 10 ns;
     constant empty_sig      : wb_req_t := (addr  => (others => '0'), data  => (others => '0'), we    => '0', stb   => '0');
@@ -52,10 +48,6 @@ begin
  
     -- Instantiate the Unit Under Test (UUT)
     uut : entity work.wb_switch 
-    generic map(
-        N_MASTERS   => N_MASTERS,
-        N_SLAVES    => N_SLAVES
-    )
     port map(
         wb_clk_i    => wb_clk_i,
         reset_i     => reset_i,
@@ -95,15 +87,15 @@ begin
                           data  => (others => '0'),
                           we    => '1',
                           stb   => '1');        
-        wb_m_req_i(1) <= (addr  => x"00000000",
+        wb_m_req_i(1) <= (addr  => x"00000025",
                           data  => (others => '0'),
                           we    => '1',
                           stb   => '1');      
-        wb_m_req_i(2) <= (addr  => x"00000000",
+        wb_m_req_i(2) <= (addr  => x"00000650",
                           data  => (others => '0'),
                           we    => '1',
                           stb   => '1');      
-        wb_m_req_i(3) <= (addr  => x"00000000",
+        wb_m_req_i(3) <= (addr  => x"00000601",
                           data  => (others => '0'),
                           we    => '1',
                           stb   => '1');
@@ -117,7 +109,7 @@ begin
     
     
     -- Slave simulation
-    slaves_gen : for I in 0 to (N_SLAVES - 1) generate
+    slaves_gen : for I in 0 to (WB_SLAVES - 1) generate
     begin
         process(wb_clk_i)
             variable num    : unsigned(31 downto 0);

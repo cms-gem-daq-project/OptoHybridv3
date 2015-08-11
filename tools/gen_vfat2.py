@@ -137,7 +137,7 @@ def getLOC_S(str):
 
 # Generate the VHDL file
 
-f = open('../src/vfat2/vfat2_buffers.vhd', 'w')
+f = open('../src/buffers/vfat2_buffers.vhd', 'w')
 
 f.write("----------------------------------------------------------------------------------\n")
 f.write("-- Company:        IIHE - ULB\n")
@@ -303,7 +303,7 @@ for i in range(3):
     f.write("    )\n")
     f.write("    port map(\n")
     f.write("        o           => vfat2_resb_o(" + str(res_name[i]) + "),\n")
-    f.write("        i           => not vfat2_reset_i\n")
+    f.write("        i           => vfat2_reset_i\n")
     f.write("    );\n")
     f.write("\n")
     f.write("    vfat2_resh_" + str(res_name[i]) + "_obuf : obuf\n")
@@ -314,7 +314,7 @@ for i in range(3):
     f.write("    )\n")
     f.write("    port map(\n")
     f.write("        o           => vfat2_resh_o(" + str(res_name[i]) + "),\n")
-    f.write("        i           => not vfat2_reset_i\n")
+    f.write("        i           => vfat2_reset_i\n")
     f.write("    );\n")
     f.write("\n")
 

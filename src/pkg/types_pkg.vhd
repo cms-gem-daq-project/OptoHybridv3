@@ -1,15 +1,20 @@
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 
 package types_pkg is
 
     --============--
     --== Common ==--
     --============--
-    
+   
     type int_array_t is array(integer range <>) of integer;
     
     type std_array_t is array(integer range <>) of std_logic;
+    
+    type u32_array_t is array(integer range <>) of unsigned(31 downto 0);
+    
+    type std32_array_t is array(integer range <>) of std_logic_vector(31 downto 0);
     
     --==================--
     --== Trigger data ==--
@@ -21,7 +26,7 @@ package types_pkg is
     
     --===================--
     --== Tracking data ==--
-    --==================--
+    --===================--
  
     type tk_data_t is record
         valid   : std_logic;
@@ -69,14 +74,6 @@ package types_pkg is
     end record;
     
     type wb_res_array_t is array(integer range <>) of wb_res_t;
-
-    --===============--
-    --== Registers ==--
-    --===============--
-    
-    subtype register_t is std_logic_vector(31 downto 0);
- 
-    type register_array_t is array(integer range <>) of register_t;
     
 end types_pkg;
 
