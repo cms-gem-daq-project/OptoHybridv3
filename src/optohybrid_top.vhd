@@ -214,15 +214,6 @@ port(
     cdce_miso_i             : in std_logic;
     
     --== Miscellaneous ==--
-    
---    hdmi_scl_io             : inout std_logic_vector(1 downto 0);
---    hdmi_sda_io             : inout std_logic_vector(1 downto 0);
---
---    tmds_d_p_io             : inout std_logic_vector(1 downto 0);
---    tmds_d_n_io             : inout std_logic_vector(1 downto 0);
---
---    tmds_clk_p_io           : inout std_logic;
---    tmds_clk_n_io           : inout std_logic;
 
     adc_chip_select_o       : out std_logic;
     adc_din_i               : in std_logic;
@@ -235,6 +226,15 @@ port(
 
     chipid_io               : inout std_logic
     
+--    hdmi_scl_io             : inout std_logic_vector(1 downto 0);
+--    hdmi_sda_io             : inout std_logic_vector(1 downto 0);
+--
+--    tmds_d_p_io             : inout std_logic_vector(1 downto 0);
+--    tmds_d_n_io             : inout std_logic_vector(1 downto 0);
+--
+--    tmds_clk_p_io           : inout std_logic;
+--    tmds_clk_n_io           : inout std_logic;
+       
     --== GTX ==--
     
 --    mgt_112_clk0_p_i        : in std_logic;
@@ -348,6 +348,8 @@ architecture Behavioral of optohybrid_top is
     alias wb_mst_gtx_res        : wb_res_array_t(2 downto 0) is wb_m_res(WB_MST_GTX_2 downto WB_MST_GTX_0);
     alias wb_mst_thr_req        : wb_req_array_t(5 downto 0) is wb_m_req(WB_MST_THR_5 downto WB_MST_THR_0);
     alias wb_mst_thr_res        : wb_res_array_t(5 downto 0) is wb_m_res(WB_MST_THR_5 downto WB_MST_THR_0);
+    alias wb_mst_lat_req        : wb_req_array_t(5 downto 0) is wb_m_req(WB_MST_LAT_5 downto WB_MST_LAT_0);
+    alias wb_mst_lat_res        : wb_res_array_t(5 downto 0) is wb_m_res(WB_MST_LAT_5 downto WB_MST_LAT_0);
     
     -- Slaves
     signal wb_s_req             : wb_req_array_t((WB_SLAVES - 1) downto 0);
@@ -357,6 +359,8 @@ architecture Behavioral of optohybrid_top is
     alias wb_slv_i2c_res        : wb_res_array_t(5 downto 0) is wb_s_res(WB_SLV_I2C_5 downto WB_SLV_I2C_0);
     alias wb_slv_threshold_req  : wb_req_array_t(5 downto 0) is wb_s_req(WB_SLV_THRESHOLD_5 downto WB_SLV_THRESHOLD_0);
     alias wb_slv_threshold_res  : wb_res_array_t(5 downto 0) is wb_s_res(WB_SLV_THRESHOLD_5 downto WB_SLV_THRESHOLD_0);
+    alias wb_slv_latency_req    : wb_req_array_t(5 downto 0) is wb_s_req(WB_SLV_LATENCY_5 downto WB_SLV_LATENCY_0);
+    alias wb_slv_latency_res    : wb_res_array_t(5 downto 0) is wb_s_res(WB_SLV_LATENCY_5 downto WB_SLV_LATENCY_0);
     
     --== Chipscope signals ==--
     
@@ -402,8 +406,12 @@ begin
         wb_slv_i2c_res_o        => wb_slv_i2c_res(0),
         wb_slv_threshold_req_i  => wb_slv_threshold_req(0),
         wb_slv_threshold_res_o  => wb_slv_threshold_res(0),
+        wb_slv_latency_req_i    => wb_slv_latency_req(0),
+        wb_slv_latency_res_o    => wb_slv_latency_res(0),
         wb_mst_thr_req_o        => wb_mst_thr_req(0),
         wb_mst_thr_res_i        => wb_mst_thr_res(0),
+        wb_mst_lat_req_o        => wb_mst_lat_req(0),
+        wb_mst_lat_res_i        => wb_mst_lat_res(0),
         vfat2_data_out_i        => vfat2_data_out(3 downto 0),
         vfat2_sbits_i           => vfat2_sbits(3 downto 0),
         vfat2_scl_o             => vfat2_scl(0),
@@ -499,6 +507,10 @@ begin
         trig0   => cs_trig0
     );
     
+    --===========--
+    --== DEBUG ==--
+    --===========--
+    
     process(qpll_clk)
         variable s : std_logic;
     begin
@@ -521,7 +533,6 @@ begin
     end process;
     
     cs_sync_in <= wb_mst_gtx_res(0).ack & wb_mst_gtx_res(0).stat & wb_mst_gtx_res(0).data;
-
     
     --=============--
     --== Buffers ==--

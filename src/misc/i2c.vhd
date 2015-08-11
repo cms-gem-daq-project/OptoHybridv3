@@ -25,13 +25,14 @@ use ieee.std_logic_1164.all;
 
 entity i2c is
 generic(
-
-    CLK_DIV     : integer := 400
-
+    -- Input frequency clock
+    IN_FREQ     : integer := 40_000_000;
+    -- SCL frequency clock
+    OUT_FREQ    : integer := 100_000
 );
 port(
 
-    clk_i       : in std_logic;
+    ref_clk_i   : in std_logic;
     reset_i     : in std_logic;
     
     en_i        : in std_logic;
@@ -52,16 +53,19 @@ port(
 end i2c;
 
 architecture Behavioral of i2c is
-    
-    type state_t is (IDLE, START, ADDR, RW, WAIT_0, ACK_0, RD, ACK_1, RST_1, ENDING_RD, WR, RST_2, ACK_2, ENDING_WR, STOP, ERROR);
-    
-    signal state        : state_t;
+
+    constant CLK_DIV    : integer := IN_FREQ / OUT_FREQ;
     
     signal clk_divider  : integer range 0 to CLK_DIV;
     signal rising_clk   : std_logic;
     signal high_clk     : std_logic;
     signal falling_clk  : std_logic;
     signal low_clk      : std_logic;
+    
+    
+    type state_t is (IDLE, START, ADDR, RW, WAIT_0, ACK_0, RD, ACK_1, RST_1, ENDING_RD, WR, RST_2, ACK_2, ENDING_WR, STOP, ERROR);
+    
+    signal state        : state_t;
     
     signal address      : std_logic_vector(6 downto 0);
     signal rw_n         : std_logic;
@@ -77,9 +81,9 @@ begin
     --== SCK ==--
     --=========--
     
-    process(clk_i)
+    process(ref_clk_i)
     begin
-        if (rising_edge(clk_i)) then
+        if (rising_edge(ref_clk_i)) then
             if (reset_i = '1') then
                 scl_o <= '0';
                 clk_divider <= 0;
@@ -132,9 +136,9 @@ begin
     --== SDA ==--
     --=========--
     
-    process(clk_i)
+    process(ref_clk_i)
     begin    
-        if (rising_edge(clk_i)) then
+        if (rising_edge(ref_clk_i)) then
             if (reset_i = '1') then
                 valid_o <= '0';
                 error_o <= '0';

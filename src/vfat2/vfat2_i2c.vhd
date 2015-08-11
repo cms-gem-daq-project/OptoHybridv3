@@ -84,10 +84,11 @@ begin
     
     i2c_inst : entity work.i2c
     generic map(
-        CLK_DIV     => 400
+        IN_FREQ     => 40_000_000,
+        OUT_FREQ    => 100_000
     )
     port map(    
-        clk_i       => ref_clk_i,
+        ref_clk_i   => ref_clk_i,
         reset_i     => reset_i,
         en_i        => i2c_en,
         address_i   => i2c_address,

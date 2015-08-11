@@ -4,21 +4,21 @@
 -- 
 -- Create Date:    13:46:42 08/05/2015 
 -- Design Name:    OptoHybrid v2
--- Module Name:    vfat2_threshold_scan - Behavioral 
+-- Module Name:    vfat2_latency_scan - Behavioral 
 -- Project Name:   OptoHybrid v2
 -- Target Devices: xc6vlx130t-1ff1156
 -- Tool versions:  ISE  P.20131013
 -- Description: 
 --
--- Wishbone slave that handles the Threshold Scan based on the SBits
+-- Wishbone slave that handles the Latency Scan based on the Tracking data
 --
 -- Register map:
 -- 0 : start the scan for a given VFAT2
--- 1 : minimum threshold (8 bits)
--- 2 : maximum threshold (8 bits)
--- 3 : threshold step (8 bits)
+-- 1 : minimum latency (8 bits)
+-- 2 : maximum latency (8 bits)
+-- 3 : latency step (8 bits)
 -- 4 : number of events  (24 bits)
--- 5 : read out the results (32 bits = 8 bits of threshold value & 24 bits of number of events hit)
+-- 5 : read out the results (32 bits = 8 bits of latency value & 24 bits of number of events hit)
 -- 6 : local reset
 --
 -- Dependencies: 
@@ -36,7 +36,7 @@ use ieee.numeric_std.all;
 library work;
 use work.types_pkg.all;
 
-entity vfat2_threshold_scan is
+entity vfat2_latency_scan is
 port(
     -- System reference clock
     ref_clk_i       : in std_logic;
@@ -50,17 +50,17 @@ port(
     wb_mst_req_o    : out wb_req_t;
     -- Response from the I2C slave
     wb_mst_res_i    : in wb_res_t;
-    -- SBits of the VFAT2s in the sector
-    vfat2_sbits_i   : in sbits_array_t(3 downto 0)
+    -- Tracking data of the VFAT2s in the sector
+    vfat2_tk_data_i : in tk_data_array_t(3 downto 0)
 );
-end vfat2_threshold_scan;
+end vfat2_latency_scan;
 
-architecture Behavioral of vfat2_threshold_scan is
+architecture Behavioral of vfat2_latency_scan is
 
     -- Local reset
     signal reset    : std_logic;
     signal reset2   : std_logic;
-
+    
     -- Signals from the Wishbone Splitter
     signal wb_stb   : std_logic_vector(6 downto 0);
     signal wb_we    : std_logic;
@@ -104,25 +104,25 @@ begin
         data_i      => wb_dout
     );
     
-    --============================--
-    --== Threshold scan routine ==--
-    --============================--
+    --==========================--
+    --== Latency scan routine ==--
+    --==========================--
     
     -- 0 : start the scan for a given VFAT2
 
-    vfat2_threshold_scan_req_inst : entity work.vfat2_threshold_scan_req
+    vfat2_latency_scan_req_inst : entity work.vfat2_latency_scan_req
     port map(
         ref_clk_i       => ref_clk_i,
         reset_i         => reset,
         req_stb_i       => wb_stb(0),
         req_vfat2_i     => wb_addr(12 downto 8),
-        req_min_thr_i   => wb_dout(1)(7 downto 0),
-        req_max_thr_i   => wb_dout(2)(7 downto 0),
-        req_thr_step_i  => wb_dout(3)(7 downto 0),
+        req_min_lat_i   => wb_dout(1)(7 downto 0),
+        req_max_lat_i   => wb_dout(2)(7 downto 0),
+        req_lat_step_i  => wb_dout(3)(7 downto 0),
         req_events_i    => wb_dout(4)(23 downto 0),
         wb_mst_req_o    => wb_mst_req_o,
         wb_mst_res_i    => wb_mst_res_i,
-        vfat2_sbits_i   => vfat2_sbits_i,
+        vfat2_tk_data_i => vfat2_tk_data_i,
         fifo_rst_o      => fifo_rst,
         fifo_we_o       => fifo_we,
         fifo_din_o      => fifo_din
@@ -136,9 +136,9 @@ begin
     --== Registers ==--
     --===============--
    
-    -- 1 : minimum threshold (8 bits)
-    -- 2 : maximum threshold (8 bits)
-    -- 3 : threshold step (8 bits)
+    -- 1 : minimum latency (8 bits)
+    -- 2 : maximum latency (8 bits)
+    -- 3 : latency step (8 bits)
     -- 4 : number of events  (24 bits)   
    
     registers_inst : entity work.registers
@@ -160,7 +160,7 @@ begin
     --== FIFO with results ==--
     --=======================--
     
-    -- 5 : read out the results (32 bits = 8 bits of threshold value & 24 bits of number of events hit)
+    -- 5 : read out the results (32 bits = 8 bits of latency value & 24 bits of number of events hit)
 
     reset2 <= reset or fifo_rst;
 

@@ -40,10 +40,18 @@ port(
     wb_slv_threshold_req_i  : in wb_req_t;
     -- Wishbone response from the Threshold Scan slave 
     wb_slv_threshold_res_o  : out wb_res_t;
+    -- Wishbone request to the Latency Scan slave 
+    wb_slv_latency_req_i  : in wb_req_t;
+    -- Wishbone response from the Latency Scan slave 
+    wb_slv_latency_res_o  : out wb_res_t;
     -- Wishbone request from the Threshold Scan master to the I2C slaves 
     wb_mst_thr_req_o        : out wb_req_t;
     -- Wishbone response from the I2C slaves to the Threshold Scan master 
     wb_mst_thr_res_i        : in wb_res_t;
+    -- Wishbone request from the Latency Scan master to the I2C slaves 
+    wb_mst_lat_req_o        : out wb_req_t;
+    -- Wishbone response from the I2C slaves to the Latency Scan master 
+    wb_mst_lat_res_i        : in wb_res_t;
     -- VFAT2 data out
     vfat2_data_out_i        : in std_logic_vector(3 downto 0);
     -- VFAT2 sbits
@@ -108,6 +116,21 @@ begin
         wb_mst_req_o    => wb_mst_thr_req_o,
         wb_mst_res_i    => wb_mst_thr_res_i,
         vfat2_sbits_i   => vfat2_sbits_i
+    );
+    
+    --==========================--
+    --== VFAT2 latency scan ==--
+    --==========================--
+    
+    vfat2_latency_scan_inst : entity work.vfat2_latency_scan
+    port map(
+        ref_clk_i       => ref_clk_i,
+        reset_i         => reset_i,
+        wb_slv_req_i    => wb_slv_latency_req_i,
+        wb_slv_res_o    => wb_slv_latency_res_o,
+        wb_mst_req_o    => wb_mst_lat_req_o,
+        wb_mst_res_i    => wb_mst_lat_res_i,
+        vfat2_tk_data_i => vfat2_tk_data
     );
 
 end Behavioral;
