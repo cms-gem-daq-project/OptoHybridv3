@@ -28,7 +28,7 @@ package wb_pkg is
     
     --== Wishbone slaves ==--
     
-	constant WB_SLAVES              : positive := 18;
+	constant WB_SLAVES              : positive := 19;
     
     constant WB_SLV_I2C_0           : integer := 0;
     constant WB_SLV_I2C_1           : integer := 1;
@@ -50,6 +50,8 @@ package wb_pkg is
     constant WB_SLV_LATENCY_3       : integer := 15;
     constant WB_SLV_LATENCY_4       : integer := 16;
     constant WB_SLV_LATENCY_5       : integer := 17;
+    
+    constant WB_SLV_T1              : integer := 18;
    
     --== Wishbone address selection & generation ==--
     
@@ -85,6 +87,9 @@ package body wb_pkg is
         elsif (std_match(addr, "0010000000000000000011--00000---")) then sel := WB_SLV_LATENCY_3;
         elsif (std_match(addr, "0010000000000000000100--00000---")) then sel := WB_SLV_LATENCY_4;
         elsif (std_match(addr, "0010000000000000000101--00000---")) then sel := WB_SLV_LATENCY_5;
+        -- VFAT2 T1                                     | REGS |      
+        elsif (std_match(addr, "00110000000000000000000000000---")) then sel := WB_SLV_T1;
+        
         --
         else sel := 99;
         end if;

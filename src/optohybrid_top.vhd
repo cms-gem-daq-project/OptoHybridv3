@@ -282,7 +282,7 @@ architecture Behavioral of optohybrid_top is
     
     signal vfat2_mclk           : std_logic; -- VFAT2 refenrece clock (should be the same as the LHC clock)
     signal vfat2_reset          : std_logic;
-    signal vfat2_t1             : std_logic; 
+    signal vfat2_t1             : std_logic;
     signal vfat2_scl            : std_logic_vector(5 downto 0); 
     signal vfat2_sda_mosi       : std_logic_vector(5 downto 0); 
     signal vfat2_sda_miso       : std_logic_vector(5 downto 0); 
@@ -361,6 +361,8 @@ architecture Behavioral of optohybrid_top is
     alias wb_slv_threshold_res  : wb_res_array_t(5 downto 0) is wb_s_res(WB_SLV_THRESHOLD_5 downto WB_SLV_THRESHOLD_0);
     alias wb_slv_latency_req    : wb_req_array_t(5 downto 0) is wb_s_req(WB_SLV_LATENCY_5 downto WB_SLV_LATENCY_0);
     alias wb_slv_latency_res    : wb_res_array_t(5 downto 0) is wb_s_res(WB_SLV_LATENCY_5 downto WB_SLV_LATENCY_0);
+    alias wb_slv_t1_req         : wb_req_t is wb_s_req(WB_SLV_T1);
+    alias wb_slv_t1_res         : wb_res_t is wb_s_res(WB_SLV_T1);
     
     --== Chipscope signals ==--
     
@@ -395,42 +397,48 @@ begin
     );
 
     --===================--
-    --== VFAT2 sectors ==--
+    --== VFAT2 columns ==--
     --===================--
+    
+    vfat2_colum_gen : for I in 0 to 2 generate
+    begin
         
-    vfat2_sector_inst : entity work.vfat2_sector      
-    port map(        
-        ref_clk_i               => ref_clk,
-        reset_i                 => reset,
-        wb_slv_i2c_req_i        => wb_slv_i2c_req(0),
-        wb_slv_i2c_res_o        => wb_slv_i2c_res(0),
-        wb_slv_threshold_req_i  => wb_slv_threshold_req(0),
-        wb_slv_threshold_res_o  => wb_slv_threshold_res(0),
-        wb_slv_latency_req_i    => wb_slv_latency_req(0),
-        wb_slv_latency_res_o    => wb_slv_latency_res(0),
-        wb_mst_thr_req_o        => wb_mst_thr_req(0),
-        wb_mst_thr_res_i        => wb_mst_thr_res(0),
-        wb_mst_lat_req_o        => wb_mst_lat_req(0),
-        wb_mst_lat_res_i        => wb_mst_lat_res(0),
-        vfat2_data_out_i        => vfat2_data_out(3 downto 0),
-        vfat2_sbits_i           => vfat2_sbits(3 downto 0),
-        vfat2_scl_o             => vfat2_scl(0),
-        vfat2_sda_miso_i        => vfat2_sda_miso(0),
-        vfat2_sda_mosi_o        => vfat2_sda_mosi(0),
-        vfat2_sda_tri_o         => vfat2_sda_tri(0)
-    );    
-     
---    vfat2_i2c_inst : entity work.vfat2_i2c
---    port map(
---        wb_clk_i            => wb_clk,
---        reset_i             => reset,
---        wb_req_i            => wb_vfat2_i2c_req,
---        wb_res_o            => wb_vfat2_i2c_res,
---        vfat2_scl_o         => vfat2_scl,
---        vfat2_sda_miso_i    => vfat2_sda_miso_i,
---        vfat2_sda_mosi_o    => vfat2_sda_mosi_o,
---        vfat2_sda_tri_o     => vfat2_sda_tri_o
---    );
+        vfat2_column_inst : entity work.vfat2_column      
+        port map(        
+            ref_clk_i               => ref_clk,
+            reset_i                 => reset,
+            wb_slv_i2c_req_i        => wb_slv_i2c_req((2 * I + 1) downto (2 * I)),
+            wb_slv_i2c_res_o        => wb_slv_i2c_res((2 * I + 1) downto (2 * I)),
+            wb_slv_threshold_req_i  => wb_slv_threshold_req((2 * I + 1) downto (2 * I)),
+            wb_slv_threshold_res_o  => wb_slv_threshold_res((2 * I + 1) downto (2 * I)),
+            wb_slv_latency_req_i    => wb_slv_latency_req((2 * I + 1) downto (2 * I)),
+            wb_slv_latency_res_o    => wb_slv_latency_res((2 * I + 1) downto (2 * I)),
+            wb_mst_thr_req_o        => wb_mst_thr_req((2 * I + 1) downto (2 * I)),
+            wb_mst_thr_res_i        => wb_mst_thr_res((2 * I + 1) downto (2 * I)),
+            wb_mst_lat_req_o        => wb_mst_lat_req((2 * I + 1) downto (2 * I)),
+            wb_mst_lat_res_i        => wb_mst_lat_res((2 * I + 1) downto (2 * I)),
+            vfat2_data_out_i        => vfat2_data_out((8 * I + 7) downto (8 * I)),
+            vfat2_sbits_i           => vfat2_sbits((8 * I + 7) downto (8 * I)),
+            vfat2_t1_o              => vfat2_t1(I),
+            vfat2_scl_o             => vfat2_scl((2 * I + 1) downto (2 * I)),
+            vfat2_sda_miso_i        => vfat2_sda_miso((2 * I + 1) downto (2 * I)),
+            vfat2_sda_mosi_o        => vfat2_sda_mosi((2 * I + 1) downto (2 * I)),
+            vfat2_sda_tri_o         => vfat2_sda_tri((2 * I + 1) downto (2 * I))
+        );    
+        
+    end generate;
+
+    --================--
+    --== T1 encoder ==--
+    --================--
+    
+    vfat2_t1_encoder_inst : entity work.vfat2_t1_encoder
+    port map(
+        vfat2_mclk_i    => ref_clk,
+        reset_i         => reset,
+        vfat2_t1_i      => local_t1,
+        vfat2_t1_o      => vfat2_t1_o
+    );
 
     --============--
     --== VFAT2s ==--
