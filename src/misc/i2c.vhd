@@ -86,6 +86,7 @@ architecture Behavioral of i2c is
     signal rw_n         : std_logic;
     signal din          : std_logic_vector(7 downto 0);
     signal dout         : std_logic_vector(7 downto 0);
+    
     -- Address and data counters
     signal address_cnt  : integer range 0 to 6;
     signal data_cnt     : integer range 0 to 7;

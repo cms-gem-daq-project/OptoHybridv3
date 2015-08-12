@@ -13,13 +13,17 @@
 -- Wishbone slave that sends T1 commands according to patterns
 --
 -- Register map:
--- 0 : start the scan for a given VFAT2
--- 1 : minimum threshold (8 bits)
--- 2 : maximum threshold (8 bits)
--- 3 : threshold step (8 bits)
--- 4 : number of events  (24 bits)
--- 5 : read out the results (32 bits = 8 bits of threshold value & 24 bits of number of events hit)
--- 6 : local reset
+-- 0 : enable/disable
+-- 1 : operation mode (2 bits)
+-- 2 : type (2 bits)
+-- 3 : number of events (32 bits)
+-- 4 : interval (32 bits)
+-- 5 : delay (32 bits)
+-- 7 & 6 : lv1a sequence (64 bits)
+-- 9 & 8 : calpulse sequence (64 bits)
+-- 11 & 10 : resync sequence (64 bits)
+-- 13 & 12 : bc0 sequence (64 bits)
+-- 14 : local reset
 --
 -- Dependencies: 
 --
@@ -56,20 +60,17 @@ architecture Behavioral of vfat2_t1_controller is
     signal local_reset  : std_logic;
     
     -- Signals from the Wishbone Splitter
-    signal wb_stb       : std_logic_vector(6 downto 0);
+    signal wb_stb       : std_logic_vector(14 downto 0);
     signal wb_we        : std_logic;
     signal wb_addr      : std_logic_vector(31 downto 0);
-    signal wb_din       : std_logic_vector(31 downto 0);
+    signal wb_data      : std_logic_vector(31 downto 0);
     
-    signal wb_ack       : std_logic_vector(6 downto 0);
-    signal wb_err       : std_logic_vector(6 downto 0);
-    signal wb_dout      : std32_array_t(6 downto 0);
+    -- Signals for the registers
+    signal reg_ack      : std_logic_vector(14 downto 0);
+    signal reg_err      : std_logic_vector(14 downto 0);
+    signal reg_data     : std32_array_t(14 downto 0);
     
 begin
-
-    --== Local reset ==--
-
-    local_reset <= reset_i or wb_stb(6);
 
     --===============================--
     --== Wishbone request splitter ==--
@@ -77,7 +78,7 @@ begin
 
     wb_splitter_inst : entity work.wb_splitter
     generic map(
-        SIZE        => 7
+        SIZE        => 15
     )
     port map(
         wb_clk_i    => ref_clk_i,
@@ -87,46 +88,72 @@ begin
         stb_o       => wb_stb,
         we_o        => wb_we,
         addr_o      => wb_addr,
-        data_o      => wb_din,
-        ack_i       => wb_ack,
-        err_i       => wb_err,
-        data_i      => wb_dout
+        data_o      => wb_data,
+        ack_i       => reg_ack,
+        err_i       => reg_err,
+        data_i      => reg_dout
     );    
     
     --===========================--
     --== T1 controller routine ==--
     --===========================--
     
-    -- 0 : start the scan for a given VFAT2
-
-    
-    -- Connect signals for automatic response
-    wb_ack(0) <= wb_stb(0);
-    wb_err(0) <= '0';
-    wb_dout(0) <= (others => '0');
-        
+    vfat2_t1_controller_req_inst : entity work.vfat2_t1_controller_req
+    port map(
+        vfat2_mclk_i    => ref_clk_i,
+        reset_i         => local_reset,
+        req_en_i        => reg_data(0)(0),
+        req_op_mode_i   => reg_data(1)(1 downto 0),
+        req_type_i      => reg_data(2)(1 downto 0),
+        req_events_i    => reg_data(3),
+        req_interval_i  => reg_data(4),
+        req_delay_i     => reg_data(5),
+        req_lv1a_seq_i  => (reg_data(7) & reg_data(6)),
+        req_cal_seq_i   => (reg_data(9) & reg_data(8)),
+        req_sync_seq_i  => (reg_data(11) & reg_data(10)),
+        req_bc0_seq_i   => (reg_data(13) & reg_data(12)),
+        vfat2_t1_0      => vfat2_t1_0
+    );
+            
     --===============--
     --== Registers ==--
     --===============--
    
-    -- 1 : minimum threshold (8 bits)
-    -- 2 : maximum threshold (8 bits)
-    -- 3 : threshold step (8 bits)
-    -- 4 : number of events  (24 bits)   
+    -- 0 : enable/disable
+    -- 1 : operation mode (2 bits)
+    -- 2 : type (2 bits)
+    -- 3 : number of events (32 bits)
+    -- 4 : interval (32 bits)
+    -- 5 : delay (32 bits)
+    -- 7 & 6 : lv1a sequence (64 bits)
+    -- 9 & 8 : calpulse sequence (64 bits)
+    -- 11 & 10 : resync sequence (64 bits)
+    -- 13 & 12 : bc0 sequence (64 bits)
    
     registers_inst : entity work.registers
     generic map(
-        SIZE        => 4
+        SIZE        => 14
     )
     port map(
         ref_clk_i   => ref_clk_i,
         reset_i     => local_reset,
-        stb_i       => wb_stb(4 downto 1),
-        we_i        => (others => wb_we),
-        data_i      => (others => wb_din),
-        ack_o       => wb_ack(4 downto 1),
-        err_o       => wb_err(4 downto 1),
-        data_o      => wb_dout(4 downto 1)
+        stb_i       => wb_stb(13 downto 1),
+        we_i        => wb_we,
+        data_i      => wb_din,
+        ack_o       => reg_ack(13 downto 1),
+        err_o       => reg_err(13 downto 1),
+        data_o      => reg_data(13 downto 1)
     );
+    
+    --=================--
+    --== Local reset ==--
+    --=================--
+
+    local_reset <= reset_i or wb_stb(14);
+    
+    -- Connect signals for automatic response
+    wb_ack(14) <= wb_stb(14);
+    wb_err(14) <= '0';
+    wb_dout(14) <= (others => '0');
     
 end Behavioral;

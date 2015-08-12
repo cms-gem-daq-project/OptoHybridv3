@@ -72,12 +72,15 @@ architecture Behavioral of vfat2_threshold_scan_req is
     -- Selected VFAT2
     signal sel_vfat2        : std_logic_vector(4 downto 0);
     signal sel_sbits        : integer range 0 to 3;
+    
     -- Saved values of the entries to ensure stability
     signal threshold_limit  : std_logic_vector(7 downto 0);
     signal threshold_step   : std_logic_vector(7 downto 0);
     signal events_limit     : std_logic_vector(23 downto 0);
+    
     -- Value of the threshold before the scan
     signal saved_threshold  : std_logic_vector(7 downto 0);
+    
     -- Counter for the scan
     signal threshold        : unsigned(7 downto 0);
     signal event_counter    : unsigned(23 downto 0);

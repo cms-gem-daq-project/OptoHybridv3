@@ -39,9 +39,9 @@ port(
     -- Request strobe
     stb_i       : in std_logic_vector((SIZE - 1) downto 0);
     -- Request write enable
-    we_i        : in std_logic_vector((SIZE - 1) downto 0);
+    we_i        : in std_logic;
     -- Request write data
-    data_i      : in std32_array_t((SIZE - 1) downto 0);
+    data_i      : in std_logic_vector(31 downto 0);
     -- Response acknowledgment
     ack_o       : out std_logic_vector((SIZE - 1) downto 0);
     -- Response error 
@@ -75,8 +75,8 @@ begin
                     -- When receiving an request strobe
                     if (stb_i(I) = '1') then
                         -- Register the value if it is a write request
-                        if (we_i(I) = '1') then
-                            registers(I) <= data_i(I);
+                        if (we_i = '1') then
+                            registers(I) <= data_i;
                         end if;
                         -- Acknowledge the transaction
                         ack_o(I) <= '1';

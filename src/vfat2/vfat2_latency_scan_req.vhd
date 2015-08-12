@@ -72,16 +72,20 @@ architecture Behavioral of vfat2_latency_scan_req is
     -- Selected VFAT2
     signal sel_vfat2        : std_logic_vector(4 downto 0);
     signal sel_tkdata       : integer range 0 to 3;
+    
     -- Saved values of the entries to ensure stability
     signal latency_limit    : std_logic_vector(7 downto 0);
     signal latency_step     : std_logic_vector(7 downto 0);
     signal events_limit     : std_logic_vector(23 downto 0);
+    
     -- Value of the latency before the scan
     signal saved_latency    : std_logic_vector(7 downto 0);
+    
     -- Counter for the scan
     signal latency          : unsigned(7 downto 0);
     signal event_counter    : unsigned(23 downto 0);
     signal hit_counter      : unsigned(23 downto 0);
+    
     -- Utility
     signal empty_128bits    : std_logic_vector(127 downto 0);
 

@@ -88,7 +88,7 @@ package body wb_pkg is
         elsif (std_match(addr, "0010000000000000000100--00000---")) then sel := WB_SLV_LATENCY_4;
         elsif (std_match(addr, "0010000000000000000101--00000---")) then sel := WB_SLV_LATENCY_5;
         -- VFAT2 T1                                     | REGS |      
-        elsif (std_match(addr, "00110000000000000000000000000---")) then sel := WB_SLV_T1;
+        elsif (std_match(addr, "0011000000000000000000000000----")) then sel := WB_SLV_T1;
         
         --
         else sel := 99;

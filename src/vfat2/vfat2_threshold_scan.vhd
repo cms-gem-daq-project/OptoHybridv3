@@ -66,11 +66,12 @@ architecture Behavioral of vfat2_threshold_scan is
     signal wb_stb       : std_logic_vector(6 downto 0);
     signal wb_we        : std_logic;
     signal wb_addr      : std_logic_vector(31 downto 0);
-    signal wb_din       : std_logic_vector(31 downto 0);
+    signal wb_data      : std_logic_vector(31 downto 0);
     
-    signal wb_ack       : std_logic_vector(6 downto 0);
-    signal wb_err       : std_logic_vector(6 downto 0);
-    signal wb_dout      : std32_array_t(6 downto 0);
+    -- Signals for the registers
+    signal reg_ack      : std_logic_vector(6 downto 0);
+    signal reg_err      : std_logic_vector(6 downto 0);
+    signal reg_data     : std32_array_t(6 downto 0);
     
     -- Signals to the FIFO
     signal fifo_rst     : std_logic;
@@ -78,10 +79,6 @@ architecture Behavioral of vfat2_threshold_scan is
     signal fifo_din     : std_logic_vector(31 downto 0);
 
 begin
-
-    --== Local reset ==--
-
-    local_reset <= reset_i or wb_stb(6);
 
     --===============================--
     --== Wishbone request splitter ==--
@@ -99,10 +96,10 @@ begin
         stb_o       => wb_stb,
         we_o        => wb_we,
         addr_o      => wb_addr,
-        data_o      => wb_din,
-        ack_i       => wb_ack,
-        err_i       => wb_err,
-        data_i      => wb_dout
+        data_o      => wb_data,
+        ack_i       => reg_ack,
+        err_i       => reg_err,
+        data_i      => reg_data
     );
     
     --============================--
@@ -117,10 +114,10 @@ begin
         reset_i         => local_reset,
         req_stb_i       => wb_stb(0),
         req_vfat2_i     => wb_addr(12 downto 8),
-        req_min_thr_i   => wb_dout(1)(7 downto 0),
-        req_max_thr_i   => wb_dout(2)(7 downto 0),
-        req_thr_step_i  => wb_dout(3)(7 downto 0),
-        req_events_i    => wb_dout(4)(23 downto 0),
+        req_min_thr_i   => reg_data(1)(7 downto 0),
+        req_max_thr_i   => reg_data(2)(7 downto 0),
+        req_thr_step_i  => reg_data(3)(7 downto 0),
+        req_events_i    => reg_data(4)(23 downto 0),
         wb_mst_req_o    => wb_mst_req_o,
         wb_mst_res_i    => wb_mst_res_i,
         vfat2_sbits_i   => vfat2_sbits_i,
@@ -131,9 +128,9 @@ begin
     );
     
     -- Connect signals for automatic response
-    wb_ack(0) <= wb_stb(0);
-    wb_err(0) <= '0';
-    wb_dout(0) <= (others => '0');
+    reg_ack(0) <= wb_stb(0);
+    reg_err(0) <= '0';
+    reg_data(0) <= (others => '0');
     
     --===============--
     --== Registers ==--
@@ -152,11 +149,11 @@ begin
         ref_clk_i   => ref_clk_i,
         reset_i     => local_reset,
         stb_i       => wb_stb(4 downto 1),
-        we_i        => (others => wb_we),
-        data_i      => (others => wb_din),
-        ack_o       => wb_ack(4 downto 1),
-        err_o       => wb_err(4 downto 1),
-        data_o      => wb_dout(4 downto 1)
+        we_i        => wb_we,
+        data_i      => wb_data,
+        ack_o       => reg_ack(4 downto 1),
+        err_o       => reg_err(4 downto 1),
+        data_o      => reg_data(4 downto 1)
     );
     
     --=======================--
@@ -172,11 +169,22 @@ begin
         wr_en       => fifo_we,
         din         => fifo_din,
         rd_en       => wb_stb(5),
-        dout        => wb_dout(5),
+        valid       => reg_ack(5),
+        dout        => reg_dout(5),
+        underflow   => reg_err(5),
         full        => open,
-        empty       => open,
-        valid       => wb_ack(5),
-        underflow   => wb_err(5)
+        empty       => open
     );
+    
+    --=================--
+    --== Local reset ==--
+    --=================--
+
+    local_reset <= reset_i or wb_stb(6);
+    
+    -- Connect signals for automatic response
+    reg_ack(6) <= wb_stb(6);
+    reg_err(6) <= '0';
+    reg_data(6) <= (others => '0');
     
 end Behavioral;

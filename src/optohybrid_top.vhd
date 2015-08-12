@@ -419,7 +419,6 @@ begin
             wb_mst_lat_res_i        => wb_mst_lat_res((2 * I + 1) downto (2 * I)),
             vfat2_data_out_i        => vfat2_data_out((8 * I + 7) downto (8 * I)),
             vfat2_sbits_i           => vfat2_sbits((8 * I + 7) downto (8 * I)),
-            vfat2_t1_o              => vfat2_t1(I),
             vfat2_scl_o             => vfat2_scl((2 * I + 1) downto (2 * I)),
             vfat2_sda_miso_i        => vfat2_sda_miso((2 * I + 1) downto (2 * I)),
             vfat2_sda_mosi_o        => vfat2_sda_mosi((2 * I + 1) downto (2 * I)),

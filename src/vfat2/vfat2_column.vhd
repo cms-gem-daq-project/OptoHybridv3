@@ -54,8 +54,6 @@ port(
     vfat2_data_out_i        : in std_logic_vector(7 downto 0);
     -- VFAT2 sbits
     vfat2_sbits_i           : in sbits_array_t(7 downto 0);
-    -- VFAT2 T1 signal
-    vfat2_t1_o              : out std_logic;
     -- VFAT2 I2C signals
     vfat2_scl_o             : out std_logic_vector(1 downto 0);
     vfat2_sda_miso_i        : in std_logic_vector(1 downto 0);
@@ -65,9 +63,6 @@ port(
 end vfat2_column;
 
 architecture Behavioral of vfat2_column is
-
-    signal local_t1 : t1_t;
-
 begin
 
     --===================--
