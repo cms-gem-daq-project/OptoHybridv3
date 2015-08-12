@@ -51,36 +51,37 @@ port(
     -- Response from the I2C slave
     wb_mst_res_i    : in wb_res_t;
     -- SBits of the VFAT2s in the sector
-    vfat2_sbits_i   : in sbits_array_t(3 downto 0)
+    vfat2_sbits_i   : in sbits_array_t(3 downto 0);
+    -- Is the scan running 
+    scan_running_o  : out std_logic
 );
 end vfat2_threshold_scan;
 
 architecture Behavioral of vfat2_threshold_scan is
 
     -- Local reset
-    signal reset    : std_logic;
-    signal reset2   : std_logic;
-
-    -- Signals from the Wishbone Splitter
-    signal wb_stb   : std_logic_vector(6 downto 0);
-    signal wb_we    : std_logic;
-    signal wb_addr  : std_logic_vector(31 downto 0);
-    signal wb_din   : std_logic_vector(31 downto 0);
+    signal local_reset  : std_logic;
     
-    signal wb_ack   : std_logic_vector(6 downto 0);
-    signal wb_err   : std_logic_vector(6 downto 0);
-    signal wb_dout  : std32_array_t(6 downto 0);
+    -- Signals from the Wishbone Splitter
+    signal wb_stb       : std_logic_vector(6 downto 0);
+    signal wb_we        : std_logic;
+    signal wb_addr      : std_logic_vector(31 downto 0);
+    signal wb_din       : std_logic_vector(31 downto 0);
+    
+    signal wb_ack       : std_logic_vector(6 downto 0);
+    signal wb_err       : std_logic_vector(6 downto 0);
+    signal wb_dout      : std32_array_t(6 downto 0);
     
     -- Signals to the FIFO
-    signal fifo_rst : std_logic;
-    signal fifo_we  : std_logic;
-    signal fifo_din : std_logic_vector(31 downto 0);
+    signal fifo_rst     : std_logic;
+    signal fifo_we      : std_logic;
+    signal fifo_din     : std_logic_vector(31 downto 0);
 
 begin
 
     --== Local reset ==--
 
-    reset <= reset_i or wb_stb(6);
+    local_reset <= reset_i or wb_stb(6);
 
     --===============================--
     --== Wishbone request splitter ==--
@@ -92,7 +93,7 @@ begin
     )
     port map(
         wb_clk_i    => ref_clk_i,
-        reset_i     => reset,
+        reset_i     => local_reset,
         wb_req_i    => wb_slv_req_i,
         wb_res_o    => wb_slv_res_o,
         stb_o       => wb_stb,
@@ -113,7 +114,7 @@ begin
     vfat2_threshold_scan_req_inst : entity work.vfat2_threshold_scan_req
     port map(
         ref_clk_i       => ref_clk_i,
-        reset_i         => reset,
+        reset_i         => local_reset,
         req_stb_i       => wb_stb(0),
         req_vfat2_i     => wb_addr(12 downto 8),
         req_min_thr_i   => wb_dout(1)(7 downto 0),
@@ -125,9 +126,11 @@ begin
         vfat2_sbits_i   => vfat2_sbits_i,
         fifo_rst_o      => fifo_rst,
         fifo_we_o       => fifo_we,
-        fifo_din_o      => fifo_din
+        fifo_din_o      => fifo_din,
+        scan_running_o  => scan_running_o
     );
     
+    -- Connect signals for automatic response
     wb_ack(0) <= wb_stb(0);
     wb_err(0) <= '0';
     wb_dout(0) <= (others => '0');
@@ -147,7 +150,7 @@ begin
     )
     port map(
         ref_clk_i   => ref_clk_i,
-        reset_i     => reset,
+        reset_i     => local_reset,
         stb_i       => wb_stb(4 downto 1),
         we_i        => (others => wb_we),
         data_i      => (others => wb_din),
@@ -162,12 +165,10 @@ begin
     
     -- 5 : read out the results (32 bits = 8 bits of threshold value & 24 bits of number of events hit)
 
-    reset2 <= reset or fifo_rst;
-
     fifo256x32_inst : entity work.fifo256x32
     port map(
         clk         => ref_clk_i,
-        rst         => reset2,
+        rst         => (local_reset or fifo_rst),
         wr_en       => fifo_we,
         din         => fifo_din,
         rd_en       => wb_stb(5),

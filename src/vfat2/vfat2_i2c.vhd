@@ -31,28 +31,29 @@ use work.types_pkg.all;
 
 entity vfat2_i2c is
 port(
-
+    -- System reference clock
     ref_clk_i           : in std_logic;
+    -- System reset
     reset_i             : in std_logic;
-    
+    -- Wishbone master request
     wb_slv_req_i        : in wb_req_t;
+    -- Wishbone slave response
     wb_slv_res_o        : out wb_res_t;
-    
+    -- I2C lines
     vfat2_scl_o         : out std_logic;
     vfat2_sda_miso_i    : in std_logic;
     vfat2_sda_mosi_o    : out std_logic;
     vfat2_sda_tri_o     : out std_logic
-    
 );
 end vfat2_i2c;
 
 architecture Behavioral of vfat2_i2c is
 
+    -- I2C transaction parameters 
     signal i2c_en       : std_logic;
     signal i2c_address  : std_logic_vector(6 downto 0);
     signal i2c_rw       : std_logic;
     signal i2c_din      : std_logic_vector(7 downto 0);
-    
     signal i2c_valid    : std_logic;
     signal i2c_error    : std_logic;
     signal i2c_dout     : std_logic_vector(7 downto 0);

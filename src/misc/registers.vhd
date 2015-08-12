@@ -10,7 +10,7 @@
 -- Tool versions:  ISE  P.20131013
 -- Description: 
 --
--- Generate N read/write registers
+-- Generates N read/write registers
 --
 -- Dependencies: 
 --

@@ -31,47 +31,62 @@ generic(
     OUT_FREQ    : integer := 100_000
 );
 port(
-
+    -- System reference clock
     ref_clk_i   : in std_logic;
+    -- System reset
     reset_i     : in std_logic;
-    
+    -- Transaction start signal
     en_i        : in std_logic;
+    -- Slave address
     address_i   : in std_logic_vector(6 downto 0);
+    -- Read / not write
     rw_i        : in std_logic;
+    -- Write data
     data_i      : in std_logic_vector(7 downto 0);
-    
+    -- Valid operation
     valid_o     : out std_logic;
+    -- Error
     error_o     : out std_logic;
+    -- Read data
     data_o      : out std_logic_vector(7 downto 0);
-    
+    -- I2C lines
     scl_o       : out std_logic;
     sda_miso_i  : in std_logic;
     sda_mosi_o  : out std_logic;
     sda_tri_o   : out std_logic
-    
 );
 end i2c;
 
 architecture Behavioral of i2c is
 
+    --== Clock signals ==--
+
+    -- Division of the clock
     constant CLK_DIV    : integer := IN_FREQ / OUT_FREQ;
     
+    -- Clock divider counter
     signal clk_divider  : integer range 0 to CLK_DIV;
+    -- Asserted on rising edge
     signal rising_clk   : std_logic;
+    -- Asserted on middle of high clock
     signal high_clk     : std_logic;
+    -- Asserted on falling edge
     signal falling_clk  : std_logic;
+    -- Asserted on middle of low clock
     signal low_clk      : std_logic;
     
+    --== State machine ==--
     
     type state_t is (IDLE, START, ADDR, RW, WAIT_0, ACK_0, RD, ACK_1, RST_1, ENDING_RD, WR, RST_2, ACK_2, ENDING_WR, STOP, ERROR);
     
     signal state        : state_t;
     
+    -- Transaction parameters
     signal address      : std_logic_vector(6 downto 0);
     signal rw_n         : std_logic;
     signal din          : std_logic_vector(7 downto 0);
     signal dout         : std_logic_vector(7 downto 0);
-    
+    -- Address and data counters
     signal address_cnt  : integer range 0 to 6;
     signal data_cnt     : integer range 0 to 7;
 
@@ -84,6 +99,7 @@ begin
     process(ref_clk_i)
     begin
         if (rising_edge(ref_clk_i)) then
+            -- Reset & default state
             if (reset_i = '1') then
                 scl_o <= '0';
                 clk_divider <= 0;
@@ -139,6 +155,7 @@ begin
     process(ref_clk_i)
     begin    
         if (rising_edge(ref_clk_i)) then
+            -- Reset & default state
             if (reset_i = '1') then
                 valid_o <= '0';
                 error_o <= '0';
@@ -154,156 +171,210 @@ begin
                 data_cnt <= 0;
             else
                 case state is
-                    -- IDLE
+                    -- IDLE wait for a start signal
                     when IDLE =>
+                        -- Reset the finish signals
                         valid_o <= '0';
                         error_o <= '0';
+                        -- Master controls the line
                         sda_mosi_o <= '1';
                         sda_tri_o <= '0';
+                        -- Wait for start signal
                         if (en_i = '1') then
-                            state <= START;
+                            -- Register the inputs
                             address <= address_i;
                             rw_n <= rw_i;
                             din <= data_i;
+                            -- Change state
+                            state <= START;
                         end if;
-                    -- Start
+                    -- START create a start condition
                     when START =>
+                        -- On a high clock, put data low
                         if (high_clk = '1') then
+                            -- Master controls the line
                             sda_mosi_o <= '0';
                             sda_tri_o <= '0';
-                            state <= ADDR;
+                            -- Set the counter for the address
                             address_cnt <= 6;
+                            state <= ADDR;
                         end if;
-                    -- Address
+                    -- ADDR transmit the address signal
                     when ADDR => 
+                        -- Write data on a low clock
                         if (low_clk = '1') then
+                            -- Master controls the line
                             sda_mosi_o <= address(address_cnt);
                             sda_tri_o <= '0';
+                            -- If the address is sent, got to rw bit
                             if (address_cnt = 0) then
                                 state <= RW;
+                            -- or decrement counter
                             else
                                 address_cnt <= address_cnt - 1;
                             end if;
                         end if;
-                    -- RW bit
+                    -- RW send the rw bit
                     when RW => 
+                        -- Write data on a low clock
                         if (low_clk = '1') then
+                            -- Master controls the line
                             sda_mosi_o <= rw_n;
                             sda_tri_o <= '0';
                             state <= WAIT_0;
                         end if;
-                    -- Wait (free the bus for slave to write)
-                    when WAIT_0 => 
-                        if (falling_clk = '1') then -- low_clk
+                    -- WAIT_0 (free the bus for slave to write)
+                    when WAIT_0 =>
+                        -- On the falling edge of the RW bit, free the line
+                        if (falling_clk = '1') then
+                            -- Slave controls the line
                             sda_mosi_o <= '1';
                             sda_tri_o <= '1';
                             state <= ACK_0;
                         end if;
-                    -- Ackownledgment (to be read)
+                    -- ACK_0 read the address acknowledgment
                     when ACK_0 =>
+                        -- On high clock, read data
                         if (high_clk = '1') then
+                            -- Slave controls the line
                             sda_mosi_o <= '1';
                             sda_tri_o <= '1';
-                            data_cnt <= 7;
+                            -- If the slave acknowledged
                             if (sda_miso_i = '0') then
+                                -- Set the data counter
+                                data_cnt <= 7;
+                                -- Go to read or write states
                                 case rw_n is
                                     when '1' => state <= RD;
                                     when others => state <= WR;
                                 end case;
+                            -- or set an error
                             else
                                 state <= ERROR;
                             end if;
                         end if;
-                    -- Read
+                    -- RD read the data line
                     when RD => 
+                        -- On high clock, read data
                         if (high_clk = '1') then
+                            -- Slave controls the line
                             dout(data_cnt) <= sda_miso_i;
                             sda_mosi_o <= '1';
                             sda_tri_o <= '1';
+                            -- If all the data has been read, send acknowledgment
                             if (data_cnt = 0) then
                                 state <= ACK_1;
+                            -- otherwise continue
                             else
                                 data_cnt <= data_cnt - 1;
                             end if;
                         end if;
-                    -- Read Ackownledgment (to be written) 
+                    -- ACK_1 send the read ackownledgment 
                     when ACK_1 => 
+                        -- On the falling clock, take back control
                         if (falling_clk = '1') then
+                            -- Master controls the line
                             sda_mosi_o <= '0';
                             sda_tri_o <= '0';
                             state <= RST_1;
                         end if;
-                    -- Wait
+                    -- RST_1 wait for the clock to go low before sending the STOP signals, otherwise
+                    -- the signal would be sent to soon
                     when RST_1 => 
+                        -- Wait for a low clock
                         if (low_clk = '1') then
+                            -- Master controls the line
                             sda_mosi_o <= '0';
                             sda_tri_o <= '0';
                             state <= ENDING_RD;
                         end if;
-                    -- ENDING
+                    -- ENDING_RD wait for the clock to go low before sending the STOP signals, otherwise
+                    -- the signal would be sent to soon
                     when ENDING_RD => 
                         if (low_clk = '1') then
+                            -- Master controls the line
                             sda_mosi_o <= '0';
                             sda_tri_o <= '0';
                             state <= STOP;
                         end if;
-                    -- Write
+                    -- WR write data on the line
                     when WR => 
-                        if (falling_clk = '1') then -- low_clk
+                        -- On the falling clock, change the data
+                        if (falling_clk = '1') then
+                            -- Master controls the line
                             sda_mosi_o <= din(data_cnt);
                             sda_tri_o <= '0';
+                            -- When no more data has to be sent, go for acknowledgment
                             if (data_cnt = 0) then
                                 state <= RST_2;
+                            -- or continue
                             else
                                 data_cnt <= data_cnt - 1;
                             end if;
                         end if;
-                    -- Wait (free the bus for slave to write)
+                    -- RST_2 give control of the line to the slave
                     when RST_2 => 
+                        -- Wait for the falling clock
                         if (falling_clk = '1') then
+                            -- Slave controls the line
                             sda_mosi_o <= '1';
                             sda_tri_o <= '1';
                             state <= ACK_2;
                         end if;
-                    -- Write Ackownledgment (to be read)
+                    -- ACK_2 read the write ackownledgment
                     when ACK_2 => 
+                        -- On the high clock
                         if (high_clk = '1') then
+                            -- Slave controls the line
                             sda_mosi_o <= '1';
                             sda_tri_o <= '1';
+                            -- If the slave acknowledged, go for end of transaction
                             if (sda_miso_i = '0') then
                                 state <= ENDING_WR;
+                            -- or error
                             else
                                 state <= ERROR;
                             end if;
                         end if;
-                    -- ENDING
+                    -- ENDING_WR wait for the clock to go low before sending the STOP signals, otherwise
+                    -- the signal would be sent to soon
                     when ENDING_WR => 
+                        -- On the falling clock
                         if (falling_clk = '1') then
+                            -- Master controls the line
                             sda_mosi_o <= '0';
                             sda_tri_o <= '0';
                             state <= STOP;
                         end if;
-                    -- STOP
+                    -- STOP send the stop signal
                     when STOP => 
+                        -- On a high clock
                         if (high_clk = '1') then
+                            -- Set the output busses
                             valid_o <= '1';
                             error_o <= '0';
                             case rw_n is
                                 when '1' => data_o <= dout;
                                 when others => data_o <= (others => '0');
                             end case;
+                            -- Master controls the line
                             sda_mosi_o <= '1';
                             sda_tri_o <= '0';
+                            -- Go back to IDLE state
                             state <= IDLE;
                         end if;
-                    -- ERROR
+                    -- ERROR set an error
                     when ERROR => 
+                        -- Wait for high clock
                         if (high_clk = '1') then
+                            -- Set the output busses
                             valid_o <= '0';
                             error_o <= '1';
                             data_o <= (others => '0');
+                            -- Master controls the line
                             sda_mosi_o <= '1';
                             sda_tri_o <= '0';
+                            -- Go back to IDLE state
                             state <= IDLE;
                         end if;
                     --

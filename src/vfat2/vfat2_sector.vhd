@@ -41,9 +41,9 @@ port(
     -- Wishbone response from the Threshold Scan slave 
     wb_slv_threshold_res_o  : out wb_res_t;
     -- Wishbone request to the Latency Scan slave 
-    wb_slv_latency_req_i  : in wb_req_t;
+    wb_slv_latency_req_i    : in wb_req_t;
     -- Wishbone response from the Latency Scan slave 
-    wb_slv_latency_res_o  : out wb_res_t;
+    wb_slv_latency_res_o    : out wb_res_t;
     -- Wishbone request from the Threshold Scan master to the I2C slaves 
     wb_mst_thr_req_o        : out wb_req_t;
     -- Wishbone response from the I2C slaves to the Threshold Scan master 
@@ -66,7 +66,12 @@ end vfat2_sector;
 
 architecture Behavioral of vfat2_sector is
 
-    signal vfat2_tk_data    : tk_data_array_t(3 downto 0);
+    -- Tracking data
+    signal vfat2_tk_data        : tk_data_array_t(3 downto 0);
+    
+    -- Scans
+    signal is_threshold_scan    : std_logic;
+    signal is_latency_scan      : std_logic;
 
 begin
 
@@ -115,12 +120,13 @@ begin
         wb_slv_res_o    => wb_slv_threshold_res_o,
         wb_mst_req_o    => wb_mst_thr_req_o,
         wb_mst_res_i    => wb_mst_thr_res_i,
-        vfat2_sbits_i   => vfat2_sbits_i
+        vfat2_sbits_i   => vfat2_sbits_i,
+        scan_running_o  => is_threshold_scan
     );
     
-    --==========================--
+    --========================--
     --== VFAT2 latency scan ==--
-    --==========================--
+    --========================--
     
     vfat2_latency_scan_inst : entity work.vfat2_latency_scan
     port map(
@@ -130,18 +136,8 @@ begin
         wb_slv_res_o    => wb_slv_latency_res_o,
         wb_mst_req_o    => wb_mst_lat_req_o,
         wb_mst_res_i    => wb_mst_lat_res_i,
-        vfat2_tk_data_i => vfat2_tk_data
+        vfat2_tk_data_i => vfat2_tk_data,
+        scan_running_o  => is_latency_scan
     );
 
 end Behavioral;
-
-
-
-
-
-
-
-
-
-
-

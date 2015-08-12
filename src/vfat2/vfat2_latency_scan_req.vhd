@@ -57,7 +57,9 @@ port(
     -- FIFO write enable to store the data
     fifo_we_o       : out std_logic;
     -- FIFO write data
-    fifo_din_o      : out std_logic_vector(31 downto 0)
+    fifo_din_o      : out std_logic_vector(31 downto 0);
+    -- Is the scan running 
+    scan_running_o  : out std_logic
 );
 end vfat2_latency_scan_req;
 
@@ -85,6 +87,7 @@ architecture Behavioral of vfat2_latency_scan_req is
 
 begin
 
+    -- All 0 to compare to empty tracking data
     empty_128bits <= (others => '0');
 
     process(ref_clk_i)
@@ -99,6 +102,7 @@ begin
                 fifo_rst_o <= '0';
                 fifo_we_o <= '0';
                 fifo_din_o <= (others => '0');
+                scan_running_o <= '0';
                 state <= IDLE;
                 sel_vfat2 <= (others => '0');
                 sel_tkdata <= 0;
@@ -115,6 +119,8 @@ begin
                     when IDLE =>
                         -- Unset the write enable signal
                         fifo_we_o <= '0';
+                        -- Scan is not running
+                        scan_running_o <= '0';
                         -- On a request strobe
                         if (req_stb_i = '1') then
                             -- Select the VFAT2
@@ -137,6 +143,8 @@ begin
                     when REQ_RUNNING => 
                         -- Reactivate the FIFO
                         fifo_rst_o <= '0';
+                        -- Scan is running
+                        scan_running_o <= '1';
                         -- Send an I2C request
                         wb_mst_req_o <= (stb    => '1',
                                          we     => '0',
