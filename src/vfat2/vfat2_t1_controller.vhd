@@ -41,8 +41,8 @@ use work.types_pkg.all;
 
 entity vfat2_t1_controller is
 port(
-    -- VFAT2 reference clock
-    vfat2_mclk_i    : in std_logic;
+    -- System reference clock
+    ref_clk_i       : in std_logic;
     -- System reset
     reset_i         : in std_logic;
     -- Request from the system
@@ -91,7 +91,7 @@ begin
         data_o      => wb_data,
         ack_i       => reg_ack,
         err_i       => reg_err,
-        data_i      => reg_dout
+        data_i      => reg_data
     );    
     
     --===========================--
@@ -100,7 +100,7 @@ begin
     
     vfat2_t1_controller_req_inst : entity work.vfat2_t1_controller_req
     port map(
-        vfat2_mclk_i    => ref_clk_i,
+        ref_clk_i       => ref_clk_i,
         reset_i         => local_reset,
         req_en_i        => reg_data(0)(0),
         req_op_mode_i   => reg_data(1)(1 downto 0),
@@ -137,12 +137,12 @@ begin
     port map(
         ref_clk_i   => ref_clk_i,
         reset_i     => local_reset,
-        stb_i       => wb_stb(13 downto 1),
+        stb_i       => wb_stb(13 downto 0),
         we_i        => wb_we,
-        data_i      => wb_din,
-        ack_o       => reg_ack(13 downto 1),
-        err_o       => reg_err(13 downto 1),
-        data_o      => reg_data(13 downto 1)
+        data_i      => wb_data,
+        ack_o       => reg_ack(13 downto 0),
+        err_o       => reg_err(13 downto 0),
+        data_o      => reg_data(13 downto 0)
     );
     
     --=================--
@@ -152,8 +152,8 @@ begin
     local_reset <= reset_i or wb_stb(14);
     
     -- Connect signals for automatic response
-    wb_ack(14) <= wb_stb(14);
-    wb_err(14) <= '0';
-    wb_dout(14) <= (others => '0');
+    reg_ack(14) <= wb_stb(14);
+    reg_err(14) <= '0';
+    reg_data(14) <= (others => '0');
     
 end Behavioral;

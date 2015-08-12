@@ -364,6 +364,10 @@ architecture Behavioral of optohybrid_top is
     alias wb_slv_t1_req         : wb_req_t is wb_s_req(WB_SLV_T1);
     alias wb_slv_t1_res         : wb_res_t is wb_s_res(WB_SLV_T1);
     
+    --== T1 signals ==--
+    
+    signal t1_controller        : t1_t;
+    
     --== Chipscope signals ==--
     
     signal cs_clk               : std_logic; -- ChipScope clock
@@ -400,7 +404,7 @@ begin
     --== VFAT2 columns ==--
     --===================--
     
-    vfat2_colum_gen : for I in 0 to 2 generate
+    vfat2_colum_gen : for I in 0 to 0 generate -- 2
     begin
         
         vfat2_column_inst : entity work.vfat2_column      
@@ -427,6 +431,19 @@ begin
         
     end generate;
 
+    --===================--
+    --== T1 controller ==--
+    --===================--
+ 
+    vfat2_t1_controller_inst : entity work.vfat2_t1_controller
+    port map(
+        ref_clk_i       => ref_clk,
+        reset_i         => reset,
+        wb_slv_req_i    => wb_slv_t1_req,
+        wb_slv_res_o    => wb_slv_t1_res,
+        vfat2_t1_0      => t1_controller
+    );
+
     --================--
     --== T1 encoder ==--
     --================--
@@ -435,8 +452,8 @@ begin
     port map(
         vfat2_mclk_i    => ref_clk,
         reset_i         => reset,
-        vfat2_t1_i      => local_t1,
-        vfat2_t1_o      => vfat2_t1_o
+        vfat2_t1_i      => t1_controller,
+        vfat2_t1_o      => vfat2_t1
     );
 
     --============--

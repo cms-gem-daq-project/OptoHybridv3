@@ -170,7 +170,7 @@ begin
         din         => fifo_din,
         rd_en       => wb_stb(5),
         valid       => reg_ack(5),
-        dout        => reg_dout(5),
+        dout        => reg_data(5),
         underflow   => reg_err(5),
         full        => open,
         empty       => open

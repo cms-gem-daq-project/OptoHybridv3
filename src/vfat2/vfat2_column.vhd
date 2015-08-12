@@ -69,29 +69,29 @@ begin
     --== VFAT2 sectors ==--
     --===================--
     
-    vfat2_sector_gen : for I in 0 to 1 generate
+    vfat2_sector_gen : for I in 0 to 0 generate -- 1
     begin
     
         vfat2_sector_inst : entity work.vfat2_sector      
         port map(        
-            ref_clk_i               => ref_clk,
-            reset_i                 => reset,
-            wb_slv_i2c_req_i        => wb_slv_i2c_req(I),
-            wb_slv_i2c_res_o        => wb_slv_i2c_res(I),
-            wb_slv_threshold_req_i  => wb_slv_threshold_req(I),
-            wb_slv_threshold_res_o  => wb_slv_threshold_res(I),
-            wb_slv_latency_req_i    => wb_slv_latency_req(I),
-            wb_slv_latency_res_o    => wb_slv_latency_res(I),
-            wb_mst_thr_req_o        => wb_mst_thr_req(I),
-            wb_mst_thr_res_i        => wb_mst_thr_res(I),
-            wb_mst_lat_req_o        => wb_mst_lat_req(I),
-            wb_mst_lat_res_i        => wb_mst_lat_res(I),
-            vfat2_data_out_i        => vfat2_data_out((4 * I + 3) downto (4 * I)),
-            vfat2_sbits_i           => vfat2_sbits((4 * I + 3) downto (4 * I)),
-            vfat2_scl_o             => vfat2_scl(I),
-            vfat2_sda_miso_i        => vfat2_sda_miso(I),
-            vfat2_sda_mosi_o        => vfat2_sda_mosi(I),
-            vfat2_sda_tri_o         => vfat2_sda_tri(I)
+            ref_clk_i               => ref_clk_i,
+            reset_i                 => reset_i,
+            wb_slv_i2c_req_i        => wb_slv_i2c_req_i(I),
+            wb_slv_i2c_res_o        => wb_slv_i2c_res_o(I),
+            wb_slv_threshold_req_i  => wb_slv_threshold_req_i(I),
+            wb_slv_threshold_res_o  => wb_slv_threshold_res_o(I),
+            wb_slv_latency_req_i    => wb_slv_latency_req_i(I),
+            wb_slv_latency_res_o    => wb_slv_latency_res_o(I),
+            wb_mst_thr_req_o        => wb_mst_thr_req_o(I),
+            wb_mst_thr_res_i        => wb_mst_thr_res_i(I),
+            wb_mst_lat_req_o        => wb_mst_lat_req_o(I),
+            wb_mst_lat_res_i        => wb_mst_lat_res_i(I),
+            vfat2_data_out_i        => vfat2_data_out_i((4 * I + 3) downto (4 * I)),
+            vfat2_sbits_i           => vfat2_sbits_i((4 * I + 3) downto (4 * I)),
+            vfat2_scl_o             => vfat2_scl_o(I),
+            vfat2_sda_miso_i        => vfat2_sda_miso_i(I),
+            vfat2_sda_mosi_o        => vfat2_sda_mosi_o(I),
+            vfat2_sda_tri_o         => vfat2_sda_tri_o(I)
         );    
     
     end generate;
