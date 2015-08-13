@@ -70,7 +70,7 @@ architecture Behavioral of vfat2_t1_controller_req is
     
     -- Counter
     signal event_counter    : unsigned(31 downto 0);
-    signal time_counter : unsigned(31 downto 0);
+    signal time_counter     : unsigned(31 downto 0);
     
 begin
 
@@ -79,10 +79,7 @@ begin
         if (rising_edge(ref_clk_i)) then
             -- Reset & Default 
             if (reset_i = '1') then
-                vfat2_t1_0 <= (lv1a     => '0',
-                               calpulse => '0',
-                               resync   => '0',
-                               bc0      => '0');
+                vfat2_t1_0 <= (lv1a => '0', calpulse => '0', resync => '0', bc0 => '0');  
                 state <= IDLE;
                 t1_type <= (others => '0');
                 events_limit <= (others => '0');
@@ -99,10 +96,7 @@ begin
                     -- IDLE
                     when IDLE =>
                         -- Reset the T1 signal
-                        vfat2_t1_0 <= (lv1a     => '0',
-                                       calpulse => '0',
-                                       resync   => '0',
-                                       bc0      => '0');          
+                        vfat2_t1_0 <= (lv1a => '0', calpulse => '0', resync => '0', bc0 => '0');          
                         -- Wait for a request
                         if (req_en_i = '1') then
                             -- Register the parameters
@@ -129,10 +123,7 @@ begin
                         -- Reset the module if the enable signal went low
                         if (req_en_i = '0') then
                             -- Reset the T1 signals
-                            vfat2_t1_0 <= (lv1a     => '0', 
-                                           calpulse => '0', 
-                                           resync   => '0', 
-                                           bc0      => '0');
+                            vfat2_t1_0 <= (lv1a => '0', calpulse => '0', resync => '0', bc0 => '0');       
                             -- Go back to IDLE
                             state <= IDLE;
                         -- or run the module
@@ -149,59 +140,26 @@ begin
                                 if (unsigned(events_limit) = 0) then
                                     -- Send pulse
                                     case t1_type is
-                                        when "00" => vfat2_t1_0 <= (lv1a     => '1', 
-                                                                    calpulse => '0', 
-                                                                    resync   => '0', 
-                                                                    bc0      => '0');
-                                        when "01" => vfat2_t1_0 <= (lv1a     => '0', 
-                                                                    calpulse => '1', 
-                                                                    resync   => '0', 
-                                                                    bc0      => '0');
-                                        when "10" => vfat2_t1_0 <= (lv1a     => '0', 
-                                                                    calpulse => '0', 
-                                                                    resync   => '1', 
-                                                                    bc0      => '0');
-                                        when "11" => vfat2_t1_0 <= (lv1a     => '0', 
-                                                                    calpulse => '0', 
-                                                                    resync   => '0', 
-                                                                    bc0      => '1');
-                                        when others => vfat2_t1_0 <= (lv1a     => '0', 
-                                                                      calpulse => '0', 
-                                                                      resync   => '0', 
-                                                                      bc0      => '0');
+                                        when "00" => vfat2_t1_0 <= (lv1a => '1', calpulse => '0', resync => '0', bc0 => '0');       
+                                        when "01" => vfat2_t1_0 <= (lv1a => '0', calpulse => '1', resync => '0', bc0 => '0');  
+                                        when "10" => vfat2_t1_0 <= (lv1a => '0', calpulse => '0', resync => '1', bc0 => '0');  
+                                        when "11" => vfat2_t1_0 <= (lv1a => '0', calpulse => '0', resync => '0', bc0 => '1');  
+                                        when others => vfat2_t1_0 <= (lv1a => '0', calpulse => '0', resync => '0', bc0 => '0');  
                                     end case;
                                 -- Above the limit on events   
                                 elsif (event_counter = unsigned(events_limit)) then
                                     -- Reset the T1 signals
-                                    vfat2_t1_0 <= (lv1a     => '0', 
-                                                   calpulse => '0', 
-                                                   resync   => '0', 
-                                                   bc0      => '0');
+                                    vfat2_t1_0 <= (lv1a => '0', calpulse => '0', resync => '0', bc0 => '0');  
                                     -- Go wait for disable signal
                                     state <= END_01;
                                 -- Limit on events but under it
                                 else
                                     case t1_type is
-                                        when "00" => vfat2_t1_0 <= (lv1a     => '1', 
-                                                                    calpulse => '0', 
-                                                                    resync   => '0', 
-                                                                    bc0      => '0');
-                                        when "01" => vfat2_t1_0 <= (lv1a     => '0', 
-                                                                    calpulse => '1', 
-                                                                    resync   => '0', 
-                                                                    bc0      => '0');
-                                        when "10" => vfat2_t1_0 <= (lv1a     => '0', 
-                                                                    calpulse => '0', 
-                                                                    resync   => '1', 
-                                                                    bc0      => '0');
-                                        when "11" => vfat2_t1_0 <= (lv1a     => '0', 
-                                                                    calpulse => '0', 
-                                                                    resync   => '0', 
-                                                                    bc0      => '1');
-                                        when others => vfat2_t1_0 <= (lv1a     => '0', 
-                                                                      calpulse => '0', 
-                                                                      resync   => '0', 
-                                                                      bc0      => '0');
+                                        when "00" => vfat2_t1_0 <= (lv1a => '1', calpulse => '0', resync => '0', bc0 => '0');       
+                                        when "01" => vfat2_t1_0 <= (lv1a => '0', calpulse => '1', resync => '0', bc0 => '0');  
+                                        when "10" => vfat2_t1_0 <= (lv1a => '0', calpulse => '0', resync => '1', bc0 => '0');  
+                                        when "11" => vfat2_t1_0 <= (lv1a => '0', calpulse => '0', resync => '0', bc0 => '1');  
+                                        when others => vfat2_t1_0 <= (lv1a => '0', calpulse => '0', resync => '0', bc0 => '0');  
                                     end case;
                                     -- Increment the event counter
                                     event_counter <= event_counter + 1;
@@ -209,23 +167,16 @@ begin
                             -- or wait for the correct interval
                             else
                                 -- Reset the T1 signals
-                                vfat2_t1_0 <= (lv1a     => '0', 
-                                               calpulse => '0', 
-                                               resync   => '0', 
-                                               bc0      => '0');
+                                vfat2_t1_0 <= (lv1a => '0', calpulse => '0', resync => '0', bc0 => '0');  
                             end if;
                         end if;
                         
-
                     -- MODE_1 send a calpulse followed by a trigger pulses
                     when MODE_1 =>
                         -- Reset the module if the enable signal went low
                         if (req_en_i = '0') then
                             -- Reset the T1 signals
-                            vfat2_t1_0 <= (lv1a     => '0', 
-                                           calpulse => '0', 
-                                           resync   => '0', 
-                                           bc0      => '0');
+                            vfat2_t1_0 <= (lv1a => '0', calpulse => '0', resync => '0', bc0 => '0');  
                             -- Go back to IDLE
                             state <= IDLE;
                         -- or run the module
@@ -241,56 +192,59 @@ begin
                                 -- No limit on events, just pulse
                                 if (unsigned(events_limit) = 0) then
                                     -- Send calibration pulse
-                                    vfat2_t1_0 <= (lv1a     => '0', 
-                                                   calpulse => '1', 
-                                                   resync   => '0', 
-                                                   bc0      => '0');
+                                    vfat2_t1_0 <= (lv1a => '0', calpulse => '1', resync => '0', bc0 => '0');  
                                 -- Above the limit on events   
                                 elsif (event_counter = unsigned(events_limit)) then
                                     -- Reset the T1 signals
-                                    vfat2_t1_0 <= (lv1a     => '0', 
-                                                   calpulse => '0', 
-                                                   resync   => '0', 
-                                                   bc0      => '0');
+                                    vfat2_t1_0 <= (lv1a => '0', calpulse => '0', resync => '0', bc0 => '0');  
                                     -- Go wait for disable signal
                                     state <= END_01;
                                 -- Limit on events but under it
                                 else
-                                    vfat2_t1_0 <= (lv1a     => '0', 
-                                                   calpulse => '1', 
-                                                   resync   => '0', 
-                                                   bc0      => '0');
+                                    vfat2_t1_0 <= (lv1a => '0', calpulse => '1', resync => '0', bc0 => '0');  
                                     -- Increment the event counter
                                     event_counter <= event_counter + 1;
                                 end if;  
                             -- LV1A on next tick
                             elsif (time_counter = unsigned(interval)) then
-                                vfat2_t1_0 <= (lv1a     => '1', 
-                                               calpulse => '0', 
-                                               resync   => '0', 
-                                               bc0      => '0');
+                                vfat2_t1_0 <= (lv1a => '1', calpulse => '0', resync => '0', bc0 => '0');  
                             -- or wait for the correct interval
                             else
                                 -- Reset the T1 signals
-                                vfat2_t1_0 <= (lv1a     => '0', 
-                                               calpulse => '0', 
-                                               resync   => '0', 
-                                               bc0      => '0');
+                                vfat2_t1_0 <= (lv1a => '0', calpulse => '0', resync => '0', bc0 => '0');  
                             end if;
                         end if;                        
                         
-                        
-                        
-                        
-                        
+                    -- MODE_2 send a sequence of pulses
+                    when MODE_2 =>
+                        -- Reset the module if the enable signal went low
+                        if (req_en_i = '0') then
+                            -- Reset the T1 signals
+                            vfat2_t1_0 <= (lv1a => '0', calpulse => '0', resync => '0', bc0 => '0');  
+                            -- Go back to IDLE
+                            state <= IDLE;
+                        -- or run the module
+                        else
+                            -- Increment the counter
+                            if (time_counter = 255) then
+                               time_counter <= (others => '0');
+                            else
+                               time_counter <= time_counter + 1;
+                            end if;
+                            -- Send bit
+                            if (time_counter(1 downto 0) = "00") then
+                                vfat2_t1_0 <= (lv1a => lv1a_sequence(to_integer(time_counter(31 downto 2))), calpulse => cal_sequence(to_integer(time_counter(31 downto 2))), resync => sync_sequence(to_integer(time_counter(31 downto 2))), bc0 => bc0_sequence(to_integer(time_counter(31 downto 2))));  
+                            -- or wait for the correct interval
+                            else
+                                -- Reset the T1 signals
+                                vfat2_t1_0 <= (lv1a => '0', calpulse => '0', resync => '0', bc0 => '0');  
+                            end if;
+                        end if;           
                         
                     -- END_01 wait for disable signal
                     when END_01 =>
                         -- Reset the T1 signals
-                        vfat2_t1_0 <= (lv1a     => '0', 
-                                       calpulse => '0', 
-                                       resync   => '0', 
-                                       bc0      => '0');
+                        vfat2_t1_0 <= (lv1a => '0', calpulse => '0', resync => '0', bc0 => '0');  
                         -- Reset the module if the enable signal went low
                         if (req_en_i = '0') then
                             -- Go back to IDLE
@@ -298,10 +252,7 @@ begin
                         end if;
                     --
                     when others =>
-                        vfat2_t1_0 <= (lv1a     => '0',
-                                       calpulse => '0',
-                                       resync   => '0',
-                                       bc0      => '0');
+                        vfat2_t1_0 <= (lv1a => '0', calpulse => '0', resync => '0', bc0 => '0');  
                         state <= IDLE;
                         t1_type <= (others => '0');
                         events_limit <= (others => '0');
