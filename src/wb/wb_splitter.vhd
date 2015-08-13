@@ -30,32 +30,32 @@ use work.types_pkg.all;
 
 entity wb_splitter is
 generic(
+
     -- Number of output busses
     SIZE        : integer := 8
+    
 );
 port(
-    -- Wishbone reference clock
-    wb_clk_i    : in std_logic;
-    -- System reset
+
+    -- System signals
+    ref_clk_i    : in std_logic;
     reset_i     : in std_logic;
-    -- Wishbone request
+    
+    -- Wishbone slave
     wb_req_i    : in wb_req_t;
-    -- Wishbone response
     wb_res_o    : out wb_res_t;
-    -- Request strobes
+    
+    -- Request
     stb_o       : out std_logic_vector((SIZE - 1) downto 0);
-    -- Request write enables
     we_o        : out std_logic;
-    -- Request address
     addr_o      : out std_logic_vector(31 downto 0);
-    -- Request write data
     data_o      : out std_logic_vector(31 downto 0);
-    -- Response acknowledges
+    
+    -- Response 
     ack_i       : in std_logic_vector((SIZE - 1) downto 0);
-    -- Reponse errors
     err_i       : in std_logic_vector((SIZE - 1) downto 0);
-    -- Response read data
     data_i      : in std32_array_t((SIZE - 1) downto 0)
+    
 );
 end wb_splitter;
 
@@ -66,22 +66,21 @@ architecture Behavioral of wb_splitter is
     
 begin
 
-    process(wb_clk_i)
+    process(ref_clk_i)
         -- Selected data bus
         variable sel_bus    : integer range 0 to (SIZE - 1);
     begin
-        if (rising_edge(wb_clk_i)) then
+        if (rising_edge(ref_clk_i)) then
             -- Reset & default values of the signals
             if (reset_i = '1') then
-                wb_res_o <= (ack    => '0',
-                             stat   => "00",
-                             data   => (others => '0'));
+                wb_res_o <= (ack => '0', stat => "00", data => (others => '0'));
                 stb_o <= (others => '0');
                 we_o <= '0';
                 addr_o <= (others => '0');
                 data_o <= (others => '0');
                 sel_bus := 0;
             else
+            
                 -- Handle an input strobe 
                 if (wb_req_i.stb = '1') then
                     -- Convert the address to a bus select
@@ -95,22 +94,20 @@ begin
                 else
                     stb_o <= (others => '0');
                 end if;
+                
                 -- Receive the acknowledgement of the previously selected bus
                 if (ack_i(sel_bus) = '1') then
                     -- Forward the data to the master
-                    wb_res_o <= (ack    => '1',
-                                 stat   => "00",
-                                 data   => data_i(sel_bus));
+                    wb_res_o <= (ack => '1', stat => "00", data => data_i(sel_bus));
                 -- Receive an error of the previously selected bus
                 elsif (err_i(sel_bus) = '1') then
                     -- Forward the error to the master
-                    wb_res_o <= (ack    => '1',
-                                 stat   => "11",
-                                 data   => (others => '0'));
+                    wb_res_o <= (ack => '1', stat => "11", data => (others => '0'));
                 -- or reset the acknowledgment
                 else
                     wb_res_o.ack <= '0';
                 end if;
+                
             end if;
         end if;
     end process;

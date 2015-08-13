@@ -29,14 +29,17 @@ use work.types_pkg.all;
 
 entity vfat2_data_decoder is
 port(
-    -- VFAT2 reference clock
-    vfat2_mclk_i        : in std_logic;
-    -- System reset
+
+    -- Systel signals
+    ref_clk_i           : in std_logic;
     reset_i             : in std_logic;
+    
     -- VFAT2 data out
     vfat2_data_out_i    : in std_logic;
+    
     -- Output packet
     tk_data_o           : out tk_data_t
+    
 );
 end vfat2_data_decoder;
 
@@ -52,9 +55,9 @@ begin
     --== Data deserializer ==--
     --=======================--
 
-    process(vfat2_mclk_i)    
+    process(ref_clk_i)    
     begin
-        if (rising_edge(vfat2_mclk_i)) then
+        if (rising_edge(ref_clk_i)) then
             -- Reset & default value
             if (reset_i = '1') then
                 data <= (others => '0');
@@ -70,20 +73,14 @@ begin
     --== Validation ==--
     --================--
     
-    process(vfat2_mclk_i)
+    process(ref_clk_i)
         -- Holds the results of the tests
         variable tests  : std_logic_vector(2 downto 0);
     begin
-        if (rising_edge(vfat2_mclk_i)) then
+        if (rising_edge(ref_clk_i)) then
             -- Reset & default value 
             if (reset_i = '1') then
-                tk_data_o <= (valid     => '0',
-                              bc        => (others => '0'),
-                              ec        => (others => '0'),
-                              flags     => (others => '0'),
-                              chip_id   => (others => '0'),
-                              strips    => (others => '0'),
-                              crc       => (others => '0'));
+                tk_data_o <= (valid => '0', bc => (others => '0'), ec => (others => '0'), flags => (others => '0'), chip_id => (others => '0'), strips => (others => '0'), crc => (others => '0'));
                 tests := (others => '0');
             else
                 -- Check the 6 fixed bits 
@@ -104,13 +101,7 @@ begin
                 -- Combine the tests and assert the packet if it is valid
                 case tests is
                     when "111" =>      
-                        tk_data_o <= (valid     => '1',
-                                      bc        => data(187 downto 176),
-                                      ec        => data(171 downto 164),
-                                      flags     => data(163 downto 160), 
-                                      chip_id   => data(155 downto 144),
-                                      strips    => data(143 downto 16),
-                                      crc       => data(15 downto 0));
+                        tk_data_o <= (valid => '1', bc => data(187 downto 176), ec => data(171 downto 164), flags => data(163 downto 160),  chip_id => data(155 downto 144), strips => data(143 downto 16), crc => data(15 downto 0));
                     when others => 
                         tk_data_o.valid <= '0';
                 end case;                

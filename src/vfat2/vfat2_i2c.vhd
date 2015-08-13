@@ -31,19 +31,21 @@ use work.types_pkg.all;
 
 entity vfat2_i2c is
 port(
-    -- System reference clock
+
+    -- System signals
     ref_clk_i           : in std_logic;
-    -- System reset
     reset_i             : in std_logic;
-    -- Wishbone master request
+    
+    -- Wishbone slave
     wb_slv_req_i        : in wb_req_t;
-    -- Wishbone slave response
     wb_slv_res_o        : out wb_res_t;
+    
     -- I2C lines
     vfat2_scl_o         : out std_logic;
     vfat2_sda_miso_i    : in std_logic;
     vfat2_sda_mosi_o    : out std_logic;
     vfat2_sda_tri_o     : out std_logic
+    
 );
 end vfat2_i2c;
 

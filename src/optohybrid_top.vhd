@@ -346,10 +346,8 @@ architecture Behavioral of optohybrid_top is
     
     alias wb_mst_gtx_req        : wb_req_array_t(2 downto 0) is wb_m_req(WB_MST_GTX_2 downto WB_MST_GTX_0);
     alias wb_mst_gtx_res        : wb_res_array_t(2 downto 0) is wb_m_res(WB_MST_GTX_2 downto WB_MST_GTX_0);
-    alias wb_mst_thr_req        : wb_req_array_t(5 downto 0) is wb_m_req(WB_MST_THR_5 downto WB_MST_THR_0);
-    alias wb_mst_thr_res        : wb_res_array_t(5 downto 0) is wb_m_res(WB_MST_THR_5 downto WB_MST_THR_0);
-    alias wb_mst_lat_req        : wb_req_array_t(5 downto 0) is wb_m_req(WB_MST_LAT_5 downto WB_MST_LAT_0);
-    alias wb_mst_lat_res        : wb_res_array_t(5 downto 0) is wb_m_res(WB_MST_LAT_5 downto WB_MST_LAT_0);
+    alias wb_mst_scan_req       : wb_req_array_t(5 downto 0) is wb_m_req(WB_MST_SCAN_5 downto WB_MST_SCAN_0);
+    alias wb_mst_scan_res       : wb_res_array_t(5 downto 0) is wb_m_res(WB_MST_SCAN_5 downto WB_MST_SCAN_0);
     
     -- Slaves
     signal wb_s_req             : wb_req_array_t((WB_SLAVES - 1) downto 0);
@@ -357,16 +355,10 @@ architecture Behavioral of optohybrid_top is
     
     alias wb_slv_i2c_req        : wb_req_array_t(5 downto 0) is wb_s_req(WB_SLV_I2C_5 downto WB_SLV_I2C_0);
     alias wb_slv_i2c_res        : wb_res_array_t(5 downto 0) is wb_s_res(WB_SLV_I2C_5 downto WB_SLV_I2C_0);
-    alias wb_slv_threshold_req  : wb_req_array_t(5 downto 0) is wb_s_req(WB_SLV_THRESHOLD_5 downto WB_SLV_THRESHOLD_0);
-    alias wb_slv_threshold_res  : wb_res_array_t(5 downto 0) is wb_s_res(WB_SLV_THRESHOLD_5 downto WB_SLV_THRESHOLD_0);
-    alias wb_slv_latency_req    : wb_req_array_t(5 downto 0) is wb_s_req(WB_SLV_LATENCY_5 downto WB_SLV_LATENCY_0);
-    alias wb_slv_latency_res    : wb_res_array_t(5 downto 0) is wb_s_res(WB_SLV_LATENCY_5 downto WB_SLV_LATENCY_0);
+    alias wb_slv_scan_req       : wb_req_array_t(5 downto 0) is wb_s_req(WB_SLV_SCAN_5 downto WB_SLV_SCAN_0);
+    alias wb_slv_scan_res       : wb_res_array_t(5 downto 0) is wb_s_res(WB_SLV_SCAN_5 downto WB_SLV_SCAN_0);
     alias wb_slv_t1_req         : wb_req_t is wb_s_req(WB_SLV_T1);
     alias wb_slv_t1_res         : wb_res_t is wb_s_res(WB_SLV_T1);
-    
-    --== T1 signals ==--
-    
-    signal t1_controller        : t1_t;
     
     --== Chipscope signals ==--
     
@@ -400,62 +392,33 @@ begin
         wb_m_res_o  => wb_m_res
     );
 
-    --===================--
-    --== VFAT2 columns ==--
-    --===================--
-    
-    vfat2_colum_gen : for I in 0 to 0 generate -- 2
-    begin
+    --===========--
+    --== VFAT2 ==--
+    --===========--
         
-        vfat2_column_inst : entity work.vfat2_column      
-        port map(        
-            ref_clk_i               => ref_clk,
-            reset_i                 => reset,
-            wb_slv_i2c_req_i        => wb_slv_i2c_req((2 * I + 1) downto (2 * I)),
-            wb_slv_i2c_res_o        => wb_slv_i2c_res((2 * I + 1) downto (2 * I)),
-            wb_slv_threshold_req_i  => wb_slv_threshold_req((2 * I + 1) downto (2 * I)),
-            wb_slv_threshold_res_o  => wb_slv_threshold_res((2 * I + 1) downto (2 * I)),
-            wb_slv_latency_req_i    => wb_slv_latency_req((2 * I + 1) downto (2 * I)),
-            wb_slv_latency_res_o    => wb_slv_latency_res((2 * I + 1) downto (2 * I)),
-            wb_mst_thr_req_o        => wb_mst_thr_req((2 * I + 1) downto (2 * I)),
-            wb_mst_thr_res_i        => wb_mst_thr_res((2 * I + 1) downto (2 * I)),
-            wb_mst_lat_req_o        => wb_mst_lat_req((2 * I + 1) downto (2 * I)),
-            wb_mst_lat_res_i        => wb_mst_lat_res((2 * I + 1) downto (2 * I)),
-            vfat2_data_out_i        => vfat2_data_out((8 * I + 7) downto (8 * I)),
-            vfat2_sbits_i           => vfat2_sbits((8 * I + 7) downto (8 * I)),
-            vfat2_scl_o             => vfat2_scl((2 * I + 1) downto (2 * I)),
-            vfat2_sda_miso_i        => vfat2_sda_miso((2 * I + 1) downto (2 * I)),
-            vfat2_sda_mosi_o        => vfat2_sda_mosi((2 * I + 1) downto (2 * I)),
-            vfat2_sda_tri_o         => vfat2_sda_tri((2 * I + 1) downto (2 * I))
-        );    
-        
-    end generate;
-
-    --===================--
-    --== T1 controller ==--
-    --===================--
- 
-    vfat2_t1_controller_inst : entity work.vfat2_t1_controller
-    port map(
-        ref_clk_i       => ref_clk,
-        reset_i         => reset,
-        wb_slv_req_i    => wb_slv_t1_req,
-        wb_slv_res_o    => wb_slv_t1_res,
-        vfat2_t1_0      => t1_controller
-    );
-
-    --================--
-    --== T1 encoder ==--
-    --================--
+    vfat2_inst : entity work.vfat2      
+    port map(        
+        ref_clk_i           => ref_clk,
+        reset_i             => reset,
+        wb_slv_t1_req_i     => wb_slv_t1_req,
+        wb_slv_t1_res_o     => wb_slv_t1_res,
+        wb_slv_i2c_req_i    => wb_slv_i2c_req,
+        wb_slv_i2c_res_o    => wb_slv_i2c_res,
+        wb_slv_scan_req_i   => wb_slv_scan_req,
+        wb_slv_scan_res_o   => wb_slv_scan_res,
+        wb_mst_scan_req_o   => wb_mst_scan_req,
+        wb_mst_scan_res_i   => wb_mst_scan_res,
+        vfat2_mclk_o        => vfat2_mclk,
+        vfat2_t1_o          => vfat2_t1,
+        vfat2_reset_o       => vfat2_reset,
+        vfat2_data_out_i    => vfat2_data_out,
+        vfat2_sbits_i       => vfat2_sbits,
+        vfat2_scl_o         => vfat2_scl,
+        vfat2_sda_miso_i    => vfat2_sda_miso,
+        vfat2_sda_mosi_o    => vfat2_sda_mosi,
+        vfat2_sda_tri_o     => vfat2_sda_tri
+    );    
     
-    vfat2_t1_encoder_inst : entity work.vfat2_t1_encoder
-    port map(
-        vfat2_mclk_i    => ref_clk,
-        reset_i         => reset,
-        vfat2_t1_i      => t1_controller,
-        vfat2_t1_o      => vfat2_t1
-    );
-
     --============--
     --== VFAT2s ==--
     --============--

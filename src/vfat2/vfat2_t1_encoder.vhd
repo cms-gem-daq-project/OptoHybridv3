@@ -28,14 +28,17 @@ use work.types_pkg.all;
 
 entity vfat2_t1_encoder is
 port(
-    -- VFAT2 reference clock
-    vfat2_mclk_i    : in std_logic;
-    -- System reset
-    reset_i         : in std_logic;
+
+    -- System signals
+    ref_clk_i   : in std_logic;
+    reset_i     : in std_logic;
+    
     -- Input T1 commands
-    vfat2_t1_i      : in t1_t;
+    vfat2_t1_i  : in t1_t;
+    
     -- VFAT2 T1 line
-    vfat2_t1_o      : out std_logic
+    vfat2_t1_o  : out std_logic
+    
 );
 end vfat2_t1_encoder;
 
@@ -50,9 +53,9 @@ architecture Behavioral of vfat2_t1_encoder is
 
 begin
 
-    process(vfat2_mclk_i)
+    process(ref_clk_i)
     begin    
-        if (rising_edge(vfat2_mclk_i)) then
+        if (rising_edge(ref_clk_i)) then
             -- Reset & default signals
             if (reset_i = '1') then
                 vfat2_t1_o <= '0';

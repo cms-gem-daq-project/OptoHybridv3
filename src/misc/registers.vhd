@@ -29,25 +29,27 @@ use work.types_pkg.all;
 
 entity registers is
 generic(
+
+    -- Number of registers
     SIZE        : integer := 4
+    
 );
 port(
-    -- System reference clock
+
+    -- System signals
     ref_clk_i   : in std_logic;
-    -- System reset
     reset_i     : in std_logic;
-    -- Request strobe
+    
+    -- Request 
     stb_i       : in std_logic_vector((SIZE - 1) downto 0);
-    -- Request write enable
     we_i        : in std_logic;
-    -- Request write data
     data_i      : in std_logic_vector(31 downto 0);
-    -- Response acknowledgment
+    
+    -- Response
     ack_o       : out std_logic_vector((SIZE - 1) downto 0);
-    -- Response error 
     err_o       : out std_logic_vector((SIZE - 1) downto 0);
-    -- Response read data
     data_o      : out std32_array_t((SIZE - 1) downto 0)
+    
 );
 end registers;
 

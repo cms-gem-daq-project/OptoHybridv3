@@ -29,14 +29,15 @@ use work.types_pkg.all;
 
 entity vfat2_i2c_req is
 port(
-    -- System referenc clock
+
+    -- System signals
     ref_clk_i       : in std_logic;
-    -- System reset
     reset_i         : in std_logic;
-    -- Wishbone request from master
+    
+    -- Wishbone slave
     wb_slv_req_i    : in wb_req_t;
-    -- Wishbone response to master
     wb_slv_res_o    : out wb_res_t;
+    
     -- I2C control lines for the I2C core
     i2c_en_o        : out std_logic;
     i2c_address_o   : out std_logic_vector(6 downto 0);
@@ -82,6 +83,7 @@ begin
                 rw <= '0';
             else
                 case state is
+                
                     -- IDLE wait for request
                     when IDLE =>
                         -- Reset the acknowledgment signal
@@ -103,6 +105,7 @@ begin
                             -- Change state
                             state <= STB;
                         end if;
+                        
                     -- STB check the parameters and send the request
                     when STB =>
                         -- Check ChipID
@@ -139,6 +142,7 @@ begin
                                 state <= IDLE;
                             end if;
                         end if;
+                        
                     -- ACK_0 (normal reg)
                     when ACK_0 =>
                         -- Reset the strobe
@@ -158,6 +162,7 @@ begin
                                              data   => (others => '0'));
                             state <= IDLE;
                         end if;
+                        
                     -- ACK_1 (extended reg)
                     when ACK_1 =>
                         -- Reset the strobe
@@ -178,6 +183,7 @@ begin
                                              data   => (others => '0'));
                             state <= IDLE;
                         end if;
+                        
                     --
                     when others => 
                         wb_slv_res_o <= (ack    => '0',
@@ -192,6 +198,7 @@ begin
                         reg <= (others => '0');
                         data <= (others => '0');
                         rw <= '0';
+                        
                 end case;
             end if;
         end if;

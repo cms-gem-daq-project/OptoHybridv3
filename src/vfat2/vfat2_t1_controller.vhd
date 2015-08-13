@@ -41,16 +41,18 @@ use work.types_pkg.all;
 
 entity vfat2_t1_controller is
 port(
-    -- System reference clock
+
+    -- System signals
     ref_clk_i       : in std_logic;
-    -- System reset
     reset_i         : in std_logic;
-    -- Request from the system
+    
+    -- Wishbone slave
     wb_slv_req_i    : in wb_req_t;
-    -- Response to the system
     wb_slv_res_o    : out wb_res_t;
+    
     -- Output T1 commands
     vfat2_t1_0      : out t1_t
+    
 );
 end vfat2_t1_controller;
 
@@ -81,7 +83,7 @@ begin
         SIZE        => 15
     )
     port map(
-        wb_clk_i    => ref_clk_i,
+        ref_clk_i   => ref_clk_i,
         reset_i     => local_reset,
         wb_req_i    => wb_slv_req_i,
         wb_res_o    => wb_slv_res_o,

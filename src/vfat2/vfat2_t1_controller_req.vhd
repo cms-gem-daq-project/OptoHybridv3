@@ -29,29 +29,26 @@ use work.types_pkg.all;
 
 entity vfat2_t1_controller_req is
 port(
-    -- System reference clock
+
+    -- System signals
     ref_clk_i       : in std_logic;
-    -- System reset
     reset_i         : in std_logic;
-    -- Enable signal
+    
+    -- Request
     req_en_i        : in std_logic;
-    -- Operation mode
     req_op_mode_i   : in std_logic_vector(1 downto 0);
-    -- Command type
     req_type_i      : in std_logic_vector(1 downto 0);
-    -- Number of events
     req_events_i    : in std_logic_vector(31 downto 0);
-    -- Interval
     req_interval_i  : in std_logic_vector(31 downto 0);
-    -- Delay
     req_delay_i     : in std_logic_vector(31 downto 0);
-    -- Sequences
     req_lv1a_seq_i  : in std_logic_vector(63 downto 0);
     req_cal_seq_i   : in std_logic_vector(63 downto 0);
     req_sync_seq_i  : in std_logic_vector(63 downto 0);
     req_bc0_seq_i   : in std_logic_vector(63 downto 0);
+    
     -- Output T1 commands
     vfat2_t1_0      : out t1_t
+    
 );
 end vfat2_t1_controller_req;
 
