@@ -57,7 +57,7 @@ end vfat2_t1_controller_req;
 
 architecture Behavioral of vfat2_t1_controller_req is
  
-    type state_t is (IDLE, MODE_0, END_0, MODE_1, MODE_2);
+    type state_t is (IDLE, MODE_0, MODE_1, END_01, MODE_2);
     
     signal state            : state_t;
       
@@ -73,7 +73,7 @@ architecture Behavioral of vfat2_t1_controller_req is
     
     -- Counter
     signal event_counter    : unsigned(31 downto 0);
-    signal interval_counter : unsigned(31 downto 0);
+    signal time_counter : unsigned(31 downto 0);
     
 begin
 
@@ -96,7 +96,7 @@ begin
                 sync_sequence <= (others => '0');
                 bc0_sequence <= (others => '0');
                 event_counter <= (others => '0');
-                interval_counter <= (others => '0');
+                time_counter <= (others => '0');
             else
                 case state is
                     -- IDLE
@@ -118,7 +118,7 @@ begin
                             sync_sequence <= req_sync_seq_i;
                             bc0_sequence <= req_bc0_seq_i;
                             event_counter <= (others => '0');
-                            interval_counter <= (others => '0');
+                            time_counter <= (others => '0');
                             -- Select the mode
                             case req_op_mode_i is
                                 when "00" => state <= MODE_0;
@@ -140,10 +140,14 @@ begin
                             state <= IDLE;
                         -- or run the module
                         else
-                            -- When we reached the interval between pulse
-                            if (interval_counter = unsigned(interval) - 1) then
-                                -- Reset the interval counter
-                                interval_counter <= (others => '0');
+                            -- Increment the counter
+                            if (time_counter = unsigned(interval) - 1) then
+                                time_counter <= (others => '0');
+                            else
+                                time_counter <= time_counter + 1;
+                            end if;
+                            -- Pulse on first tick
+                            if (time_counter = 0) then
                                 -- No limit on events, just pulse
                                 if (unsigned(events_limit) = 0) then
                                     -- Send pulse
@@ -177,7 +181,7 @@ begin
                                                    resync   => '0', 
                                                    bc0      => '0');
                                     -- Go wait for disable signal
-                                    state <= END_0;
+                                    state <= END_01;
                                 -- Limit on events but under it
                                 else
                                     case t1_type is
@@ -212,12 +216,79 @@ begin
                                                calpulse => '0', 
                                                resync   => '0', 
                                                bc0      => '0');
-                                 -- Increment the counter
-                                interval_counter <= interval_counter + 1;
                             end if;
                         end if;
-                    -- END_0 wait for disable signal
-                    when END_0 =>
+                        
+
+                    -- MODE_1 send a calpulse followed by a trigger pulses
+                    when MODE_1 =>
+                        -- Reset the module if the enable signal went low
+                        if (req_en_i = '0') then
+                            -- Reset the T1 signals
+                            vfat2_t1_0 <= (lv1a     => '0', 
+                                           calpulse => '0', 
+                                           resync   => '0', 
+                                           bc0      => '0');
+                            -- Go back to IDLE
+                            state <= IDLE;
+                        -- or run the module
+                        else
+                            -- Increment the counter
+                            if (time_counter = unsigned(delay) - 1) then
+                               time_counter <= (others => '0');
+                            else
+                               time_counter <= time_counter + 1;
+                            end if;
+                            -- Calpulse on first tick
+                            if (time_counter = 0) then
+                                -- No limit on events, just pulse
+                                if (unsigned(events_limit) = 0) then
+                                    -- Send calibration pulse
+                                    vfat2_t1_0 <= (lv1a     => '0', 
+                                                   calpulse => '1', 
+                                                   resync   => '0', 
+                                                   bc0      => '0');
+                                -- Above the limit on events   
+                                elsif (event_counter = unsigned(events_limit)) then
+                                    -- Reset the T1 signals
+                                    vfat2_t1_0 <= (lv1a     => '0', 
+                                                   calpulse => '0', 
+                                                   resync   => '0', 
+                                                   bc0      => '0');
+                                    -- Go wait for disable signal
+                                    state <= END_01;
+                                -- Limit on events but under it
+                                else
+                                    vfat2_t1_0 <= (lv1a     => '0', 
+                                                   calpulse => '1', 
+                                                   resync   => '0', 
+                                                   bc0      => '0');
+                                    -- Increment the event counter
+                                    event_counter <= event_counter + 1;
+                                end if;  
+                            -- LV1A on next tick
+                            elsif (time_counter = unsigned(interval)) then
+                                vfat2_t1_0 <= (lv1a     => '1', 
+                                               calpulse => '0', 
+                                               resync   => '0', 
+                                               bc0      => '0');
+                            -- or wait for the correct interval
+                            else
+                                -- Reset the T1 signals
+                                vfat2_t1_0 <= (lv1a     => '0', 
+                                               calpulse => '0', 
+                                               resync   => '0', 
+                                               bc0      => '0');
+                            end if;
+                        end if;                        
+                        
+                        
+                        
+                        
+                        
+                        
+                    -- END_01 wait for disable signal
+                    when END_01 =>
                         -- Reset the T1 signals
                         vfat2_t1_0 <= (lv1a     => '0', 
                                        calpulse => '0', 
@@ -244,7 +315,7 @@ begin
                         sync_sequence <= (others => '0');
                         bc0_sequence <= (others => '0');
                         event_counter <= (others => '0');
-                        interval_counter <= (others => '0');
+                        time_counter <= (others => '0');
                 end case;
             end if;
         end if;
