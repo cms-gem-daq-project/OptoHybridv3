@@ -30,7 +30,6 @@ use work.types_pkg.all;
 entity vfat2_data_decoder is
 port(
 
-    -- Systel signals
     ref_clk_i           : in std_logic;
     reset_i             : in std_logic;
     
@@ -45,7 +44,7 @@ end vfat2_data_decoder;
 
 architecture Behavioral of vfat2_data_decoder is
 
-    -- The data packet is 192 bits wide but we include the two IDLE bits in front of each packet 
+    -- The data packet is 192 bits wide but we include the two required IDLE bits in front of each packet 
     signal data : std_logic_vector(193 downto 0); 
     
 begin
@@ -117,12 +116,10 @@ begin
                 else
                     tests(3) := '0';
                 end if;
-                -- Combine the tests and assert the packet if it is valid
+                -- Combine the tests and assert the packet if they are valid
                 case tests is
-                    when "1111" =>      
-                        tk_data_o <= (valid => '1', bc => data(187 downto 176), ec => data(171 downto 164), flags => data(163 downto 160),  chip_id => data(155 downto 144), strips => data(143 downto 16), crc => data(15 downto 0));
-                    when others => 
-                        tk_data_o.valid <= '0';
+                    when "1111" => tk_data_o <= (valid => '1', bc => data(187 downto 176), ec => data(171 downto 164), flags => data(163 downto 160), chip_id => data(155 downto 144), strips => data(143 downto 16), crc => data(15 downto 0));
+                    when others => tk_data_o.valid <= '0';
                 end case;                
             end if;
         end if;

@@ -369,6 +369,9 @@ architecture Behavioral of optohybrid_top is
     signal cs_sync_out          : std_logic_vector(65 downto 0);
     signal cs_trig0             : std_logic_vector(31 downto 0);
     
+    -- Tracking data
+    signal vfat2_tk_data        : tk_data_array_t(23 downto 0);
+    
 begin
 
     reset <= '0';
@@ -416,7 +419,8 @@ begin
         vfat2_scl_o         => vfat2_scl,
         vfat2_sda_miso_i    => vfat2_sda_miso,
         vfat2_sda_mosi_o    => vfat2_sda_mosi,
-        vfat2_sda_tri_o     => vfat2_sda_tri
+        vfat2_sda_tri_o     => vfat2_sda_tri,
+        vfat2_tk_data_o     => vfat2_tk_data
     );    
     
     --============--
@@ -520,6 +524,8 @@ begin
     end process;
     
     cs_sync_in <= wb_mst_gtx_res(0).ack & wb_mst_gtx_res(0).stat & wb_mst_gtx_res(0).data;
+    
+    cs_trig0 <= (0 => vfat2_data_out(1), 1 => vfat2_tk_data(0).valid, others => '0');
     
     --=============--
     --== Buffers ==--

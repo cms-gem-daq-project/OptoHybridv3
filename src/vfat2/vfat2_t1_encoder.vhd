@@ -29,7 +29,6 @@ use work.types_pkg.all;
 entity vfat2_t1_encoder is
 port(
 
-    -- System signals
     ref_clk_i   : in std_logic;
     reset_i     : in std_logic;
     
@@ -56,7 +55,7 @@ begin
     process(ref_clk_i)
     begin    
         if (rising_edge(ref_clk_i)) then
-            -- Reset & default signals
+            -- Reset & default values
             if (reset_i = '1') then
                 vfat2_t1_o <= '0';
                 state <= IDLE;
@@ -92,7 +91,6 @@ begin
                     when BIT_1 =>
                         vfat2_t1_o <= t1_data(1);
                         state <= BIT_0;
-                    -- BIT_0 send bit 0
                     -- BIT_0 send bit 0
                     when BIT_0 =>
                         vfat2_t1_o <= t1_data(0);

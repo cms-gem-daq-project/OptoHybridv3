@@ -62,7 +62,11 @@ port(
     vfat2_scl_o         : out std_logic_vector(5 downto 0);
     vfat2_sda_miso_i    : in std_logic_vector(5 downto 0);
     vfat2_sda_mosi_o    : out std_logic_vector(5 downto 0);
-    vfat2_sda_tri_o     : out std_logic_vector(5 downto 0)
+    vfat2_sda_tri_o     : out std_logic_vector(5 downto 0);
+    
+    
+    -- Tracking data
+    vfat2_tk_data_o     : out tk_data_array_t(23 downto 0)
     
 );
 end vfat2;
@@ -79,6 +83,9 @@ architecture Behavioral of vfat2 is
     signal scan_running         : std_logic_vector(1 downto 0);
 
 begin
+
+    vfat2_tk_data_o <= vfat2_tk_data;
+
 
     --=====================--
     --== Clock and reset ==--
