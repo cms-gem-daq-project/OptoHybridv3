@@ -46,8 +46,7 @@ end vfat2_data_decoder;
 architecture Behavioral of vfat2_data_decoder is
 
     -- The data packet is 192 bits wide but we include the two IDLE bits in front of each packet 
-    -- and the computation time for the algorithm (the data will be shifted while computing)
-    signal data : std_logic_vector(194 downto 0); 
+    signal data : std_logic_vector(193 downto 0); 
     
 begin
 
@@ -63,8 +62,7 @@ begin
                 data <= (others => '0');
             else
                 -- Shift the data in the register
-                data(194 downto 1) <= data(193 downto 0);
-                data(0) <= vfat2_data_out_i;
+                data <= data(192 downto 0) & vfat2_data_out_i;
             end if;
         end if;
     end process;
@@ -75,13 +73,16 @@ begin
     
     process(ref_clk_i)
         -- Holds the results of the tests
-        variable tests  : std_logic_vector(2 downto 0);
+        variable tests  : std_logic_vector(3 downto 0);
+        -- Hold the computed CRC
+        variable crc    : std_logic_vector(15 downto 0);
     begin
         if (rising_edge(ref_clk_i)) then
-            -- Reset & default value 
+            -- Reset & default values
             if (reset_i = '1') then
                 tk_data_o <= (valid => '0', bc => (others => '0'), ec => (others => '0'), flags => (others => '0'), chip_id => (others => '0'), strips => (others => '0'), crc => (others => '0'));
                 tests := (others => '0');
+                crc := (others => '0');
             else
                 -- Check the 6 fixed bits 
                 case data(193 downto 188) is
@@ -98,9 +99,27 @@ begin
                     when "1110" => tests(2) := '1';
                     when others => tests(2) := '0';
                 end case;
+                -- Compute CRC
+                crc := x"FFFF";
+                for I in 11 downto 1 loop
+                    for J in 0 to 15 loop
+                        if (data((I * 16) + J) = crc(0)) then
+                            crc := '0' & crc(15 downto 1);
+                        else
+                            crc := '0' & crc(15 downto 1);
+                            crc := crc xor x"8408";
+                        end if;
+                    end loop;
+                end loop; 
+                -- Check CRC
+                if (crc = data(15 downto 0)) then
+                    tests(3) := '1';
+                else
+                    tests(3) := '0';
+                end if;
                 -- Combine the tests and assert the packet if it is valid
                 case tests is
-                    when "111" =>      
+                    when "1111" =>      
                         tk_data_o <= (valid => '1', bc => data(187 downto 176), ec => data(171 downto 164), flags => data(163 downto 160),  chip_id => data(155 downto 144), strips => data(143 downto 16), crc => data(15 downto 0));
                     when others => 
                         tk_data_o.valid <= '0';

@@ -13,7 +13,7 @@
 -- Whishbone slave that handles the I2C communication with the VFAT2s
 --
 -- Register map:
--- 0..151 : VFAT2 registers
+-- 0..150 : VFAT2 registers
 --
 -- Dependencies: 
 --

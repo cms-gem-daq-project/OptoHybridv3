@@ -30,7 +30,7 @@ end vfat2_data_decoder_test;
 architecture behavior of vfat2_data_decoder_test is     
 
     --Inputs
-    signal vfat2_mclk_i         : std_logic;
+    signal ref_clk_i            : std_logic;
     signal reset_i              : std_logic;
     signal vfat2_data_out_i     : std_logic;
 
@@ -44,14 +44,14 @@ architecture behavior of vfat2_data_decoder_test is
     constant vfat2_event_3      : std_logic_vector(195 downto 0) := "0000101010010111100011000000100100001110111010010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000110010011011";
     constant vfat2_event_4      : std_logic_vector(195 downto 0) := "0000101011011111010111000000010000001110111010010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001011101100";
 
-    constant vfat2_mclk_period  : time := 25 ns;
+    constant ref_clk_period     : time := 25 ns;
  
 begin
  
     -- Instantiate the Unit Under Test (UUT)
     uut : entity work.vfat2_data_decoder 
     port map(
-        vfat2_mclk_i        => vfat2_mclk_i,
+        ref_clk_i           => ref_clk_i,
         reset_i             => reset_i,
         vfat2_data_out_i    => vfat2_data_out_i,
         tk_data_o           => tk_data_o
@@ -60,10 +60,10 @@ begin
     -- Clock process definitions
     process
     begin
-        vfat2_mclk_i <= '1';
-        wait for vfat2_mclk_period / 2;
-        vfat2_mclk_i <= '0';
-        wait for vfat2_mclk_period / 2;
+        ref_clk_i <= '1';
+        wait for ref_clk_period / 2;
+        ref_clk_i <= '0';
+        wait for ref_clk_period / 2;
     end process;
     
     -- Reset process
@@ -84,27 +84,27 @@ begin
         -- Event 0
         for I in 195 downto 0 loop
             vfat2_data_out_i <= vfat2_event_0(I);
-            wait for vfat2_mclk_period;
+            wait for ref_clk_period;
         end loop;
         -- Event 1
         for I in 195 downto 0 loop
             vfat2_data_out_i <= vfat2_event_1(I);
-            wait for vfat2_mclk_period;
+            wait for ref_clk_period;
         end loop;
         -- Event 2
         for I in 195 downto 0 loop
             vfat2_data_out_i <= vfat2_event_2(I);
-            wait for vfat2_mclk_period;
+            wait for ref_clk_period;
         end loop;
         -- Event 3
         for I in 195 downto 0 loop
             vfat2_data_out_i <= vfat2_event_3(I);
-            wait for vfat2_mclk_period;
+            wait for ref_clk_period;
         end loop;
         -- Event 4
         for I in 195 downto 0 loop
             vfat2_data_out_i <= vfat2_event_4(I);
-            wait for vfat2_mclk_period;
+            wait for ref_clk_period;
         end loop;
     end process;
 
