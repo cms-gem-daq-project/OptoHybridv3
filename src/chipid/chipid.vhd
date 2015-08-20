@@ -25,41 +25,9 @@ library work;
 use work.types_pkg.all;
 
 entity chipid is
-port(
-
-    --== Chip ID raw ==--
-    
-    chip_id_io  : inout std_logic;
-
-    --== Chip ID packed ==--
-    
-    wb_req_i    : in wb_req_t;
-    wb_res_o    : in wb_res_t
-
-);
 end chipid;
 
 architecture Behavioral of chipid is
-
-    signal chip_id_mosi : std_logic;
-    signal chip_id_miso : std_logic;
-    signal chip_id_tri  : std_logic;
-
 begin
 
-    --=====================--
-    --== Chip ID buffers ==--
-    --=====================--
-    
-    chipid_buffers_inst : entity work.chipid_buffers
-    port map(
-        -- Raw
-        chip_id_io      => chip_id_io,
-        -- Buffered
-        chip_id_mosi_i  => chip_id_mosi,
-        chip_id_miso_o  => chip_id_miso,
-        chip_id_tri_i   => chip_id_tri
-    );
-
 end Behavioral;
-

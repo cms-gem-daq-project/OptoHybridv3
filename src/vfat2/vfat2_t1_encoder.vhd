@@ -29,12 +29,14 @@ use work.types_pkg.all;
 entity vfat2_t1_encoder is
 port(
 
-    vfat2_mclk_i    : in std_logic;
-    reset_i         : in std_logic;
+    ref_clk_i   : in std_logic;
+    reset_i     : in std_logic;
     
-    vfat2_t1_i      : in t1_t;
+    -- Input T1 commands
+    vfat2_t1_i  : in t1_t;
     
-    vfat2_t1_o      : out std_logic
+    -- VFAT2 T1 line
+    vfat2_t1_o  : out std_logic
     
 );
 end vfat2_t1_encoder;
@@ -44,44 +46,52 @@ architecture Behavioral of vfat2_t1_encoder is
     type state_t is (IDLE, BIT_2, BIT_1, BIT_0);
     
     signal state    : state_t;
+    
+    -- Data to send
     signal t1_data  : std_logic_vector(2 downto 0);
 
 begin
 
-    process(vfat2_mclk_i)
+    process(ref_clk_i)
     begin    
-        if (rising_edge(vfat2_mclk_i)) then
+        if (rising_edge(ref_clk_i)) then
+            -- Reset & default values
             if (reset_i = '1') then
                 vfat2_t1_o <= '0';
                 state <= IDLE;
                 t1_data <= (others => '0');
             else
                 case state is
-                    -- IDLE
+                    -- IDLE wait for strobe
                     when IDLE =>
+                        -- Set the line to 0
                         vfat2_t1_o <= '0';
+                        -- LV1A
                         if (vfat2_t1_i.lv1a = '1') then
                             state <= BIT_2;
                             t1_data <= "100";
+                        -- Calibration pulse
                         elsif (vfat2_t1_i.calpulse = '1') then 
                             state <= BIT_2;
                             t1_data <= "111";
+                        -- Resync signal
                         elsif (vfat2_t1_i.resync = '1') then  
                             state <= BIT_2;
                             t1_data <= "110";
+                        -- BC0 reset
                         elsif (vfat2_t1_i.bc0 = '1') then 
                             state <= BIT_2;
                             t1_data <= "101";
                         end if;  
-                    -- BIT_2
+                    -- BIT_2 send bit 2
                     when BIT_2 =>
                         vfat2_t1_o <= t1_data(2);
                         state <= BIT_1;
-                    -- BIT_1
+                    -- BIT_1 send bit 1
                     when BIT_1 =>
                         vfat2_t1_o <= t1_data(1);
                         state <= BIT_0;
-                    -- BIT_0
+                    -- BIT_0 send bit 0
                     when BIT_0 =>
                         vfat2_t1_o <= t1_data(0);
                         state <= IDLE;

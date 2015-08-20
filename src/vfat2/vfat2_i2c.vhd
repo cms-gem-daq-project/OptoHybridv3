@@ -10,6 +10,11 @@
 -- Tool versions:  ISE  P.20131013
 -- Description:
 --
+-- Whishbone slave that handles the I2C communication with the VFAT2s
+--
+-- Register map:
+-- 0..150 : VFAT2 registers
+--
 -- Dependencies: 
 --
 -- Revision: 
@@ -27,12 +32,15 @@ use work.types_pkg.all;
 entity vfat2_i2c is
 port(
 
-    wb_clk_i            : in std_logic;
+    -- System signals
+    ref_clk_i           : in std_logic;
     reset_i             : in std_logic;
     
-    wb_req_i            : in wb_req_t;
-    wb_res_o            : out wb_res_t;
+    -- Wishbone slave
+    wb_slv_req_i        : in wb_req_t;
+    wb_slv_res_o        : out wb_res_t;
     
+    -- I2C lines
     vfat2_scl_o         : out std_logic;
     vfat2_sda_miso_i    : in std_logic;
     vfat2_sda_mosi_o    : out std_logic;
@@ -43,27 +51,27 @@ end vfat2_i2c;
 
 architecture Behavioral of vfat2_i2c is
 
+    -- I2C transaction parameters 
     signal i2c_en       : std_logic;
     signal i2c_address  : std_logic_vector(6 downto 0);
     signal i2c_rw       : std_logic;
     signal i2c_din      : std_logic_vector(7 downto 0);
-    
     signal i2c_valid    : std_logic;
     signal i2c_error    : std_logic;
     signal i2c_dout     : std_logic_vector(7 downto 0);
-
-begin
     
-    --===============================--
-    --== VFAT2 I2C request handler ==--
-    --===============================--
+begin
+
+    --========================================--
+    --== Wishbone VFAT2 I2C request handler ==--
+    --========================================--
 
     vfat2_i2c_req_inst : entity work.vfat2_i2c_req
     port map(
-        wb_clk_i        => wb_clk_i,
+        ref_clk_i       => ref_clk_i,
         reset_i         => reset_i,
-        wb_req_i        => wb_req_i,
-        wb_res_o        => wb_res_o,
+        wb_slv_req_i    => wb_slv_req_i,
+        wb_slv_res_o    => wb_slv_res_o,
         i2c_en_o        => i2c_en,
         i2c_address_o   => i2c_address,
         i2c_rw_o        => i2c_rw,
@@ -79,10 +87,11 @@ begin
     
     i2c_inst : entity work.i2c
     generic map(
-        CLK_DIV     => 400
+        IN_FREQ     => 40_000_000,
+        OUT_FREQ    => 100_000
     )
     port map(    
-        clk_i       => wb_clk_i,
+        ref_clk_i   => ref_clk_i,
         reset_i     => reset_i,
         en_i        => i2c_en,
         address_i   => i2c_address,
@@ -96,5 +105,5 @@ begin
         sda_mosi_o  => vfat2_sda_mosi_o,
         sda_tri_o   => vfat2_sda_tri_o
     );
-    
+
 end Behavioral;

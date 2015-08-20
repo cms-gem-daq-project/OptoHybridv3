@@ -48,7 +48,7 @@ architecture Behavioral of wb_slave_interface is
     type state_t is (IDLE, ACK_WAIT, MONO);
     
     signal state    : state_t;
-    signal cnt      : integer range 0 to WB_N_MASTERS;
+    signal counter  : integer range 0 to WB_MASTERS;
 
 begin
 
@@ -64,7 +64,7 @@ begin
                              stat   => (others => '0'),
                              data   => (others => '0'));
                 state <= IDLE;
-                cnt <= 0;
+                counter <= 0;
             else
                 case state is
                     when IDLE =>
@@ -79,14 +79,14 @@ begin
                         wb_req_o.stb <= '0';
                         if (wb_res_i.ack = '1') then
                             wb_res_o <= wb_res_i;
-                            cnt <= WB_N_MASTERS - 1;
+                            counter <= WB_MASTERS - 1;
                             state <= MONO;
                         end if;
                     when MONO =>
-                        if (cnt = 0) then
+                        if (counter = 0) then
                             state <= IDLE;
                         else
-                            cnt <= cnt - 1;
+                            counter <= counter - 1;
                         end if;
                     when others => 
                         wb_req_o <= (stb    => '0',
