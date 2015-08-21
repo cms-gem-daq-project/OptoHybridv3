@@ -360,15 +360,15 @@ architecture Behavioral of optohybrid_top is
     
     alias wb_slv_i2c_req        : wb_req_array_t(5 downto 0) is wb_s_req(WB_SLV_I2C_5 downto WB_SLV_I2C_0);
     alias wb_slv_i2c_res        : wb_res_array_t(5 downto 0) is wb_s_res(WB_SLV_I2C_5 downto WB_SLV_I2C_0);
-    
-    alias wb_slv_ei2c_req       : wb_req_array_t(1 downto 0) is wb_s_req(WB_SLV_EI2C_1 downto WB_SLV_EI2C_0);
-    alias wb_slv_ei2c_res       : wb_res_array_t(1 downto 0) is wb_s_res(WB_SLV_EI2C_1 downto WB_SLV_EI2C_0);
-    
-    alias wb_slv_scan_req       : wb_req_t is wb_s_req(WB_SLV_SCAN);
-    alias wb_slv_scan_res       : wb_res_t is wb_s_res(WB_SLV_SCAN);
+            
+    alias wb_slv_ei2c_req       : wb_req_t is wb_s_req(WB_SLV_EI2C);
+    alias wb_slv_ei2c_res       : wb_res_t is wb_s_res(WB_SLV_EI2C);
     
     alias wb_slv_t1_req         : wb_req_t is wb_s_req(WB_SLV_T1);
     alias wb_slv_t1_res         : wb_res_t is wb_s_res(WB_SLV_T1);
+    
+    alias wb_slv_scan_req       : wb_req_t is wb_s_req(WB_SLV_SCAN);
+    alias wb_slv_scan_res       : wb_res_t is wb_s_res(WB_SLV_SCAN);
     
     --== Chipscope signals ==--
     
@@ -396,10 +396,7 @@ begin
     --== Wishbone switch ==--
     --=====================--
     
-    wb_arbitrer_inst : entity work.wb_arbitrer
-    generic map(
-        TIMEOUT     => 100_000
-    )
+    wb_switch_inst : entity work.wb_switch
     port map(
         ref_clk_i   => ref_clk,
         reset_i     => reset,

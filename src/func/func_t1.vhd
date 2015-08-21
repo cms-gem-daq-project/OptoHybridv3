@@ -82,7 +82,8 @@ begin
 
     wb_splitter_inst : entity work.wb_splitter
     generic map(
-        SIZE        => 15
+        SIZE        => 15,
+        OFFSET      => 0
     )
     port map(
         ref_clk_i   => ref_clk_i,

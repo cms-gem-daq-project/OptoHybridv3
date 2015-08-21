@@ -77,7 +77,7 @@ begin
     process(ref_clk_i)
     begin
         if (rising_edge(ref_clk_i)) then
-            -- Reset & Default 
+            -- Reset & default values 
             if (reset_i = '1') then
                 vfat2_t1_0 <= (lv1a => '0', calpulse => '0', resync => '0', bc0 => '0');  
                 t1_running_o <= (others => '0');

@@ -31,8 +31,8 @@ port(
     reset_i             : in std_logic;
     
     -- Wishbone ext i2c slave
-    wb_slv_ei2c_req_i   : in wb_req_array_t(1 downto 0);
-    wb_slv_ei2c_res_o   : out wb_res_array_t(1 downto 0);
+    wb_slv_ei2c_req_i   : in wb_req_t;
+    wb_slv_ei2c_res_o   : out wb_res_t;
     
     -- Wishbone ext i2c master
     wb_mst_ei2c_req_o   : out wb_req_t;

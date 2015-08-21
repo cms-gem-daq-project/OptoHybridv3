@@ -67,7 +67,8 @@ architecture Behavioral of func_i2c_req is
     signal vfat2_counter    : unsigned(4 downto 0);
 
 begin
-
+    
+    -- Automatic response to request
     wb_slv_res_o <= (ack => wb_slv_req_i.stb, stat => "00", data => (others => '0'));
 
     process(ref_clk_i)
@@ -86,9 +87,8 @@ begin
                 req_we <= '0';
                 vfat2_counter <= (others => '0');
             else
-                case state is
-                
-                    -- IDLE
+                case state is                
+                    -- Wait for a request
                     when IDLE =>
                         -- Reset the flags
                         fifo_rst_o <= '0';
@@ -106,9 +106,8 @@ begin
                             fifo_rst_o <= '1';
                             -- Change state
                             state <= REQ_I2C;
-                        end if;
-                                                
-                    -- REQ_I2C send an I2C request to change the latency
+                        end if;                                                
+                    -- Send an I2C request to change the latency
                     when REQ_I2C =>
                         -- Enable the FIFO
                         fifo_rst_o <= '0';
@@ -125,9 +124,8 @@ begin
                             else
                                 vfat2_counter <= vfat2_counter + 1;
                             end if;
-                        end if;
-                        
-                    -- ACK_I2C wait for the acknowledgment
+                        end if;                        
+                    -- Wait for the acknowledgment
                     when ACK_I2C => 
                         -- Reset the strobe
                         wb_mst_req_o.stb <= '0';
@@ -140,8 +138,7 @@ begin
                             vfat2_counter <= vfat2_counter + 1;
                             -- Change state
                             state <= REQ_I2C;
-                        end if;
-                    
+                        end if;                    
                     --
                     when others =>
                         wb_mst_req_o <= (stb => '0', we => '0', addr => (others => '0'), data => (others => '0'));

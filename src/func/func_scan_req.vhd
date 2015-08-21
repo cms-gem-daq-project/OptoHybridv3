@@ -125,9 +125,8 @@ begin
                 event_counter <= (others => '0');
                 hit_counter <= (others => '0');
             else
-                case state is
-                
-                    -- IDLE
+                case state is                
+                    -- Wait for request
                     when IDLE =>
                         -- Reset the flags and acknowledgments
                         fifo_rst_o <= '0';
@@ -173,17 +172,15 @@ begin
                             end case;
                             -- Change state
                             state <= REQ_RUNNING;
-                        end if;
-                        
-                    -- REQ_RUNNING prepare the scan
+                        end if;                        
+                    -- Prepare the scan
                     when REQ_RUNNING =>
                         -- Reactivate the FIFO
                         fifo_rst_o <= '0';
                         -- Ask if VFAT2 is running
                         wb_mst_req_o <= (stb => '1', we => '0', addr => WB_ADDR_I2C & "000000000000000" & req_vfat2 & x"00", data => (others => '0'));
-                        state <= ACK_RUNNING;
-                        
-                    -- ACK_RUNNING wait for the response
+                        state <= ACK_RUNNING;                        
+                    -- Wait for the response
                     when ACK_RUNNING => 
                         -- Reset the strobe
                         wb_mst_req_o.stb <= '0';
@@ -201,15 +198,13 @@ begin
                                 -- end the scan
                                 state <= IDLE;
                             end if;
-                        end if;
-                        
-                    -- REQ_CURRENT read the current value of the register
+                        end if;                        
+                    -- Read the current value of the register
                     when REQ_CURRENT => 
                         -- Send an I2C request
                         wb_mst_req_o <= (stb => '1', we => '0', addr => WB_ADDR_I2C & "000000000000000" & req_vfat2 & register_id, data => (others => '0'));
-                        state <= ACK_CURRENT;
-                        
-                    -- ACK_CURRENT wait for the response
+                        state <= ACK_CURRENT;                        
+                    -- Wait for the response
                     when ACK_CURRENT => 
                         -- Reset the strobe
                         wb_mst_req_o.stb <= '0';
@@ -229,17 +224,15 @@ begin
                                 -- end the scan
                                 state <= IDLE;
                             end if;
-                        end if;
-                        
-                    -- REQ_I2C send an I2C request to change the latency
+                        end if;                        
+                    -- Send an I2C request to change the value
                     when REQ_I2C =>
                         -- Reset the write enable 
                         fifo_we_o <= '0';
                         -- Send an I2C request
                         wb_mst_req_o <= (stb => '1', we => '1', addr => WB_ADDR_I2C & "000000000000000" & req_vfat2 & register_id, data => x"000000" & std_logic_vector(value_counter));
-                        state <= ACK_I2C;
-                        
-                    -- ACK_I2C wait for the acknowledgment
+                        state <= ACK_I2C;                        
+                    -- Wait for the acknowledgment
                     when ACK_I2C => 
                         -- Reset the strobe
                         wb_mst_req_o.stb <= '0';
@@ -263,9 +256,8 @@ begin
                                 hit_counter <= (others => '1');
                                 state <= STORE_RESULT;
                             end if;
-                        end if;
-               
-                    -- SCAN_THRESHOLD perform a threshold scan
+                        end if;               
+                    -- Perform a threshold scan
                     when SCAN_THRESHOLD =>
                         -- Change state when the counter reached its limit
                         if (event_counter = unsigned(req_events)) then
@@ -277,13 +269,11 @@ begin
                             if (vfat2_sbits_i(vfat2_int) /= empty_8bits) then
                                 hit_counter <= hit_counter + 1;
                             end if;
-                        end if;
-                        
-                    -- SCAN_THRESHOLD2 perform a threshold scan on a signel channel
+                        end if;                        
+                    -- Perform a threshold scan on a signel channel
                     when SCAN_THRESHOLD2 =>
-                        state <= STORE_RESULT;
-                        
-                    -- SCAN_LATENCY perform a latency scan
+                        state <= STORE_RESULT;                        
+                    -- Perform a latency scan
                     when SCAN_LATENCY =>                        
                     -- Change state when the counter reached its limit
                         if (event_counter = unsigned(req_events)) then
@@ -298,9 +288,8 @@ begin
                                     hit_counter <= hit_counter + 1;
                                 end if;
                             end if;
-                        end if;
-                        
-                    -- STORE_RESULT store the results in the FIFO
+                        end if;                        
+                    -- Store the results in the FIFO
                     when STORE_RESULT =>
                         -- Write in the FIFO
                         fifo_we_o <= '1';
@@ -314,25 +303,22 @@ begin
                         -- Or restore the latency value
                         else
                             state <= REQ_RESTORE;
-                        end if;
-                        
-                    -- REQ_RESTORE restore the value
+                        end if;                        
+                    -- Restore the value
                     when REQ_RESTORE => 
                         -- Reset the write enable 
                         fifo_we_o <= '0';
                         -- Send an I2C request
                         wb_mst_req_o <= (stb => '1', we => '1', addr => WB_ADDR_I2C & "000000000000000" & req_vfat2 & register_id, data => x"000000" & std_logic_vector(saved_value));
-                        state <= ACK_RESTORE;
-                        
-                    -- ACK_RESTORE wait for the acknowledgment
+                        state <= ACK_RESTORE;                        
+                    -- Wait for the acknowledgment
                     when ACK_RESTORE => 
                         -- Reset the strobe
                         wb_mst_req_o.stb <= '0';
                         -- On acknowledgment
                         if (wb_mst_res_i.ack = '1') then
                             state <= IDLE;
-                        end if;
-                    
+                        end if;                    
                     --
                     when others =>
                         wb_mst_req_o <= (stb => '0', we => '0', addr => (others => '0'), data => (others => '0'));

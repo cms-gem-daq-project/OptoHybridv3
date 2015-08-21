@@ -69,20 +69,23 @@ architecture Behavioral of func_scan is
     signal local_reset  : std_logic;
     
     -- Signals from the Wishbone Splitter
-    signal wb_stb       : std_logic_vector(9 downto 0);
+    signal wb_stb       : std_logic_vector(10 downto 0);
     signal wb_we        : std_logic;
     signal wb_addr      : std_logic_vector(31 downto 0);
     signal wb_data      : std_logic_vector(31 downto 0);
     
     -- Signals for the registers
-    signal reg_ack      : std_logic_vector(9 downto 0);
-    signal reg_err      : std_logic_vector(9 downto 0);
-    signal reg_data     : std32_array_t(9 downto 0);
+    signal reg_ack      : std_logic_vector(10 downto 0);
+    signal reg_err      : std_logic_vector(10 downto 0);
+    signal reg_data     : std32_array_t(10 downto 0);
     
     -- Signals to the FIFO
     signal fifo_rst     : std_logic;
     signal fifo_we      : std_logic;
     signal fifo_din     : std_logic_vector(31 downto 0);
+    
+    -- Scan status
+    signal scan_running : std_logic_vector(1 downto 0);
 
 begin
 
@@ -92,7 +95,8 @@ begin
 
     wb_splitter_inst : entity work.wb_splitter
     generic map(
-        SIZE        => 10
+        SIZE        => 11,
+        OFFSET      => 0
     )
     port map(
         ref_clk_i   => ref_clk_i,
@@ -133,7 +137,7 @@ begin
         fifo_rst_o      => fifo_rst,
         fifo_we_o       => fifo_we,
         fifo_din_o      => fifo_din,
-        scan_running_o  => scan_running_o
+        scan_running_o  => scan_running
     );
     
     -- Connect signals for automatic response
@@ -190,16 +194,27 @@ begin
     );
     
     --=================--
+    --== Scan status ==--
+    --=================--
+    
+    -- Connect signals for automatic response
+    reg_ack(9) <= wb_stb(9);
+    reg_err(9) <= '0';
+    reg_data(9) <= x"0000000" & "00" & scan_running;
+    
+    scan_running_o <= scan_running;
+    
+    --=================--
     --== Local reset ==--
     --=================--
 
     -- 9 : local reset
 
-    local_reset <= reset_i or wb_stb(9);
+    local_reset <= reset_i or wb_stb(10);
     
     -- Connect signals for automatic response
-    reg_ack(9) <= wb_stb(9);
-    reg_err(9) <= '0';
-    reg_data(9) <= (others => '0');
+    reg_ack(10) <= wb_stb(10);
+    reg_err(10) <= '0';
+    reg_data(10) <= (others => '0');
     
 end Behavioral;

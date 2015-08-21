@@ -40,8 +40,8 @@ port(
     reset_i         : in std_logic;
     
     -- Wishbone slave
-    wb_slv_req_i    : in wb_req_array_t(1 downto 0);
-    wb_slv_res_o    : out wb_res_array_t(1 downto 0);
+    wb_slv_req_i    : in wb_req_t;
+    wb_slv_res_o    : out wb_res_t;
     
     -- Wishbone master
     wb_mst_req_o    : out wb_req_t;
@@ -55,7 +55,11 @@ architecture Behavioral of func_i2c is
     -- Local reset
     signal local_reset  : std_logic;
     
-    -- Signals from the Wishbone Splitter
+    -- Signals from the Wishbone Hub
+    signal wb_req       : wb_req_t;
+    signal wb_res       : wb_res_t;
+    
+    -- Signals from the Wishbone Hub
     signal wb_stb       : std_logic_vector(2 downto 0);
     signal wb_we        : std_logic;
     signal wb_addr      : std_logic_vector(31 downto 0);
@@ -72,6 +76,32 @@ architecture Behavioral of func_i2c is
     signal fifo_din     : std_logic_vector(31 downto 0);
 
 begin
+
+    --===============================--
+    --== Wishbone request splitter ==--
+    --===============================--
+
+    wb_hub_inst : entity work.wb_hub
+    generic map(
+        MASK        => "00000000000000000001000000--",
+        SIZE        => 3,
+        OFFSET      => 0
+    )
+    port map(
+        ref_clk_i   => ref_clk_i,
+        reset_i     => local_reset,
+        wb_req_i    => wb_slv_req_i,
+        wb_res_o    => wb_slv_res_o,
+        wb_req_o    => wb_req,
+        wb_res_i    => wb_res,
+        stb_o       => wb_stb,
+        we_o        => wb_we,
+        addr_o      => wb_addr,
+        data_o      => wb_data,
+        ack_i       => reg_ack,
+        err_i       => reg_err,
+        data_i      => reg_data
+    );
     
     --==================--
     --== I2C extended ==--
@@ -83,36 +113,14 @@ begin
     port map(
         ref_clk_i       => ref_clk_i,
         reset_i         => local_reset,
-        wb_slv_req_i    => wb_slv_req_i(0),
-        wb_slv_res_o    => wb_slv_res_o(0),
+        wb_slv_req_i    => wb_req,
+        wb_slv_res_o    => wb_res,
         wb_mst_req_o    => wb_mst_req_o,
         wb_mst_res_i    => wb_mst_res_i,
         req_mask_i      => reg_data(0)(23 downto 0),
         fifo_rst_o      => fifo_rst,
         fifo_we_o       => fifo_we,
         fifo_din_o      => fifo_din
-    );
-
-    --===============================--
-    --== Wishbone request splitter ==--
-    --===============================--
-
-    wb_splitter_inst : entity work.wb_splitter
-    generic map(
-        SIZE        => 3
-    )
-    port map(
-        ref_clk_i   => ref_clk_i,
-        reset_i     => local_reset,
-        wb_req_i    => wb_slv_req_i(1),
-        wb_res_o    => wb_slv_res_o(1),
-        stb_o       => wb_stb,
-        we_o        => wb_we,
-        addr_o      => wb_addr,
-        data_o      => wb_data,
-        ack_i       => reg_ack,
-        err_i       => reg_err,
-        data_i      => reg_data
     );
     
     --===============--
