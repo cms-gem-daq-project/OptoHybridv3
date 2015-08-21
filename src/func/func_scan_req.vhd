@@ -85,7 +85,7 @@ architecture Behavioral of func_scan_req is
     signal saved_value      : std_logic_vector(7 downto 0);
     
     -- Counter for the scan
-    signal value_counter    : unsigned(7 downto 0);
+    signal value_counter    : unsigned(8 downto 0);
     signal event_counter    : unsigned(23 downto 0);
     signal hit_counter      : unsigned(23 downto 0);
     
@@ -160,7 +160,7 @@ begin
                                 when others => register_id <= x"00";
                             end case;
                             -- Set the counter
-                            value_counter <= unsigned(req_min_i);
+                            value_counter <= '0' & unsigned(req_min_i);
                             -- Reset the FIFO
                             fifo_rst_o <= '1';
                             -- Scan is running
@@ -230,7 +230,7 @@ begin
                         -- Reset the write enable 
                         fifo_we_o <= '0';
                         -- Send an I2C request
-                        wb_mst_req_o <= (stb => '1', we => '1', addr => WB_ADDR_I2C & "000000000000000" & req_vfat2 & register_id, data => x"000000" & std_logic_vector(value_counter));
+                        wb_mst_req_o <= (stb => '1', we => '1', addr => WB_ADDR_I2C & "000000000000000" & req_vfat2 & register_id, data => x"000000" & std_logic_vector(value_counter(7 downto 0)));
                         state <= ACK_I2C;                        
                     -- Wait for the acknowledgment
                     when ACK_I2C => 
@@ -293,7 +293,7 @@ begin
                     when STORE_RESULT =>
                         -- Write in the FIFO
                         fifo_we_o <= '1';
-                        fifo_din_o <= std_logic_vector(value_counter) & std_logic_vector(hit_counter);
+                        fifo_din_o <= std_logic_vector(value_counter(7 downto 0)) & std_logic_vector(hit_counter);
                         -- Check the value for its limit
                         if (value_counter + unsigned(req_step) <= unsigned(req_max)) then
                             -- Increment the value counter

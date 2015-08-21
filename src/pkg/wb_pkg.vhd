@@ -67,7 +67,7 @@ package body wb_pkg is
         -- VFAT2 I2C extended                                     | REGS  |
         elsif (std_match(addr, WB_ADDR_EI2C & "0000000000000000000---------")) then sel := WB_SLV_EI2C;
         -- VFAT2 scan                                              | REGS |            
-        elsif (std_match(addr, WB_ADDR_SCAN & "0000000000000000000000000---")) then sel := WB_SLV_SCAN;
+        elsif (std_match(addr, WB_ADDR_SCAN & "000000000000000000000000----")) then sel := WB_SLV_SCAN;
         -- VFAT2 T1                                                | REGS |      
         elsif (std_match(addr, WB_ADDR_T1   & "000000000000000000000000----")) then sel := WB_SLV_T1;
         
