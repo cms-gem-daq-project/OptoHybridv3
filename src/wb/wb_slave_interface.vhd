@@ -10,7 +10,7 @@
 -- Tool versions:  ISE  P.20131013
 -- Description: 
 --
--- This entity is the interface between the slave and the arbitrer and keep the signals
+-- This entity is the interface between the slave and the arbitrer and keeps the signals
 -- asserted when the slaves are busy
 --
 -- Dependencies: 
@@ -31,12 +31,14 @@ use work.wb_pkg.all;
 entity wb_slave_interface is
 port(
 
-    wb_clk_i    : in std_logic;
+    ref_clk_i   : in std_logic;
     reset_i     : in std_logic;
    
+    -- Request forwarding
     wb_req_i    : in wb_req_t;
     wb_req_o    : out wb_req_t;
     
+    -- Response forwarding
     wb_res_i    : in wb_res_t;
     wb_res_o    : out wb_res_t
     
@@ -52,21 +54,17 @@ architecture Behavioral of wb_slave_interface is
 
 begin
 
-    process(wb_clk_i)
+    process(ref_clk_i)
     begin
-        if (rising_edge(wb_clk_i)) then
+        if (rising_edge(ref_clk_i)) then
             if (reset_i = '1') then
-                wb_req_o <= (stb    => '0',
-                             we     => '0',
-                             addr   => (others => '0'),
-                             data   => (others => '0'));
-                wb_res_o <= (ack    => '0',
-                             stat   => (others => '0'),
-                             data   => (others => '0'));
+                wb_req_o <= (stb => '0', we => '0', addr => (others => '0'), data   => (others => '0'));
+                wb_res_o <= (ack => '0', stat => (others => '0'), data => (others => '0'));
                 state <= IDLE;
                 counter <= 0;
             else
                 case state is
+                    -- Wait for request to forward
                     when IDLE =>
                         wb_res_o.ack <= '0';
                         if (wb_req_i.stb = '1') then
@@ -75,6 +73,7 @@ begin
                         else
                             wb_req_o.stb <= '0';
                         end if;
+                    -- Wait for response to forward
                     when ACK_WAIT =>
                         wb_req_o.stb <= '0';
                         if (wb_res_i.ack = '1') then
@@ -82,20 +81,17 @@ begin
                             counter <= WB_MASTERS - 1;
                             state <= MONO;
                         end if;
+                    -- Assert the acknowledgment 
                     when MONO =>
                         if (counter = 0) then
                             state <= IDLE;
                         else
                             counter <= counter - 1;
                         end if;
+                    --
                     when others => 
-                        wb_req_o <= (stb    => '0',
-                                     we     => '0',
-                                     addr   => (others => '0'),
-                                     data   => (others => '0'));
-                        wb_res_o <= (ack    => '0',
-                                     stat   => (others => '0'),
-                                     data   => (others => '0'));
+                        wb_req_o <= (stb => '0', we => '0', addr => (others => '0'), data   => (others => '0'));
+                        wb_res_o <= (ack => '0', stat => (others => '0'), data => (others => '0'));
                         state <= IDLE;
                 end case;
             end if;

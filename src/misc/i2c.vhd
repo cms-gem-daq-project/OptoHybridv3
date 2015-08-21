@@ -34,7 +34,6 @@ generic(
 );
 port(
 
-    -- System signals
     ref_clk_i   : in std_logic;
     reset_i     : in std_logic;
     
@@ -60,7 +59,7 @@ end i2c;
 
 architecture Behavioral of i2c is
 
-    --== Clock signals ==--
+    --== Clocking signals ==--
 
     -- Division of the clock
     constant CLK_DIV    : integer := IN_FREQ / OUT_FREQ;
@@ -101,7 +100,7 @@ begin
     process(ref_clk_i)
     begin
         if (rising_edge(ref_clk_i)) then
-            -- Reset & default state
+            -- Reset & default values
             if (reset_i = '1') then
                 scl_o <= '0';
                 clk_divider <= 0;
@@ -157,7 +156,7 @@ begin
     process(ref_clk_i)
     begin    
         if (rising_edge(ref_clk_i)) then
-            -- Reset & default state
+            -- Reset & default values
             if (reset_i = '1') then
                 valid_o <= '0';
                 error_o <= '0';

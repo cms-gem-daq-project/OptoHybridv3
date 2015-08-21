@@ -30,7 +30,7 @@ use work.wb_pkg.all;
 entity wb_arbitrer is
 port(
 
-    wb_clk_i    : in std_logic;
+    ref_clk_i   : in std_logic;
     reset_i     : in std_logic;
    
     wb_req_i    : in wb_req_array_t((WB_MASTERS - 1) downto 0); -- From masters requests
@@ -61,9 +61,9 @@ begin
     --== Switch masters ==--
     --====================--
 
-    process(wb_clk_i)
+    process(ref_clk_i)
     begin
-        if (rising_edge(wb_clk_i)) then
+        if (rising_edge(ref_clk_i)) then
             if (reset_i = '1') then
                 ctrl_master <= 0;
             else
@@ -80,25 +80,20 @@ begin
     --== Request forwarding ==--
     --========================--
 
-    process(wb_clk_i)
+    process(ref_clk_i)
     begin
-        if (rising_edge(wb_clk_i)) then
+        if (rising_edge(ref_clk_i)) then
             if (reset_i = '1') then
-                wb_req_o <= (others => (stb  => '0',
-                                        we   => '0',
-                                        addr => (others => '0'),
-                                        data => (others => '0')));
-                wb_res_o <= (others => (ack  => '0',
-                                        stat => (others => '0'),
-                                        data => (others => '0')));
+                wb_req_o <= (others => (stb => '0', we  => '0', addr => (others => '0'), data => (others => '0')));
+                wb_res_o <= (others => (ack => '0', stat => (others => '0'), data => (others => '0')));
                 states <= (others => IDLE);
-                wb_req <= (others => (stb  => '0',
-                                      we   => '0',
-                                      addr => (others => '0'),
-                                      data => (others => '0')));
+                wb_req <= (others => (stb  => '0', we   => '0', addr => (others => '0'), data => (others => '0')));
                 sel_slave <= (others => 99);
                 sel_master <= (others => 99);
             else
+                for I in 0 to (WB_MASTERS - 1) loop
+                    wb_res_o(I).ack <= '0';
+                end loop;
                 case states(ctrl_master) is
                     when IDLE =>
                         wb_res_o(ctrl_master).ack <= '0';
@@ -129,15 +124,13 @@ begin
                             sel_master(sel_slave(ctrl_master)) <= 99;
                             states(ctrl_master) <= IDLE;
                         end if;
-                    when others =>                
-                        wb_req_o(ctrl_master) <= (stb  => '0',
-                                                  we   => '0',
-                                                  addr => (others => '0'),
-                                                  data => (others => '0'));
-                        wb_res_o(ctrl_master) <= (ack  => '0',
-                                                  stat => (others => '0'),
-                                                  data => (others => '0'));
-                        states(ctrl_master) <= IDLE;
+                    when others =>            
+                        wb_req_o <= (others => (stb => '0', we  => '0', addr => (others => '0'), data => (others => '0')));
+                        wb_res_o <= (others => (ack => '0', stat => (others => '0'), data => (others => '0')));
+                        states <= (others => IDLE);
+                        wb_req <= (others => (stb  => '0', we   => '0', addr => (others => '0'), data => (others => '0')));
+                        sel_slave <= (others => 99);
+                        sel_master <= (others => 99);
                 end case;
             end if;
         end if;

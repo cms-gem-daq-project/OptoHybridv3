@@ -10,7 +10,7 @@
 -- Tool versions:  ISE  P.20131013
 -- Description: 
 --
--- Handles the I2C requests for the VFAT2s
+-- Translates the Wishbone request to an I2C request
 --
 -- Dependencies: 
 --
@@ -30,7 +30,6 @@ use work.types_pkg.all;
 entity vfat2_i2c_req is
 port(
 
-    -- System signals
     ref_clk_i       : in std_logic;
     reset_i         : in std_logic;
     
@@ -67,11 +66,9 @@ begin
     process(ref_clk_i)
     begin
         if (rising_edge(ref_clk_i)) then
-            -- Reset & default state
+            -- Reset & default values
             if (reset_i = '1') then
-                wb_slv_res_o <= (ack    => '0',
-                                 stat   => "00",
-                                 data   => (others => '0'));
+                wb_slv_res_o <= (ack => '0', stat => "00", data => (others => '0'));
                 i2c_en_o <= '0';
                 i2c_address_o <= (others => '0');
                 i2c_rw_o <= '0';
@@ -111,9 +108,7 @@ begin
                         -- Check ChipID
                         if (chipid = "000") then
                             -- The chip ID is not valid, end an error
-                            wb_slv_res_o <= (ack    => '1',
-                                             stat   => "01",
-                                             data   => (others => '0'));
+                            wb_slv_res_o <= (ack => '1', stat => "01", data => (others => '0'));
                             state <= IDLE;
                         -- or handle the request
                         else
@@ -126,7 +121,7 @@ begin
                                 i2c_data_o <= data;
                                 state <= ACK_0;
                             -- Extended reg
-                            elsif (reg < 157) then  
+                            elsif (reg < 151) then  
                                 -- Send a request
                                 i2c_en_o <= '1';                        
                                 i2c_address_o <= chipid & "1110";
@@ -136,9 +131,7 @@ begin
                             -- Error
                             else
                                 -- The register is not valid, send an error
-                                wb_slv_res_o <= (ack    => '1',
-                                                 stat   => "10",
-                                                 data   => (others => '0'));
+                                wb_slv_res_o <= (ack => '1', stat => "10", data => (others => '0'));
                                 state <= IDLE;
                             end if;
                         end if;
@@ -150,16 +143,12 @@ begin
                         -- Wait for a valid signal
                         if (i2c_valid_i = '1') then
                             -- Send response
-                            wb_slv_res_o <= (ack    => '1',
-                                             stat   => "00",
-                                             data   => x"000000" & i2c_data_i);
+                            wb_slv_res_o <= (ack => '1', stat => "00", data => x"000000" & i2c_data_i);
                             state <= IDLE;
                         -- Wait for an error signal
                         elsif (i2c_error_i = '1') then
                             -- Send error
-                            wb_slv_res_o <= (ack    => '1',
-                                             stat   => "11",
-                                             data   => (others => '0'));
+                            wb_slv_res_o <= (ack => '1', stat => "11", data => (others => '0'));
                             state <= IDLE;
                         end if;
                         
@@ -178,17 +167,13 @@ begin
                         -- Wait for an error signal
                         elsif (i2c_error_i = '1') then
                             -- Send error
-                            wb_slv_res_o <= (ack    => '1',
-                                             stat   => "11",
-                                             data   => (others => '0'));
+                            wb_slv_res_o <= (ack => '1', stat => "11", data => (others => '0'));
                             state <= IDLE;
                         end if;
                         
                     --
                     when others => 
-                        wb_slv_res_o <= (ack    => '0',
-                                         stat   => "00",
-                                         data   => (others => '0'));
+                        wb_slv_res_o <= (ack => '0', stat => "00", data => (others => '0'));
                         i2c_en_o <= '0';
                         i2c_address_o <= (others => '0');
                         i2c_rw_o <= '0';

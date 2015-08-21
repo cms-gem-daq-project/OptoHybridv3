@@ -4,7 +4,7 @@
 -- 
 -- Create Date:    11:22:49 06/30/2015 
 -- Design Name:    OptoHybrid v2
--- Module Name:    vfat2_t1_controller_req - Behavioral 
+-- Module Name:    func_t1_req - Behavioral 
 -- Project Name:   OptoHybrid v2
 -- Target Devices: xc6vlx130t-1ff1156
 -- Tool versions:  ISE  P.20131013
@@ -27,10 +27,9 @@ use ieee.numeric_std.all;
 library work;
 use work.types_pkg.all;
 
-entity vfat2_t1_controller_req is
+entity func_t1_req is
 port(
 
-    -- System signals
     ref_clk_i       : in std_logic;
     reset_i         : in std_logic;
     
@@ -47,12 +46,15 @@ port(
     req_bc0_seq_i   : in std_logic_vector(63 downto 0);
     
     -- Output T1 commands
-    vfat2_t1_0      : out t1_t
+    vfat2_t1_0      : out t1_t;
+    
+    -- Running mode
+    t1_running_o  : out std_logic_vector(1 downto 0)
     
 );
-end vfat2_t1_controller_req;
+end func_t1_req;
 
-architecture Behavioral of vfat2_t1_controller_req is
+architecture Behavioral of func_t1_req is
  
     type state_t is (IDLE, MODE_0, MODE_1, END_01, MODE_2);
     
@@ -80,6 +82,7 @@ begin
             -- Reset & Default 
             if (reset_i = '1') then
                 vfat2_t1_0 <= (lv1a => '0', calpulse => '0', resync => '0', bc0 => '0');  
+                t1_running_o <= (others => '0');
                 state <= IDLE;
                 t1_type <= (others => '0');
                 events_limit <= (others => '0');
@@ -97,6 +100,7 @@ begin
                     when IDLE =>
                         -- Reset the T1 signal
                         vfat2_t1_0 <= (lv1a => '0', calpulse => '0', resync => '0', bc0 => '0');          
+                        t1_running_o <= (others => '0');
                         -- Wait for a request
                         if (req_en_i = '1') then
                             -- Register the parameters
@@ -116,6 +120,13 @@ begin
                                 when "01" => state <= MODE_1;
                                 when "10" => state <= MODE_2;
                                 when others => state <= IDLE;
+                            end case;
+                            -- T1 is running
+                            case req_op_mode_i is
+                                when "00" => t1_running_o <= "01";
+                                when "01" => t1_running_o <= "10";
+                                when "10" | "11" => t1_running_o <= "11";
+                                when others => t1_running_o <= "00";
                             end case;
                         end if;
                     -- MODE_0 send simple pulses

@@ -291,6 +291,9 @@ architecture Behavioral of optohybrid_top is
     signal vfat2_data_out       : std_logic_vector(23 downto 0);
     signal vfat2_sbits          : sbits_array_t(23 downto 0);
     
+    signal t1_command           : t1_t;
+    signal vfat2_tk_data        : tk_data_array_t(23 downto 0);
+    
     --== ADC signals ==--
     
     signal adc_clk              : std_logic;
@@ -346,8 +349,12 @@ architecture Behavioral of optohybrid_top is
     
     alias wb_mst_gtx_req        : wb_req_array_t(2 downto 0) is wb_m_req(WB_MST_GTX_2 downto WB_MST_GTX_0);
     alias wb_mst_gtx_res        : wb_res_array_t(2 downto 0) is wb_m_res(WB_MST_GTX_2 downto WB_MST_GTX_0);
-    alias wb_mst_scan_req       : wb_req_array_t(5 downto 0) is wb_m_req(WB_MST_SCAN_5 downto WB_MST_SCAN_0);
-    alias wb_mst_scan_res       : wb_res_array_t(5 downto 0) is wb_m_res(WB_MST_SCAN_5 downto WB_MST_SCAN_0);
+    
+    alias wb_mst_ei2c_req       : wb_req_t is wb_m_req(WB_MST_EI2C);
+    alias wb_mst_ei2c_res       : wb_res_t is wb_m_res(WB_MST_EI2C);
+    
+    alias wb_mst_scan_req       : wb_req_t is wb_m_req(WB_MST_SCAN);
+    alias wb_mst_scan_res       : wb_res_t is wb_m_res(WB_MST_SCAN);
     
     -- Slaves
     signal wb_s_req             : wb_req_array_t((WB_SLAVES - 1) downto 0);
@@ -355,8 +362,13 @@ architecture Behavioral of optohybrid_top is
     
     alias wb_slv_i2c_req        : wb_req_array_t(5 downto 0) is wb_s_req(WB_SLV_I2C_5 downto WB_SLV_I2C_0);
     alias wb_slv_i2c_res        : wb_res_array_t(5 downto 0) is wb_s_res(WB_SLV_I2C_5 downto WB_SLV_I2C_0);
-    alias wb_slv_scan_req       : wb_req_array_t(5 downto 0) is wb_s_req(WB_SLV_SCAN_5 downto WB_SLV_SCAN_0);
-    alias wb_slv_scan_res       : wb_res_array_t(5 downto 0) is wb_s_res(WB_SLV_SCAN_5 downto WB_SLV_SCAN_0);
+    
+    alias wb_slv_ei2c_req       : wb_req_array_t(1 downto 0) is wb_s_req(WB_SLV_EI2C_1 downto WB_SLV_EI2C_0);
+    alias wb_slv_ei2c_res       : wb_res_array_t(1 downto 0) is wb_s_res(WB_SLV_EI2C_1 downto WB_SLV_EI2C_0);
+    
+    alias wb_slv_scan_req       : wb_req_t is wb_s_req(WB_SLV_SCAN);
+    alias wb_slv_scan_res       : wb_res_t is wb_s_res(WB_SLV_SCAN);
+    
     alias wb_slv_t1_req         : wb_req_t is wb_s_req(WB_SLV_T1);
     alias wb_slv_t1_res         : wb_res_t is wb_s_res(WB_SLV_T1);
     
@@ -369,17 +381,19 @@ architecture Behavioral of optohybrid_top is
     signal cs_sync_out          : std_logic_vector(65 downto 0);
     signal cs_trig0             : std_logic_vector(31 downto 0);
     
-    -- Tracking data
-    signal vfat2_tk_data        : tk_data_array_t(23 downto 0);
-    
 begin
 
     reset <= '0';
     vfat2_reset <= '1';
     
-    ref_clk <= qpll_clk;
-    wb_clk <= qpll_clk;
-    vfat2_mclk <= qpll_clk;
+    --ref_clk <= qpll_clk;
+    --wb_clk <= qpll_clk;
+    --vfat2_mclk <= qpll_clk;
+    
+    pll_50MHz_inst : entity work.pll_50MHz port map(clk_50MHz_i => clk_50MHz_i, clk_40MHz_o => ref_clk);
+    wb_clk <= ref_clk;
+    vfat2_mclk <= ref_clk;
+    cs_clk <= ref_clk;
     
     --=====================--
     --== Wishbone switch ==--
@@ -387,7 +401,7 @@ begin
     
     wb_switch_inst : entity work.wb_switch
     port map(
-        wb_clk_i    => wb_clk,
+        ref_clk_i   => wb_clk,
         reset_i     => reset,
         wb_m_req_i  => wb_m_req,
         wb_s_req_o  => wb_s_req,
@@ -403,79 +417,46 @@ begin
     port map(        
         ref_clk_i           => ref_clk,
         reset_i             => reset,
-        wb_slv_t1_req_i     => wb_slv_t1_req,
-        wb_slv_t1_res_o     => wb_slv_t1_res,
+        vfat2_t1_o          => vfat2_t1,
+        vfat2_mclk_o        => vfat2_mclk,
+        vfat2_t1_i          => t1_command,
+        vfat2_reset_o       => vfat2_reset,
+        vfat2_tk_data_o     => vfat2_tk_data,
+        vfat2_data_out_i    => vfat2_data_out,
+        vfat2_scl_o         => vfat2_scl,
         wb_slv_i2c_req_i    => wb_slv_i2c_req,
         wb_slv_i2c_res_o    => wb_slv_i2c_res,
+        vfat2_sda_miso_i    => vfat2_sda_miso,
+        vfat2_sda_mosi_o    => vfat2_sda_mosi,
+        vfat2_sda_tri_o     => vfat2_sda_tri
+    );    
+
+    --=====================--
+    --== Functionalities ==--
+    --=====================--
+        
+    func_inst : entity work.func      
+    port map(        
+        ref_clk_i           => ref_clk,
+        reset_i             => reset,
         wb_slv_scan_req_i   => wb_slv_scan_req,
         wb_slv_scan_res_o   => wb_slv_scan_res,
         wb_mst_scan_req_o   => wb_mst_scan_req,
         wb_mst_scan_res_i   => wb_mst_scan_res,
-        vfat2_mclk_o        => vfat2_mclk,
-        vfat2_t1_o          => vfat2_t1,
-        vfat2_reset_o       => vfat2_reset,
-        vfat2_data_out_i    => vfat2_data_out,
+        wb_slv_t1_req_i     => wb_slv_t1_req,
+        wb_slv_t1_res_o     => wb_slv_t1_res,
+        wb_slv_ei2c_req_i   => wb_slv_ei2c_req,
+        wb_slv_ei2c_res_o   => wb_slv_ei2c_res,
+        wb_mst_ei2c_req_o   => wb_mst_ei2c_req,
+        wb_mst_ei2c_res_i   => wb_mst_ei2c_res,
+        vfat2_tk_data_i     => vfat2_tk_data,
         vfat2_sbits_i       => vfat2_sbits,
-        vfat2_scl_o         => vfat2_scl,
-        vfat2_sda_miso_i    => vfat2_sda_miso,
-        vfat2_sda_mosi_o    => vfat2_sda_mosi,
-        vfat2_sda_tri_o     => vfat2_sda_tri,
-        vfat2_tk_data_o     => vfat2_tk_data
+        vfat2_t1_o          => t1_command
     );    
-    
-    --============--
-    --== VFAT2s ==--
-    --============--
-    
---    vfat2_inst : entity work.vfat2
---    port map(     
---    ); 
-    
-    --=========--
-    --== ADC ==--
-    --=========--
-    
---    adc_inst : entity work.adc
---    port map(
---    );
-
-    --==========--
-    --== CDCE ==--
-    --==========--
-    
---    cdce_inst : entity work.cdce
---    port map(
---    );
-
-    --=============--
-    --== Chip ID ==--
-    --=============--
-    
---    chipid_inst : entity work.chipid
---    port map(
---    );
-
-    --==========--
-    --== QPLL ==--
-    --==========--
-    
---    qpll_inst : entity work.qpll
---    port map(
---    );
-    
-    --=================--
-    --== Temperature ==--
-    --=================--
-    
---    temp_inst : entity work.temp
---    port map(
---    );
-    
+        
     --===============--
     --== ChipScope ==--
     --===============--
-    
-    cs_clk <= qpll_clk;
     
     chipscope_icon_inst : entity work.chipscope_icon
     port map(
@@ -502,10 +483,10 @@ begin
     --== DEBUG ==--
     --===========--
     
-    process(qpll_clk)
+    process(ref_clk)
         variable s : std_logic;
     begin
-        if (rising_edge(qpll_clk)) then
+        if (rising_edge(ref_clk)) then
             if (reset = '1') then
                 s := '0';
                 wb_mst_gtx_req(0).stb <= '0'; 
@@ -525,7 +506,7 @@ begin
     
     cs_sync_in <= wb_mst_gtx_res(0).ack & wb_mst_gtx_res(0).stat & wb_mst_gtx_res(0).data;
     
-    cs_trig0 <= (0 => vfat2_data_out(1), 1 => vfat2_tk_data(0).valid, others => '0');
+    cs_trig0 <= x"000" & "00" & wb_slv_i2c_res(0).ack & wb_mst_ei2c_res.ack & wb_slv_i2c_res(0).data(7 downto 0) & wb_mst_ei2c_res.data(7 downto 0);
     
     --=============--
     --== Buffers ==--

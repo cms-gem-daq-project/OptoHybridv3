@@ -30,13 +30,15 @@ use work.wb_pkg.all;
 entity wb_switch is
 port(
 
-    wb_clk_i    : in std_logic;
+    ref_clk_i   : in std_logic;
     reset_i     : in std_logic;
-   
-    wb_m_req_i  : in wb_req_array_t((WB_MASTERS - 1) downto 0); -- Request from master to slave
+        
+    -- Request from master to slave
+    wb_m_req_i  : in wb_req_array_t((WB_MASTERS - 1) downto 0); 
     wb_s_req_o  : out wb_req_array_t((WB_SLAVES - 1) downto 0);
     
-    wb_s_res_i  : in wb_res_array_t((WB_SLAVES - 1) downto 0); -- Response from slave to master
+    -- Response from slave to master
+    wb_s_res_i  : in wb_res_array_t((WB_SLAVES - 1) downto 0); 
     wb_m_res_o  : out wb_res_array_t((WB_MASTERS - 1) downto 0)
     
 );
@@ -61,7 +63,7 @@ begin
 
         wb_master_interface_inst : entity work.wb_master_interface
         port map(
-            wb_clk_i    => wb_clk_i,
+            ref_clk_i   => ref_clk_i,
             reset_i     => reset_i,
             wb_req_i    => wb_m_req_i(M),
             wb_req_o    => wb_from_m_req(M),
@@ -77,7 +79,7 @@ begin
     
     wb_arbitrer_inst : entity work.wb_arbitrer
     port map(
-        wb_clk_i    => wb_clk_i,
+        ref_clk_i   => ref_clk_i,
         reset_i     => reset_i,
         wb_req_i    => wb_from_m_req,
         wb_req_o    => wb_from_arb_req,
@@ -94,7 +96,7 @@ begin
 
         wb_slave_interface_inst : entity work.wb_slave_interface
         port map(
-            wb_clk_i    => wb_clk_i,
+            ref_clk_i   => ref_clk_i,
             reset_i     => reset_i,
             wb_req_i    => wb_from_arb_req(S),
             wb_req_o    => wb_s_req_o(S),

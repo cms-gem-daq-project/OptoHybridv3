@@ -4,7 +4,7 @@
 -- 
 -- Create Date:    13:46:42 08/05/2015 
 -- Design Name:    OptoHybrid v2
--- Module Name:    vfat2_scan_req - Behavioral 
+-- Module Name:    func_scan_req - Behavioral 
 -- Project Name:   OptoHybrid v2
 -- Target Devices: xc6vlx130t-1ff1156
 -- Tool versions:  ISE  P.20131013
@@ -28,10 +28,9 @@ library work;
 use work.types_pkg.all;
 use work.wb_pkg.all;
 
-entity vfat2_scan_req is
+entity func_scan_req is
 port(
 
-    -- System signals
     ref_clk_i       : in std_logic;
     reset_i         : in std_logic;
     
@@ -50,8 +49,8 @@ port(
     wb_mst_res_i    : in wb_res_t;
     
     -- VFAT2 data
-    vfat2_sbits_i   : in sbits_array_t(3 downto 0);
-    vfat2_tk_data_i : in tk_data_array_t(3 downto 0);
+    vfat2_sbits_i   : in sbits_array_t(23 downto 0);
+    vfat2_tk_data_i : in tk_data_array_t(23 downto 0);
     
     -- FIFO control
     fifo_rst_o      : out std_logic;
@@ -62,9 +61,9 @@ port(
     scan_running_o  : out std_logic_vector(1 downto 0)
     
 );
-end vfat2_scan_req;
+end func_scan_req;
 
-architecture Behavioral of vfat2_scan_req is
+architecture Behavioral of func_scan_req is
 
     type state_t is (IDLE, REQ_RUNNING, ACK_RUNNING, REQ_CURRENT, ACK_CURRENT, REQ_I2C, ACK_I2C, SCAN_THRESHOLD, SCAN_THRESHOLD2, SCAN_LATENCY, STORE_RESULT, REQ_RESTORE, ACK_RESTORE);
         
@@ -80,7 +79,7 @@ architecture Behavioral of vfat2_scan_req is
     signal req_events       : std_logic_vector(23 downto 0);
     
     -- Helpers
-    signal vfat2_int        : integer range 0 to 3;
+    signal vfat2_int        : integer range 0 to 23;
     signal channel_int      : integer range 0 to 127;
     signal register_id      : std_logic_vector(7 downto 0);
     
@@ -93,11 +92,13 @@ architecture Behavioral of vfat2_scan_req is
     signal hit_counter      : unsigned(23 downto 0);
     
     -- Utility
+    signal empty_8bits      : std_logic_vector(7 downto 0);
     signal empty_128bits    : std_logic_vector(127 downto 0);
 
 begin
 
-    -- All 0 to compare to empty tracking data
+    -- All 0 to compare to
+    empty_8bits <= (others => '0');
     empty_128bits <= (others => '0');
 
     process(ref_clk_i)
@@ -131,8 +132,8 @@ begin
                     -- IDLE
                     when IDLE =>
                         -- Reset the flags and acknowledgments
-                        fifo_we_o <= '0';
                         fifo_rst_o <= '0';
+                        fifo_we_o <= '0';
                         scan_running_o <= (others => '0');
                         -- On a request strobe
                         if (req_stb_i = '1') then
@@ -154,7 +155,7 @@ begin
                                 when others => req_events <= req_events_i;
                             end case;
                             -- Set the helpers
-                            vfat2_int <= to_integer(unsigned(req_vfat2_i(1 downto 0)));
+                            vfat2_int <= to_integer(unsigned(req_vfat2_i));
                             channel_int <= to_integer(unsigned(req_channel_i));
                             case req_mode_i is
                                 when "00" | "01" => register_id <= x"92";
@@ -181,7 +182,7 @@ begin
                         -- Reactivate the FIFO
                         fifo_rst_o <= '0';
                         -- Ask if VFAT2 is running
-                        wb_mst_req_o <= (stb => '1', we => '0', addr => "0000000000000000000" & req_vfat2 & x"00", data => (others => '0'));
+                        wb_mst_req_o <= (stb => '1', we => '0', addr => WB_ADDR_I2C & "000000000000000" & req_vfat2 & x"00", data => (others => '0'));
                         state <= ACK_RUNNING;
                         
                     -- ACK_RUNNING wait for the response
@@ -199,7 +200,7 @@ begin
                                 -- Store an error in the FIFO
                                 fifo_we_o <= '1';
                                 fifo_din_o <= x"FF000000";
-                                -- and go back to the IDLE state
+                                -- end the scan
                                 state <= IDLE;
                             end if;
                         end if;
@@ -207,7 +208,7 @@ begin
                     -- REQ_CURRENT read the current value of the register
                     when REQ_CURRENT => 
                         -- Send an I2C request
-                        wb_mst_req_o <= (stb => '1', we => '0', addr => "0000000000000000000" & req_vfat2 & register_id, data => (others => '0'));
+                        wb_mst_req_o <= (stb => '1', we => '0', addr => WB_ADDR_I2C & "000000000000000" & req_vfat2 & register_id, data => (others => '0'));
                         state <= ACK_CURRENT;
                         
                     -- ACK_CURRENT wait for the response
@@ -227,7 +228,7 @@ begin
                                 -- Store an error in the FIFO
                                 fifo_we_o <= '1';
                                 fifo_din_o <= x"FF000000";
-                                -- and go back to the IDLE state
+                                -- end the scan
                                 state <= IDLE;
                             end if;
                         end if;
@@ -237,7 +238,7 @@ begin
                         -- Reset the write enable 
                         fifo_we_o <= '0';
                         -- Send an I2C request
-                        wb_mst_req_o <= (stb => '1', we => '1', addr => "0000000000000000000" & req_vfat2 & register_id, data => x"000000" & std_logic_vector(value_counter));
+                        wb_mst_req_o <= (stb => '1', we => '1', addr => WB_ADDR_I2C & "000000000000000" & req_vfat2 & register_id, data => x"000000" & std_logic_vector(value_counter));
                         state <= ACK_I2C;
                         
                     -- ACK_I2C wait for the acknowledgment
@@ -275,7 +276,7 @@ begin
                             -- Increment the event counter
                             event_counter <= event_counter + 1;
                             -- Increment the hit counter
-                            if (vfat2_sbits_i(vfat2_int) /= "00000000") then
+                            if (vfat2_sbits_i(vfat2_int) /= empty_8bits) then
                                 hit_counter <= hit_counter + 1;
                             end if;
                         end if;
@@ -322,7 +323,7 @@ begin
                         -- Reset the write enable 
                         fifo_we_o <= '0';
                         -- Send an I2C request
-                        wb_mst_req_o <= (stb => '1', we => '1', addr => "0000000000000000000" & req_vfat2 & register_id, data => x"000000" & std_logic_vector(saved_value));
+                        wb_mst_req_o <= (stb => '1', we => '1', addr => WB_ADDR_I2C & "000000000000000" & req_vfat2 & register_id, data => x"000000" & std_logic_vector(saved_value));
                         state <= ACK_RESTORE;
                         
                     -- ACK_RESTORE wait for the acknowledgment
@@ -333,7 +334,7 @@ begin
                         if (wb_mst_res_i.ack = '1') then
                             state <= IDLE;
                         end if;
-                        
+                    
                     --
                     when others =>
                         wb_mst_req_o <= (stb => '0', we => '0', addr => (others => '0'), data => (others => '0'));

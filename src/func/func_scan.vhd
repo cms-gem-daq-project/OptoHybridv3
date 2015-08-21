@@ -4,24 +4,25 @@
 -- 
 -- Create Date:    13:46:42 08/05/2015 
 -- Design Name:    OptoHybrid v2
--- Module Name:    vfat2_scan - Behavioral 
+-- Module Name:    func_scan - Behavioral 
 -- Project Name:   OptoHybrid v2
 -- Target Devices: xc6vlx130t-1ff1156
 -- Tool versions:  ISE  P.20131013
 -- Description: 
 --
--- Wishbone slave that handles the threshold, threshold2, and latency scans for on GEB sector
+-- Function that handles the threshold, threshold2, and latency scans for all VFAT2s
 --
 -- Register map:
--- 0 : start the scan for a given VFAT2
+-- 0 : start the scan
 -- 1 : scan type (2 bits)
--- 2 : minimum value (8 bits)
--- 3 : maximum value (8 bits)
--- 4 : stepping (8 bits)
--- 5 : number of events  (24 bits)
--- 6 : channel to scan  (7 bits)
--- 7 : read out the results (32 bits = 8 bits of value & 24 bits of number of events hit)
--- 8 : local reset
+-- 2 : VFAT2 ID (5 bits)
+-- 3 : channel to scan (7 bits)
+-- 4 : minimum value (8 bits)
+-- 5 : maximum value (8 bits)
+-- 6 : stepping (8 bits)
+-- 7 : number of events (24 bits)
+-- 8 : read out the results (32 bits = 8 bits of value & 24 bits of number of events hit)
+-- 9 : local reset
 --
 -- Dependencies: 
 --
@@ -38,10 +39,9 @@ use ieee.numeric_std.all;
 library work;
 use work.types_pkg.all;
 
-entity vfat2_scan is
+entity func_scan is
 port(
 
-    -- System signals
     ref_clk_i       : in std_logic;
     reset_i         : in std_logic;
     
@@ -54,30 +54,30 @@ port(
     wb_mst_res_i    : in wb_res_t;
     
     -- VFAT2 datara
-    vfat2_sbits_i   : in sbits_array_t(3 downto 0);
-    vfat2_tk_data_i : in tk_data_array_t(3 downto 0);
+    vfat2_sbits_i   : in sbits_array_t(23 downto 0);
+    vfat2_tk_data_i : in tk_data_array_t(23 downto 0);
     
     -- Running mode
     scan_running_o  : out std_logic_vector(1 downto 0)
     
 );
-end vfat2_scan;
+end func_scan;
 
-architecture Behavioral of vfat2_scan is
+architecture Behavioral of func_scan is
 
     -- Local reset
     signal local_reset  : std_logic;
     
     -- Signals from the Wishbone Splitter
-    signal wb_stb       : std_logic_vector(8 downto 0);
+    signal wb_stb       : std_logic_vector(9 downto 0);
     signal wb_we        : std_logic;
     signal wb_addr      : std_logic_vector(31 downto 0);
     signal wb_data      : std_logic_vector(31 downto 0);
     
     -- Signals for the registers
-    signal reg_ack      : std_logic_vector(8 downto 0);
-    signal reg_err      : std_logic_vector(8 downto 0);
-    signal reg_data     : std32_array_t(8 downto 0);
+    signal reg_ack      : std_logic_vector(9 downto 0);
+    signal reg_err      : std_logic_vector(9 downto 0);
+    signal reg_data     : std32_array_t(9 downto 0);
     
     -- Signals to the FIFO
     signal fifo_rst     : std_logic;
@@ -92,7 +92,7 @@ begin
 
     wb_splitter_inst : entity work.wb_splitter
     generic map(
-        SIZE        => 9
+        SIZE        => 10
     )
     port map(
         ref_clk_i   => ref_clk_i,
@@ -112,20 +112,20 @@ begin
     --== Scan routine ==--
     --==================--
     
-    -- 0 : start the scan for a given VFAT2
+    -- 0 : start the scan
 
-    vfat2_scan_req_inst : entity work.vfat2_scan_req
+    func_scan_req_inst : entity work.func_scan_req
     port map(
         ref_clk_i       => ref_clk_i,
         reset_i         => local_reset,
         req_stb_i       => wb_stb(0),
         req_mode_i      => reg_data(1)(1 downto 0),
-        req_vfat2_i     => wb_addr(12 downto 8),
-        req_channel_i   => reg_data(6)(6 downto 0),
-        req_min_i       => reg_data(2)(7 downto 0),
-        req_max_i       => reg_data(3)(7 downto 0),
-        req_step_i      => reg_data(4)(7 downto 0),
-        req_events_i    => reg_data(5)(23 downto 0),
+        req_vfat2_i     => reg_data(2)(4 downto 0),
+        req_channel_i   => reg_data(3)(6 downto 0),
+        req_min_i       => reg_data(4)(7 downto 0),
+        req_max_i       => reg_data(5)(7 downto 0),
+        req_step_i      => reg_data(6)(7 downto 0),
+        req_events_i    => reg_data(7)(23 downto 0),
         wb_mst_req_o    => wb_mst_req_o,
         wb_mst_res_i    => wb_mst_res_i,
         vfat2_sbits_i   => vfat2_sbits_i,
@@ -146,43 +146,45 @@ begin
     --===============--
    
     -- 1 : scan type (2 bits)
-    -- 2 : minimum value (8 bits)
-    -- 3 : maximum value (8 bits)
-    -- 4 : stepping (8 bits)
-    -- 5 : number of events  (24 bits)
-    -- 6 : channel to scan  (7 bits)
+    -- 2 : VFAT2 ID (5 bits)
+    -- 3 : channel to scan  (7 bits)
+    -- 4 : minimum value (8 bits)
+    -- 5 : maximum value (8 bits)
+    -- 6 : stepping (8 bits)
+    -- 7 : number of events (24 bits)
 
     registers_inst : entity work.registers
     generic map(
-        SIZE        => 6
+        SIZE        => 7
     )
     port map(
         ref_clk_i   => ref_clk_i,
         reset_i     => local_reset,
-        stb_i       => wb_stb(6 downto 1),
+        stb_i       => wb_stb(7 downto 1),
         we_i        => wb_we,
         data_i      => wb_data,
-        ack_o       => reg_ack(6 downto 1),
-        err_o       => reg_err(6 downto 1),
-        data_o      => reg_data(6 downto 1)
+        ack_o       => reg_ack(7 downto 1),
+        err_o       => reg_err(7 downto 1),
+        data_o      => reg_data(7 downto 1)
+        
     );
     
     --=======================--
     --== FIFO with results ==--
     --=======================--
 
-    -- 7 : read out the results (32 bits = 8 bits of value & 24 bits of number of events hit)
+    -- 8 : read out the results (32 bits = 8 bits of value & 24 bits of number of events hit)
 
     fifo256x32_inst : entity work.fifo256x32
     port map(
         clk         => ref_clk_i,
-        rst         => (local_reset or fifo_rst),
+        rst         => fifo_rst,
         wr_en       => fifo_we,
         din         => fifo_din,
-        rd_en       => wb_stb(7),
-        valid       => reg_ack(7),
-        dout        => reg_data(7),
-        underflow   => reg_err(7),
+        rd_en       => wb_stb(8),
+        valid       => reg_ack(8),
+        dout        => reg_data(8),
+        underflow   => reg_err(8),
         full        => open,
         empty       => open
     );
@@ -191,11 +193,13 @@ begin
     --== Local reset ==--
     --=================--
 
-    local_reset <= reset_i or wb_stb(8);
+    -- 9 : local reset
+
+    local_reset <= reset_i or wb_stb(9);
     
     -- Connect signals for automatic response
-    reg_ack(8) <= wb_stb(8);
-    reg_err(8) <= '0';
-    reg_data(8) <= (others => '0');
+    reg_ack(9) <= wb_stb(9);
+    reg_err(9) <= '0';
+    reg_data(9) <= (others => '0');
     
 end Behavioral;

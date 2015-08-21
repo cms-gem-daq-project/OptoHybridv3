@@ -30,15 +30,14 @@ use work.types_pkg.all;
 
 entity wb_splitter is
 generic(
-
+    
     -- Number of output busses
     SIZE        : integer := 8
     
 );
 port(
 
-    -- System signals
-    ref_clk_i    : in std_logic;
+    ref_clk_i   : in std_logic;
     reset_i     : in std_logic;
     
     -- Wishbone slave
@@ -67,11 +66,13 @@ architecture Behavioral of wb_splitter is
 begin
 
     process(ref_clk_i)
+    
         -- Selected data bus
         variable sel_bus    : integer range 0 to (SIZE - 1);
+        
     begin
         if (rising_edge(ref_clk_i)) then
-            -- Reset & default values of the signals
+            -- Reset & default values
             if (reset_i = '1') then
                 wb_res_o <= (ack => '0', stat => "00", data => (others => '0'));
                 stb_o <= (others => '0');
@@ -80,7 +81,6 @@ begin
                 data_o <= (others => '0');
                 sel_bus := 0;
             else
-            
                 -- Handle an input strobe 
                 if (wb_req_i.stb = '1') then
                     -- Convert the address to a bus select
@@ -90,24 +90,18 @@ begin
                     we_o <= wb_req_i.we;
                     addr_o <= wb_req_i.addr;
                     data_o <= wb_req_i.data;
-                -- or reset the strobes
                 else
                     stb_o <= (others => '0');
                 end if;
-                
                 -- Receive the acknowledgement of the previously selected bus
                 if (ack_i(sel_bus) = '1') then
-                    -- Forward the data to the master
                     wb_res_o <= (ack => '1', stat => "00", data => data_i(sel_bus));
                 -- Receive an error of the previously selected bus
                 elsif (err_i(sel_bus) = '1') then
-                    -- Forward the error to the master
                     wb_res_o <= (ack => '1', stat => "11", data => (others => '0'));
-                -- or reset the acknowledgment
                 else
                     wb_res_o.ack <= '0';
                 end if;
-                
             end if;
         end if;
     end process;

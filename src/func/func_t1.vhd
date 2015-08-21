@@ -4,7 +4,7 @@
 -- 
 -- Create Date:    11:22:49 06/30/2015 
 -- Design Name:    OptoHybrid v2
--- Module Name:    vfat2_t1_controller - Behavioral 
+-- Module Name:    func_t1 - Behavioral 
 -- Project Name:   OptoHybrid v2
 -- Target Devices: xc6vlx130t-1ff1156
 -- Tool versions:  ISE  P.20131013
@@ -39,10 +39,9 @@ use ieee.std_logic_1164.all;
 library work;
 use work.types_pkg.all;
 
-entity vfat2_t1_controller is
+entity func_t1 is
 port(
 
-    -- System signals
     ref_clk_i       : in std_logic;
     reset_i         : in std_logic;
     
@@ -51,12 +50,15 @@ port(
     wb_slv_res_o    : out wb_res_t;
     
     -- Output T1 commands
-    vfat2_t1_0      : out t1_t
+    vfat2_t1_0      : out t1_t; 
+    
+    -- T1 running mode
+    t1_running_o  : out std_logic_vector(1 downto 0)
     
 );
-end vfat2_t1_controller;
+end func_t1;
 
-architecture Behavioral of vfat2_t1_controller is
+architecture Behavioral of func_t1 is
 
     -- Local reset
     signal local_reset  : std_logic;
@@ -100,7 +102,7 @@ begin
     --== T1 controller routine ==--
     --===========================--
     
-    vfat2_t1_controller_req_inst : entity work.vfat2_t1_controller_req
+    func_t1_req_inst : entity work.func_t1_req
     port map(
         ref_clk_i       => ref_clk_i,
         reset_i         => local_reset,
@@ -114,7 +116,8 @@ begin
         req_cal_seq_i   => (reg_data(9) & reg_data(8)),
         req_sync_seq_i  => (reg_data(11) & reg_data(10)),
         req_bc0_seq_i   => (reg_data(13) & reg_data(12)),
-        vfat2_t1_0      => vfat2_t1_0
+        vfat2_t1_0      => vfat2_t1_0,
+        t1_running_o    => t1_running_o
     );
             
     --===============--
@@ -150,6 +153,8 @@ begin
     --=================--
     --== Local reset ==--
     --=================--
+    
+    -- 14 : local reset
 
     local_reset <= reset_i or wb_stb(14);
     

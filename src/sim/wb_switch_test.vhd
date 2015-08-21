@@ -49,7 +49,7 @@ begin
     -- Instantiate the Unit Under Test (UUT)
     uut : entity work.wb_switch 
     port map(
-        wb_clk_i    => wb_clk_i,
+        ref_clk_i   => wb_clk_i,
         reset_i     => reset_i,
         wb_m_req_i  => wb_m_req_i,
         wb_s_req_o  => wb_s_req_o,
@@ -81,29 +81,23 @@ begin
     begin
         wb_m_req_i(0) <= empty_sig;
         wb_m_req_i(1) <= empty_sig;
+        wb_m_req_i(2) <= empty_sig;
+        wb_m_req_i(3) <= empty_sig;
         wait for 150 ns;
         ---
         wb_m_req_i(0) <= (addr  => x"00000000",
                           data  => (others => '0'),
                           we    => '1',
                           stb   => '1');        
-        wb_m_req_i(1) <= (addr  => x"00000025",
-                          data  => (others => '0'),
-                          we    => '1',
-                          stb   => '1');      
-        wb_m_req_i(2) <= (addr  => x"00000650",
-                          data  => (others => '0'),
-                          we    => '1',
-                          stb   => '1');      
-        wb_m_req_i(3) <= (addr  => x"00000601",
-                          data  => (others => '0'),
-                          we    => '1',
-                          stb   => '1');
         wait for wb_clk_period;
         wb_m_req_i(0).stb <= '0';
-        wb_m_req_i(1).stb <= '0';
-        wb_m_req_i(2).stb <= '0';
-        wb_m_req_i(3).stb <= '0';
+        wait for wb_clk_period;
+        wb_m_req_i(0) <= (addr  => x"00000000",
+                          data  => (others => '0'),
+                          we    => '1',
+                          stb   => '1');         
+        wait for wb_clk_period;
+        wb_m_req_i(0).stb <= '0';
         wait;
     end process;
     
