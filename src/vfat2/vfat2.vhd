@@ -10,7 +10,7 @@
 -- Tool versions:  ISE  P.20131013
 -- Description: 
 --
--- Handles the VFAT2s
+-- Handles the VFAT2s basic functions: data readout, T1 encoding, I2C communication
 -- 
 -- Dependencies: 
 --

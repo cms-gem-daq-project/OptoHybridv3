@@ -30,16 +30,16 @@ package wb_pkg is
     constant WB_SLV_EI2C_0  : integer := 6; -- I2C request to broadcast
     constant WB_SLV_EI2C_1  : integer := 7; -- Control registers
     
-    constant WB_SLV_SCAN    : integer := 8;
+    constant WB_SLV_T1      : integer := 8;
     
-    constant WB_SLV_T1      : integer := 9;
+    constant WB_SLV_SCAN    : integer := 9;
     
     --== Wishbone addresses ==--
     
     constant WB_ADDR_I2C    : std_logic_vector(3 downto 0) := x"0";
     constant WB_ADDR_EI2C   : std_logic_vector(3 downto 0) := x"1";
-    constant WB_ADDR_SCAN   : std_logic_vector(3 downto 0) := x"2";
-    constant WB_ADDR_T1     : std_logic_vector(3 downto 0) := x"3";
+    constant WB_ADDR_T1     : std_logic_vector(3 downto 0) := x"2";
+    constant WB_ADDR_SCAN   : std_logic_vector(3 downto 0) := x"3";
    
     --== Wishbone address selection & generation ==--
     

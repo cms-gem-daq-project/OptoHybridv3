@@ -32,7 +32,10 @@ entity wb_splitter is
 generic(
     
     -- Number of output busses
-    SIZE        : integer := 8
+    SIZE        : integer := 8;
+    
+    -- Split mask
+    MASK        : std_logic_vector(31 downto 0) := "--------------------------------"
     
 );
 port(

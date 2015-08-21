@@ -10,12 +10,6 @@
 -- Tool versions:  ISE  P.20131013
 -- Description:
 --
--- Whishbone slave that handles communications to multiple VFAT2s
---
--- Register map:
--- 0..150 : VFAT2 registers
--- 151 : 
---
 -- Dependencies: 
 --
 -- Revision: 
@@ -35,7 +29,6 @@ use work.wb_pkg.all;
 entity func_i2c_req is
 port(
 
-    -- System signals
     ref_clk_i       : in std_logic;
     reset_i         : in std_logic;
     

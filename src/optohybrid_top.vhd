@@ -341,8 +341,6 @@ architecture Behavioral of optohybrid_top is
     
     --== Wishbone signals ==--
     
-    signal wb_clk               : std_logic;
-    
     -- Masters
     signal wb_m_req             : wb_req_array_t((WB_MASTERS - 1) downto 0);
     signal wb_m_res             : wb_res_array_t((WB_MASTERS - 1) downto 0);
@@ -391,7 +389,6 @@ begin
     --vfat2_mclk <= qpll_clk;
     
     pll_50MHz_inst : entity work.pll_50MHz port map(clk_50MHz_i => clk_50MHz_i, clk_40MHz_o => ref_clk);
-    wb_clk <= ref_clk;
     vfat2_mclk <= ref_clk;
     cs_clk <= ref_clk;
     
@@ -399,14 +396,17 @@ begin
     --== Wishbone switch ==--
     --=====================--
     
-    wb_switch_inst : entity work.wb_switch
+    wb_arbitrer_inst : entity work.wb_arbitrer
+    generic map(
+        TIMEOUT     => 100_000
+    )
     port map(
-        ref_clk_i   => wb_clk,
+        ref_clk_i   => ref_clk,
         reset_i     => reset,
-        wb_m_req_i  => wb_m_req,
-        wb_s_req_o  => wb_s_req,
-        wb_s_res_i  => wb_s_res,
-        wb_m_res_o  => wb_m_res
+        wb_req_i    => wb_m_req,
+        wb_req_o    => wb_s_req,
+        wb_res_i    => wb_s_res,
+        wb_res_o    => wb_m_res
     );
 
     --===========--
@@ -439,16 +439,16 @@ begin
     port map(        
         ref_clk_i           => ref_clk,
         reset_i             => reset,
-        wb_slv_scan_req_i   => wb_slv_scan_req,
-        wb_slv_scan_res_o   => wb_slv_scan_res,
-        wb_mst_scan_req_o   => wb_mst_scan_req,
-        wb_mst_scan_res_i   => wb_mst_scan_res,
-        wb_slv_t1_req_i     => wb_slv_t1_req,
-        wb_slv_t1_res_o     => wb_slv_t1_res,
         wb_slv_ei2c_req_i   => wb_slv_ei2c_req,
         wb_slv_ei2c_res_o   => wb_slv_ei2c_res,
         wb_mst_ei2c_req_o   => wb_mst_ei2c_req,
         wb_mst_ei2c_res_i   => wb_mst_ei2c_res,
+        wb_slv_t1_req_i     => wb_slv_t1_req,
+        wb_slv_t1_res_o     => wb_slv_t1_res,
+        wb_slv_scan_req_i   => wb_slv_scan_req,
+        wb_slv_scan_res_o   => wb_slv_scan_res,
+        wb_mst_scan_req_o   => wb_mst_scan_req,
+        wb_mst_scan_res_i   => wb_mst_scan_res,
         vfat2_tk_data_i     => vfat2_tk_data,
         vfat2_sbits_i       => vfat2_sbits,
         vfat2_t1_o          => t1_command

@@ -36,7 +36,6 @@ use work.types_pkg.all;
 entity func_i2c is
 port(
 
-    -- System signals
     ref_clk_i       : in std_logic;
     reset_i         : in std_logic;
     

@@ -79,9 +79,8 @@ begin
                 data <= (others => '0');
                 rw <= '0';
             else
-                case state is
-                
-                    -- IDLE wait for request
+                case state is                
+                    -- Wait for request
                     when IDLE =>
                         -- Reset the acknowledgment signal
                         wb_slv_res_o.ack <= '0';
@@ -101,9 +100,8 @@ begin
                             rw <= not wb_slv_req_i.we;
                             -- Change state
                             state <= STB;
-                        end if;
-                        
-                    -- STB check the parameters and send the request
+                        end if;                        
+                    -- Check the parameters and send the request
                     when STB =>
                         -- Check ChipID
                         if (chipid = "000") then
@@ -134,9 +132,8 @@ begin
                                 wb_slv_res_o <= (ack => '1', stat => "10", data => (others => '0'));
                                 state <= IDLE;
                             end if;
-                        end if;
-                        
-                    -- ACK_0 (normal reg)
+                        end if;                        
+                    -- Acknowledgment for a normal register
                     when ACK_0 =>
                         -- Reset the strobe
                         i2c_en_o <= '0';
@@ -150,9 +147,8 @@ begin
                             -- Send error
                             wb_slv_res_o <= (ack => '1', stat => "11", data => (others => '0'));
                             state <= IDLE;
-                        end if;
-                        
-                    -- ACK_1 (extended reg)
+                        end if;                        
+                    -- Acknowledgment for an extended register
                     when ACK_1 =>
                         -- Reset the strobe
                         i2c_en_o <= '0';
@@ -169,8 +165,7 @@ begin
                             -- Send error
                             wb_slv_res_o <= (ack => '1', stat => "11", data => (others => '0'));
                             state <= IDLE;
-                        end if;
-                        
+                        end if;                        
                     --
                     when others => 
                         wb_slv_res_o <= (ack => '0', stat => "00", data => (others => '0'));
@@ -182,8 +177,7 @@ begin
                         chipid <= (others => '0');
                         reg <= (others => '0');
                         data <= (others => '0');
-                        rw <= '0';
-                        
+                        rw <= '0';                        
                 end case;
             end if;
         end if;

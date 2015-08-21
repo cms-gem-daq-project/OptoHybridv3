@@ -62,8 +62,7 @@ begin
                 t1_data <= (others => '0');
             else
                 case state is
-                
-                    -- IDLE wait for strobe
+                    -- Wait for strobe
                     when IDLE =>
                         -- Set the line to 0
                         vfat2_t1_o <= '0';
@@ -88,17 +87,14 @@ begin
                             state <= BIT_1;
                             t1_data <= "01";
                         end if;  
-                        
-                    -- BIT_1 send bit 1
+                    -- Send bit 1
                     when BIT_1 =>
                         vfat2_t1_o <= t1_data(1);
                         state <= BIT_0;
-                        
-                    -- BIT_0 send bit 0
+                    -- Send bit 0
                     when BIT_0 =>
                         vfat2_t1_o <= t1_data(0);
                         state <= IDLE;
-                        
                     --
                     when others => 
                         vfat2_t1_o <= '0';

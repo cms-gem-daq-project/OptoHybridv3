@@ -171,9 +171,8 @@ begin
                 address_cnt <= 0;
                 data_cnt <= 0;
             else
-                case state is
-                
-                    -- IDLE wait for a start signal
+                case state is                
+                    -- Wait for a start signal
                     when IDLE =>
                         -- Reset the finish signals
                         valid_o <= '0';
@@ -189,9 +188,8 @@ begin
                             din <= data_i;
                             -- Change state
                             state <= START;
-                        end if;
-                        
-                    -- START create a start condition
+                        end if;                        
+                    -- Create a start condition
                     when START =>
                         -- On a high clock, put data low
                         if (high_clk = '1') then
@@ -201,9 +199,8 @@ begin
                             -- Set the counter for the address
                             address_cnt <= 6;
                             state <= ADDR;
-                        end if;
-                        
-                    -- ADDR transmit the address signal
+                        end if;                       
+                    -- Transmit the address signal
                     when ADDR => 
                         -- Write data on a low clock
                         if (low_clk = '1') then
@@ -218,8 +215,7 @@ begin
                                 address_cnt <= address_cnt - 1;
                             end if;
                         end if;
-                        
-                    -- RW send the rw bit
+                    -- Send the rw bit
                     when RW => 
                         -- Write data on a low clock
                         if (low_clk = '1') then
@@ -228,8 +224,7 @@ begin
                             sda_tri_o <= '0';
                             state <= WAIT_0;
                         end if;
-                        
-                    -- WAIT_0 (free the bus for slave to write)
+                    -- Free the bus for slave to write
                     when WAIT_0 =>
                         -- On the falling edge of the RW bit, free the line
                         if (falling_clk = '1') then
@@ -238,8 +233,7 @@ begin
                             sda_tri_o <= '1';
                             state <= ACK_0;
                         end if;
-                        
-                    -- ACK_0 read the address acknowledgment
+                    -- Read the address acknowledgment
                     when ACK_0 =>
                         -- On high clock, read data
                         if (high_clk = '1') then
@@ -260,8 +254,7 @@ begin
                                 state <= ERROR;
                             end if;
                         end if;
-                        
-                    -- RD read the data line
+                    -- Read the data line
                     when RD => 
                         -- On high clock, read data
                         if (high_clk = '1') then
@@ -277,8 +270,7 @@ begin
                                 data_cnt <= data_cnt - 1;
                             end if;
                         end if;
-                        
-                    -- ACK_1 send the read ackownledgment 
+                    -- Send the read ackownledgment 
                     when ACK_1 => 
                         -- On the falling clock, take back control
                         if (falling_clk = '1') then
@@ -286,9 +278,8 @@ begin
                             sda_mosi_o <= '0';
                             sda_tri_o <= '0';
                             state <= RST_1;
-                        end if;
-                        
-                    -- RST_1 wait for the clock to go low before sending the STOP signals, otherwise
+                        end if;                        
+                    -- Wait for the clock to go low before sending the STOP signals, otherwise
                     -- the signal would be sent to soon
                     when RST_1 => 
                         -- Wait for a low clock
@@ -297,9 +288,8 @@ begin
                             sda_mosi_o <= '0';
                             sda_tri_o <= '0';
                             state <= ENDING_RD;
-                        end if;
-                        
-                    -- ENDING_RD wait for the clock to go low before sending the STOP signals, otherwise
+                        end if;                        
+                    -- Wait for the clock to go low before sending the STOP signals, otherwise
                     -- the signal would be sent to soon
                     when ENDING_RD => 
                         if (low_clk = '1') then
@@ -307,9 +297,8 @@ begin
                             sda_mosi_o <= '0';
                             sda_tri_o <= '0';
                             state <= STOP;
-                        end if;
-                        
-                    -- WR write data on the line
+                        end if;                        
+                    -- Write data on the line
                     when WR => 
                         -- On the falling clock, change the data
                         if (falling_clk = '1') then
@@ -323,9 +312,8 @@ begin
                             else
                                 data_cnt <= data_cnt - 1;
                             end if;
-                        end if;
-                        
-                    -- RST_2 give control of the line to the slave
+                        end if;                        
+                    -- Give control of the line to the slave
                     when RST_2 => 
                         -- Wait for the falling clock
                         if (falling_clk = '1') then
@@ -333,9 +321,8 @@ begin
                             sda_mosi_o <= '1';
                             sda_tri_o <= '1';
                             state <= ACK_2;
-                        end if;
-                        
-                    -- ACK_2 read the write ackownledgment
+                        end if;                        
+                    -- Read the write ackownledgment
                     when ACK_2 => 
                         -- On the high clock
                         if (high_clk = '1') then
@@ -349,9 +336,8 @@ begin
                             else
                                 state <= ERROR;
                             end if;
-                        end if;
-                        
-                    -- ENDING_WR wait for the clock to go low before sending the STOP signals, otherwise
+                        end if;                        
+                    -- Wait for the clock to go low before sending the STOP signals, otherwise
                     -- the signal would be sent to soon
                     when ENDING_WR => 
                         -- On the falling clock
@@ -360,9 +346,8 @@ begin
                             sda_mosi_o <= '0';
                             sda_tri_o <= '0';
                             state <= STOP;
-                        end if;
-                        
-                    -- STOP send the stop signal
+                        end if;                        
+                    -- Send the stop signal
                     when STOP => 
                         -- On a high clock
                         if (high_clk = '1') then
@@ -378,9 +363,8 @@ begin
                             sda_tri_o <= '0';
                             -- Go back to IDLE state
                             state <= IDLE;
-                        end if;
-                        
-                    -- ERROR set an error
+                        end if;                        
+                    -- Set an error
                     when ERROR => 
                         -- Wait for high clock
                         if (high_clk = '1') then
@@ -393,8 +377,7 @@ begin
                             sda_tri_o <= '0';
                             -- Go back to IDLE state
                             state <= IDLE;
-                        end if;
-                        
+                        end if;                        
                     --
                     when others => 
                         valid_o <= '0';
@@ -408,8 +391,7 @@ begin
                         din <= (others => '0');
                         dout <= (others => '0');
                         address_cnt <= 0;
-                        data_cnt <= 0;
-                        
+                        data_cnt <= 0;                        
                 end case;  
             end if;
         end if;

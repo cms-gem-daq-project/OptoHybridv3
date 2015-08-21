@@ -22,20 +22,29 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 
 library work;
 use work.types_pkg.all;
 use work.wb_pkg.all;
 
 entity wb_arbitrer is
+generic(
+
+    -- Transaction timeout
+    TIMEOUT     : integer := 100_000
+
+);
 port(
 
     ref_clk_i   : in std_logic;
     reset_i     : in std_logic;
    
+    -- Requests
     wb_req_i    : in wb_req_array_t((WB_MASTERS - 1) downto 0); -- From masters requests
     wb_req_o    : out wb_req_array_t((WB_SLAVES - 1) downto 0); -- To slaves requests
     
+    -- Responses
     wb_res_i    : in wb_res_array_t((WB_SLAVES - 1) downto 0); -- From slaves responses
     wb_res_o    : out wb_res_array_t((WB_MASTERS - 1) downto 0) -- To masters responses
     
@@ -44,94 +53,112 @@ end wb_arbitrer;
 
 architecture Behavioral of wb_arbitrer is
 
-    type state_t is (IDLE, TESTING, WAITING, ACK_WAIT);
+    type state_t is (IDLE, WAITING, ACK_WAIT);
     type state_array_t is array(integer range <>) of state_t;
     
     signal states       : state_array_t((WB_MASTERS - 1) downto 0);
     
-    signal ctrl_master  : integer range 0 to (WB_MASTERS - 1);
-   
-    signal sel_slave    : int_array_t((WB_MASTERS - 1) downto 0); -- for each master, the slave it is addressing 
-    signal sel_master   : int_array_t((WB_SLAVES - 1) downto 0); -- for each slave, the master that is controllign it
-    signal wb_req       : wb_req_array_t((WB_MASTERS - 1) downto 0);
+    signal wb_req       : wb_req_array_t((WB_MASTERS - 1) downto 0);  
+    signal timeouts     : u32_array_t((WB_MASTERS - 1) downto 0);  
+       
+    -- For each master, the slave it is addressing 
+    signal sel_slave    : int_array_t((WB_MASTERS - 1) downto 0); 
     
 begin
-    
-    --====================--
-    --== Switch masters ==--
-    --====================--
 
-    process(ref_clk_i)
-    begin
-        if (rising_edge(ref_clk_i)) then
-            if (reset_i = '1') then
-                ctrl_master <= 0;
-            else
-                if (ctrl_master = (WB_MASTERS - 1)) then
-                    ctrl_master <= 0;
-                else
-                    ctrl_master <= ctrl_master + 1;
-                end if;
-            end if;
-        end if;
-    end process;
-    
     --========================--
     --== Request forwarding ==--
     --========================--
 
-    process(ref_clk_i)
+    process(ref_clk_i)        
+        -- For each slave, the master that is controllign it  
+        variable sel_master : int_array_t((WB_SLAVES - 1) downto 0);     
     begin
         if (rising_edge(ref_clk_i)) then
+            -- Reset & default values
             if (reset_i = '1') then
-                wb_req_o <= (others => (stb => '0', we  => '0', addr => (others => '0'), data => (others => '0')));
+                wb_req_o <= (others => (stb => '0', we => '0', addr => (others => '0'), data => (others => '0')));
                 wb_res_o <= (others => (ack => '0', stat => (others => '0'), data => (others => '0')));
                 states <= (others => IDLE);
-                wb_req <= (others => (stb  => '0', we   => '0', addr => (others => '0'), data => (others => '0')));
+                wb_req <= (others => (stb => '0', we => '0', addr => (others => '0'), data => (others => '0')));
+                timeouts <= (others => (others => '0'));
                 sel_slave <= (others => 99);
-                sel_master <= (others => 99);
+                sel_master := (others => 99);
             else
+                -- Loop over the masters
                 for I in 0 to (WB_MASTERS - 1) loop
-                    wb_res_o(I).ack <= '0';
+                    -- Each master has its own state machine
+                    case states(I) is
+                        -- Wait for a request
+                        when IDLE =>
+                            -- Reset the acknowledgment
+                            wb_res_o(I).ack <= '0';
+                            -- Incoming request
+                            if (wb_req_i(I).stb = '1') then
+                                -- Save the request
+                                wb_req(I) <= wb_req_i(I);
+                                -- Select the slave to address
+                                sel_slave(I) <= wb_addr_sel(wb_req_i(I).addr);
+                                -- Set the timeout
+                                timeouts(I) <= to_unsigned(TIMEOUT, 32);
+                                -- Change state
+                                states(I) <= WAITING;
+                            end if;
+                        -- Wait to transfer request
+                        when WAITING =>
+                            -- Check the timeout
+                            if (timeouts(I) = 0) then
+                                -- Set error on timeout
+                                wb_res_o(I) <= (ack => '1', stat => "11", data => (others => '0'));
+                                states(I) <= IDLE;
+                            else
+                                -- Decrement timeout
+                                timeouts(I) <= timeouts(I) - 1;
+                                -- Unknown slave
+                                if (sel_slave(I) = 99) then
+                                    -- Error
+                                    wb_res_o(I) <= (ack => '1', stat => "11", data => (others => '0'));
+                                    states(I) <= IDLE;
+                                -- Slave is free
+                                elsif (sel_master(sel_slave(I)) = 99) then
+                                    -- Send request to slave
+                                    wb_req_o(sel_slave(I)) <= wb_req(I);
+                                    sel_master(sel_slave(I)) := I;
+                                    states(I) <= ACK_WAIT;
+                                end if;   
+                            end if;
+                        -- Wait for acknowledgment
+                        when ACK_WAIT => 
+                            -- Reset the strobe
+                            wb_req_o(sel_slave(I)).stb <= '0';
+                            -- Check the timeout
+                            if (timeouts(I) = 0) then
+                                -- Set error on timeout
+                                wb_res_o(I) <= (ack => '1', stat => "11", data => (others => '0'));
+                                states(I) <= IDLE;
+                            else
+                                -- Decrement timeout
+                                timeouts(I) <= timeouts(I) - 1;
+                                -- Incoming response
+                                if (wb_res_i(sel_slave(I)).ack = '1') then
+                                    -- Transfer the response
+                                    wb_res_o(I) <= wb_res_i(sel_slave(I));
+                                    -- Free the slave
+                                    sel_master(sel_slave(I)) := 99;
+                                    states(I) <= IDLE;
+                                end if;
+                            end if;
+                        --
+                        when others =>            
+                            wb_req_o(I) <= (stb => '0', we  => '0', addr => (others => '0'), data => (others => '0'));
+                            wb_res_o(I) <= (ack => '0', stat => (others => '0'), data => (others => '0'));
+                            states(I) <= IDLE;
+                            wb_req(I) <= (stb => '0', we => '0', addr => (others => '0'), data => (others => '0'));
+                            timeouts(I) <= (others => '0');
+                            sel_slave(I) <= 99;
+                            sel_master(I) := 99;
+                    end case;
                 end loop;
-                case states(ctrl_master) is
-                    when IDLE =>
-                        wb_res_o(ctrl_master).ack <= '0';
-                        if (wb_req_i(ctrl_master).stb = '1') then
-                            wb_req(ctrl_master) <= wb_req_i(ctrl_master);
-                            sel_slave(ctrl_master) <= wb_addr_sel(wb_req_i(ctrl_master).addr);
-                            states(ctrl_master) <= TESTING;
-                        end if;
-                    when TESTING =>
-                         if (sel_slave(ctrl_master) = 99) then
-                            wb_res_o(ctrl_master) <= (ack   => '1',
-                                                      stat  => "11",
-                                                      data  => (others => '0'));
-                            states(ctrl_master) <= IDLE;
-                        else
-                            states(ctrl_master) <= WAITING;
-                        end if;                          
-                    when WAITING =>
-                        if (sel_master(sel_slave(ctrl_master)) = 99) then
-                            wb_req_o(sel_slave(ctrl_master)) <= wb_req(ctrl_master);
-                            sel_master(sel_slave(ctrl_master)) <= ctrl_master;
-                            states(ctrl_master) <= ACK_WAIT;
-                        end if;                        
-                    when ACK_WAIT => 
-                        if (wb_res_i(sel_slave(ctrl_master)).ack = '1') then
-                            wb_req_o(sel_slave(ctrl_master)).stb <= '0';
-                            wb_res_o(ctrl_master) <= wb_res_i(sel_slave(ctrl_master));
-                            sel_master(sel_slave(ctrl_master)) <= 99;
-                            states(ctrl_master) <= IDLE;
-                        end if;
-                    when others =>            
-                        wb_req_o <= (others => (stb => '0', we  => '0', addr => (others => '0'), data => (others => '0')));
-                        wb_res_o <= (others => (ack => '0', stat => (others => '0'), data => (others => '0')));
-                        states <= (others => IDLE);
-                        wb_req <= (others => (stb  => '0', we   => '0', addr => (others => '0'), data => (others => '0')));
-                        sel_slave <= (others => 99);
-                        sel_master <= (others => 99);
-                end case;
             end if;
         end if;
     end process;    

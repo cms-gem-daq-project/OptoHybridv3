@@ -32,7 +32,7 @@ end wb_switch_test;
 architecture behavior of wb_switch_test is 
 
     --Inputs
-    signal wb_clk_i         : std_logic := '0';
+    signal ref_clk_i        : std_logic := '0';
     signal reset_i          : std_logic := '0';
     signal wb_m_req_i       : wb_req_array_t((WB_MASTERS - 1) downto 0);
     signal wb_s_res_i       : wb_res_array_t((WB_SLAVES - 1) downto 0);
@@ -49,7 +49,7 @@ begin
     -- Instantiate the Unit Under Test (UUT)
     uut : entity work.wb_switch 
     port map(
-        ref_clk_i   => wb_clk_i,
+        ref_clk_i   => ref_clk_i,
         reset_i     => reset_i,
         wb_m_req_i  => wb_m_req_i,
         wb_s_req_o  => wb_s_req_o,
@@ -60,9 +60,9 @@ begin
     -- Clock process definitions
     process
     begin
-        wb_clk_i <= '1';
+        ref_clk_i <= '1';
         wait for wb_clk_period / 2;
-        wb_clk_i <= '0';
+        ref_clk_i <= '0';
         wait for wb_clk_period / 2;
     end process;
     
@@ -81,23 +81,29 @@ begin
     begin
         wb_m_req_i(0) <= empty_sig;
         wb_m_req_i(1) <= empty_sig;
-        wb_m_req_i(2) <= empty_sig;
-        wb_m_req_i(3) <= empty_sig;
         wait for 150 ns;
         ---
         wb_m_req_i(0) <= (addr  => x"00000000",
                           data  => (others => '0'),
                           we    => '1',
                           stb   => '1');        
-        wait for wb_clk_period;
-        wb_m_req_i(0).stb <= '0';
-        wait for wb_clk_period;
-        wb_m_req_i(0) <= (addr  => x"00000000",
+        wb_m_req_i(1) <= (addr  => x"00000025",
                           data  => (others => '0'),
                           we    => '1',
-                          stb   => '1');         
+                          stb   => '1');      
+        wb_m_req_i(2) <= (addr  => x"00000650",
+                          data  => (others => '0'),
+                          we    => '1',
+                          stb   => '1');      
+        wb_m_req_i(3) <= (addr  => x"00000601",
+                          data  => (others => '0'),
+                          we    => '1',
+                          stb   => '1');
         wait for wb_clk_period;
         wb_m_req_i(0).stb <= '0';
+        wb_m_req_i(1).stb <= '0';
+        wb_m_req_i(2).stb <= '0';
+        wb_m_req_i(3).stb <= '0';
         wait;
     end process;
     
@@ -105,10 +111,10 @@ begin
     -- Slave simulation
     slaves_gen : for I in 0 to (WB_SLAVES - 1) generate
     begin
-        process(wb_clk_i)
+        process(ref_clk_i)
             variable num    : unsigned(31 downto 0);
         begin
-            if (rising_edge(wb_clk_i)) then
+            if (rising_edge(ref_clk_i)) then
                 if (reset_i = '1') then
                     wb_s_res_i(I) <= (ack   => '0',
                                       stat  => "00",

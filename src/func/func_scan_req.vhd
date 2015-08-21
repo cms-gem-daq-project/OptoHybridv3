@@ -10,8 +10,6 @@
 -- Tool versions:  ISE  P.20131013
 -- Description: 
 --
--- Handles the various scans
---
 -- Dependencies: 
 --
 -- Revision: 

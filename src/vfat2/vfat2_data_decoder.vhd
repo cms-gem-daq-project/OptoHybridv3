@@ -70,11 +70,11 @@ begin
     --== Validation ==--
     --================--
     
-    process(ref_clk_i)
+    process(ref_clk_i)    
         -- Holds the results of the tests
-        variable tests  : std_logic_vector(3 downto 0);
+        variable tests  : std_logic_vector(3 downto 0);        
         -- Hold the computed CRC
-        variable crc    : std_logic_vector(15 downto 0);
+        variable crc    : std_logic_vector(15 downto 0);        
     begin
         if (rising_edge(ref_clk_i)) then
             -- Reset & default values
