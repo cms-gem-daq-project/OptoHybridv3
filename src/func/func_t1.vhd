@@ -25,12 +25,6 @@
 -- 13 & 12 : bc0 sequence (64 bits)
 -- 14 : local reset
 --
--- Dependencies: 
---
--- Revision: 
--- Revision 0.01 - File Created
--- Additional Comments: 
---
 ----------------------------------------------------------------------------------
 
 library ieee;

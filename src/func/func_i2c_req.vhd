@@ -69,7 +69,7 @@ architecture Behavioral of func_i2c_req is
 begin
     
     -- Automatic response to request
-    wb_slv_res_o <= (ack => wb_slv_req_i.stb, stat => "00", data => (others => '0'));
+    wb_slv_res_o <= (ack => wb_slv_req_i.stb, stat => WB_NO_ERR, data => (others => '0'));
 
     process(ref_clk_i)
     begin
@@ -107,7 +107,7 @@ begin
                             -- Change state
                             state <= REQ_I2C;
                         end if;                                                
-                    -- Send an I2C request to change the latency
+                    -- Send an I2C request
                     when REQ_I2C =>
                         -- Enable the FIFO
                         fifo_rst_o <= '0';
@@ -133,7 +133,7 @@ begin
                         if (wb_mst_res_i.ack = '1') then
                             -- Write in the FIFO
                             fifo_we_o <= '1';
-                            fifo_din_o <= x"00" & "000000" & wb_mst_res_i.stat & "000" & std_logic_vector(vfat2_counter) & wb_mst_res_i.data(7 downto 0);
+                            fifo_din_o <= x"000" & wb_mst_res_i.stat & "000" & std_logic_vector(vfat2_counter) & wb_mst_res_i.data(7 downto 0);
                             -- Increment the counter
                             vfat2_counter <= vfat2_counter + 1;
                             -- Change state

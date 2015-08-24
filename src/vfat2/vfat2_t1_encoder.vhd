@@ -10,13 +10,9 @@
 -- Tool versions:  ISE  P.20131013
 -- Description: 
 --
--- Encodes the T1 commands for the VFAT2s
---
--- Dependencies: 
---
--- Revision: 
--- Revision 0.01 - File Created
--- Additional Comments: 
+-- Encodes the T1 commands for the VFAT2s on 3 consecutive bits. If two signals 
+-- arrive with a delay less than 3 clock cycles, the second operation is ignored.
+-- The priority is as follows: LV1A, Calpulse, Resync, BC0.
 --
 ----------------------------------------------------------------------------------
 

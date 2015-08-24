@@ -6,43 +6,56 @@ package wb_pkg is
     
     --== Wishbone options ==--
     
-    constant WB_TIMEOUT     : integer := 200_000;
+    constant WB_TIMEOUT         : integer := 200_000;
+    
+    --== Wishbone errors ==--
+    
+    constant WB_NO_ERR          : std_logic_vector(3 downto 0) := x"0";
+        
+    constant WB_ERR_BUS         : std_logic_vector(3 downto 0) := x"D";
+    constant WB_ERR_SLAVE       : std_logic_vector(3 downto 0) := x"E";
+    constant WB_ERR_TIMEOUT     : std_logic_vector(3 downto 0) := x"F";
+    
+    constant WB_ERR_I2C_CHIPID  : std_logic_vector(3 downto 0) := x"1";
+    constant WB_ERR_I2C_REG     : std_logic_vector(3 downto 0) := x"2";
+    constant WB_ERR_I2C_ACK     : std_logic_vector(3 downto 0) := x"3";
+    
     
     --== Wishbone masters ==--
     
-	constant WB_MASTERS     : positive := 5;
+	constant WB_MASTERS         : positive := 5;
     
-    constant WB_MST_GTX_0   : integer := 0;
-    constant WB_MST_GTX_1   : integer := 1;
-    constant WB_MST_GTX_2   : integer := 2;
+    constant WB_MST_GTX_0       : integer := 0;
+    constant WB_MST_GTX_1       : integer := 1;
+    constant WB_MST_GTX_2       : integer := 2;
     
-    constant WB_MST_EI2C    : integer := 3;
+    constant WB_MST_EI2C        : integer := 3;
     
-    constant WB_MST_SCAN    : integer := 4;
+    constant WB_MST_SCAN        : integer := 4;
     
     --== Wishbone slaves ==--
     
-	constant WB_SLAVES      : positive := 9;
+	constant WB_SLAVES          : positive := 9;
     
-    constant WB_SLV_I2C_0   : integer := 0;
-    constant WB_SLV_I2C_1   : integer := 1;
-    constant WB_SLV_I2C_2   : integer := 2;
-    constant WB_SLV_I2C_3   : integer := 3; 
-    constant WB_SLV_I2C_4   : integer := 4; 
-    constant WB_SLV_I2C_5   : integer := 5;
+    constant WB_SLV_I2C_0       : integer := 0;
+    constant WB_SLV_I2C_1       : integer := 1;
+    constant WB_SLV_I2C_2       : integer := 2;
+    constant WB_SLV_I2C_3       : integer := 3; 
+    constant WB_SLV_I2C_4       : integer := 4; 
+    constant WB_SLV_I2C_5       : integer := 5;
     
-    constant WB_SLV_EI2C    : integer := 6;
+    constant WB_SLV_EI2C        : integer := 6;
     
-    constant WB_SLV_T1      : integer := 7;
+    constant WB_SLV_SCAN        : integer := 7;
     
-    constant WB_SLV_SCAN    : integer := 8;
+    constant WB_SLV_T1          : integer := 8;
     
     --== Wishbone addresses ==--
     
-    constant WB_ADDR_I2C    : std_logic_vector(3 downto 0) := x"0";
-    constant WB_ADDR_EI2C   : std_logic_vector(3 downto 0) := x"1";
-    constant WB_ADDR_SCAN   : std_logic_vector(3 downto 0) := x"2";
-    constant WB_ADDR_T1     : std_logic_vector(3 downto 0) := x"3";
+    constant WB_ADDR_I2C        : std_logic_vector(3 downto 0) := x"0";
+    constant WB_ADDR_EI2C       : std_logic_vector(3 downto 0) := x"1";
+    constant WB_ADDR_SCAN       : std_logic_vector(3 downto 0) := x"2";
+    constant WB_ADDR_T1         : std_logic_vector(3 downto 0) := x"3";
    
     --== Wishbone address selection & generation ==--
     
@@ -66,11 +79,10 @@ package body wb_pkg is
         elsif (std_match(addr, WB_ADDR_I2C  & "000000000000000101----------")) then sel := WB_SLV_I2C_5;
         -- VFAT2 I2C extended                                     | REGS  |
         elsif (std_match(addr, WB_ADDR_EI2C & "0000000000000000000---------")) then sel := WB_SLV_EI2C;
-        -- VFAT2 scan                                              | REGS |            
+        -- VFAT2 scan                                             REGS |  |            
         elsif (std_match(addr, WB_ADDR_SCAN & "000000000000000000000000----")) then sel := WB_SLV_SCAN;
-        -- VFAT2 T1                                                | REGS |      
-        elsif (std_match(addr, WB_ADDR_T1   & "000000000000000000000000----")) then sel := WB_SLV_T1;
-        
+        -- VFAT2 T1                                               REGS |  |      
+        elsif (std_match(addr, WB_ADDR_T1   & "000000000000000000000000----")) then sel := WB_SLV_T1;        
         --
         else sel := 99;
         end if;

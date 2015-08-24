@@ -1,20 +1,17 @@
 ----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
+-- Company:        IIHE - ULB
+-- Engineer:       Thomas Lenzi (thomas.lenzi@cern.ch)
 -- 
 -- Create Date:    09:48:46 08/19/2015 
--- Design Name: 
+-- Design Name:    OptoHybrid v2
 -- Module Name:    func - Behavioral 
--- Project Name: 
--- Target Devices: 
--- Tool versions: 
--- Description: 
+-- Project Name:   OptoHybrid v2
+-- Target Devices: xc6vlx130t-1ff1156
+-- Tool versions:  ISE  P.20131013
+-- Description:
 --
--- Dependencies: 
---
--- Revision: 
--- Revision 0.01 - File Created
--- Additional Comments: 
+-- This module regroups the high-level functions of the OH that are performed on the 
+-- VFAT2s (scans, broadcasting, T1, ...) 
 --
 ----------------------------------------------------------------------------------
 

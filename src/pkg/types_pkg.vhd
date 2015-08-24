@@ -69,7 +69,7 @@ package types_pkg is
     
     type wb_res_t is record
         ack     : std_logic;
-        stat    : std_logic_vector(1 downto 0);
+        stat    : std_logic_vector(3 downto 0);
         data    : std_logic_vector(31 downto 0);
     end record;
     

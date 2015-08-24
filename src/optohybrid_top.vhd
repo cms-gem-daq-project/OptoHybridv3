@@ -10,11 +10,7 @@
 -- Tool versions:  ISE  P.20131013
 -- Description: 
 --
--- Dependencies: 
---
--- Revision: 
--- Revision 0.01 - File Created
--- Additional Comments: 
+-- Top Level of the design
 --
 ----------------------------------------------------------------------------------
 
@@ -364,11 +360,11 @@ architecture Behavioral of optohybrid_top is
     alias wb_slv_ei2c_req       : wb_req_t is wb_s_req(WB_SLV_EI2C);
     alias wb_slv_ei2c_res       : wb_res_t is wb_s_res(WB_SLV_EI2C);
     
-    alias wb_slv_t1_req         : wb_req_t is wb_s_req(WB_SLV_T1);
-    alias wb_slv_t1_res         : wb_res_t is wb_s_res(WB_SLV_T1);
-    
     alias wb_slv_scan_req       : wb_req_t is wb_s_req(WB_SLV_SCAN);
     alias wb_slv_scan_res       : wb_res_t is wb_s_res(WB_SLV_SCAN);
+    
+    alias wb_slv_t1_req         : wb_req_t is wb_s_req(WB_SLV_T1);
+    alias wb_slv_t1_res         : wb_res_t is wb_s_res(WB_SLV_T1);
     
     --== Chipscope signals ==--
     
@@ -418,8 +414,8 @@ begin
         vfat2_mclk_o        => vfat2_mclk,
         vfat2_t1_i          => t1_command,
         vfat2_reset_o       => vfat2_reset,
-        vfat2_tk_data_o     => vfat2_tk_data,
         vfat2_data_out_i    => vfat2_data_out,
+        vfat2_tk_data_o     => vfat2_tk_data,
         vfat2_scl_o         => vfat2_scl,
         wb_slv_i2c_req_i    => wb_slv_i2c_req,
         wb_slv_i2c_res_o    => wb_slv_i2c_res,

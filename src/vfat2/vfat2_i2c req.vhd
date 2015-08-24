@@ -10,13 +10,8 @@
 -- Tool versions:  ISE  P.20131013
 -- Description: 
 --
--- Translates the Wishbone request to an I2C request
---
--- Dependencies: 
---
--- Revision: 
--- Revision 0.01 - File Created
--- Additional Comments: 
+-- Translates the Wishbone request to an I2C request that is then sent to the common
+-- I2C communication module.
 --
 ----------------------------------------------------------------------------------
 
@@ -68,7 +63,7 @@ begin
         if (rising_edge(ref_clk_i)) then
             -- Reset & default values
             if (reset_i = '1') then
-                wb_slv_res_o <= (ack => '0', stat => "00", data => (others => '0'));
+                wb_slv_res_o <= (ack => '0', stat => (others => '0'), data => (others => '0'));
                 i2c_en_o <= '0';
                 i2c_address_o <= (others => '0');
                 i2c_rw_o <= '0';
@@ -106,7 +101,7 @@ begin
                         -- Check ChipID
                         if (chipid = "000") then
                             -- The chip ID is not valid, end an error
-                            wb_slv_res_o <= (ack => '1', stat => "01", data => (others => '0'));
+                            wb_slv_res_o <= (ack => '1', stat => WB_ERR_I2C_CHIPID, data => (others => '0'));
                             state <= IDLE;
                         -- or handle the request
                         else
@@ -129,7 +124,7 @@ begin
                             -- Error
                             else
                                 -- The register is not valid, send an error
-                                wb_slv_res_o <= (ack => '1', stat => "10", data => (others => '0'));
+                                wb_slv_res_o <= (ack => '1', stat => WB_ERR_I2C_REG, data => (others => '0'));
                                 state <= IDLE;
                             end if;
                         end if;                        
@@ -140,12 +135,12 @@ begin
                         -- Wait for a valid signal
                         if (i2c_valid_i = '1') then
                             -- Send response
-                            wb_slv_res_o <= (ack => '1', stat => "00", data => x"000000" & i2c_data_i);
+                            wb_slv_res_o <= (ack => '1', stat => WB_NO_ERR, data => x"000000" & i2c_data_i);
                             state <= IDLE;
                         -- Wait for an error signal
                         elsif (i2c_error_i = '1') then
                             -- Send error
-                            wb_slv_res_o <= (ack => '1', stat => "11", data => (others => '0'));
+                            wb_slv_res_o <= (ack => '1', stat => WB_ERR_I2C_ACK, data => (others => '0'));
                             state <= IDLE;
                         end if;                        
                     -- Acknowledgment for an extended register
@@ -163,12 +158,12 @@ begin
                         -- Wait for an error signal
                         elsif (i2c_error_i = '1') then
                             -- Send error
-                            wb_slv_res_o <= (ack => '1', stat => "11", data => (others => '0'));
+                            wb_slv_res_o <= (ack => '1', stat => WB_ERR_I2C_ACK, data => (others => '0'));
                             state <= IDLE;
                         end if;                        
                     --
                     when others => 
-                        wb_slv_res_o <= (ack => '0', stat => "00", data => (others => '0'));
+                        wb_slv_res_o <= (ack => '0', stat => (others => '0'), data => (others => '0'));
                         i2c_en_o <= '0';
                         i2c_address_o <= (others => '0');
                         i2c_rw_o <= '0';

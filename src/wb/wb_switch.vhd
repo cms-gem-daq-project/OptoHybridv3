@@ -10,13 +10,9 @@
 -- Tool versions:  ISE  P.20131013
 -- Description: 
 --
--- Transfers the requests from the masters to the slaves
---
--- Dependencies: 
---
--- Revision: 
--- Revision 0.01 - File Created
--- Additional Comments: 
+-- Switching system for the Wishbone transactions between masters and slaves.
+-- This module allows multiple masters to communicate with the slaves by forwarding 
+-- the requests and automatically route the reponses between masters and slaves.
 --
 ----------------------------------------------------------------------------------
 
@@ -103,7 +99,7 @@ begin
                             -- Check the timeout
                             if (timeouts(I) = 0) then
                                 -- Set error on timeout
-                                wb_res_o(I) <= (ack => '1', stat => "11", data => (others => '0'));
+                                wb_res_o(I) <= (ack => '1', stat => WB_ERR_TIMEOUT, data => (others => '0'));
                                 states(I) <= IDLE;
                             else
                                 -- Decrement timeout
@@ -111,7 +107,7 @@ begin
                                 -- Unknown slave
                                 if (sel_slave(I) = 99) then
                                     -- Error
-                                    wb_res_o(I) <= (ack => '1', stat => "11", data => (others => '0'));
+                                    wb_res_o(I) <= (ack => '1', stat => WB_ERR_SLAVE, data => (others => '0'));
                                     states(I) <= IDLE;
                                 -- Slave is free
                                 elsif (sel_master(sel_slave(I)) = 99) then
@@ -128,7 +124,7 @@ begin
                             -- Check the timeout
                             if (timeouts(I) = 0) then
                                 -- Set error on timeout
-                                wb_res_o(I) <= (ack => '1', stat => "11", data => (others => '0'));
+                                wb_res_o(I) <= (ack => '1', stat => WB_ERR_TIMEOUT, data => (others => '0'));
                                 states(I) <= IDLE;
                             else
                                 -- Decrement timeout

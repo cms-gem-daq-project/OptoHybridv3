@@ -12,12 +12,6 @@
 --
 -- Handles basic I2C communications
 --
--- Dependencies: 
---
--- Revision: 
--- Revision 0.01 - File Created
--- Additional Comments: 
---
 ----------------------------------------------------------------------------------
 
 library ieee;

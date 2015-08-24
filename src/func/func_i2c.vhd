@@ -18,12 +18,6 @@
 -- 257 : read out the results (32 bits = 8x0 & 8 bits of vfat2 id & 8 bits of status & 8 bits of data
 -- 258 : local reset
 --
--- Dependencies: 
---
--- Revision: 
--- Revision 0.01 - File Created
--- Additional Comments: 
---
 ----------------------------------------------------------------------------------
 
 library ieee;

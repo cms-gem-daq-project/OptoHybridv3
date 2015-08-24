@@ -10,14 +10,10 @@
 -- Tool versions:  ISE  P.20131013
 -- Description: 
 --
--- Handles the VFAT2s basic functions: data readout, T1 encoding, I2C communication
+-- Handles the VFAT2s basic functions: data readout, T1 encoding, I2C communication.
+-- This module is the link between the OH high-level functions and the VFAT2s. It 
+-- doesn't operate complex operations but only handles the low-level signals of the VFAT2s.
 -- 
--- Dependencies: 
---
--- Revision: 
--- Revision 0.01 - File Created
--- Additional Comments: 
---
 ----------------------------------------------------------------------------------
 
 library ieee;
@@ -32,7 +28,7 @@ port(
     ref_clk_i           : in std_logic;
     reset_i             : in std_logic;
         
-    -- VFAT2 t1 control
+    -- VFAT2 T1 control
     vfat2_t1_i          : in t1_t;
     
     -- VFAT2 control
@@ -40,10 +36,10 @@ port(
     vfat2_t1_o          : out std_logic;
     vfat2_reset_o       : out std_logic;
     
-    -- VFAT2 data
+    -- VFAT2 raw tracking data
     vfat2_data_out_i    : in std_logic_vector(23 downto 0);
         
-    -- Tracking data
+    -- VFAT2 formated tracking data
     vfat2_tk_data_o     : out tk_data_array_t(23 downto 0);
     
     -- Wishbone I2C slave

@@ -24,12 +24,6 @@
 -- 8 : read out the results (32 bits = 8 bits of value & 24 bits of number of events hit)
 -- 9 : local reset
 --
--- Dependencies: 
---
--- Revision: 
--- Revision 0.01 - File Created
--- Additional Comments: 
---
 ----------------------------------------------------------------------------------
 
 library ieee;

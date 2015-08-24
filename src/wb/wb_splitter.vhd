@@ -12,12 +12,6 @@
 --
 -- Splits a Wishbone request in individual signal busses or forwards the request
 --
--- Dependencies: 
---
--- Revision: 
--- Revision 0.01 - File Created
--- Additional Comments: 
---
 ----------------------------------------------------------------------------------
 
 library ieee;
@@ -80,7 +74,7 @@ begin
         if (rising_edge(ref_clk_i)) then
             -- Reset & default values
             if (reset_i = '1') then
-                wb_res_o <= (ack => '0', stat => "00", data => (others => '0'));
+                wb_res_o <= (ack => '0', stat => (others => '0'), data => (others => '0'));
                 stb_o <= (others => '0');
                 we_o <= '0';
                 addr_o <= (others => '0');
@@ -115,24 +109,24 @@ begin
                         -- Check the timeout
                         if (timeout = 0) then
                             -- Send an error
-                            wb_res_o <= (ack => '1', stat => "11", data => (others => '0'));
+                            wb_res_o <= (ack => '1', stat => WB_ERR_TIMEOUT, data => (others => '0'));
                             state <= IDLE;
                         else
                             -- Decrement timeout
                             timeout <= timeout - 1;
                             -- Receive the acknowledgement of the previously selected bus
                             if (ack_i(sel_bus) = '1') then
-                                wb_res_o <= (ack => '1', stat => "00", data => data_i(sel_bus));
+                                wb_res_o <= (ack => '1', stat => WB_NO_ERR, data => data_i(sel_bus));
                                 state <= IDLE;
                             -- Receive an error of the previously selected bus
                             elsif (err_i(sel_bus) = '1') then
-                                wb_res_o <= (ack => '1', stat => "11", data => (others => '0'));
+                                wb_res_o <= (ack => '1', stat => WB_ERR_BUS, data => (others => '0'));
                                 state <= IDLE;
                             end if;
                         end if;
                     --
                     when others =>
-                        wb_res_o <= (ack => '0', stat => "00", data => (others => '0'));
+                        wb_res_o <= (ack => '0', stat => (others => '0'), data => (others => '0'));
                         stb_o <= (others => '0');
                         we_o <= '0';
                         addr_o <= (others => '0');

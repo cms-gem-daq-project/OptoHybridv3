@@ -13,12 +13,6 @@
 -- This module deserializes the tracking data coming from a single VFAT2 and checks the CRC.
 -- Data is constantly checked in order to make abstraction of the data_valid line. 
 --
--- Dependencies: 
---
--- Revision: 
--- Revision 0.01 - File Created
--- Additional Comments: 
---
 ----------------------------------------------------------------------------------
 
 library ieee;
