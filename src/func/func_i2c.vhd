@@ -18,6 +18,9 @@
 -- 257 : read out the results (32 bits = 8x0 & 8 bits of vfat2 id & 8 bits of status & 8 bits of data
 -- 258 : local reset
 --
+-- 
+-- Stable & tested
+--
 ----------------------------------------------------------------------------------
 
 library ieee;
@@ -83,7 +86,7 @@ begin
     )
     port map(
         ref_clk_i   => ref_clk_i,
-        reset_i     => local_reset,
+        reset_i     => reset_i,
         wb_req_i    => wb_slv_req_i,
         wb_res_o    => wb_slv_res_o,
         wb_req_o    => wb_req,

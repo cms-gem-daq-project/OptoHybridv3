@@ -9,12 +9,9 @@
 -- Target Devices: xc6vlx130t-1ff1156
 -- Tool versions:  ISE  P.20131013
 -- Description:
+-- 
 --
--- Dependencies: 
---
--- Revision: 
--- Revision 0.01 - File Created
--- Additional Comments: 
+-- Stable & tested
 --
 ----------------------------------------------------------------------------------
 
@@ -53,7 +50,7 @@ end func_i2c_req;
 
 architecture Behavioral of func_i2c_req is
 
-    type state_t is (IDLE, REQ_I2C, ACK_I2C);
+    type state_t is (IDLE, CHECKS, REQ_I2C, ACK_I2C);
         
     signal state            : state_t;
     
@@ -67,15 +64,13 @@ architecture Behavioral of func_i2c_req is
     signal vfat2_counter    : unsigned(4 downto 0);
 
 begin
-    
-    -- Automatic response to request
-    wb_slv_res_o <= (ack => wb_slv_req_i.stb, stat => WB_NO_ERR, data => (others => '0'));
 
     process(ref_clk_i)
     begin
         if (rising_edge(ref_clk_i)) then
             -- Reset and default values
             if (reset_i = '1') then
+                wb_slv_res_o <= (ack => '0', stat => (others => '0'), data => (others => '0'));
                 wb_mst_req_o <= (stb => '0', we => '0', addr => (others => '0'), data => (others => '0'));
                 fifo_rst_o <= '0';
                 fifo_we_o <= '0';
@@ -88,33 +83,45 @@ begin
                 vfat2_counter <= (others => '0');
             else
                 case state is                
-                    -- Wait for a request
+                    -- Wait for request
                     when IDLE =>
                         -- Reset the flags
-                        fifo_rst_o <= '0';
+                        wb_slv_res_o.ack <= '0';
                         fifo_we_o <= '0';
-                        -- On a request strobe
+                        -- On request
                         if (wb_slv_req_i.stb = '1') then
-                            -- Save the parameters by applying the default value if 0                            
+                            -- Store the request values                         
                             req_mask <= req_mask_i;
                             req_register <= wb_slv_req_i.addr(7 downto 0);
                             req_data <= wb_slv_req_i.data(7 downto 0);
                             req_we <= wb_slv_req_i.we;
-                            -- Set the counter
+                            -- Set the helpers
                             vfat2_counter <= (others => '0');
-                            -- Reset the FIFO
+                            -- Set the flags
                             fifo_rst_o <= '1';
                             -- Change state
-                            state <= REQ_I2C;
-                        end if;                                                
-                    -- Send an I2C request
-                    when REQ_I2C =>
+                            state <= CHECKS;
+                        end if;                     
+                    -- Check the parameters
+                    when CHECKS =>
                         -- Enable the FIFO
                         fifo_rst_o <= '0';
+                        -- Check the register
+                        if (unsigned(req_register) > 150) then
+                            -- The register is not valid, send an error
+                            wb_slv_res_o <= (ack => '1', stat => WB_ERR_I2C_REG, data => (others => '0'));
+                            state <= IDLE;
+                        else
+                            -- Move on
+                            state <= REQ_I2C;
+                        end if;                                                    
+                    -- Send an I2C request
+                    when REQ_I2C =>
                         -- Reset the write enable 
                         fifo_we_o <= '0';
-                        -- Increment the VFAT2 counter
+                        -- When reached the maximum number of VFAT2s then send an acknowledge
                         if (vfat2_counter = 24) then
+                            wb_slv_res_o <= (ack => '1', stat => WB_NO_ERR, data => (others => '0'));
                             state <= IDLE;
                         else
                             -- Send an I2C request if needed
@@ -141,6 +148,7 @@ begin
                         end if;                    
                     --
                     when others =>
+                        wb_slv_res_o <= (ack => '0', stat => (others => '0'), data => (others => '0'));
                         wb_mst_req_o <= (stb => '0', we => '0', addr => (others => '0'), data => (others => '0'));
                         fifo_rst_o <= '0';
                         fifo_we_o <= '0';
