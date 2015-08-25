@@ -36,7 +36,7 @@ package wb_pkg is
     
     --== Wishbone slaves ==--
     
-	constant WB_SLAVES          : positive := 10;
+	constant WB_SLAVES          : positive := 11;
     
     constant WB_SLV_I2C_0       : integer := 0;
     constant WB_SLV_I2C_1       : integer := 1;
@@ -53,6 +53,8 @@ package wb_pkg is
     
     constant WB_SLV_DAC         : integer := 9;
     
+    constant WB_SLV_ADC         : integer := 10;
+    
     --== Wishbone addresses ==--
     
     constant WB_ADDR_I2C        : std_logic_vector(3 downto 0) := x"0";
@@ -60,6 +62,8 @@ package wb_pkg is
     constant WB_ADDR_SCAN       : std_logic_vector(3 downto 0) := x"2";
     constant WB_ADDR_T1         : std_logic_vector(3 downto 0) := x"3";
     constant WB_ADDR_DAC        : std_logic_vector(3 downto 0) := x"4";
+    
+    constant WB_ADDR_ADC        : std_logic_vector(3 downto 0) := x"8";
    
     --== Wishbone address selection & generation ==--
     
@@ -88,7 +92,10 @@ package body wb_pkg is
         -- VFAT2 T1                                               REGS |  |      
         elsif (std_match(addr, WB_ADDR_T1   & "000000000000000000000000----")) then sel := WB_SLV_T1;   
         -- VFAT2 dac                                              REGS |  |            
-        elsif (std_match(addr, WB_ADDR_DAC  & "000000000000000000000000----")) then sel := WB_SLV_DAC;     
+        elsif (std_match(addr, WB_ADDR_DAC  & "000000000000000000000000----")) then sel := WB_SLV_DAC;    
+        
+        -- ADC                                                              
+        elsif (std_match(addr, WB_ADDR_ADC  & "0000000000000000000000000000")) then sel := WB_SLV_ADC;     
         --
         else sel := 99;
         end if;

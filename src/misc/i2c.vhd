@@ -168,18 +168,17 @@ begin
                 address_cnt <= 0;
                 data_cnt <= 0;
             else
-                case state is                
-                    -- Wait for a start signal
+                case state is
+                    -- Wait for request
                     when IDLE =>
-                        -- Reset the finish signals
+                        -- Reset the flags
                         valid_o <= '0';
                         error_o <= '0';
-                        -- Master controls the line
                         sda_mosi_o <= '1';
                         sda_tri_o <= '0';
-                        -- Wait for start signal
+                        -- On request
                         if (en_i = '1') then
-                            -- Register the inputs
+                            -- Store the request values
                             address <= address_i;
                             rw_n <= rw_i;
                             din <= data_i;

@@ -372,6 +372,9 @@ architecture Behavioral of optohybrid_top is
     alias wb_slv_dac_req        : wb_req_t is wb_s_req(WB_SLV_DAC);
     alias wb_slv_dac_res        : wb_res_t is wb_s_res(WB_SLV_DAC);
     
+    alias wb_slv_adc_req        : wb_req_t is wb_s_req(WB_SLV_ADC);
+    alias wb_slv_adc_res        : wb_res_t is wb_s_res(WB_SLV_ADC);
+    
     --== Chipscope signals ==--
     
     signal cs_clk               : std_logic; -- ChipScope clock
@@ -456,6 +459,23 @@ begin
         vfat2_sbits_i       => vfat2_sbits,
         vfat2_t1_o          => t1_command
     );    
+    
+    --=========--
+    --== ADC ==--
+    --=========--
+    
+    adc_inst : entity work.adc
+    port map(
+        ref_clk_i           => ref_clk,
+        reset_i             => reset,
+        wb_slv_req_i        => wb_slv_adc_req,
+        wb_slv_res_o        => wb_slv_adc_res,
+        adc_chip_select_o   => adc_chip_select,
+        adc_din_i           => adc_din,
+        adc_dout_o          => adc_dout,
+        adc_clk_o           => adc_clk,
+        adc_eoc_i           => adc_eoc
+    );
         
     --===============--
     --== ChipScope ==--
@@ -509,7 +529,7 @@ begin
     
     cs_sync_in <= wb_mst_gtx_res(0).ack & wb_mst_gtx_res(0).stat & wb_mst_gtx_res(0).data;
     
-    cs_trig0 <= x"000" & "00" & wb_slv_i2c_res(0).ack & wb_mst_ei2c_res.ack & wb_slv_i2c_res(0).data(7 downto 0) & wb_mst_ei2c_res.data(7 downto 0);
+    cs_trig0 <= (0 => adc_clk, 1 => adc_din, 2 => adc_chip_select, 3 => adc_eoc, 4 => adc_dout, 5 => wb_slv_adc_req.stb, 6 => wb_slv_adc_res.ack, others => '0');
     
     --=============--
     --== Buffers ==--
