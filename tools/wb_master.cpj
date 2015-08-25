@@ -1,5 +1,5 @@
 #ChipScope Pro Analyzer Project File, Version 3.0
-#Fri Aug 21 16:31:35 CEST 2015
+#Tue Aug 25 09:37:27 CEST 2015
 deviceChain.deviceName0=XC6VLX130T
 deviceChain.iRLength0=10
 deviceChain.name0=MyDevice0
@@ -31,13 +31,15 @@ unit.0.0.6.HEIGHT6=0.24644549
 unit.0.0.6.WIDTH6=0.9890534
 unit.0.0.6.X6=0.0
 unit.0.0.6.Y6=0.2521327
+unit.0.0.browser_tree_state<Ack>=0
+unit.0.0.browser_tree_state<Stat>=1
 unit.0.0.browser_tree_state<Sync\ Input\ Port>=1
 unit.0.0.browser_tree_state<Sync\ Output\ Port>=1
 unit.0.0.coretype=VIO
 unit.0.0.port.-1.buscount=0
 unit.0.0.port.-1.channelcount=0
-unit.0.0.port.0.b.0.alias=Ack
-unit.0.0.port.0.b.0.channellist=34
+unit.0.0.port.0.b.0.alias=Read Data
+unit.0.0.port.0.b.0.channellist=0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
 unit.0.0.port.0.b.0.color=java.awt.Color[r\=0,g\=0,b\=124]
 unit.0.0.port.0.b.0.display=16
 unit.0.0.port.0.b.0.name=SyncIn
@@ -50,10 +52,10 @@ unit.0.0.port.0.b.0.tokencount=0
 unit.0.0.port.0.b.0.unsignedOffset=0.0
 unit.0.0.port.0.b.0.unsignedPrecision=0
 unit.0.0.port.0.b.0.unsignedScaleFactor=1.0
-unit.0.0.port.0.b.0.value=0
+unit.0.0.port.0.b.0.value=00000000
 unit.0.0.port.0.b.0.visible=1
-unit.0.0.port.0.b.1.alias=Read Data
-unit.0.0.port.0.b.1.channellist=0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+unit.0.0.port.0.b.1.alias=Stat
+unit.0.0.port.0.b.1.channellist=32 33 34 35
 unit.0.0.port.0.b.1.color=java.awt.Color[r\=0,g\=0,b\=124]
 unit.0.0.port.0.b.1.display=16
 unit.0.0.port.0.b.1.name=SyncIn
@@ -66,7 +68,7 @@ unit.0.0.port.0.b.1.tokencount=0
 unit.0.0.port.0.b.1.unsignedOffset=0.0
 unit.0.0.port.0.b.1.unsignedPrecision=0
 unit.0.0.port.0.b.1.unsignedScaleFactor=1.0
-unit.0.0.port.0.b.1.value=00000000
+unit.0.0.port.0.b.1.value=0
 unit.0.0.port.0.b.1.visible=1
 unit.0.0.port.0.b.2.alias=Stat
 unit.0.0.port.0.b.2.channellist=32 33
@@ -84,8 +86,8 @@ unit.0.0.port.0.b.2.unsignedPrecision=0
 unit.0.0.port.0.b.2.unsignedScaleFactor=1.0
 unit.0.0.port.0.b.2.value=0
 unit.0.0.port.0.b.2.visible=1
-unit.0.0.port.0.buscount=3
-unit.0.0.port.0.channelcount=35
+unit.0.0.port.0.buscount=2
+unit.0.0.port.0.channelcount=37
 unit.0.0.port.0.s.0.alias=
 unit.0.0.port.0.s.0.color=java.awt.Color[r\=0,g\=0,b\=124]
 unit.0.0.port.0.s.0.display=16
@@ -318,6 +320,22 @@ unit.0.0.port.0.s.34.orderindex=-1
 unit.0.0.port.0.s.34.persistence=0
 unit.0.0.port.0.s.34.value=0
 unit.0.0.port.0.s.34.visible=0
+unit.0.0.port.0.s.35.alias=
+unit.0.0.port.0.s.35.color=java.awt.Color[r\=0,g\=0,b\=124]
+unit.0.0.port.0.s.35.display=16
+unit.0.0.port.0.s.35.name=SyncIn[35]
+unit.0.0.port.0.s.35.orderindex=-1
+unit.0.0.port.0.s.35.persistence=0
+unit.0.0.port.0.s.35.value=0
+unit.0.0.port.0.s.35.visible=0
+unit.0.0.port.0.s.36.alias=Ack
+unit.0.0.port.0.s.36.color=java.awt.Color[r\=0,g\=0,b\=124]
+unit.0.0.port.0.s.36.display=16
+unit.0.0.port.0.s.36.name=SyncIn[36]
+unit.0.0.port.0.s.36.orderindex=-1
+unit.0.0.port.0.s.36.persistence=0
+unit.0.0.port.0.s.36.value=0
+unit.0.0.port.0.s.36.visible=1
 unit.0.0.port.0.s.4.alias=
 unit.0.0.port.0.s.4.color=java.awt.Color[r\=0,g\=0,b\=124]
 unit.0.0.port.0.s.4.display=16
@@ -382,7 +400,7 @@ unit.0.0.port.2.b.0.tokencount=0
 unit.0.0.port.2.b.0.unsignedOffset=0.0
 unit.0.0.port.2.b.0.unsignedPrecision=0
 unit.0.0.port.2.b.0.unsignedScaleFactor=1.0
-unit.0.0.port.2.b.0.value=20000008
+unit.0.0.port.2.b.0.value=30000000
 unit.0.0.port.2.b.0.visible=1
 unit.0.0.port.2.b.1.alias=Write data
 unit.0.0.port.2.b.1.channellist=32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63
@@ -398,7 +416,7 @@ unit.0.0.port.2.b.1.tokencount=0
 unit.0.0.port.2.b.1.unsignedOffset=0.0
 unit.0.0.port.2.b.1.unsignedPrecision=0
 unit.0.0.port.2.b.1.unsignedScaleFactor=1.0
-unit.0.0.port.2.b.1.value=0000FFFF
+unit.0.0.port.2.b.1.value=00000000
 unit.0.0.port.2.b.1.visible=1
 unit.0.0.port.2.b.2.alias=Write data
 unit.0.0.port.2.b.2.channellist=32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63
@@ -608,7 +626,7 @@ unit.0.0.port.2.s.28.display=0
 unit.0.0.port.2.s.28.name=SyncOut[28]
 unit.0.0.port.2.s.28.orderindex=-1
 unit.0.0.port.2.s.28.persistence=0
-unit.0.0.port.2.s.28.value=0
+unit.0.0.port.2.s.28.value=1
 unit.0.0.port.2.s.28.visible=0
 unit.0.0.port.2.s.29.alias=
 unit.0.0.port.2.s.29.color=java.awt.Color[r\=0,g\=0,b\=124]
@@ -624,7 +642,7 @@ unit.0.0.port.2.s.3.display=0
 unit.0.0.port.2.s.3.name=SyncOut[3]
 unit.0.0.port.2.s.3.orderindex=-1
 unit.0.0.port.2.s.3.persistence=0
-unit.0.0.port.2.s.3.value=1
+unit.0.0.port.2.s.3.value=0
 unit.0.0.port.2.s.3.visible=0
 unit.0.0.port.2.s.30.alias=
 unit.0.0.port.2.s.30.color=java.awt.Color[r\=0,g\=0,b\=124]
@@ -648,7 +666,7 @@ unit.0.0.port.2.s.32.display=0
 unit.0.0.port.2.s.32.name=SyncOut[32]
 unit.0.0.port.2.s.32.orderindex=-1
 unit.0.0.port.2.s.32.persistence=0
-unit.0.0.port.2.s.32.value=1
+unit.0.0.port.2.s.32.value=0
 unit.0.0.port.2.s.32.visible=0
 unit.0.0.port.2.s.33.alias=
 unit.0.0.port.2.s.33.color=java.awt.Color[r\=0,g\=0,b\=124]
@@ -656,7 +674,7 @@ unit.0.0.port.2.s.33.display=0
 unit.0.0.port.2.s.33.name=SyncOut[33]
 unit.0.0.port.2.s.33.orderindex=-1
 unit.0.0.port.2.s.33.persistence=0
-unit.0.0.port.2.s.33.value=1
+unit.0.0.port.2.s.33.value=0
 unit.0.0.port.2.s.33.visible=0
 unit.0.0.port.2.s.34.alias=
 unit.0.0.port.2.s.34.color=java.awt.Color[r\=0,g\=0,b\=124]
@@ -664,7 +682,7 @@ unit.0.0.port.2.s.34.display=0
 unit.0.0.port.2.s.34.name=SyncOut[34]
 unit.0.0.port.2.s.34.orderindex=-1
 unit.0.0.port.2.s.34.persistence=0
-unit.0.0.port.2.s.34.value=1
+unit.0.0.port.2.s.34.value=0
 unit.0.0.port.2.s.34.visible=0
 unit.0.0.port.2.s.35.alias=
 unit.0.0.port.2.s.35.color=java.awt.Color[r\=0,g\=0,b\=124]
@@ -672,7 +690,7 @@ unit.0.0.port.2.s.35.display=0
 unit.0.0.port.2.s.35.name=SyncOut[35]
 unit.0.0.port.2.s.35.orderindex=-1
 unit.0.0.port.2.s.35.persistence=0
-unit.0.0.port.2.s.35.value=1
+unit.0.0.port.2.s.35.value=0
 unit.0.0.port.2.s.35.visible=0
 unit.0.0.port.2.s.36.alias=
 unit.0.0.port.2.s.36.color=java.awt.Color[r\=0,g\=0,b\=124]
@@ -680,7 +698,7 @@ unit.0.0.port.2.s.36.display=0
 unit.0.0.port.2.s.36.name=SyncOut[36]
 unit.0.0.port.2.s.36.orderindex=-1
 unit.0.0.port.2.s.36.persistence=0
-unit.0.0.port.2.s.36.value=1
+unit.0.0.port.2.s.36.value=0
 unit.0.0.port.2.s.36.visible=0
 unit.0.0.port.2.s.37.alias=
 unit.0.0.port.2.s.37.color=java.awt.Color[r\=0,g\=0,b\=124]
@@ -688,7 +706,7 @@ unit.0.0.port.2.s.37.display=0
 unit.0.0.port.2.s.37.name=SyncOut[37]
 unit.0.0.port.2.s.37.orderindex=-1
 unit.0.0.port.2.s.37.persistence=0
-unit.0.0.port.2.s.37.value=1
+unit.0.0.port.2.s.37.value=0
 unit.0.0.port.2.s.37.visible=0
 unit.0.0.port.2.s.38.alias=
 unit.0.0.port.2.s.38.color=java.awt.Color[r\=0,g\=0,b\=124]
@@ -696,7 +714,7 @@ unit.0.0.port.2.s.38.display=0
 unit.0.0.port.2.s.38.name=SyncOut[38]
 unit.0.0.port.2.s.38.orderindex=-1
 unit.0.0.port.2.s.38.persistence=0
-unit.0.0.port.2.s.38.value=1
+unit.0.0.port.2.s.38.value=0
 unit.0.0.port.2.s.38.visible=0
 unit.0.0.port.2.s.39.alias=
 unit.0.0.port.2.s.39.color=java.awt.Color[r\=0,g\=0,b\=124]
@@ -704,7 +722,7 @@ unit.0.0.port.2.s.39.display=0
 unit.0.0.port.2.s.39.name=SyncOut[39]
 unit.0.0.port.2.s.39.orderindex=-1
 unit.0.0.port.2.s.39.persistence=0
-unit.0.0.port.2.s.39.value=1
+unit.0.0.port.2.s.39.value=0
 unit.0.0.port.2.s.39.visible=0
 unit.0.0.port.2.s.4.alias=
 unit.0.0.port.2.s.4.color=java.awt.Color[r\=0,g\=0,b\=124]
@@ -720,7 +738,7 @@ unit.0.0.port.2.s.40.display=0
 unit.0.0.port.2.s.40.name=SyncOut[40]
 unit.0.0.port.2.s.40.orderindex=-1
 unit.0.0.port.2.s.40.persistence=0
-unit.0.0.port.2.s.40.value=1
+unit.0.0.port.2.s.40.value=0
 unit.0.0.port.2.s.40.visible=0
 unit.0.0.port.2.s.41.alias=
 unit.0.0.port.2.s.41.color=java.awt.Color[r\=0,g\=0,b\=124]
@@ -728,7 +746,7 @@ unit.0.0.port.2.s.41.display=0
 unit.0.0.port.2.s.41.name=SyncOut[41]
 unit.0.0.port.2.s.41.orderindex=-1
 unit.0.0.port.2.s.41.persistence=0
-unit.0.0.port.2.s.41.value=1
+unit.0.0.port.2.s.41.value=0
 unit.0.0.port.2.s.41.visible=0
 unit.0.0.port.2.s.42.alias=
 unit.0.0.port.2.s.42.color=java.awt.Color[r\=0,g\=0,b\=124]
@@ -736,7 +754,7 @@ unit.0.0.port.2.s.42.display=0
 unit.0.0.port.2.s.42.name=SyncOut[42]
 unit.0.0.port.2.s.42.orderindex=-1
 unit.0.0.port.2.s.42.persistence=0
-unit.0.0.port.2.s.42.value=1
+unit.0.0.port.2.s.42.value=0
 unit.0.0.port.2.s.42.visible=0
 unit.0.0.port.2.s.43.alias=
 unit.0.0.port.2.s.43.color=java.awt.Color[r\=0,g\=0,b\=124]
@@ -744,7 +762,7 @@ unit.0.0.port.2.s.43.display=0
 unit.0.0.port.2.s.43.name=SyncOut[43]
 unit.0.0.port.2.s.43.orderindex=-1
 unit.0.0.port.2.s.43.persistence=0
-unit.0.0.port.2.s.43.value=1
+unit.0.0.port.2.s.43.value=0
 unit.0.0.port.2.s.43.visible=0
 unit.0.0.port.2.s.44.alias=
 unit.0.0.port.2.s.44.color=java.awt.Color[r\=0,g\=0,b\=124]
@@ -752,7 +770,7 @@ unit.0.0.port.2.s.44.display=0
 unit.0.0.port.2.s.44.name=SyncOut[44]
 unit.0.0.port.2.s.44.orderindex=-1
 unit.0.0.port.2.s.44.persistence=0
-unit.0.0.port.2.s.44.value=1
+unit.0.0.port.2.s.44.value=0
 unit.0.0.port.2.s.44.visible=0
 unit.0.0.port.2.s.45.alias=
 unit.0.0.port.2.s.45.color=java.awt.Color[r\=0,g\=0,b\=124]
@@ -760,7 +778,7 @@ unit.0.0.port.2.s.45.display=0
 unit.0.0.port.2.s.45.name=SyncOut[45]
 unit.0.0.port.2.s.45.orderindex=-1
 unit.0.0.port.2.s.45.persistence=0
-unit.0.0.port.2.s.45.value=1
+unit.0.0.port.2.s.45.value=0
 unit.0.0.port.2.s.45.visible=0
 unit.0.0.port.2.s.46.alias=
 unit.0.0.port.2.s.46.color=java.awt.Color[r\=0,g\=0,b\=124]
@@ -768,7 +786,7 @@ unit.0.0.port.2.s.46.display=0
 unit.0.0.port.2.s.46.name=SyncOut[46]
 unit.0.0.port.2.s.46.orderindex=-1
 unit.0.0.port.2.s.46.persistence=0
-unit.0.0.port.2.s.46.value=1
+unit.0.0.port.2.s.46.value=0
 unit.0.0.port.2.s.46.visible=0
 unit.0.0.port.2.s.47.alias=
 unit.0.0.port.2.s.47.color=java.awt.Color[r\=0,g\=0,b\=124]
@@ -776,7 +794,7 @@ unit.0.0.port.2.s.47.display=0
 unit.0.0.port.2.s.47.name=SyncOut[47]
 unit.0.0.port.2.s.47.orderindex=-1
 unit.0.0.port.2.s.47.persistence=0
-unit.0.0.port.2.s.47.value=1
+unit.0.0.port.2.s.47.value=0
 unit.0.0.port.2.s.47.visible=0
 unit.0.0.port.2.s.48.alias=
 unit.0.0.port.2.s.48.color=java.awt.Color[r\=0,g\=0,b\=124]
@@ -1109,11 +1127,11 @@ unit.0.0.vio.posn.39.channel=65
 unit.0.0.vio.posn.39.name=SyncOut[65]
 unit.0.0.vio.posn.39.port=2
 unit.0.0.vio.posn.39.type=signal
-unit.0.0.vio.posn.4.channel=2147483646
+unit.0.0.vio.posn.4.channel=36
 unit.0.0.vio.posn.4.name=Ack
 unit.0.0.vio.posn.4.port=0
 unit.0.0.vio.posn.4.radix=1
-unit.0.0.vio.posn.4.type=bus
+unit.0.0.vio.posn.4.type=signal
 unit.0.0.vio.posn.40.channel=65
 unit.0.0.vio.posn.40.name=SyncOut[65]
 unit.0.0.vio.posn.40.port=2

@@ -8,7 +8,7 @@
 -- \   \   \/     Version    : 14.7
 --  \   \         Application: XILINX CORE Generator
 --  /   /         Filename   : chipscope_vio.vhd
--- /___/   /\     Timestamp  : Tue Aug 11 11:20:34 Romance Daylight Time 2015
+-- /___/   /\     Timestamp  : Mon Aug 24 10:41:22 Romance Daylight Time 2015
 -- \   \  /  \
 --  \___\/\___\
 --
@@ -22,7 +22,7 @@ ENTITY chipscope_vio IS
   port (
     CONTROL: inout std_logic_vector(35 downto 0);
     CLK: in std_logic;
-    SYNC_IN: in std_logic_vector(34 downto 0);
+    SYNC_IN: in std_logic_vector(36 downto 0);
     SYNC_OUT: out std_logic_vector(65 downto 0));
 END chipscope_vio;
 

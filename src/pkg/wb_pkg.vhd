@@ -20,10 +20,9 @@ package wb_pkg is
     constant WB_ERR_I2C_REG     : std_logic_vector(3 downto 0) := x"2";
     constant WB_ERR_I2C_ACK     : std_logic_vector(3 downto 0) := x"3";
     
-    
     --== Wishbone masters ==--
     
-	constant WB_MASTERS         : positive := 5;
+	constant WB_MASTERS         : positive := 6;
     
     constant WB_MST_GTX_0       : integer := 0;
     constant WB_MST_GTX_1       : integer := 1;
@@ -33,9 +32,11 @@ package wb_pkg is
     
     constant WB_MST_SCAN        : integer := 4;
     
+    constant WB_MST_DAC         : integer := 5;
+    
     --== Wishbone slaves ==--
     
-	constant WB_SLAVES          : positive := 9;
+	constant WB_SLAVES          : positive := 10;
     
     constant WB_SLV_I2C_0       : integer := 0;
     constant WB_SLV_I2C_1       : integer := 1;
@@ -50,12 +51,15 @@ package wb_pkg is
     
     constant WB_SLV_T1          : integer := 8;
     
+    constant WB_SLV_DAC         : integer := 9;
+    
     --== Wishbone addresses ==--
     
     constant WB_ADDR_I2C        : std_logic_vector(3 downto 0) := x"0";
     constant WB_ADDR_EI2C       : std_logic_vector(3 downto 0) := x"1";
     constant WB_ADDR_SCAN       : std_logic_vector(3 downto 0) := x"2";
     constant WB_ADDR_T1         : std_logic_vector(3 downto 0) := x"3";
+    constant WB_ADDR_DAC        : std_logic_vector(3 downto 0) := x"4";
    
     --== Wishbone address selection & generation ==--
     
@@ -82,7 +86,9 @@ package body wb_pkg is
         -- VFAT2 scan                                             REGS |  |            
         elsif (std_match(addr, WB_ADDR_SCAN & "000000000000000000000000----")) then sel := WB_SLV_SCAN;
         -- VFAT2 T1                                               REGS |  |      
-        elsif (std_match(addr, WB_ADDR_T1   & "000000000000000000000000----")) then sel := WB_SLV_T1;        
+        elsif (std_match(addr, WB_ADDR_T1   & "000000000000000000000000----")) then sel := WB_SLV_T1;   
+        -- VFAT2 dac                                              REGS |  |            
+        elsif (std_match(addr, WB_ADDR_DAC  & "000000000000000000000000----")) then sel := WB_SLV_DAC;     
         --
         else sel := 99;
         end if;

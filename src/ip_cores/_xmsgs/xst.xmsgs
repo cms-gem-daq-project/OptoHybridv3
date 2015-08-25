@@ -56,7 +56,7 @@
 <msg type="warning" file="Xst" num="647" delta="old" >Input &lt;<arg fmt="%s" index="1">CONTROL_IN&lt;34:7&gt;</arg>&gt; is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
 </msg>
 
-<msg type="info" file="Xst" num="3210" delta="new" >&quot;<arg fmt="%s" index="1">C:\Users\Administrator\Documents\firmware\OptoHybridv2\src\ip_cores\tmp\_cg\_bbx\chipscope_vio_v1_05_a\vio_core.vhd</arg>&quot; line <arg fmt="%s" index="2">189</arg>: Output port &lt;<arg fmt="%s" index="3">SHIFT_OUT</arg>&gt; of the instance &lt;<arg fmt="%s" index="4">GEN_UPDATE_OUT[131].UPDATE_CELL</arg>&gt; is unconnected or connected to loadless signal.
+<msg type="info" file="Xst" num="3210" delta="old" >&quot;<arg fmt="%s" index="1">C:\Users\Administrator\Documents\firmware\OptoHybridv2\src\ip_cores\tmp\_cg\_bbx\chipscope_vio_v1_05_a\vio_core.vhd</arg>&quot; line <arg fmt="%s" index="2">189</arg>: Output port &lt;<arg fmt="%s" index="3">SHIFT_OUT</arg>&gt; of the instance &lt;<arg fmt="%s" index="4">GEN_UPDATE_OUT[131].UPDATE_CELL</arg>&gt; is unconnected or connected to loadless signal.
 </msg>
 
 <msg type="warning" file="Xst" num="647" delta="old" >Input &lt;<arg fmt="%s" index="1">CFG_ARM</arg>&gt; is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
@@ -80,16 +80,16 @@
 <msg type="info" file="Xst" num="2260" delta="old" >The FF/Latch &lt;<arg fmt="%s" index="1">U0/I_VIO/GEN_SYNC_IN[14].SYNC_IN_CELL/sync_f_edge/U_DOUT0</arg>&gt; in Unit &lt;<arg fmt="%s" index="2">chipscope_vio</arg>&gt; is equivalent to the following <arg fmt="%s" index="3">2 FFs/Latches</arg> : <arg fmt="%s" index="4">&lt;U0/I_VIO/GEN_SYNC_IN[14].SYNC_IN_CELL/sync_r_edge/U_DOUT0&gt; &lt;U0/I_VIO/GEN_SYNC_IN[14].SYNC_IN_CELL/USER_CLK_REG&gt; </arg>
 </msg>
 
-<msg type="info" file="Xst" num="2260" delta="old" >The FF/Latch &lt;<arg fmt="%s" index="1">U0/I_VIO/GEN_SYNC_IN[15].SYNC_IN_CELL/sync_f_edge/U_DOUT0</arg>&gt; in Unit &lt;<arg fmt="%s" index="2">chipscope_vio</arg>&gt; is equivalent to the following <arg fmt="%s" index="3">2 FFs/Latches</arg> : <arg fmt="%s" index="4">&lt;U0/I_VIO/GEN_SYNC_IN[15].SYNC_IN_CELL/sync_r_edge/U_DOUT0&gt; &lt;U0/I_VIO/GEN_SYNC_IN[15].SYNC_IN_CELL/USER_CLK_REG&gt; </arg>
-</msg>
-
 <msg type="info" file="Xst" num="2260" delta="old" >The FF/Latch &lt;<arg fmt="%s" index="1">U0/I_VIO/GEN_SYNC_IN[20].SYNC_IN_CELL/sync_f_edge/U_DOUT0</arg>&gt; in Unit &lt;<arg fmt="%s" index="2">chipscope_vio</arg>&gt; is equivalent to the following <arg fmt="%s" index="3">2 FFs/Latches</arg> : <arg fmt="%s" index="4">&lt;U0/I_VIO/GEN_SYNC_IN[20].SYNC_IN_CELL/sync_r_edge/U_DOUT0&gt; &lt;U0/I_VIO/GEN_SYNC_IN[20].SYNC_IN_CELL/USER_CLK_REG&gt; </arg>
 </msg>
 
-<msg type="info" file="Xst" num="2260" delta="old" >The FF/Latch &lt;<arg fmt="%s" index="1">U0/I_VIO/GEN_SYNC_IN[16].SYNC_IN_CELL/sync_f_edge/U_DOUT0</arg>&gt; in Unit &lt;<arg fmt="%s" index="2">chipscope_vio</arg>&gt; is equivalent to the following <arg fmt="%s" index="3">2 FFs/Latches</arg> : <arg fmt="%s" index="4">&lt;U0/I_VIO/GEN_SYNC_IN[16].SYNC_IN_CELL/sync_r_edge/U_DOUT0&gt; &lt;U0/I_VIO/GEN_SYNC_IN[16].SYNC_IN_CELL/USER_CLK_REG&gt; </arg>
+<msg type="info" file="Xst" num="2260" delta="old" >The FF/Latch &lt;<arg fmt="%s" index="1">U0/I_VIO/GEN_SYNC_IN[15].SYNC_IN_CELL/sync_f_edge/U_DOUT0</arg>&gt; in Unit &lt;<arg fmt="%s" index="2">chipscope_vio</arg>&gt; is equivalent to the following <arg fmt="%s" index="3">2 FFs/Latches</arg> : <arg fmt="%s" index="4">&lt;U0/I_VIO/GEN_SYNC_IN[15].SYNC_IN_CELL/sync_r_edge/U_DOUT0&gt; &lt;U0/I_VIO/GEN_SYNC_IN[15].SYNC_IN_CELL/USER_CLK_REG&gt; </arg>
 </msg>
 
 <msg type="info" file="Xst" num="2260" delta="old" >The FF/Latch &lt;<arg fmt="%s" index="1">U0/I_VIO/GEN_SYNC_IN[21].SYNC_IN_CELL/sync_f_edge/U_DOUT0</arg>&gt; in Unit &lt;<arg fmt="%s" index="2">chipscope_vio</arg>&gt; is equivalent to the following <arg fmt="%s" index="3">2 FFs/Latches</arg> : <arg fmt="%s" index="4">&lt;U0/I_VIO/GEN_SYNC_IN[21].SYNC_IN_CELL/sync_r_edge/U_DOUT0&gt; &lt;U0/I_VIO/GEN_SYNC_IN[21].SYNC_IN_CELL/USER_CLK_REG&gt; </arg>
+</msg>
+
+<msg type="info" file="Xst" num="2260" delta="old" >The FF/Latch &lt;<arg fmt="%s" index="1">U0/I_VIO/GEN_SYNC_IN[16].SYNC_IN_CELL/sync_f_edge/U_DOUT0</arg>&gt; in Unit &lt;<arg fmt="%s" index="2">chipscope_vio</arg>&gt; is equivalent to the following <arg fmt="%s" index="3">2 FFs/Latches</arg> : <arg fmt="%s" index="4">&lt;U0/I_VIO/GEN_SYNC_IN[16].SYNC_IN_CELL/sync_r_edge/U_DOUT0&gt; &lt;U0/I_VIO/GEN_SYNC_IN[16].SYNC_IN_CELL/USER_CLK_REG&gt; </arg>
 </msg>
 
 <msg type="info" file="Xst" num="2260" delta="old" >The FF/Latch &lt;<arg fmt="%s" index="1">U0/I_VIO/GEN_SYNC_IN[17].SYNC_IN_CELL/sync_f_edge/U_DOUT0</arg>&gt; in Unit &lt;<arg fmt="%s" index="2">chipscope_vio</arg>&gt; is equivalent to the following <arg fmt="%s" index="3">2 FFs/Latches</arg> : <arg fmt="%s" index="4">&lt;U0/I_VIO/GEN_SYNC_IN[17].SYNC_IN_CELL/sync_r_edge/U_DOUT0&gt; &lt;U0/I_VIO/GEN_SYNC_IN[17].SYNC_IN_CELL/USER_CLK_REG&gt; </arg>
@@ -138,6 +138,12 @@
 </msg>
 
 <msg type="info" file="Xst" num="2260" delta="old" >The FF/Latch &lt;<arg fmt="%s" index="1">U0/I_VIO/GEN_SYNC_IN[34].SYNC_IN_CELL/sync_f_edge/U_DOUT0</arg>&gt; in Unit &lt;<arg fmt="%s" index="2">chipscope_vio</arg>&gt; is equivalent to the following <arg fmt="%s" index="3">2 FFs/Latches</arg> : <arg fmt="%s" index="4">&lt;U0/I_VIO/GEN_SYNC_IN[34].SYNC_IN_CELL/sync_r_edge/U_DOUT0&gt; &lt;U0/I_VIO/GEN_SYNC_IN[34].SYNC_IN_CELL/USER_CLK_REG&gt; </arg>
+</msg>
+
+<msg type="info" file="Xst" num="2260" delta="new" >The FF/Latch &lt;<arg fmt="%s" index="1">U0/I_VIO/GEN_SYNC_IN[35].SYNC_IN_CELL/sync_f_edge/U_DOUT0</arg>&gt; in Unit &lt;<arg fmt="%s" index="2">chipscope_vio</arg>&gt; is equivalent to the following <arg fmt="%s" index="3">2 FFs/Latches</arg> : <arg fmt="%s" index="4">&lt;U0/I_VIO/GEN_SYNC_IN[35].SYNC_IN_CELL/sync_r_edge/U_DOUT0&gt; &lt;U0/I_VIO/GEN_SYNC_IN[35].SYNC_IN_CELL/USER_CLK_REG&gt; </arg>
+</msg>
+
+<msg type="info" file="Xst" num="2260" delta="new" >The FF/Latch &lt;<arg fmt="%s" index="1">U0/I_VIO/GEN_SYNC_IN[36].SYNC_IN_CELL/sync_f_edge/U_DOUT0</arg>&gt; in Unit &lt;<arg fmt="%s" index="2">chipscope_vio</arg>&gt; is equivalent to the following <arg fmt="%s" index="3">2 FFs/Latches</arg> : <arg fmt="%s" index="4">&lt;U0/I_VIO/GEN_SYNC_IN[36].SYNC_IN_CELL/sync_r_edge/U_DOUT0&gt; &lt;U0/I_VIO/GEN_SYNC_IN[36].SYNC_IN_CELL/USER_CLK_REG&gt; </arg>
 </msg>
 
 <msg type="info" file="Xst" num="2260" delta="old" >The FF/Latch &lt;<arg fmt="%s" index="1">U0/I_VIO/GEN_SYNC_IN[0].SYNC_IN_CELL/sync_f_edge/U_DOUT0</arg>&gt; in Unit &lt;<arg fmt="%s" index="2">chipscope_vio</arg>&gt; is equivalent to the following <arg fmt="%s" index="3">2 FFs/Latches</arg> : <arg fmt="%s" index="4">&lt;U0/I_VIO/GEN_SYNC_IN[0].SYNC_IN_CELL/sync_r_edge/U_DOUT0&gt; &lt;U0/I_VIO/GEN_SYNC_IN[0].SYNC_IN_CELL/USER_CLK_REG&gt; </arg>

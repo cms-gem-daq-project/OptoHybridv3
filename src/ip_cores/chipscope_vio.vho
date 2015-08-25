@@ -8,7 +8,7 @@
 -- \   \   \/     Version    : 14.7
 --  \   \         Application: Xilinx CORE Generator
 --  /   /         Filename   : chipscope_vio.vho
--- /___/   /\     Timestamp  : Tue Aug 11 11:20:34 Romance Daylight Time 2015
+-- /___/   /\     Timestamp  : Mon Aug 24 10:41:22 Romance Daylight Time 2015
 -- \   \  /  \
 --  \___\/\___\
 --
@@ -22,7 +22,7 @@ component chipscope_vio
   PORT (
     CONTROL : INOUT STD_LOGIC_VECTOR(35 DOWNTO 0);
     CLK : IN STD_LOGIC;
-    SYNC_IN : IN STD_LOGIC_VECTOR(34 DOWNTO 0);
+    SYNC_IN : IN STD_LOGIC_VECTOR(36 DOWNTO 0);
     SYNC_OUT : OUT STD_LOGIC_VECTOR(65 DOWNTO 0));
 
 end component;

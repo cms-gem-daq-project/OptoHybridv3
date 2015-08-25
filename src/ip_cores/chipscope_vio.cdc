@@ -1,5 +1,5 @@
 #ChipScope Core Generator Project File Version 3.0
-#Tue Aug 11 11:20:34 Romance Daylight Time 2015
+#Mon Aug 24 10:41:22 Romance Daylight Time 2015
 SignalExport.asyncInputWidth=0
 SignalExport.asyncOutputWidth=0
 SignalExport.clockChannel=CLK
@@ -38,7 +38,9 @@ SignalExport.syncInput<0031>=SyncIn[31]
 SignalExport.syncInput<0032>=SyncIn[32]
 SignalExport.syncInput<0033>=SyncIn[33]
 SignalExport.syncInput<0034>=SyncIn[34]
-SignalExport.syncInputWidth=35
+SignalExport.syncInput<0035>=SyncIn[35]
+SignalExport.syncInput<0036>=SyncIn[36]
+SignalExport.syncInputWidth=37
 SignalExport.syncOutput<0000>=SyncOut[0]
 SignalExport.syncOutput<0001>=SyncOut[1]
 SignalExport.syncOutput<0002>=SyncOut[2]

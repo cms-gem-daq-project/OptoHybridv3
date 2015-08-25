@@ -350,6 +350,9 @@ architecture Behavioral of optohybrid_top is
     alias wb_mst_scan_req       : wb_req_t is wb_m_req(WB_MST_SCAN);
     alias wb_mst_scan_res       : wb_res_t is wb_m_res(WB_MST_SCAN);
     
+    alias wb_mst_dac_req        : wb_req_t is wb_m_req(WB_MST_DAC);
+    alias wb_mst_dac_res        : wb_res_t is wb_m_res(WB_MST_DAC);
+    
     -- Slaves
     signal wb_s_req             : wb_req_array_t((WB_SLAVES - 1) downto 0);
     signal wb_s_res             : wb_res_array_t((WB_SLAVES - 1) downto 0);
@@ -366,12 +369,15 @@ architecture Behavioral of optohybrid_top is
     alias wb_slv_t1_req         : wb_req_t is wb_s_req(WB_SLV_T1);
     alias wb_slv_t1_res         : wb_res_t is wb_s_res(WB_SLV_T1);
     
+    alias wb_slv_dac_req        : wb_req_t is wb_s_req(WB_SLV_DAC);
+    alias wb_slv_dac_res        : wb_res_t is wb_s_res(WB_SLV_DAC);
+    
     --== Chipscope signals ==--
     
     signal cs_clk               : std_logic; -- ChipScope clock
     signal cs_ctrl0             : std_logic_vector(35 downto 0);
     signal cs_ctrl1             : std_logic_vector(35 downto 0); 
-    signal cs_sync_in           : std_logic_vector(34 downto 0);
+    signal cs_sync_in           : std_logic_vector(36 downto 0);
     signal cs_sync_out          : std_logic_vector(65 downto 0);
     signal cs_trig0             : std_logic_vector(31 downto 0);
     
@@ -436,12 +442,16 @@ begin
         wb_slv_ei2c_res_o   => wb_slv_ei2c_res,
         wb_mst_ei2c_req_o   => wb_mst_ei2c_req,
         wb_mst_ei2c_res_i   => wb_mst_ei2c_res,
-        wb_slv_t1_req_i     => wb_slv_t1_req,
-        wb_slv_t1_res_o     => wb_slv_t1_res,
         wb_slv_scan_req_i   => wb_slv_scan_req,
         wb_slv_scan_res_o   => wb_slv_scan_res,
         wb_mst_scan_req_o   => wb_mst_scan_req,
         wb_mst_scan_res_i   => wb_mst_scan_res,
+        wb_slv_t1_req_i     => wb_slv_t1_req,
+        wb_slv_t1_res_o     => wb_slv_t1_res,
+        wb_slv_dac_req_i    => wb_slv_dac_req,
+        wb_slv_dac_res_o    => wb_slv_dac_res,
+        wb_mst_dac_req_o    => wb_mst_dac_req,
+        wb_mst_dac_res_i    => wb_mst_dac_res,
         vfat2_tk_data_i     => vfat2_tk_data,
         vfat2_sbits_i       => vfat2_sbits,
         vfat2_t1_o          => t1_command
