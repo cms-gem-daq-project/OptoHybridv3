@@ -10,13 +10,7 @@
 -- Tool versions:  ISE  P.20131013
 -- Description: 
 --
--- Splits a Wishbone request in individual signal busses
---
--- Dependencies: 
---
--- Revision: 
--- Revision 0.01 - File Created
--- Additional Comments: 
+-- Splits a Wishbone request in individual signal busses or forwards the request
 --
 ----------------------------------------------------------------------------------
 
@@ -27,18 +21,19 @@ use ieee.math_real.all;
 
 library work;
 use work.types_pkg.all;
+use work.wb_pkg.all;
 
 entity wb_splitter is
 generic(
-
-    -- Number of output busses
-    SIZE        : integer := 8
+    
+    -- Parameters of the split
+    SIZE        : integer := 8;    
+    OFFSET      : integer := 0
     
 );
 port(
 
-    -- System signals
-    ref_clk_i    : in std_logic;
+    ref_clk_i   : in std_logic;
     reset_i     : in std_logic;
     
     -- Wishbone slave
@@ -63,51 +58,83 @@ architecture Behavioral of wb_splitter is
 
     -- Number of bits to use in the address field in order to cover the size of the bus
     constant NBITS  : integer := integer(ceil(log2(real(SIZE))));
+
+    type state_t is (IDLE, ACK);
+    
+    signal state    : state_t;
+    
+    signal timeout  : unsigned(31 downto 0);
     
 begin
 
-    process(ref_clk_i)
+    process(ref_clk_i)    
         -- Selected data bus
-        variable sel_bus    : integer range 0 to (SIZE - 1);
+        variable sel_bus    : integer range 0 to (SIZE - 1);        
     begin
         if (rising_edge(ref_clk_i)) then
-            -- Reset & default values of the signals
+            -- Reset & default values
             if (reset_i = '1') then
-                wb_res_o <= (ack => '0', stat => "00", data => (others => '0'));
+                wb_res_o <= (ack => '0', stat => (others => '0'), data => (others => '0'));
                 stb_o <= (others => '0');
                 we_o <= '0';
                 addr_o <= (others => '0');
                 data_o <= (others => '0');
                 sel_bus := 0;
+                state <= IDLE;
+                timeout <= (others => '0');
             else
-            
-                -- Handle an input strobe 
-                if (wb_req_i.stb = '1') then
-                    -- Convert the address to a bus select
-                    sel_bus := to_integer(unsigned(wb_req_i.addr((NBITS - 1) downto 0)));
-                    -- Forward the data on the bus
-                    stb_o(sel_bus) <= '1';
-                    we_o <= wb_req_i.we;
-                    addr_o <= wb_req_i.addr;
-                    data_o <= wb_req_i.data;
-                -- or reset the strobes
-                else
-                    stb_o <= (others => '0');
-                end if;
-                
-                -- Receive the acknowledgement of the previously selected bus
-                if (ack_i(sel_bus) = '1') then
-                    -- Forward the data to the master
-                    wb_res_o <= (ack => '1', stat => "00", data => data_i(sel_bus));
-                -- Receive an error of the previously selected bus
-                elsif (err_i(sel_bus) = '1') then
-                    -- Forward the error to the master
-                    wb_res_o <= (ack => '1', stat => "11", data => (others => '0'));
-                -- or reset the acknowledgment
-                else
-                    wb_res_o.ack <= '0';
-                end if;
-                
+                case state is
+                    -- Wait for a strobe
+                    when IDLE =>
+                        -- Reset the acknowledgment
+                        wb_res_o.ack <= '0';
+                        -- Handle an input strobe 
+                        if (wb_req_i.stb = '1') then
+                            -- Set timeout
+                            timeout <= to_unsigned(WB_TIMEOUT - 4, 32);
+                            -- Convert the address to a bus select
+                            sel_bus := to_integer(unsigned(wb_req_i.addr((NBITS - 1 + OFFSET) downto OFFSET)));
+                            -- Forward the data on the bus
+                            stb_o(sel_bus) <= '1';
+                            we_o <= wb_req_i.we;
+                            addr_o <= wb_req_i.addr;
+                            data_o <= wb_req_i.data;
+                            -- Acknowledgment 
+                            state <= ACK;
+                        end if;
+                    -- wait for the acknowledgment
+                    when ACK =>
+                        -- Reset the strobes
+                        stb_o <= (others => '0');
+                        -- Check the timeout
+                        if (timeout = 0) then
+                            -- Send an error
+                            wb_res_o <= (ack => '1', stat => WB_ERR_TIMEOUT, data => (others => '0'));
+                            state <= IDLE;
+                        else
+                            -- Decrement timeout
+                            timeout <= timeout - 1;
+                            -- Receive the acknowledgement of the previously selected bus
+                            if (ack_i(sel_bus) = '1') then
+                                wb_res_o <= (ack => '1', stat => WB_NO_ERR, data => data_i(sel_bus));
+                                state <= IDLE;
+                            -- Receive an error of the previously selected bus
+                            elsif (err_i(sel_bus) = '1') then
+                                wb_res_o <= (ack => '1', stat => WB_ERR_BUS, data => (others => '0'));
+                                state <= IDLE;
+                            end if;
+                        end if;
+                    --
+                    when others =>
+                        wb_res_o <= (ack => '0', stat => (others => '0'), data => (others => '0'));
+                        stb_o <= (others => '0');
+                        we_o <= '0';
+                        addr_o <= (others => '0');
+                        data_o <= (others => '0');
+                        sel_bus := 0;
+                        state <= IDLE;
+                        timeout <= (others => '0');
+                end case;
             end if;
         end if;
     end process;

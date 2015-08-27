@@ -2,7 +2,7 @@
 -- Company:        IIHE - ULB
 -- Engineer:       Thomas Lenzi (thomas.lenzi@cern.ch)
 -- 
--- Create Date:    13:13:21 03/12/2015 
+-- Create Date:    09:18:05 07/09/2015 
 -- Design Name:    OptoHybrid v2
 -- Module Name:    wb_switch - Behavioral 
 -- Project Name:   OptoHybrid v2
@@ -10,18 +10,15 @@
 -- Tool versions:  ISE  P.20131013
 -- Description: 
 --
--- Wishbone switch that allows multiples masters to control multiples slaves
---
--- Dependencies: 
---
--- Revision: 
--- Revision 0.01 - File Created
--- Additional Comments: 
+-- Switching system for the Wishbone transactions between masters and slaves.
+-- This module allows multiple masters to communicate with the slaves by forwarding 
+-- the requests and automatically route the reponses between masters and slaves.
 --
 ----------------------------------------------------------------------------------
 
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 
 library work;
 use work.types_pkg.all;
@@ -30,78 +27,131 @@ use work.wb_pkg.all;
 entity wb_switch is
 port(
 
-    wb_clk_i    : in std_logic;
+    ref_clk_i   : in std_logic;
     reset_i     : in std_logic;
    
-    wb_m_req_i  : in wb_req_array_t((WB_MASTERS - 1) downto 0); -- Request from master to slave
-    wb_s_req_o  : out wb_req_array_t((WB_SLAVES - 1) downto 0);
+    -- Requests
+    wb_req_i    : in wb_req_array_t((WB_MASTERS - 1) downto 0); -- From masters requests
+    wb_req_o    : out wb_req_array_t((WB_SLAVES - 1) downto 0); -- To slaves requests
     
-    wb_s_res_i  : in wb_res_array_t((WB_SLAVES - 1) downto 0); -- Response from slave to master
-    wb_m_res_o  : out wb_res_array_t((WB_MASTERS - 1) downto 0)
+    -- Responses
+    wb_res_i    : in wb_res_array_t((WB_SLAVES - 1) downto 0); -- From slaves responses
+    wb_res_o    : out wb_res_array_t((WB_MASTERS - 1) downto 0) -- To masters responses
     
 );
 end wb_switch;
 
 architecture Behavioral of wb_switch is
 
-    signal wb_from_m_req    : wb_req_array_t((WB_MASTERS - 1) downto 0);
-    signal wb_to_m_res      : wb_res_array_t((WB_MASTERS - 1) downto 0);
+    type state_t is (IDLE, WAITING, ACK_WAIT);
+    type state_array_t is array(integer range <>) of state_t;
     
-    signal wb_from_arb_req  : wb_req_array_t((WB_SLAVES - 1) downto 0); 
-    signal wb_to_arb_res    : wb_res_array_t((WB_SLAVES - 1) downto 0);
-
+    signal states       : state_array_t((WB_MASTERS - 1) downto 0);
+    
+    signal wb_req       : wb_req_array_t((WB_MASTERS - 1) downto 0);  
+    signal timeouts     : u32_array_t((WB_MASTERS - 1) downto 0);  
+       
+    -- For each master, the slave it is addressing 
+    signal sel_slave    : int_array_t((WB_MASTERS - 1) downto 0); 
+    
 begin
 
-    --=======================--
-    --== Master interfaces ==--
-    --=======================--
+    --========================--
+    --== Request forwarding ==--
+    --========================--
 
-    wb_master_gen : for M in 0 to (WB_MASTERS - 1) generate
+    process(ref_clk_i)        
+        -- For each slave, the master that is controllign it  
+        variable sel_master : int_array_t((WB_SLAVES - 1) downto 0);     
     begin
-
-        wb_master_interface_inst : entity work.wb_master_interface
-        port map(
-            wb_clk_i    => wb_clk_i,
-            reset_i     => reset_i,
-            wb_req_i    => wb_m_req_i(M),
-            wb_req_o    => wb_from_m_req(M),
-            wb_res_i    => wb_to_m_res(M),
-            wb_res_o    => wb_m_res_o(M)
-        );
-        
-    end generate;
-
-    --==============--
-    --== Arbitrer ==--
-    --==============--
-    
-    wb_arbitrer_inst : entity work.wb_arbitrer
-    port map(
-        wb_clk_i    => wb_clk_i,
-        reset_i     => reset_i,
-        wb_req_i    => wb_from_m_req,
-        wb_req_o    => wb_from_arb_req,
-        wb_res_i    => wb_to_arb_res,
-        wb_res_o    => wb_to_m_res
-    );
-   
-    --======================--
-    --== Slave interfaces ==--
-    --======================--
-
-    wb_slave_gen : for S in 0 to (WB_SLAVES - 1) generate
-    begin
-
-        wb_slave_interface_inst : entity work.wb_slave_interface
-        port map(
-            wb_clk_i    => wb_clk_i,
-            reset_i     => reset_i,
-            wb_req_i    => wb_from_arb_req(S),
-            wb_req_o    => wb_s_req_o(S),
-            wb_res_i    => wb_s_res_i(S),
-            wb_res_o    => wb_to_arb_res(S)
-        );
-        
-    end generate;
+        if (rising_edge(ref_clk_i)) then
+            -- Reset & default values
+            if (reset_i = '1') then
+                wb_req_o <= (others => (stb => '0', we => '0', addr => (others => '0'), data => (others => '0')));
+                wb_res_o <= (others => (ack => '0', stat => (others => '0'), data => (others => '0')));
+                states <= (others => IDLE);
+                wb_req <= (others => (stb => '0', we => '0', addr => (others => '0'), data => (others => '0')));
+                timeouts <= (others => (others => '0'));
+                sel_slave <= (others => 99);
+                sel_master := (others => 99);
+            else
+                -- Loop over the masters
+                for I in 0 to (WB_MASTERS - 1) loop
+                    -- Each master has its own state machine
+                    case states(I) is
+                        -- Wait for a request
+                        when IDLE =>
+                            -- Reset the acknowledgment
+                            wb_res_o(I).ack <= '0';
+                            -- Incoming request
+                            if (wb_req_i(I).stb = '1') then
+                                -- Save the request
+                                wb_req(I) <= wb_req_i(I);
+                                -- Select the slave to address
+                                sel_slave(I) <= wb_addr_sel(wb_req_i(I).addr);
+                                -- Set the timeout
+                                timeouts(I) <= to_unsigned(WB_TIMEOUT, 32);
+                                -- Change state
+                                states(I) <= WAITING;
+                            end if;
+                        -- Wait to transfer request
+                        when WAITING =>
+                            -- Check the timeout
+                            if (timeouts(I) = 0) then
+                                -- Set error on timeout
+                                wb_res_o(I) <= (ack => '1', stat => WB_ERR_TIMEOUT, data => (others => '0'));
+                                states(I) <= IDLE;
+                            else
+                                -- Decrement timeout
+                                timeouts(I) <= timeouts(I) - 1;
+                                -- Unknown slave
+                                if (sel_slave(I) = 99) then
+                                    -- Error
+                                    wb_res_o(I) <= (ack => '1', stat => WB_ERR_SLAVE, data => (others => '0'));
+                                    states(I) <= IDLE;
+                                -- Slave is free
+                                elsif (sel_master(sel_slave(I)) = 99) then
+                                    -- Send request to slave
+                                    wb_req_o(sel_slave(I)) <= wb_req(I);
+                                    sel_master(sel_slave(I)) := I;
+                                    states(I) <= ACK_WAIT;
+                                end if;   
+                            end if;
+                        -- Wait for acknowledgment
+                        when ACK_WAIT => 
+                            -- Reset the strobe
+                            wb_req_o(sel_slave(I)).stb <= '0';
+                            -- Check the timeout
+                            if (timeouts(I) = 0) then
+                                -- Set error on timeout
+                                wb_res_o(I) <= (ack => '1', stat => WB_ERR_TIMEOUT, data => (others => '0'));
+                                states(I) <= IDLE;
+                            else
+                                -- Decrement timeout
+                                timeouts(I) <= timeouts(I) - 1;
+                                -- Incoming response
+                                if (wb_res_i(sel_slave(I)).ack = '1') then
+                                    -- Transfer the response
+                                    wb_res_o(I) <= wb_res_i(sel_slave(I));
+                                    -- Free the slave
+                                    sel_master(sel_slave(I)) := 99;
+                                    states(I) <= IDLE;
+                                end if;
+                            end if;
+                        --
+                        when others =>            
+                            wb_req_o(I) <= (stb => '0', we  => '0', addr => (others => '0'), data => (others => '0'));
+                            wb_res_o(I) <= (ack => '0', stat => (others => '0'), data => (others => '0'));
+                            states(I) <= IDLE;
+                            wb_req(I) <= (stb => '0', we => '0', addr => (others => '0'), data => (others => '0'));
+                            timeouts(I) <= (others => '0');
+                            sel_slave(I) <= 99;
+                            sel_master(I) := 99;
+                    end case;
+                end loop;
+            end if;
+        end if;
+    end process;    
     
 end Behavioral;
+

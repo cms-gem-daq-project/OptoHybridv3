@@ -10,13 +10,9 @@
 -- Tool versions:  ISE  P.20131013
 -- Description: 
 --
--- Encodes the T1 commands for the VFAT2s
---
--- Dependencies: 
---
--- Revision: 
--- Revision 0.01 - File Created
--- Additional Comments: 
+-- Encodes the T1 commands for the VFAT2s on 3 consecutive bits. If two signals 
+-- arrive with a delay less than 3 clock cycles, the second operation is ignored.
+-- The priority is as follows: LV1A, Calpulse, Resync, BC0.
 --
 ----------------------------------------------------------------------------------
 
@@ -43,12 +39,12 @@ end vfat2_t1_encoder;
 
 architecture Behavioral of vfat2_t1_encoder is
    
-    type state_t is (IDLE, BIT_2, BIT_1, BIT_0);
+    type state_t is (IDLE, BIT_1, BIT_0);
     
     signal state    : state_t;
     
     -- Data to send
-    signal t1_data  : std_logic_vector(2 downto 0);
+    signal t1_data  : std_logic_vector(1 downto 0);
 
 begin
 
@@ -62,36 +58,36 @@ begin
                 t1_data <= (others => '0');
             else
                 case state is
-                    -- IDLE wait for strobe
+                    -- Wait for strobe
                     when IDLE =>
                         -- Set the line to 0
                         vfat2_t1_o <= '0';
                         -- LV1A
                         if (vfat2_t1_i.lv1a = '1') then
-                            state <= BIT_2;
-                            t1_data <= "100";
+                            vfat2_t1_o <= '1';
+                            state <= BIT_1;
+                            t1_data <= "00";
                         -- Calibration pulse
                         elsif (vfat2_t1_i.calpulse = '1') then 
-                            state <= BIT_2;
-                            t1_data <= "111";
+                            vfat2_t1_o <= '1';
+                            state <= BIT_1;
+                            t1_data <= "11";
                         -- Resync signal
                         elsif (vfat2_t1_i.resync = '1') then  
-                            state <= BIT_2;
-                            t1_data <= "110";
+                            vfat2_t1_o <= '1';
+                            state <= BIT_1;
+                            t1_data <= "10";
                         -- BC0 reset
                         elsif (vfat2_t1_i.bc0 = '1') then 
-                            state <= BIT_2;
-                            t1_data <= "101";
+                            vfat2_t1_o <= '1';
+                            state <= BIT_1;
+                            t1_data <= "01";
                         end if;  
-                    -- BIT_2 send bit 2
-                    when BIT_2 =>
-                        vfat2_t1_o <= t1_data(2);
-                        state <= BIT_1;
-                    -- BIT_1 send bit 1
+                    -- Send bit 1
                     when BIT_1 =>
                         vfat2_t1_o <= t1_data(1);
                         state <= BIT_0;
-                    -- BIT_0 send bit 0
+                    -- Send bit 0
                     when BIT_0 =>
                         vfat2_t1_o <= t1_data(0);
                         state <= IDLE;

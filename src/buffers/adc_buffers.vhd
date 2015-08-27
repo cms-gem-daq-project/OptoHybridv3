@@ -49,9 +49,28 @@ port(
 end adc_buffers;
 
 architecture Behavioral of adc_buffers is
+
+    signal adc_clk  : std_logic;
+
 begin
 
-    -- adc_clk
+    -- adc_clk    
+    
+    adc_clk_oddr : oddr
+    generic map(
+        ddr_clk_edge    => "opposite_edge",
+        init            => '0',
+        srtype          => "sync"
+    )
+    port map (
+        q               => adc_clk,
+        c               => adc_clk_i,
+        ce              => '1',
+        d1              => '1',
+        d2              => '0',
+        r               => '0',
+        s               => '0'
+    );  
 
     adc_clk_obuf : obuf
     generic map(
@@ -60,7 +79,7 @@ begin
         slew        => "fast"
     )
     port map(
-        i           => adc_clk_i,
+        i           => adc_clk,
         o           => adc_clk_o
     );
     

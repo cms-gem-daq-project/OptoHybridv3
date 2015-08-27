@@ -1,7 +1,7 @@
 ##############################################################
 #
 # Xilinx Core Generator version 14.7
-# Date: Tue Aug 11 09:20:03 2015
+# Date: Mon Aug 24 08:40:48 2015
 #
 ##############################################################
 #
@@ -49,11 +49,11 @@ CSET enable_synchronous_input_port=true
 CSET enable_synchronous_output_port=true
 CSET example_design=false
 CSET invert_clock_input=false
-CSET synchronous_input_port_width=35
+CSET synchronous_input_port_width=37
 CSET synchronous_output_port_width=66
 # END Parameters
 # BEGIN Extra information
 MISC pkg_timestamp=2013-10-13T14:13:48Z
 # END Extra information
 GENERATE
-# CRC: 4c79dbd4
+# CRC: 5b7a62d6

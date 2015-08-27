@@ -2,7 +2,7 @@
 
 ## Single ended clocks
 
-NET "clk_50MHz_i"       LOC = A11; # L14_P
+NET "clk_50MHz_i"       LOC = A11 | CLOCK_DEDICATED_ROUTE = FALSE; # L14_P
 
 ## QPLL
 

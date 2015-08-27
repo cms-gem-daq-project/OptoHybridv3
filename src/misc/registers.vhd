@@ -12,12 +12,6 @@
 --
 -- Generates N read/write registers
 --
--- Dependencies: 
---
--- Revision: 
--- Revision 0.01 - File Created
--- Additional Comments: 
---
 ----------------------------------------------------------------------------------
 
 library ieee;
@@ -36,7 +30,6 @@ generic(
 );
 port(
 
-    -- System signals
     ref_clk_i   : in std_logic;
     reset_i     : in std_logic;
     

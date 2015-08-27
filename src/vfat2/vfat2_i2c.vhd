@@ -10,16 +10,14 @@
 -- Tool versions:  ISE  P.20131013
 -- Description:
 --
--- Whishbone slave that handles the I2C communication with the VFAT2s
+-- Whishbone slave that handles the I2C communication with a single VFAT2s. The module
+-- handles the normal and extended registers in one operation.
 --
 -- Register map:
 -- 0..150 : VFAT2 registers
 --
--- Dependencies: 
---
--- Revision: 
--- Revision 0.01 - File Created
--- Additional Comments: 
+-- 
+-- Stable & tested
 --
 ----------------------------------------------------------------------------------
 
@@ -32,7 +30,6 @@ use work.types_pkg.all;
 entity vfat2_i2c is
 port(
 
-    -- System signals
     ref_clk_i           : in std_logic;
     reset_i             : in std_logic;
     
@@ -65,6 +62,8 @@ begin
     --========================================--
     --== Wishbone VFAT2 I2C request handler ==--
     --========================================--
+    
+    -- 0..150 : VFAT2 registers
 
     vfat2_i2c_req_inst : entity work.vfat2_i2c_req
     port map(
