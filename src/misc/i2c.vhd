@@ -12,9 +12,6 @@
 --
 -- Handles basic I2C communications
 --
--- 
--- Stable & tested
---
 ----------------------------------------------------------------------------------
 
 library ieee;

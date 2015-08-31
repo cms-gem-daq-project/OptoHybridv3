@@ -4,7 +4,7 @@
 -- 
 -- Create Date:    08:44:34 08/18/2015 
 -- Design Name:    OptoHybrid v2
--- Module Name:    func_i2c - Behavioral 
+-- Module Name:    vfat2_func_i2c - Behavioral 
 -- Project Name:   OptoHybrid v2
 -- Target Devices: xc6vlx130t-1ff1156
 -- Tool versions:  ISE  P.20131013
@@ -18,9 +18,6 @@
 -- 257 : read out the results (32 bits = 8x0 & 8 bits of vfat2 id & 8 bits of status & 8 bits of data
 -- 258 : local reset
 --
--- 
--- Stable & tested
---
 ----------------------------------------------------------------------------------
 
 library ieee;
@@ -30,7 +27,7 @@ use ieee.numeric_std.all;
 library work;
 use work.types_pkg.all;
 
-entity func_i2c is
+entity vfat2_func_i2c is
 port(
 
     ref_clk_i       : in std_logic;
@@ -45,9 +42,9 @@ port(
     wb_mst_res_i    : in wb_res_t
     
 );
-end func_i2c;
+end vfat2_func_i2c;
 
-architecture Behavioral of func_i2c is
+architecture Behavioral of vfat2_func_i2c is
     
     -- Local reset
     signal local_reset  : std_logic;
@@ -106,7 +103,7 @@ begin
     
     -- 0..150 : VFAT2 registers
 
-    func_i2c_req_inst : entity work.func_i2c_req
+    vfat2_func_i2c_req_inst : entity work.vfat2_func_i2c_req
     port map(
         ref_clk_i       => ref_clk_i,
         reset_i         => local_reset,

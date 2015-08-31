@@ -1,0 +1,2 @@
+vhdl work ../../vfat2_readout_clk.vhd
+vhdl work ../example_design/vfat2_readout_clk_exdes.vhd

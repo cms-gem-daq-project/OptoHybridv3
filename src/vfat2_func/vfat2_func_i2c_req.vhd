@@ -4,15 +4,12 @@
 -- 
 -- Create Date:    08:44:34 08/18/2015 
 -- Design Name:    OptoHybrid v2
--- Module Name:    func_i2c_req - Behavioral 
+-- Module Name:    vfat2_func_i2c_req - Behavioral 
 -- Project Name:   OptoHybrid v2
 -- Target Devices: xc6vlx130t-1ff1156
 -- Tool versions:  ISE  P.20131013
 -- Description:
 -- 
---
--- Stable & tested
---
 ----------------------------------------------------------------------------------
 
 library ieee;
@@ -23,7 +20,7 @@ library work;
 use work.types_pkg.all;
 use work.wb_pkg.all;
 
-entity func_i2c_req is
+entity vfat2_func_i2c_req is
 port(
 
     ref_clk_i       : in std_logic;
@@ -46,9 +43,9 @@ port(
     fifo_din_o      : out std_logic_vector(31 downto 0)
     
 );
-end func_i2c_req;
+end vfat2_func_i2c_req;
 
-architecture Behavioral of func_i2c_req is
+architecture Behavioral of vfat2_func_i2c_req is
 
     type state_t is (IDLE, CHECKS, REQ_I2C, ACK_I2C);
         

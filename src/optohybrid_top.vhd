@@ -387,7 +387,6 @@ architecture Behavioral of optohybrid_top is
 begin
 
     reset <= '0';
-    vfat2_reset <= '1';
     
     --ref_clk <= qpll_clk;
     --wb_clk <= qpll_clk;
@@ -419,15 +418,15 @@ begin
     port map(        
         ref_clk_i           => ref_clk,
         reset_i             => reset,
-        vfat2_t1_o          => vfat2_t1,
-        vfat2_mclk_o        => vfat2_mclk,
         vfat2_t1_i          => t1_command,
+        vfat2_mclk_o        => vfat2_mclk,
         vfat2_reset_o       => vfat2_reset,
+        vfat2_t1_o          => vfat2_t1,
         vfat2_data_out_i    => vfat2_data_out,
         vfat2_tk_data_o     => vfat2_tk_data,
-        vfat2_scl_o         => vfat2_scl,
         wb_slv_i2c_req_i    => wb_slv_i2c_req,
         wb_slv_i2c_res_o    => wb_slv_i2c_res,
+        vfat2_scl_o         => vfat2_scl,
         vfat2_sda_miso_i    => vfat2_sda_miso,
         vfat2_sda_mosi_o    => vfat2_sda_mosi,
         vfat2_sda_tri_o     => vfat2_sda_tri
@@ -437,7 +436,7 @@ begin
     --== Functionalities ==--
     --=====================--
         
-    func_inst : entity work.func      
+    vfat2_func_inst : entity work.vfat2_func      
     port map(        
         ref_clk_i           => ref_clk,
         reset_i             => reset,

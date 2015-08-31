@@ -4,7 +4,7 @@
 -- 
 -- Create Date:    09:48:46 08/19/2015 
 -- Design Name:    OptoHybrid v2
--- Module Name:    func - Behavioral 
+-- Module Name:    vfat2_func - Behavioral 
 -- Project Name:   OptoHybrid v2
 -- Target Devices: xc6vlx130t-1ff1156
 -- Tool versions:  ISE  P.20131013
@@ -21,7 +21,7 @@ use ieee.std_logic_1164.all;
 library work;
 use work.types_pkg.all;
 
-entity func is
+entity vfat2_func is
 port(
 
     ref_clk_i           : in std_logic;
@@ -47,11 +47,11 @@ port(
     wb_slv_t1_req_i     : in wb_req_t;
     wb_slv_t1_res_o     : out wb_res_t;
     
-    -- Wishbone dac slave
+    -- Wishbone DAC slave
     wb_slv_dac_req_i    : in wb_req_t;
     wb_slv_dac_res_o    : out wb_res_t;
     
-    -- Wishbone dac master
+    -- Wishbone DAC master
     wb_mst_dac_req_o    : out wb_req_t;
     wb_mst_dac_res_i    : in wb_res_t;
         
@@ -63,9 +63,9 @@ port(
     vfat2_t1_o          : out t1_t
     
 );
-end func;
+end vfat2_func;
 
-architecture Behavioral of func is
+architecture Behavioral of vfat2_func is
     
     -- Running modes
     signal scan_running : std_logic_vector(1 downto 0);
@@ -78,7 +78,7 @@ begin
     --== Extended I2C ==--
     --==================--
     
-    func_i2c_inst : entity work.func_i2c
+    vfat2_func_i2c_inst : entity work.vfat2_func_i2c
     port map(
         ref_clk_i       => ref_clk_i,
         reset_i         => reset_i,
@@ -92,7 +92,7 @@ begin
     --== VFAT2 scan routines ==--
     --=========================--
     
-    func_scan_inst : entity work.func_scan
+    vfat2_func_scan_inst : entity work.vfat2_func_scan
     port map(
         ref_clk_i       => ref_clk_i,
         reset_i         => reset_i,
@@ -109,7 +109,7 @@ begin
     --== T1 controller ==--
     --===================--
  
-   func_t1_inst : entity work.func_t1
+   vfat2_func_t1_inst : entity work.vfat2_func_t1
     port map(
         ref_clk_i       => ref_clk_i,
         reset_i         => reset_i,
@@ -123,15 +123,15 @@ begin
     --== VFAT2 DAC routines ==--
     --========================--
     
---    func_dac_inst : entity work.func_dac
---    port map(
---        ref_clk_i       => ref_clk_i,
---        reset_i         => reset_i,
---        wb_slv_req_i    => wb_slv_dac_req_i,
---        wb_slv_res_o    => wb_slv_dac_res_o,
---        wb_mst_req_o    => wb_mst_dac_req_o,
---        wb_mst_res_i    => wb_mst_dac_res_i,
---        dac_running_o   => dac_running
---    );
+    vfat2_func_dac_inst : entity work.vfat2_func_dac
+    port map(
+        ref_clk_i       => ref_clk_i,
+        reset_i         => reset_i,
+        wb_slv_req_i    => wb_slv_dac_req_i,
+        wb_slv_res_o    => wb_slv_dac_res_o,
+        wb_mst_req_o    => wb_mst_dac_req_o,
+        wb_mst_res_i    => wb_mst_dac_res_i,
+        dac_running_o   => dac_running
+    );
     
 end Behavioral;

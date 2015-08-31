@@ -4,16 +4,13 @@
 -- 
 -- Create Date:    11:22:49 06/30/2015 
 -- Design Name:    OptoHybrid v2
--- Module Name:    func_t1_req - Behavioral 
+-- Module Name:    vfat2_func_t1_req - Behavioral 
 -- Project Name:   OptoHybrid v2
 -- Target Devices: xc6vlx130t-1ff1156
 -- Tool versions:  ISE  P.20131013
 -- Description: 
 --
 -- Generates T1 commands according to the user inputs
---
--- 
--- Stable & tested
 --
 ----------------------------------------------------------------------------------
 
@@ -24,7 +21,7 @@ use ieee.numeric_std.all;
 library work;
 use work.types_pkg.all;
 
-entity func_t1_req is
+entity vfat2_func_t1_req is
 port(
 
     ref_clk_i       : in std_logic;
@@ -52,9 +49,9 @@ port(
     t1_running_o  : out std_logic_vector(1 downto 0)
     
 );
-end func_t1_req;
+end vfat2_func_t1_req;
 
-architecture Behavioral of func_t1_req is
+architecture Behavioral of vfat2_func_t1_req is
  
     type state_t is (IDLE, CHECKS, MODE_0, MODE_1, MODE_2);
     

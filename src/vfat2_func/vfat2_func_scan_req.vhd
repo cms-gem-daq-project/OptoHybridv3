@@ -4,7 +4,7 @@
 -- 
 -- Create Date:    13:46:42 08/05/2015 
 -- Design Name:    OptoHybrid v2
--- Module Name:    func_scan_req - Behavioral 
+-- Module Name:    vfat2_func_scan_req - Behavioral 
 -- Project Name:   OptoHybrid v2
 -- Target Devices: xc6vlx130t-1ff1156
 -- Tool versions:  ISE  P.20131013
@@ -20,7 +20,7 @@ library work;
 use work.types_pkg.all;
 use work.wb_pkg.all;
 
-entity func_scan_req is
+entity vfat2_func_scan_req is
 port(
 
     ref_clk_i       : in std_logic;
@@ -56,9 +56,9 @@ port(
     scan_running_o  : out std_logic_vector(1 downto 0)
     
 );
-end func_scan_req;
+end vfat2_func_scan_req;
 
-architecture Behavioral of func_scan_req is
+architecture Behavioral of vfat2_func_scan_req is
 
     type state_t is (IDLE, CHECKS, REQ_RUNNING, ACK_RUNNING, REQ_CURRENT, ACK_CURRENT, REQ_I2C, ACK_I2C, SCAN_THRESHOLD, SCAN_THRESHOLD2, SCAN_LATENCY, STORE_RESULT, REQ_RESTORE, ACK_RESTORE);
         
@@ -298,7 +298,7 @@ begin
                             state <= STORE_RESULT;
                         else
                             -- Wait for tracking data
-                            if (vfat2_tk_data_i(vfat2_int).valid = '1') then
+                            if (vfat2_tk_data_i(vfat2_int).valid = '1' and vfat2_tk_data_i(vfat2_int).crc_ok = '1') then
                                 -- Increment the event counter
                                 event_counter <= event_counter + 1;
                                 -- Increment the hit counter

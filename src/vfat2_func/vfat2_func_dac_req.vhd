@@ -4,7 +4,7 @@
 -- 
 -- Create Date:    13:46:42 08/05/2015 
 -- Design Name:    OptoHybrid v2
--- Module Name:    func_dac_req - Behavioral 
+-- Module Name:    vfat2_func_dac_req - Behavioral 
 -- Project Name:   OptoHybrid v2
 -- Target Devices: xc6vlx130t-1ff1156
 -- Tool versions:  ISE  P.20131013
@@ -20,7 +20,7 @@ library work;
 use work.types_pkg.all;
 use work.wb_pkg.all;
 
-entity func_dac_req is
+entity vfat2_func_dac_req is
 port(
 
     ref_clk_i       : in std_logic;
@@ -51,28 +51,34 @@ port(
     dac_running_o   : out std_logic
     
 );
-end func_dac_req;
+end vfat2_func_dac_req;
 
-architecture Behavioral of func_dac_req is
+architecture Behavioral of vfat2_func_dac_req is
 
-    type state_t is (IDLE, CHECKS, REQ_RUNNING, ACK_RUNNING, REQ_SHUTDOWN, ACK_SHUTDOWN, REQ_I2C, ACK_I2C, SCAN_DAC, STORE_RESULT, REQ_RESTORE, ACK_RESTORE);
+    type state_t is (IDLE, CHECKS, REQ_RUNNING, ACK_RUNNING, REQ_SHUTDOWN, ACK_SHUTDOWN, REQ_SAVE, ACK_SAVE, REQ_SET_DAC, ACK_SET_DAC, REQ_I2C, ACK_I2C, REQ_SCAN_DAC, ACK_SCAN_DAC, AVERAGE, STORE_RESULT, REQ_RESTORE, ACK_RESTORE);
         
     signal state            : state_t;
     
     -- Scan parameters
-    signal req_dac          : std_logic_vector(7 downto 0);
+    signal req_dac          : std_logic_vector(3 downto 0);
     signal req_vfat2        : std_logic_vector(4 downto 0);    
     signal req_min          : std_logic_vector(7 downto 0);
     signal req_max          : std_logic_vector(7 downto 0);
     signal req_step         : std_logic_vector(7 downto 0);
-    signal req_events       : std_logic_vector(3 downto 0);
+    signal req_events       : std_logic_vector(15 downto 0);
+    
+    -- Helpers
+    signal adc_channel      : std_logic_vector(3 downto 0);
+    signal dac_code         : std_logic_vector(3 downto 0);
+    signal register_id      : std_logic_vector(7 downto 0);
+    signal average_shift    : integer range 0 to 15;
     
     -- Value of the register before the scan
     signal saved_value      : std_logic_vector(7 downto 0);
     
     -- Counter for the scan
     signal value_counter    : unsigned(8 downto 0);
-    signal event_counter    : unsigned(14 downto 0);
+    signal event_counter    : unsigned(15 downto 0);
     signal dac_counter      : unsigned(32 downto 0);
 
 begin
@@ -96,7 +102,10 @@ begin
                 req_max <= (others => '0');
                 req_step <= (others => '0');
                 req_events <= (others => '0');
+                adc_channel <= (others => '0');
+                dac_code <= (others => '0');
                 register_id <= (others => '0');
+                average_shift <= 0;
                 saved_value <= (others => '0');
                 value_counter <= (others => '0');
                 event_counter <= (others => '0');
@@ -128,8 +137,81 @@ begin
                                 when x"00" => req_step <= x"01";
                                 when others => req_step <= req_step_i;
                             end case;
-                            req_events <= req_events_i;
+                            case req_events_i is
+                                when x"0" => req_events <= x"0001";
+                                when x"1" => req_events <= x"0002";
+                                when x"2" => req_events <= x"0004";
+                                when x"3" => req_events <= x"0008";
+                                when x"4" => req_events <= x"000F";
+                                when x"5" => req_events <= x"0010";
+                                when x"6" => req_events <= x"0020";
+                                when x"7" => req_events <= x"0040";
+                                when x"8" => req_events <= x"0080";
+                                when x"9" => req_events <= x"00F0";
+                                when x"A" => req_events <= x"0100";
+                                when x"B" => req_events <= x"0200";
+                                when x"C" => req_events <= x"0400";
+                                when x"D" => req_events <= x"0800";
+                                when x"E" => req_events <= x"0F00";
+                                when x"F" => req_events <= x"1000";
+                                when others => req_events <= x"0001";
+                            end case;
                             -- Set the helpers
+                            if (req_vfat2_i(4 downto 3) = "00") then
+                                case req_dac_i is
+                                    when x"0" | x"1" | x"2" | x"3" | x"4" | x"5" => adc_channel <= x"0";
+                                    when x"6" | x"7" | x"8" | x"9" => adc_channel <= x"1";
+                                    when others => adc_channel <= x"0";
+                                end case;
+                            elsif (req_vfat2_i(4 downto 3) = "01") then
+                                case req_dac_i is
+                                    when x"0" | x"1" | x"2" | x"3" | x"4" | x"5" => adc_channel <= x"8";
+                                    when x"6" | x"7" | x"8" | x"9" => adc_channel <= x"5";
+                                    when others => adc_channel <= x"0";
+                                end case;                            
+                            else
+                                case req_dac_i is
+                                    when x"0" | x"1" | x"2" | x"3" | x"4" | x"5" => adc_channel <= x"7";
+                                    when x"6" | x"7" | x"8" | x"9" => adc_channel <= x"6";
+                                    when others => adc_channel <= x"0";
+                                end case;                            
+                            end if;                            
+                            case req_dac_i is
+                                when x"0" =>
+                                    dac_code <= x"1";
+                                    register_id <= x"02";
+                                when x"1" =>
+                                    dac_code <= x"2";
+                                    register_id <= x"03";
+                                when x"2" =>
+                                    dac_code <= x"3";
+                                    register_id <= x"04";
+                                when x"3" =>
+                                    dac_code <= x"4";
+                                    register_id <= x"05";
+                                when x"4" =>
+                                    dac_code <= x"5";
+                                    register_id <= x"06";
+                                when x"5" =>
+                                    dac_code <= x"6";
+                                    register_id <= x"07";
+                                when x"6" =>
+                                    dac_code <= x"7";
+                                    register_id <= x"92";
+                                when x"7" =>
+                                    dac_code <= x"8";
+                                    register_id <= x"93";
+                                when x"8" =>
+                                    dac_code <= x"9";
+                                    register_id <= x"91";
+                                when x"9" =>
+                                    dac_code <= x"B";
+                                    register_id <= x"00";
+                                when others => 
+                                    dac_code <= x"0";
+                                    register_id <= x"00";
+                            end case;
+                            average_shift <= to_integer(unsigned(req_events_i));
                             value_counter <= '0' & unsigned(req_min_i);
                             -- Set the flags
                             fifo_rst_o <= '1';
@@ -142,7 +224,7 @@ begin
                         -- Enable the FIFO
                         fifo_rst_o <= '0';
                         -- Check VFAT2
-                        if (vfat2_int > 23) then
+                        if (unsigned(req_vfat2) > 23) then
                             req_ack_o <= '0';
                             req_err_o <= '1';
                             state <= IDLE;                        
@@ -150,7 +232,12 @@ begin
                         elsif (unsigned(req_min) > unsigned(req_max)) then
                             req_ack_o <= '0';
                             req_err_o <= '1';
-                            state <= IDLE;      
+                            state <= IDLE;   
+                        -- Check the DAC code and register ID
+                        elsif (dac_code = x"0" and register_id = x"00") then
+                            req_ack_o <= '0';
+                            req_err_o <= '1';
+                            state <= IDLE;   
                         else
                             req_ack_o <= '1';
                             req_err_o <= '0';
@@ -186,7 +273,7 @@ begin
                     -- Ask for all VFAT2s to shutdown their DAC
                     when REQ_SHUTDOWN => 
                         -- Send an I2C request
-                        wb_mst_req_o <= (stb => '1', we => '1', addr => WB_ADDR_EI2C & x"000000" & x"01", data => (others => '0'));
+                        wb_mst_req_o <= (stb => '1', we => '1', addr => WB_ADDR_EI2C & x"00000" & x"01", data => (others => '0'));
                         state <= ACK_SHUTDOWN;                        
                     -- Wait for the response
                     when ACK_SHUTDOWN => 
@@ -196,9 +283,60 @@ begin
                         if (wb_mst_res_i.ack = '1') then
                             -- If the data is valid
                             if (wb_mst_res_i.stat = "00") then
+                                -- change state
+                                state <= REQ_SAVE;
+                            -- Or
+                            else
+                                -- Store an error in the FIFO
+                                fifo_we_o <= '1';
+                                fifo_din_o <= x"FF000000";
+                                -- end the scan
+                                state <= IDLE;
+                            end if;
+                        end if;     
+                    -- Save the current value
+                    when REQ_SAVE =>
+                        -- Reset the acknowledmgents
+                        req_ack_o <= '0';
+                        req_err_o <= '0';
+                        -- Ask if VFAT2 is running
+                        wb_mst_req_o <= (stb => '1', we => '0', addr => WB_ADDR_I2C & "000000000000000" & req_vfat2 & x"01", data => x"0000000" & dac_code);
+                        state <= ACK_SAVE;      
+                    -- Wait for the response
+                    when ACK_SAVE => 
+                        -- Reset the strobe
+                        wb_mst_req_o.stb <= '0';
+                        -- On acknowledgment
+                        if (wb_mst_res_i.ack = '1') then
+                            -- If the data is valid and the VFAT2 is on
+                            if (wb_mst_res_i.stat = "00" and wb_mst_res_i.data(0) = '1') then
                                 -- Store it in memory
                                 saved_value <= wb_mst_res_i.data(7 downto 0);
-                                -- and change state
+                                -- change state
+                                state <= REQ_SET_DAC;
+                            -- Or
+                            else
+                                -- Store an error in the FIFO
+                                fifo_we_o <= '1';
+                                fifo_din_o <= x"FF000000";
+                                -- end the scan
+                                state <= IDLE;
+                            end if;
+                        end if;        
+                    -- Set the DAC select
+                    when REQ_SET_DAC =>
+                        -- Select the correct DAC
+                        wb_mst_req_o <= (stb => '1', we => '1', addr => WB_ADDR_I2C & "000000000000000" & req_vfat2 & x"01", data => x"0000000" & dac_code);
+                        state <= ACK_SET_DAC;      
+                    -- Wait for the response
+                    when ACK_SET_DAC => 
+                        -- Reset the strobe
+                        wb_mst_req_o.stb <= '0';
+                        -- On acknowledgment
+                        if (wb_mst_res_i.ack = '1') then
+                            -- If the data is valid and the VFAT2 is on
+                            if (wb_mst_res_i.stat = "00" and wb_mst_res_i.data(0) = '1') then
+                                -- change state
                                 state <= REQ_I2C;
                             -- Or
                             else
@@ -208,13 +346,13 @@ begin
                                 -- end the scan
                                 state <= IDLE;
                             end if;
-                        end if;                        
+                        end if;                         
                     -- Send an I2C request to change the value
                     when REQ_I2C =>
                         -- Reset the write enable 
                         fifo_we_o <= '0';
                         -- Send an I2C request
-                        wb_mst_req_o <= (stb => '1', we => '1', addr => WB_ADDR_I2C & "000000000000000" & req_vfat2 & x"01", data => x"000000" & std_logic_vector(value_counter(7 downto 0)));
+                        wb_mst_req_o <= (stb => '1', we => '1', addr => WB_ADDR_I2C & "000000000000000" & req_vfat2 & register_id, data => x"000000" & std_logic_vector(value_counter(7 downto 0)));
                         state <= ACK_I2C;                        
                     -- Wait for the acknowledgment
                     when ACK_I2C => 
@@ -226,58 +364,53 @@ begin
                             if (wb_mst_res_i.stat = "00") then
                                 -- Go for counting
                                 event_counter <= (others => '0');
-                                hit_counter <= (others => '0');
+                                dac_counter <= (others => '0');
                                 -- Change state
-                                case req_mode is
-                                    when "00" => state <= SCAN_DAC;
-                                    when "01" => state <= SCAN_DAC2;
-                                    when "10" | "11" => state <= SCAN_LATENCY;
-                                    when others => state <= IDLE;
-                                end case;
+                                state <= REQ_SCAN_DAC;
                             -- or store an error
                             else
                                 event_counter <= (others => '1');
-                                hit_counter <= (others => '1');
+                                dac_counter <= (others => '1');
                                 state <= STORE_RESULT;
                             end if;
                         end if;               
-                    -- Perform a threshold scan
-                    when SCAN_DAC =>
+                    -- Perform the DAC scan
+                    when REQ_SCAN_DAC =>
                         -- Change state when the counter reached its limit
                         if (event_counter = unsigned(req_events)) then
-                            state <= STORE_RESULT;
+                            state <= AVERAGE;
                         else
-                            -- Increment the event counter
-                            event_counter <= event_counter + 1;
-                            -- Increment the hit counter
-                            if (vfat2_sbits_i(vfat2_int) /= empty_8bits) then
-                                hit_counter <= hit_counter + 1;
-                            end if;
-                        end if;                        
-                    -- Perform a threshold scan on a signel channel
-                    when SCAN_DAC2 =>
-                        state <= STORE_RESULT;                        
-                    -- Perform a latency scan
-                    when SCAN_LATENCY =>                        
-                    -- Change state when the counter reached its limit
-                        if (event_counter = unsigned(req_events)) then
-                            state <= STORE_RESULT;
-                        else
-                            -- Wait for tracking data
-                            if (vfat2_tk_data_i(vfat2_int).valid = '1') then
+                            -- Request the ADC value
+                            wb_mst_req_o <= (stb => '1', we => '1', addr => WB_ADDR_ADC & x"000000" & adc_channel, data => (others => '0'));
+                            state <= ACK_SCAN_DAC;  
+                        end if;                
+                    -- Wait for the acknowledgment
+                    when ACK_SCAN_DAC => 
+                        -- Reset the strobe
+                        wb_mst_req_o.stb <= '0';
+                        -- On acknowledgment
+                        if (wb_mst_res_i.ack = '1') then
+                            -- If the request was done successfully
+                            if (wb_mst_res_i.stat = "00") then
                                 -- Increment the event counter
                                 event_counter <= event_counter + 1;
-                                -- Increment the hit counter
-                                if (vfat2_tk_data_i(vfat2_int).strips /= empty_128bits) then
-                                    hit_counter <= hit_counter + 1;
-                                end if;
+                                -- Increment the DAC counter
+                                dac_counter <= dac_counter + unsigned(wb_mst_res_i.data(15 downto 0));
+                                -- Change state
+                                state <= REQ_SCAN_DAC;
                             end if;
-                        end if;                        
+                            -- 
+                            state <= REQ_SCAN_DAC;
+                        end if;        
+                    -- Perform the average of the results
+                    when AVERAGE => 
+                        dac_counter <= dac_counter srl average_shift;
+                        state <= STORE_RESULT;
                     -- Store the results in the FIFO
                     when STORE_RESULT =>
                         -- Write in the FIFO
                         fifo_we_o <= '1';
-                        fifo_din_o <= std_logic_vector(value_counter(7 downto 0)) & std_logic_vector(hit_counter);
+                        fifo_din_o <= std_logic_vector(value_counter(7 downto 0)) & std_logic_vector(dac_counter(23 downto 0));
                         -- Check the value for its limit
                         if (value_counter + unsigned(req_step) <= unsigned(req_max)) then
                             -- Increment the value counter
@@ -305,27 +438,28 @@ begin
                         end if;                    
                     --
                     when others =>
+                        req_ack_o <= '0';
+                        req_err_o <= '0';
                         wb_mst_req_o <= (stb => '0', we => '0', addr => (others => '0'), data => (others => '0'));
                         fifo_rst_o <= '0';
                         fifo_we_o <= '0';
                         fifo_din_o <= (others => '0');
-                        scan_running_o <= (others => '0');
+                        dac_running_o <= '0';
                         state <= IDLE;
-                        req_mode <= (others => '0');
+                        req_dac <= (others => '0');
                         req_vfat2 <= (others => '0');
-                        req_channel <= (others => '0');
                         req_min <= (others => '0');
                         req_max <= (others => '0');
                         req_step <= (others => '0');
                         req_events <= (others => '0');
-                        vfat2_int <= 0;
-                        channel_int <= 0;
+                        adc_channel <= (others => '0');
+                        dac_code <= (others => '0');
                         register_id <= (others => '0');
+                        average_shift <= 0;
                         saved_value <= (others => '0');
                         value_counter <= (others => '0');
                         event_counter <= (others => '0');
-                        hit_counter <= (others => '0');
-                        
+                        dac_counter <= (others => '0');
                 end case;
             end if;
         end if;

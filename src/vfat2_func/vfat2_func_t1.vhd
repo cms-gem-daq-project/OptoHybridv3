@@ -4,7 +4,7 @@
 -- 
 -- Create Date:    11:22:49 06/30/2015 
 -- Design Name:    OptoHybrid v2
--- Module Name:    func_t1 - Behavioral 
+-- Module Name:    vfat2_func_t1 - Behavioral 
 -- Project Name:   OptoHybrid v2
 -- Target Devices: xc6vlx130t-1ff1156
 -- Tool versions:  ISE  P.20131013
@@ -26,9 +26,6 @@
 -- 14 : status (2 bits)
 -- 15 : local reset
 --
--- 
--- Stable & tested
---
 ----------------------------------------------------------------------------------
 
 library ieee;
@@ -37,7 +34,7 @@ use ieee.std_logic_1164.all;
 library work;
 use work.types_pkg.all;
 
-entity func_t1 is
+entity vfat2_func_t1 is
 port(
 
     ref_clk_i       : in std_logic;
@@ -54,9 +51,9 @@ port(
     t1_running_o  : out std_logic_vector(1 downto 0)
     
 );
-end func_t1;
+end vfat2_func_t1;
 
-architecture Behavioral of func_t1 is
+architecture Behavioral of vfat2_func_t1 is
 
     -- Local reset
     signal local_reset  : std_logic;
@@ -106,7 +103,7 @@ begin
     
     -- 0 : enable/disable
     
-    func_t1_req_inst : entity work.func_t1_req
+    vfat2_func_t1_req_inst : entity work.vfat2_func_t1_req
     port map(
         ref_clk_i       => ref_clk_i,
         reset_i         => local_reset,
