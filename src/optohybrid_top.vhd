@@ -318,7 +318,6 @@ architecture Behavioral of optohybrid_top is
     signal chipid_mosi          : std_logic;
     signal chipid_miso          : std_logic;
     signal chipid_tri           : std_logic;
-
     
     --== QPLL signals ==--
 
