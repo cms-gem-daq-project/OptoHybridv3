@@ -36,7 +36,7 @@ package wb_pkg is
     
     --== Wishbone slaves ==--
     
-	constant WB_SLAVES          : positive := 11;
+	constant WB_SLAVES          : positive := 13;
     
     constant WB_SLV_I2C_0       : integer := 0;
     constant WB_SLV_I2C_1       : integer := 1;
@@ -55,15 +55,21 @@ package wb_pkg is
     
     constant WB_SLV_ADC         : integer := 10;
     
+    constant WB_SLV_CLK         : integer := 11;
+    
+    constant WB_SLV_CNT         : integer := 12;
+    
     --== Wishbone addresses ==--
     
-    constant WB_ADDR_I2C        : std_logic_vector(3 downto 0) := x"0";
-    constant WB_ADDR_EI2C       : std_logic_vector(3 downto 0) := x"1";
-    constant WB_ADDR_SCAN       : std_logic_vector(3 downto 0) := x"2";
-    constant WB_ADDR_T1         : std_logic_vector(3 downto 0) := x"3";
-    constant WB_ADDR_DAC        : std_logic_vector(3 downto 0) := x"4";
+    constant WB_ADDR_I2C        : std_logic_vector(7 downto 0) := x"40";
+    constant WB_ADDR_EI2C       : std_logic_vector(7 downto 0) := x"41";
+    constant WB_ADDR_SCAN       : std_logic_vector(7 downto 0) := x"42";
+    constant WB_ADDR_T1         : std_logic_vector(7 downto 0) := x"43";
+    constant WB_ADDR_DAC        : std_logic_vector(7 downto 0) := x"44";
     
-    constant WB_ADDR_ADC        : std_logic_vector(3 downto 0) := x"8";
+    constant WB_ADDR_ADC        : std_logic_vector(7 downto 0) := x"48";
+    constant WB_ADDR_CLK        : std_logic_vector(7 downto 0) := x"49";
+    constant WB_ADDR_CNT        : std_logic_vector(7 downto 0) := x"4A";
    
     --== Wishbone address selection & generation ==--
     
@@ -78,23 +84,27 @@ package body wb_pkg is
     function wb_addr_sel(signal addr : in std_logic_vector(31 downto 0)) return integer is
         variable sel : integer;
     begin
-        -- VFAT2 I2C                                          |ID || REGS |
-        if    (std_match(addr, WB_ADDR_I2C  & "000000000000000000----------")) then sel := WB_SLV_I2C_0;
-        elsif (std_match(addr, WB_ADDR_I2C  & "000000000000000001----------")) then sel := WB_SLV_I2C_1;
-        elsif (std_match(addr, WB_ADDR_I2C  & "000000000000000010----------")) then sel := WB_SLV_I2C_2;
-        elsif (std_match(addr, WB_ADDR_I2C  & "000000000000000011----------")) then sel := WB_SLV_I2C_3;
-        elsif (std_match(addr, WB_ADDR_I2C  & "000000000000000100----------")) then sel := WB_SLV_I2C_4;
-        elsif (std_match(addr, WB_ADDR_I2C  & "000000000000000101----------")) then sel := WB_SLV_I2C_5;
-        -- VFAT2 I2C extended                                     | REGS  |
-        elsif (std_match(addr, WB_ADDR_EI2C & "0000000000000000000---------")) then sel := WB_SLV_EI2C;
-        -- VFAT2 scan                                             REGS |  |            
-        elsif (std_match(addr, WB_ADDR_SCAN & "000000000000000000000000----")) then sel := WB_SLV_SCAN;
-        -- VFAT2 T1                                               REGS |  |      
-        elsif (std_match(addr, WB_ADDR_T1   & "000000000000000000000000----")) then sel := WB_SLV_T1;   
-        -- VFAT2 dac                                              REGS |  |            
-        elsif (std_match(addr, WB_ADDR_DAC  & "000000000000000000000000----")) then sel := WB_SLV_DAC;  
+        -- VFAT2 I2C                                      |ID || REGS |
+        if    (std_match(addr, WB_ADDR_I2C  & "00000000000000----------")) then sel := WB_SLV_I2C_0;
+        elsif (std_match(addr, WB_ADDR_I2C  & "00000000000001----------")) then sel := WB_SLV_I2C_1;
+        elsif (std_match(addr, WB_ADDR_I2C  & "00000000000010----------")) then sel := WB_SLV_I2C_2;
+        elsif (std_match(addr, WB_ADDR_I2C  & "00000000000011----------")) then sel := WB_SLV_I2C_3;
+        elsif (std_match(addr, WB_ADDR_I2C  & "00000000000100----------")) then sel := WB_SLV_I2C_4;
+        elsif (std_match(addr, WB_ADDR_I2C  & "00000000000101----------")) then sel := WB_SLV_I2C_5;
+        -- VFAT2 I2C extended                                 | REGS  |
+        elsif (std_match(addr, WB_ADDR_EI2C & "000000000000000---------")) then sel := WB_SLV_EI2C;
+        -- VFAT2 scan                                         REGS |  |            
+        elsif (std_match(addr, WB_ADDR_SCAN & "00000000000000000000----")) then sel := WB_SLV_SCAN;
+        -- VFAT2 T1                                           REGS |  |      
+        elsif (std_match(addr, WB_ADDR_T1   & "00000000000000000000----")) then sel := WB_SLV_T1;   
+        -- VFAT2 dac                                          REGS |  |            
+        elsif (std_match(addr, WB_ADDR_DAC  & "00000000000000000000----")) then sel := WB_SLV_DAC;  
         -- ADC                                                              
-        elsif (std_match(addr, WB_ADDR_ADC  & "0000000000000000000000000000")) then sel := WB_SLV_ADC;     
+        elsif (std_match(addr, WB_ADDR_ADC  & "000000000000000000000000")) then sel := WB_SLV_ADC;    
+        -- CLK                                                              
+        elsif (std_match(addr, WB_ADDR_CLK  & "000000000000000000000000")) then sel := WB_SLV_CLK;    
+        -- CNT                                                              
+        elsif (std_match(addr, x"4" & WB_ADDR_CNT  & "000000000000000000000000")) then sel := WB_SLV_CNT;    
         --
         else sel := 99;
         end if;

@@ -276,63 +276,65 @@ architecture Behavioral of optohybrid_top is
 
     --== VFAT2 signals ==--
     
-    signal vfat2_mclk           : std_logic; -- VFAT2 refenrece clock (should be the same as the LHC clock)
-    signal vfat2_reset          : std_logic;
-    signal vfat2_t1             : std_logic;
-    signal vfat2_scl            : std_logic_vector(5 downto 0); 
-    signal vfat2_sda_mosi       : std_logic_vector(5 downto 0); 
-    signal vfat2_sda_miso       : std_logic_vector(5 downto 0); 
-    signal vfat2_sda_tri        : std_logic_vector(5 downto 0); 
-    signal vfat2_data_valid     : std_logic_vector(5 downto 0);
-    signal vfat2_data_out       : std_logic_vector(23 downto 0);
-    signal vfat2_sbits          : sbits_array_t(23 downto 0);
+    signal vfat2_mclk_b         : std_logic; -- VFAT2 refenrece clock (should be the same as the LHC clock)
+    signal vfat2_reset_b        : std_logic;
+    signal vfat2_t1_b           : std_logic;
+    signal vfat2_scl_b          : std_logic_vector(5 downto 0); 
+    signal vfat2_sda_mosi_b     : std_logic_vector(5 downto 0); 
+    signal vfat2_sda_miso_b     : std_logic_vector(5 downto 0); 
+    signal vfat2_sda_tri_b      : std_logic_vector(5 downto 0); 
+    signal vfat2_data_valid_b   : std_logic_vector(5 downto 0);
+    signal vfat2_data_out_b     : std_logic_vector(23 downto 0);
+    signal vfat2_sbits_b        : sbits_array_t(23 downto 0);
     
-    signal t1_command           : t1_t;
+    signal vfat2_readout_clk    : std_logic_vector(2 downto 0);
+    signal vfat2_reset          : std_logic;
+    signal vfat2_t1             : t1_t;
     signal vfat2_tk_data        : tk_data_array_t(23 downto 0);
     
     --== ADC signals ==--
     
-    signal adc_clk              : std_logic;
-    signal adc_chip_select      : std_logic;
-    signal adc_dout             : std_logic;
-    signal adc_din              : std_logic;
-    signal adc_eoc              : std_logic;    
+    signal adc_clk_b            : std_logic;
+    signal adc_chip_select_b    : std_logic;
+    signal adc_dout_b           : std_logic;
+    signal adc_din_b            : std_logic;
+    signal adc_eoc_b            : std_logic;    
     
     --== CDCE signals ==--
 
-    signal cdce_clk             : std_logic;
-    signal cdce_clk_pri         : std_logic;
-    signal cdce_aux_out         : std_logic;
-    signal cdce_aux_in          : std_logic;
-    signal cdce_ref             : std_logic;
-    signal cdce_pwrdown         : std_logic;
-    signal cdce_sync            : std_logic;
-    signal cdce_locked          : std_logic;
-    signal cdce_sck             : std_logic;
-    signal cdce_mosi            : std_logic;
-    signal cdce_le              : std_logic;
-    signal cdce_miso            : std_logic;    
+    signal cdce_clk_b           : std_logic;
+    signal cdce_clk_pri_b       : std_logic;
+    signal cdce_aux_out_b       : std_logic;
+    signal cdce_aux_in_b        : std_logic;
+    signal cdce_ref_b           : std_logic;
+    signal cdce_pwrdown_b       : std_logic;
+    signal cdce_sync_b          : std_logic;
+    signal cdce_locked_b        : std_logic;
+    signal cdce_sck_b           : std_logic;
+    signal cdce_mosi_b          : std_logic;
+    signal cdce_le_b            : std_logic;
+    signal cdce_miso_b          : std_logic;    
     
     --== Chip ID signals ==--
 
-    signal chipid_mosi          : std_logic;
-    signal chipid_miso          : std_logic;
-    signal chipid_tri           : std_logic;
+    signal chipid_mosi_b        : std_logic;
+    signal chipid_miso_b        : std_logic;
+    signal chipid_tri_b         : std_logic;
     
     --== QPLL signals ==--
 
-    signal qpll_ref_40MHz       : std_logic;
-    signal qpll_reset           : std_logic;
-    signal qpll_locked          : std_logic;
-    signal qpll_error           : std_logic;
-    signal qpll_clk             : std_logic;
+    signal qpll_ref_40MHz_b     : std_logic;
+    signal qpll_reset_b         : std_logic;
+    signal qpll_locked_b        : std_logic;
+    signal qpll_error_b         : std_logic;
+    signal qpll_clk_b           : std_logic;
     
     --== Temperature signals ==--
 
-    signal temp_clk             : std_logic;
-    signal temp_data_mosi       : std_logic;
-    signal temp_data_miso       : std_logic;
-    signal temp_data_tri        : std_logic;
+    signal temp_clk_b           : std_logic;
+    signal temp_data_mosi_b     : std_logic;
+    signal temp_data_miso_b     : std_logic;
+    signal temp_data_tri_b      : std_logic;
     
     --== Wishbone signals ==--
     
@@ -374,6 +376,9 @@ architecture Behavioral of optohybrid_top is
     alias wb_slv_adc_req        : wb_req_t is wb_s_req(WB_SLV_ADC);
     alias wb_slv_adc_res        : wb_res_t is wb_s_res(WB_SLV_ADC);
     
+    alias wb_slv_clk_req        : wb_req_t is wb_s_req(WB_SLV_CLK);
+    alias wb_slv_clk_res        : wb_res_t is wb_s_res(WB_SLV_CLK);
+    
     --== Chipscope signals ==--
     
     signal cs_clk               : std_logic; -- ChipScope clock
@@ -392,7 +397,6 @@ begin
     --vfat2_mclk <= qpll_clk;
     
     pll_50MHz_inst : entity work.pll_50MHz port map(clk_50MHz_i => clk_50MHz_i, clk_40MHz_o => ref_clk);
-    vfat2_mclk <= ref_clk;
     cs_clk <= ref_clk;
     
     --=====================--
@@ -408,6 +412,19 @@ begin
         wb_res_i    => wb_s_res,
         wb_res_o    => wb_m_res
     );
+    
+    --==============--
+    --== Clocking ==--
+    --==============--
+    
+    clocking_inst : entity work.clocking
+    port map(
+        ref_clk_i           => ref_clk,
+        reset_i             => reset,
+        wb_slv_req_i        => wb_slv_clk_req,
+        wb_slv_res_o        => wb_slv_clk_res,
+        vfat2_readout_clk_o => vfat2_readout_clk
+    );
 
     --===========--
     --== VFAT2 ==--
@@ -417,18 +434,20 @@ begin
     port map(        
         ref_clk_i           => ref_clk,
         reset_i             => reset,
-        vfat2_t1_i          => t1_command,
-        vfat2_mclk_o        => vfat2_mclk,
-        vfat2_reset_o       => vfat2_reset,
-        vfat2_t1_o          => vfat2_t1,
-        vfat2_data_out_i    => vfat2_data_out,
+        vfat2_readout_clk_i => vfat2_readout_clk,
+        vfat2_reset_i       => vfat2_reset,
+        vfat2_t1_i          => vfat2_t1,
+        vfat2_mclk_o        => vfat2_mclk_b,
+        vfat2_reset_o       => vfat2_reset_b,
+        vfat2_t1_o          => vfat2_t1_b,
+        vfat2_data_out_i    => vfat2_data_out_b,
         vfat2_tk_data_o     => vfat2_tk_data,
         wb_slv_i2c_req_i    => wb_slv_i2c_req,
         wb_slv_i2c_res_o    => wb_slv_i2c_res,
-        vfat2_scl_o         => vfat2_scl,
-        vfat2_sda_miso_i    => vfat2_sda_miso,
-        vfat2_sda_mosi_o    => vfat2_sda_mosi,
-        vfat2_sda_tri_o     => vfat2_sda_tri
+        vfat2_scl_o         => vfat2_scl_b,
+        vfat2_sda_miso_i    => vfat2_sda_miso_b,
+        vfat2_sda_mosi_o    => vfat2_sda_mosi_b,
+        vfat2_sda_tri_o     => vfat2_sda_tri_b
     );    
 
     --=====================--
@@ -454,8 +473,8 @@ begin
         wb_mst_dac_req_o    => wb_mst_dac_req,
         wb_mst_dac_res_i    => wb_mst_dac_res,
         vfat2_tk_data_i     => vfat2_tk_data,
-        vfat2_sbits_i       => vfat2_sbits,
-        vfat2_t1_o          => t1_command
+        vfat2_sbits_i       => vfat2_sbits_b,
+        vfat2_t1_o          => vfat2_t1
     );    
     
     --=========--
@@ -468,11 +487,11 @@ begin
         reset_i             => reset,
         wb_slv_req_i        => wb_slv_adc_req,
         wb_slv_res_o        => wb_slv_adc_res,
-        adc_chip_select_o   => adc_chip_select,
-        adc_din_i           => adc_din,
-        adc_dout_o          => adc_dout,
-        adc_clk_o           => adc_clk,
-        adc_eoc_i           => adc_eoc
+        adc_chip_select_o   => adc_chip_select_b,
+        adc_din_i           => adc_din_b,
+        adc_dout_o          => adc_dout_b,
+        adc_clk_o           => adc_clk_b,
+        adc_eoc_i           => adc_eoc_b
     );
         
     --===============--
@@ -527,7 +546,7 @@ begin
     
     cs_sync_in <= wb_mst_gtx_res(0).ack & wb_mst_gtx_res(0).stat & wb_mst_gtx_res(0).data;
     
-    cs_trig0 <= (0 => adc_clk, 1 => adc_din, 2 => adc_chip_select, 3 => adc_eoc, 4 => adc_dout, 5 => wb_slv_adc_req.stb, 6 => wb_slv_adc_res.ack, others => '0');
+    cs_trig0 <= (0 => adc_clk_b, 1 => adc_din_b, 2 => adc_chip_select_b, 3 => adc_eoc_b, 4 => adc_dout_b, 5 => wb_slv_adc_req.stb, 6 => wb_slv_adc_res.ack, others => '0');
     
     --=============--
     --== Buffers ==--
@@ -645,16 +664,16 @@ begin
         vfat2_23_data_out_p_i	=> vfat2_23_data_out_p_i,
         vfat2_23_data_out_n_i	=> vfat2_23_data_out_n_i,
         --
-        vfat2_mclk_i            => vfat2_mclk,
-        vfat2_reset_i           => vfat2_reset,
-        vfat2_t1_i              => vfat2_t1,
-        vfat2_scl_i             => vfat2_scl,
-        vfat2_sda_miso_o        => vfat2_sda_miso, 
-        vfat2_sda_mosi_i        => vfat2_sda_mosi,
-        vfat2_sda_tri_i         => vfat2_sda_tri,
-        vfat2_data_valid_o      => vfat2_data_valid,
-        vfat2_data_out_o        => vfat2_data_out,
-        vfat2_sbits_o           => vfat2_sbits,
+        vfat2_mclk_i            => vfat2_mclk_b,
+        vfat2_reset_i           => vfat2_reset_b,
+        vfat2_t1_i              => vfat2_t1_b,
+        vfat2_scl_i             => vfat2_scl_b,
+        vfat2_sda_miso_o        => vfat2_sda_miso_b, 
+        vfat2_sda_mosi_i        => vfat2_sda_mosi_b,
+        vfat2_sda_tri_i         => vfat2_sda_tri_b,
+        vfat2_data_valid_o      => vfat2_data_valid_b,
+        vfat2_data_out_o        => vfat2_data_out_b,
+        vfat2_sbits_o           => vfat2_sbits_b,
         -- ADC
         adc_clk_o               => adc_clk_o,
         adc_chip_select_o       => adc_chip_select_o,
@@ -662,11 +681,11 @@ begin
         adc_din_i               => adc_din_i,
         adc_eoc_i               => adc_eoc_i,
         --
-        adc_clk_i               => adc_clk,
-        adc_chip_select_i       => adc_chip_select,
-        adc_dout_i              => adc_dout,
-        adc_din_o               => adc_din,
-        adc_eoc_o               => adc_eoc,
+        adc_clk_i               => adc_clk_b,
+        adc_chip_select_i       => adc_chip_select_b,
+        adc_dout_i              => adc_dout_b,
+        adc_din_o               => adc_din_b,
+        adc_eoc_o               => adc_eoc_b,
         -- CDCE
         cdce_clk_p_i            => cdce_clk_p_i,
         cdce_clk_n_i            => cdce_clk_n_i,
@@ -683,24 +702,24 @@ begin
         cdce_le_o               => cdce_le_o,
         cdce_miso_i             => cdce_miso_i,
         -- 
-        cdce_clk_o              => cdce_clk,
-        cdce_clk_pri_i          => cdce_clk_pri,
-        cdce_aux_out_i          => cdce_aux_out,
-        cdce_aux_in_o           => cdce_aux_in,
-        cdce_ref_i              => cdce_ref,
-        cdce_pwrdown_i          => cdce_pwrdown,
-        cdce_sync_i             => cdce_sync,
-        cdce_locked_o           => cdce_locked,
-        cdce_sck_i              => cdce_sck,
-        cdce_mosi_i             => cdce_mosi,
-        cdce_le_i               => cdce_le,
-        cdce_miso_o             => cdce_miso,
+        cdce_clk_o              => cdce_clk_b,
+        cdce_clk_pri_i          => cdce_clk_pri_b,
+        cdce_aux_out_i          => cdce_aux_out_b,
+        cdce_aux_in_o           => cdce_aux_in_b,
+        cdce_ref_i              => cdce_ref_b,
+        cdce_pwrdown_i          => cdce_pwrdown_b,
+        cdce_sync_i             => cdce_sync_b,
+        cdce_locked_o           => cdce_locked_b,
+        cdce_sck_i              => cdce_sck_b,
+        cdce_mosi_i             => cdce_mosi_b,
+        cdce_le_i               => cdce_le_b,
+        cdce_miso_o             => cdce_miso_b,
         -- ChipID
         chipid_io               => chipid_io,
         -- 
-        chipid_mosi_i           => chipid_mosi,
-        chipid_miso_o           => chipid_miso,
-        chipid_tri_i            => chipid_tri,
+        chipid_mosi_i           => chipid_mosi_b,
+        chipid_miso_o           => chipid_miso_b,
+        chipid_tri_i            => chipid_tri_b,
         -- QPLL
         qpll_ref_40MHz_o        => qpll_ref_40MHz_o,
         qpll_reset_o            => qpll_reset_o,
@@ -709,19 +728,19 @@ begin
         qpll_clk_p_i            => qpll_clk_p_i,
         qpll_clk_n_i            => qpll_clk_n_i,
         --
-        qpll_ref_40MHz_i        => qpll_ref_40MHz,
-        qpll_reset_i            => qpll_reset,
-        qpll_locked_o           => qpll_locked,
-        qpll_error_o            => qpll_error,
-        qpll_clk_o              => qpll_clk,
+        qpll_ref_40MHz_i        => qpll_ref_40MHz_b,
+        qpll_reset_i            => qpll_reset_b,
+        qpll_locked_o           => qpll_locked_b,
+        qpll_error_o            => qpll_error_b,
+        qpll_clk_o              => qpll_clk_b,
         -- Temperature
         temp_clk_o              => temp_clk_o,
         temp_data_io            => temp_data_io,
         --
-        temp_clk_i              => temp_clk,
-        temp_data_mosi_i        => temp_data_mosi,
-        temp_data_miso_o        => temp_data_miso,
-        temp_data_tri_i         => temp_data_tri
+        temp_clk_i              => temp_clk_b,
+        temp_data_mosi_i        => temp_data_mosi_b,
+        temp_data_miso_o        => temp_data_miso_b,
+        temp_data_tri_i         => temp_data_tri_b
     );
     
 end Behavioral;

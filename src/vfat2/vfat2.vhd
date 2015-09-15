@@ -28,10 +28,12 @@ port(
     ref_clk_i           : in std_logic;
     reset_i             : in std_logic;
         
-    -- VFAT2 T1 control
+    -- VFAT2 control input
+    vfat2_readout_clk_i : in std_logic_vector(2 downto 0);
+    vfat2_reset_i       : in std_logic;
     vfat2_t1_i          : in t1_t;
     
-    -- VFAT2 control
+    -- VFAT2 control output
     vfat2_mclk_o        : out std_logic;
     vfat2_reset_o       : out std_logic;
     vfat2_t1_o          : out std_logic;
@@ -56,9 +58,6 @@ port(
 end vfat2;
 
 architecture Behavioral of vfat2 is
-
-    signal clk_readout  : std_logic_vector(2 downto 0);
-
 begin
 
     --=====================--
@@ -66,40 +65,7 @@ begin
     --=====================--
     
     vfat2_mclk_o <= ref_clk_i;
-    vfat2_reset_o <= '1';
-    
-    vfat2_clock_phase_gen : for I in 0 to 2 generate
-    begin
-    
-        vfat2_clock_phase_inst : entity work.vfat2_clock_phase
-        port map(
-            ref_clk_i   => ref_clk_i,
-            reset_i     => reset_i,            
-            req_en_i    => '0',
-            req_shift_i => x"00",           
-            req_ack_o   => open,
-            req_err_o   => open,            
-            vfat2_clk_o => clk_readout(I)               
-        );
-            
-    end generate;
-    
-    --==================================--
-    --== VFAT2 tracking data decoders ==--
-    --==================================--
-    
-    vfat2_data_decoder_gen : for I in 0 to 23 generate
-    begin
-    
-        vfat2_data_decoder_inst : entity work.vfat2_data_decoder
-        port map(
-            ref_clk_i           => clk_readout(I / 8),
-            reset_i             => reset_i,
-            vfat2_data_out_i    => vfat2_data_out_i(I),
-            tk_data_o           => vfat2_tk_data_o(I)
-        );
-
-    end generate;
+    vfat2_reset_o <= not vfat2_reset_i;
 
     --================--
     --== T1 encoder ==--
@@ -112,6 +78,23 @@ begin
         vfat2_t1_i  => vfat2_t1_i,
         vfat2_t1_o  => vfat2_t1_o
     );
+    
+    --==================================--
+    --== VFAT2 tracking data decoders ==--
+    --==================================--
+    
+    vfat2_data_decoder_gen : for I in 0 to 23 generate
+    begin
+    
+        vfat2_data_decoder_inst : entity work.vfat2_data_decoder
+        port map(
+            ref_clk_i           => vfat2_readout_clk_i(I / 8),
+            reset_i             => reset_i,
+            vfat2_data_out_i    => vfat2_data_out_i(I),
+            tk_data_o           => vfat2_tk_data_o(I)
+        );
+
+    end generate;
 
     --========================--
     --== VFAT2 I2C handlers ==--

@@ -123,7 +123,7 @@ begin
                         else
                             -- Send an I2C request if needed
                             if (req_mask(to_integer(vfat2_counter)) = '0') then
-                                wb_mst_req_o <= (stb => '1', we => req_we, addr => WB_ADDR_I2C & "000000000000000" & std_logic_vector(vfat2_counter) & req_register, data => x"000000" & req_data);
+                                wb_mst_req_o <= (stb => '1', we => req_we, addr => WB_ADDR_I2C & "00000000000" & std_logic_vector(vfat2_counter) & req_register, data => x"000000" & req_data);
                                 state <= ACK_I2C;
                             else
                                 vfat2_counter <= vfat2_counter + 1;

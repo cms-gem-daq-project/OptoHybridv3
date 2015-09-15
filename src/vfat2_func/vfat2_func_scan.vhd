@@ -161,8 +161,7 @@ begin
         data_i      => wb_data,
         ack_o       => reg_ack(7 downto 1),
         err_o       => reg_err(7 downto 1),
-        data_o      => reg_data(7 downto 1)
-        
+        data_o      => reg_data(7 downto 1)        
     );
     
     --=======================--

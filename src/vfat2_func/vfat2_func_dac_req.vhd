@@ -249,7 +249,7 @@ begin
                         req_ack_o <= '0';
                         req_err_o <= '0';
                         -- Ask if VFAT2 is running
-                        wb_mst_req_o <= (stb => '1', we => '0', addr => WB_ADDR_I2C & "000000000000000" & req_vfat2 & x"00", data => (others => '0'));
+                        wb_mst_req_o <= (stb => '1', we => '0', addr => WB_ADDR_I2C & "00000000000" & req_vfat2 & x"00", data => (others => '0'));
                         state <= ACK_RUNNING;      
                     -- Wait for the response
                     when ACK_RUNNING => 
@@ -273,7 +273,7 @@ begin
                     -- Ask for all VFAT2s to shutdown their DAC
                     when REQ_SHUTDOWN => 
                         -- Send an I2C request
-                        wb_mst_req_o <= (stb => '1', we => '1', addr => WB_ADDR_EI2C & x"00000" & x"01", data => (others => '0'));
+                        wb_mst_req_o <= (stb => '1', we => '1', addr => WB_ADDR_EI2C & x"0000" & x"01", data => (others => '0'));
                         state <= ACK_SHUTDOWN;                        
                     -- Wait for the response
                     when ACK_SHUTDOWN => 
@@ -300,7 +300,7 @@ begin
                         req_ack_o <= '0';
                         req_err_o <= '0';
                         -- Ask if VFAT2 is running
-                        wb_mst_req_o <= (stb => '1', we => '0', addr => WB_ADDR_I2C & "000000000000000" & req_vfat2 & x"01", data => x"0000000" & dac_code);
+                        wb_mst_req_o <= (stb => '1', we => '0', addr => WB_ADDR_I2C & "00000000000" & req_vfat2 & x"01", data => x"0000000" & dac_code);
                         state <= ACK_SAVE;      
                     -- Wait for the response
                     when ACK_SAVE => 
@@ -326,7 +326,7 @@ begin
                     -- Set the DAC select
                     when REQ_SET_DAC =>
                         -- Select the correct DAC
-                        wb_mst_req_o <= (stb => '1', we => '1', addr => WB_ADDR_I2C & "000000000000000" & req_vfat2 & x"01", data => x"0000000" & dac_code);
+                        wb_mst_req_o <= (stb => '1', we => '1', addr => WB_ADDR_I2C & "00000000000" & req_vfat2 & x"01", data => x"0000000" & dac_code);
                         state <= ACK_SET_DAC;      
                     -- Wait for the response
                     when ACK_SET_DAC => 
@@ -352,7 +352,7 @@ begin
                         -- Reset the write enable 
                         fifo_we_o <= '0';
                         -- Send an I2C request
-                        wb_mst_req_o <= (stb => '1', we => '1', addr => WB_ADDR_I2C & "000000000000000" & req_vfat2 & register_id, data => x"000000" & std_logic_vector(value_counter(7 downto 0)));
+                        wb_mst_req_o <= (stb => '1', we => '1', addr => WB_ADDR_I2C & "00000000000" & req_vfat2 & register_id, data => x"000000" & std_logic_vector(value_counter(7 downto 0)));
                         state <= ACK_I2C;                        
                     -- Wait for the acknowledgment
                     when ACK_I2C => 
@@ -381,7 +381,7 @@ begin
                             state <= AVERAGE;
                         else
                             -- Request the ADC value
-                            wb_mst_req_o <= (stb => '1', we => '1', addr => WB_ADDR_ADC & x"000000" & adc_channel, data => (others => '0'));
+                            wb_mst_req_o <= (stb => '1', we => '1', addr => WB_ADDR_ADC & x"00000" & adc_channel, data => (others => '0'));
                             state <= ACK_SCAN_DAC;  
                         end if;                
                     -- Wait for the acknowledgment
@@ -426,7 +426,7 @@ begin
                         -- Reset the write enable 
                         fifo_we_o <= '0';
                         -- Send an I2C request
-                        wb_mst_req_o <= (stb => '1', we => '1', addr => WB_ADDR_I2C & "000000000000000" & req_vfat2 & register_id, data => x"000000" & std_logic_vector(saved_value));
+                        wb_mst_req_o <= (stb => '1', we => '1', addr => WB_ADDR_I2C & "00000000000" & req_vfat2 & register_id, data => x"000000" & std_logic_vector(saved_value));
                         state <= ACK_RESTORE;                        
                     -- Wait for the acknowledgment
                     when ACK_RESTORE => 
