@@ -28,13 +28,15 @@ port(
     ref_clk_i           : in std_logic;
     reset_i             : in std_logic;
         
-    -- VFAT2 T1 control
+    -- VFAT2 control input
+    vfat2_readout_clk_i : in std_logic_vector(2 downto 0);
+    vfat2_reset_i       : in std_logic;
     vfat2_t1_i          : in t1_t;
     
-    -- VFAT2 control
+    -- VFAT2 control output
     vfat2_mclk_o        : out std_logic;
-    vfat2_t1_o          : out std_logic;
     vfat2_reset_o       : out std_logic;
+    vfat2_t1_o          : out std_logic;
     
     -- VFAT2 raw tracking data
     vfat2_data_out_i    : in std_logic_vector(23 downto 0);
@@ -63,24 +65,7 @@ begin
     --=====================--
     
     vfat2_mclk_o <= ref_clk_i;
-    vfat2_reset_o <= '1';
-    
-    --==================================--
-    --== VFAT2 tracking data decoders ==--
-    --==================================--
-    
-    vfat2_data_decoder_gen : for I in 0 to 23 generate
-    begin
-    
-        vfat2_data_decoder_inst : entity work.vfat2_data_decoder
-        port map(
-            ref_clk_i           => ref_clk_i,
-            reset_i             => reset_i,
-            vfat2_data_out_i    => vfat2_data_out_i(I),
-            tk_data_o           => vfat2_tk_data_o(I)
-        );
-
-    end generate;
+    vfat2_reset_o <= not vfat2_reset_i;
 
     --================--
     --== T1 encoder ==--
@@ -93,6 +78,23 @@ begin
         vfat2_t1_i  => vfat2_t1_i,
         vfat2_t1_o  => vfat2_t1_o
     );
+    
+    --==================================--
+    --== VFAT2 tracking data decoders ==--
+    --==================================--
+    
+    vfat2_data_decoder_gen : for I in 0 to 23 generate
+    begin
+    
+        vfat2_data_decoder_inst : entity work.vfat2_data_decoder
+        port map(
+            ref_clk_i           => vfat2_readout_clk_i(I / 8),
+            reset_i             => reset_i,
+            vfat2_data_out_i    => vfat2_data_out_i(I),
+            tk_data_o           => vfat2_tk_data_o(I)
+        );
+
+    end generate;
 
     --========================--
     --== VFAT2 I2C handlers ==--

@@ -35,7 +35,8 @@ package types_pkg is
         flags   : std_logic_vector(3 downto 0);
         chip_id : std_logic_vector(11 downto 0);
         strips  : std_logic_vector(127 downto 0);
-        crc     : std_logic_vector(15 downto 0);    
+        crc     : std_logic_vector(15 downto 0);  
+        crc_ok  : std_logic;
     end record;
     
     type tk_data_array_t is array(integer range <>) of tk_data_t;

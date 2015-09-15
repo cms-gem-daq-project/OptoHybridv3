@@ -13,9 +13,6 @@
 -- Translates the Wishbone request to an I2C request that is then sent to the common
 -- I2C communication module.
 --
--- 
--- Stable & tested
---
 ----------------------------------------------------------------------------------
 
 library ieee;
