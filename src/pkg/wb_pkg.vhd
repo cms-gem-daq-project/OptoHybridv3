@@ -22,17 +22,15 @@ package wb_pkg is
     
     --== Wishbone masters ==--
     
-	constant WB_MASTERS         : positive := 6;
+	constant WB_MASTERS         : positive := 4;
     
-    constant WB_MST_GTX_0       : integer := 0;
-    constant WB_MST_GTX_1       : integer := 1;
-    constant WB_MST_GTX_2       : integer := 2;
+    constant WB_MST_GTX         : integer := 0;
     
-    constant WB_MST_EI2C        : integer := 3;
+    constant WB_MST_EI2C        : integer := 1;
+   
+    constant WB_MST_SCAN        : integer := 2;
     
-    constant WB_MST_SCAN        : integer := 4;
-    
-    constant WB_MST_DAC         : integer := 5;
+    constant WB_MST_DAC         : integer := 3;
     
     --== Wishbone slaves ==--
     

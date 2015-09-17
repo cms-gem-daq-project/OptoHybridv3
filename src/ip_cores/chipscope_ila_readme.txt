@@ -20,14 +20,25 @@ Creates an implementation netlist:
    * chipscope_ila.xdc
    * chipscope_ila_xmdf.tcl
 
+Creates an HDL instantiation template:
+   Creates an HDL instantiation template for the IP.
+
+   * chipscope_ila.vho
+
 IP Symbol Generator:
    Generate an IP symbol based on the current project options'.
 
    * chipscope_ila.asy
 
+SYM file generator:
+   Generate a SYM file for compatibility with legacy flows
+
+   * chipscope_ila.sym
+
 Generate ISE subproject:
    Create an ISE subproject for use when including this core in ISE designs
 
+   * _xmsgs/pn_parser.xmsgs
    * chipscope_ila.gise
    * chipscope_ila.xise
 

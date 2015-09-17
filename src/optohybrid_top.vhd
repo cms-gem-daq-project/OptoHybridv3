@@ -220,7 +220,7 @@ port(
     temp_clk_o              : out std_logic;
     temp_data_io            : inout std_logic;
 
-    chipid_io               : inout std_logic
+    chipid_io               : inout std_logic;
     
 --    hdmi_scl_io             : inout std_logic_vector(1 downto 0);
 --    hdmi_sda_io             : inout std_logic_vector(1 downto 0);
@@ -233,8 +233,13 @@ port(
        
     --== GTX ==--
     
---    mgt_112_clk0_p_i        : in std_logic;
---    mgt_112_clk0_n_i        : in std_logic;
+    mgt_112_clk0_p_i        : in std_logic;
+    mgt_112_clk0_n_i        : in std_logic;
+    
+    mgt_112_rx_p_i          : in std_logic_vector(1 downto 0);
+    mgt_112_rx_n_i          : in std_logic_vector(1 downto 0);
+    mgt_112_tx_p_o          : out std_logic_vector(1 downto 0);
+    mgt_112_tx_n_o          : out std_logic_vector(1 downto 0)
     
 --    mgt_116_clk1_p_i        : in std_logic;
 --    mgt_116_clk1_n_i        : in std_logic;
@@ -272,7 +277,7 @@ architecture Behavioral of optohybrid_top is
     --== Global signals ==--
 
     signal ref_clk              : std_logic;
-    signal reset                : std_logic;
+    signal reset                : std_logic;    
 
     --== VFAT2 signals ==--
     
@@ -342,8 +347,8 @@ architecture Behavioral of optohybrid_top is
     signal wb_m_req             : wb_req_array_t((WB_MASTERS - 1) downto 0);
     signal wb_m_res             : wb_res_array_t((WB_MASTERS - 1) downto 0);
     
-    alias wb_mst_gtx_req        : wb_req_array_t(2 downto 0) is wb_m_req(WB_MST_GTX_2 downto WB_MST_GTX_0);
-    alias wb_mst_gtx_res        : wb_res_array_t(2 downto 0) is wb_m_res(WB_MST_GTX_2 downto WB_MST_GTX_0);
+    alias wb_mst_gtx_req        : wb_req_t is wb_m_req(WB_MST_GTX);
+    alias wb_mst_gtx_res        : wb_res_t is wb_m_res(WB_MST_GTX);
     
     alias wb_mst_ei2c_req       : wb_req_t is wb_m_req(WB_MST_EI2C);
     alias wb_mst_ei2c_res       : wb_res_t is wb_m_res(WB_MST_EI2C);
@@ -379,25 +384,11 @@ architecture Behavioral of optohybrid_top is
     alias wb_slv_clk_req        : wb_req_t is wb_s_req(WB_SLV_CLK);
     alias wb_slv_clk_res        : wb_res_t is wb_s_res(WB_SLV_CLK);
     
-    --== Chipscope signals ==--
-    
-    signal cs_clk               : std_logic; -- ChipScope clock
-    signal cs_ctrl0             : std_logic_vector(35 downto 0);
-    signal cs_ctrl1             : std_logic_vector(35 downto 0); 
-    signal cs_sync_in           : std_logic_vector(36 downto 0);
-    signal cs_sync_out          : std_logic_vector(65 downto 0);
-    signal cs_trig0             : std_logic_vector(31 downto 0);
-    
 begin
 
     reset <= '0';
     
-    --ref_clk <= qpll_clk;
-    --wb_clk <= qpll_clk;
-    --vfat2_mclk <= qpll_clk;
-    
     pll_50MHz_inst : entity work.pll_50MHz port map(clk_50MHz_i => clk_50MHz_i, clk_40MHz_o => ref_clk);
-    cs_clk <= ref_clk;
     
     --=====================--
     --== Wishbone switch ==--
@@ -425,6 +416,24 @@ begin
         wb_slv_res_o        => wb_slv_clk_res,
         vfat2_readout_clk_o => vfat2_readout_clk
     );
+    
+    --=========--
+    --== GTX ==--
+    --=========--
+    
+    gtx_inst : entity work.gtx 
+    port map(
+		mgt_refclk_n_i  => mgt_112_clk0_n_i,
+		mgt_refclk_p_i  => mgt_112_clk0_p_i,
+        ref_clk_i       => ref_clk,
+		reset_i         => reset,
+        wb_mst_req_o    => wb_mst_gtx_req,
+        wb_mst_res_i    => wb_mst_gtx_res,
+		rx_n_i          => mgt_112_rx_n_i,
+		rx_p_i          => mgt_112_rx_p_i,
+		tx_n_o          => mgt_112_tx_n_o,
+		tx_p_o          => mgt_112_tx_p_o
+	);
 
     --===========--
     --== VFAT2 ==--
@@ -494,59 +503,26 @@ begin
         adc_eoc_i           => adc_eoc_b
     );
         
-    --===============--
-    --== ChipScope ==--
-    --===============--
+    --==========--
+    --== CDCE ==--
+    --==========--
     
-    chipscope_icon_inst : entity work.chipscope_icon
+    cdce_inst : entity work.cdce 
     port map(
-        control0    => cs_ctrl0,
-        control1    => cs_ctrl1
-    );
-    
-    chipscope_vio_inst : entity work.chipscope_vio
-    port map(
-        control     => cs_ctrl0,
-        clk         => cs_clk,
-        sync_in     => cs_sync_in,
-        sync_out    => cs_sync_out
-    );
-    
-    chipscope_ila_inst : entity work.chipscope_ila
-    port map(
-        control => cs_ctrl1,
-        clk     => cs_clk,
-        trig0   => cs_trig0
-    );
-    
-    --===========--
-    --== DEBUG ==--
-    --===========--
-    
-    process(ref_clk)
-        variable s : std_logic;
-    begin
-        if (rising_edge(ref_clk)) then
-            if (reset = '1') then
-                s := '0';
-                wb_mst_gtx_req(0).stb <= '0'; 
-            else
-                if (s = '0' and cs_sync_out(65) = '1') then
-                    wb_mst_gtx_req(0) <= (stb   => cs_sync_out(65),
-                                          we    => cs_sync_out(64),
-                                          addr  => cs_sync_out(31 downto 0),
-                                          data  => cs_sync_out(63 downto 32));
-                else
-                    wb_mst_gtx_req(0).stb <= '0'; 
-                end if;
-                s := cs_sync_out(65);
-            end if;
-        end if; 
-    end process;
-    
-    cs_sync_in <= wb_mst_gtx_res(0).ack & wb_mst_gtx_res(0).stat & wb_mst_gtx_res(0).data;
-    
-    cs_trig0 <= (0 => adc_clk_b, 1 => adc_din_b, 2 => adc_chip_select_b, 3 => adc_eoc_b, 4 => adc_dout_b, 5 => wb_slv_adc_req.stb, 6 => wb_slv_adc_res.ack, others => '0');
+		ref_clk_i       => ref_clk,
+        cdce_clk_i      => cdce_clk_b,
+        cdce_clk_pri_o  => cdce_clk_pri_b,
+        cdce_aux_out_o  => cdce_aux_out_b,
+        cdce_aux_in_i   => cdce_aux_in_b,
+        cdce_ref_o      => cdce_ref_b,
+        cdce_pwrdown_o  => cdce_pwrdown_b,
+        cdce_sync_o     => cdce_sync_b,
+        cdce_locked_i   => cdce_locked_b,
+        cdce_sck_o      => cdce_sck_b,
+        cdce_mosi_o     => cdce_mosi_b,
+        cdce_le_o       => cdce_le_b,
+        cdce_miso_i     => cdce_miso_b
+	);
     
     --=============--
     --== Buffers ==--
