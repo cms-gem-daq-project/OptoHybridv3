@@ -77,7 +77,7 @@ begin
 
     wb_hub_inst : entity work.wb_hub
     generic map(
-        MASK        => "00000000000000000001000000--",
+        MASK        => "0000000000000001000000--",
         SIZE        => 3,
         OFFSET      => 0
     )

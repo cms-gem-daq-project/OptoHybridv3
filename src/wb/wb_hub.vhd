@@ -28,7 +28,7 @@ entity wb_hub is
 generic(
     
     -- Parameters of the split
-    MASK        : std_logic_vector(27 downto 0) := "----------------------------";
+    MASK        : std_logic_vector(23 downto 0) := "------------------------";
     SIZE        : integer := 8;    
     OFFSET      : integer := 0
     
@@ -100,7 +100,7 @@ begin
                             -- Set timeout
                             timeout <= to_unsigned(WB_TIMEOUT - 4, 32);
                             -- Check if we should split
-                            if (std_match(wb_req_i.addr(27 downto 0), MASK)) then
+                            if (std_match(wb_req_i.addr(23 downto 0), MASK)) then
                                 -- Convert the address to a bus select
                                 sel_bus := to_integer(unsigned(wb_req_i.addr((NBITS - 1 + OFFSET) downto OFFSET)));
                                 -- Forward the data on the bus
