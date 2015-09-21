@@ -27,7 +27,6 @@ port(
     reset_i         : in std_logic;
     
     req_en_o        : out std_logic;
-    req_ack_i       : in std_logic;
     req_data_o      : out std_logic_vector(64 downto 0);
     req_error_o     : out std_logic;
     
@@ -43,12 +42,10 @@ architecture Behavioral of gtx_rx_tracking is
     
     signal state        : state_t;
     
-    signal req_en       : std_logic;
-    signal req_data     : std_logic_vector(79 downto 0);
+    signal req_header   : std_logic_vector(15 downto 0);
+    signal req_data     : std_logic_vector(63 downto 0);
 
 begin  
-
-    req_en_o <= req_en;
 
     --== Transitions between states ==--
 
@@ -101,10 +98,11 @@ begin
     begin
         if (rising_edge(gtx_clk_i)) then
             if (reset_i = '1') then
+                req_header <= (others => '0');
                 req_data <= (others => '0');
             else
                 case state is                    
-                    when HEADER => req_data(79 downto 64) <= rx_data_i;
+                    when HEADER => req_header <= rx_data_i;
                     when ADDR_0 => req_data(63 downto 48) <= rx_data_i;
                     when ADDR_1 => req_data(47 downto 32) <= rx_data_i;
                     when DATA_0 => req_data(31 downto 16) <= rx_data_i;
@@ -116,23 +114,20 @@ begin
     end process;   
     
     --== Forward valid data ==--    
-    
+
     process(gtx_clk_i)
     begin
         if (rising_edge(gtx_clk_i)) then
             if (reset_i = '1') then
-                req_en <= '0';
+                req_en_o <= '0';
                 req_data_o <= (others => '0');
             else
-                if (state = COMMA and req_data(79) = '1') then
-                    if (req_en = '0' and req_ack_i = '0') then
-                        req_en <= '1';
-                        req_data_o <= req_data(64 downto 0);
-                    end if;  
-                end if;
-                if (req_en = '1' and req_ack_i = '1') then
-                    req_en <= '0';
-                end if;
+                case state is
+                    when COMMA =>            
+                        req_en_o <= req_header(15);
+                        req_data_o <= req_header(0) & req_data;
+                    when others => req_en_o <= '0';
+                end case;                
             end if;
         end if;
     end process;
