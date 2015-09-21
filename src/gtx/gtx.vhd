@@ -64,7 +64,9 @@ architecture Behavioral of gtx is
     
     signal fwd_res_en   : std_logic;
     signal fwd_res_ack  : std_logic;
-    signal fwd_res_data : std_logic_vector(31 downto 0); 
+    signal fwd_res_data : std_logic_vector(31 downto 0);
+    
+    signal fwd_rx_error : std_logic;
     
     --== Chipscope signals ==--
     
@@ -113,9 +115,10 @@ begin
         reset_i     => reset_i,           
         req_en_o    => fwd_req_en,   
         req_ack_i   => fwd_req_ack,   
-        req_data_o  => fwd_req_data,           
+        req_data_o  => fwd_req_data,  
+        req_error_o => fwd_rx_error,         
         rx_kchar_i  => gtx_rx_kchar(1 downto 0),   
-        rx_data_i   => gtx_rx_data(15 downto 0)        
+        rx_data_i   => gtx_rx_data(15 downto 0)
     );
     
     --==========================--
