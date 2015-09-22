@@ -34,7 +34,7 @@ package wb_pkg is
     
     --== Wishbone slaves ==--
     
-	constant WB_SLAVES          : positive := 13;
+	constant WB_SLAVES          : positive := 14;
     
     constant WB_SLV_I2C_0       : integer := 0;
     constant WB_SLV_I2C_1       : integer := 1;
@@ -57,6 +57,8 @@ package wb_pkg is
     
     constant WB_SLV_CNT         : integer := 12;
     
+    constant WB_SLV_SYS         : integer := 13;
+    
     --== Wishbone addresses ==--
     
     constant WB_ADDR_I2C        : std_logic_vector(7 downto 0) := x"40";
@@ -68,6 +70,7 @@ package wb_pkg is
     constant WB_ADDR_ADC        : std_logic_vector(7 downto 0) := x"48";
     constant WB_ADDR_CLK        : std_logic_vector(7 downto 0) := x"49";
     constant WB_ADDR_CNT        : std_logic_vector(7 downto 0) := x"4A";
+    constant WB_ADDR_SYS        : std_logic_vector(7 downto 0) := x"4B";
    
     --== Wishbone address selection & generation ==--
     
@@ -102,7 +105,9 @@ package body wb_pkg is
         -- CLK                                                              
         elsif (std_match(addr, WB_ADDR_CLK  & "000000000000000000000000")) then sel := WB_SLV_CLK;    
         -- CNT                                                              
-        elsif (std_match(addr, x"4" & WB_ADDR_CNT  & "000000000000000000000000")) then sel := WB_SLV_CNT;    
+        elsif (std_match(addr, WB_ADDR_CNT  & "0000000000000000--------")) then sel := WB_SLV_CNT;    
+        -- SYS                                                              
+        elsif (std_match(addr, WB_ADDR_SYS  & "0000000000000000--------")) then sel := WB_SLV_SYS;  
         --
         else sel := 99;
         end if;

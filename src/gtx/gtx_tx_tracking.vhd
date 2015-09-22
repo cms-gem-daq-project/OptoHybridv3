@@ -30,6 +30,11 @@ port(
     req_valid_i     : in std_logic;
     req_data_i      : in std_logic_vector(31 downto 0);
     
+    tk_rd_en_o      : out std_logic;
+    tk_rd_valid_i   : in std_logic;
+    tk_rd_data_i    : in std_logic_vector(15 downto 0);
+    tk_rd_csb_i     : in std_logic;
+    
     tx_kchar_o      : out std_logic_vector(1 downto 0);
     tx_data_o       : out std_logic_vector(15 downto 0)
     
@@ -46,6 +51,7 @@ architecture Behavioral of gtx_tx_tracking is
     
     signal req_header   : std_logic_vector(15 downto 0);
     signal req_data     : std_logic_vector(31 downto 0);
+    signal req_tk_data  : std_logic;
 
 begin  
 
@@ -95,6 +101,29 @@ begin
         end if;
     end process; 
 
+    --== Request new tracking data ==--
+
+    process(gtx_clk_i)
+    begin
+        if (rising_edge(gtx_clk_i)) then
+            if (reset_i = '1') then
+                tk_rd_en_o <= '0';
+                req_tk_data <= '0';
+            else
+                case state is         
+                    when COMMA => 
+                        tk_rd_en_o <= (not tk_rd_csb_i);      
+                        req_tk_data <= (not tk_rd_csb_i);              
+                    when HEADER => tk_rd_en_o <= req_tk_data;
+                    when TK_DATA => tk_rd_en_o <= req_tk_data;
+                    when others => 
+                        tk_rd_en_o <= '0';
+                        req_tk_data <= '0';
+                end case;
+            end if;
+        end if;
+    end process; 
+
     --== Handle new data ==--
 
     process(gtx_clk_i)
@@ -107,10 +136,10 @@ begin
                 case state is         
                     when COMMA => 
                         if (req_valid_i = '1') then
-                            req_header <= x"8000";
+                            req_header <= '1' & (not tk_rd_csb_i) & "00" & x"000";
                             req_data <= req_data_i;
                         else
-                            req_header <= (others => '0');
+                            req_header <= '0' & (not tk_rd_csb_i) & "00" & x"000";
                             req_data <= (others => '0');
                         end if;
                     when others => null;
@@ -137,7 +166,11 @@ begin
                         tx_data_o <= req_header;   
                     when TK_DATA => 
                         tx_kchar_o <= "00";
-                        tx_data_o <= (others => '0');                      
+                        if (tk_rd_valid_i = '1') then
+                            tx_data_o <= tk_rd_data_i;   
+                        else
+                            tx_data_o <= (others => '0');                                
+                        end if;
                     when DATA_0 => 
                         tx_kchar_o <= "00";
                         tx_data_o <= req_data(31 downto 16);

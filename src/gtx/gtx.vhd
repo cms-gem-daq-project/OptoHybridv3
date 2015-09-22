@@ -24,20 +24,23 @@ use work.types_pkg.all;
 entity gtx is
 port(
 
-    mgt_refclk_n_i  : in std_logic;
-    mgt_refclk_p_i  : in std_logic;
+    mgt_refclk_n_i      : in std_logic;
+    mgt_refclk_p_i      : in std_logic;
     
-    ref_clk_i       : in std_logic;
+    ref_clk_i           : in std_logic;
     
-    reset_i         : in std_logic;
+    reset_i             : in std_logic;
     
-    wb_mst_req_o    : out wb_req_t;
-    wb_mst_res_i    : in wb_res_t;
+    wb_mst_req_o        : out wb_req_t;
+    wb_mst_res_i        : in wb_res_t;
+    
+    vfat2_tk_data_i     : in tk_data_array_t(23 downto 0);
+    vfat2_tk_mask_i     : in std_logic_vector(23 downto 0);
    
-    rx_n_i          : in std_logic_vector(1 downto 0);
-    rx_p_i          : in std_logic_vector(1 downto 0);
-    tx_n_o          : out std_logic_vector(1 downto 0);
-    tx_p_o          : out std_logic_vector(1 downto 0)
+    rx_n_i              : in std_logic_vector(1 downto 0);
+    rx_p_i              : in std_logic_vector(1 downto 0);
+    tx_n_o              : out std_logic_vector(1 downto 0);
+    tx_p_o              : out std_logic_vector(1 downto 0)
     
 );
 end gtx;
@@ -66,6 +69,13 @@ architecture Behavioral of gtx is
     signal o2g_req_valid    : std_logic;
     signal o2g_req_data     : std_logic_vector(31 downto 0);
     
+    --== VFAT2 tracking data ==--
+    
+    signal tk_rd_en         : std_logic;
+    signal tk_rd_valid      : std_logic;
+    signal tk_rd_data       : std_logic_vector(15 downto 0);
+    signal tk_rd_csb        : std_logic;
+    
     --== Chipscope signals ==--
     
     signal cs_ctrl0         : std_logic_vector(35 downto 0);
@@ -75,11 +85,7 @@ architecture Behavioral of gtx is
     signal cs_trig0         : std_logic_vector(31 downto 0);
     signal cs_trig1         : std_logic_vector(31 downto 0);
     
-    signal wb_mst_req       : wb_req_t;
-    
 begin    
-
-    wb_mst_req_o <= wb_mst_req;
     
     --=================--
     --== GTX wrapper ==--
@@ -124,13 +130,17 @@ begin
        
     gtx_tx_tracking_inst : entity work.gtx_tx_tracking
     port map(
-        gtx_clk_i   => gtx_usr_clk,   
-        reset_i     => reset_i,       
-		req_en_o    => o2g_req_en,
-		req_valid_i => o2g_req_valid,
-		req_data_i  => o2g_req_data,
-		tx_kchar_o  => gtx_tx_kchar(1 downto 0),  
-		tx_data_o   => gtx_tx_data(15 downto 0)
+        gtx_clk_i       => gtx_usr_clk,   
+        reset_i         => reset_i,       
+		req_en_o        => o2g_req_en,
+		req_valid_i     => o2g_req_valid,
+		req_data_i      => o2g_req_data,
+		tk_rd_en_o      => tk_rd_en,
+		tk_rd_valid_i   => tk_rd_valid,
+		tk_rd_data_i    => tk_rd_data,
+        tk_rd_csb_i     => tk_rd_csb,
+		tx_kchar_o      => gtx_tx_kchar(1 downto 0),  
+		tx_data_o       => gtx_tx_data(15 downto 0)
 	);
     
     --============================--
@@ -142,14 +152,31 @@ begin
         ref_clk_i       => ref_clk_i,
         gtx_clk_i       => gtx_usr_clk,  
         reset_i         => reset_i,        
-        wb_mst_req_o    => wb_mst_req,
+        wb_mst_req_o    => wb_mst_req_o,
         wb_mst_res_i    => wb_mst_res_i,       
         rx_en_i         => g2o_req_en,
         rx_data_i       => g2o_req_data,          
         tx_en_i         => o2g_req_en,
         tx_valid_o      => o2g_req_valid,
         tx_data_o       => o2g_req_data      
-    );    
+    );  
+    
+    --======================================--
+    --== VFAT2 tracking data concentrator ==--
+    --======================================--	
+    
+    gtx_tk_concentrator_inst : entity work.gtx_tk_concentrator 
+    port map(
+		ref_clk_i       => ref_clk_i,
+		gtx_clk_i       => gtx_usr_clk,
+		reset_i         => reset_i,
+		tk_data_i       => vfat2_tk_data_i,
+        vfat2_tk_mask_i => vfat2_tk_mask_i,
+		tk_rd_en_i      => tk_rd_en,
+		tk_rd_valid_o   => tk_rd_valid,
+		tk_rd_data_o    => tk_rd_data,
+        tk_rd_csb_o     => tk_rd_csb
+	);  
             
     --===============--
     --== ChipScope ==--
@@ -179,11 +206,11 @@ begin
         
     cs_trig0 <= gtx_rx_data(15 downto 0) & gtx_tx_data(15 downto 0);
     cs_trig1 <= (
-        0 => g2o_req_en,
-        1 => '0',
-        2 => wb_mst_req.stb,
-        3 => wb_mst_res_i.ack,
-        4 => o2g_req_en,
+        0 => vfat2_tk_data_i(0).valid,
+        1 => vfat2_tk_data_i(0).crc_ok,
+        2 => tk_rd_en,
+        3 => tk_rd_valid,   
+        4 => tk_rd_csb,
         others => '0'
     );
     

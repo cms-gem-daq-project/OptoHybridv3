@@ -1,11 +1,11 @@
 #ChipScope Pro Analyzer Project File, Version 3.0
-#Thu Sep 17 11:40:11 CEST 2015
+#Mon Sep 21 17:10:32 CEST 2015
 deviceChain.deviceName0=XC6VLX130T
 deviceChain.iRLength0=10
 deviceChain.name0=MyDevice0
 deviceIds=6424a093
-mdiAreaHeight=0.6852189781021898
-mdiAreaHeightLast=0.75
+mdiAreaHeight=0.6696078431372549
+mdiAreaHeightLast=0.8058823529411765
 mdiCount=2
 mdiDevice0=0
 mdiDevice1=0
@@ -13,15 +13,15 @@ mdiType0=1
 mdiType1=0
 mdiUnit0=1
 mdiUnit1=1
-navigatorHeight=0.31386861313868614
-navigatorHeightLast=0.19251824817518248
-navigatorWidth=0.17820247933884298
-navigatorWidthLast=0.17820247933884298
+navigatorHeight=0.33725490196078434
+navigatorHeightLast=0.2068627450980392
+navigatorWidth=0.17769671704012507
+navigatorWidthLast=0.17769671704012507
 signalDisplayPath=0
 unit.-1.-1.username=
 unit.0.-1.coretype=SYSTEM MONITOR
 unit.0.-1.port.-1.buscount=0
-unit.0.-1.port.-1.channelcount=4
+unit.0.-1.port.-1.channelcount=0
 unit.0.-1.port.-1.s.0.alias=Die Temperature
 unit.0.-1.port.-1.s.0.color=java.awt.Color[r\=0,g\=0,b\=124]
 unit.0.-1.port.-1.s.0.name=Die Temperature
@@ -48,7 +48,7 @@ unit.0.0.coretype=VIO
 unit.0.0.port.-1.buscount=0
 unit.0.0.port.-1.channelcount=0
 unit.0.0.port.0.buscount=0
-unit.0.0.port.0.channelcount=0
+unit.0.0.port.0.channelcount=37
 unit.0.0.port.0.s.0.alias=
 unit.0.0.port.0.s.0.color=java.awt.Color[r\=0,g\=0,b\=124]
 unit.0.0.port.0.s.0.display=16
@@ -346,7 +346,7 @@ unit.0.0.port.0.s.9.persistence=0
 unit.0.0.port.0.s.9.value=0
 unit.0.0.port.0.s.9.visible=1
 unit.0.0.port.1.buscount=0
-unit.0.0.port.1.channelcount=8
+unit.0.0.port.1.channelcount=0
 unit.0.0.port.1.s.0.alias=
 unit.0.0.port.1.s.0.color=java.awt.Color[r\=0,g\=0,b\=124]
 unit.0.0.port.1.s.0.display=0
@@ -412,7 +412,7 @@ unit.0.0.port.1.s.7.persistence=0
 unit.0.0.port.1.s.7.value=0
 unit.0.0.port.1.s.7.visible=1
 unit.0.0.port.2.buscount=0
-unit.0.0.port.2.channelcount=0
+unit.0.0.port.2.channelcount=66
 unit.0.0.port.2.s.0.alias=
 unit.0.0.port.2.s.0.color=java.awt.Color[r\=0,g\=0,b\=124]
 unit.0.0.port.2.s.0.display=0
@@ -943,22 +943,22 @@ unit.0.0.port.2.s.9.value=0
 unit.0.0.port.2.s.9.visible=1
 unit.0.0.portcount=3
 unit.0.0.username=MyVIO0
-unit.0.1.0.HEIGHT0=0.30882353
+unit.0.1.0.HEIGHT0=0.44117647
 unit.0.1.0.TriggerRow0=1
 unit.0.1.0.TriggerRow1=1
 unit.0.1.0.TriggerRow2=1
 unit.0.1.0.WIDTH0=1.0
 unit.0.1.0.X0=0.0
 unit.0.1.0.Y0=0.0
-unit.0.1.1.HEIGHT1=0.64705884
+unit.0.1.1.HEIGHT1=0.62941176
 unit.0.1.1.WIDTH1=1.0
 unit.0.1.1.X1=0.0
-unit.0.1.1.Y1=0.30882353
+unit.0.1.1.Y1=0.47058824
 unit.0.1.2.HEIGHT2=0.64705884
 unit.0.1.2.WIDTH2=1.0
 unit.0.1.2.X2=0.0
 unit.0.1.2.Y2=0.30882353
-unit.0.1.MFBitsA0=XXXXXXXXXXXX0001XXXXXXXXXXXXXXXX
+unit.0.1.MFBitsA0=XXXXXXXXXXXXXXXX0000000000000010
 unit.0.1.MFBitsA1=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 unit.0.1.MFBitsB0=00000000000000000000000000000000
 unit.0.1.MFBitsB1=00000000000000000000000000000000
@@ -971,7 +971,7 @@ unit.0.1.MFDisplay0=1
 unit.0.1.MFDisplay1=0
 unit.0.1.MFEventType0=3
 unit.0.1.MFEventType1=3
-unit.0.1.RunMode=SINGLE RUN
+unit.0.1.RunMode=REPETITIVE RUN
 unit.0.1.SQCondition=All Data
 unit.0.1.SQContiguous0=0
 unit.0.1.SequencerOn=0
@@ -1152,27 +1152,27 @@ unit.0.1.port.-1.s.31.color=java.awt.Color[r\=0,g\=0,b\=124]
 unit.0.1.port.-1.s.31.name=DataPort[31]
 unit.0.1.port.-1.s.31.orderindex=-1
 unit.0.1.port.-1.s.31.visible=0
-unit.0.1.port.-1.s.32.alias=REQ_EN
+unit.0.1.port.-1.s.32.alias=VALID
 unit.0.1.port.-1.s.32.color=java.awt.Color[r\=0,g\=0,b\=124]
 unit.0.1.port.-1.s.32.name=DataPort[32]
 unit.0.1.port.-1.s.32.orderindex=-1
 unit.0.1.port.-1.s.32.visible=1
-unit.0.1.port.-1.s.33.alias=REQ_ACK
+unit.0.1.port.-1.s.33.alias=CRC_OK
 unit.0.1.port.-1.s.33.color=java.awt.Color[r\=0,g\=0,b\=124]
 unit.0.1.port.-1.s.33.name=DataPort[33]
 unit.0.1.port.-1.s.33.orderindex=-1
 unit.0.1.port.-1.s.33.visible=1
-unit.0.1.port.-1.s.34.alias=WB_ACK
+unit.0.1.port.-1.s.34.alias=EN
 unit.0.1.port.-1.s.34.color=java.awt.Color[r\=0,g\=0,b\=124]
 unit.0.1.port.-1.s.34.name=DataPort[34]
 unit.0.1.port.-1.s.34.orderindex=-1
 unit.0.1.port.-1.s.34.visible=1
-unit.0.1.port.-1.s.35.alias=RES_EN
+unit.0.1.port.-1.s.35.alias=EN_VALID
 unit.0.1.port.-1.s.35.color=java.awt.Color[r\=0,g\=0,b\=124]
 unit.0.1.port.-1.s.35.name=DataPort[35]
 unit.0.1.port.-1.s.35.orderindex=-1
 unit.0.1.port.-1.s.35.visible=1
-unit.0.1.port.-1.s.36.alias=RES_ACK
+unit.0.1.port.-1.s.36.alias=EMPTY
 unit.0.1.port.-1.s.36.color=java.awt.Color[r\=0,g\=0,b\=124]
 unit.0.1.port.-1.s.36.name=DataPort[36]
 unit.0.1.port.-1.s.36.orderindex=-1
@@ -1532,12 +1532,12 @@ unit.0.1.port.1.b.0.unsignedScaleFactor=1.0
 unit.0.1.port.1.b.0.visible=1
 unit.0.1.port.1.buscount=1
 unit.0.1.port.1.channelcount=32
-unit.0.1.port.1.s.0.alias=REQ_EN
+unit.0.1.port.1.s.0.alias=VALID
 unit.0.1.port.1.s.0.color=java.awt.Color[r\=0,g\=0,b\=124]
 unit.0.1.port.1.s.0.name=TriggerPort1[0]
 unit.0.1.port.1.s.0.orderindex=-1
 unit.0.1.port.1.s.0.visible=1
-unit.0.1.port.1.s.1.alias=REQ_ACK
+unit.0.1.port.1.s.1.alias=CRC_OK
 unit.0.1.port.1.s.1.color=java.awt.Color[r\=0,g\=0,b\=124]
 unit.0.1.port.1.s.1.name=TriggerPort1[1]
 unit.0.1.port.1.s.1.orderindex=-1
@@ -1592,7 +1592,7 @@ unit.0.1.port.1.s.19.color=java.awt.Color[r\=0,g\=0,b\=124]
 unit.0.1.port.1.s.19.name=TriggerPort1[19]
 unit.0.1.port.1.s.19.orderindex=-1
 unit.0.1.port.1.s.19.visible=1
-unit.0.1.port.1.s.2.alias=WB_ACK
+unit.0.1.port.1.s.2.alias=EN
 unit.0.1.port.1.s.2.color=java.awt.Color[r\=0,g\=0,b\=124]
 unit.0.1.port.1.s.2.name=TriggerPort1[2]
 unit.0.1.port.1.s.2.orderindex=-1
@@ -1647,7 +1647,7 @@ unit.0.1.port.1.s.29.color=java.awt.Color[r\=0,g\=0,b\=124]
 unit.0.1.port.1.s.29.name=TriggerPort1[29]
 unit.0.1.port.1.s.29.orderindex=-1
 unit.0.1.port.1.s.29.visible=1
-unit.0.1.port.1.s.3.alias=RES_EN
+unit.0.1.port.1.s.3.alias=EN_VALID
 unit.0.1.port.1.s.3.color=java.awt.Color[r\=0,g\=0,b\=124]
 unit.0.1.port.1.s.3.name=TriggerPort1[3]
 unit.0.1.port.1.s.3.orderindex=-1
@@ -1662,7 +1662,7 @@ unit.0.1.port.1.s.31.color=java.awt.Color[r\=0,g\=0,b\=124]
 unit.0.1.port.1.s.31.name=TriggerPort1[31]
 unit.0.1.port.1.s.31.orderindex=-1
 unit.0.1.port.1.s.31.visible=1
-unit.0.1.port.1.s.4.alias=RES_ACK
+unit.0.1.port.1.s.4.alias=EMPTY
 unit.0.1.port.1.s.4.color=java.awt.Color[r\=0,g\=0,b\=124]
 unit.0.1.port.1.s.4.name=TriggerPort1[4]
 unit.0.1.port.1.s.4.orderindex=-1
@@ -1747,7 +1747,7 @@ unit.0.1.waveform.posn.19.channel=31
 unit.0.1.waveform.posn.19.name=DataPort[31]
 unit.0.1.waveform.posn.19.type=signal
 unit.0.1.waveform.posn.2.channel=32
-unit.0.1.waveform.posn.2.name=REQ_EN
+unit.0.1.waveform.posn.2.name=VALID
 unit.0.1.waveform.posn.2.type=signal
 unit.0.1.waveform.posn.20.channel=31
 unit.0.1.waveform.posn.20.name=DataPort[31]
@@ -1780,7 +1780,7 @@ unit.0.1.waveform.posn.29.channel=31
 unit.0.1.waveform.posn.29.name=DataPort[31]
 unit.0.1.waveform.posn.29.type=signal
 unit.0.1.waveform.posn.3.channel=33
-unit.0.1.waveform.posn.3.name=REQ_ACK
+unit.0.1.waveform.posn.3.name=CRC_OK
 unit.0.1.waveform.posn.3.type=signal
 unit.0.1.waveform.posn.30.channel=31
 unit.0.1.waveform.posn.30.name=DataPort[31]
@@ -1789,13 +1789,13 @@ unit.0.1.waveform.posn.31.channel=31
 unit.0.1.waveform.posn.31.name=DataPort[31]
 unit.0.1.waveform.posn.31.type=signal
 unit.0.1.waveform.posn.4.channel=34
-unit.0.1.waveform.posn.4.name=WB_ACK
+unit.0.1.waveform.posn.4.name=EN
 unit.0.1.waveform.posn.4.type=signal
 unit.0.1.waveform.posn.5.channel=35
-unit.0.1.waveform.posn.5.name=RES_EN
+unit.0.1.waveform.posn.5.name=EN_VALID
 unit.0.1.waveform.posn.5.type=signal
 unit.0.1.waveform.posn.6.channel=36
-unit.0.1.waveform.posn.6.name=RES_ACK
+unit.0.1.waveform.posn.6.name=EMPTY
 unit.0.1.waveform.posn.6.type=signal
 unit.0.1.waveform.posn.7.channel=31
 unit.0.1.waveform.posn.7.name=DataPort[31]

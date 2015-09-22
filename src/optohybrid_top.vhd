@@ -341,23 +341,15 @@ architecture Behavioral of optohybrid_top is
     signal temp_data_miso_b     : std_logic;
     signal temp_data_tri_b      : std_logic;
     
+    --== System ==--
+    
+    signal vfat2_tk_mask        : std_logic_vector(23 downto 0);
+    
     --== Wishbone signals ==--
     
     -- Masters
     signal wb_m_req             : wb_req_array_t((WB_MASTERS - 1) downto 0);
     signal wb_m_res             : wb_res_array_t((WB_MASTERS - 1) downto 0);
-    
-    alias wb_mst_gtx_req        : wb_req_t is wb_m_req(WB_MST_GTX);
-    alias wb_mst_gtx_res        : wb_res_t is wb_m_res(WB_MST_GTX);
-    
-    alias wb_mst_ei2c_req       : wb_req_t is wb_m_req(WB_MST_EI2C);
-    alias wb_mst_ei2c_res       : wb_res_t is wb_m_res(WB_MST_EI2C);
-    
-    alias wb_mst_scan_req       : wb_req_t is wb_m_req(WB_MST_SCAN);
-    alias wb_mst_scan_res       : wb_res_t is wb_m_res(WB_MST_SCAN);
-    
-    alias wb_mst_dac_req        : wb_req_t is wb_m_req(WB_MST_DAC);
-    alias wb_mst_dac_res        : wb_res_t is wb_m_res(WB_MST_DAC);
     
     -- Slaves
     signal wb_s_req             : wb_req_array_t((WB_SLAVES - 1) downto 0);
@@ -365,24 +357,6 @@ architecture Behavioral of optohybrid_top is
     
     alias wb_slv_i2c_req        : wb_req_array_t(5 downto 0) is wb_s_req(WB_SLV_I2C_5 downto WB_SLV_I2C_0);
     alias wb_slv_i2c_res        : wb_res_array_t(5 downto 0) is wb_s_res(WB_SLV_I2C_5 downto WB_SLV_I2C_0);
-            
-    alias wb_slv_ei2c_req       : wb_req_t is wb_s_req(WB_SLV_EI2C);
-    alias wb_slv_ei2c_res       : wb_res_t is wb_s_res(WB_SLV_EI2C);
-    
-    alias wb_slv_scan_req       : wb_req_t is wb_s_req(WB_SLV_SCAN);
-    alias wb_slv_scan_res       : wb_res_t is wb_s_res(WB_SLV_SCAN);
-    
-    alias wb_slv_t1_req         : wb_req_t is wb_s_req(WB_SLV_T1);
-    alias wb_slv_t1_res         : wb_res_t is wb_s_res(WB_SLV_T1);
-    
-    alias wb_slv_dac_req        : wb_req_t is wb_s_req(WB_SLV_DAC);
-    alias wb_slv_dac_res        : wb_res_t is wb_s_res(WB_SLV_DAC);
-    
-    alias wb_slv_adc_req        : wb_req_t is wb_s_req(WB_SLV_ADC);
-    alias wb_slv_adc_res        : wb_res_t is wb_s_res(WB_SLV_ADC);
-    
-    alias wb_slv_clk_req        : wb_req_t is wb_s_req(WB_SLV_CLK);
-    alias wb_slv_clk_res        : wb_res_t is wb_s_res(WB_SLV_CLK);
     
 begin
 
@@ -412,8 +386,8 @@ begin
     port map(
         ref_clk_i           => ref_clk,
         reset_i             => reset,
-        wb_slv_req_i        => wb_slv_clk_req,
-        wb_slv_res_o        => wb_slv_clk_res,
+        wb_slv_req_i        => wb_s_req(WB_SLV_CLK),
+        wb_slv_res_o        => wb_s_res(WB_SLV_CLK),
         vfat2_readout_clk_o => vfat2_readout_clk
     );
     
@@ -427,8 +401,10 @@ begin
 		mgt_refclk_p_i  => mgt_112_clk0_p_i,
         ref_clk_i       => ref_clk,
 		reset_i         => reset,
-        wb_mst_req_o    => wb_mst_gtx_req,
-        wb_mst_res_i    => wb_mst_gtx_res,
+        wb_mst_req_o    => wb_m_req(WB_MST_GTX),
+        wb_mst_res_i    => wb_m_res(WB_MST_GTX),
+        vfat2_tk_data_i => vfat2_tk_data,
+        vfat2_tk_mask_i => vfat2_tk_mask,
 		rx_n_i          => mgt_112_rx_n_i,
 		rx_p_i          => mgt_112_rx_p_i,
 		tx_n_o          => mgt_112_tx_n_o,
@@ -451,8 +427,8 @@ begin
         vfat2_t1_o          => vfat2_t1_b,
         vfat2_data_out_i    => vfat2_data_out_b,
         vfat2_tk_data_o     => vfat2_tk_data,
-        wb_slv_i2c_req_i    => wb_slv_i2c_req,
-        wb_slv_i2c_res_o    => wb_slv_i2c_res,
+        wb_slv_i2c_req_i    => wb_s_req(WB_SLV_I2C_5 downto WB_SLV_I2C_0),
+        wb_slv_i2c_res_o    => wb_s_res(WB_SLV_I2C_5 downto WB_SLV_I2C_0),
         vfat2_scl_o         => vfat2_scl_b,
         vfat2_sda_miso_i    => vfat2_sda_miso_b,
         vfat2_sda_mosi_o    => vfat2_sda_mosi_b,
@@ -467,20 +443,20 @@ begin
     port map(        
         ref_clk_i           => ref_clk,
         reset_i             => reset,
-        wb_slv_ei2c_req_i   => wb_slv_ei2c_req,
-        wb_slv_ei2c_res_o   => wb_slv_ei2c_res,
-        wb_mst_ei2c_req_o   => wb_mst_ei2c_req,
-        wb_mst_ei2c_res_i   => wb_mst_ei2c_res,
-        wb_slv_scan_req_i   => wb_slv_scan_req,
-        wb_slv_scan_res_o   => wb_slv_scan_res,
-        wb_mst_scan_req_o   => wb_mst_scan_req,
-        wb_mst_scan_res_i   => wb_mst_scan_res,
-        wb_slv_t1_req_i     => wb_slv_t1_req,
-        wb_slv_t1_res_o     => wb_slv_t1_res,
-        wb_slv_dac_req_i    => wb_slv_dac_req,
-        wb_slv_dac_res_o    => wb_slv_dac_res,
-        wb_mst_dac_req_o    => wb_mst_dac_req,
-        wb_mst_dac_res_i    => wb_mst_dac_res,
+        wb_slv_ei2c_req_i   => wb_s_req(WB_SLV_EI2C),
+        wb_slv_ei2c_res_o   => wb_s_res(WB_SLV_EI2C),
+        wb_mst_ei2c_req_o   => wb_m_req(WB_MST_EI2C),
+        wb_mst_ei2c_res_i   => wb_m_res(WB_MST_EI2C),
+        wb_slv_scan_req_i   => wb_s_req(WB_SLV_SCAN),
+        wb_slv_scan_res_o   => wb_s_res(WB_SLV_SCAN),
+        wb_mst_scan_req_o   => wb_m_req(WB_MST_SCAN),
+        wb_mst_scan_res_i   => wb_m_res(WB_MST_SCAN),
+        wb_slv_t1_req_i     => wb_s_req(WB_SLV_T1),
+        wb_slv_t1_res_o     => wb_s_res(WB_SLV_T1),
+        wb_slv_dac_req_i    => wb_s_req(WB_SLV_DAC),
+        wb_slv_dac_res_o    => wb_s_res(WB_SLV_DAC),
+        wb_mst_dac_req_o    => wb_m_req(WB_MST_DAC),
+        wb_mst_dac_res_i    => wb_m_res(WB_MST_DAC),
         vfat2_tk_data_i     => vfat2_tk_data,
         vfat2_sbits_i       => vfat2_sbits_b,
         vfat2_t1_o          => vfat2_t1
@@ -494,8 +470,8 @@ begin
     port map(
         ref_clk_i           => ref_clk,
         reset_i             => reset,
-        wb_slv_req_i        => wb_slv_adc_req,
-        wb_slv_res_o        => wb_slv_adc_res,
+        wb_slv_req_i        => wb_s_req(WB_SLV_ADC),
+        wb_slv_res_o        => wb_s_res(WB_SLV_ADC),
         adc_chip_select_o   => adc_chip_select_b,
         adc_din_i           => adc_din_b,
         adc_dout_o          => adc_dout_b,
@@ -523,6 +499,32 @@ begin
         cdce_le_o       => cdce_le_b,
         cdce_miso_i     => cdce_miso_b
 	);
+    
+    --==============--
+    --== Counters ==--
+    --==============--
+    
+    counters_inst : entity work.counters
+    port map(
+        ref_clk_i       => ref_clk,
+        reset_i         => reset, 
+        wb_slv_req_i    => wb_s_req(WB_SLV_CNT),
+        wb_slv_res_o    => wb_s_res(WB_SLV_CNT),
+        vfat2_tk_data_i => vfat2_tk_data
+    );
+    
+    --============--
+    --== System ==--
+    --============--
+    
+    sys_inst : entity work.sys
+    port map(
+        ref_clk_i       => ref_clk,
+        reset_i         => reset, 
+        wb_slv_req_i    => wb_s_req(WB_SLV_SYS),
+        wb_slv_res_o    => wb_s_res(WB_SLV_SYS),  
+        vfat2_tk_mask_o => vfat2_tk_mask        
+    );
     
     --=============--
     --== Buffers ==--
