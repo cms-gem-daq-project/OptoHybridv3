@@ -18,6 +18,7 @@ use ieee.numeric_std.all;
 
 library work;
 use work.types_pkg.all;
+use work.wb_pkg.all;
 
 entity counters is
 port(
@@ -30,7 +31,13 @@ port(
     wb_slv_res_o    : out wb_res_t;    
     
     -- Data to count
-    vfat2_tk_data_i : in tk_data_array_t(23 downto 0)
+    vfat2_tk_data_i : in tk_data_array_t(23 downto 0);
+    
+    wb_m_req_i      : in wb_req_array_t((WB_MASTERS - 1) downto 0);
+    wb_m_res_i      : in wb_res_array_t((WB_MASTERS - 1) downto 0);
+    
+    wb_s_req_i      : in wb_req_array_t((WB_SLAVES - 1) downto 0);
+    wb_s_res_i      : in wb_res_array_t((WB_SLAVES - 1) downto 0)
     
 );
 end counters;
@@ -38,15 +45,15 @@ end counters;
 architecture Behavioral of counters is
     
     -- Signals from the Wishbone Hub
-    signal wb_stb       : std_logic_vector(63 downto 0);
+    signal wb_stb       : std_logic_vector(83 downto 0);
     signal wb_we        : std_logic;
     signal wb_addr      : std_logic_vector(31 downto 0);
     signal wb_data      : std_logic_vector(31 downto 0);
     
     -- Signals for the registers
-    signal reg_ack      : std_logic_vector(63 downto 0);
-    signal reg_err      : std_logic_vector(63 downto 0);
-    signal reg_data     : std32_array_t(63 downto 0);
+    signal reg_ack      : std_logic_vector(83 downto 0);
+    signal reg_err      : std_logic_vector(83 downto 0);
+    signal reg_data     : std32_array_t(83 downto 0);
 
 begin
 
@@ -56,7 +63,7 @@ begin
 
     wb_splitter_inst : entity work.wb_splitter
     generic map(
-        SIZE        => 64,
+        SIZE        => 84,
         OFFSET      => 0
     )
     port map(
@@ -74,7 +81,7 @@ begin
     );
     
     --=============--
-    --== Mapping ==--
+    --== Counters ==--
     --=============--
     
     tk_data_good_cnt_loop : for I in 0 to 23 generate
@@ -92,6 +99,32 @@ begin
         tk_data_bad_cnt_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(24 + I) and wb_we), en_i => (vfat2_tk_data_i(I).valid and (not vfat2_tk_data_i(I).crc_ok)), data_o => reg_data(24 + I));
         reg_ack(24 + I) <= wb_stb(24 + I);
         reg_err(24 + I) <= '0';
+    
+    end generate;
+    
+    wb_m_cnt_loop : for I in 0 to 3 generate
+    begin
+    
+        wb_m_req_cnt_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(48 + I) and wb_we), en_i => wb_m_req_i(I).stb, data_o => reg_data(48 + I));
+        reg_ack(48 + I) <= wb_stb(48 + I);
+        reg_err(48 + I) <= '0';
+    
+        wb_m_res_cnt_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(52 + I) and wb_we), en_i => wb_m_res_i(I).ack, data_o => reg_data(52 + I));
+        reg_ack(52 + I) <= wb_stb(52 + I);
+        reg_err(52 + I) <= '0';
+    
+    end generate;
+    
+    wb_s_cnt_loop : for I in 0 to 13 generate
+    begin
+    
+        wb_s_req_cnt_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(56 + I) and wb_we), en_i => wb_s_req_i(I).stb, data_o => reg_data(56 + I));
+        reg_ack(56 + I) <= wb_stb(56 + I);
+        reg_err(56 + I) <= '0';
+    
+        wb_s_res_cnt_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(70 + I) and wb_we), en_i => wb_s_res_i(I).ack, data_o => reg_data(70 + I));
+        reg_ack(70 + I) <= wb_stb(70 + I);
+        reg_err(70 + I) <= '0';
     
     end generate;
 

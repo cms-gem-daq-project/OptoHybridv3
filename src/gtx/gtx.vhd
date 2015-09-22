@@ -74,7 +74,7 @@ architecture Behavioral of gtx is
     signal tk_rd_en         : std_logic;
     signal tk_rd_valid      : std_logic;
     signal tk_rd_data       : std_logic_vector(15 downto 0);
-    signal tk_rd_csb        : std_logic;
+    signal tk_rd_ready      : std_logic;
     
     --== Chipscope signals ==--
     
@@ -138,7 +138,7 @@ begin
 		tk_rd_en_o      => tk_rd_en,
 		tk_rd_valid_i   => tk_rd_valid,
 		tk_rd_data_i    => tk_rd_data,
-        tk_rd_csb_i     => tk_rd_csb,
+        tk_rd_ready_i   => tk_rd_ready,
 		tx_kchar_o      => gtx_tx_kchar(1 downto 0),  
 		tx_data_o       => gtx_tx_data(15 downto 0)
 	);
@@ -175,7 +175,7 @@ begin
 		tk_rd_en_i      => tk_rd_en,
 		tk_rd_valid_o   => tk_rd_valid,
 		tk_rd_data_o    => tk_rd_data,
-        tk_rd_csb_o     => tk_rd_csb
+        tk_rd_ready_o   => tk_rd_ready
 	);  
             
     --===============--
@@ -210,7 +210,7 @@ begin
         1 => vfat2_tk_data_i(0).crc_ok,
         2 => tk_rd_en,
         3 => tk_rd_valid,   
-        4 => tk_rd_csb,
+        4 => tk_rd_ready,
         others => '0'
     );
     

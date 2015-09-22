@@ -32,14 +32,14 @@ port(
     tk_rd_en_i      : in std_logic;
     tk_rd_valid_o   : out std_logic;
     tk_rd_data_o    : out std_logic_vector(15 downto 0);
-    tk_rd_csb_o     : out std_logic
+    tk_rd_ready_o   : out std_logic
     
 );
 end gtx_tk_concentrator;
 
 architecture Behavioral of gtx_tk_concentrator is
       
-    type state_t is (LOOPING, SAVING_0, SAVING_1, SAVING_2);
+    type state_t is (IDLE, DELAY_0, DELAY_1, LOOPING, SAVING_0, SAVING_1, SAVING_2);
 
     signal state        : state_t;
       
@@ -52,7 +52,12 @@ architecture Behavioral of gtx_tk_concentrator is
     signal tk_wr_en     : std_logic;
     signal tk_wr_data   : std_logic_vector(63 downto 0);
     
+    signal tk_empty     : std_logic;
+    signal tk_busy      : std_logic;
+    
 begin
+
+    tk_rd_ready_o <= (not tk_busy) and (not tk_empty);
 
     --== Store the tracking data ==--
 
@@ -83,13 +88,23 @@ begin
     begin    
         if (rising_edge(ref_clk_i)) then        
             if (reset_i = '1') then   
-                state <= LOOPING;
+                state <= IDLE;
                 vfat2_cnt <= 0;
                 tk_data_ack <= (others => '0');
                 tk_wr_en <= '0';
                 tk_wr_data <= (others => '0');
+                tk_busy <= '0';
             else
                 case state is
+                    when IDLE =>
+                        if (tk_data_stb /= x"000000") then
+                            state <= DELAY_0;
+                            tk_busy <= '1';
+                        else
+                            tk_busy <= '0';
+                        end if;
+                    when DELAY_0 => state <= DELAY_1;
+                    when DELAY_1 => state <= LOOPING;                        
                     when LOOPING =>                
                         -- Check the strobe
                         if (tk_data_stb(vfat2_cnt) = '1' and tk_data_ack(vfat2_cnt) = '0') then
@@ -100,6 +115,7 @@ begin
                         else
                             if (vfat2_cnt = 23) then
                                 vfat2_cnt <= 0;
+                                state <= IDLE;
                             else
                                 vfat2_cnt <= vfat2_cnt + 1;
                             end if;
@@ -118,15 +134,16 @@ begin
                         tk_wr_data <= tk_data(vfat2_cnt).strips(47 downto 0) & tk_data(vfat2_cnt).crc;
                         state <= LOOPING;                    
                     when others =>        
-                        state <= LOOPING;
+                        state <= IDLE;
                         vfat2_cnt <= 0;
                         tk_data_ack <= (others => '0');
                         tk_wr_en <= '0';
                         tk_wr_data <= (others => '0');
+                        tk_busy <= '0';
                 end case;                  
             end if;        
         end if;    
-    end process; 
+    end process;    
     
     --== FIFO ==--
     
@@ -141,7 +158,7 @@ begin
         valid   => tk_rd_valid_o,
         dout    => tk_rd_data_o,
         full    => open,
-        empty   => tk_rd_csb_o
+        empty   => tk_empty
     );
     
 end Behavioral;

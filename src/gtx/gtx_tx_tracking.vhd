@@ -33,7 +33,7 @@ port(
     tk_rd_en_o      : out std_logic;
     tk_rd_valid_i   : in std_logic;
     tk_rd_data_i    : in std_logic_vector(15 downto 0);
-    tk_rd_csb_i     : in std_logic;
+    tk_rd_ready_i   : in std_logic;
     
     tx_kchar_o      : out std_logic_vector(1 downto 0);
     tx_data_o       : out std_logic_vector(15 downto 0)
@@ -112,8 +112,8 @@ begin
             else
                 case state is         
                     when COMMA => 
-                        tk_rd_en_o <= (not tk_rd_csb_i);      
-                        req_tk_data <= (not tk_rd_csb_i);              
+                        tk_rd_en_o <= tk_rd_ready_i;      
+                        req_tk_data <= tk_rd_ready_i;              
                     when HEADER => tk_rd_en_o <= req_tk_data;
                     when TK_DATA => tk_rd_en_o <= req_tk_data;
                     when others => 
@@ -136,10 +136,10 @@ begin
                 case state is         
                     when COMMA => 
                         if (req_valid_i = '1') then
-                            req_header <= '1' & (not tk_rd_csb_i) & "00" & x"000";
+                            req_header <= '1' & tk_rd_ready_i & "00" & x"000";
                             req_data <= req_data_i;
                         else
-                            req_header <= '0' & (not tk_rd_csb_i) & "00" & x"000";
+                            req_header <= '0' & tk_rd_ready_i & "00" & x"000";
                             req_data <= (others => '0');
                         end if;
                     when others => null;

@@ -355,9 +355,6 @@ architecture Behavioral of optohybrid_top is
     signal wb_s_req             : wb_req_array_t((WB_SLAVES - 1) downto 0);
     signal wb_s_res             : wb_res_array_t((WB_SLAVES - 1) downto 0);
     
-    alias wb_slv_i2c_req        : wb_req_array_t(5 downto 0) is wb_s_req(WB_SLV_I2C_5 downto WB_SLV_I2C_0);
-    alias wb_slv_i2c_res        : wb_res_array_t(5 downto 0) is wb_s_res(WB_SLV_I2C_5 downto WB_SLV_I2C_0);
-    
 begin
 
     reset <= '0';
@@ -510,7 +507,11 @@ begin
         reset_i         => reset, 
         wb_slv_req_i    => wb_s_req(WB_SLV_CNT),
         wb_slv_res_o    => wb_s_res(WB_SLV_CNT),
-        vfat2_tk_data_i => vfat2_tk_data
+        vfat2_tk_data_i => vfat2_tk_data,
+        wb_m_req_i      => wb_m_req,      
+        wb_m_res_i      => wb_m_res,
+        wb_s_req_i      => wb_s_req,
+        wb_s_res_i      => wb_s_res
     );
     
     --============--
