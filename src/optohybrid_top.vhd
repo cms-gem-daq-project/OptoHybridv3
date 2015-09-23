@@ -277,7 +277,12 @@ architecture Behavioral of optohybrid_top is
     --== Global signals ==--
 
     signal ref_clk              : std_logic;
-    signal reset                : std_logic;    
+    signal reset                : std_logic;
+
+    --== GTX ==--
+    
+    signal gtx_tk_error         : std_logic;
+    signal gtx_tr_error         : std_logic;
 
     --== VFAT2 signals ==--
     
@@ -347,13 +352,19 @@ architecture Behavioral of optohybrid_top is
     
     --== Wishbone signals ==--
     
-    -- Masters
     signal wb_m_req             : wb_req_array_t((WB_MASTERS - 1) downto 0);
     signal wb_m_res             : wb_res_array_t((WB_MASTERS - 1) downto 0);
-    
-    -- Slaves
     signal wb_s_req             : wb_req_array_t((WB_SLAVES - 1) downto 0);
     signal wb_s_res             : wb_res_array_t((WB_SLAVES - 1) downto 0);
+    
+    --== Chipscope signals ==--
+    
+    signal cs_ctrl0             : std_logic_vector(35 downto 0);
+    signal cs_ctrl1             : std_logic_vector(35 downto 0); 
+    signal cs_sync_in           : std_logic_vector(36 downto 0);
+    signal cs_sync_out          : std_logic_vector(65 downto 0);
+    signal cs_trig0             : std_logic_vector(31 downto 0);
+    signal cs_trig1             : std_logic_vector(31 downto 0);
     
 begin
 
@@ -402,6 +413,7 @@ begin
         wb_mst_res_i    => wb_m_res(WB_MST_GTX),
         vfat2_tk_data_i => vfat2_tk_data,
         vfat2_tk_mask_i => vfat2_tk_mask,
+        tk_error_o      => gtx_tk_error,
 		rx_n_i          => mgt_112_rx_n_i,
 		rx_p_i          => mgt_112_rx_p_i,
 		tx_n_o          => mgt_112_tx_n_o,
@@ -507,11 +519,14 @@ begin
         reset_i         => reset, 
         wb_slv_req_i    => wb_s_req(WB_SLV_CNT),
         wb_slv_res_o    => wb_s_res(WB_SLV_CNT),
-        vfat2_tk_data_i => vfat2_tk_data,
         wb_m_req_i      => wb_m_req,      
         wb_m_res_i      => wb_m_res,
         wb_s_req_i      => wb_s_req,
-        wb_s_res_i      => wb_s_res
+        wb_s_res_i      => wb_s_res,
+        vfat2_tk_data_i => vfat2_tk_data,
+        vfat2_t1_i      => vfat2_t1,
+        gtx_tk_error_i  => gtx_tk_error,
+        gtx_tr_error_i  => gtx_tr_error
     );
     
     --============--
@@ -525,6 +540,43 @@ begin
         wb_slv_req_i    => wb_s_req(WB_SLV_SYS),
         wb_slv_res_o    => wb_s_res(WB_SLV_SYS),  
         vfat2_tk_mask_o => vfat2_tk_mask        
+    );
+            
+    --===============--
+    --== ChipScope ==--
+    --===============--
+    
+    chipscope_icon_inst : entity work.chipscope_icon
+    port map(
+        control0    => cs_ctrl0,
+        control1    => cs_ctrl1
+    );
+    
+    chipscope_vio_inst : entity work.chipscope_vio
+    port map(
+        control     => cs_ctrl0,
+        clk         => ref_clk,
+        sync_in     => cs_sync_in,
+        sync_out    => cs_sync_out
+    );
+    
+    chipscope_ila_inst : entity work.chipscope_ila
+    port map(
+        control => cs_ctrl1,
+        clk     => ref_clk,
+        trig0   => cs_trig0,
+        trig1   => cs_trig1
+    );
+        
+    cs_trig0 <= (
+        0 => wb_s_req(WB_SLV_ADC).stb,
+        1 => wb_s_res(WB_SLV_ADC).ack,
+        2 => adc_chip_select_b,
+        3 => adc_din_b,   
+        4 => adc_dout_b,
+        5 => adc_clk_b,
+        6 => adc_eoc_b,
+        others => '0'
     );
     
     --=============--

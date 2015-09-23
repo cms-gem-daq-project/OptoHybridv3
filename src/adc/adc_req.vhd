@@ -31,9 +31,9 @@ port(
     
     -- ADC control signals
     adc_en_o        : out std_logic;
-    adc_data_o      : out std_logic_vector(7 downto 0);
+    adc_data_o      : out std_logic_vector(3 downto 0);
     adc_valid_i     : in std_logic;
-    adc_data_i      : in std_logic_vector(15 downto 0)
+    adc_data_i      : in std_logic_vector(11 downto 0)
     
 );
 end adc_req;
@@ -45,7 +45,7 @@ architecture Behavioral of adc_req is
     signal state    : state_t;
     
     -- I2C transaction parameters
-    signal data     : std_logic_vector(7 downto 0);
+    signal data     : std_logic_vector(3 downto 0);
     
 begin
 
@@ -67,7 +67,7 @@ begin
                         wb_slv_res_o.ack <= '0';
                         -- On request
                         if (wb_slv_req_i.stb = '1') then
-                            data <= wb_slv_req_i.data(7 downto 0);
+                            data <= wb_slv_req_i.addr(3 downto 0);
                             -- Change state
                             state <= EXEC;
                         end if;                                               
@@ -83,7 +83,7 @@ begin
                         -- Wait for a valid signal
                         if (adc_valid_i = '1') then
                             -- Send response
-                            wb_slv_res_o <= (ack => '1', stat => WB_NO_ERR, data => x"0000" & adc_data_i);
+                            wb_slv_res_o <= (ack => '1', stat => WB_NO_ERR, data => x"00000" & adc_data_i);
                             state <= IDLE;
                         end if;                                               
                     --

@@ -30,14 +30,21 @@ port(
     wb_slv_req_i    : in wb_req_t;
     wb_slv_res_o    : out wb_res_t;    
     
-    -- Data to count
+    -- Wishbone request
+    wb_m_req_i      : in wb_req_array_t((WB_MASTERS - 1) downto 0);
+    wb_m_res_i      : in wb_res_array_t((WB_MASTERS - 1) downto 0);    
+    wb_s_req_i      : in wb_req_array_t((WB_SLAVES - 1) downto 0);
+    wb_s_res_i      : in wb_res_array_t((WB_SLAVES - 1) downto 0);
+    
+    -- Tracking data
     vfat2_tk_data_i : in tk_data_array_t(23 downto 0);
     
-    wb_m_req_i      : in wb_req_array_t((WB_MASTERS - 1) downto 0);
-    wb_m_res_i      : in wb_res_array_t((WB_MASTERS - 1) downto 0);
+    -- T1
+    vfat2_t1_i      : in t1_t;
     
-    wb_s_req_i      : in wb_req_array_t((WB_SLAVES - 1) downto 0);
-    wb_s_res_i      : in wb_res_array_t((WB_SLAVES - 1) downto 0)
+    -- GTX
+    gtx_tk_error_i  : in std_logic;
+    gtx_tr_error_i  : in std_logic
     
 );
 end counters;
@@ -45,15 +52,15 @@ end counters;
 architecture Behavioral of counters is
     
     -- Signals from the Wishbone Hub
-    signal wb_stb       : std_logic_vector(83 downto 0);
+    signal wb_stb       : std_logic_vector(89 downto 0);
     signal wb_we        : std_logic;
     signal wb_addr      : std_logic_vector(31 downto 0);
     signal wb_data      : std_logic_vector(31 downto 0);
     
     -- Signals for the registers
-    signal reg_ack      : std_logic_vector(83 downto 0);
-    signal reg_err      : std_logic_vector(83 downto 0);
-    signal reg_data     : std32_array_t(83 downto 0);
+    signal reg_ack      : std_logic_vector(89 downto 0);
+    signal reg_err      : std_logic_vector(89 downto 0);
+    signal reg_data     : std32_array_t(89 downto 0);
 
 begin
 
@@ -63,7 +70,7 @@ begin
 
     wb_splitter_inst : entity work.wb_splitter
     generic map(
-        SIZE        => 84,
+        SIZE        => 90,
         OFFSET      => 0
     )
     port map(
@@ -80,52 +87,76 @@ begin
         data_i      => reg_data
     );
     
-    --=============--
-    --== Counters ==--
-    --=============--
+    --========================--
+    --== Automatic response ==--
+    --========================--
     
-    tk_data_good_cnt_loop : for I in 0 to 23 generate
+    ack_err_loop : for I in 0 to 89 generate
     begin
     
-        tk_data_good_cnt_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(I) and wb_we), en_i => (vfat2_tk_data_i(I).valid and vfat2_tk_data_i(I).crc_ok), data_o => reg_data(I));
         reg_ack(I) <= wb_stb(I);
         reg_err(I) <= '0';
-    
+        
     end generate;
     
-    tk_data_bad_cnt_loop : for I in 0 to 23 generate
-    begin
+    --==============--
+    --== Counters ==--
+    --==============--  
     
-        tk_data_bad_cnt_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(24 + I) and wb_we), en_i => (vfat2_tk_data_i(I).valid and (not vfat2_tk_data_i(I).crc_ok)), data_o => reg_data(24 + I));
-        reg_ack(24 + I) <= wb_stb(24 + I);
-        reg_err(24 + I) <= '0';
-    
-    end generate;
+    -- 0 - 7 : WB master
     
     wb_m_cnt_loop : for I in 0 to 3 generate
     begin
     
-        wb_m_req_cnt_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(48 + I) and wb_we), en_i => wb_m_req_i(I).stb, data_o => reg_data(48 + I));
-        reg_ack(48 + I) <= wb_stb(48 + I);
-        reg_err(48 + I) <= '0';
+        wb_m_req_cnt_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(I) and wb_we), en_i => wb_m_req_i(I).stb, data_o => reg_data(I));
     
-        wb_m_res_cnt_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(52 + I) and wb_we), en_i => wb_m_res_i(I).ack, data_o => reg_data(52 + I));
-        reg_ack(52 + I) <= wb_stb(52 + I);
-        reg_err(52 + I) <= '0';
+        wb_m_res_cnt_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(4 + I) and wb_we), en_i => wb_m_res_i(I).ack, data_o => reg_data(4 + I));
     
     end generate;
+    
+    -- 8 - 35 : WB slaves
     
     wb_s_cnt_loop : for I in 0 to 13 generate
     begin
     
-        wb_s_req_cnt_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(56 + I) and wb_we), en_i => wb_s_req_i(I).stb, data_o => reg_data(56 + I));
-        reg_ack(56 + I) <= wb_stb(56 + I);
-        reg_err(56 + I) <= '0';
+        wb_s_req_cnt_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(8 + I) and wb_we), en_i => wb_s_req_i(I).stb, data_o => reg_data(8 + I));
     
-        wb_s_res_cnt_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(70 + I) and wb_we), en_i => wb_s_res_i(I).ack, data_o => reg_data(70 + I));
-        reg_ack(70 + I) <= wb_stb(70 + I);
-        reg_err(70 + I) <= '0';
+        wb_s_res_cnt_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(22 + I) and wb_we), en_i => wb_s_res_i(I).ack, data_o => reg_data(22 + I));
+
+    end generate;
+    
+    -- 36 - 59 : Good tracking data
+    
+    tk_data_godd_cnt_loop : for I in 0 to 23 generate
+    begin
+    
+        tk_data_good_cnt_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(36 + I) and wb_we), en_i => (vfat2_tk_data_i(I).valid and vfat2_tk_data_i(I).crc_ok), data_o => reg_data(36 + I));
     
     end generate;
+    
+    -- 60 - 83 : Bad tracking data
+    
+    tk_data_bad_cnt_loop : for I in 0 to 23 generate
+    begin
+    
+        tk_data_bad_cnt_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(60 + I) and wb_we), en_i => (vfat2_tk_data_i(I).valid and (not vfat2_tk_data_i(I).crc_ok)), data_o => reg_data(60 + I));
+    
+    end generate;
+    
+    -- 84 - 87 : T1 commands   
+    
+    lv1a_cnt_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(84) and wb_we), en_i => vfat2_t1_i.lv1a, data_o => reg_data(84));
+    
+    calpulse_cnt_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(85) and wb_we), en_i => vfat2_t1_i.calpulse, data_o => reg_data(85));
+    
+    resync_cnt_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(86) and wb_we), en_i => vfat2_t1_i.resync, data_o => reg_data(86));
+    
+    bc0_cnt_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(87) and wb_we), en_i => vfat2_t1_i.bc0, data_o => reg_data(87));
+    
+    -- 88 - 89 : GTX error (TK & Trigger)
+    
+    gtx_tk_error_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(88) and wb_we), en_i => gtx_tk_error_i, data_o => reg_data(88));
+    
+    gtx_tr_error_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(89) and wb_we), en_i => gtx_tr_error_i, data_o => reg_data(89));
 
 end Behavioral;

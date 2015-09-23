@@ -36,6 +36,8 @@ port(
     
     vfat2_tk_data_i     : in tk_data_array_t(23 downto 0);
     vfat2_tk_mask_i     : in std_logic_vector(23 downto 0);
+    
+    tk_error_o          : out std_logic;
    
     rx_n_i              : in std_logic_vector(1 downto 0);
     rx_p_i              : in std_logic_vector(1 downto 0);
@@ -63,7 +65,6 @@ architecture Behavioral of gtx is
     
     signal g2o_req_en       : std_logic;
     signal g2o_req_data     : std_logic_vector(64 downto 0);    
-    signal g2o_req_error    : std_logic;
     
     signal o2g_req_en       : std_logic;
     signal o2g_req_valid    : std_logic;
@@ -75,15 +76,6 @@ architecture Behavioral of gtx is
     signal tk_rd_valid      : std_logic;
     signal tk_rd_data       : std_logic_vector(15 downto 0);
     signal tk_rd_ready      : std_logic;
-    
-    --== Chipscope signals ==--
-    
-    signal cs_ctrl0         : std_logic_vector(35 downto 0);
-    signal cs_ctrl1         : std_logic_vector(35 downto 0); 
-    signal cs_sync_in       : std_logic_vector(36 downto 0);
-    signal cs_sync_out      : std_logic_vector(65 downto 0);
-    signal cs_trig0         : std_logic_vector(31 downto 0);
-    signal cs_trig1         : std_logic_vector(31 downto 0);
     
 begin    
     
@@ -119,7 +111,7 @@ begin
         reset_i     => reset_i,           
         req_en_o    => g2o_req_en,   
         req_data_o  => g2o_req_data,  
-        req_error_o => g2o_req_error,         
+        req_error_o => tk_error_o,         
         rx_kchar_i  => gtx_rx_kchar(1 downto 0),   
         rx_data_i   => gtx_rx_data(15 downto 0)
     );
@@ -177,41 +169,5 @@ begin
 		tk_rd_data_o    => tk_rd_data,
         tk_rd_ready_o   => tk_rd_ready
 	);  
-            
-    --===============--
-    --== ChipScope ==--
-    --===============--
-    
-    chipscope_icon_inst : entity work.chipscope_icon
-    port map(
-        control0    => cs_ctrl0,
-        control1    => cs_ctrl1
-    );
-    
-    chipscope_vio_inst : entity work.chipscope_vio
-    port map(
-        control     => cs_ctrl0,
-        clk         => gtx_usr_clk,
-        sync_in     => cs_sync_in,
-        sync_out    => cs_sync_out
-    );
-    
-    chipscope_ila_inst : entity work.chipscope_ila
-    port map(
-        control => cs_ctrl1,
-        clk     => gtx_usr_clk,
-        trig0   => cs_trig0,
-        trig1   => cs_trig1
-    );
-        
-    cs_trig0 <= gtx_rx_data(15 downto 0) & gtx_tx_data(15 downto 0);
-    cs_trig1 <= (
-        0 => vfat2_tk_data_i(0).valid,
-        1 => vfat2_tk_data_i(0).crc_ok,
-        2 => tk_rd_en,
-        3 => tk_rd_valid,   
-        4 => tk_rd_ready,
-        others => '0'
-    );
     
 end Behavioral;

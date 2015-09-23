@@ -101,7 +101,7 @@ package body wb_pkg is
         -- VFAT2 dac                                          REGS |  |            
         elsif (std_match(addr, WB_ADDR_DAC  & "00000000000000000000----")) then sel := WB_SLV_DAC;  
         -- ADC                                                              
-        elsif (std_match(addr, WB_ADDR_ADC  & "000000000000000000000000")) then sel := WB_SLV_ADC;    
+        elsif (std_match(addr, WB_ADDR_ADC  & "00000000000000000000----")) then sel := WB_SLV_ADC;    
         -- CLK                                                              
         elsif (std_match(addr, WB_ADDR_CLK  & "000000000000000000000000")) then sel := WB_SLV_CLK;    
         -- CNT                                                              
