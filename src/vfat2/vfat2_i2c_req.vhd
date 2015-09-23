@@ -53,6 +53,7 @@ architecture Behavioral of vfat2_i2c_req is
     
     -- I2C transaction parameters
     signal chipid   : std_logic_vector(2 downto 0);
+    signal id       : std_logic_vector(4 downto 0);
     signal reg      : unsigned(7 downto 0);
     signal data     : std_logic_vector(7 downto 0);
     signal rw       : std_logic;
@@ -71,6 +72,7 @@ begin
                 i2c_data_o <= (others => '0');
                 state <= IDLE;
                 chipid <= (others => '0');
+                id <= (others => '0');
                 reg <= (others => '0');
                 data <= (others => '0');
                 rw <= '0';
@@ -90,6 +92,7 @@ begin
                                 when "00011" | "00111" | "01011" | "01111" | "10011" | "10111" => chipid <= "011";
                                 when others => chipid <= "000"; 
                             end case;
+                            id <= wb_slv_req_i.addr(12 downto 8);
                             reg <= unsigned(wb_slv_req_i.addr(7 downto 0));
                             data <= wb_slv_req_i.data(7 downto 0);
                             rw <= not wb_slv_req_i.we;
@@ -101,12 +104,12 @@ begin
                         -- Check ChipID
                         if (chipid = "000") then
                             -- The chip ID is not valid, send an error
-                            wb_slv_res_o <= (ack => '1', stat => WB_ERR_I2C_CHIPID, data => (others => '0'));
+                            wb_slv_res_o <= (ack => '1', stat => WB_ERR_I2C_CHIPID, data => "0000010" & rw & "000" & id & std_logic_vector(reg) & data);
                             state <= IDLE;
                         -- Check the register
                         elsif (reg > 150) then
                             -- The register is not valid, send an error
-                            wb_slv_res_o <= (ack => '1', stat => WB_ERR_I2C_REG, data => (others => '0'));
+                            wb_slv_res_o <= (ack => '1', stat => WB_ERR_I2C_REG, data => "0000010" & rw & "000" & id & std_logic_vector(reg) & data);
                             state <= IDLE;
                         else
                             -- Move on
@@ -138,12 +141,12 @@ begin
                         -- Wait for a valid signal
                         if (i2c_valid_i = '1') then
                             -- Send response
-                            wb_slv_res_o <= (ack => '1', stat => WB_NO_ERR, data => x"000000" & i2c_data_i);
+                            wb_slv_res_o <= (ack => '1', stat => WB_NO_ERR, data => "0000001" & rw & "000" & id & std_logic_vector(reg) & i2c_data_i);
                             state <= IDLE;
                         -- Wait for an error signal
                         elsif (i2c_error_i = '1') then
                             -- Send error
-                            wb_slv_res_o <= (ack => '1', stat => WB_ERR_I2C_ACK, data => (others => '0'));
+                            wb_slv_res_o <= (ack => '1', stat => WB_ERR_I2C_ACK, data => "0000010" & rw & "000" & id & std_logic_vector(reg) & "00000000");
                             state <= IDLE;
                         end if;                        
                     -- Acknowledgment for an extended register
@@ -161,7 +164,7 @@ begin
                         -- Wait for an error signal
                         elsif (i2c_error_i = '1') then
                             -- Send error
-                            wb_slv_res_o <= (ack => '1', stat => WB_ERR_I2C_ACK, data => (others => '0'));
+                            wb_slv_res_o <= (ack => '1', stat => WB_ERR_I2C_ACK, data => "0000010" & rw & "000" & id & std_logic_vector(reg) & "00000000");
                             state <= IDLE;
                         end if;                        
                     --
@@ -173,6 +176,7 @@ begin
                         i2c_data_o <= (others => '0');
                         state <= IDLE;
                         chipid <= (others => '0');
+                        id <= (others => '0');
                         reg <= (others => '0');
                         data <= (others => '0');
                         rw <= '0';                        

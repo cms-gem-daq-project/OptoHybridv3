@@ -258,7 +258,7 @@ begin
                         -- On acknowledgment
                         if (wb_mst_res_i.ack = '1') then
                             -- If the data is valid and the VFAT2 is on
-                            if (wb_mst_res_i.stat = "00" and wb_mst_res_i.data(0) = '1') then
+                            if (wb_mst_res_i.stat = WB_NO_ERR and wb_mst_res_i.data(0) = '1') then
                                 -- change state
                                 state <= REQ_SHUTDOWN;
                             -- Or
@@ -282,7 +282,7 @@ begin
                         -- On acknowledgment
                         if (wb_mst_res_i.ack = '1') then
                             -- If the data is valid
-                            if (wb_mst_res_i.stat = "00") then
+                            if (wb_mst_res_i.stat = WB_NO_ERR) then
                                 -- change state
                                 state <= REQ_SAVE;
                             -- Or
@@ -309,7 +309,7 @@ begin
                         -- On acknowledgment
                         if (wb_mst_res_i.ack = '1') then
                             -- If the data is valid and the VFAT2 is on
-                            if (wb_mst_res_i.stat = "00" and wb_mst_res_i.data(0) = '1') then
+                            if (wb_mst_res_i.stat = WB_NO_ERR and wb_mst_res_i.data(0) = '1') then
                                 -- Store it in memory
                                 saved_value <= wb_mst_res_i.data(7 downto 0);
                                 -- change state
@@ -335,7 +335,7 @@ begin
                         -- On acknowledgment
                         if (wb_mst_res_i.ack = '1') then
                             -- If the data is valid and the VFAT2 is on
-                            if (wb_mst_res_i.stat = "00" and wb_mst_res_i.data(0) = '1') then
+                            if (wb_mst_res_i.stat = WB_NO_ERR and wb_mst_res_i.data(0) = '1') then
                                 -- change state
                                 state <= REQ_I2C;
                             -- Or
@@ -361,7 +361,7 @@ begin
                         -- On acknowledgment
                         if (wb_mst_res_i.ack = '1') then
                             -- If the request was done successfully
-                            if (wb_mst_res_i.stat = "00") then
+                            if (wb_mst_res_i.stat = WB_NO_ERR) then
                                 -- Go for counting
                                 event_counter <= (others => '0');
                                 dac_counter <= (others => '0');
@@ -391,7 +391,7 @@ begin
                         -- On acknowledgment
                         if (wb_mst_res_i.ack = '1') then
                             -- If the request was done successfully
-                            if (wb_mst_res_i.stat = "00") then
+                            if (wb_mst_res_i.stat = WB_NO_ERR) then
                                 -- Increment the event counter
                                 event_counter <= event_counter + 1;
                                 -- Increment the DAC counter

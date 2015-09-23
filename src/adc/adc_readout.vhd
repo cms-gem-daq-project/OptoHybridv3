@@ -40,11 +40,11 @@ port(
 
     -- Input request
     en_i                : in std_logic;
-    data_i              : in std_logic_vector(7 downto 0);
+    data_i              : in std_logic_vector(3 downto 0);
     
     -- Output response
     valid_o             : out std_logic;
-    data_o              : out std_logic_vector(15 downto 0);
+    data_o              : out std_logic_vector(11 downto 0);
 
     -- ADC lines
     adc_chip_select_o   : out std_logic;
@@ -76,20 +76,18 @@ architecture Behavioral of adc_readout is
     -- Asserted on middle of low clock
     signal low_clk      : std_logic;
     
-        --== State machine ==--
+    --== State machine ==--
     
     type state_t is (IDLE, SEND_DATA, WAIT_EOC_LOW, WAIT_EOC_HIGH, READ_RESULT, STOP);
     
     signal state        : state_t;
     
     -- Transaction parameters
-    signal din          : std_logic_vector(7 downto 0);
-    signal dout         : std_logic_vector(15 downto 0);
-    signal data_length  : integer range 0 to 15;
-    signal data_order   : std_logic;
+    signal din          : std_logic_vector(11 downto 0);
+    signal dout         : std_logic_vector(11 downto 0);
     
     -- Helper
-    signal data_cnt     : integer range 0 to 15;
+    signal data_cnt     : integer range 0 to 11;
     
 begin
 
@@ -160,14 +158,12 @@ begin
             if (reset_i = '1') then
                 valid_o <= '0';
                 data_o <= (others => '0');
-                adc_chip_select_o <= '0';
+                adc_chip_select_o <= '1';
                 adc_dout_o <= '0';
                 clk_enable <= '0';
                 state <= IDLE;
                 din <= (others => '0');
                 dout <= (others => '0');
-                data_length <= 0;
-                data_order <= '0';
                 data_cnt <= 0;
             else
                 case state is                                
@@ -175,21 +171,14 @@ begin
                     when IDLE =>
                         -- Reset the flags
                         valid_o <= '0';
-                        adc_chip_select_o <= '0';
+                        adc_chip_select_o <= '1';
                         clk_enable <= '0';
                         -- On request
                         if (en_i = '1') then
                             -- Store the request values
-                            din <= data_i;
-                            case data_i(3 downto 2) is
-                                when "01" => data_length <= 7;
-                                when "00" | "10" => data_length <= 11;
-                                when "11" => data_length <= 15;
-                                when others => data_length <= 11;
-                            end case;
-                            data_order <= data_i(1);
+                            din <= data_i & "00000000";
                             -- Set the helpers
-                            data_cnt <= 7;
+                            data_cnt <= 11;
                             -- Change state
                             state <= SEND_DATA;
                         end if;       
@@ -214,7 +203,7 @@ begin
                         if (low_clk = '1') then
                             if (adc_eoc_i = '0') then
                                 -- End cycle
-                                adc_chip_select_o <= '0';                            
+                                adc_chip_select_o <= '1';                            
                                 clk_enable <= '0';
                                 state <= WAIT_EOC_HIGH;
                             end if;
@@ -227,7 +216,7 @@ begin
                                 adc_chip_select_o <= '0';                                                       
                                 clk_enable <= '1';
                                 dout <= (others => '0');
-                                data_cnt <= 0;
+                                data_cnt <= 11;
                                 state <= READ_RESULT;
                             end if;
                         end if;
@@ -238,23 +227,19 @@ begin
                             adc_chip_select_o <= '0';                                                     
                             clk_enable <= '1';
                             -- Get the data in the right order
-                            if (data_order = '0') then
-                                dout(data_length - data_cnt) <= adc_din_i;
-                            else
-                                dout(data_cnt) <= adc_din_i; 
-                            end if;                            
+                            dout(data_cnt) <= adc_din_i;                          
                             -- Check if data is still available
-                            if (data_cnt = data_length) then
+                            if (data_cnt = 0) then
                                 state <= STOP;
                             else
-                                data_cnt <= data_cnt + 1;
+                                data_cnt <= data_cnt - 1;
                             end if;
                         end if;
                     -- Stop the ADC
                     when STOP =>
                         -- Stop on a low clock
                         if (low_clk = '1') then
-                            adc_chip_select_o <= '0';                                                     
+                            adc_chip_select_o <= '1';                                                     
                             clk_enable <= '0';
                             -- Set the data
                             valid_o <= '1';
@@ -271,8 +256,6 @@ begin
                         state <= IDLE;
                         din <= (others => '0');
                         dout <= (others => '0');
-                        data_length <= 0;
-                        data_order <= '0';
                         data_cnt <= 0;
                 end case;  
             end if;

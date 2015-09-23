@@ -205,14 +205,14 @@ begin
                         -- On acknowledgment
                         if (wb_mst_res_i.ack = '1') then
                             -- If the data is valid and the VFAT2 is on
-                            if (wb_mst_res_i.stat = "00" and wb_mst_res_i.data(0) = '1') then
+                            if (wb_mst_res_i.stat = WB_NO_ERR and wb_mst_res_i.data(0) = '1') then
                                 -- change state
                                 state <= REQ_CURRENT;
                             -- Or
                             else
                                 -- Store an error in the FIFO
                                 fifo_we_o <= '1';
-                                fifo_din_o <= x"FF000000";
+                                fifo_din_o <= x"F0000000";
                                 -- end the scan
                                 state <= IDLE;
                             end if;
@@ -229,7 +229,7 @@ begin
                         -- On acknowledgment
                         if (wb_mst_res_i.ack = '1') then
                             -- If the data is valid
-                            if (wb_mst_res_i.stat = "00") then
+                            if (wb_mst_res_i.stat = WB_NO_ERR) then
                                 -- Store it in memory
                                 saved_value <= wb_mst_res_i.data(7 downto 0);
                                 -- and change state
@@ -257,7 +257,7 @@ begin
                         -- On acknowledgment
                         if (wb_mst_res_i.ack = '1') then
                             -- If the request was done successfully
-                            if (wb_mst_res_i.stat = "00") then
+                            if (wb_mst_res_i.stat = WB_NO_ERR) then
                                 -- Go for counting
                                 event_counter <= (others => '0');
                                 hit_counter <= (others => '0');
@@ -358,8 +358,7 @@ begin
                         saved_value <= (others => '0');
                         value_counter <= (others => '0');
                         event_counter <= (others => '0');
-                        hit_counter <= (others => '0');
-                        
+                        hit_counter <= (others => '0');                                                
                 end case;
             end if;
         end if;

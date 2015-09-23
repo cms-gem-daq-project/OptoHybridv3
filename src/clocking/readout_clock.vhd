@@ -47,31 +47,33 @@ architecture Behavioral of readout_clock is
     
 begin
 
-    readout_clock_req_inst : entity work.readout_clock_req
-    port map(
-        ref_clk_i   => ref_clk_i,
-        reset_i     => reset_i,
-        req_en_i    => req_en_i,
-        req_shift_i => req_shift_i,
-        req_ack_o   => req_ack_o,
-        req_err_o   => req_err_o,
-        locked_i    => locked,
-        ps_reset_o  => ps_reset,
-        ps_en_o     => ps_en,
-        ps_incdec_o => ps_incdec,
-        ps_done_i   => ps_done        
-    );
+    vfat2_clk_o <= ref_clk_i;
 
-    vfat2_readout_clk_inst : entity work.vfat2_readout_clk
-    port map(
-        clk_i       => ref_clk_i,
-        reset_i     => (reset_i or ps_reset),
-        clk_o       => vfat2_clk_o,
-        locked_o    => locked,
-        ps_clk_i    => ref_clk_i,
-        ps_en_i     => ps_en,
-        ps_incdec_i => ps_incdec,
-        ps_done_o   => ps_done
-    ); 
+--    readout_clock_req_inst : entity work.readout_clock_req
+--    port map(
+--        ref_clk_i   => ref_clk_i,
+--        reset_i     => reset_i,
+--        req_en_i    => req_en_i,
+--        req_shift_i => req_shift_i,
+--        req_ack_o   => req_ack_o,
+--        req_err_o   => req_err_o,
+--        locked_i    => locked,
+--        ps_reset_o  => ps_reset,
+--        ps_en_o     => ps_en,
+--        ps_incdec_o => ps_incdec,
+--        ps_done_i   => ps_done        
+--    );
+--
+--    vfat2_readout_clk_inst : entity work.vfat2_readout_clk
+--    port map(
+--        clk_i       => ref_clk_i,
+--        reset_i     => (reset_i or ps_reset),
+--        clk_o       => vfat2_clk_o,
+--        locked_o    => locked,
+--        ps_clk_i    => ref_clk_i,
+--        ps_en_i     => ps_en,
+--        ps_incdec_i => ps_incdec,
+--        ps_done_o   => ps_done
+--    ); 
 
 end Behavioral;

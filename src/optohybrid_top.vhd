@@ -220,7 +220,7 @@ port(
     temp_clk_o              : out std_logic;
     temp_data_io            : inout std_logic;
 
-    chipid_io               : inout std_logic
+    chipid_io               : inout std_logic;
     
 --    hdmi_scl_io             : inout std_logic_vector(1 downto 0);
 --    hdmi_sda_io             : inout std_logic_vector(1 downto 0);
@@ -233,8 +233,13 @@ port(
        
     --== GTX ==--
     
---    mgt_112_clk0_p_i        : in std_logic;
---    mgt_112_clk0_n_i        : in std_logic;
+    mgt_112_clk0_p_i        : in std_logic;
+    mgt_112_clk0_n_i        : in std_logic;
+    
+    mgt_112_rx_p_i          : in std_logic_vector(1 downto 0);
+    mgt_112_rx_n_i          : in std_logic_vector(1 downto 0);
+    mgt_112_tx_p_o          : out std_logic_vector(1 downto 0);
+    mgt_112_tx_n_o          : out std_logic_vector(1 downto 0)
     
 --    mgt_116_clk1_p_i        : in std_logic;
 --    mgt_116_clk1_n_i        : in std_logic;
@@ -273,6 +278,11 @@ architecture Behavioral of optohybrid_top is
 
     signal ref_clk              : std_logic;
     signal reset                : std_logic;
+
+    --== GTX ==--
+    
+    signal gtx_tk_error         : std_logic;
+    signal gtx_tr_error         : std_logic;
 
     --== VFAT2 signals ==--
     
@@ -336,68 +346,31 @@ architecture Behavioral of optohybrid_top is
     signal temp_data_miso_b     : std_logic;
     signal temp_data_tri_b      : std_logic;
     
+    --== System ==--
+    
+    signal vfat2_tk_mask        : std_logic_vector(23 downto 0);
+    
     --== Wishbone signals ==--
     
-    -- Masters
     signal wb_m_req             : wb_req_array_t((WB_MASTERS - 1) downto 0);
     signal wb_m_res             : wb_res_array_t((WB_MASTERS - 1) downto 0);
-    
-    alias wb_mst_gtx_req        : wb_req_array_t(2 downto 0) is wb_m_req(WB_MST_GTX_2 downto WB_MST_GTX_0);
-    alias wb_mst_gtx_res        : wb_res_array_t(2 downto 0) is wb_m_res(WB_MST_GTX_2 downto WB_MST_GTX_0);
-    
-    alias wb_mst_ei2c_req       : wb_req_t is wb_m_req(WB_MST_EI2C);
-    alias wb_mst_ei2c_res       : wb_res_t is wb_m_res(WB_MST_EI2C);
-    
-    alias wb_mst_scan_req       : wb_req_t is wb_m_req(WB_MST_SCAN);
-    alias wb_mst_scan_res       : wb_res_t is wb_m_res(WB_MST_SCAN);
-    
-    alias wb_mst_dac_req        : wb_req_t is wb_m_req(WB_MST_DAC);
-    alias wb_mst_dac_res        : wb_res_t is wb_m_res(WB_MST_DAC);
-    
-    -- Slaves
     signal wb_s_req             : wb_req_array_t((WB_SLAVES - 1) downto 0);
     signal wb_s_res             : wb_res_array_t((WB_SLAVES - 1) downto 0);
     
-    alias wb_slv_i2c_req        : wb_req_array_t(5 downto 0) is wb_s_req(WB_SLV_I2C_5 downto WB_SLV_I2C_0);
-    alias wb_slv_i2c_res        : wb_res_array_t(5 downto 0) is wb_s_res(WB_SLV_I2C_5 downto WB_SLV_I2C_0);
-            
-    alias wb_slv_ei2c_req       : wb_req_t is wb_s_req(WB_SLV_EI2C);
-    alias wb_slv_ei2c_res       : wb_res_t is wb_s_res(WB_SLV_EI2C);
-    
-    alias wb_slv_scan_req       : wb_req_t is wb_s_req(WB_SLV_SCAN);
-    alias wb_slv_scan_res       : wb_res_t is wb_s_res(WB_SLV_SCAN);
-    
-    alias wb_slv_t1_req         : wb_req_t is wb_s_req(WB_SLV_T1);
-    alias wb_slv_t1_res         : wb_res_t is wb_s_res(WB_SLV_T1);
-    
-    alias wb_slv_dac_req        : wb_req_t is wb_s_req(WB_SLV_DAC);
-    alias wb_slv_dac_res        : wb_res_t is wb_s_res(WB_SLV_DAC);
-    
-    alias wb_slv_adc_req        : wb_req_t is wb_s_req(WB_SLV_ADC);
-    alias wb_slv_adc_res        : wb_res_t is wb_s_res(WB_SLV_ADC);
-    
-    alias wb_slv_clk_req        : wb_req_t is wb_s_req(WB_SLV_CLK);
-    alias wb_slv_clk_res        : wb_res_t is wb_s_res(WB_SLV_CLK);
-    
     --== Chipscope signals ==--
     
-    signal cs_clk               : std_logic; -- ChipScope clock
     signal cs_ctrl0             : std_logic_vector(35 downto 0);
     signal cs_ctrl1             : std_logic_vector(35 downto 0); 
     signal cs_sync_in           : std_logic_vector(36 downto 0);
     signal cs_sync_out          : std_logic_vector(65 downto 0);
     signal cs_trig0             : std_logic_vector(31 downto 0);
+    signal cs_trig1             : std_logic_vector(31 downto 0);
     
 begin
 
     reset <= '0';
     
-    --ref_clk <= qpll_clk;
-    --wb_clk <= qpll_clk;
-    --vfat2_mclk <= qpll_clk;
-    
     pll_50MHz_inst : entity work.pll_50MHz port map(clk_50MHz_i => clk_50MHz_i, clk_40MHz_o => ref_clk);
-    cs_clk <= ref_clk;
     
     --=====================--
     --== Wishbone switch ==--
@@ -421,10 +394,31 @@ begin
     port map(
         ref_clk_i           => ref_clk,
         reset_i             => reset,
-        wb_slv_req_i        => wb_slv_clk_req,
-        wb_slv_res_o        => wb_slv_clk_res,
+        wb_slv_req_i        => wb_s_req(WB_SLV_CLK),
+        wb_slv_res_o        => wb_s_res(WB_SLV_CLK),
         vfat2_readout_clk_o => vfat2_readout_clk
     );
+    
+    --=========--
+    --== GTX ==--
+    --=========--
+    
+    gtx_inst : entity work.gtx 
+    port map(
+		mgt_refclk_n_i  => mgt_112_clk0_n_i,
+		mgt_refclk_p_i  => mgt_112_clk0_p_i,
+        ref_clk_i       => ref_clk,
+		reset_i         => reset,
+        wb_mst_req_o    => wb_m_req(WB_MST_GTX),
+        wb_mst_res_i    => wb_m_res(WB_MST_GTX),
+        vfat2_tk_data_i => vfat2_tk_data,
+        vfat2_tk_mask_i => vfat2_tk_mask,
+        tk_error_o      => gtx_tk_error,
+		rx_n_i          => mgt_112_rx_n_i,
+		rx_p_i          => mgt_112_rx_p_i,
+		tx_n_o          => mgt_112_tx_n_o,
+		tx_p_o          => mgt_112_tx_p_o
+	);
 
     --===========--
     --== VFAT2 ==--
@@ -442,8 +436,8 @@ begin
         vfat2_t1_o          => vfat2_t1_b,
         vfat2_data_out_i    => vfat2_data_out_b,
         vfat2_tk_data_o     => vfat2_tk_data,
-        wb_slv_i2c_req_i    => wb_slv_i2c_req,
-        wb_slv_i2c_res_o    => wb_slv_i2c_res,
+        wb_slv_i2c_req_i    => wb_s_req(WB_SLV_I2C_5 downto WB_SLV_I2C_0),
+        wb_slv_i2c_res_o    => wb_s_res(WB_SLV_I2C_5 downto WB_SLV_I2C_0),
         vfat2_scl_o         => vfat2_scl_b,
         vfat2_sda_miso_i    => vfat2_sda_miso_b,
         vfat2_sda_mosi_o    => vfat2_sda_mosi_b,
@@ -458,20 +452,20 @@ begin
     port map(        
         ref_clk_i           => ref_clk,
         reset_i             => reset,
-        wb_slv_ei2c_req_i   => wb_slv_ei2c_req,
-        wb_slv_ei2c_res_o   => wb_slv_ei2c_res,
-        wb_mst_ei2c_req_o   => wb_mst_ei2c_req,
-        wb_mst_ei2c_res_i   => wb_mst_ei2c_res,
-        wb_slv_scan_req_i   => wb_slv_scan_req,
-        wb_slv_scan_res_o   => wb_slv_scan_res,
-        wb_mst_scan_req_o   => wb_mst_scan_req,
-        wb_mst_scan_res_i   => wb_mst_scan_res,
-        wb_slv_t1_req_i     => wb_slv_t1_req,
-        wb_slv_t1_res_o     => wb_slv_t1_res,
-        wb_slv_dac_req_i    => wb_slv_dac_req,
-        wb_slv_dac_res_o    => wb_slv_dac_res,
-        wb_mst_dac_req_o    => wb_mst_dac_req,
-        wb_mst_dac_res_i    => wb_mst_dac_res,
+        wb_slv_ei2c_req_i   => wb_s_req(WB_SLV_EI2C),
+        wb_slv_ei2c_res_o   => wb_s_res(WB_SLV_EI2C),
+        wb_mst_ei2c_req_o   => wb_m_req(WB_MST_EI2C),
+        wb_mst_ei2c_res_i   => wb_m_res(WB_MST_EI2C),
+        wb_slv_scan_req_i   => wb_s_req(WB_SLV_SCAN),
+        wb_slv_scan_res_o   => wb_s_res(WB_SLV_SCAN),
+        wb_mst_scan_req_o   => wb_m_req(WB_MST_SCAN),
+        wb_mst_scan_res_i   => wb_m_res(WB_MST_SCAN),
+        wb_slv_t1_req_i     => wb_s_req(WB_SLV_T1),
+        wb_slv_t1_res_o     => wb_s_res(WB_SLV_T1),
+        wb_slv_dac_req_i    => wb_s_req(WB_SLV_DAC),
+        wb_slv_dac_res_o    => wb_s_res(WB_SLV_DAC),
+        wb_mst_dac_req_o    => wb_m_req(WB_MST_DAC),
+        wb_mst_dac_res_i    => wb_m_res(WB_MST_DAC),
         vfat2_tk_data_i     => vfat2_tk_data,
         vfat2_sbits_i       => vfat2_sbits_b,
         vfat2_t1_o          => vfat2_t1
@@ -485,8 +479,8 @@ begin
     port map(
         ref_clk_i           => ref_clk,
         reset_i             => reset,
-        wb_slv_req_i        => wb_slv_adc_req,
-        wb_slv_res_o        => wb_slv_adc_res,
+        wb_slv_req_i        => wb_s_req(WB_SLV_ADC),
+        wb_slv_res_o        => wb_s_res(WB_SLV_ADC),
         adc_chip_select_o   => adc_chip_select_b,
         adc_din_i           => adc_din_b,
         adc_dout_o          => adc_dout_b,
@@ -494,6 +488,60 @@ begin
         adc_eoc_i           => adc_eoc_b
     );
         
+    --==========--
+    --== CDCE ==--
+    --==========--
+    
+    cdce_inst : entity work.cdce 
+    port map(
+		ref_clk_i       => ref_clk,
+        cdce_clk_i      => cdce_clk_b,
+        cdce_clk_pri_o  => cdce_clk_pri_b,
+        cdce_aux_out_o  => cdce_aux_out_b,
+        cdce_aux_in_i   => cdce_aux_in_b,
+        cdce_ref_o      => cdce_ref_b,
+        cdce_pwrdown_o  => cdce_pwrdown_b,
+        cdce_sync_o     => cdce_sync_b,
+        cdce_locked_i   => cdce_locked_b,
+        cdce_sck_o      => cdce_sck_b,
+        cdce_mosi_o     => cdce_mosi_b,
+        cdce_le_o       => cdce_le_b,
+        cdce_miso_i     => cdce_miso_b
+	);
+    
+    --==============--
+    --== Counters ==--
+    --==============--
+    
+    counters_inst : entity work.counters
+    port map(
+        ref_clk_i       => ref_clk,
+        reset_i         => reset, 
+        wb_slv_req_i    => wb_s_req(WB_SLV_CNT),
+        wb_slv_res_o    => wb_s_res(WB_SLV_CNT),
+        wb_m_req_i      => wb_m_req,      
+        wb_m_res_i      => wb_m_res,
+        wb_s_req_i      => wb_s_req,
+        wb_s_res_i      => wb_s_res,
+        vfat2_tk_data_i => vfat2_tk_data,
+        vfat2_t1_i      => vfat2_t1,
+        gtx_tk_error_i  => gtx_tk_error,
+        gtx_tr_error_i  => gtx_tr_error
+    );
+    
+    --============--
+    --== System ==--
+    --============--
+    
+    sys_inst : entity work.sys
+    port map(
+        ref_clk_i       => ref_clk,
+        reset_i         => reset, 
+        wb_slv_req_i    => wb_s_req(WB_SLV_SYS),
+        wb_slv_res_o    => wb_s_res(WB_SLV_SYS),  
+        vfat2_tk_mask_o => vfat2_tk_mask        
+    );
+            
     --===============--
     --== ChipScope ==--
     --===============--
@@ -507,7 +555,7 @@ begin
     chipscope_vio_inst : entity work.chipscope_vio
     port map(
         control     => cs_ctrl0,
-        clk         => cs_clk,
+        clk         => ref_clk,
         sync_in     => cs_sync_in,
         sync_out    => cs_sync_out
     );
@@ -515,38 +563,21 @@ begin
     chipscope_ila_inst : entity work.chipscope_ila
     port map(
         control => cs_ctrl1,
-        clk     => cs_clk,
-        trig0   => cs_trig0
+        clk     => ref_clk,
+        trig0   => cs_trig0,
+        trig1   => cs_trig1
     );
-    
-    --===========--
-    --== DEBUG ==--
-    --===========--
-    
-    process(ref_clk)
-        variable s : std_logic;
-    begin
-        if (rising_edge(ref_clk)) then
-            if (reset = '1') then
-                s := '0';
-                wb_mst_gtx_req(0).stb <= '0'; 
-            else
-                if (s = '0' and cs_sync_out(65) = '1') then
-                    wb_mst_gtx_req(0) <= (stb   => cs_sync_out(65),
-                                          we    => cs_sync_out(64),
-                                          addr  => cs_sync_out(31 downto 0),
-                                          data  => cs_sync_out(63 downto 32));
-                else
-                    wb_mst_gtx_req(0).stb <= '0'; 
-                end if;
-                s := cs_sync_out(65);
-            end if;
-        end if; 
-    end process;
-    
-    cs_sync_in <= wb_mst_gtx_res(0).ack & wb_mst_gtx_res(0).stat & wb_mst_gtx_res(0).data;
-    
-    cs_trig0 <= (0 => adc_clk_b, 1 => adc_din_b, 2 => adc_chip_select_b, 3 => adc_eoc_b, 4 => adc_dout_b, 5 => wb_slv_adc_req.stb, 6 => wb_slv_adc_res.ack, others => '0');
+        
+    cs_trig0 <= (
+        0 => wb_s_req(WB_SLV_ADC).stb,
+        1 => wb_s_res(WB_SLV_ADC).ack,
+        2 => adc_chip_select_b,
+        3 => adc_din_b,   
+        4 => adc_dout_b,
+        5 => adc_clk_b,
+        6 => adc_eoc_b,
+        others => '0'
+    );
     
     --=============--
     --== Buffers ==--

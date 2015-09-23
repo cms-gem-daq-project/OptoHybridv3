@@ -42,17 +42,15 @@ architecture Behavioral of adc is
 
     -- I2C transaction parameters 
     signal adc_en       : std_logic;
-    signal adc_din      : std_logic_vector(7 downto 0);
+    signal adc_din      : std_logic_vector(3 downto 0);
     signal adc_valid    : std_logic;
-    signal adc_dout     : std_logic_vector(15 downto 0);
+    signal adc_dout     : std_logic_vector(11 downto 0);
     
 begin
 
     --==================================--
     --== Wishbone ADC request handler ==--
     --==================================--
-    
-    -- 0..150 : VFAT2 registers
 
     adc_req_inst : entity work.adc_req
     port map(
