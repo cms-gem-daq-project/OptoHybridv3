@@ -274,19 +274,9 @@ end optohybrid_top;
 
 architecture Behavioral of optohybrid_top is
 
-    --== Global signals ==--
-
-    signal ref_clk              : std_logic;
-    signal reset                : std_logic;
-
-    --== GTX ==--
+    --== Bufferes ==--
     
-    signal gtx_tk_error         : std_logic;
-    signal gtx_tr_error         : std_logic;
-
-    --== VFAT2 signals ==--
-    
-    signal vfat2_mclk_b         : std_logic; -- VFAT2 refenrece clock (should be the same as the LHC clock)
+    signal vfat2_mclk_b         : std_logic; 
     signal vfat2_reset_b        : std_logic;
     signal vfat2_t1_b           : std_logic;
     signal vfat2_scl_b          : std_logic_vector(5 downto 0); 
@@ -297,21 +287,12 @@ architecture Behavioral of optohybrid_top is
     signal vfat2_data_out_b     : std_logic_vector(23 downto 0);
     signal vfat2_sbits_b        : sbits_array_t(23 downto 0);
     
-    signal vfat2_readout_clk    : std_logic_vector(2 downto 0);
-    signal vfat2_reset          : std_logic;
-    signal vfat2_t1             : t1_t;
-    signal vfat2_tk_data        : tk_data_array_t(23 downto 0);
-    
-    --== ADC signals ==--
-    
     signal adc_clk_b            : std_logic;
     signal adc_chip_select_b    : std_logic;
     signal adc_dout_b           : std_logic;
     signal adc_din_b            : std_logic;
-    signal adc_eoc_b            : std_logic;    
+    signal adc_eoc_b            : std_logic; 
     
-    --== CDCE signals ==--
-
     signal cdce_clk_b           : std_logic;
     signal cdce_clk_pri_b       : std_logic;
     signal cdce_aux_out_b       : std_logic;
@@ -323,32 +304,44 @@ architecture Behavioral of optohybrid_top is
     signal cdce_sck_b           : std_logic;
     signal cdce_mosi_b          : std_logic;
     signal cdce_le_b            : std_logic;
-    signal cdce_miso_b          : std_logic;    
-    
-    --== Chip ID signals ==--
+    signal cdce_miso_b          : std_logic;  
 
     signal chipid_mosi_b        : std_logic;
     signal chipid_miso_b        : std_logic;
     signal chipid_tri_b         : std_logic;
     
-    --== QPLL signals ==--
-
     signal qpll_ref_40MHz_b     : std_logic;
     signal qpll_reset_b         : std_logic;
     signal qpll_locked_b        : std_logic;
     signal qpll_error_b         : std_logic;
     signal qpll_clk_b           : std_logic;
     
-    --== Temperature signals ==--
-
     signal temp_clk_b           : std_logic;
     signal temp_data_mosi_b     : std_logic;
     signal temp_data_miso_b     : std_logic;
     signal temp_data_tri_b      : std_logic;
     
+    --== Global signals ==--
+
+    signal ref_clk              : std_logic;
+    signal reset                : std_logic;
+
+    --== GTX ==--
+    
+    signal gtx_tk_error         : std_logic;
+    signal gtx_tr_error         : std_logic;
+    
+    --== VFAT2 ==--
+    
+    signal vfat2_readout_clk    : std_logic_vector(2 downto 0);
+    signal vfat2_t1             : t1_array_t(3 downto 0);
+    signal vfat2_tk_data        : tk_data_array_t(23 downto 0);
+    
     --== System ==--
     
     signal vfat2_tk_mask        : std_logic_vector(23 downto 0);
+    signal vfat2_t1_sel         : std_logic_vector(1 downto 0);
+    signal vfat2_reset          : std_logic;
     
     --== Wishbone signals ==--
     
@@ -356,15 +349,6 @@ architecture Behavioral of optohybrid_top is
     signal wb_m_res             : wb_res_array_t((WB_MASTERS - 1) downto 0);
     signal wb_s_req             : wb_req_array_t((WB_SLAVES - 1) downto 0);
     signal wb_s_res             : wb_res_array_t((WB_SLAVES - 1) downto 0);
-    
-    --== Chipscope signals ==--
-    
-    signal cs_ctrl0             : std_logic_vector(35 downto 0);
-    signal cs_ctrl1             : std_logic_vector(35 downto 0); 
-    signal cs_sync_in           : std_logic_vector(36 downto 0);
-    signal cs_sync_out          : std_logic_vector(65 downto 0);
-    signal cs_trig0             : std_logic_vector(31 downto 0);
-    signal cs_trig1             : std_logic_vector(31 downto 0);
     
 begin
 
@@ -413,7 +397,9 @@ begin
         wb_mst_res_i    => wb_m_res(WB_MST_GTX),
         vfat2_tk_data_i => vfat2_tk_data,
         vfat2_tk_mask_i => vfat2_tk_mask,
+        vfat2_t1_o      => vfat2_t1(0), 
         tk_error_o      => gtx_tk_error,
+        tr_error_o      => gtx_tr_error,
 		rx_n_i          => mgt_112_rx_n_i,
 		rx_p_i          => mgt_112_rx_p_i,
 		tx_n_o          => mgt_112_tx_n_o,
@@ -430,10 +416,12 @@ begin
         reset_i             => reset,
         vfat2_readout_clk_i => vfat2_readout_clk,
         vfat2_reset_i       => vfat2_reset,
-        vfat2_t1_i          => vfat2_t1,
+        vfat2_t1_i          => vfat2_t1(2 downto 0),
+        vfat2_t1_sel_i      => vfat2_t1_sel,
         vfat2_mclk_o        => vfat2_mclk_b,
         vfat2_reset_o       => vfat2_reset_b,
         vfat2_t1_o          => vfat2_t1_b,
+        vfat2_t1_mx_o       => vfat2_t1(3),
         vfat2_data_out_i    => vfat2_data_out_b,
         vfat2_tk_data_o     => vfat2_tk_data,
         wb_slv_i2c_req_i    => wb_s_req(WB_SLV_I2C_5 downto WB_SLV_I2C_0),
@@ -468,7 +456,7 @@ begin
         wb_mst_dac_res_i    => wb_m_res(WB_MST_DAC),
         vfat2_tk_data_i     => vfat2_tk_data,
         vfat2_sbits_i       => vfat2_sbits_b,
-        vfat2_t1_o          => vfat2_t1
+        vfat2_t1_o          => vfat2_t1(1)
     );    
     
     --=========--
@@ -539,44 +527,9 @@ begin
         reset_i         => reset, 
         wb_slv_req_i    => wb_s_req(WB_SLV_SYS),
         wb_slv_res_o    => wb_s_res(WB_SLV_SYS),  
-        vfat2_tk_mask_o => vfat2_tk_mask        
-    );
-            
-    --===============--
-    --== ChipScope ==--
-    --===============--
-    
-    chipscope_icon_inst : entity work.chipscope_icon
-    port map(
-        control0    => cs_ctrl0,
-        control1    => cs_ctrl1
-    );
-    
-    chipscope_vio_inst : entity work.chipscope_vio
-    port map(
-        control     => cs_ctrl0,
-        clk         => ref_clk,
-        sync_in     => cs_sync_in,
-        sync_out    => cs_sync_out
-    );
-    
-    chipscope_ila_inst : entity work.chipscope_ila
-    port map(
-        control => cs_ctrl1,
-        clk     => ref_clk,
-        trig0   => cs_trig0,
-        trig1   => cs_trig1
-    );
-        
-    cs_trig0 <= (
-        0 => wb_s_req(WB_SLV_ADC).stb,
-        1 => wb_s_res(WB_SLV_ADC).ack,
-        2 => adc_chip_select_b,
-        3 => adc_din_b,   
-        4 => adc_dout_b,
-        5 => adc_clk_b,
-        6 => adc_eoc_b,
-        others => '0'
+        vfat2_tk_mask_o => vfat2_tk_mask,
+        vfat2_t1_sel_o  => vfat2_t1_sel,
+        vfat2_reset_o   => vfat2_reset 
     );
     
     --=============--

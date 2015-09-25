@@ -11,6 +11,9 @@
 -- Description:
 --
 -- 0 : VFAT2 mask for tracking data - 24 bits
+-- 1 : VFAT2 T1 selection
+-- 2 : VFAT2 reset
+--
 ----------------------------------------------------------------------------------
 
 library ieee;
@@ -31,7 +34,9 @@ port(
     wb_slv_res_o    : out wb_res_t;
     
     --
-    vfat2_tk_mask_o : out std_logic_vector(23 downto 0)
+    vfat2_tk_mask_o : out std_logic_vector(23 downto 0);
+    vfat2_t1_sel_o  : out std_logic_vector(1 downto 0);
+    vfat2_reset_o   : out std_logic
     
 );
 end sys;
@@ -98,6 +103,10 @@ begin
     --=============--
     
     vfat2_tk_mask_o <= reg_data(0)(23 downto 0);
+    
+    vfat2_t1_sel_o <= reg_data(1)(1 downto 0);
+    
+    vfat2_reset_o <= wb_stb(2) and wb_we;
 
 end Behavioral;
 

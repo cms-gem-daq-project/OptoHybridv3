@@ -10,7 +10,7 @@
 -- Tool versions:  ISE  P.20131013
 -- Description: 
 --
--- Handles the VFAT2s basic functions: data readout, T1 encoding, I2C communication.
+-- Handles the VFAT2s basic functions: data readout, T1 selection and encoding, I2C communication.
 -- This module is the link between the OH high-level functions and the VFAT2s. It 
 -- doesn't operate complex operations but only handles the low-level signals of the VFAT2s.
 -- 
@@ -31,12 +31,14 @@ port(
     -- VFAT2 control input
     vfat2_readout_clk_i : in std_logic_vector(2 downto 0);
     vfat2_reset_i       : in std_logic;
-    vfat2_t1_i          : in t1_t;
+    vfat2_t1_i          : in t1_array_t(2 downto 0);
+    vfat2_t1_sel_i      : in std_logic_vector(1 downto 0);
     
     -- VFAT2 control output
     vfat2_mclk_o        : out std_logic;
     vfat2_reset_o       : out std_logic;
     vfat2_t1_o          : out std_logic;
+    vfat2_t1_mx_o       : out t1_t;
     
     -- VFAT2 raw tracking data
     vfat2_data_out_i    : in std_logic_vector(23 downto 0);
@@ -58,6 +60,9 @@ port(
 end vfat2;
 
 architecture Behavioral of vfat2 is
+
+    signal vfat2_t1_mx  : t1_t;
+
 begin
 
     --=====================--
@@ -65,8 +70,30 @@ begin
     --=====================--
     
     vfat2_mclk_o <= ref_clk_i;
-    vfat2_reset_o <= not vfat2_reset_i;
-
+    
+    vfat2_reset_inst : entity work.vfat2_reset
+    port map(
+        ref_clk_i       => ref_clk_i,
+        reset_i         => reset_i,
+        vfat2_reset_i   => vfat2_reset_i,    
+        vfat2_reset_o   => vfat2_reset_o   
+    );
+    
+    --=================--
+    --== T1 selector ==--
+    --=================--
+    
+    vfat2_t1_mx_o <= vfat2_t1_mx;
+        
+    vfat2_t1_selector_inst : entity work.vfat2_t1_selector
+    port map(
+        ref_clk_i       => ref_clk_i,
+        reset_i         => reset_i,
+        vfat2_t1_i      => vfat2_t1_i,
+        vfat2_t1_sel_i  => vfat2_t1_sel_i,
+        vfat2_t1_o      => vfat2_t1_mx      
+    );
+    
     --================--
     --== T1 encoder ==--
     --================--
@@ -75,7 +102,7 @@ begin
     port map(
         ref_clk_i   => ref_clk_i,
         reset_i     => reset_i,
-        vfat2_t1_i  => vfat2_t1_i,
+        vfat2_t1_i  => vfat2_t1_mx,
         vfat2_t1_o  => vfat2_t1_o
     );
     

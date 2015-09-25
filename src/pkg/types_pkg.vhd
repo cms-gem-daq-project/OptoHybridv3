@@ -37,6 +37,7 @@ package types_pkg is
         strips  : std_logic_vector(127 downto 0);
         crc     : std_logic_vector(15 downto 0);  
         crc_ok  : std_logic;
+        hit     : std_logic;
     end record;
     
     type tk_data_array_t is array(integer range <>) of tk_data_t;
@@ -53,6 +54,8 @@ package types_pkg is
     end record;
     
     type t1_array_t is array(integer range <>) of t1_t;
+    
+    function "or"(a : t1_t; b : t1_t) return t1_t;
 
     --==============--
     --== Wishbone ==--
@@ -79,4 +82,15 @@ package types_pkg is
 end types_pkg;
 
 package body types_pkg is 
+
+    function "or"(a : t1_t; b : t1_t) return t1_t is
+        variable res    : t1_t;
+    begin
+        res.lv1a := a.lv1a or b.lv1a;
+        res.calpulse := a.calpulse or b.calpulse;
+        res.resync := a.resync or b.resync;
+        res.bc0 := a.bc0 or b.bc0;
+        return res;
+    end "or";
+  
 end types_pkg;

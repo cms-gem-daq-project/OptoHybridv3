@@ -448,8 +448,8 @@ begin
         RXPRBSERR                       =>      open,
         ------------------- Receive Ports - RX Data Path interface -----------------
         RXDATA                          =>      rxdata_i,
-        RXRECCLK                        =>      RXRECCLK_OUT,
-        RXRECCLKPCS                     =>      open,
+        RXRECCLK                        =>      open,
+        RXRECCLKPCS                     =>      RXRECCLK_OUT,
         RXRESET                         =>      tied_to_ground_i,
         RXUSRCLK                        =>      tied_to_ground_i,
         RXUSRCLK2                       =>      RXUSRCLK2_IN,

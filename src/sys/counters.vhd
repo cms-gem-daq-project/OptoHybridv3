@@ -21,6 +21,9 @@ use work.types_pkg.all;
 use work.wb_pkg.all;
 
 entity counters is
+generic(
+    N               : integer := 102
+);
 port(
 
     ref_clk_i       : in std_logic;
@@ -40,7 +43,7 @@ port(
     vfat2_tk_data_i : in tk_data_array_t(23 downto 0);
     
     -- T1
-    vfat2_t1_i      : in t1_t;
+    vfat2_t1_i      : in t1_array_t(3 downto 0);
     
     -- GTX
     gtx_tk_error_i  : in std_logic;
@@ -52,15 +55,15 @@ end counters;
 architecture Behavioral of counters is
     
     -- Signals from the Wishbone Hub
-    signal wb_stb       : std_logic_vector(89 downto 0);
+    signal wb_stb       : std_logic_vector((N - 1) downto 0);
     signal wb_we        : std_logic;
     signal wb_addr      : std_logic_vector(31 downto 0);
     signal wb_data      : std_logic_vector(31 downto 0);
     
     -- Signals for the registers
-    signal reg_ack      : std_logic_vector(89 downto 0);
-    signal reg_err      : std_logic_vector(89 downto 0);
-    signal reg_data     : std32_array_t(89 downto 0);
+    signal reg_ack      : std_logic_vector((N - 1) downto 0);
+    signal reg_err      : std_logic_vector((N - 1) downto 0);
+    signal reg_data     : std32_array_t((N - 1) downto 0);
 
 begin
 
@@ -70,7 +73,7 @@ begin
 
     wb_splitter_inst : entity work.wb_splitter
     generic map(
-        SIZE        => 90,
+        SIZE        => N,
         OFFSET      => 0
     )
     port map(
@@ -91,7 +94,7 @@ begin
     --== Automatic response ==--
     --========================--
     
-    ack_err_loop : for I in 0 to 89 generate
+    ack_err_loop : for I in 0 to (N - 1) generate
     begin
     
         reg_ack(I) <= wb_stb(I);
@@ -143,20 +146,25 @@ begin
     
     end generate;
     
-    -- 84 - 87 : T1 commands   
+    -- 84 - 95 : T1 commands  
+
+    t1_cnt_loop : for I in 0 to 3 generate
+    begin
     
-    lv1a_cnt_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(84) and wb_we), en_i => vfat2_t1_i.lv1a, data_o => reg_data(84));
+        lv1a_cnt_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(84 + I * 4) and wb_we), en_i => vfat2_t1_i(I).lv1a, data_o => reg_data(84 + I * 4));
+        
+        calpulse_cnt_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(85 + I * 4) and wb_we), en_i => vfat2_t1_i(I).calpulse, data_o => reg_data(85 + I * 4));
+        
+        resync_cnt_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(86 + I * 4) and wb_we), en_i => vfat2_t1_i(I).resync, data_o => reg_data(86 + I * 4));
+        
+        bc0_cnt_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(87 + I * 4) and wb_we), en_i => vfat2_t1_i(I).bc0, data_o => reg_data(87 + I * 4));
     
-    calpulse_cnt_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(85) and wb_we), en_i => vfat2_t1_i.calpulse, data_o => reg_data(85));
+    end generate;
     
-    resync_cnt_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(86) and wb_we), en_i => vfat2_t1_i.resync, data_o => reg_data(86));
+    -- 100 - 101 : GTX error (TK & Trigger)
     
-    bc0_cnt_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(87) and wb_we), en_i => vfat2_t1_i.bc0, data_o => reg_data(87));
+    gtx_tk_error_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(100) and wb_we), en_i => gtx_tk_error_i, data_o => reg_data(100));
     
-    -- 88 - 89 : GTX error (TK & Trigger)
-    
-    gtx_tk_error_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(88) and wb_we), en_i => gtx_tk_error_i, data_o => reg_data(88));
-    
-    gtx_tr_error_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(89) and wb_we), en_i => gtx_tr_error_i, data_o => reg_data(89));
+    gtx_tr_error_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(101) and wb_we), en_i => gtx_tr_error_i, data_o => reg_data(101));
 
 end Behavioral;
