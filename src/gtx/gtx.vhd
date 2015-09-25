@@ -31,6 +31,8 @@ port(
     
     reset_i         : in std_logic;
     
+    rec_clk_o       : out std_logic;
+    
     wb_mst_req_o    : out wb_req_t;
     wb_mst_res_i    : in wb_res_t;
     
@@ -62,7 +64,6 @@ architecture Behavioral of gtx is
     signal gtx_rx_error     : std_logic_vector(1 downto 0);
  
     signal gtx_usr_clk      : std_logic;   
-    signal gtx_rec_clk      : std_logic;   
     
     --== GTX requests ==--
     
@@ -89,7 +90,13 @@ architecture Behavioral of gtx is
     signal cs_trig0         : std_logic_vector(31 downto 0);
     signal cs_trig1         : std_logic_vector(31 downto 0);
     
+    signal tk_error         : std_logic;
+    signal tr_error         : std_logic;
+    
 begin    
+
+    tk_error_o <= tk_error;
+    tr_error_o <= tr_error;
     
     --=================--
     --== GTX wrapper ==--
@@ -106,7 +113,7 @@ begin
 		rx_data_o       => gtx_rx_data,
 		rx_error_o      => gtx_rx_error,
 		usr_clk_o       => gtx_usr_clk,
-        rec_clk_o       => gtx_rec_clk,
+        rec_clk_o       => rec_clk_o,
 		rx_n_i          => rx_n_i(1 downto 0),
 		rx_p_i          => rx_p_i(1 downto 0),
 		tx_n_o          => tx_n_o(1 downto 0),
@@ -122,7 +129,7 @@ begin
         gtx_clk_i   => gtx_usr_clk,   
         reset_i     => reset_i,  
         vfat2_t1_o  => vfat2_t1_o,
-        tr_error_o  => tr_error_o,        
+        tr_error_o  => tr_error,        
         rx_kchar_i  => gtx_rx_kchar(3 downto 2),   
         rx_data_i   => gtx_rx_data(31 downto 16)      
     );
@@ -137,7 +144,7 @@ begin
         reset_i     => reset_i,           
         req_en_o    => g2o_req_en,   
         req_data_o  => g2o_req_data,  
-        tk_error_o  => tk_error_o,         
+        tk_error_o  => tk_error,         
         rx_kchar_i  => gtx_rx_kchar(1 downto 0),   
         rx_data_i   => gtx_rx_data(15 downto 0)
     );
@@ -223,5 +230,6 @@ begin
     );
         
     cs_trig0 <= gtx_tx_data(15 downto 0) & gtx_rx_data(15 downto 0);
+    cs_trig1(0) <= tk_error;
     
 end Behavioral;

@@ -13,6 +13,8 @@
 -- 0 : VFAT2 mask for tracking data - 24 bits
 -- 1 : VFAT2 T1 selection
 -- 2 : VFAT2 reset
+-- 3 : referenc clock select
+-- 4 : SBit select
 --
 ----------------------------------------------------------------------------------
 
@@ -36,7 +38,9 @@ port(
     --
     vfat2_tk_mask_o : out std_logic_vector(23 downto 0);
     vfat2_t1_sel_o  : out std_logic_vector(1 downto 0);
-    vfat2_reset_o   : out std_logic
+    vfat2_reset_o   : out std_logic;
+    sys_clk_sel_o   : out std_logic_vector(1 downto 0);
+    sys_sbit_sel_o  : out std_logic_vector(4 downto 0)
     
 );
 end sys;
@@ -107,6 +111,10 @@ begin
     vfat2_t1_sel_o <= reg_data(1)(1 downto 0);
     
     vfat2_reset_o <= wb_stb(2) and wb_we;
+    
+    sys_clk_sel_o <= reg_data(3)(1 downto 0);
+    
+    sys_sbit_sel_o <= reg_data(4)(4 downto 0);
 
 end Behavioral;
 

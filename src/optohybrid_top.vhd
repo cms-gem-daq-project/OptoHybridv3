@@ -323,17 +323,18 @@ architecture Behavioral of optohybrid_top is
     
     --== Global signals ==--
 
+    signal clk_onboard          : std_logic;
     signal ref_clk              : std_logic;
     signal reset                : std_logic;
 
     --== GTX ==--
     
+    signal gtx_rec_clk          : std_logic;   
     signal gtx_tk_error         : std_logic;
     signal gtx_tr_error         : std_logic;
     
     --== VFAT2 ==--
     
-    signal vfat2_readout_clk    : std_logic_vector(2 downto 0);
     signal vfat2_t1             : t1_array_t(3 downto 0);
     signal vfat2_tk_data        : tk_data_array_t(23 downto 0);
     
@@ -342,6 +343,8 @@ architecture Behavioral of optohybrid_top is
     signal vfat2_tk_mask        : std_logic_vector(23 downto 0);
     signal vfat2_t1_sel         : std_logic_vector(1 downto 0);
     signal vfat2_reset          : std_logic;
+    signal sys_clk_sel          : std_logic_vector(1 downto 0);
+    signal sys_sbit_sel         : std_logic_vector(4 downto 0);
     
     --== Wishbone signals ==--
     
@@ -354,7 +357,7 @@ begin
 
     reset <= '0';
     
-    pll_50MHz_inst : entity work.pll_50MHz port map(clk_50MHz_i => clk_50MHz_i, clk_40MHz_o => ref_clk);
+    pll_50MHz_inst : entity work.pll_50MHz port map(clk_50MHz_i => clk_50MHz_i, clk_40MHz_o => clk_onboard);
     
     --=====================--
     --== Wishbone switch ==--
@@ -376,13 +379,13 @@ begin
     
     clocking_inst : entity work.clocking
     port map(
-        ref_clk_i           => ref_clk,
-        reset_i             => reset,
-        wb_slv_req_i        => wb_s_req(WB_SLV_CLK),
-        wb_slv_res_o        => wb_s_res(WB_SLV_CLK),
-        vfat2_readout_clk_o => vfat2_readout_clk
+        clk_onboard_i   => clk_onboard, 
+        clk_gtx_rec_i   => gtx_rec_clk,
+        clk_ext_i       => '0',
+        sys_clk_sel_i   => sys_clk_sel,
+        ref_clk_o       => ref_clk
     );
-    
+
     --=========--
     --== GTX ==--
     --=========--
@@ -393,6 +396,7 @@ begin
 		mgt_refclk_p_i  => mgt_112_clk0_p_i,
         ref_clk_i       => ref_clk,
 		reset_i         => reset,
+        rec_clk_o       => gtx_rec_clk,
         wb_mst_req_o    => wb_m_req(WB_MST_GTX),
         wb_mst_res_i    => wb_m_res(WB_MST_GTX),
         vfat2_tk_data_i => vfat2_tk_data,
@@ -414,7 +418,6 @@ begin
     port map(        
         ref_clk_i           => ref_clk,
         reset_i             => reset,
-        vfat2_readout_clk_i => vfat2_readout_clk,
         vfat2_reset_i       => vfat2_reset,
         vfat2_t1_i          => vfat2_t1(2 downto 0),
         vfat2_t1_sel_i      => vfat2_t1_sel,
@@ -529,7 +532,9 @@ begin
         wb_slv_res_o    => wb_s_res(WB_SLV_SYS),  
         vfat2_tk_mask_o => vfat2_tk_mask,
         vfat2_t1_sel_o  => vfat2_t1_sel,
-        vfat2_reset_o   => vfat2_reset 
+        vfat2_reset_o   => vfat2_reset,
+        sys_clk_sel_o   => sys_clk_sel,
+        sys_sbit_sel_o  => sys_sbit_sel
     );
     
     --=============--

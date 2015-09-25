@@ -29,7 +29,6 @@ port(
     reset_i             : in std_logic;
         
     -- VFAT2 control input
-    vfat2_readout_clk_i : in std_logic_vector(2 downto 0);
     vfat2_reset_i       : in std_logic;
     vfat2_t1_i          : in t1_array_t(2 downto 0);
     vfat2_t1_sel_i      : in std_logic_vector(1 downto 0);
@@ -115,7 +114,7 @@ begin
     
         vfat2_data_decoder_inst : entity work.vfat2_data_decoder
         port map(
-            ref_clk_i           => vfat2_readout_clk_i(I / 8),
+            ref_clk_i           => ref_clk_i,
             reset_i             => reset_i,
             vfat2_data_out_i    => vfat2_data_out_i(I),
             tk_data_o           => vfat2_tk_data_o(I)
