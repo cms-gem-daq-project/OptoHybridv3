@@ -230,6 +230,6 @@ begin
     );
         
     cs_trig0 <= gtx_tx_data(15 downto 0) & gtx_rx_data(15 downto 0);
-    cs_trig1(0) <= tk_error;
+    cs_trig1 <= gtx_tx_data(31 downto 16) & gtx_rx_data(31 downto 16);
     
 end Behavioral;

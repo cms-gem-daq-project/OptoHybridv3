@@ -506,4 +506,4 @@ TIMESPEC "TS_mgt_refclk" = PERIOD "mgt_refclk" 6.25;
 INST gtx_inst/gtx_wrapper_inst/sfp_gtx_inst/gtx0_sfp_gtx_i/gtxe1_i LOC=GTXE1_X0Y0;
 
 ##---------- Set placement for gtx1_gtx_wrapper_i/GTX_DUAL ------
-INST gtx_inst/gtx_wrapper_inst/sfp_gtx_inst/gtx1_sfp_gtx_i/gtxe1_i LOC=GTXE1_X0Y1;
+INST gtx_inst/gtx_wrapper_inst/sfp_gtx_inst/gtx1_sfp_gtx_i/gtxe1_i LOC=GTXE1_X0Y2;
