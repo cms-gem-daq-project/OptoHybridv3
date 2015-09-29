@@ -37,7 +37,8 @@ port(
     
     --
     vfat2_tk_mask_o : out std_logic_vector(23 downto 0);
-    vfat2_t1_sel_o  : out std_logic_vector(1 downto 0);
+    vfat2_t1_sel_o  : out std_logic_vector(2 downto 0);
+    sys_loop_sbit_o : out std_logic_vector(4 downto 0);
     vfat2_reset_o   : out std_logic;
     sys_clk_sel_o   : out std_logic_vector(1 downto 0);
     sys_sbit_sel_o  : out std_logic_vector(4 downto 0)
@@ -108,13 +109,15 @@ begin
     
     vfat2_tk_mask_o <= reg_data(0)(23 downto 0);
     
-    vfat2_t1_sel_o <= reg_data(1)(1 downto 0);
+    vfat2_t1_sel_o <= reg_data(1)(2 downto 0);
     
-    vfat2_reset_o <= wb_stb(2) and wb_we;
+    sys_loop_sbit_o <= reg_data(2)(4 downto 0);
     
-    sys_clk_sel_o <= reg_data(3)(1 downto 0);
+    vfat2_reset_o <= wb_stb(3) and wb_we;
     
-    sys_sbit_sel_o <= reg_data(4)(4 downto 0);
+    sys_clk_sel_o <= reg_data(4)(1 downto 0);
+    
+    sys_sbit_sel_o <= reg_data(5)(4 downto 0);
 
 end Behavioral;
 

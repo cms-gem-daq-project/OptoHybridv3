@@ -335,16 +335,18 @@ architecture Behavioral of optohybrid_top is
     
     --== VFAT2 ==--
     
-    signal vfat2_t1             : t1_array_t(3 downto 0);
+    signal vfat2_t1             : t1_array_t(2 downto 0);
+    signal vfat2_t1_lst         : t1_array_t(4 downto 0);
     signal vfat2_tk_data        : tk_data_array_t(23 downto 0);
     
     --== System ==--
     
     signal vfat2_tk_mask        : std_logic_vector(23 downto 0);
-    signal vfat2_t1_sel         : std_logic_vector(1 downto 0);
+    signal vfat2_t1_sel         : std_logic_vector(2 downto 0);
     signal vfat2_reset          : std_logic;
     signal sys_clk_sel          : std_logic_vector(1 downto 0);
     signal sys_sbit_sel         : std_logic_vector(4 downto 0);
+    signal sys_loop_sbit        : std_logic_vector(4 downto 0);
     
     --== Wishbone signals ==--
     
@@ -419,14 +421,16 @@ begin
         ref_clk_i           => ref_clk,
         reset_i             => reset,
         vfat2_reset_i       => vfat2_reset,
-        vfat2_t1_i          => vfat2_t1(2 downto 0),
+        vfat2_t1_lst_i      => vfat2_t1,
+        vfat2_t1_lst_o      => vfat2_t1_lst,
         vfat2_t1_sel_i      => vfat2_t1_sel,
         vfat2_mclk_o        => vfat2_mclk_b,
         vfat2_reset_o       => vfat2_reset_b,
         vfat2_t1_o          => vfat2_t1_b,
-        vfat2_t1_mx_o       => vfat2_t1(3),
         vfat2_data_out_i    => vfat2_data_out_b,
         vfat2_tk_data_o     => vfat2_tk_data,
+        vfat2_sbits_i       => vfat2_sbits_b,
+        sys_loop_sbit_i     => sys_loop_sbit,
         wb_slv_i2c_req_i    => wb_s_req(WB_SLV_I2C_5 downto WB_SLV_I2C_0),
         wb_slv_i2c_res_o    => wb_s_res(WB_SLV_I2C_5 downto WB_SLV_I2C_0),
         vfat2_scl_o         => vfat2_scl_b,
@@ -515,7 +519,7 @@ begin
         wb_s_req_i      => wb_s_req,
         wb_s_res_i      => wb_s_res,
         vfat2_tk_data_i => vfat2_tk_data,
-        vfat2_t1_i      => vfat2_t1,
+        vfat2_t1_i      => vfat2_t1_lst,
         gtx_tk_error_i  => gtx_tk_error,
         gtx_tr_error_i  => gtx_tr_error
     );
@@ -532,6 +536,7 @@ begin
         wb_slv_res_o    => wb_s_res(WB_SLV_SYS),  
         vfat2_tk_mask_o => vfat2_tk_mask,
         vfat2_t1_sel_o  => vfat2_t1_sel,
+        sys_loop_sbit_o => sys_loop_sbit,
         vfat2_reset_o   => vfat2_reset,
         sys_clk_sel_o   => sys_clk_sel,
         sys_sbit_sel_o  => sys_sbit_sel

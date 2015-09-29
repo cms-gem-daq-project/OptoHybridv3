@@ -22,7 +22,7 @@ use work.wb_pkg.all;
 
 entity counters is
 generic(
-    N               : integer := 102
+    N               : integer := 106
 );
 port(
 
@@ -43,7 +43,7 @@ port(
     vfat2_tk_data_i : in tk_data_array_t(23 downto 0);
     
     -- T1
-    vfat2_t1_i      : in t1_array_t(3 downto 0);
+    vfat2_t1_i      : in t1_array_t(4 downto 0);
     
     -- GTX
     gtx_tk_error_i  : in std_logic;
@@ -146,9 +146,9 @@ begin
     
     end generate;
     
-    -- 84 - 95 : T1 commands  
+    -- 84 - 103 : T1 commands  
 
-    t1_cnt_loop : for I in 0 to 3 generate
+    t1_cnt_loop : for I in 0 to 4 generate
     begin
     
         lv1a_cnt_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(84 + I * 4) and wb_we), en_i => vfat2_t1_i(I).lv1a, data_o => reg_data(84 + I * 4));
@@ -161,10 +161,10 @@ begin
     
     end generate;
     
-    -- 100 - 101 : GTX error (TK & Trigger)
+    -- 104 - 105 : GTX error (TK & Trigger)
     
-    gtx_tk_error_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(100) and wb_we), en_i => gtx_tk_error_i, data_o => reg_data(100));
+    gtx_tk_error_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(104) and wb_we), en_i => gtx_tk_error_i, data_o => reg_data(104));
     
-    gtx_tr_error_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(101) and wb_we), en_i => gtx_tr_error_i, data_o => reg_data(101));
+    gtx_tr_error_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(105) and wb_we), en_i => gtx_tr_error_i, data_o => reg_data(105));
 
 end Behavioral;

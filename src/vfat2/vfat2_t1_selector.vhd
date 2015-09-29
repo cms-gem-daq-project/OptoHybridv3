@@ -25,8 +25,8 @@ port(
     reset_i         : in std_logic;
     
     -- Input T1 commands
-    vfat2_t1_i      : in t1_array_t(2 downto 0);    
-    vfat2_t1_sel_i  : in std_logic_vector(1 downto 0);
+    vfat2_t1_i      : in t1_array_t(3 downto 0);    
+    vfat2_t1_sel_i  : in std_logic_vector(2 downto 0);
     
     -- VFAT2 T1 line
     vfat2_t1_o      : out t1_t
@@ -45,10 +45,11 @@ begin
                 vfat2_t1_o <= (lv1a => '0', calpulse => '0', resync => '0', bc0 => '0');
             else
                 case vfat2_t1_sel_i is
-                    when "00" => vfat2_t1_o <= vfat2_t1_i(0);
-                    when "01" => vfat2_t1_o <= vfat2_t1_i(1);
-                    when "10" => vfat2_t1_o <= vfat2_t1_i(2);
-                    when "11" => vfat2_t1_o <= vfat2_t1_i(0) or vfat2_t1_i(1) or vfat2_t1_i(2);
+                    when "000" => vfat2_t1_o <= vfat2_t1_i(0);
+                    when "001" => vfat2_t1_o <= vfat2_t1_i(1);
+                    when "010" => vfat2_t1_o <= vfat2_t1_i(2);
+                    when "011" => vfat2_t1_o <= vfat2_t1_i(3);
+                    when "100" => vfat2_t1_o <= vfat2_t1_i(0) or vfat2_t1_i(1) or vfat2_t1_i(2) or vfat2_t1_i(3);
                     when others => vfat2_t1_o <= (lv1a => '0', calpulse => '0', resync => '0', bc0 => '0');
                 end case;
             end if;
