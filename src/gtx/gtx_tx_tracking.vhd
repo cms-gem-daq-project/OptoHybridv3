@@ -47,7 +47,7 @@ architecture Behavioral of gtx_tx_tracking is
     
     signal state        : state_t;
     
-    signal tk_counter   : integer range 0 to 287;
+    signal tk_counter   : integer range 0 to 13;
     
     signal evt_valid    : std_logic;
     signal req_valid    : std_logic;
@@ -71,7 +71,7 @@ begin
                         state <= TK_DATA;
                         tk_counter <= 0;
                     when TK_DATA =>
-                        if (tk_counter = 287) then
+                        if (tk_counter = 13) then
                             state <= DATA_0;
                         else
                             tk_counter <= tk_counter + 1;

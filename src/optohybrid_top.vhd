@@ -433,6 +433,7 @@ begin
         wb_mst_res_i    => wb_m_res(WB_MST_GTX),
         vfat2_tk_data_i => vfat2_tk_data,
         vfat2_tk_mask_i => vfat2_tk_mask,
+        vfat2_t1_i      => vfat2_t1_lst(4),
         vfat2_t1_o      => vfat2_t1(0), 
         tk_error_o      => gtx_tk_error,
         tr_error_o      => gtx_tr_error,

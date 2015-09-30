@@ -166,5 +166,5 @@ begin
     gtx_tk_error_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(104) and wb_we), en_i => gtx_tk_error_i, data_o => reg_data(104));
     
     gtx_tr_error_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(105) and wb_we), en_i => gtx_tr_error_i, data_o => reg_data(105));
-
+    
 end Behavioral;

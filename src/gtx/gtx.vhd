@@ -43,6 +43,7 @@ port(
     vfat2_tk_data_i : in tk_data_array_t(23 downto 0);
     vfat2_tk_mask_i : in std_logic_vector(23 downto 0);
     
+    vfat2_t1_i      : in t1_t;
     vfat2_t1_o      : out t1_t;
     
     tk_error_o      : out std_logic;
@@ -203,6 +204,7 @@ begin
 		ref_clk_i       => ref_clk_i,
 		gtx_clk_i       => gtx_usr_clk,
 		reset_i         => reset_i,
+        vfat2_t1_i      => vfat2_t1_i,
 		vfat2_tk_data_i => vfat2_tk_data_i,
         vfat2_tk_mask_i => vfat2_tk_mask_i,
 		evt_rd_en_i     => evt_rd_en,
