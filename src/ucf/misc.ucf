@@ -36,5 +36,13 @@ NET "chipid_io"         LOC = AE23; # N18_N
 #NET "tmds_clk_p_io"     LOC = AF11; # K5
 #NET "tmds_clk_n_io"     LOC = AE11;
 
+## External signals for Test Beam
 
-NET "ext_clk_i"         LOC = AC13 | CLOCK_DEDICATED_ROUTE = false; # K10
+NET "ext_clk_i"         LOC = AC13 | CLOCK_DEDICATED_ROUTE = FALSE;
+NET "ext_trigger_i"     LOC = AC12;
+NET "ext_sbits_o<0>"    LOC = AD12;
+NET "ext_sbits_o<1>"    LOC = AD11;
+NET "ext_sbits_o<2>"    LOC = AF15;
+NET "ext_sbits_o<3>"    LOC = AG13;
+NET "ext_sbits_o<4>"    LOC = AD15;
+NET "ext_sbits_o<5>"    LOC = AF13;

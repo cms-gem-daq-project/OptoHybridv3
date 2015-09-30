@@ -16,6 +16,8 @@ package types_pkg is
     
     type std32_array_t is array(integer range <>) of std_logic_vector(31 downto 0);
     
+    type std5_array_t is array(integer range <>) of std_logic_vector(4 downto 0);
+    
     --==================--
     --== Trigger data ==--
     --==================--

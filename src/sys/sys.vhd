@@ -41,7 +41,7 @@ port(
     sys_loop_sbit_o : out std_logic_vector(4 downto 0);
     vfat2_reset_o   : out std_logic;
     sys_clk_sel_o   : out std_logic_vector(1 downto 0);
-    sys_sbit_sel_o  : out std_logic_vector(4 downto 0)
+    sys_sbit_sel_o  : out std5_array_t(5 downto 0)
     
 );
 end sys;
@@ -49,15 +49,15 @@ end sys;
 architecture Behavioral of sys is
     
     -- Signals from the Wishbone Hub
-    signal wb_stb       : std_logic_vector(31 downto 0);
+    signal wb_stb       : std_logic_vector(11 downto 0);
     signal wb_we        : std_logic;
     signal wb_addr      : std_logic_vector(31 downto 0);
     signal wb_data      : std_logic_vector(31 downto 0);
     
     -- Signals for the registers
-    signal reg_ack      : std_logic_vector(31 downto 0);
-    signal reg_err      : std_logic_vector(31 downto 0);
-    signal reg_data     : std32_array_t(31 downto 0);
+    signal reg_ack      : std_logic_vector(11 downto 0);
+    signal reg_err      : std_logic_vector(11 downto 0);
+    signal reg_data     : std32_array_t(11 downto 0);
 
 begin
 
@@ -67,7 +67,7 @@ begin
 
     wb_splitter_inst : entity work.wb_splitter
     generic map(
-        SIZE        => 32,
+        SIZE        => 12,
         OFFSET      => 0
     )
     port map(
@@ -90,17 +90,17 @@ begin
 
     registers_inst : entity work.registers
     generic map(
-        SIZE        => 32
+        SIZE        => 11
     )
     port map(
         ref_clk_i   => ref_clk_i,
         reset_i     => reset_i,
-        stb_i       => wb_stb(31 downto 0),
+        stb_i       => wb_stb(10 downto 0),
         we_i        => wb_we,
         data_i      => wb_data,
-        ack_o       => reg_ack(31 downto 0),
-        err_o       => reg_err(31 downto 0),
-        data_o      => reg_data(31 downto 0)
+        ack_o       => reg_ack(10 downto 0),
+        err_o       => reg_err(10 downto 0),
+        data_o      => reg_data(10 downto 0)
     );
     
     --=============--
@@ -117,7 +117,20 @@ begin
     
     sys_clk_sel_o <= reg_data(4)(1 downto 0);
     
-    sys_sbit_sel_o <= reg_data(5)(4 downto 0);
+    sbits_loop : for I in 0 to 5 generate
+    begin
+    
+        sys_sbit_sel_o(I) <= reg_data(5 + I)(4 downto 0);
+    
+    end generate;
+    
+    --===================--
+    --== Other mapping ==--
+    --===================--
+    
+    reg_data(11) <= x"20150930";
+    reg_ack(11) <= wb_stb(11);
+    reg_err(11) <= '0';
 
 end Behavioral;
 

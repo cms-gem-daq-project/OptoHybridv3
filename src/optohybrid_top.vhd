@@ -232,6 +232,8 @@ port(
 --    tmds_clk_n_io           : inout std_logic;
 
     ext_clk_i               : in std_logic;
+    ext_trigger_i           : in std_logic;
+    ext_sbits_o             : out std_logic_vector(5 downto 0);
        
     --== GTX ==--
     
@@ -327,6 +329,7 @@ architecture Behavioral of optohybrid_top is
 
     signal clk_onboard          : std_logic;
     signal ref_clk              : std_logic;
+    signal ext_clk              : std_logic;
     signal alt_gtx_clk          : std_logic;
     signal reset                : std_logic;
     signal clk_reg_reset        : std_logic;
@@ -347,10 +350,10 @@ architecture Behavioral of optohybrid_top is
     
     signal vfat2_tk_mask        : std_logic_vector(23 downto 0);
     signal vfat2_t1_sel         : std_logic_vector(2 downto 0);
+    signal sys_loop_sbit        : std_logic_vector(4 downto 0);
     signal vfat2_reset          : std_logic;
     signal sys_clk_sel          : std_logic_vector(1 downto 0);
-    signal sys_sbit_sel         : std_logic_vector(4 downto 0);
-    signal sys_loop_sbit        : std_logic_vector(4 downto 0);
+    signal sys_sbit_sel         : std5_array_t(5 downto 0);
     
     --== Wishbone signals ==--
     
@@ -364,7 +367,38 @@ begin
     reset <= '0';
     
     pll_50MHz_inst : entity work.pll_50MHz port map(clk_50MHz_i => clk_50MHz_i, clk_40MHz_o => clk_onboard, clk_160MHz_o => alt_gtx_clk);
-    --pll_40MHz_inst : entity work.pll_40MHz port map(clk_40MHz_i => ext_clk_i, clk_40MHz_o => clk_onboard, clk_160MHz_o => alt_gtx_clk);
+    
+    --======================--
+    --== External signals ==--
+    --======================--    
+    
+    external_inst : entity work.external
+    port map(
+        ref_clk_i       => ref_clk,
+        reset_i         => reset,
+        ext_clk_i       => ext_clk_i,
+        ext_clk_o       => ext_clk,
+        ext_trigger_i   => ext_trigger_i,
+        vfat2_t1_o      => vfat2_t1(2),
+        vfat2_sbits_i   => vfat2_sbits_b,
+        sys_sbit_sel_i  => sys_sbit_sel,
+        ext_sbits_o     => ext_sbits_o        
+    );
+    
+    --==============--
+    --== Clocking ==--
+    --==============--
+    
+    clocking_inst : entity work.clocking
+    port map(
+        reset_i         => reset,
+        clk_onboard_i   => clk_onboard, 
+        clk_gtx_rec_i   => gtx_rec_clk,
+        clk_ext_i       => ext_clk,
+        sys_clk_sel_i   => sys_clk_sel,
+        ref_clk_o       => ref_clk,
+        gtx_tk_error_i  => gtx_tk_error
+    );
     
     --=====================--
     --== Wishbone switch ==--
@@ -378,21 +412,6 @@ begin
         wb_req_o    => wb_s_req,
         wb_res_i    => wb_s_res,
         wb_res_o    => wb_m_res
-    );
-    
-    --==============--
-    --== Clocking ==--
-    --==============--
-    
-    clocking_inst : entity work.clocking
-    port map(
-        reset_i         => reset,
-        clk_onboard_i   => clk_onboard, 
-        clk_gtx_rec_i   => gtx_rec_clk,
-        clk_ext_i       => '0',
-        sys_clk_sel_i   => sys_clk_sel,
-        ref_clk_o       => ref_clk,
-        gtx_tk_error_i  => gtx_tk_error
     );
 
     --=========--
