@@ -87,17 +87,20 @@ architecture test of pll_50MHz_tb is
 
   -- Declare the input clock signals
   signal CLK_IN1       : std_logic := '1';
-  -- The high bit of the sampling counter
-  signal COUNT         : std_logic;
+  -- The high bits of the sampling counters
+  signal COUNT         : std_logic_vector(2 downto 1);
   signal COUNTER_RESET : std_logic := '0';
   signal timeout_counter : std_logic_vector (13 downto 0) := (others => '0');
 --  signal defined to stop mti simulation without severity failure in the report
   signal end_of_sim : std_logic := '0';
-  signal CLK_OUT : std_logic_vector(1 downto 1);
+  signal CLK_OUT : std_logic_vector(2 downto 1);
 --Freq Check using the M & D values setting and actual Frequency generated
   signal period1 : time := 0 ps;
-constant  ref_period1_clkin1 : time := (20.000*1*25.000/20.000)*1000 ps;
+constant  ref_period1_clkin1 : time := (20.000*1*20.000/16.000)*1000 ps;
    signal prev_rise1 : time := 0 ps;
+  signal period2 : time := 0 ps;
+constant  ref_period2_clkin1 : time := (20.000*1*5/16.000)*1000 ps;
+   signal prev_rise2 : time := 0 ps;
 
 component pll_50MHz_exdes
 port
@@ -105,9 +108,9 @@ port
   CLK_IN1           : in  std_logic;
   -- Reset that only drives logic in example design
   COUNTER_RESET     : in  std_logic;
-  CLK_OUT           : out std_logic_vector(1 downto 1) ;
+  CLK_OUT           : out std_logic_vector(2 downto 1) ;
   -- High bits of counters driven by clocks
-  COUNT             : out std_logic
+  COUNT             : out std_logic_vector(2 downto 1)
  );
 end component;
 
@@ -165,6 +168,8 @@ begin
     wait for (PER1*COUNT_PHASE);
     simfreqprint(period1, 1);
     assert (((period1 - ref_period1_clkin1) >= -100 ps) and ((period1 - ref_period1_clkin1) <= 100 ps)) report "ERROR: Freq of CLK_OUT(1) is not correct"  severity note;
+    simfreqprint(period2, 2);
+    assert (((period2 - ref_period2_clkin1) >= -100 ps) and ((period2 - ref_period2_clkin1) <= 100 ps)) report "ERROR: Freq of CLK_OUT(2) is not correct"  severity note;
 
 
     simtimeprint;
@@ -196,6 +201,15 @@ begin
        period1 <= NOW - prev_rise1;
      end if;
      prev_rise1 <= NOW; 
+   end if;
+   end process;
+   process(CLK_OUT(2))
+   begin
+   if (CLK_OUT(2)'event and CLK_OUT(2) = '1') then
+     if (prev_rise2 /= 0 ps) then
+       period2 <= NOW - prev_rise2;
+     end if;
+     prev_rise2 <= NOW; 
    end if;
    end process;
 

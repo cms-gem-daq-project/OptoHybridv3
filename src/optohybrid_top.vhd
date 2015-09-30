@@ -230,6 +230,8 @@ port(
 --
 --    tmds_clk_p_io           : inout std_logic;
 --    tmds_clk_n_io           : inout std_logic;
+
+    ext_clk_i               : in std_logic;
        
     --== GTX ==--
     
@@ -321,11 +323,13 @@ architecture Behavioral of optohybrid_top is
     signal temp_data_miso_b     : std_logic;
     signal temp_data_tri_b      : std_logic;
     
-    --== Global signals ==--
+    --== Global signals & Clocks ==--
 
     signal clk_onboard          : std_logic;
     signal ref_clk              : std_logic;
+    signal alt_gtx_clk          : std_logic;
     signal reset                : std_logic;
+    signal clk_reg_reset        : std_logic;
 
     --== GTX ==--
     
@@ -359,7 +363,8 @@ begin
 
     reset <= '0';
     
-    pll_50MHz_inst : entity work.pll_50MHz port map(clk_50MHz_i => clk_50MHz_i, clk_40MHz_o => clk_onboard);
+    pll_50MHz_inst : entity work.pll_50MHz port map(clk_50MHz_i => clk_50MHz_i, clk_40MHz_o => clk_onboard, clk_160MHz_o => alt_gtx_clk);
+    --pll_40MHz_inst : entity work.pll_40MHz port map(clk_40MHz_i => ext_clk_i, clk_40MHz_o => clk_onboard, clk_160MHz_o => alt_gtx_clk);
     
     --=====================--
     --== Wishbone switch ==--
@@ -381,21 +386,27 @@ begin
     
     clocking_inst : entity work.clocking
     port map(
+        reset_i         => reset,
         clk_onboard_i   => clk_onboard, 
         clk_gtx_rec_i   => gtx_rec_clk,
         clk_ext_i       => '0',
         sys_clk_sel_i   => sys_clk_sel,
-        ref_clk_o       => ref_clk
+        ref_clk_o       => ref_clk,
+        gtx_tk_error_i  => gtx_tk_error
     );
 
     --=========--
     --== GTX ==--
     --=========--
     
-    gtx_inst : entity work.gtx 
+    gtx_inst : entity work.gtx
+    generic map(
+        USE_CDCE        => true
+    )
     port map(
 		mgt_refclk_n_i  => mgt_112_clk0_n_i,
 		mgt_refclk_p_i  => mgt_112_clk0_p_i,
+        alt_gtx_clk_i   => alt_gtx_clk,
         ref_clk_i       => ref_clk,
 		reset_i         => reset,
         rec_clk_o       => gtx_rec_clk,

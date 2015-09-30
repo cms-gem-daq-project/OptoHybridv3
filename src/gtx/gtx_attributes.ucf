@@ -499,6 +499,8 @@ TIMESPEC "TS_gtx_usr_clk" = PERIOD "gtx_usr_clk" 6.25;
 NET "gtx_inst/gtx_wrapper_inst/mgt_refclk" TNM_NET = "mgt_refclk";
 TIMESPEC "TS_mgt_refclk" = PERIOD "mgt_refclk" 6.25;
 
+#NET "alt_gtx_clk" TNM_NET = "alt_gtx_clk";
+#TIMESPEC "TS_alt_gtx_clk" = PERIOD "alt_gtx_clk" 6.25;
 
 ################################## Placement ##########################
 

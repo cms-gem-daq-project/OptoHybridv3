@@ -43,7 +43,7 @@ end gtx_tx_tracking;
 
 architecture Behavioral of gtx_tx_tracking is    
 
-    type state_t is (COMMA, HEADER, TK_DATA, DATA_0, DATA_1);
+    type state_t is (COMMA, HEADER, TK_DATA, DATA_0, DATA_1, CRC);
     
     signal state        : state_t;
     
@@ -52,6 +52,7 @@ architecture Behavioral of gtx_tx_tracking is
     signal evt_valid    : std_logic;
     signal req_valid    : std_logic;
     signal req_data     : std_logic_vector(31 downto 0);
+    signal req_crc      : std_logic_vector(15 downto 0);
     
 begin  
 
@@ -76,7 +77,8 @@ begin
                             tk_counter <= tk_counter + 1;
                         end if;
                     when DATA_0 => state <= DATA_1;
-                    when DATA_1 => state <= COMMA;
+                    when DATA_1 => state <= CRC;
+                    when CRC => state <= COMMA;
                     when others => 
                         state <= COMMA;
                         tk_counter <= 0;
@@ -117,13 +119,15 @@ begin
                 req_en_o <= '0';
                 req_valid <= '0';
                 req_data <= (others => '0');
+                req_crc <= (others => '0');
             else
                 case state is   
                     when COMMA => 
                         req_en_o <= '0';
                         req_valid <= req_valid_i;
                         req_data <= req_data_i;
-                    when DATA_0 => req_en_o <= '1';
+                        req_crc <= req_data_i(31 downto 16) xor req_data_i(15 downto 0);
+                    when DATA_1 => req_en_o <= '1';
                     when others => req_en_o <= '0';
                 end case;
             end if;
@@ -159,6 +163,9 @@ begin
                     when DATA_1 => 
                         tx_kchar_o <= "00";
                         tx_data_o <= req_data(15 downto 0);
+                    when CRC =>
+                        tx_kchar_o <= "00";
+                        tx_data_o <= req_crc;
                     when others => 
                         tx_kchar_o <= "00";
                         tx_data_o <= x"0000";

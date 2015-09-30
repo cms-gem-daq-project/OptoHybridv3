@@ -35,3 +35,6 @@ NET "chipid_io"         LOC = AE23; # N18_N
 
 #NET "tmds_clk_p_io"     LOC = AF11; # K5
 #NET "tmds_clk_n_io"     LOC = AE11;
+
+
+NET "ext_clk_i"         LOC = AC13 | CLOCK_DEDICATED_ROUTE = false; # K10

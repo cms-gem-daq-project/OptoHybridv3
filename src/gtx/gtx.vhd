@@ -22,10 +22,14 @@ library work;
 use work.types_pkg.all;
 
 entity gtx is
+generic(
+    USE_CDCE        : boolean := true
+);
 port(
 
     mgt_refclk_n_i  : in std_logic;
     mgt_refclk_p_i  : in std_logic;
+    alt_gtx_clk_i   : in std_logic;
     
     ref_clk_i       : in std_logic;
     
@@ -103,9 +107,13 @@ begin
     --=================--
     
 	gtx_wrapper_inst : entity work.gtx_wrapper 
+    generic map(
+        USE_CDCE        => USE_CDCE
+    )
     port map(
 		mgt_refclk_n_i  => mgt_refclk_n_i,
 		mgt_refclk_p_i  => mgt_refclk_p_i,
+        alt_gtx_clk_i   => alt_gtx_clk_i,
 		reset_i         => cs_sync_out(0),
 		tx_kchar_i      => gtx_tx_kchar,
 		tx_data_i       => gtx_tx_data,
