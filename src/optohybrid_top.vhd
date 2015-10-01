@@ -336,9 +336,11 @@ architecture Behavioral of optohybrid_top is
 
     --== GTX ==--
     
+    signal gtx_clk              : std_logic;   
     signal gtx_rec_clk          : std_logic;   
     signal gtx_tk_error         : std_logic;
     signal gtx_tr_error         : std_logic;
+    signal gtx_evt_sent         : std_logic;
     
     --== VFAT2 ==--
     
@@ -428,6 +430,7 @@ begin
         alt_gtx_clk_i   => alt_gtx_clk,
         ref_clk_i       => ref_clk,
 		reset_i         => reset,
+        gtx_clk_o       => gtx_clk,
         rec_clk_o       => gtx_rec_clk,
         wb_mst_req_o    => wb_m_req(WB_MST_GTX),
         wb_mst_res_i    => wb_m_res(WB_MST_GTX),
@@ -437,6 +440,7 @@ begin
         vfat2_t1_o      => vfat2_t1(0), 
         tk_error_o      => gtx_tk_error,
         tr_error_o      => gtx_tr_error,
+        evt_sent_o      => gtx_evt_sent,
 		rx_n_i          => mgt_112_rx_n_i,
 		rx_p_i          => mgt_112_rx_p_i,
 		tx_n_o          => mgt_112_tx_n_o,
@@ -542,6 +546,7 @@ begin
     counters_inst : entity work.counters
     port map(
         ref_clk_i       => ref_clk,
+        gtx_clk_i       => gtx_clk,
         reset_i         => reset, 
         wb_slv_req_i    => wb_s_req(WB_SLV_CNT),
         wb_slv_res_o    => wb_s_res(WB_SLV_CNT),
@@ -552,7 +557,8 @@ begin
         vfat2_tk_data_i => vfat2_tk_data,
         vfat2_t1_i      => vfat2_t1_lst,
         gtx_tk_error_i  => gtx_tk_error,
-        gtx_tr_error_i  => gtx_tr_error
+        gtx_tr_error_i  => gtx_tr_error,
+        gtx_evt_sent_i  => gtx_evt_sent
     );
     
     --============--

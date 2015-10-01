@@ -23,20 +23,19 @@ library work;
 entity gtx_tx_tracking is
 port(
 
-    gtx_clk_i       : in std_logic;    
-    reset_i         : in std_logic;
+    gtx_clk_i   : in std_logic;    
+    reset_i     : in std_logic;
     
-    req_en_o        : out std_logic;
-    req_valid_i     : in std_logic;
-    req_data_i      : in std_logic_vector(31 downto 0);
+    req_en_o    : out std_logic;
+    req_valid_i : in std_logic;
+    req_data_i  : in std_logic_vector(31 downto 0);
     
-    evt_rd_en_o     : out std_logic;
-    evt_rd_valid_i  : in std_logic;
-    evt_rd_data_i   : in std_logic_vector(15 downto 0);
-    evt_rd_ready_i  : in std_logic;
+    evt_en_o    : out std_logic;
+    evt_valid_i : in std_logic;
+    evt_data_i  : in std_logic_vector(223 downto 0);
     
-    tx_kchar_o      : out std_logic_vector(1 downto 0);
-    tx_data_o       : out std_logic_vector(15 downto 0)
+    tx_kchar_o  : out std_logic_vector(1 downto 0);
+    tx_data_o   : out std_logic_vector(15 downto 0)       
     
 );
 end gtx_tx_tracking;
@@ -50,6 +49,7 @@ architecture Behavioral of gtx_tx_tracking is
     signal tk_counter   : integer range 0 to 13;
     
     signal evt_valid    : std_logic;
+    signal evt_data     : std_logic_vector(223 downto 0);
     signal req_valid    : std_logic;
     signal req_data     : std_logic_vector(31 downto 0);
     signal req_crc      : std_logic_vector(15 downto 0);
@@ -69,12 +69,12 @@ begin
                     when COMMA => state <= HEADER;
                     when HEADER => 
                         state <= TK_DATA;
-                        tk_counter <= 0;
+                        tk_counter <= 13;
                     when TK_DATA =>
-                        if (tk_counter = 13) then
+                        if (tk_counter = 0) then
                             state <= DATA_0;
                         else
-                            tk_counter <= tk_counter + 1;
+                            tk_counter <= tk_counter - 1;
                         end if;
                     when DATA_0 => state <= DATA_1;
                     when DATA_1 => state <= CRC;
@@ -93,18 +93,16 @@ begin
     begin
         if (rising_edge(gtx_clk_i)) then
             if (reset_i = '1') then
-                evt_rd_en_o <= '0';
+                evt_en_o <= '0';
                 evt_valid <= '0';
             else
                 case state is         
                     when COMMA => 
-                        evt_rd_en_o <= evt_rd_ready_i;      
-                        evt_valid <= evt_rd_ready_i;              
-                    when HEADER => evt_rd_en_o <= evt_valid;
-                    when TK_DATA => evt_rd_en_o <= evt_valid;
-                    when others => 
-                        evt_rd_en_o <= '0';
-                        evt_valid <= '0';
+                        evt_en_o <= '0';
+                        evt_valid <= evt_valid_i;
+                        evt_data <= evt_data_i;
+                    when DATA_1 => evt_en_o <= '1';   
+                    when others => evt_en_o <= '0';
                 end case;
             end if;
         end if;
@@ -152,11 +150,7 @@ begin
                         tx_data_o <= req_valid & evt_valid & "00" & x"000";   
                     when TK_DATA => 
                         tx_kchar_o <= "00";
-                        if (evt_rd_valid_i = '1') then
-                            tx_data_o <= evt_rd_data_i;   
-                        else
-                            tx_data_o <= (others => '0');                                
-                        end if;
+                        tx_data_o <= evt_data_i((16 * tk_counter + 15) downto (16 * tk_counter)); 
                     when DATA_0 => 
                         tx_kchar_o <= "00";
                         tx_data_o <= req_data(31 downto 16);

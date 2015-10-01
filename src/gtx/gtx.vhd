@@ -35,6 +35,7 @@ port(
     
     reset_i         : in std_logic;
     
+    gtx_clk_o       : out std_logic;
     rec_clk_o       : out std_logic;
     
     wb_mst_req_o    : out wb_req_t;
@@ -48,6 +49,7 @@ port(
     
     tk_error_o      : out std_logic;
     tr_error_o      : out std_logic;
+    evt_sent_o      : out std_logic;
    
     rx_n_i          : in std_logic_vector(1 downto 0);
     rx_p_i          : in std_logic_vector(1 downto 0);
@@ -81,10 +83,9 @@ architecture Behavioral of gtx is
     
     --== VFAT2 event data ==--
     
-    signal evt_rd_en        : std_logic;
-    signal evt_rd_valid     : std_logic;
-    signal evt_rd_data      : std_logic_vector(15 downto 0);
-    signal evt_rd_ready     : std_logic;
+    signal evt_en           : std_logic;
+    signal evt_valid        : std_logic;
+    signal evt_data         : std_logic_vector(223 downto 0);
     
     --== Chipscope signals ==--
     
@@ -102,6 +103,9 @@ begin
 
     tk_error_o <= tk_error;
     tr_error_o <= tr_error;
+    
+    gtx_clk_o <= gtx_usr_clk;
+    evt_sent_o <= evt_valid;
     
     --=================--
     --== GTX wrapper ==--
@@ -164,17 +168,16 @@ begin
        
     gtx_tx_tracking_inst : entity work.gtx_tx_tracking
     port map(
-        gtx_clk_i       => gtx_usr_clk,   
-        reset_i         => reset_i,       
-		req_en_o        => o2g_req_en,
-		req_valid_i     => o2g_req_valid,
-		req_data_i      => o2g_req_data,
-		evt_rd_en_o     => evt_rd_en,
-		evt_rd_valid_i  => evt_rd_valid,
-		evt_rd_data_i   => evt_rd_data,
-        evt_rd_ready_i  => evt_rd_ready,
-		tx_kchar_o      => gtx_tx_kchar(1 downto 0),  
-		tx_data_o       => gtx_tx_data(15 downto 0)
+        gtx_clk_i   => gtx_usr_clk,   
+        reset_i     => reset_i,       
+		req_en_o    => o2g_req_en,
+		req_valid_i => o2g_req_valid,
+		req_data_i  => o2g_req_data,
+		evt_en_o    => evt_en,
+		evt_valid_i => evt_valid,
+		evt_data_i  => evt_data,
+		tx_kchar_o  => gtx_tx_kchar(1 downto 0),  
+		tx_data_o   => gtx_tx_data(15 downto 0)
 	);
     
     --============================--
@@ -207,10 +210,9 @@ begin
         vfat2_t1_i      => vfat2_t1_i,
 		vfat2_tk_data_i => vfat2_tk_data_i,
         vfat2_tk_mask_i => vfat2_tk_mask_i,
-		evt_rd_en_i     => evt_rd_en,
-		evt_rd_valid_o  => evt_rd_valid,
-		evt_rd_data_o   => evt_rd_data,
-        evt_rd_ready_o  => evt_rd_ready
+		evt_en_i        => evt_en,
+		evt_valid_o     => evt_valid,
+		evt_data_o      => evt_data
 	);  
             
     --===============--

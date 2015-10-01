@@ -105,7 +105,7 @@ begin
 --        end if;
 --    end process;
 
-clk_source <= sys_clk_sel_i;
+    clk_source <= sys_clk_sel_i;
     
     --== Clock mux ==--
 
@@ -113,6 +113,6 @@ clk_source <= sys_clk_sel_i;
                  clk_rec when clk_source= "01" else
                  clk_ext_i when clk_source = "10" else
                  clk_onboard_i;
-
+                 
 end Behavioral;
 

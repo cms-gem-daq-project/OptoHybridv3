@@ -245,10 +245,6 @@
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="228"/>
       <association xil_pn:name="Implementation" xil_pn:seqID="16"/>
     </file>
-    <file xil_pn:name="../src/ip_cores/fifo128x64.xco" xil_pn:type="FILE_COREGEN">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="235"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="18"/>
-    </file>
     <file xil_pn:name="../src/gtx/gtx_tk_concentrator.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="242"/>
       <association xil_pn:name="Implementation" xil_pn:seqID="37"/>
@@ -301,6 +297,10 @@
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="256"/>
       <association xil_pn:name="Implementation" xil_pn:seqID="3"/>
     </file>
+    <file xil_pn:name="../src/ip_cores/fifo128x64.xco" xil_pn:type="FILE_COREGEN">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="192"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="18"/>
+    </file>
     <file xil_pn:name="../src/ip_cores/chipscope_icon.xise" xil_pn:type="FILE_COREGENISE">
       <association xil_pn:name="Implementation" xil_pn:seqID="0"/>
     </file>
@@ -325,13 +325,13 @@
     <file xil_pn:name="../src/ip_cores/fifo16x65.xise" xil_pn:type="FILE_COREGENISE">
       <association xil_pn:name="Implementation" xil_pn:seqID="0"/>
     </file>
-    <file xil_pn:name="../src/ip_cores/fifo128x64.xise" xil_pn:type="FILE_COREGENISE">
-      <association xil_pn:name="Implementation" xil_pn:seqID="0"/>
-    </file>
     <file xil_pn:name="../src/ip_cores/gtx_rec_pll.xise" xil_pn:type="FILE_COREGENISE">
       <association xil_pn:name="Implementation" xil_pn:seqID="0"/>
     </file>
     <file xil_pn:name="../src/ip_cores/pll_40MHz.xise" xil_pn:type="FILE_COREGENISE">
+      <association xil_pn:name="Implementation" xil_pn:seqID="0"/>
+    </file>
+    <file xil_pn:name="../src/ip_cores/fifo128x64.xise" xil_pn:type="FILE_COREGENISE">
       <association xil_pn:name="Implementation" xil_pn:seqID="0"/>
     </file>
   </files>

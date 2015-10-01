@@ -22,11 +22,12 @@ use work.wb_pkg.all;
 
 entity counters is
 generic(
-    N               : integer := 106
+    N               : integer := 107
 );
 port(
 
     ref_clk_i       : in std_logic;
+    gtx_clk_i       : in std_logic;
     reset_i         : in std_logic;
     
     -- Wishbone slave
@@ -47,7 +48,8 @@ port(
     
     -- GTX
     gtx_tk_error_i  : in std_logic;
-    gtx_tr_error_i  : in std_logic
+    gtx_tr_error_i  : in std_logic;
+    gtx_evt_sent_i  : in std_logic
     
 );
 end counters;
@@ -163,8 +165,12 @@ begin
     
     -- 104 - 105 : GTX error (TK & Trigger)
     
-    gtx_tk_error_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(104) and wb_we), en_i => gtx_tk_error_i, data_o => reg_data(104));
+    gtx_tk_error_inst : entity work.counter port map(ref_clk_i => gtx_clk_i, reset_i => (wb_stb(104) and wb_we), en_i => gtx_tk_error_i, data_o => reg_data(104));
     
-    gtx_tr_error_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(105) and wb_we), en_i => gtx_tr_error_i, data_o => reg_data(105));
+    gtx_tr_error_inst : entity work.counter port map(ref_clk_i => gtx_clk_i, reset_i => (wb_stb(105) and wb_we), en_i => gtx_tr_error_i, data_o => reg_data(105));
+    
+    -- 106 : events sent
+    
+    gtx_evt_sent_inst : entity work.counter port map(ref_clk_i => gtx_clk_i, reset_i => (wb_stb(106) and wb_we), en_i => gtx_evt_sent_i, data_o => reg_data(106));
     
 end Behavioral;

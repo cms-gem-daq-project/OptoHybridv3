@@ -30,31 +30,28 @@ port(
     vfat2_tk_data_i : in tk_data_array_t(23 downto 0);
     vfat2_tk_mask_i : in std_logic_vector(23 downto 0);
     
-    evt_rd_en_i     : in std_logic;
-    evt_rd_valid_o  : out std_logic;
-    evt_rd_data_o   : out std_logic_vector(15 downto 0);
-    evt_rd_ready_o  : out std_logic
+    evt_en_i        : in std_logic;
+    evt_valid_o     : out std_logic;
+    evt_data_o      : out std_logic_vector(223 downto 0)
     
 );
 end gtx_tk_concentrator;
 
 architecture Behavioral of gtx_tk_concentrator is
       
-    type state_t is (IDLE, REQ_BX, ACK_BX, SAVING_0, SAVING_1, SAVING_2, SAVING_3, SAVING_4, SAVING_5, SAVING_6);
+    type state_t is (IDLE, REQ_BX, ACK_BX, SAVING);
 
     signal state        : state_t;
       
     signal vfat2_cnt    : integer range 0 to 23;
-    signal last_cnt     : integer range 0 to 15;
+    signal last_cnt     : integer range 0 to 127;
 
     signal evt_data     : tk_data_array_t(23 downto 0);    
     signal evt_stb      : std_logic_vector(23 downto 0);
     signal evt_ack      : std_logic_vector(23 downto 0);
     
     signal evt_wr_en    : std_logic;
-    signal evt_wr_data  : std_logic_vector(31 downto 0);
-    signal evt_empty    : std_logic;
-    signal evt_busy     : std_logic;
+    signal evt_wr_data  : std_logic_vector(223 downto 0);
     
     signal bx_counter   : std_logic_vector(31 downto 0);
     signal last_bx      : std_logic_vector(31 downto 0);
@@ -65,8 +62,6 @@ architecture Behavioral of gtx_tk_concentrator is
     signal bx_rd_err    : std_logic;
     
 begin
-
-    evt_rd_ready_o <= (not evt_busy) and (not evt_empty);
 
     --== Store the tracking data in a temporary buffer ==--
 
@@ -103,7 +98,6 @@ begin
                 evt_ack <= (others => '0');
                 evt_wr_en <= '0';
                 evt_wr_data <= (others => '0');
-                evt_busy <= '0';
                 last_bx <= (others => '0');
                 bx_rd_en <= '0';
             else
@@ -114,10 +108,10 @@ begin
                             evt_ack(vfat2_cnt) <= '1';
                             -- Check if require new BX
                             if (last_cnt = 0) then
-                                last_cnt <= 15;
+                                last_cnt <= 127;
                                 state <= REQ_BX;
                             else
-                                state <= SAVING_0;
+                                state <= SAVING;
                             end if;
                         else
                             -- Reset strobe
@@ -135,66 +129,26 @@ begin
                                 last_cnt <= last_cnt - 1;
                             end if;
                         end if;  
-                        evt_busy <= '0';
                         evt_wr_en <= '0';  
                         bx_rd_en <= '0';
                     when REQ_BX =>
-                        evt_busy <= '0';
                         evt_wr_en <= '0';  
                         bx_rd_en <= '1';
                         state <= ACK_BX;
                     when ACK_BX => 
                         if (bx_rd_valid = '1') then
                             last_bx <= bx_rd_data;
-                            state <= SAVING_0;
+                            state <= SAVING;
                         elsif (bx_rd_err = '1') then
                             last_bx <= (others => '0');
-                            state <= SAVING_0;
+                            state <= SAVING;
                         end if;
-                        evt_busy <= '0';
                         evt_wr_en <= '0';  
                         bx_rd_en <= '0';                        
-                    when SAVING_0 =>
+                    when SAVING =>
                         bx_rd_en <= '0';
-                        evt_busy <= '1';
                         evt_wr_en <= '1';
-                        evt_wr_data <= "1010" & evt_data(vfat2_cnt).bc & "1100" & evt_data(vfat2_cnt).ec & evt_data(vfat2_cnt).flags;   
-                        state <= SAVING_1;                      
-                    when SAVING_1 =>
-                        bx_rd_en <= '0';
-                        evt_busy <= '1';
-                        evt_wr_en <= '1';
-                        evt_wr_data <= "1110" & evt_data(vfat2_cnt).chip_id & evt_data(vfat2_cnt).strips(127 downto 112);
-                        state <= SAVING_2; 
-                    when SAVING_2 =>
-                        bx_rd_en <= '0';
-                        evt_busy <= '1';
-                        evt_wr_en <= '1';
-                        evt_wr_data <= evt_data(vfat2_cnt).strips(111 downto 80);
-                        state <= SAVING_3; 
-                    when SAVING_3 =>
-                        bx_rd_en <= '0';
-                        evt_busy <= '1';
-                        evt_wr_en <= '1';
-                        evt_wr_data <= evt_data(vfat2_cnt).strips(79 downto 48);
-                        state <= SAVING_4; 
-                    when SAVING_4 => 
-                        bx_rd_en <= '0'; 
-                        evt_busy <= '0'; 
-                        evt_wr_en <= '1';
-                        evt_wr_data <= evt_data(vfat2_cnt).strips(47 downto 16);
-                        state <= SAVING_5; 
-                    when SAVING_5 => 
-                        bx_rd_en <= '0'; 
-                        evt_busy <= '0'; 
-                        evt_wr_en <= '1';
-                        evt_wr_data <= evt_data(vfat2_cnt).strips(15 downto 0) & evt_data(vfat2_cnt).crc;
-                        state <= SAVING_6; 
-                    when SAVING_6 => 
-                        bx_rd_en <= '0'; 
-                        evt_busy <= '0'; 
-                        evt_wr_en <= '1';
-                        evt_wr_data <= last_bx;
+                        evt_wr_data <= "1010" & evt_data(vfat2_cnt).bc & "1100" & evt_data(vfat2_cnt).ec & evt_data(vfat2_cnt).flags & "1110" & evt_data(vfat2_cnt).chip_id & evt_data(vfat2_cnt).strips(127 downto 0) & evt_data(vfat2_cnt).crc & last_bx;
                         state <= IDLE;                  
                     when others =>        
                         state <= IDLE;
@@ -203,7 +157,6 @@ begin
                         evt_ack <= (others => '0');
                         evt_wr_en <= '0';
                         evt_wr_data <= (others => '0');
-                        evt_busy <= '0';
                         last_bx <= (others => '0');
                         bx_rd_en <= '0';
                 end case;                  
@@ -220,11 +173,11 @@ begin
         wr_en   => evt_wr_en,
         din     => evt_wr_data,        
         rd_clk  => gtx_clk_i,
-        rd_en   => evt_rd_en_i,
-        valid   => evt_rd_valid_o,
-        dout    => evt_rd_data_o,
+        rd_en   => evt_en_i,
+        valid   => evt_valid_o,
+        dout    => evt_data_o,
         full    => open,
-        empty   => evt_empty
+        empty   => open
     );
     
     --== BX FIFO ==--

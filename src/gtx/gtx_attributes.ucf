@@ -492,8 +492,8 @@ INST gtx_inst/gtx_wrapper_inst/sfp_gtx_inst/gtx1_sfp_gtx_i/gtxe1_i TRANS_TIME_TO
 
 ################################## Clock Constraints ##########################
 
-NET "gtx_inst/gtx_usr_clk" TNM_NET = "gtx_usr_clk";
-TIMESPEC "TS_gtx_usr_clk" = PERIOD "gtx_usr_clk" 6.25;
+NET "gtx_clk" TNM_NET = "gtx_clk";
+TIMESPEC "TS_gtx_clk" = PERIOD "gtx_clk" 6.25;
 
 # User Clock Constraints
 NET "gtx_inst/gtx_wrapper_inst/mgt_refclk" TNM_NET = "mgt_refclk";
