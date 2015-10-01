@@ -41,7 +41,11 @@ architecture Behavioral of vfat2_data_decoder is
     -- The data packet is 192 bits wide but we include the two required IDLE bits in front of each packet 
     signal data : std_logic_vector(193 downto 0); 
     
+    signal empty_128bits    : std_logic_vector(127 downto 0);
+    
 begin
+
+    empty_128bits <= (others => '0');
 
     --=======================--
     --== Data deserializer ==--
@@ -68,12 +72,14 @@ begin
         -- Holds the results of the tests
         variable tests  : std_logic_vector(3 downto 0);        
         -- Hold the computed CRC
-        variable crc    : std_logic_vector(15 downto 0);        
+        variable crc    : std_logic_vector(15 downto 0);  
+        -- Check if the strips are hit
+        variable hit    : std_logic;
     begin
         if (rising_edge(ref_clk_i)) then
             -- Reset & default values
             if (reset_i = '1') then
-                tk_data_o <= (valid => '0', bc => (others => '0'), ec => (others => '0'), flags => (others => '0'), chip_id => (others => '0'), strips => (others => '0'), crc => (others => '0'), crc_ok => '0');
+                tk_data_o <= (valid => '0', bc => (others => '0'), ec => (others => '0'), flags => (others => '0'), chip_id => (others => '0'), strips => (others => '0'), crc => (others => '0'), crc_ok => '0', hit => '0');
                 tests := (others => '0');
                 crc := (others => '0');
             else
@@ -104,6 +110,12 @@ begin
                         end if;
                     end loop;
                 end loop; 
+                -- Check if the strips are hit
+                if (data(143 downto 16) /= empty_128bits) then
+                    hit := '1';
+                else
+                    hit := '0';
+                end if;
                 -- Check CRC
                 if (crc = data(15 downto 0)) then
                     tests(3) := '1';
@@ -112,8 +124,8 @@ begin
                 end if;
                 -- Combine the tests and assert the packet if they are valid
                 case tests is
-                    when "1111" => tk_data_o <= (valid => '1', bc => data(187 downto 176), ec => data(171 downto 164), flags => data(163 downto 160), chip_id => data(155 downto 144), strips => data(143 downto 16), crc => data(15 downto 0), crc_ok => '1');
-                    when "1110" => tk_data_o <= (valid => '1', bc => data(187 downto 176), ec => data(171 downto 164), flags => data(163 downto 160), chip_id => data(155 downto 144), strips => data(143 downto 16), crc => data(15 downto 0), crc_ok => '0');
+                    when "1111" => tk_data_o <= (valid => '1', bc => data(187 downto 176), ec => data(171 downto 164), flags => data(163 downto 160), chip_id => data(155 downto 144), strips => data(143 downto 16), crc => data(15 downto 0), crc_ok => '1', hit => hit);
+                    when "1110" => tk_data_o <= (valid => '1', bc => data(187 downto 176), ec => data(171 downto 164), flags => data(163 downto 160), chip_id => data(155 downto 144), strips => data(143 downto 16), crc => data(15 downto 0), crc_ok => '0', hit => hit);
                     when others => tk_data_o.valid <= '0';
                 end case;                
             end if;

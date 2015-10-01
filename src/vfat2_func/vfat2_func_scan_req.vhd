@@ -88,13 +88,11 @@ architecture Behavioral of vfat2_func_scan_req is
     
     -- Utility
     signal empty_8bits      : std_logic_vector(7 downto 0);
-    signal empty_128bits    : std_logic_vector(127 downto 0);
 
 begin
 
     -- All 0 to compare to
     empty_8bits <= (others => '0');
-    empty_128bits <= (others => '0');
 
     process(ref_clk_i)
     begin
@@ -302,7 +300,7 @@ begin
                                 -- Increment the event counter
                                 event_counter <= event_counter + 1;
                                 -- Increment the hit counter
-                                if (vfat2_tk_data_i(vfat2_int).strips /= empty_128bits) then
+                                if (vfat2_tk_data_i(vfat2_int).hit = '1') then
                                     hit_counter <= hit_counter + 1;
                                 end if;
                             end if;

@@ -12,9 +12,18 @@ NET "mgt_112_clk0_n_i"      LOC = AK5;
 
 NET "mgt_112_rx_p_i<0>"     LOC = AP5;
 NET "mgt_112_rx_n_i<0>"     LOC = AP6;
+NET "mgt_112_tx_p_o<0>"     LOC = AP1;
+NET "mgt_112_tx_n_o<0>"     LOC = AP2;
+NET "mgt_112_rx_p_i<1>"     LOC = AL3;
+NET "mgt_112_rx_n_i<1>"     LOC = AL4;
+NET "mgt_112_tx_p_o<1>"     LOC = AM1;
+NET "mgt_112_tx_n_o<1>"     LOC = AM2;
 
-NET "mgt_112_rx_p_i<1>"     LOC = AM5;
-NET "mgt_112_rx_n_i<1>"     LOC = AM6;
+#NET "mgt_112_rx_p_i<0>"     LOC = AP5;
+#NET "mgt_112_rx_n_i<0>"     LOC = AP6;
+
+#NET "mgt_112_rx_p_i<1>"     LOC = AM5;
+#NET "mgt_112_rx_n_i<1>"     LOC = AM6;
 
 #NET "mgt_112_rx_p_i<2>"     LOC = AL3;
 #NET "mgt_112_rx_n_i<2>"     LOC = AL4;
@@ -23,11 +32,11 @@ NET "mgt_112_rx_n_i<1>"     LOC = AM6;
 #NET "mgt_112_rx_n_i<3>"     LOC = AJ4;
 
 
-NET "mgt_112_tx_p_o<0>"     LOC = AP1;
-NET "mgt_112_tx_n_o<0>"     LOC = AP2;
+#NET "mgt_112_tx_p_o<0>"     LOC = AP1;
+#NET "mgt_112_tx_n_o<0>"     LOC = AP2;
 
-NET "mgt_112_tx_p_o<1>"     LOC = AN3;
-NET "mgt_112_tx_n_o<1>"     LOC = AN4;
+#NET "mgt_112_tx_p_o<1>"     LOC = AN3;
+#NET "mgt_112_tx_n_o<1>"     LOC = AN4;
 
 #NET "mgt_112_tx_p_o<2>"     LOC = AM1;
 #NET "mgt_112_tx_n_o<2>"     LOC = AM2;

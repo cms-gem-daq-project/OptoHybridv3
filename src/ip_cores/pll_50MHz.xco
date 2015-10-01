@@ -1,7 +1,7 @@
 ##############################################################
 #
 # Xilinx Core Generator version 14.7
-# Date: Thu Aug 20 08:11:07 2015
+# Date: Wed Sep 30 07:10:48 2015
 #
 ##############################################################
 #
@@ -43,7 +43,7 @@ CSET calc_done=DONE
 CSET clk_in_sel_port=CLK_IN_SEL
 CSET clk_out1_port=clk_40MHz_o
 CSET clk_out1_use_fine_ps_gui=false
-CSET clk_out2_port=CLK_OUT2
+CSET clk_out2_port=clk_160MHz_o
 CSET clk_out2_use_fine_ps_gui=false
 CSET clk_out3_port=CLK_OUT3
 CSET clk_out3_use_fine_ps_gui=false
@@ -74,9 +74,9 @@ CSET clkout1_requested_out_freq=40.000
 CSET clkout1_requested_phase=0.000
 CSET clkout2_drives=BUFG
 CSET clkout2_requested_duty_cycle=50.000
-CSET clkout2_requested_out_freq=100.000
+CSET clkout2_requested_out_freq=160.000
 CSET clkout2_requested_phase=0.000
-CSET clkout2_used=false
+CSET clkout2_used=true
 CSET clkout3_drives=BUFG
 CSET clkout3_requested_duty_cycle=50.000
 CSET clkout3_requested_out_freq=100.000
@@ -148,16 +148,16 @@ CSET jitter_options=UI
 CSET jitter_sel=No_Jitter
 CSET locked_port=LOCKED
 CSET mmcm_bandwidth=OPTIMIZED
-CSET mmcm_clkfbout_mult_f=20.000
+CSET mmcm_clkfbout_mult_f=16.000
 CSET mmcm_clkfbout_phase=0.000
 CSET mmcm_clkfbout_use_fine_ps=false
 CSET mmcm_clkin1_period=20.000
 CSET mmcm_clkin2_period=10.0
-CSET mmcm_clkout0_divide_f=25.000
+CSET mmcm_clkout0_divide_f=20.000
 CSET mmcm_clkout0_duty_cycle=0.500
 CSET mmcm_clkout0_phase=0.000
 CSET mmcm_clkout0_use_fine_ps=false
-CSET mmcm_clkout1_divide=1
+CSET mmcm_clkout1_divide=5
 CSET mmcm_clkout1_duty_cycle=0.500
 CSET mmcm_clkout1_phase=0.000
 CSET mmcm_clkout1_use_fine_ps=false
@@ -189,7 +189,7 @@ CSET mmcm_notes=None
 CSET mmcm_ref_jitter1=0.010
 CSET mmcm_ref_jitter2=0.010
 CSET mmcm_startup_wait=false
-CSET num_out_clks=1
+CSET num_out_clks=2
 CSET override_dcm=false
 CSET override_dcm_clkgen=false
 CSET override_mmcm=false
@@ -266,4 +266,4 @@ CSET use_status=false
 MISC pkg_timestamp=2012-05-10T12:44:55Z
 # END Extra information
 GENERATE
-# CRC: decee857
+# CRC: f1b849d4

@@ -23,39 +23,40 @@ library work;
 entity gtx_tx_tracking is
 port(
 
-    gtx_clk_i       : in std_logic;    
-    reset_i         : in std_logic;
+    gtx_clk_i   : in std_logic;    
+    reset_i     : in std_logic;
     
-    req_en_o        : out std_logic;
-    req_valid_i     : in std_logic;
-    req_data_i      : in std_logic_vector(31 downto 0);
+    req_en_o    : out std_logic;
+    req_valid_i : in std_logic;
+    req_data_i  : in std_logic_vector(31 downto 0);
     
-    tk_rd_en_o      : out std_logic;
-    tk_rd_valid_i   : in std_logic;
-    tk_rd_data_i    : in std_logic_vector(15 downto 0);
-    tk_rd_ready_i   : in std_logic;
+    evt_en_o    : out std_logic;
+    evt_valid_i : in std_logic;
+    evt_data_i  : in std_logic_vector(223 downto 0);
     
-    tx_kchar_o      : out std_logic_vector(1 downto 0);
-    tx_data_o       : out std_logic_vector(15 downto 0)
+    tx_kchar_o  : out std_logic_vector(1 downto 0);
+    tx_data_o   : out std_logic_vector(15 downto 0)       
     
 );
 end gtx_tx_tracking;
 
 architecture Behavioral of gtx_tx_tracking is    
 
-    type state_t is (COMMA, HEADER, TK_DATA, DATA_0, DATA_1);
+    type state_t is (COMMA, HEADER, TK_DATA, DATA_0, DATA_1, CRC);
     
     signal state        : state_t;
     
-    signal tk_counter   : integer range 0 to 287;
+    signal tk_counter   : integer range 0 to 13;
     
-    signal req_header   : std_logic_vector(15 downto 0);
+    signal evt_valid    : std_logic;
+    signal evt_data     : std_logic_vector(223 downto 0);
+    signal req_valid    : std_logic;
     signal req_data     : std_logic_vector(31 downto 0);
-    signal req_tk_data  : std_logic;
-
+    signal req_crc      : std_logic_vector(15 downto 0);
+    
 begin  
 
-    --== Transitions between states ==--
+    --== STATE ==--
 
     process(gtx_clk_i)
     begin
@@ -68,15 +69,16 @@ begin
                     when COMMA => state <= HEADER;
                     when HEADER => 
                         state <= TK_DATA;
-                        tk_counter <= 0;
+                        tk_counter <= 13;
                     when TK_DATA =>
-                        if (tk_counter = 287) then
+                        if (tk_counter = 0) then
                             state <= DATA_0;
                         else
-                            tk_counter <= tk_counter + 1;
+                            tk_counter <= tk_counter - 1;
                         end if;
                     when DATA_0 => state <= DATA_1;
-                    when DATA_1 => state <= COMMA;
+                    when DATA_1 => state <= CRC;
+                    when CRC => state <= COMMA;
                     when others => 
                         state <= COMMA;
                         tk_counter <= 0;
@@ -85,70 +87,52 @@ begin
         end if;
     end process;
 
-    --== Request new data ==--
+    --== TRACKING DATA ==--
+
+    process(gtx_clk_i)
+    begin
+        if (rising_edge(gtx_clk_i)) then
+            if (reset_i = '1') then
+                evt_en_o <= '0';
+                evt_valid <= '0';
+            else
+                case state is         
+                    when COMMA => 
+                        evt_en_o <= '0';
+                        evt_valid <= evt_valid_i;
+                        evt_data <= evt_data_i;
+                    when DATA_1 => evt_en_o <= '1';   
+                    when others => evt_en_o <= '0';
+                end case;
+            end if;
+        end if;
+    end process; 
+
+    --== REQUEST ==--
 
     process(gtx_clk_i)
     begin
         if (rising_edge(gtx_clk_i)) then
             if (reset_i = '1') then
                 req_en_o <= '0';
+                req_valid <= '0';
+                req_data <= (others => '0');
+                req_crc <= (others => '0');
             else
-                case state is         
-                    when DATA_0 => req_en_o <= '1';
+                case state is   
+                    when COMMA => 
+                        req_en_o <= '0';
+                        req_valid <= req_valid_i;
+                        req_data <= req_data_i;
+                        req_crc <= req_data_i(31 downto 16) xor req_data_i(15 downto 0);
+                    when DATA_1 => req_en_o <= '1';
                     when others => req_en_o <= '0';
                 end case;
             end if;
         end if;
     end process; 
-
-    --== Request new tracking data ==--
-
-    process(gtx_clk_i)
-    begin
-        if (rising_edge(gtx_clk_i)) then
-            if (reset_i = '1') then
-                tk_rd_en_o <= '0';
-                req_tk_data <= '0';
-            else
-                case state is         
-                    when COMMA => 
-                        tk_rd_en_o <= tk_rd_ready_i;      
-                        req_tk_data <= tk_rd_ready_i;              
-                    when HEADER => tk_rd_en_o <= req_tk_data;
-                    when TK_DATA => tk_rd_en_o <= req_tk_data;
-                    when others => 
-                        tk_rd_en_o <= '0';
-                        req_tk_data <= '0';
-                end case;
-            end if;
-        end if;
-    end process; 
-
-    --== Handle new data ==--
-
-    process(gtx_clk_i)
-    begin
-        if (rising_edge(gtx_clk_i)) then
-            if (reset_i = '1') then
-                req_header <= (others => '0');
-                req_data <= (others => '0');
-            else
-                case state is         
-                    when COMMA => 
-                        if (req_valid_i = '1') then
-                            req_header <= '1' & tk_rd_ready_i & "00" & x"000";
-                            req_data <= req_data_i;
-                        else
-                            req_header <= '0' & tk_rd_ready_i & "00" & x"000";
-                            req_data <= (others => '0');
-                        end if;
-                    when others => null;
-                end case;
-            end if;
-        end if;
-    end process; 
-        
-    --== Send data ==--    
+    
+    --== SEND ==--    
     
     process(gtx_clk_i)
     begin
@@ -163,20 +147,19 @@ begin
                         tx_data_o <= x"00BC";
                     when HEADER => 
                         tx_kchar_o <= "00";
-                        tx_data_o <= req_header;   
+                        tx_data_o <= req_valid & evt_valid & "00" & x"000";   
                     when TK_DATA => 
                         tx_kchar_o <= "00";
-                        if (tk_rd_valid_i = '1') then
-                            tx_data_o <= tk_rd_data_i;   
-                        else
-                            tx_data_o <= (others => '0');                                
-                        end if;
+                        tx_data_o <= evt_data_i((16 * tk_counter + 15) downto (16 * tk_counter)); 
                     when DATA_0 => 
                         tx_kchar_o <= "00";
                         tx_data_o <= req_data(31 downto 16);
                     when DATA_1 => 
                         tx_kchar_o <= "00";
                         tx_data_o <= req_data(15 downto 0);
+                    when CRC =>
+                        tx_kchar_o <= "00";
+                        tx_data_o <= req_crc;
                     when others => 
                         tx_kchar_o <= "00";
                         tx_data_o <= x"0000";
