@@ -34,7 +34,7 @@ package wb_pkg is
     
     --== Wishbone slaves ==--
     
-	constant WB_SLAVES          : positive := 14;
+	constant WB_SLAVES          : positive := 15;
     
     constant WB_SLV_I2C_0       : integer := 0;
     constant WB_SLV_I2C_1       : integer := 1;
@@ -59,6 +59,8 @@ package wb_pkg is
     
     constant WB_SLV_SYS         : integer := 13;
     
+    constant WB_SLV_STAT        : integer := 14;
+    
     --== Wishbone addresses ==--
     
     constant WB_ADDR_I2C        : std_logic_vector(7 downto 0) := x"40";
@@ -71,6 +73,7 @@ package wb_pkg is
     constant WB_ADDR_CLK        : std_logic_vector(7 downto 0) := x"49";
     constant WB_ADDR_CNT        : std_logic_vector(7 downto 0) := x"4A";
     constant WB_ADDR_SYS        : std_logic_vector(7 downto 0) := x"4B";
+    constant WB_ADDR_STAT       : std_logic_vector(7 downto 0) := x"4C";
    
     --== Wishbone address selection & generation ==--
     
@@ -98,16 +101,18 @@ package body wb_pkg is
         elsif (std_match(addr, WB_ADDR_SCAN & "00000000000000000000----")) then sel := WB_SLV_SCAN;
         -- VFAT2 T1                                           REGS |  |      
         elsif (std_match(addr, WB_ADDR_T1   & "00000000000000000000----")) then sel := WB_SLV_T1;   
-        -- VFAT2 dac                                          REGS |  |            
+        -- VFAT2 DAC                                          REGS |  |            
         elsif (std_match(addr, WB_ADDR_DAC  & "00000000000000000000----")) then sel := WB_SLV_DAC;  
         -- ADC                                                              
         elsif (std_match(addr, WB_ADDR_ADC  & "00000000000000000000----")) then sel := WB_SLV_ADC;    
-        -- CLK                                                              
+        -- Clocking                                                              
         elsif (std_match(addr, WB_ADDR_CLK  & "000000000000000000000000")) then sel := WB_SLV_CLK;    
-        -- CNT                                                              
+        -- Counters                                                              
         elsif (std_match(addr, WB_ADDR_CNT  & "0000000000000000--------")) then sel := WB_SLV_CNT;    
-        -- SYS                                                              
+        -- System                                                           
         elsif (std_match(addr, WB_ADDR_SYS  & "0000000000000000--------")) then sel := WB_SLV_SYS;  
+        -- Status
+        elsif (std_match(addr, WB_ADDR_STAT & "0000000000000000--------")) then sel := WB_SLV_STAT;  
         --
         else sel := 99;
         end if;

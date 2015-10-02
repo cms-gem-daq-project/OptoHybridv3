@@ -31,6 +31,7 @@ port(
 
     -- Output reference clock
     ref_clk_o           : out std_logic;
+    rec_pll_locked_o    : out std_logic;
     
     -- Link stability
     gtx_tk_error_i      : in std_logic
@@ -51,7 +52,7 @@ begin
         clk_160MHz_i    => clk_gtx_rec_i,
         clk_40MHz_o     => clk_rec,
         reset_i         => '0',
-        locked_o        => open
+        locked_o        => rec_pll_locked_o
     );
     
     --== Clock mux ==--

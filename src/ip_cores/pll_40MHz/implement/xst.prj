@@ -1,0 +1,2 @@
+vhdl work ../../pll_40MHz.vhd
+vhdl work ../example_design/pll_40MHz_exdes.vhd

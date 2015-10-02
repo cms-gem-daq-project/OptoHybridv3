@@ -146,6 +146,18 @@ begin
         rx_kchar_i  => gtx_rx_kchar(3 downto 2),   
         rx_data_i   => gtx_rx_data(31 downto 16)      
     );
+    
+    --=========================--
+    --== SFP TX Trigger Link ==--
+    --=========================--
+    
+    gtx_tx_trigger_inst : entity work.gtx_tx_trigger
+    port map(
+        gtx_clk_i   => gtx_usr_clk,   
+        reset_i     => reset_i,  
+        tx_kchar_o  => gtx_tx_kchar(3 downto 2),   
+        tx_data_o   => gtx_tx_data(31 downto 16)    
+    );
         
     --==========================--
     --== SFP RX Tracking link ==--
