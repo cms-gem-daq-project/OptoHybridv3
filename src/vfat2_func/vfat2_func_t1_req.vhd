@@ -113,8 +113,17 @@ begin
                                 when x"00000000" => events_limit <= "11" & x"00000000";
                                 when others => events_limit <= "00" & req_events_i;
                             end case;
-                            interval <= req_interval_i;
-                            delay <= req_delay_i;
+                            -- Work on interval and delay
+                            if (req_op_mode_i = "00" and req_events_i = x"00000001") then
+                                interval <= x"00000004";  
+                                delay <= req_delay_i;                          
+                            elsif (req_op_mode_i = "01" and req_events_i = x"00000001") then
+                                interval <= req_delay_i(30 downto 0) & '0';
+                                delay <= req_delay_i;                            
+                            else
+                                interval <= req_interval_i;
+                                delay <= req_delay_i;
+                            end if;
                             lv1a_sequence <= req_lv1a_seq_i;
                             cal_sequence <= req_cal_seq_i;
                             sync_sequence <= req_sync_seq_i;
@@ -132,7 +141,7 @@ begin
                             state <= CHECKS;
                         end if;
                     -- Check the parameters
-                    when CHECKS => 
+                    when CHECKS =>                            
                         -- interval >= 3
                         if (req_mode(1) = '0' and unsigned(interval) < 3) then                            
                             req_ack_o <= '0';

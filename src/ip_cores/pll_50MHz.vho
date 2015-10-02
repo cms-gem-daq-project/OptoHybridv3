@@ -71,7 +71,9 @@ port
   clk_50Mhz_i           : in     std_logic;
   -- Clock out ports
   clk_40MHz_o          : out    std_logic;
-  clk_160MHz_o          : out    std_logic
+  clk_160MHz_o          : out    std_logic;
+  -- Status and control signals
+  locked_o            : out    std_logic
  );
 end component;
 
@@ -85,5 +87,7 @@ your_instance_name : pll_50MHz
     clk_50Mhz_i => clk_50Mhz_i,
     -- Clock out ports
     clk_40MHz_o => clk_40MHz_o,
-    clk_160MHz_o => clk_160MHz_o);
+    clk_160MHz_o => clk_160MHz_o,
+    -- Status and control signals
+    locked_o => locked_o);
 -- INST_TAG_END ------ End INSTANTIATION Template ------------

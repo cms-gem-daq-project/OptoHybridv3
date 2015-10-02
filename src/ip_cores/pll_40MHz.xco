@@ -1,7 +1,7 @@
 ##############################################################
 #
 # Xilinx Core Generator version 14.7
-# Date: Wed Sep 30 07:20:33 2015
+# Date: Fri Oct 02 06:59:55 2015
 #
 ##############################################################
 #
@@ -146,7 +146,7 @@ CSET in_jitter_units=Units_UI
 CSET input_clk_stopped_port=INPUT_CLK_STOPPED
 CSET jitter_options=UI
 CSET jitter_sel=No_Jitter
-CSET locked_port=LOCKED
+CSET locked_port=locked_o
 CSET mmcm_bandwidth=OPTIMIZED
 CSET mmcm_clkfbout_mult_f=24.000
 CSET mmcm_clkfbout_phase=0.000
@@ -251,7 +251,7 @@ CSET use_freeze=false
 CSET use_freq_synth=true
 CSET use_inclk_stopped=false
 CSET use_inclk_switchover=false
-CSET use_locked=false
+CSET use_locked=true
 CSET use_max_i_jitter=false
 CSET use_min_o_jitter=false
 CSET use_min_power=false
@@ -266,4 +266,4 @@ CSET use_status=false
 MISC pkg_timestamp=2012-05-10T12:44:55Z
 # END Extra information
 GENERATE
-# CRC: 84b4980a
+# CRC: e07e25bf

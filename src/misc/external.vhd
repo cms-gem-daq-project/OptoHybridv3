@@ -23,21 +23,22 @@ use work.types_pkg.all;
 entity external is
 port(
 
-    ref_clk_i       : in std_logic;
-    reset_i         : in std_logic;
+    ref_clk_i           : in std_logic;
+    reset_i             : in std_logic;
     
     -- Clock        
-    ext_clk_i       : in std_logic;
-    ext_clk_o       : out std_logic;
+    ext_clk_i           : in std_logic;
+    ext_clk_o           : out std_logic;
+    ext_pll_locked_o    : out std_logic;
     
     -- Trigger
-    ext_trigger_i   : in std_logic;
-    vfat2_t1_o      : out t1_t;
+    ext_trigger_i       : in std_logic;
+    vfat2_t1_o          : out t1_t;
     
     -- Sbits
-    vfat2_sbits_i   : in sbits_array_t(23 downto 0);
-    sys_sbit_sel_i  : in std5_array_t(5 downto 0);
-    ext_sbits_o     : out std_logic_vector(5 downto 0)
+    vfat2_sbits_i       : in sbits_array_t(23 downto 0);
+    sys_sbit_sel_i      : in std_logic_vector(29 downto 0);
+    ext_sbits_o         : out std_logic_vector(5 downto 0)
     
 );
 end external;
@@ -54,7 +55,7 @@ begin
 
     --== Clock ==--
     
-    pll_40MHz_inst : entity work.pll_40MHz port map(clk_40MHz_i => ext_clk_i, clk_40MHz_o => ext_clk_o, clk_160MHz_o => open);
+    pll_40MHz_inst : entity work.pll_40MHz port map(clk_40MHz_i => ext_clk_i, clk_40MHz_o => ext_clk_o, clk_160MHz_o => open, locked_o => ext_pll_locked_o);
 
     --== Trigger ==--
 
@@ -82,7 +83,7 @@ begin
     sbits_sel_loop : for I in 0 to 5 generate
     begin
     
-        sbits_sel(I) <= to_integer(unsigned(sys_sbit_sel_i(I)));
+        sbits_sel(I) <= to_integer(unsigned(sys_sbit_sel_i((I * 5 + 4) downto (I * 5))));
         ext_sbits_o(I) <= ors(sbits_sel(I));
     
     end generate;

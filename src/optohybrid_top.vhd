@@ -331,8 +331,11 @@ architecture Behavioral of optohybrid_top is
     signal ref_clk              : std_logic;
     signal ext_clk              : std_logic;
     signal alt_gtx_clk          : std_logic;
-    signal reset                : std_logic;
-    signal clk_reg_reset        : std_logic;
+    signal reset                : std_logic;    
+    
+    signal fpga_pll_locked      : std_logic;
+    signal ext_pll_locked       : std_logic;
+    signal rec_pll_locked       : std_logic;
 
     --== GTX ==--
     
@@ -355,7 +358,7 @@ architecture Behavioral of optohybrid_top is
     signal sys_loop_sbit        : std_logic_vector(4 downto 0);
     signal vfat2_reset          : std_logic;
     signal sys_clk_sel          : std_logic_vector(1 downto 0);
-    signal sys_sbit_sel         : std5_array_t(5 downto 0);
+    signal sys_sbit_sel         : std_logic_vector(29 downto 0);
     
     --== Wishbone signals ==--
     
@@ -368,7 +371,7 @@ begin
 
     reset <= '0';
     
-    pll_50MHz_inst : entity work.pll_50MHz port map(clk_50MHz_i => clk_50MHz_i, clk_40MHz_o => clk_onboard, clk_160MHz_o => alt_gtx_clk);
+    pll_50MHz_inst : entity work.pll_50MHz port map(clk_50MHz_i => clk_50MHz_i, clk_40MHz_o => clk_onboard, clk_160MHz_o => alt_gtx_clk, locked_o => fpga_pll_locked);
     
     --======================--
     --== External signals ==--
@@ -376,15 +379,16 @@ begin
     
     external_inst : entity work.external
     port map(
-        ref_clk_i       => ref_clk,
-        reset_i         => reset,
-        ext_clk_i       => ext_clk_i,
-        ext_clk_o       => ext_clk,
-        ext_trigger_i   => ext_trigger_i,
-        vfat2_t1_o      => vfat2_t1(2),
-        vfat2_sbits_i   => vfat2_sbits_b,
-        sys_sbit_sel_i  => sys_sbit_sel,
-        ext_sbits_o     => ext_sbits_o        
+        ref_clk_i           => ref_clk,
+        reset_i             => reset,
+        ext_clk_i           => ext_clk_i,
+        ext_clk_o           => ext_clk,
+        ext_pll_locked_o    => ext_pll_locked,
+        ext_trigger_i       => ext_trigger_i,
+        vfat2_t1_o          => vfat2_t1(2),
+        vfat2_sbits_i       => vfat2_sbits_b,
+        sys_sbit_sel_i      => sys_sbit_sel,
+        ext_sbits_o         => ext_sbits_o        
     );
     
     --==============--
@@ -393,13 +397,14 @@ begin
     
     clocking_inst : entity work.clocking
     port map(
-        reset_i         => reset,
-        clk_onboard_i   => clk_onboard, 
-        clk_gtx_rec_i   => gtx_rec_clk,
-        clk_ext_i       => ext_clk,
-        sys_clk_sel_i   => sys_clk_sel,
-        ref_clk_o       => ref_clk,
-        gtx_tk_error_i  => gtx_tk_error
+        reset_i             => reset,
+        clk_onboard_i       => clk_onboard, 
+        clk_gtx_rec_i       => gtx_rec_clk,
+        clk_ext_i           => ext_clk,
+        sys_clk_sel_i       => sys_clk_sel,
+        ref_clk_o           => ref_clk,
+        rec_pll_locked_o    => rec_pll_locked,
+        gtx_tk_error_i      => gtx_tk_error
     );
     
     --=====================--
@@ -577,6 +582,22 @@ begin
         vfat2_reset_o   => vfat2_reset,
         sys_clk_sel_o   => sys_clk_sel,
         sys_sbit_sel_o  => sys_sbit_sel
+    );
+    
+    --============--
+    --== Status ==--
+    --============--
+    
+    stat_inst : entity work.stat
+    port map(
+        ref_clk_i           => ref_clk,
+        reset_i             => reset, 
+        wb_slv_req_i        => wb_s_req(WB_SLV_STAT),
+        wb_slv_res_o        => wb_s_res(WB_SLV_STAT), 
+        fpga_pll_locked_i   => fpga_pll_locked,
+        ext_pll_locked_i    => ext_pll_locked,
+        cdce_pll_locked_i   => cdce_locked_b,
+        rec_pll_locked_i    => rec_pll_locked
     );
     
     --=============--
