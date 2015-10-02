@@ -29,8 +29,7 @@ port(
 
     mgt_refclk_n_i  : in std_logic;
     mgt_refclk_p_i  : in std_logic;
-    alt_gtx_clk_i   : in std_logic;
-    
+    alt_gtx_clk_i   : in std_logic;    
     ref_clk_i       : in std_logic;
     
     reset_i         : in std_logic;
@@ -119,6 +118,7 @@ begin
 		mgt_refclk_n_i  => mgt_refclk_n_i,
 		mgt_refclk_p_i  => mgt_refclk_p_i,
         alt_gtx_clk_i   => alt_gtx_clk_i,
+        ref_clk_i       => ref_clk_i,
 		reset_i         => cs_sync_out(0),
 		tx_kchar_i      => gtx_tx_kchar,
 		tx_data_i       => gtx_tx_data,
@@ -143,8 +143,8 @@ begin
         reset_i     => reset_i,  
         vfat2_t1_o  => vfat2_t1_o,
         tr_error_o  => tr_error,        
-        rx_kchar_i  => gtx_rx_kchar(3 downto 2),   
-        rx_data_i   => gtx_rx_data(31 downto 16)      
+        rx_kchar_i  => gtx_rx_kchar(1 downto 0),   
+        rx_data_i   => gtx_rx_data(15 downto 0)      
     );
     
     --=========================--
@@ -155,8 +155,8 @@ begin
     port map(
         gtx_clk_i   => gtx_usr_clk,   
         reset_i     => reset_i,  
-        tx_kchar_o  => gtx_tx_kchar(3 downto 2),   
-        tx_data_o   => gtx_tx_data(31 downto 16)    
+        tx_kchar_o  => gtx_tx_kchar(1 downto 0),   
+        tx_data_o   => gtx_tx_data(15 downto 0)    
     );
         
     --==========================--
@@ -170,8 +170,8 @@ begin
         req_en_o    => g2o_req_en,   
         req_data_o  => g2o_req_data,  
         tk_error_o  => tk_error,         
-        rx_kchar_i  => gtx_rx_kchar(1 downto 0),   
-        rx_data_i   => gtx_rx_data(15 downto 0)
+        rx_kchar_i  => gtx_rx_kchar(3 downto 2),   
+        rx_data_i   => gtx_rx_data(31 downto 16)
     );
     
     --==========================--
@@ -188,8 +188,8 @@ begin
 		evt_en_o    => evt_en,
 		evt_valid_i => evt_valid,
 		evt_data_i  => evt_data,
-		tx_kchar_o  => gtx_tx_kchar(1 downto 0),  
-		tx_data_o   => gtx_tx_data(15 downto 0)
+		tx_kchar_o  => gtx_tx_kchar(3 downto 2),  
+		tx_data_o   => gtx_tx_data(31 downto 16)
 	);
     
     --============================--
