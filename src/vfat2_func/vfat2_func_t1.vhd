@@ -107,7 +107,7 @@ begin
     port map(
         ref_clk_i       => ref_clk_i,
         reset_i         => local_reset,
-        req_en_i        => wb_stb(0),
+        req_en_i        => (wb_stb(0) and wb_we),
         req_op_mode_i   => reg_data(1)(1 downto 0),
         req_type_i      => reg_data(2)(1 downto 0),
         req_events_i    => reg_data(3),

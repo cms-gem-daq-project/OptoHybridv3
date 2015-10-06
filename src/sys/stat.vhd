@@ -101,7 +101,7 @@ begin
     --== Mapping ==--
     --=============--
     
-    reg_data(0) <= x"20151002";
+    reg_data(0) <= x"20151006";
     
     reg_data(1) <= (0 => fpga_pll_locked_i, others => '0');
     
