@@ -47,7 +47,7 @@ begin
 
     --== RX buffer ==--
     
-    fifo16x65_inst : entity work.fifo16x65
+    fifo_gtx_rx_inst : entity work.fifo_gtx_rx
     port map(
         rst     => reset_i,
         wr_clk  => gtx_clk_i,
@@ -80,7 +80,7 @@ begin
     
     --== TX buffer ==--
     
-    fifo16x32_inst : entity work.fifo16x32
+    fifo_gtx_tx_inst : entity work.fifo_gtx_tx
     port map(
         rst     => reset_i,
         wr_clk  => ref_clk_i,

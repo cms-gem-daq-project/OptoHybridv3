@@ -95,13 +95,7 @@ architecture Behavioral of gtx is
     signal cs_trig0         : std_logic_vector(31 downto 0);
     signal cs_trig1         : std_logic_vector(31 downto 0);
     
-    signal tk_error         : std_logic;
-    signal tr_error         : std_logic;
-    
 begin    
-
-    tk_error_o <= tk_error;
-    tr_error_o <= tr_error;
     
     gtx_clk_o <= gtx_usr_clk;
     evt_sent_o <= evt_valid;
@@ -142,9 +136,9 @@ begin
         gtx_clk_i   => gtx_usr_clk,   
         reset_i     => reset_i,  
         vfat2_t1_o  => vfat2_t1_o,
-        tr_error_o  => tr_error,        
-        rx_kchar_i  => gtx_rx_kchar(1 downto 0),   
-        rx_data_i   => gtx_rx_data(15 downto 0)      
+        tr_error_o  => tr_error_o,        
+        rx_kchar_i  => gtx_rx_kchar(3 downto 2),   
+        rx_data_i   => gtx_rx_data(31 downto 16)      
     );
     
     --=========================--
@@ -155,8 +149,8 @@ begin
     port map(
         gtx_clk_i   => gtx_usr_clk,   
         reset_i     => reset_i,  
-        tx_kchar_o  => gtx_tx_kchar(1 downto 0),   
-        tx_data_o   => gtx_tx_data(15 downto 0)    
+        tx_kchar_o  => gtx_tx_kchar(3 downto 2),   
+        tx_data_o   => gtx_tx_data(31 downto 16)    
     );
         
     --==========================--
@@ -169,9 +163,9 @@ begin
         reset_i     => reset_i,           
         req_en_o    => g2o_req_en,   
         req_data_o  => g2o_req_data,  
-        tk_error_o  => tk_error,         
-        rx_kchar_i  => gtx_rx_kchar(3 downto 2),   
-        rx_data_i   => gtx_rx_data(31 downto 16)
+        tk_error_o  => tk_error_o,         
+        rx_kchar_i  => gtx_rx_kchar(1 downto 0),   
+        rx_data_i   => gtx_rx_data(15 downto 0)
     );
     
     --==========================--
@@ -188,8 +182,8 @@ begin
 		evt_en_o    => evt_en,
 		evt_valid_i => evt_valid,
 		evt_data_i  => evt_data,
-		tx_kchar_o  => gtx_tx_kchar(3 downto 2),  
-		tx_data_o   => gtx_tx_data(31 downto 16)
+		tx_kchar_o  => gtx_tx_kchar(1 downto 0),  
+		tx_data_o   => gtx_tx_data(15 downto 0)
 	);
     
     --============================--
@@ -253,7 +247,7 @@ begin
         trig1   => cs_trig1
     );
         
-    cs_trig0 <= gtx_tx_data(15 downto 0) & gtx_rx_data(15 downto 0);
-    cs_trig1 <= gtx_tx_data(31 downto 16) & gtx_rx_data(31 downto 16);
+    cs_trig0 <= gtx_rx_data;
+    cs_trig1 <= gtx_tx_data;
     
 end Behavioral;
