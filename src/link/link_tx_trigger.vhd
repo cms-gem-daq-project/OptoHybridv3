@@ -4,7 +4,7 @@
 -- 
 -- Create Date:    08:37:33 07/07/2015 
 -- Design Name:    OptoHybrid v2
--- Module Name:    gtx_tx_trigger - Behavioral 
+-- Module Name:    link_tx_trigger - Behavioral 
 -- Project Name:   OptoHybrid v2
 -- Target Devices: xc6vlx130t-1ff1156
 -- Tool versions:  ISE  P.20131013
@@ -18,7 +18,7 @@ use ieee.std_logic_1164.all;
 library unisim;
 use unisim.vcomponents.all;
 
-entity gtx_tx_trigger is
+entity link_tx_trigger is
 port(
 
     gtx_clk_i   : in std_logic;    
@@ -28,9 +28,9 @@ port(
     tx_data_o   : out std_logic_vector(15 downto 0)
     
 );
-end gtx_tx_trigger;
+end link_tx_trigger;
 
-architecture Behavioral of gtx_tx_trigger is    
+architecture Behavioral of link_tx_trigger is    
 
     type state_t is (COMMA, DATA_0, DATA_1, DATA_2);
     

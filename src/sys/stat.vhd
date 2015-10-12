@@ -42,7 +42,8 @@ port(
     fpga_pll_locked_i   : in std_logic;
     ext_pll_locked_i    : in std_logic;
     cdce_pll_locked_i   : in std_logic;
-    rec_pll_locked_i    : in std_logic
+    rec_pll_locked_i    : in std_logic;
+    clk_switch_mode_i   : in std_logic
     
 );
 end stat;
@@ -101,7 +102,7 @@ begin
     --== Mapping ==--
     --=============--
     
-    reg_data(0) <= x"20151008";
+    reg_data(0) <= x"20151009";
     
     reg_data(1) <= (0 => fpga_pll_locked_i, others => '0');
     
@@ -110,6 +111,8 @@ begin
     reg_data(3) <= (0 => cdce_pll_locked_i, others => '0');
     
     reg_data(4) <= (0 => rec_pll_locked_i, others => '0');
+    
+    reg_data(5) <= (0 => clk_switch_mode_i, others => '0');
 
 end Behavioral;
 

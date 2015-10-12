@@ -21,15 +21,10 @@ use unisim.vcomponents.all;
 library work;
 
 entity gtx_wrapper is
-generic(
-    USE_CDCE        : boolean := true
-);
 port(
 
     mgt_refclk_n_i  : in std_logic;
     mgt_refclk_p_i  : in std_logic;
-    alt_gtx_clk_i   : in std_logic;    
-    ref_clk_i       : in std_logic;
     
     reset_i         : in std_logic;
     
@@ -63,41 +58,16 @@ architecture Behavioral of gtx_wrapper is
     signal usr_clk2         : std_logic;
     
 begin    
-
-    --== When using the CDCE ==--
     
-    use_cdce_gen : if USE_CDCE = true generate
-    begin
-    
-        ibufds_gtxe1_inst : ibufds_gtxe1
-        port map(
-            o       => mgt_refclk,
-            odiv2   => open,
-            ceb     => '0',
-            i       => mgt_refclk_p_i,
-            ib      => mgt_refclk_n_i
-        );
-    
-    end generate;
-    
-    --== When NOT using the CDCE ==--
-    
-    not_use_cdce_gen : if USE_CDCE = false generate
-    begin
-    
-        ibufds_gtxe1_inst : ibufds_gtxe1
-        port map(
-            o       => open,
-            odiv2   => open,
-            ceb     => '0',
-            i       => mgt_refclk_p_i,
-            ib      => mgt_refclk_n_i
-        );
-
-        mgt_refclk <= alt_gtx_clk_i;
-    
-    end generate;
-    
+    ibufds_gtxe1_inst : ibufds_gtxe1
+    port map(
+        o       => mgt_refclk,
+        odiv2   => open,
+        ceb     => '0',
+        i       => mgt_refclk_p_i,
+        ib      => mgt_refclk_n_i
+    );
+        
     --    
 
     usr_clk_bufg : bufg 
@@ -167,21 +137,5 @@ begin
         GTX1_GTXTXRESET_IN          => (mgt_reset or reset_i),
         GTX1_TXRESETDONE_OUT        => open
     );
-    
-    --== Control Reset signal ==--
-
-    process(ref_clk_i)
-        variable delay  : integer range 0 to 31 := 0;
-    begin
-        if (rising_edge(ref_clk_i)) then
-            if (delay < 30) then
-                mgt_reset <= '1';
-                delay := delay + 1;
-            else
-                mgt_reset <= '0';
-                delay := 30;
-            end if;
-        end if;
-    end process;   
     
 end Behavioral;

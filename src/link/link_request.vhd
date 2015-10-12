@@ -4,7 +4,7 @@
 -- 
 -- Create Date:    08:37:33 07/07/2015 
 -- Design Name:    OptoHybrid v2
--- Module Name:    gtx_forward - Behavioral 
+-- Module Name:    link_request - Behavioral 
 -- Project Name:   OptoHybrid v2
 -- Target Devices: xc6vlx130t-1ff1156
 -- Tool versions:  ISE  P.20131013
@@ -18,7 +18,7 @@ use ieee.std_logic_1164.all;
 library work;
 use work.types_pkg.all;
 
-entity gtx_forward is
+entity link_request is
 port(
 
 	ref_clk_i       : in std_logic;
@@ -36,9 +36,9 @@ port(
     tx_data_o       : out std_logic_vector(31 downto 0)
     
 );
-end gtx_forward;
+end link_request;
 
-architecture Behavioral of gtx_forward is
+architecture Behavioral of link_request is
     
     signal rd_valid : std_logic;
     signal rd_data  : std_logic_vector(64 downto 0);

@@ -4,7 +4,7 @@
 -- 
 -- Create Date:    08:37:33 07/07/2015 
 -- Design Name:    OptoHybrid v2
--- Module Name:    gtx_tx_tracking - Behavioral 
+-- Module Name:    link_tx_tracking - Behavioral 
 -- Project Name:   OptoHybrid v2
 -- Target Devices: xc6vlx130t-1ff1156
 -- Tool versions:  ISE  P.20131013
@@ -20,7 +20,7 @@ use unisim.vcomponents.all;
 
 library work;
 
-entity gtx_tx_tracking is
+entity link_tx_tracking is
 port(
 
     gtx_clk_i   : in std_logic;    
@@ -38,9 +38,9 @@ port(
     tx_data_o   : out std_logic_vector(15 downto 0)       
     
 );
-end gtx_tx_tracking;
+end link_tx_tracking;
 
-architecture Behavioral of gtx_tx_tracking is    
+architecture Behavioral of link_tx_tracking is    
 
     type state_t is (COMMA, HEADER, TK_DATA, DATA_0, DATA_1, CRC);
     

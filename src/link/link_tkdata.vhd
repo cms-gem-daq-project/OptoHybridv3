@@ -4,7 +4,7 @@
 -- 
 -- Create Date:    08:37:33 07/07/2015 
 -- Design Name:    OptoHybrid v2
--- Module Name:    gtx_tk_concentrator - Behavioral 
+-- Module Name:    link_tkdata - Behavioral 
 -- Project Name:   OptoHybrid v2
 -- Target Devices: xc6vlx130t-1ff1156
 -- Tool versions:  ISE  P.20131013
@@ -19,7 +19,7 @@ use ieee.numeric_std.all;
 library work;
 use work.types_pkg.all;
 
-entity gtx_tk_concentrator is
+entity link_tkdata is
 port(
 
     ref_clk_i       : in std_logic;
@@ -35,9 +35,9 @@ port(
     evt_data_o      : out std_logic_vector(223 downto 0)
     
 );
-end gtx_tk_concentrator;
+end link_tkdata;
 
-architecture Behavioral of gtx_tk_concentrator is
+architecture Behavioral of link_tkdata is
       
     type state_t is (IDLE, REQ_BX, ACK_BX, SAVING);
 
