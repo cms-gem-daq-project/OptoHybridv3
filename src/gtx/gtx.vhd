@@ -22,14 +22,10 @@ library work;
 use work.types_pkg.all;
 
 entity gtx is
-generic(
-    USE_CDCE        : boolean := true
-);
 port(
 
     mgt_refclk_n_i  : in std_logic;
     mgt_refclk_p_i  : in std_logic;
-    alt_gtx_clk_i   : in std_logic;    
     ref_clk_i       : in std_logic;
     
     reset_i         : in std_logic;
@@ -95,13 +91,7 @@ architecture Behavioral of gtx is
     signal cs_trig0         : std_logic_vector(31 downto 0);
     signal cs_trig1         : std_logic_vector(31 downto 0);
     
-    signal tk_error         : std_logic;
-    signal tr_error         : std_logic;
-    
 begin    
-
-    tk_error_o <= tk_error;
-    tr_error_o <= tr_error;
     
     gtx_clk_o <= gtx_usr_clk;
     evt_sent_o <= evt_valid;
@@ -111,14 +101,10 @@ begin
     --=================--
     
 	gtx_wrapper_inst : entity work.gtx_wrapper 
-    generic map(
-        USE_CDCE        => USE_CDCE
-    )
     port map(
 		mgt_refclk_n_i  => mgt_refclk_n_i,
 		mgt_refclk_p_i  => mgt_refclk_p_i,
-        alt_gtx_clk_i   => alt_gtx_clk_i,
-        ref_clk_i       => ref_clk_i,
+		ref_clk_i       => ref_clk_i,
 		reset_i         => cs_sync_out(0),
 		tx_kchar_i      => gtx_tx_kchar,
 		tx_data_i       => gtx_tx_data,
@@ -137,48 +123,48 @@ begin
     --== SFP RX Trigger Link ==--
     --=========================--
     
-    gtx_rx_trigger_inst : entity work.gtx_rx_trigger
+    link_rx_trigger_inst : entity work.link_rx_trigger
     port map(
         gtx_clk_i   => gtx_usr_clk,   
         reset_i     => reset_i,  
         vfat2_t1_o  => vfat2_t1_o,
-        tr_error_o  => tr_error,        
-        rx_kchar_i  => gtx_rx_kchar(1 downto 0),   
-        rx_data_i   => gtx_rx_data(15 downto 0)      
+        tr_error_o  => tr_error_o,        
+        rx_kchar_i  => gtx_rx_kchar(3 downto 2),   
+        rx_data_i   => gtx_rx_data(31 downto 16)      
     );
     
     --=========================--
     --== SFP TX Trigger Link ==--
     --=========================--
     
-    gtx_tx_trigger_inst : entity work.gtx_tx_trigger
+    link_tx_trigger_inst : entity work.link_tx_trigger
     port map(
         gtx_clk_i   => gtx_usr_clk,   
         reset_i     => reset_i,  
-        tx_kchar_o  => gtx_tx_kchar(1 downto 0),   
-        tx_data_o   => gtx_tx_data(15 downto 0)    
+        tx_kchar_o  => gtx_tx_kchar(3 downto 2),   
+        tx_data_o   => gtx_tx_data(31 downto 16)    
     );
         
     --==========================--
     --== SFP RX Tracking link ==--
     --==========================--
        
-    gtx_rx_tracking_inst : entity work.gtx_rx_tracking
+    link_rx_tracking_inst : entity work.link_rx_tracking
     port map(
         gtx_clk_i   => gtx_usr_clk,   
         reset_i     => reset_i,           
         req_en_o    => g2o_req_en,   
         req_data_o  => g2o_req_data,  
-        tk_error_o  => tk_error,         
-        rx_kchar_i  => gtx_rx_kchar(3 downto 2),   
-        rx_data_i   => gtx_rx_data(31 downto 16)
+        tk_error_o  => tk_error_o,         
+        rx_kchar_i  => gtx_rx_kchar(1 downto 0),   
+        rx_data_i   => gtx_rx_data(15 downto 0)
     );
     
     --==========================--
     --== SFP TX Tracking link ==--
     --==========================--
        
-    gtx_tx_tracking_inst : entity work.gtx_tx_tracking
+    link_tx_tracking_inst : entity work.link_tx_tracking
     port map(
         gtx_clk_i   => gtx_usr_clk,   
         reset_i     => reset_i,       
@@ -188,15 +174,15 @@ begin
 		evt_en_o    => evt_en,
 		evt_valid_i => evt_valid,
 		evt_data_i  => evt_data,
-		tx_kchar_o  => gtx_tx_kchar(3 downto 2),  
-		tx_data_o   => gtx_tx_data(31 downto 16)
+		tx_kchar_o  => gtx_tx_kchar(1 downto 0),  
+		tx_data_o   => gtx_tx_data(15 downto 0)
 	);
     
     --============================--
     --== GTX request forwarding ==--
     --============================--
     
-    gtx_forward_inst : entity work.gtx_forward
+    link_request_inst : entity work.link_request
     port map(
         ref_clk_i       => ref_clk_i,
         gtx_clk_i       => gtx_usr_clk,  
@@ -214,7 +200,7 @@ begin
     --== VFAT2 tracking data concentrator ==--
     --======================================--	
     
-    gtx_tk_concentrator_inst : entity work.gtx_tk_concentrator 
+    link_tkdata_inst : entity work.link_tkdata 
     port map(
 		ref_clk_i       => ref_clk_i,
 		gtx_clk_i       => gtx_usr_clk,
@@ -253,7 +239,7 @@ begin
         trig1   => cs_trig1
     );
         
-    cs_trig0 <= gtx_tx_data(15 downto 0) & gtx_rx_data(15 downto 0);
-    cs_trig1 <= gtx_tx_data(31 downto 16) & gtx_rx_data(31 downto 16);
+    cs_trig0 <= gtx_rx_data;
+    cs_trig1 <= gtx_tx_data;
     
 end Behavioral;

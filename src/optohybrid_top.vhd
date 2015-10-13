@@ -330,12 +330,12 @@ architecture Behavioral of optohybrid_top is
     signal clk_onboard          : std_logic;
     signal ref_clk              : std_logic;
     signal ext_clk              : std_logic;
-    signal alt_gtx_clk          : std_logic;
     signal reset                : std_logic;    
     
     signal fpga_pll_locked      : std_logic;
     signal ext_pll_locked       : std_logic;
     signal rec_pll_locked       : std_logic;
+    signal clk_switch_mode      : std_logic;
 
     --== GTX ==--
     
@@ -371,7 +371,7 @@ begin
 
     reset <= '0';
     
-    pll_50MHz_inst : entity work.pll_50MHz port map(clk_50MHz_i => clk_50MHz_i, clk_40MHz_o => clk_onboard, clk_160MHz_o => alt_gtx_clk, locked_o => fpga_pll_locked);
+    pll_50MHz_inst : entity work.pll_50MHz port map(clk_50MHz_i => clk_50MHz_i, clk_40MHz_o => clk_onboard, clk_160MHz_o => open, locked_o => fpga_pll_locked);
     
     --======================--
     --== External signals ==--
@@ -401,10 +401,11 @@ begin
         clk_onboard_i       => clk_onboard, 
         clk_gtx_rec_i       => gtx_rec_clk,
         clk_ext_i           => ext_clk,
+        cdce_pll_locked_i   => cdce_locked_b,
         sys_clk_sel_i       => sys_clk_sel,
         ref_clk_o           => ref_clk,
         rec_pll_locked_o    => rec_pll_locked,
-        gtx_tk_error_i      => gtx_tk_error
+        switch_mode_o       => clk_switch_mode
     );
     
     --=====================--
@@ -426,13 +427,9 @@ begin
     --=========--
     
     gtx_inst : entity work.gtx
-    generic map(
-        USE_CDCE        => true
-    )
     port map(
 		mgt_refclk_n_i  => mgt_112_clk0_n_i,
 		mgt_refclk_p_i  => mgt_112_clk0_p_i,
-        alt_gtx_clk_i   => alt_gtx_clk,
         ref_clk_i       => ref_clk,
 		reset_i         => reset,
         gtx_clk_o       => gtx_clk,
@@ -597,7 +594,8 @@ begin
         fpga_pll_locked_i   => fpga_pll_locked,
         ext_pll_locked_i    => ext_pll_locked,
         cdce_pll_locked_i   => cdce_locked_b,
-        rec_pll_locked_i    => rec_pll_locked
+        rec_pll_locked_i    => rec_pll_locked,
+        clk_switch_mode_i   => clk_switch_mode
     );
     
     --=============--

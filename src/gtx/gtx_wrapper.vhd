@@ -21,14 +21,10 @@ use unisim.vcomponents.all;
 library work;
 
 entity gtx_wrapper is
-generic(
-    USE_CDCE        : boolean := true
-);
 port(
 
     mgt_refclk_n_i  : in std_logic;
     mgt_refclk_p_i  : in std_logic;
-    alt_gtx_clk_i   : in std_logic;    
     ref_clk_i       : in std_logic;
     
     reset_i         : in std_logic;
@@ -55,6 +51,7 @@ architecture Behavioral of gtx_wrapper is
 
     signal mgt_refclk       : std_logic;
     signal mgt_reset        : std_logic;
+    signal mgt_rst_cnt      : integer range 0 to 67_108_863;
    
     signal rx_disperr       : std_logic_vector(3 downto 0); 
     signal rx_notintable    : std_logic_vector(3 downto 0);
@@ -63,41 +60,16 @@ architecture Behavioral of gtx_wrapper is
     signal usr_clk2         : std_logic;
     
 begin    
-
-    --== When using the CDCE ==--
     
-    use_cdce_gen : if USE_CDCE = true generate
-    begin
-    
-        ibufds_gtxe1_inst : ibufds_gtxe1
-        port map(
-            o       => mgt_refclk,
-            odiv2   => open,
-            ceb     => '0',
-            i       => mgt_refclk_p_i,
-            ib      => mgt_refclk_n_i
-        );
-    
-    end generate;
-    
-    --== When NOT using the CDCE ==--
-    
-    not_use_cdce_gen : if USE_CDCE = false generate
-    begin
-    
-        ibufds_gtxe1_inst : ibufds_gtxe1
-        port map(
-            o       => open,
-            odiv2   => open,
-            ceb     => '0',
-            i       => mgt_refclk_p_i,
-            ib      => mgt_refclk_n_i
-        );
-
-        mgt_refclk <= alt_gtx_clk_i;
-    
-    end generate;
-    
+    ibufds_gtxe1_inst : ibufds_gtxe1
+    port map(
+        o       => mgt_refclk,
+        odiv2   => open,
+        ceb     => '0',
+        i       => mgt_refclk_p_i,
+        ib      => mgt_refclk_n_i
+    );
+        
     --    
 
     usr_clk_bufg : bufg 
@@ -169,19 +141,18 @@ begin
     );
     
     --== Control Reset signal ==--
-
+    
     process(ref_clk_i)
-        variable delay  : integer range 0 to 31 := 0;
     begin
         if (rising_edge(ref_clk_i)) then
-            if (delay < 30) then
-                mgt_reset <= '1';
-                delay := delay + 1;
+            if (mgt_rst_cnt = 60_000_000) then
+              mgt_reset <= '0';
+              mgt_rst_cnt <= 60_000_000;
             else
-                mgt_reset <= '0';
-                delay := 30;
+              mgt_reset <= '1';
+              mgt_rst_cnt <= mgt_rst_cnt + 1;
             end if;
         end if;
-    end process;   
+    end process;
     
 end Behavioral;
