@@ -34,6 +34,7 @@ port(
     
     data_i          : in std_logic_vector(15 downto 0);
     kchar_i         : in std_logic_vector(1 downto 0);
+    error_i         : in std_logic;
     
     slide_o         : out std_logic;
     rec_clk_o       : out std_logic;
@@ -46,11 +47,12 @@ architecture Behavioral of gtx_align is
 
     type state_t is (LOOK, CHECK, SLIDE, DLY, DONE);
 
-    signal state    : state_t;
+    signal state        : state_t;
     
-    signal counter  : integer range 0 to 255;
+    signal bx_cnt       : integer range 0 to 255;
+    signal check_cnt    : integer range 0 to 255;
     
-    signal clk_cnt  : integer range 0 to 3;
+    signal clk_cnt      : integer range 0 to 3;
 
 begin
 
@@ -88,40 +90,51 @@ begin
             if (reset_i = '1') then
                 slide_o <= '0';
                 lock_done_o <= '0';
+                bx_cnt <= 0;
+                check_cnt <= 0;
                 state <= LOOK;
             else                    
                 case state is
                     when LOOK => 
-                        lock_done_o <= '0';
+                        slide_o <= '0';
+                        lock_done_o <= '0';  
                         if (data_i = x"00BC" and kchar_i = "01") then
                             state <= CHECK;
-                            counter <= 0;
-                        elsif (counter = (PACKET_LENGTH - 1)) then
+                            bx_cnt <= PACKET_LENGTH - 1;                            
+                        elsif (bx_cnt = PACKET_LENGTH) then
                             state <= SLIDE;
                         else
-                            counter <= counter + 1;
+                            bx_cnt <= bx_cnt + 1;
                         end if;
                     when SLIDE =>
                         slide_o <= '1';
                         lock_done_o <= '0';
                         state <= DLY;
-                        counter <= 0;
+                        bx_cnt <= 0;
                     when DLY =>
                         slide_o <= '0';
                         lock_done_o <= '0';
-                        if (counter = 31) then
+                        if (bx_cnt = 31) then
+                            bx_cnt <= 0;
                             state <= LOOK;
                         else
-                            counter <= counter + 1;
+                            bx_cnt <= bx_cnt + 1;
                         end if;                       
                     when CHECK =>
                         lock_done_o <= '0';
-                        if (kchar_i = "10") then  
-                            state <= LOOK;
-                        elsif (counter = (PACKET_LENGTH - 2)) then
-                            state <= DONE;
+                        if (bx_cnt = 0) then
+                            if (data_i = x"00BC" and kchar_i = "01") then
+                                bx_cnt <= PACKET_LENGTH - 1;
+                                if (check_cnt = 4) then
+                                    state <= DONE;                                
+                                else
+                                    check_cnt <= check_cnt + 1;
+                                end if;
+                            else                                
+                                state <= LOOK;                            
+                            end if;
                         else
-                            counter <= counter + 1;
+                            bx_cnt <= bx_cnt - 1;
                         end if;
                     when DONE => 
                         state <= DONE;
@@ -129,6 +142,8 @@ begin
                     when others => 
                         slide_o <= '0';
                         lock_done_o <= '0';
+                        bx_cnt <= 0;
+                        check_cnt <= 0;
                         state <= LOOK;
                 end case; 
             end if;

@@ -402,6 +402,7 @@ begin
         clk_gtx_rec_i       => gtx_rec_clk,
         clk_ext_i           => ext_clk,
         cdce_pll_locked_i   => cdce_locked_b,
+        ext_pll_locked_i    => ext_pll_locked,
         sys_clk_sel_i       => sys_clk_sel,
         ref_clk_o           => ref_clk,
         rec_pll_locked_o    => rec_pll_locked,
