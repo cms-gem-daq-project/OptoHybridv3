@@ -28,6 +28,7 @@ port(
     clk_ext_i           : in std_logic;
 
     cdce_pll_locked_i   : in std_logic;
+    ext_pll_locked_i    : in std_logic;
     sys_clk_sel_i       : in std_logic_vector(1 downto 0);
 
     -- Output reference clock
@@ -59,14 +60,21 @@ begin
         locked_o        => rec_pll_locked
     );
     
-    --== Clock mux ==--
-
+    --== Clock mux ==--    
+    
     ref_clk_o <= clk_rec when sys_clk_sel_i= "01" else
                  clk_ext_i when sys_clk_sel_i = "10" else
                  clk_onboard_i when sys_clk_sel_i = "11" else
-                 clk_onboard_i when (sys_clk_sel_i = "00" and operate_switch = '0') else
-                 clk_rec when (sys_clk_sel_i = "00" and operate_switch = '1') else
+                 clk_onboard_i when (sys_clk_sel_i = "00" and ext_pll_locked_i = '0') else
+                 clk_ext_i when (sys_clk_sel_i = "00" and ext_pll_locked_i = '1') else
                  clk_onboard_i;
+
+--    ref_clk_o <= clk_rec when sys_clk_sel_i= "01" else
+--                 clk_ext_i when sys_clk_sel_i = "10" else
+--                 clk_onboard_i when sys_clk_sel_i = "11" else
+--                 clk_onboard_i when (sys_clk_sel_i = "00" and operate_switch = '0') else
+--                 clk_rec when (sys_clk_sel_i = "00" and operate_switch = '1') else
+--                 clk_onboard_i;
                  
     --== Clock switch ==--             
                  

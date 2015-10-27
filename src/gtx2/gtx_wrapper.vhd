@@ -12,6 +12,7 @@ port(
 
     mgt_refclk_n_i  : in std_logic;
     mgt_refclk_p_i  : in std_logic; 
+    ref_clk_i       : in std_logic;
     
     reset_i         : in std_logic;
     
@@ -80,6 +81,8 @@ architecture RTL of gtx_wrapper is
     signal gtx_link_fixed           : std_logic_vector(1 downto 0);
     
     signal rec_clk                  : std_logic_vector(1 downto 0);
+    
+    signal gtx_rx_error             : std_logic_vector (1 downto 0);
 
 begin
 
@@ -102,6 +105,7 @@ begin
     rx_data_o <= rx_data;
     usr_clk_o <= gtx_rxusrclk2(0);
     rec_clk_o <= gtx_rxusrclk2(0);
+    rx_error_o <= gtx_rx_error;
 
     gtx_loop : for I in 0 to 1 generate
     begin
@@ -164,7 +168,7 @@ begin
 
         -- Error
 
-        rx_error_o(I) <= gtx_rx_disperr(2 * I) or gtx_rx_disperr(2 * I + 1) or gtx_rx_notintable(2 * I) or gtx_rx_notintable(2 * I + 1);
+        gtx_rx_error(I) <= gtx_rx_disperr(2 * I) or gtx_rx_disperr(2 * I + 1) or gtx_rx_notintable(2 * I) or gtx_rx_notintable(2 * I + 1);
 
         -- Clocks
 
@@ -245,6 +249,7 @@ begin
 		reset_i         => reset_i,
 		data_i          => rx_data(15 downto 0),
 		kchar_i         => rx_kchar(1 downto 0),
+        error_i         => gtx_rx_error(0),
 		slide_o         => gtx_rx_slide(0),
         rec_clk_o       => rec_clk(0),
         lock_done_o     => open
@@ -257,6 +262,7 @@ begin
 		reset_i         => reset_i,
 		data_i          => rx_data(31 downto 16),
 		kchar_i         => rx_kchar(3 downto 2),
+        error_i         => gtx_rx_error(1),
 		slide_o         => gtx_rx_slide(1),
         rec_clk_o       => rec_clk(1),
         lock_done_o     => open

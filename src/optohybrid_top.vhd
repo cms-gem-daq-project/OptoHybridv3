@@ -359,6 +359,7 @@ architecture Behavioral of optohybrid_top is
     signal vfat2_reset          : std_logic;
     signal sys_clk_sel          : std_logic_vector(1 downto 0);
     signal sys_sbit_sel         : std_logic_vector(29 downto 0);
+    signal trigger_lim          : std_logic_vector(31 downto 0);
     
     --== Wishbone signals ==--
     
@@ -402,6 +403,7 @@ begin
         clk_gtx_rec_i       => gtx_rec_clk,
         clk_ext_i           => ext_clk,
         cdce_pll_locked_i   => cdce_locked_b,
+        ext_pll_locked_i    => ext_pll_locked,
         sys_clk_sel_i       => sys_clk_sel,
         ref_clk_o           => ref_clk,
         rec_pll_locked_o    => rec_pll_locked,
@@ -461,6 +463,7 @@ begin
         vfat2_t1_lst_i      => vfat2_t1,
         vfat2_t1_lst_o      => vfat2_t1_lst,
         vfat2_t1_sel_i      => vfat2_t1_sel,
+        trigger_lim_i       => trigger_lim,
         vfat2_mclk_o        => vfat2_mclk_b,
         vfat2_reset_o       => vfat2_reset_b,
         vfat2_t1_o          => vfat2_t1_b,
@@ -578,7 +581,8 @@ begin
         sys_loop_sbit_o => sys_loop_sbit,
         vfat2_reset_o   => vfat2_reset,
         sys_clk_sel_o   => sys_clk_sel,
-        sys_sbit_sel_o  => sys_sbit_sel
+        sys_sbit_sel_o  => sys_sbit_sel,
+        trigger_lim_o   => trigger_lim
     );
     
     --============--

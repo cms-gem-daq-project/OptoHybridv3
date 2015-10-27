@@ -1,7 +1,0 @@
-INFO:sim:172 - Generating IP...
-ERROR:sim - Unable to clean the temporary directory
-   'C:\Users\Administrator\Documents\firmware\OptoHybridv2\src\ip_cores\tmp\_cg\
-   ' because it is being used by another person, process, or program.  Close any
-   processes or programs that might be using this directory and try again.
-ERROR:sim - Failed to generate 'fifo256x32'.  
-Wrote CGP file for project 'fifo256x32'.
