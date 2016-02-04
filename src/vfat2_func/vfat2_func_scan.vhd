@@ -53,7 +53,7 @@ port(
     vfat2_tk_data_i : in tk_data_array_t(23 downto 0);
     
     -- Running mode
-    scan_running_o  : out std_logic_vector(1 downto 0)
+    scan_running_o  : out std_logic_vector(2 downto 0)
     
 );
 end vfat2_func_scan;
@@ -80,7 +80,7 @@ architecture Behavioral of vfat2_func_scan is
     signal fifo_din     : std_logic_vector(31 downto 0);
     
     -- Scan status
-    signal scan_running : std_logic_vector(1 downto 0);
+    signal scan_running : std_logic_vector(2 downto 0);
 
 begin
 
@@ -195,7 +195,7 @@ begin
     -- Connect signals for automatic response
     reg_ack(9) <= wb_stb(9);
     reg_err(9) <= '0';
-    reg_data(9) <= x"0000000" & "00" & scan_running;
+    reg_data(9) <= x"0000000" & '0' & scan_running;
     
     
     --=================--
