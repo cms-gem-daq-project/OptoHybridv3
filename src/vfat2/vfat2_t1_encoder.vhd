@@ -18,6 +18,7 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 
 library work;
 use work.types_pkg.all;
@@ -25,14 +26,14 @@ use work.types_pkg.all;
 entity vfat2_t1_encoder is
 port(
 
-    ref_clk_i   : in std_logic;
-    reset_i     : in std_logic;
+    ref_clk_i       : in std_logic;
+    reset_i         : in std_logic;
     
     -- Input T1 commands
-    vfat2_t1_i  : in t1_t;
+    vfat2_t1_i      : in t1_t;
     
     -- VFAT2 T1 line
-    vfat2_t1_o  : out std_logic
+    vfat2_t1_o      : out std_logic
     
 );
 end vfat2_t1_encoder;

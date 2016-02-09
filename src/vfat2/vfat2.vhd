@@ -33,6 +33,7 @@ port(
     vfat2_t1_lst_i      : in t1_array_t(2 downto 0);
     vfat2_t1_lst_o      : out t1_array_t(4 downto 0);
     vfat2_t1_sel_i      : in std_logic_vector(2 downto 0);
+    trigger_lim_i       : in std_logic_vector(31 downto 0);
     
     -- VFAT2 control output
     vfat2_mclk_o        : out std_logic;
@@ -108,6 +109,7 @@ begin
     port map(
         ref_clk_i       => ref_clk_i,
         reset_i         => reset_i,
+        trigger_lim_i   => trigger_lim_i,
         vfat2_t1_i      => vfat2_t1_lst,
         vfat2_t1_sel_i  => vfat2_t1_sel_i,
         vfat2_t1_o      => vfat2_t1_mx      
@@ -119,10 +121,10 @@ begin
     
     vfat2_t1_encoder_inst : entity work.vfat2_t1_encoder
     port map(
-        ref_clk_i   => ref_clk_i,
-        reset_i     => reset_i,
-        vfat2_t1_i  => vfat2_t1_mx,
-        vfat2_t1_o  => vfat2_t1_o
+        ref_clk_i       => ref_clk_i,
+        reset_i         => reset_i,
+        vfat2_t1_i      => vfat2_t1_mx,
+        vfat2_t1_o      => vfat2_t1_o
     );
     
     --==================================--

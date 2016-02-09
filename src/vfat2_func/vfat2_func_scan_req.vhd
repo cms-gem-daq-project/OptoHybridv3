@@ -60,7 +60,7 @@ end vfat2_func_scan_req;
 
 architecture Behavioral of vfat2_func_scan_req is
 
-    type state_t is (IDLE, CHECKS, REQ_RUNNING, ACK_RUNNING, REQ_CURRENT, ACK_CURRENT, REQ_I2C, ACK_I2C, SCAN_THRESHOLD, SCAN_THRESHOLD2, SCAN_LATENCY, SCAN_SCURVE, STORE_RESULT, REQ_RESTORE, ACK_RESTORE);
+    type state_t is (IDLE, CHECKS, REQ_RUNNING, ACK_RUNNING, REQ_CURRENT, ACK_CURRENT, REQ_I2C, ACK_I2C, WAIT_DELAY, SCAN_THRESHOLD, SCAN_THRESHOLD2, SCAN_LATENCY, SCAN_SCURVE, STORE_RESULT, REQ_RESTORE, ACK_RESTORE);
         
     signal state            : state_t;
     
@@ -85,6 +85,7 @@ architecture Behavioral of vfat2_func_scan_req is
     signal value_counter    : unsigned(8 downto 0);
     signal event_counter    : unsigned(23 downto 0);
     signal hit_counter      : unsigned(23 downto 0);
+    signal delay            : unsigned(15 downto 0);    
     
     -- Utility
     signal empty_8bits      : std_logic_vector(7 downto 0);
@@ -121,6 +122,7 @@ begin
                 value_counter <= (others => '0');
                 event_counter <= (others => '0');
                 hit_counter <= (others => '0');
+                delay <= (others => '0');
             else
                 case state is                
                     -- Wait for request
@@ -258,24 +260,32 @@ begin
                         if (wb_mst_res_i.ack = '1') then
                             -- If the request was done successfully
                             if (wb_mst_res_i.stat = WB_NO_ERR) then
-                                -- Go for counting
-                                event_counter <= (others => '0');
-                                hit_counter <= (others => '0');
-                                -- Change state
-                                case req_mode is
-                                    when "00" => state <= SCAN_THRESHOLD;
-                                    when "01" => state <= SCAN_THRESHOLD2;
-                                    when "10" => state <= SCAN_LATENCY;
-                                    when "11" => state <= SCAN_SCURVE;
-                                    when others => state <= IDLE;
-                                end case;
+                                delay <= (others => '0');
+                                state <= WAIT_DELAY;
                             -- or store an error
                             else
                                 event_counter <= (others => '1');
                                 hit_counter <= (others => '1');
                                 state <= STORE_RESULT;
                             end if;
-                        end if;               
+                        end if;  
+                    -- Wait a bit
+                    when WAIT_DELAY =>
+                        if (delay = 50_000) then 
+                            -- Go for counting
+                            event_counter <= (others => '0');
+                            hit_counter <= (others => '0');
+                            -- Change state
+                            case req_mode is
+                                when "00" => state <= SCAN_THRESHOLD;
+                                when "01" => state <= SCAN_THRESHOLD2;
+                                when "10" => state <= SCAN_LATENCY;
+                                when "11" => state <= SCAN_SCURVE;
+                                when others => state <= IDLE;
+                            end case;
+                        else
+                            delay <= delay + 1;
+                        end if;
                     -- Perform a threshold scan
                     when SCAN_THRESHOLD =>
                         -- Change state when the counter reached its limit
