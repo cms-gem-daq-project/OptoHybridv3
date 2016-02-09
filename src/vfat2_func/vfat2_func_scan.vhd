@@ -188,7 +188,7 @@ begin
     --== Scan status ==--
     --=================--
     
-    -- 9 : status (2 bits)
+    -- 9 : status (3 bits)
 
     scan_running_o <= scan_running;
     
@@ -196,8 +196,7 @@ begin
     reg_ack(9) <= wb_stb(9);
     reg_err(9) <= '0';
     reg_data(9) <= x"0000000" & '0' & scan_running;
-    
-    
+        
     --=================--
     --== Local reset ==--
     --=================--

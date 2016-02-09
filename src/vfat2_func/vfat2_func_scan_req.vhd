@@ -60,7 +60,7 @@ end vfat2_func_scan_req;
 
 architecture Behavioral of vfat2_func_scan_req is
 
-    type state_t is (IDLE, CHECKS, REQ_RUNNING, ACK_RUNNING, REQ_CURRENT, ACK_CURRENT, REQ_I2C, ACK_I2C, SCAN_THRESHOLD, SCAN_THRESHOLD2, SCAN_LATENCY, SCAN_SCURVE ,STORE_RESULT, REQ_RESTORE, ACK_RESTORE);
+    type state_t is (IDLE, CHECKS, REQ_RUNNING, ACK_RUNNING, REQ_CURRENT, ACK_CURRENT, REQ_I2C, ACK_I2C, SCAN_THRESHOLD, SCAN_THRESHOLD2, SCAN_LATENCY, SCAN_SCURVE, STORE_RESULT, REQ_RESTORE, ACK_RESTORE);
         
     signal state            : state_t;
     
@@ -155,8 +155,8 @@ begin
                             case req_mode_i is
                                 when "00" | "01" => register_id <= x"92";
                                 when "10" => register_id <= x"10";
-                                when "11" => register_id <= x"10";
-                                when others => register_id <= x"91";
+                                when "11" => register_id <= x"91";
+                                when others => register_id <= x"10";
                             end case;
                             value_counter <= '0' & unsigned(req_min_i);
                             -- Set the flags
@@ -290,8 +290,21 @@ begin
                             end if;
                         end if;                        
                     -- Perform a threshold scan on a signel channel
-                    when SCAN_THRESHOLD2 =>
-                        state <= STORE_RESULT;                        
+                    when SCAN_THRESHOLD2 =>                   
+                        -- Change state when the counter reached its limit
+                        if (event_counter = unsigned(req_events)) then
+                            state <= STORE_RESULT;
+                        else
+                            -- Wait for tracking data
+                            if (vfat2_tk_data_i(vfat2_int).valid = '1' and vfat2_tk_data_i(vfat2_int).crc_ok = '1') then
+                                -- Increment the event counter
+                                event_counter <= event_counter + 1;
+                                -- Increment the hit counter
+                                if (vfat2_tk_data_i(vfat2_int).strips(channel_int) = '1') then
+                                    hit_counter <= hit_counter + 1;
+                                end if;
+                            end if;
+                        end if;                          
                     -- Perform a latency scan
                     when SCAN_LATENCY =>                        
                     -- Change state when the counter reached its limit
@@ -310,7 +323,7 @@ begin
                         end if;                       
                     -- Perform a scurve
                     when SCAN_SCURVE =>                        
-                    -- Change state when the counter reached its limit
+                        -- Change state when the counter reached its limit
                         if (event_counter = unsigned(req_events)) then
                             state <= STORE_RESULT;
                         else
