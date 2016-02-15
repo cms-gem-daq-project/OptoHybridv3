@@ -53,14 +53,14 @@ port(
     fifo_din_o      : out std_logic_vector(31 downto 0);
     
     -- Running mode
-    scan_running_o  : out std_logic_vector(1 downto 0)
+    scan_running_o  : out std_logic_vector(2 downto 0)
     
 );
 end vfat2_func_scan_req;
 
 architecture Behavioral of vfat2_func_scan_req is
 
-    type state_t is (IDLE, CHECKS, REQ_RUNNING, ACK_RUNNING, REQ_CURRENT, ACK_CURRENT, REQ_I2C, ACK_I2C, WAIT_DELAY, SCAN_THRESHOLD, SCAN_THRESHOLD2, SCAN_LATENCY, STORE_RESULT, REQ_RESTORE, ACK_RESTORE);
+    type state_t is (IDLE, CHECKS, REQ_RUNNING, ACK_RUNNING, REQ_CURRENT, ACK_CURRENT, REQ_I2C, ACK_I2C, WAIT_DELAY, SCAN_THRESHOLD, SCAN_THRESHOLD2, SCAN_LATENCY, SCAN_SCURVE, STORE_RESULT, REQ_RESTORE, ACK_RESTORE);
         
     signal state            : state_t;
     
@@ -156,17 +156,19 @@ begin
                             channel_int <= to_integer(unsigned(req_channel_i));
                             case req_mode_i is
                                 when "00" | "01" => register_id <= x"92";
-                                when "10" | "11" => register_id <= x"10";
-                                when others => register_id <= x"00";
+                                when "10" => register_id <= x"10";
+                                when "11" => register_id <= x"91";
+                                when others => register_id <= x"10";
                             end case;
                             value_counter <= '0' & unsigned(req_min_i);
                             -- Set the flags
                             fifo_rst_o <= '1';
                             case req_mode_i is
-                                when "00" => scan_running_o <= "01";
-                                when "01" => scan_running_o <= "10";
-                                when "10" | "11" => scan_running_o <= "11";
-                                when others => scan_running_o <= "00";
+                                when "00" => scan_running_o <= "001";
+                                when "01" => scan_running_o <= "010";
+                                when "10" => scan_running_o <= "011";
+                                when "11" => scan_running_o <= "100";
+                                when others => scan_running_o <= "000";
                             end case;
                             -- Change state
                             state <= CHECKS;
@@ -277,7 +279,8 @@ begin
                             case req_mode is
                                 when "00" => state <= SCAN_THRESHOLD;
                                 when "01" => state <= SCAN_THRESHOLD2;
-                                when "10" | "11" => state <= SCAN_LATENCY;
+                                when "10" => state <= SCAN_LATENCY;
+                                when "11" => state <= SCAN_SCURVE;
                                 when others => state <= IDLE;
                             end case;
                         else
@@ -297,8 +300,21 @@ begin
                             end if;
                         end if;                        
                     -- Perform a threshold scan on a signel channel
-                    when SCAN_THRESHOLD2 =>
-                        state <= STORE_RESULT;                        
+                    when SCAN_THRESHOLD2 =>                   
+                        -- Change state when the counter reached its limit
+                        if (event_counter = unsigned(req_events)) then
+                            state <= STORE_RESULT;
+                        else
+                            -- Wait for tracking data
+                            if (vfat2_tk_data_i(vfat2_int).valid = '1' and vfat2_tk_data_i(vfat2_int).crc_ok = '1') then
+                                -- Increment the event counter
+                                event_counter <= event_counter + 1;
+                                -- Increment the hit counter
+                                if (vfat2_tk_data_i(vfat2_int).strips(channel_int) = '1') then
+                                    hit_counter <= hit_counter + 1;
+                                end if;
+                            end if;
+                        end if;                          
                     -- Perform a latency scan
                     when SCAN_LATENCY =>                        
                     -- Change state when the counter reached its limit
@@ -311,6 +327,22 @@ begin
                                 event_counter <= event_counter + 1;
                                 -- Increment the hit counter
                                 if (vfat2_tk_data_i(vfat2_int).hit = '1') then
+                                    hit_counter <= hit_counter + 1;
+                                end if;
+                            end if;
+                        end if;                       
+                    -- Perform a scurve
+                    when SCAN_SCURVE =>                        
+                        -- Change state when the counter reached its limit
+                        if (event_counter = unsigned(req_events)) then
+                            state <= STORE_RESULT;
+                        else
+                            -- Wait for tracking data
+                            if (vfat2_tk_data_i(vfat2_int).valid = '1' and vfat2_tk_data_i(vfat2_int).crc_ok = '1') then
+                                -- Increment the event counter
+                                event_counter <= event_counter + 1;
+                                -- Increment the hit counter
+                                if (vfat2_tk_data_i(vfat2_int).strips(channel_int) = '1') then
                                     hit_counter <= hit_counter + 1;
                                 end if;
                             end if;

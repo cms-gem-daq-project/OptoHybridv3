@@ -68,7 +68,7 @@ end vfat2_func;
 architecture Behavioral of vfat2_func is
     
     -- Running modes
-    signal scan_running : std_logic_vector(1 downto 0);
+    signal scan_running : std_logic_vector(2 downto 0);
     signal t1_running   : std_logic_vector(1 downto 0);
     signal dac_running  : std_logic;
 

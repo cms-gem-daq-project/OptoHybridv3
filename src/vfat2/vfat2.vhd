@@ -109,6 +109,7 @@ begin
     port map(
         ref_clk_i       => ref_clk_i,
         reset_i         => reset_i,
+        trigger_lim_i   => trigger_lim_i,
         vfat2_t1_i      => vfat2_t1_lst,
         vfat2_t1_sel_i  => vfat2_t1_sel_i,
         vfat2_t1_o      => vfat2_t1_mx      
@@ -122,7 +123,6 @@ begin
     port map(
         ref_clk_i       => ref_clk_i,
         reset_i         => reset_i,
-        trigger_lim_i   => trigger_lim_i,
         vfat2_t1_i      => vfat2_t1_mx,
         vfat2_t1_o      => vfat2_t1_o
     );

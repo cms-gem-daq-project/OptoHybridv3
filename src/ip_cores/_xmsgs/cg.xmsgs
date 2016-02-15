@@ -8,11 +8,5 @@
 <msg type="info" file="sim" num="172" delta="old" >Generating IP...
 </msg>
 
-<msg type="error" file="sim" num="0" delta="new" >Unable to clean the temporary directory &apos;C:\Users\Administrator\Documents\firmware\OptoHybridv2\src\ip_cores\tmp\_cg\&apos; because it is being used by another person, process, or program.  Close any processes or programs that might be using this directory and try again.
-</msg>
-
-<msg type="error" file="sim" num="0" delta="new" >Failed to generate &apos;fifo256x32&apos;.  
-</msg>
-
 </messages>
 

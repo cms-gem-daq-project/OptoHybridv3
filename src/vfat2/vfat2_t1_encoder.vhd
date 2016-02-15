@@ -29,8 +29,6 @@ port(
     ref_clk_i       : in std_logic;
     reset_i         : in std_logic;
     
-    trigger_lim_i   : in std_logic_vector(31 downto 0);
-    
     -- Input T1 commands
     vfat2_t1_i      : in t1_t;
     
@@ -48,9 +46,6 @@ architecture Behavioral of vfat2_t1_encoder is
     
     -- Data to send
     signal t1_data  : std_logic_vector(1 downto 0);
-    
-    -- Trigger counter
-    signal t1_cnt   : unsigned(31 downto 0);
 
 begin
 
@@ -62,7 +57,6 @@ begin
                 vfat2_t1_o <= '0';
                 state <= IDLE;
                 t1_data <= (others => '0');
-                t1_cnt <= (others => '0');
             else
                 case state is
                     -- Wait for strobe
@@ -71,18 +65,9 @@ begin
                         vfat2_t1_o <= '0';
                         -- LV1A
                         if (vfat2_t1_i.lv1a = '1') then
-                            if (trigger_lim_i = x"00000000") then
-                                vfat2_t1_o <= '1';
-                                state <= BIT_1;
-                                t1_data <= "00";
-                            elsif (t1_cnt = unsigned(trigger_lim_i)) then
-                                vfat2_t1_o <= '1';
-                                state <= BIT_1;
-                                t1_data <= "00";
-                                t1_cnt <= x"00000001";
-                            else
-                                t1_cnt <= t1_cnt + 1;
-                            end if;
+                            vfat2_t1_o <= '1';
+                            state <= BIT_1;
+                            t1_data <= "00";
                         -- Calibration pulse
                         elsif (vfat2_t1_i.calpulse = '1') then 
                             vfat2_t1_o <= '1';
@@ -112,7 +97,6 @@ begin
                         vfat2_t1_o <= '0';
                         state <= IDLE;
                         t1_data <= (others => '0');
-                        t1_cnt <= (others => '0');
                 end case;  
             end if;
         end if;
