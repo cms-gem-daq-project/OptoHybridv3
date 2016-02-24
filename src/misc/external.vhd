@@ -26,11 +26,6 @@ port(
     ref_clk_i           : in std_logic;
     reset_i             : in std_logic;
     
-    -- Clock        
-    ext_clk_i           : in std_logic;
-    ext_clk_o           : out std_logic;
-    ext_pll_locked_o    : out std_logic;
-    
     -- Trigger
     ext_trigger_i       : in std_logic;
     vfat2_t1_o          : out t1_t;
@@ -52,10 +47,6 @@ architecture Behavioral of external is
     signal sbits_sel    : int_array_t(5 downto 0);
 
 begin
-
-    --== Clock ==--
-    
-    pll_40MHz_inst : entity work.pll_40MHz port map(clk_40MHz_i => ext_clk_i, clk_40MHz_o => ext_clk_o, clk_160MHz_o => open, locked_o => ext_pll_locked_o);
 
     --== Trigger ==--
 

@@ -27,7 +27,7 @@ use work.types_pkg.all;
 
 entity sys is
 generic(
-    N               : integer := 7
+    N               : integer := 8
 );
 port(
 
@@ -45,7 +45,8 @@ port(
     vfat2_reset_o   : out std_logic;
     sys_clk_sel_o   : out std_logic_vector(1 downto 0);
     sys_sbit_sel_o  : out std_logic_vector(29 downto 0);
-    trigger_lim_o   : out std_logic_vector(31 downto 0)
+    trigger_lim_o   : out std_logic_vector(31 downto 0);
+    zero_suppress_o : out std_logic
     
 );
 end sys;
@@ -124,6 +125,8 @@ begin
     sys_sbit_sel_o <= reg_data(5)(29 downto 0);    
     
     trigger_lim_o <= reg_data(6);
+    
+    zero_suppress_o <= reg_data(7)(0);
 
 end Behavioral;
 

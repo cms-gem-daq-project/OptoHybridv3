@@ -558,7 +558,7 @@ begin
         TXUSRCLK2                       =>      TXUSRCLK2_IN,
         ---------------- Transmit Ports - TX Driver and OOB signaling --------------
         TXBUFDIFFCTRL                   =>      "100",
-        TXDIFFCTRL                      =>      "0000",
+        TXDIFFCTRL                      =>      "0110",
         TXINHIBIT                       =>      tied_to_ground_i,
         TXN                             =>      TXN_OUT,
         TXP                             =>      TXP_OUT,

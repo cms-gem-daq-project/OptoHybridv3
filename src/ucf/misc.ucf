@@ -44,6 +44,16 @@ NET "chipid_io" LOC = AE23;
 #NET "tmds_clk_p_io"     LOC = AF11; # K5
 #NET "tmds_clk_n_io"     LOC = AE11;
 
+## ADC
+
+NET "xadc_p_i<0>"       LOC = U18;
+NET "xadc_p_i<1>"       LOC = B12;
+NET "xadc_p_i<2>"       LOC = H12;
+
+NET "xadc_n_i<0>"       LOC = V17;
+NET "xadc_n_i<1>"       LOC = B13;
+NET "xadc_n_i<2>"       LOC = J12;
+
 ## External signals for Test Beam
 
 NET "ext_clk_i" CLOCK_DEDICATED_ROUTE = FALSE;

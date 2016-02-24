@@ -10,6 +10,8 @@
 -- Tool versions:  ISE  P.20131013
 -- Description: 
 --
+-- This entity controls the PHY level of the GTX.
+--
 ----------------------------------------------------------------------------------
 
 library ieee;
@@ -30,21 +32,14 @@ port(
     
     reset_i         : in std_logic;
     
-    gtx_clk_o       : out std_logic;
-    rec_clk_o       : out std_logic;
-    
-    wb_mst_req_o    : out wb_req_t;
-    wb_mst_res_i    : in wb_res_t;
-    
-    vfat2_tk_data_i : in tk_data_array_t(23 downto 0);
-    vfat2_tk_mask_i : in std_logic_vector(23 downto 0);
-    
-    vfat2_t1_i      : in t1_t;
-    vfat2_t1_o      : out t1_t;
-    
-    tk_error_o      : out std_logic;
-    tr_error_o      : out std_logic;
-    evt_sent_o      : out std_logic;
+    gtx_clk_o       : out std_logic;    
+    rec_clk_o       : out std_logic;    
+
+    gtx_tx_kchar_i  : in std_logic_vector(3 downto 0);
+    gtx_tx_data_i   : in std_logic_vector(31 downto 0);
+    gtx_rx_kchar_o  : out std_logic_vector(3 downto 0);
+    gtx_rx_data_o   : out std_logic_vector(31 downto 0);
+    gtx_rx_error_o  : out std_logic_vector(1 downto 0);
    
     rx_n_i          : in std_logic_vector(1 downto 0);
     rx_p_i          : in std_logic_vector(1 downto 0);
@@ -54,48 +49,9 @@ port(
 );
 end gtx;
 
-architecture Behavioral of gtx is      
-
-    --== GTX signals ==--
-
-    signal gtx_tx_kchar     : std_logic_vector(3 downto 0);
-    signal gtx_tx_data      : std_logic_vector(31 downto 0);
-    
-    signal gtx_rx_kchar     : std_logic_vector(3 downto 0);
-    signal gtx_rx_data      : std_logic_vector(31 downto 0);
-    signal gtx_rx_error     : std_logic_vector(1 downto 0);
- 
-    signal gtx_usr_clk      : std_logic;   
-    
-    --== GTX requests ==--
-    
-    signal g2o_req_en       : std_logic;
-    signal g2o_req_data     : std_logic_vector(64 downto 0);    
-    
-    signal o2g_req_en       : std_logic;
-    signal o2g_req_valid    : std_logic;
-    signal o2g_req_data     : std_logic_vector(31 downto 0);
-    
-    --== VFAT2 event data ==--
-    
-    signal evt_en           : std_logic;
-    signal evt_valid        : std_logic;
-    signal evt_data         : std_logic_vector(223 downto 0);
-    
-    --== Chipscope signals ==--
-    
-    signal cs_ctrl0         : std_logic_vector(35 downto 0);
-    signal cs_ctrl1         : std_logic_vector(35 downto 0); 
-    signal cs_sync_in       : std_logic_vector(36 downto 0);
-    signal cs_sync_out      : std_logic_vector(65 downto 0);
-    signal cs_trig0         : std_logic_vector(31 downto 0);
-    signal cs_trig1         : std_logic_vector(31 downto 0);
-    
+architecture Behavioral of gtx is          
 begin    
-    
-    gtx_clk_o <= gtx_usr_clk;
-    evt_sent_o <= evt_valid;
-    
+        
     --=================--
     --== GTX wrapper ==--
     --=================--
@@ -105,141 +61,18 @@ begin
 		mgt_refclk_n_i  => mgt_refclk_n_i,
 		mgt_refclk_p_i  => mgt_refclk_p_i,
 		ref_clk_i       => ref_clk_i,
-		reset_i         => cs_sync_out(0),
-		tx_kchar_i      => gtx_tx_kchar,
-		tx_data_i       => gtx_tx_data,
-		rx_kchar_o      => gtx_rx_kchar,
-		rx_data_o       => gtx_rx_data,
-		rx_error_o      => gtx_rx_error,
-		usr_clk_o       => gtx_usr_clk,
+		reset_i         => reset_i,
+		tx_kchar_i      => gtx_tx_kchar_i,
+		tx_data_i       => gtx_tx_data_i,
+		rx_kchar_o      => gtx_rx_kchar_o,
+		rx_data_o       => gtx_rx_data_o,
+		rx_error_o      => gtx_rx_error_o,
+		usr_clk_o       => gtx_clk_o,
         rec_clk_o       => rec_clk_o,
 		rx_n_i          => rx_n_i(1 downto 0),
 		rx_p_i          => rx_p_i(1 downto 0),
 		tx_n_o          => tx_n_o(1 downto 0),
 		tx_p_o          => tx_p_o(1 downto 0)
 	);   
-    
-    --=========================--
-    --== SFP RX Trigger Link ==--
-    --=========================--
-    
-    link_rx_trigger_inst : entity work.link_rx_trigger
-    port map(
-        gtx_clk_i   => gtx_usr_clk,   
-        reset_i     => reset_i,  
-        vfat2_t1_o  => vfat2_t1_o,
-        tr_error_o  => tr_error_o,        
-        rx_kchar_i  => gtx_rx_kchar(3 downto 2),   
-        rx_data_i   => gtx_rx_data(31 downto 16)      
-    );
-    
-    --=========================--
-    --== SFP TX Trigger Link ==--
-    --=========================--
-    
-    link_tx_trigger_inst : entity work.link_tx_trigger
-    port map(
-        gtx_clk_i   => gtx_usr_clk,   
-        reset_i     => reset_i,  
-        tx_kchar_o  => gtx_tx_kchar(3 downto 2),   
-        tx_data_o   => gtx_tx_data(31 downto 16)    
-    );
         
-    --==========================--
-    --== SFP RX Tracking link ==--
-    --==========================--
-       
-    link_rx_tracking_inst : entity work.link_rx_tracking
-    port map(
-        gtx_clk_i   => gtx_usr_clk,   
-        reset_i     => reset_i,           
-        req_en_o    => g2o_req_en,   
-        req_data_o  => g2o_req_data,  
-        tk_error_o  => tk_error_o,         
-        rx_kchar_i  => gtx_rx_kchar(1 downto 0),   
-        rx_data_i   => gtx_rx_data(15 downto 0)
-    );
-    
-    --==========================--
-    --== SFP TX Tracking link ==--
-    --==========================--
-       
-    link_tx_tracking_inst : entity work.link_tx_tracking
-    port map(
-        gtx_clk_i   => gtx_usr_clk,   
-        reset_i     => reset_i,       
-		req_en_o    => o2g_req_en,
-		req_valid_i => o2g_req_valid,
-		req_data_i  => o2g_req_data,
-		evt_en_o    => evt_en,
-		evt_valid_i => evt_valid,
-		evt_data_i  => evt_data,
-		tx_kchar_o  => gtx_tx_kchar(1 downto 0),  
-		tx_data_o   => gtx_tx_data(15 downto 0)
-	);
-    
-    --============================--
-    --== GTX request forwarding ==--
-    --============================--
-    
-    link_request_inst : entity work.link_request
-    port map(
-        ref_clk_i       => ref_clk_i,
-        gtx_clk_i       => gtx_usr_clk,  
-        reset_i         => reset_i,        
-        wb_mst_req_o    => wb_mst_req_o,
-        wb_mst_res_i    => wb_mst_res_i,       
-        rx_en_i         => g2o_req_en,
-        rx_data_i       => g2o_req_data,          
-        tx_en_i         => o2g_req_en,
-        tx_valid_o      => o2g_req_valid,
-        tx_data_o       => o2g_req_data      
-    );  
-    
-    --======================================--
-    --== VFAT2 tracking data concentrator ==--
-    --======================================--	
-    
-    link_tkdata_inst : entity work.link_tkdata 
-    port map(
-		ref_clk_i       => ref_clk_i,
-		gtx_clk_i       => gtx_usr_clk,
-		reset_i         => reset_i,
-        vfat2_t1_i      => vfat2_t1_i,
-		vfat2_tk_data_i => vfat2_tk_data_i,
-        vfat2_tk_mask_i => vfat2_tk_mask_i,
-		evt_en_i        => evt_en,
-		evt_valid_o     => evt_valid,
-		evt_data_o      => evt_data
-	);  
-            
-    --===============--
-    --== ChipScope ==--
-    --===============--
-    
-    chipscope_icon_inst : entity work.chipscope_icon
-    port map(
-        control0    => cs_ctrl0,
-        control1    => cs_ctrl1
-    );
-    
-    chipscope_vio_inst : entity work.chipscope_vio
-    port map(
-        control     => cs_ctrl0,
-        clk         => gtx_usr_clk,
-        sync_in     => cs_sync_in,
-        sync_out    => cs_sync_out
-    );
-    
-    chipscope_ila_inst : entity work.chipscope_ila
-    port map(
-        control => cs_ctrl1,
-        clk     => gtx_usr_clk,
-        trig0   => cs_trig0,
-        trig1   => cs_trig1
-    );
-        
-    cs_trig0 <= gtx_rx_data;
-    cs_trig1 <= gtx_tx_data;
-    
 end Behavioral;

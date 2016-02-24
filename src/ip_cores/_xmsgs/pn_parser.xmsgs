@@ -8,7 +8,7 @@
 <!-- Copyright (c) 1995-2013 Xilinx, Inc.  All rights reserved.    -->
 
 <messages>
-<msg type="info" file="ProjectMgmt" num="1061" ><arg fmt="%s" index="1">Parsing VHDL file &quot;C:/Users/Administrator/Documents/firmware/SliceTB/OptoHybridv2/src/ip_cores/fifo_gtx_tx.vhd&quot; into library work</arg>
+<msg type="info" file="ProjectMgmt" num="1061" ><arg fmt="%s" index="1">Parsing VHDL file &quot;C:/Users/Administrator/Documents/firmware/SliceTB/OptoHybridv2/src/ip_cores/sysmon_wiz_v2_1.vhd&quot; into library work</arg>
 </msg>
 
 </messages>

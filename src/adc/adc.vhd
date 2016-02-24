@@ -17,74 +17,49 @@ use ieee.std_logic_1164.all;
 
 library work;
 use work.types_pkg.all;
+use work.wb_pkg.all;
 
 entity adc is
 port(
 
-    ref_clk_i           : in std_logic;
-    reset_i             : in std_logic;
+    ref_clk_i       : in std_logic;
+    reset_i         : in std_logic;
 
     -- Wishbone slave
-    wb_slv_req_i        : in wb_req_t;
-    wb_slv_res_o        : out wb_res_t;
+    wb_slv_req_i    : in wb_req_t;
+    wb_slv_res_o    : out wb_res_t;
 
-    -- ADC lines
-    adc_chip_select_o   : out std_logic;
-    adc_din_i           : in std_logic;
-    adc_dout_o          : out std_logic;
-    adc_clk_o           : out std_logic;
-    adc_eoc_i           : in std_logic
+    xadc_p_i        : in std_logic_vector(2 downto 0);
+    xadc_n_i        : in std_logic_vector(2 downto 0)
     
 );
 end adc;
 
-architecture Behavioral of adc is
-
-    -- I2C transaction parameters 
-    signal adc_en       : std_logic;
-    signal adc_din      : std_logic_vector(3 downto 0);
-    signal adc_valid    : std_logic;
-    signal adc_dout     : std_logic_vector(11 downto 0);
-    
+architecture Behavioral of adc is  
 begin
 
-    --==================================--
-    --== Wishbone ADC request handler ==--
-    --==================================--
-
-    adc_req_inst : entity work.adc_req
-    port map(
-        ref_clk_i       => ref_clk_i,
-        reset_i         => reset_i,
-        wb_slv_req_i    => wb_slv_req_i,
-        wb_slv_res_o    => wb_slv_res_o,
-        adc_en_o        => adc_en,
-        adc_data_o      => adc_din,
-        adc_valid_i     => adc_valid,
-        adc_data_i      => adc_dout
+    sysmon_wiz_v2_1_inst : entity work.sysmon_wiz_v2_1
+    port map( 
+        daddr_in    => wb_slv_req_i.addr(6 downto 0), 
+        dclk_in     => ref_clk_i, 
+        den_in      => wb_slv_req_i.stb, 
+        di_in       => wb_slv_req_i.data(15 downto 0),
+        dwe_in      => wb_slv_req_i.we, 
+        reset_in    => reset_i, 
+        vauxp4      => xadc_p_i(1),
+        vauxn4      => xadc_n_i(1),
+        vauxp5      => xadc_p_i(2),
+        vauxn5      => xadc_n_i(2),
+        busy_out    => open,
+        channel_out => open,
+        do_out      => wb_slv_res_o.data(15 downto 0),
+        drdy_out    => wb_slv_res_o.ack,
+        eoc_out     => open,
+        eos_out     => open,
+        vp_in       => xadc_p_i(0), 
+        vn_in       => xadc_n_i(0)
     );
     
-    --==========================--
-    --== ADC protocol handler ==--
-    --==========================--
-    
-    adc_readout_inst : entity work.adc_readout
-    generic map(
-        IN_FREQ             => 40_000_000,
-        OUT_FREQ            => 2_000_000
-    )
-    port map(    
-        ref_clk_i           => ref_clk_i,
-        reset_i             => reset_i,
-        en_i                => adc_en,        
-        data_i              => adc_din,
-        valid_o             => adc_valid,       
-        data_o              => adc_dout,
-        adc_chip_select_o   => adc_chip_select_o,
-        adc_din_i           => adc_din_i,
-        adc_dout_o          => adc_dout_o,
-        adc_clk_o           => adc_clk_o,
-        adc_eoc_i           => adc_eoc_i
-    );
+    wb_slv_res_o.stat <= WB_NO_ERR;
 
 end Behavioral;

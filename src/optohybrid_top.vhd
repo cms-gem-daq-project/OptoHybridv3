@@ -216,6 +216,9 @@ port(
     adc_dout_o              : out std_logic;
     adc_clk_o               : out std_logic;
     adc_eoc_i               : in std_logic;
+    
+    xadc_p_i                : in std_logic_vector(2 downto 0);
+    xadc_n_i                : in std_logic_vector(2 downto 0);
 
     temp_clk_o              : out std_logic;
     temp_data_io            : inout std_logic;
@@ -237,42 +240,14 @@ port(
        
     --== GTX ==--
     
-    mgt_112_clk0_p_i        : in std_logic;
-    mgt_112_clk0_n_i        : in std_logic;
+    mgt_clk_p_i             : in std_logic;
+    mgt_clk_n_i             : in std_logic;
     
-    mgt_112_rx_p_i          : in std_logic_vector(1 downto 0);
-    mgt_112_rx_n_i          : in std_logic_vector(1 downto 0);
-    mgt_112_tx_p_o          : out std_logic_vector(1 downto 0);
-    mgt_112_tx_n_o          : out std_logic_vector(1 downto 0)
+    mgt_rx_p_i              : in std_logic_vector(1 downto 0);
+    mgt_rx_n_i              : in std_logic_vector(1 downto 0);
+    mgt_tx_p_o              : out std_logic_vector(1 downto 0);
+    mgt_tx_n_o              : out std_logic_vector(1 downto 0)
     
---    mgt_116_clk1_p_i        : in std_logic;
---    mgt_116_clk1_n_i        : in std_logic;
-    
---    mgt_112_rx_p_i          : in std_logic_vector(3 downto 0);
---    mgt_112_rx_n_i          : in std_logic_vector(3 downto 0);
---    mgt_112_tx_p_o          : out std_logic_vector(3 downto 0);
---    mgt_112_tx_n_o          : out std_logic_vector(3 downto 0)
-    
---    mgt_113_rx_p_i          : in std_logic_vector(3 downto 0);
---    mgt_113_rx_n_i          : in std_logic_vector(3 downto 0);
---    mgt_113_tx_p_o          : out std_logic_vector(3 downto 0);
---    mgt_113_tx_n_o          : out std_logic_vector(3 downto 0);
-    
---    mgt_114_rx_p_i          : in std_logic_vector(3 downto 0);
---    mgt_114_rx_n_i          : in std_logic_vector(3 downto 0);
---    mgt_114_tx_p_o          : out std_logic_vector(3 downto 0);
---    mgt_114_tx_n_o          : out std_logic_vector(3 downto 0);
-    
---    mgt_115_rx_p_i          : in std_logic_vector(3 downto 0);
---    mgt_115_rx_n_i          : in std_logic_vector(3 downto 0);
---    mgt_115_tx_p_o          : out std_logic_vector(3 downto 0);
---    mgt_115_tx_n_o          : out std_logic_vector(3 downto 0);
-    
---    mgt_116_rx_p_i          : in std_logic_vector(3 downto 0);
---    mgt_116_rx_n_i          : in std_logic_vector(3 downto 0);
---    mgt_116_tx_p_o          : out std_logic_vector(3 downto 0);
---    mgt_116_tx_n_o          : out std_logic_vector(3 downto 0)
-
 );
 end optohybrid_top;
 
@@ -327,9 +302,7 @@ architecture Behavioral of optohybrid_top is
     
     --== Global signals & Clocks ==--
 
-    signal clk_onboard          : std_logic;
     signal ref_clk              : std_logic;
-    signal ext_clk              : std_logic;
     signal reset                : std_logic;    
     
     signal fpga_pll_locked      : std_logic;
@@ -344,6 +317,12 @@ architecture Behavioral of optohybrid_top is
     signal gtx_tk_error         : std_logic;
     signal gtx_tr_error         : std_logic;
     signal gtx_evt_sent         : std_logic;
+    
+    signal gtx_tx_kchar         : std_logic_vector(3 downto 0);
+    signal gtx_tx_data          : std_logic_vector(31 downto 0);
+    signal gtx_rx_kchar         : std_logic_vector(3 downto 0);
+    signal gtx_rx_data          : std_logic_vector(31 downto 0);
+    signal gtx_rx_error         : std_logic_vector(1 downto 0);
     
     --== VFAT2 ==--
     
@@ -360,6 +339,7 @@ architecture Behavioral of optohybrid_top is
     signal sys_clk_sel          : std_logic_vector(1 downto 0);
     signal sys_sbit_sel         : std_logic_vector(29 downto 0);
     signal trigger_lim          : std_logic_vector(31 downto 0);
+    signal zero_suppress        : std_logic;
     
     --== Wishbone signals ==--
     
@@ -367,24 +347,44 @@ architecture Behavioral of optohybrid_top is
     signal wb_m_res             : wb_res_array_t((WB_MASTERS - 1) downto 0);
     signal wb_s_req             : wb_req_array_t((WB_SLAVES - 1) downto 0);
     signal wb_s_res             : wb_res_array_t((WB_SLAVES - 1) downto 0);
-    
+        
 begin
 
     reset <= '0';
     
-    pll_50MHz_inst : entity work.pll_50MHz port map(clk_50MHz_i => clk_50MHz_i, clk_40MHz_o => clk_onboard, clk_160MHz_o => open, locked_o => fpga_pll_locked);
+    --==============--
+    --== Clocking ==--
+    --==============--
+    
+    -- This module controls all the clocks in the OH design.
+    -- It performs clock switching between the onboard and the recovered clock,
+    -- selects which clock will be used as reference clock in the system, ...
+    
+    clocking_inst : entity work.clocking
+    port map(
+        reset_i             => reset,
+        clk_50MHz_i         => clk_50MHz_i, 
+        ext_clk_i           => ext_clk_i,
+        clk_gtx_rec_i       => gtx_rec_clk,
+        cdce_pll_locked_i   => cdce_locked_b,
+        sys_clk_sel_i       => sys_clk_sel,
+        ref_clk_o           => ref_clk,
+        rec_pll_locked_o    => rec_pll_locked,
+        fpga_pll_locked_o   => fpga_pll_locked,
+        ext_pll_locked_o    => ext_pll_locked,
+        switch_mode_o       => clk_switch_mode
+    );
     
     --======================--
     --== External signals ==--
-    --======================--    
+    --======================--   
+
+    -- This module handles the external signals: the input trigger and the output SBits.
     
     external_inst : entity work.external
     port map(
         ref_clk_i           => ref_clk,
         reset_i             => reset,
-        ext_clk_i           => ext_clk_i,
-        ext_clk_o           => ext_clk,
-        ext_pll_locked_o    => ext_pll_locked,
         ext_trigger_i       => ext_trigger_i,
         vfat2_t1_o          => vfat2_t1(2),
         vfat2_sbits_i       => vfat2_sbits_b,
@@ -392,27 +392,11 @@ begin
         ext_sbits_o         => ext_sbits_o        
     );
     
-    --==============--
-    --== Clocking ==--
-    --==============--
-    
-    clocking_inst : entity work.clocking
-    port map(
-        reset_i             => reset,
-        clk_onboard_i       => clk_onboard, 
-        clk_gtx_rec_i       => gtx_rec_clk,
-        clk_ext_i           => ext_clk,
-        cdce_pll_locked_i   => cdce_locked_b,
-        ext_pll_locked_i    => ext_pll_locked,
-        sys_clk_sel_i       => sys_clk_sel,
-        ref_clk_o           => ref_clk,
-        rec_pll_locked_o    => rec_pll_locked,
-        switch_mode_o       => clk_switch_mode
-    );
-    
     --=====================--
     --== Wishbone switch ==--
     --=====================--
+    
+    -- This module is the Wishbone switch which redirects requests from the masters to the slaves.
     
     wb_switch_inst : entity work.wb_switch
     port map(
@@ -428,32 +412,61 @@ begin
     --== GTX ==--
     --=========--
     
+    -- This module controls the PHY of the GTX. It contains low-level functions that control the quality of the 
+    -- link and perform the resets.
+    
     gtx_inst : entity work.gtx
     port map(
-		mgt_refclk_n_i  => mgt_112_clk0_n_i,
-		mgt_refclk_p_i  => mgt_112_clk0_p_i,
+		mgt_refclk_n_i  => mgt_clk_n_i,
+		mgt_refclk_p_i  => mgt_clk_p_i,
         ref_clk_i       => ref_clk,
 		reset_i         => reset,
         gtx_clk_o       => gtx_clk,
         rec_clk_o       => gtx_rec_clk,
+        gtx_tx_kchar_i  => gtx_tx_kchar,
+        gtx_tx_data_i   => gtx_tx_data,
+        gtx_rx_kchar_o  => gtx_rx_kchar,
+        gtx_rx_data_o   => gtx_rx_data,
+        gtx_rx_error_o  => gtx_rx_error,     
+		rx_n_i          => mgt_rx_n_i,
+		rx_p_i          => mgt_rx_p_i,
+		tx_n_o          => mgt_tx_n_o,
+		tx_p_o          => mgt_tx_p_o
+	);
+    
+    --==========--
+    --== Link ==--
+    --==========--
+    
+    -- This module controls the DATA of the GTX. It formats data packets to be sent over the optical link.
+
+    link_inst : entity work.link
+    port map(
+        ref_clk_i       => ref_clk,
+        gtx_clk_i       => gtx_clk,
+        reset_i         => reset,
+        gtx_tx_kchar_o  => gtx_tx_kchar,
+        gtx_tx_data_o   => gtx_tx_data,
+        gtx_rx_kchar_i  => gtx_rx_kchar,
+        gtx_rx_data_i   => gtx_rx_data,
+        gtx_rx_error_i  => gtx_rx_error,        
         wb_mst_req_o    => wb_m_req(WB_MST_GTX),
         wb_mst_res_i    => wb_m_res(WB_MST_GTX),
         vfat2_tk_data_i => vfat2_tk_data,
         vfat2_tk_mask_i => vfat2_tk_mask,
+        zero_suppress_i => zero_suppress,
         vfat2_t1_i      => vfat2_t1_lst(4),
         vfat2_t1_o      => vfat2_t1(0), 
         tk_error_o      => gtx_tk_error,
         tr_error_o      => gtx_tr_error,
-        evt_sent_o      => gtx_evt_sent,
-		rx_n_i          => mgt_112_rx_n_i,
-		rx_p_i          => mgt_112_rx_p_i,
-		tx_n_o          => mgt_112_tx_n_o,
-		tx_p_o          => mgt_112_tx_p_o
-	);
+        evt_sent_o      => gtx_evt_sent        
+    );
 
     --===========--
     --== VFAT2 ==--
     --===========--
+    
+    -- This module controls the low-level VFAT2 functionnalities.
         
     vfat2_inst : entity work.vfat2      
     port map(        
@@ -482,6 +495,8 @@ begin
     --=====================--
     --== Functionalities ==--
     --=====================--
+    
+    -- This modules controls the high-level VFAT2 functionnalities.
         
     vfat2_func_inst : entity work.vfat2_func      
     port map(        
@@ -510,22 +525,23 @@ begin
     --== ADC ==--
     --=========--
     
+    -- This module controls the xADC of the Virtex6.
+    
     adc_inst : entity work.adc
     port map(
-        ref_clk_i           => ref_clk,
-        reset_i             => reset,
-        wb_slv_req_i        => wb_s_req(WB_SLV_ADC),
-        wb_slv_res_o        => wb_s_res(WB_SLV_ADC),
-        adc_chip_select_o   => adc_chip_select_b,
-        adc_din_i           => adc_din_b,
-        adc_dout_o          => adc_dout_b,
-        adc_clk_o           => adc_clk_b,
-        adc_eoc_i           => adc_eoc_b
+        ref_clk_i       => ref_clk,
+        reset_i         => reset,
+        wb_slv_req_i    => wb_s_req(WB_SLV_ADC),
+        wb_slv_res_o    => wb_s_res(WB_SLV_ADC),
+        xadc_p_i        => xadc_p_i,
+        xadc_n_i        => xadc_n_i
     );
         
     --==========--
     --== CDCE ==--
     --==========--
+    
+    -- This module controls the CDCE.
     
     cdce_inst : entity work.cdce 
     port map(
@@ -547,6 +563,8 @@ begin
     --==============--
     --== Counters ==--
     --==============--
+    
+    -- This module implements a multitude of counters.
     
     counters_inst : entity work.counters
     port map(
@@ -570,6 +588,8 @@ begin
     --== System ==--
     --============--
     
+    -- This module holds the system registers that define the behaviour of the OH.
+    
     sys_inst : entity work.sys
     port map(
         ref_clk_i       => ref_clk,
@@ -582,12 +602,15 @@ begin
         vfat2_reset_o   => vfat2_reset,
         sys_clk_sel_o   => sys_clk_sel,
         sys_sbit_sel_o  => sys_sbit_sel,
-        trigger_lim_o   => trigger_lim
+        trigger_lim_o   => trigger_lim,
+        zero_suppress_o => zero_suppress
     );
     
     --============--
     --== Status ==--
     --============--
+    
+    -- This module holds the status registers that describe the state of the OH.
     
     stat_inst : entity work.stat
     port map(
@@ -606,7 +629,8 @@ begin
     --== Buffers ==--
     --=============--
     
-    -- This entity is placed at the end of the file for readability reasons
+    -- This module implements all the required buffers on the FPGA. 
+    -- Nothing to see below here.
     
     buffers_inst: entity work.buffers 
     port map(

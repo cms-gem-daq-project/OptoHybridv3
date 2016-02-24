@@ -498,23 +498,3 @@ TIMESPEC "TS_gtx_clk" = PERIOD "gtx_clk" 6.25;
 # User Clock Constraints
 NET "gtx_inst/gtx_wrapper_inst/mgt_refclk" TNM_NET = "mgt_refclk";
 TIMESPEC "TS_mgt_refclk" = PERIOD "mgt_refclk" 6.25;
-
-################################## Placement ##########################
-
-INST gtx_inst/gtx_wrapper_inst/sfp_gtx_inst/gtx0_sfp_gtx_i/gtxe1_i LOC=GTXE1_X0Y4;
-INST gtx_inst/gtx_wrapper_inst/sfp_gtx_inst/gtx1_sfp_gtx_i/gtxe1_i LOC=GTXE1_X0Y6;
-
-NET "mgt_112_rx_p_i<0>"     LOC = AG3;
-NET "mgt_112_rx_n_i<0>"     LOC = AG4;
-NET "mgt_112_tx_p_o<0>"     LOC = AH1;
-NET "mgt_112_tx_n_o<0>"     LOC = AH2;
-
-NET "mgt_112_rx_p_i<1>"     LOC = AE3;
-NET "mgt_112_rx_n_i<1>"     LOC = AE4;
-NET "mgt_112_tx_p_o<1>"     LOC = AD1;
-NET "mgt_112_tx_n_o<1>"     LOC = AD2;
-
-
-
-
-
