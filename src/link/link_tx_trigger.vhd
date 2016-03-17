@@ -18,14 +18,19 @@ use ieee.std_logic_1164.all;
 library unisim;
 use unisim.vcomponents.all;
 
+library work;
+use work.types_pkg.all;
+
 entity link_tx_trigger is
 port(
 
-    gtx_clk_i   : in std_logic;    
-    reset_i     : in std_logic;
+    gtx_clk_i           : in std_logic;    
+    reset_i             : in std_logic;
     
-    tx_kchar_o  : out std_logic_vector(1 downto 0);
-    tx_data_o   : out std_logic_vector(15 downto 0)
+    sbit_clusters_i     : in sbit_cluster_array_t(7 downto 0);
+    
+    tx_kchar_o          : out std_logic_vector(1 downto 0);
+    tx_data_o           : out std_logic_vector(15 downto 0)
     
 );
 end link_tx_trigger;
@@ -36,7 +41,11 @@ architecture Behavioral of link_tx_trigger is
     
     signal state    : state_t;
     
+    signal cluster_data : std_logic_vector(55 downto 0);
+    
 begin  
+
+    cluster_data <= sbit_clusters_i(0) & sbit_clusters_i(1) & sbit_clusters_i(2) & sbit_clusters_i(3);
 
     --== STATE ==--
 
@@ -69,10 +78,16 @@ begin
                 case state is
                     when COMMA => 
                         tx_kchar_o <= "01";
-                        tx_data_o <= x"00BC";
+                        tx_data_o <= cluster_data(55 downto 48) & x"BC";
                     when DATA_0 => 
                         tx_kchar_o <= "00";
-                        tx_data_o <= x"0000";
+                        tx_data_o <= cluster_data(47 downto 32);
+                    when DATA_1 => 
+                        tx_kchar_o <= "00";
+                        tx_data_o <= cluster_data(31 downto 16);
+                    when DATA_2 => 
+                        tx_kchar_o <= "00";
+                        tx_data_o <= cluster_data(15 downto 0);
                     when others => 
                         tx_kchar_o <= "00";
                         tx_data_o <= x"0000";

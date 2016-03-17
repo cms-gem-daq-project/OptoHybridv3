@@ -15,6 +15,8 @@ package types_pkg is
     type u32_array_t is array(integer range <>) of unsigned(31 downto 0);
     
     type std32_array_t is array(integer range <>) of std_logic_vector(31 downto 0);
+
+    type std64_array_t is array(integer range <>) of std_logic_vector(63 downto 0);
     
     --==================--
     --== Trigger data ==--
@@ -23,6 +25,10 @@ package types_pkg is
     subtype sbits_t is std_logic_vector(7 downto 0);
  
     type sbits_array_t is array(integer range <>) of sbits_t;
+    
+    subtype sbit_cluster_t is std_logic_vector(13 downto 0);
+    
+    type sbit_cluster_array_t is array(integer range<>) of sbit_cluster_t;
     
     --===================--
     --== Tracking data ==--
