@@ -43,6 +43,8 @@ port(
     vfat2_tk_mask_i : in std_logic_vector(23 downto 0);
     zero_suppress_i : in std_logic;
     
+    sbit_clusters_i : in sbit_cluster_array_t(7 downto 0);
+    
     vfat2_t1_i      : in t1_t;
     vfat2_t1_o      : out t1_t;
     
@@ -94,10 +96,11 @@ begin
     
     link_tx_trigger_inst : entity work.link_tx_trigger
     port map(
-        gtx_clk_i   => gtx_clk_i,   
-        reset_i     => reset_i,  
-        tx_kchar_o  => gtx_tx_kchar_o(3 downto 2),   
-        tx_data_o   => gtx_tx_data_o(31 downto 16)    
+        gtx_clk_i       => gtx_clk_i,   
+        reset_i         => reset_i,  
+        sbit_clusters_i => sbit_clusters_i,
+        tx_kchar_o      => gtx_tx_kchar_o(3 downto 2),   
+        tx_data_o       => gtx_tx_data_o(31 downto 16)    
     );
         
     --==========================--
