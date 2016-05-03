@@ -75,6 +75,7 @@ generic
 (
     -- Simulation attributes
     WRAPPER_SIM_GTXRESET_SPEEDUP    : integer   := 0 -- Set to 1 to speed up sim reset
+    
 );
 port
 (
@@ -195,7 +196,10 @@ generic
     -- Share RX PLL parameter
     GTX_TX_CLK_SOURCE           : string     := "TXPLL";
     -- Save power parameter
-    GTX_POWER_SAVE              : bit_vector := "0000000000"
+    GTX_POWER_SAVE              : bit_vector := "0000000000";
+    
+    RXPOLARITY                  : std_logic := '0';
+    TXPOLARITY                  : std_logic := '0'
 );
 port 
 (   
@@ -272,7 +276,10 @@ begin
         -- Share RX PLL parameter
         GTX_TX_CLK_SOURCE           => "RXPLL",
         -- Save power parameter
-        GTX_POWER_SAVE              => "0000110100"
+        GTX_POWER_SAVE              => "0000110100",
+        
+        RXPOLARITY                  => '0',
+        TXPOLARITY                  => '1'
     )
     port map
     (
@@ -331,7 +338,10 @@ begin
         -- Share RX PLL parameter
         GTX_TX_CLK_SOURCE           => "RXPLL",
         -- Save power parameter
-        GTX_POWER_SAVE              => "0000110100"
+        GTX_POWER_SAVE              => "0000110100",
+        
+        RXPOLARITY                  => '0',
+        TXPOLARITY                  => '0'
     )
     port map
     (

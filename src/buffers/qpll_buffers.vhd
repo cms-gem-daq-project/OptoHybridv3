@@ -29,62 +29,22 @@ port(
 
     --== QPLL raw ==--
 
-    qpll_ref_40MHz_o    : out std_logic;
-    qpll_reset_o        : out std_logic;
-    
-    qpll_locked_i       : in std_logic;
-    qpll_error_i        : in std_logic;
-    
-    qpll_clk_p_i        : in std_logic;
-    qpll_clk_n_i        : in std_logic;
-    
+    qpll_clk_p_i            : in std_logic;
+    qpll_clk_n_i            : in std_logic;
+    qpll_reset_o            : out std_logic;    
+    qpll_locked_i           : in std_logic;    
+        
     --== QPLL buffered ==--
     
-    qpll_ref_40MHz_i    : in std_logic;
-    qpll_reset_i        : in std_logic;
-    
-    qpll_locked_o       : out std_logic;
-    qpll_error_o        : out std_logic;
-    
-    qpll_clk_o          : out std_logic
+    qpll_clk_o              : out std_logic;
+    qpll_reset_i            : in std_logic;    
+    qpll_locked_o           : out std_logic
     
 );
 end qpll_buffers;
 
 architecture Behavioral of qpll_buffers is
-
-    signal qpll_ref_40MHz   : std_logic;
-
 begin    
-
-    -- qpll_ref_40MHz
-    
-    qpll_ref_40MHz_oddr : oddr
-    generic map(
-        ddr_clk_edge    => "opposite_edge",
-        init            => '0',
-        srtype          => "sync"
-    )
-    port map (
-        q               => qpll_ref_40MHz,
-        c               => qpll_ref_40MHz_i,
-        ce              => '1',
-        d1              => '1',
-        d2              => '0',
-        r               => '0',
-        s               => '0'
-    );    
-    
-    qpll_ref_40MHz_obufds : obuf
-    generic map(
-        drive       => 12,
-        iostandard  => "lvcmos25",
-        slew        => "fast"
-    )
-    port map(
-        i           => qpll_ref_40MHz,
-        o           => qpll_ref_40MHz_o
-    );
     
     -- qpll_reset
 
@@ -109,18 +69,6 @@ begin
     port map(
         i               => qpll_locked_i,
         o               => qpll_locked_o
-    );
-    
-    -- qpll_error_i
-    
-    qpll_error_ibuf : ibuf
-    generic map(
-        ibuf_low_pwr    => true,
-        iostandard      => "lvcmos25"
-    )
-    port map(
-        i               => qpll_error_i,
-        o               => qpll_error_o
     );
     
     -- qpll_clk

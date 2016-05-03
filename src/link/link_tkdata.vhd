@@ -29,6 +29,7 @@ port(
     vfat2_t1_i      : in t1_t;
     vfat2_tk_data_i : in tk_data_array_t(23 downto 0);
     vfat2_tk_mask_i : in std_logic_vector(23 downto 0);
+    zero_suppress_i : in std_logic;
     
     evt_en_i        : in std_logic;
     evt_valid_o     : out std_logic;
@@ -46,7 +47,7 @@ architecture Behavioral of link_tkdata is
     signal vfat2_cnt    : integer range 0 to 23;
     signal last_cnt     : integer range 0 to 127;
 
-    signal evt_data     : tk_data_array_t(23 downto 0);    
+    signal evt_data     : tk_data_array_t(23 downto 0); 
     signal evt_stb      : std_logic_vector(23 downto 0);
     signal evt_ack      : std_logic_vector(23 downto 0);
     

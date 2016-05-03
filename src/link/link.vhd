@@ -164,6 +164,7 @@ begin
         vfat2_t1_i      => vfat2_t1_i,
 		vfat2_tk_data_i => vfat2_tk_data_i,
         vfat2_tk_mask_i => vfat2_tk_mask_i,
+        zero_suppress_i => zero_suppress_i,
 		evt_en_i        => evt_en,
 		evt_valid_o     => evt_valid,
 		evt_data_o      => evt_data

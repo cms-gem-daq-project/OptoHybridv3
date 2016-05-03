@@ -27,7 +27,7 @@ use work.types_pkg.all;
 
 entity stat is
 generic(
-    N               : integer := 6
+    N               : integer := 3
 );
 port(
 
@@ -39,11 +39,7 @@ port(
     wb_slv_res_o        : out wb_res_t;
     
     --
-    fpga_pll_locked_i   : in std_logic;
-    ext_pll_locked_i    : in std_logic;
-    cdce_pll_locked_i   : in std_logic;
-    rec_pll_locked_i    : in std_logic;
-    clk_switch_mode_i   : in std_logic
+    qpll_locked_i       : in std_logic
     
 );
 end stat;
@@ -102,17 +98,12 @@ begin
     --== Mapping ==--
     --=============--
     
-    reg_data(0) <= x"20160216";
+    reg_data(0) <= x"20160428";
     
-    reg_data(1) <= (0 => fpga_pll_locked_i, others => '0');
+    reg_data(1) <= (0 => qpll_locked_i, others => '0');
     
-    reg_data(2) <= (0 => ext_pll_locked_i, others => '0');
+    qpll_lock_counter : entity work.counter_async port map(reset_i => (wb_stb(2) and wb_we), en_i => qpll_locked_i, data_o => reg_data(2));
     
-    reg_data(3) <= (0 => cdce_pll_locked_i, others => '0');
     
-    reg_data(4) <= (0 => rec_pll_locked_i, others => '0');
-    
-    reg_data(5) <= (0 => clk_switch_mode_i, others => '0');
-
 end Behavioral;
 

@@ -38,6 +38,9 @@ port(
     vfat2_scl_o             : out std_logic_vector(5 downto 0);
     vfat2_sda_io            : inout std_logic_vector(5 downto 0);
     
+--    vfat2_daco_v_i          : in std_logic_vector(2 downto 0);
+--    vfat2_daco_i_i          : in std_logic_vector(2 downto 0);
+    
     vfat2_data_valid_p_i    : in std_logic_vector(5 downto 0);
     vfat2_data_valid_n_i    : in std_logic_vector(5 downto 0);
     
@@ -174,62 +177,17 @@ port(
 --    flash_write_enable_b_o  : out std_logic;
 --    flash_latch_enable_b_o  : out std_logic;
     
---    eprom_data_i            : inout std_logic_vector(7 downto 0);
---    eprom_clk_o             : out std_logic;
---    eprom_reset_b_o         : out std_logic;
---    eprom_chip_enable_b_o   : out std_logic;
---    eprom_tdi_o             : out std_logic;
---    eprom_tdo_i             : in std_logic;
---    eprom_tms_o             : out std_logic;
---    eprom_tck_o             : out std_logic;
-    
     --== Clocking ==--
     
-    clk_50MHz_i             : in std_logic;
-
-    qpll_ref_40MHz_o        : out std_logic;
-    qpll_reset_o            : out std_logic;
-    qpll_locked_i           : in std_logic;
-    qpll_error_i            : in std_logic;
     qpll_clk_p_i            : in std_logic;
     qpll_clk_n_i            : in std_logic;
-
-    cdce_clk_p_i            : in std_logic;
-    cdce_clk_n_i            : in std_logic;
-    cdce_clk_pri_p_o        : out std_logic;
-    cdce_clk_pri_n_o        : out std_logic;
-    cdce_aux_out_o          : out std_logic;
-    cdce_aux_in_i           : in std_logic;
-    cdce_ref_o              : out std_logic;
-    cdce_pwrdown_o          : out std_logic;
-    cdce_sync_o             : out std_logic;
-    cdce_locked_i           : in std_logic;
-    cdce_sck_o              : out std_logic;
-    cdce_mosi_o             : out std_logic;
-    cdce_le_o               : out std_logic;
-    cdce_miso_i             : in std_logic;
+    qpll_reset_o            : out std_logic;
+    qpll_locked_i           : in std_logic;
     
     --== Miscellaneous ==--
-
-    adc_chip_select_o       : out std_logic;
-    adc_din_i               : in std_logic;
-    adc_dout_o              : out std_logic;
-    adc_clk_o               : out std_logic;
-    adc_eoc_i               : in std_logic;
     
-    xadc_p_i                : in std_logic_vector(2 downto 0);
-    xadc_n_i                : in std_logic_vector(2 downto 0);
-
-    temp_clk_o              : out std_logic;
-    temp_data_io            : inout std_logic;
-
-    chipid_io               : inout std_logic;
-    
---    hdmi_scl_io             : inout std_logic_vector(1 downto 0);
---    hdmi_sda_io             : inout std_logic_vector(1 downto 0);
---
---    tmds_d_p_io             : inout std_logic_vector(1 downto 0);
---    tmds_d_n_io             : inout std_logic_vector(1 downto 0);
+--    tmds_d_p_io             : inout std_logic_vector(2 downto 0);
+--    tmds_d_n_io             : inout std_logic_vector(2 downto 0);
 --
 --    tmds_clk_p_io           : inout std_logic;
 --    tmds_clk_n_io           : inout std_logic;
@@ -237,6 +195,8 @@ port(
     ext_clk_i               : in std_logic;
     ext_trigger_i           : in std_logic;
     ext_sbits_o             : out std_logic_vector(5 downto 0);
+    
+    header_io               : in std_logic_vector(15 downto 0);
        
     --== GTX ==--
     
@@ -265,40 +225,10 @@ architecture Behavioral of optohybrid_top is
     signal vfat2_data_valid_b   : std_logic_vector(5 downto 0);
     signal vfat2_data_out_b     : std_logic_vector(23 downto 0);
     signal vfat2_sbits_b        : sbits_array_t(23 downto 0);
-    
-    signal adc_clk_b            : std_logic;
-    signal adc_chip_select_b    : std_logic;
-    signal adc_dout_b           : std_logic;
-    signal adc_din_b            : std_logic;
-    signal adc_eoc_b            : std_logic; 
-    
-    signal cdce_clk_b           : std_logic;
-    signal cdce_clk_pri_b       : std_logic;
-    signal cdce_aux_out_b       : std_logic;
-    signal cdce_aux_in_b        : std_logic;
-    signal cdce_ref_b           : std_logic;
-    signal cdce_pwrdown_b       : std_logic;
-    signal cdce_sync_b          : std_logic;
-    signal cdce_locked_b        : std_logic;
-    signal cdce_sck_b           : std_logic;
-    signal cdce_mosi_b          : std_logic;
-    signal cdce_le_b            : std_logic;
-    signal cdce_miso_b          : std_logic;  
-
-    signal chipid_mosi_b        : std_logic;
-    signal chipid_miso_b        : std_logic;
-    signal chipid_tri_b         : std_logic;
-    
-    signal qpll_ref_40MHz_b     : std_logic;
+        
+    signal qpll_clk_b           : std_logic;
     signal qpll_reset_b         : std_logic;
     signal qpll_locked_b        : std_logic;
-    signal qpll_error_b         : std_logic;
-    signal qpll_clk_b           : std_logic;
-    
-    signal temp_clk_b           : std_logic;
-    signal temp_data_mosi_b     : std_logic;
-    signal temp_data_miso_b     : std_logic;
-    signal temp_data_tri_b      : std_logic;
     
     --== Global signals & Clocks ==--
 
@@ -356,24 +286,7 @@ begin
     --== Clocking ==--
     --==============--
     
-    -- This module controls all the clocks in the OH design.
-    -- It performs clock switching between the onboard and the recovered clock,
-    -- selects which clock will be used as reference clock in the system, ...
-    
-    clocking_inst : entity work.clocking
-    port map(
-        reset_i             => reset,
-        clk_50MHz_i         => clk_50MHz_i, 
-        ext_clk_i           => ext_clk_i,
-        clk_gtx_rec_i       => gtx_rec_clk,
-        cdce_pll_locked_i   => cdce_locked_b,
-        sys_clk_sel_i       => sys_clk_sel,
-        ref_clk_o           => ref_clk,
-        rec_pll_locked_o    => rec_pll_locked,
-        fpga_pll_locked_o   => fpga_pll_locked,
-        ext_pll_locked_o    => ext_pll_locked,
-        switch_mode_o       => clk_switch_mode
-    );
+    ref_clk <= qpll_clk_b;
     
     --======================--
     --== External signals ==--
@@ -527,39 +440,16 @@ begin
     
     -- This module controls the xADC of the Virtex6.
     
-    adc_inst : entity work.adc
-    port map(
-        ref_clk_i       => ref_clk,
-        reset_i         => reset,
-        wb_slv_req_i    => wb_s_req(WB_SLV_ADC),
-        wb_slv_res_o    => wb_s_res(WB_SLV_ADC),
-        xadc_p_i        => xadc_p_i,
-        xadc_n_i        => xadc_n_i
-    );
-        
-    --==========--
-    --== CDCE ==--
-    --==========--
-    
-    -- This module controls the CDCE.
-    
-    cdce_inst : entity work.cdce 
-    port map(
-		ref_clk_i       => ref_clk,
-        cdce_clk_i      => cdce_clk_b,
-        cdce_clk_pri_o  => cdce_clk_pri_b,
-        cdce_aux_out_o  => cdce_aux_out_b,
-        cdce_aux_in_i   => cdce_aux_in_b,
-        cdce_ref_o      => cdce_ref_b,
-        cdce_pwrdown_o  => cdce_pwrdown_b,
-        cdce_sync_o     => cdce_sync_b,
-        cdce_locked_i   => cdce_locked_b,
-        cdce_sck_o      => cdce_sck_b,
-        cdce_mosi_o     => cdce_mosi_b,
-        cdce_le_o       => cdce_le_b,
-        cdce_miso_i     => cdce_miso_b
-	);
-    
+--    adc_inst : entity work.adc
+--    port map(
+--        ref_clk_i       => ref_clk,
+--        reset_i         => reset,
+--        wb_slv_req_i    => wb_s_req(WB_SLV_ADC),
+--        wb_slv_res_o    => wb_s_res(WB_SLV_ADC),
+--        xadc_p_i        => xadc_p_i,
+--        xadc_n_i        => xadc_n_i
+--    );
+            
     --==============--
     --== Counters ==--
     --==============--
@@ -618,11 +508,7 @@ begin
         reset_i             => reset, 
         wb_slv_req_i        => wb_s_req(WB_SLV_STAT),
         wb_slv_res_o        => wb_s_res(WB_SLV_STAT), 
-        fpga_pll_locked_i   => fpga_pll_locked,
-        ext_pll_locked_i    => ext_pll_locked,
-        cdce_pll_locked_i   => cdce_locked_b,
-        rec_pll_locked_i    => rec_pll_locked,
-        clk_switch_mode_i   => clk_switch_mode
+        qpll_locked_i       => qpll_locked_b
     );
     
     --=============--
@@ -752,73 +638,15 @@ begin
         vfat2_data_valid_o      => vfat2_data_valid_b,
         vfat2_data_out_o        => vfat2_data_out_b,
         vfat2_sbits_o           => vfat2_sbits_b,
-        -- ADC
-        adc_clk_o               => adc_clk_o,
-        adc_chip_select_o       => adc_chip_select_o,
-        adc_dout_o              => adc_dout_o,
-        adc_din_i               => adc_din_i,
-        adc_eoc_i               => adc_eoc_i,
-        --
-        adc_clk_i               => adc_clk_b,
-        adc_chip_select_i       => adc_chip_select_b,
-        adc_dout_i              => adc_dout_b,
-        adc_din_o               => adc_din_b,
-        adc_eoc_o               => adc_eoc_b,
-        -- CDCE
-        cdce_clk_p_i            => cdce_clk_p_i,
-        cdce_clk_n_i            => cdce_clk_n_i,
-        cdce_clk_pri_p_o        => cdce_clk_pri_p_o,
-        cdce_clk_pri_n_o        => cdce_clk_pri_n_o,
-        cdce_aux_out_o          => cdce_aux_out_o,
-        cdce_aux_in_i           => cdce_aux_in_i,
-        cdce_ref_o              => cdce_ref_o,
-        cdce_pwrdown_o          => cdce_pwrdown_o,
-        cdce_sync_o             => cdce_sync_o,
-        cdce_locked_i           => cdce_locked_i,
-        cdce_sck_o              => cdce_sck_o,
-        cdce_mosi_o             => cdce_mosi_o,
-        cdce_le_o               => cdce_le_o,
-        cdce_miso_i             => cdce_miso_i,
-        -- 
-        cdce_clk_o              => cdce_clk_b,
-        cdce_clk_pri_i          => cdce_clk_pri_b,
-        cdce_aux_out_i          => cdce_aux_out_b,
-        cdce_aux_in_o           => cdce_aux_in_b,
-        cdce_ref_i              => cdce_ref_b,
-        cdce_pwrdown_i          => cdce_pwrdown_b,
-        cdce_sync_i             => cdce_sync_b,
-        cdce_locked_o           => cdce_locked_b,
-        cdce_sck_i              => cdce_sck_b,
-        cdce_mosi_i             => cdce_mosi_b,
-        cdce_le_i               => cdce_le_b,
-        cdce_miso_o             => cdce_miso_b,
-        -- ChipID
-        chipid_io               => chipid_io,
-        -- 
-        chipid_mosi_i           => chipid_mosi_b,
-        chipid_miso_o           => chipid_miso_b,
-        chipid_tri_i            => chipid_tri_b,
         -- QPLL
-        qpll_ref_40MHz_o        => qpll_ref_40MHz_o,
-        qpll_reset_o            => qpll_reset_o,
-        qpll_locked_i           => qpll_locked_i,
-        qpll_error_i            => qpll_error_i,
         qpll_clk_p_i            => qpll_clk_p_i,
         qpll_clk_n_i            => qpll_clk_n_i,
+        qpll_reset_o            => qpll_reset_o,
+        qpll_locked_i           => qpll_locked_i,
         --
-        qpll_ref_40MHz_i        => qpll_ref_40MHz_b,
-        qpll_reset_i            => qpll_reset_b,
-        qpll_locked_o           => qpll_locked_b,
-        qpll_error_o            => qpll_error_b,
         qpll_clk_o              => qpll_clk_b,
-        -- Temperature
-        temp_clk_o              => temp_clk_o,
-        temp_data_io            => temp_data_io,
-        --
-        temp_clk_i              => temp_clk_b,
-        temp_data_mosi_i        => temp_data_mosi_b,
-        temp_data_miso_o        => temp_data_miso_b,
-        temp_data_tri_i         => temp_data_tri_b
+        qpll_reset_i            => qpll_reset_b,
+        qpll_locked_o           => qpll_locked_b
     );
     
 end Behavioral;

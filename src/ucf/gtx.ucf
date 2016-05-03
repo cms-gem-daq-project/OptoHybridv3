@@ -1,20 +1,20 @@
 # This file constraints the GTX signals
 
-INST gtx_inst/gtx_wrapper_inst/sfp_gtx_inst/gtx0_sfp_gtx_i/gtxe1_i LOC=GTXE1_X0Y4;
-INST gtx_inst/gtx_wrapper_inst/sfp_gtx_inst/gtx1_sfp_gtx_i/gtxe1_i LOC=GTXE1_X0Y6;
+INST gtx_inst/gtx_wrapper_inst/sfp_gtx_inst/gtx0_sfp_gtx_i/gtxe1_i LOC=GTXE1_X0Y19;
+INST gtx_inst/gtx_wrapper_inst/sfp_gtx_inst/gtx1_sfp_gtx_i/gtxe1_i LOC=GTXE1_X0Y14;
 
-NET "mgt_clk_p_i"           LOC = AK6; 
-NET "mgt_clk_n_i"           LOC = AK5;
+NET "mgt_clk_p_i"           LOC = P6; 
+NET "mgt_clk_n_i"           LOC = P5;
 
-NET "mgt_rx_p_i<0>"         LOC = AG3;
-NET "mgt_rx_n_i<0>"         LOC = AG4;
-NET "mgt_tx_p_o<0>"         LOC = AH1;
-NET "mgt_tx_n_o<0>"         LOC = AH2;
+NET "mgt_rx_p_i<0>"         LOC = B5;
+NET "mgt_rx_n_i<0>"         LOC = B6;
+NET "mgt_tx_p_o<0>"         LOC = A3;
+NET "mgt_tx_n_o<0>"         LOC = A4;
 
-NET "mgt_rx_p_i<1>"         LOC = AE3;
-NET "mgt_rx_n_i<1>"         LOC = AE4;
-NET "mgt_tx_p_o<1>"         LOC = AD1;
-NET "mgt_tx_n_o<1>"         LOC = AD2;
+NET "mgt_rx_p_i<1>"         LOC = K5;
+NET "mgt_rx_n_i<1>"         LOC = K6;
+NET "mgt_tx_p_o<1>"         LOC = H1;
+NET "mgt_tx_n_o<1>"         LOC = H2;
 
 
 #NET "mgt_116_clk1_p_i"      LOC = F6; # 160 MHz

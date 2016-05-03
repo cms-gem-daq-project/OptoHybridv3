@@ -192,125 +192,22 @@ port(
     vfat2_data_out_o        : out std_logic_vector(23 downto 0);
     vfat2_sbits_o           : out sbits_array_t(23 downto 0);
     
-    --=========--
-    --== ADC ==--
-    --=========--
-    
-    --== ADC raw ==--
-    
-    adc_clk_o               : out std_logic;
-    adc_chip_select_o       : out std_logic;
-    adc_dout_o              : out std_logic;
-    
-    adc_din_i               : in std_logic;
-    adc_eoc_i               : in std_logic;
-    
-    --== ADC buffered ==--
-    
-    adc_clk_i               : in std_logic;
-    adc_chip_select_i       : in std_logic;
-    adc_dout_i              : in std_logic;
-    
-    adc_din_o               : out std_logic;
-    adc_eoc_o               : out std_logic;
-
-    --==========--
-    --== CDCE ==--
-    --==========--
-    
-    --== CDCE raw ==--
-    
-    cdce_clk_p_i            : in std_logic;
-    cdce_clk_n_i            : in std_logic;
-    
-    cdce_clk_pri_p_o        : out std_logic;
-    cdce_clk_pri_n_o        : out std_logic;
-
-    cdce_aux_out_o          : out std_logic;
-    cdce_aux_in_i           : in std_logic;
-    cdce_ref_o              : out std_logic;
-    cdce_pwrdown_o          : out std_logic;
-    cdce_sync_o             : out std_logic;
-    cdce_locked_i           : in std_logic;
-    
-    cdce_sck_o              : out std_logic;
-    cdce_mosi_o             : out std_logic;
-    cdce_le_o               : out std_logic;
-    cdce_miso_i             : in std_logic;
-    
-    --== CDCE buffered ==--
-     
-    cdce_clk_o              : out std_logic;
-    
-    cdce_clk_pri_i          : in std_logic;
-
-    cdce_aux_out_i          : in std_logic;
-    cdce_aux_in_o           : out std_logic;
-    cdce_ref_i              : in std_logic;
-    cdce_pwrdown_i          : in std_logic;
-    cdce_sync_i             : in std_logic;
-    cdce_locked_o           : out std_logic;
-    
-    cdce_sck_i              : in std_logic;
-    cdce_mosi_i             : in std_logic;
-    cdce_le_i               : in std_logic;
-    cdce_miso_o             : out std_logic;
-    
-    --============--
-    --== ChipID ==--
-    --============--
-    
-    --== ChipID raw ==--
-    
-    chipid_io               : inout std_logic;
-
-    --== ChipID buffered ==--
-    
-    chipid_mosi_i           : in std_logic;
-    chipid_miso_o           : out std_logic;
-    chipid_tri_i            : in std_logic;
-    
     --==========--
     --== QPLL ==--
     --==========--
 
     --== QPLL raw ==--
 
-    qpll_ref_40MHz_o        : out std_logic;
-    qpll_reset_o            : out std_logic;
-    
-    qpll_locked_i           : in std_logic;
-    qpll_error_i            : in std_logic;
-    
     qpll_clk_p_i            : in std_logic;
     qpll_clk_n_i            : in std_logic;
+    qpll_reset_o            : out std_logic;    
+    qpll_locked_i           : in std_logic;    
         
     --== QPLL buffered ==--
     
-    qpll_ref_40MHz_i        : in std_logic;
-    qpll_reset_i            : in std_logic;
-    
-    qpll_locked_o           : out std_logic;
-    qpll_error_o            : out std_logic;
-    
     qpll_clk_o              : out std_logic;
-    
-    --=================--
-    --== Temperature ==--
-    --=================--
-    
-    --== Temperature raw ==--
-
-    temp_clk_o              : out std_logic;
-    temp_data_io            : inout std_logic;
-
-    --== Temperature buffered ==--
-    
-    temp_clk_i              : in std_logic;
-    
-    temp_data_mosi_i        : in std_logic;
-    temp_data_miso_o        : out std_logic;
-    temp_data_tri_i         : in std_logic
+    qpll_reset_i            : in std_logic;    
+    qpll_locked_o           : out std_logic
     
 );
 end buffers;
@@ -444,76 +341,6 @@ begin
         vfat2_sbits_o           => vfat2_sbits_o
     );
     
-    --=================--
-    --== ADC buffers ==--
-    --=================--
-
-    adc_buffers_inst : entity work.adc_buffers
-    port map(
-        -- Raw
-        adc_clk_o           => adc_clk_o,
-        adc_chip_select_o   => adc_chip_select_o,
-        adc_dout_o          => adc_dout_o,
-        adc_din_i           => adc_din_i,
-        adc_eoc_i           => adc_eoc_i,
-        -- Buffered
-        adc_clk_i           => adc_clk_i,
-        adc_chip_select_i   => adc_chip_select_i,
-        adc_dout_i          => adc_dout_i,
-        adc_din_o           => adc_din_o,
-        adc_eoc_o           => adc_eoc_o
-    );
-
-    --==================--
-    --== CDCE buffers ==--
-    --==================--
-
-    cdce_buffers_inst : entity work.cdce_buffers
-    port map(
-        -- Raw
-        cdce_clk_p_i        => cdce_clk_p_i,
-        cdce_clk_n_i        => cdce_clk_n_i,
-        cdce_clk_pri_p_o    => cdce_clk_pri_p_o,
-        cdce_clk_pri_n_o    => cdce_clk_pri_n_o,
-        cdce_aux_out_o      => cdce_aux_out_o,
-        cdce_aux_in_i       => cdce_aux_in_i,
-        cdce_ref_o          => cdce_ref_o,
-        cdce_pwrdown_o      => cdce_pwrdown_o,
-        cdce_sync_o         => cdce_sync_o,
-        cdce_locked_i       => cdce_locked_i,
-        cdce_sck_o          => cdce_sck_o,
-        cdce_mosi_o         => cdce_mosi_o,
-        cdce_le_o           => cdce_le_o,
-        cdce_miso_i         => cdce_miso_i,
-        -- Buffered
-        cdce_clk_o          => cdce_clk_o,
-        cdce_clk_pri_i      => cdce_clk_pri_i,
-        cdce_aux_out_i      => cdce_aux_out_i,
-        cdce_aux_in_o       => cdce_aux_in_o,
-        cdce_ref_i          => cdce_ref_i,
-        cdce_pwrdown_i      => cdce_pwrdown_i,
-        cdce_sync_i         => cdce_sync_i,
-        cdce_locked_o       => cdce_locked_o,
-        cdce_sck_i          => cdce_sck_i,
-        cdce_mosi_i         => cdce_mosi_i,
-        cdce_le_i           => cdce_le_i,
-        cdce_miso_o         => cdce_miso_o
-    );
-
-    --====================--
-    --== ChipID buffers ==--
-    --====================--
-    
-    chipid_buffers_inst : entity work.chipid_buffers
-    port map(
-        -- Raw
-        chipid_io       => chipid_io,
-        -- Buffered
-        chipid_mosi_i   => chipid_mosi_i,
-        chipid_miso_o   => chipid_miso_o,
-        chipid_tri_i    => chipid_tri_i
-    );
-
     --==================--
     --== QPLL buffers ==--
     --==================--
@@ -521,34 +348,14 @@ begin
     qpll_buffers_inst : entity work.qpll_buffers
     port map(
         -- Raw
-        qpll_ref_40MHz_o    => qpll_ref_40MHz_o,
-        qpll_reset_o        => qpll_reset_o,
-        qpll_locked_i       => qpll_locked_i,
-        qpll_error_i        => qpll_error_i,
-        qpll_clk_p_i        => qpll_clk_p_i,
-        qpll_clk_n_i        => qpll_clk_n_i,
+        qpll_clk_p_i    => qpll_clk_p_i,
+        qpll_clk_n_i    => qpll_clk_n_i,
+        qpll_reset_o    => qpll_reset_o,    
+        qpll_locked_i   => qpll_locked_i,  
         -- Buffered
-        qpll_ref_40MHz_i    => qpll_ref_40MHz_i,
-        qpll_reset_i        => qpll_reset_i,
-        qpll_locked_o       => qpll_locked_o,
-        qpll_error_o        => qpll_error_o,
-        qpll_clk_o          => qpll_clk_o
-    );
-
-    --=========================--
-    --== Temperature buffers ==--
-    --=========================--
-
-    temp_buffers_inst : entity work.temp_buffers
-    port map(
-        -- Raw
-        temp_clk_o          => temp_clk_o,
-        temp_data_io        => temp_data_io,
-        -- Buffered
-        temp_clk_i          => temp_clk_i,
-        temp_data_mosi_i    => temp_data_mosi_i,
-        temp_data_miso_o    => temp_data_miso_o,
-        temp_data_tri_i     => temp_data_tri_i
+        qpll_clk_o      => qpll_clk_o,
+        qpll_reset_i    => qpll_reset_i,  
+        qpll_locked_o   => qpll_locked_o    
     );
 
 end Behavioral;

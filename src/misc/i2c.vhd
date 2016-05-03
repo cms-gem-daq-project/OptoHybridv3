@@ -58,6 +58,8 @@ architecture Behavioral of i2c is
     -- Division of the clock
     constant CLK_DIV    : integer := IN_FREQ / OUT_FREQ;
     
+    -- Clock enable
+    signal clk_en       : std_logic;
     -- Clock divider counter
     signal clk_divider  : integer range 0 to CLK_DIV;
     -- Asserted on rising edge
@@ -95,8 +97,8 @@ begin
     begin
         if (rising_edge(ref_clk_i)) then
             -- Reset & default values
-            if (reset_i = '1') then
-                scl_o <= '0';
+            if (reset_i = '1' or clk_en = '0') then
+                scl_o <= '1';
                 clk_divider <= 0;
                 rising_clk <= '0';
                 high_clk <= '0';
@@ -157,6 +159,7 @@ begin
                 data_o <= (others => '0');
                 sda_mosi_o <= '1';
                 sda_tri_o <= '1';
+                clk_en <= '0';
                 state <= IDLE;
                 address <= (others => '0');
                 rw_n <= '0';
@@ -173,6 +176,7 @@ begin
                         error_o <= '0';
                         sda_mosi_o <= '1';
                         sda_tri_o <= '0';
+                        clk_en <= '0';
                         -- On request
                         if (en_i = '1') then
                             -- Store the request values
@@ -181,9 +185,10 @@ begin
                             din <= data_i;
                             -- Change state
                             state <= START;
-                        end if;                        
+                        end if;            
                     -- Create a start condition
                     when START =>
+                        clk_en <= '1';
                         -- On a high clock, put data low
                         if (high_clk = '1') then
                             -- Master controls the line
@@ -378,6 +383,7 @@ begin
                         data_o <= (others => '0');
                         sda_mosi_o <= '1';
                         sda_tri_o <= '1';
+                        clk_en <= '0';
                         state <= IDLE;
                         address <= (others => '0');
                         rw_n <= '0';
