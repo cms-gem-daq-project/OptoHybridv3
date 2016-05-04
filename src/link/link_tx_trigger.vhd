@@ -29,7 +29,7 @@ port(
     sbit_clusters_i     : in sbit_cluster_array_t(7 downto 0);
     
     tx_kchar_link_0_o   : out std_logic_vector(1 downto 0);
-    tx_data_link_0_o    : out std_logic_vector(15 downto 0)
+    tx_data_link_0_o    : out std_logic_vector(15 downto 0);
     
     tx_kchar_link_1_o   : out std_logic_vector(1 downto 0);
     tx_data_link_1_o    : out std_logic_vector(15 downto 0)
@@ -76,8 +76,10 @@ begin
     begin
         if (rising_edge(gtx_clk_i)) then
             if (reset_i = '1') then
-                tx_kchar_o <= "00";
-                tx_data_o <= x"0000";
+                tx_kchar_link_0_o <= "00";
+                tx_data_link_0_o <= x"0000";
+                tx_kchar_link_1_o <= "00";
+                tx_data_link_1_o <= x"0000";
             else
                 case state is
                     when COMMA => 

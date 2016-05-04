@@ -100,7 +100,7 @@ begin
         reset_i             => reset_i,  
         sbit_clusters_i     => sbit_clusters_i,
         tx_kchar_link_0_o   => gtx_tx_kchar_o(3 downto 2),   
-        tx_data_link_0_o    => gtx_tx_data_o(31 downto 16)    
+        tx_data_link_0_o    => gtx_tx_data_o(31 downto 16),    
         tx_kchar_link_1_o   => gtx_tx_kchar_o(5 downto 4),   
         tx_data_link_1_o    => gtx_tx_data_o(47 downto 32)    
     );
