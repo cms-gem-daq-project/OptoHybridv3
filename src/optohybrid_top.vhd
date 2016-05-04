@@ -203,11 +203,12 @@ port(
     mgt_clk_p_i             : in std_logic;
     mgt_clk_n_i             : in std_logic;
     
-    mgt_rx_p_i              : in std_logic_vector(1 downto 0);
-    mgt_rx_n_i              : in std_logic_vector(1 downto 0);
-    mgt_tx_p_o              : out std_logic_vector(1 downto 0);
-    mgt_tx_n_o              : out std_logic_vector(1 downto 0)
-    
+    -- the first link is the track and control link, the other 4 are the trigger links TODO: make different name for trigger links
+    mgt_rx_p_i        : in std_logic_vector(4 downto 0);
+    mgt_rx_n_i        : in std_logic_vector(4 downto 0);
+    mgt_tx_p_o        : out std_logic_vector(4 downto 0);
+    mgt_tx_n_o        : out std_logic_vector(4 downto 0)
+
 );
 end optohybrid_top;
 
@@ -292,11 +293,11 @@ architecture Behavioral of optohybrid_top is
     signal gtx_tr_error         : std_logic;
     signal gtx_evt_sent         : std_logic;
     
-    signal gtx_tx_kchar         : std_logic_vector(3 downto 0);
-    signal gtx_tx_data          : std_logic_vector(31 downto 0);
-    signal gtx_rx_kchar         : std_logic_vector(3 downto 0);
-    signal gtx_rx_data          : std_logic_vector(31 downto 0);
-    signal gtx_rx_error         : std_logic_vector(1 downto 0);
+    signal gtx_tx_kchar         : std_logic_vector(5 downto 0);
+    signal gtx_tx_data          : std_logic_vector(47 downto 0);
+    signal gtx_rx_kchar         : std_logic_vector(1 downto 0);
+    signal gtx_rx_data          : std_logic_vector(15 downto 0);
+    signal gtx_rx_error         : std_logic_vector(0 downto 0);
     
     --== VFAT2 ==--
     

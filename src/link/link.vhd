@@ -30,11 +30,11 @@ port(
     gtx_clk_i       : in std_logic;   
     reset_i         : in std_logic;    
    
-    gtx_tx_kchar_o  : out std_logic_vector(3 downto 0);
-    gtx_tx_data_o   : out std_logic_vector(31 downto 0);
-    gtx_rx_kchar_i  : in std_logic_vector(3 downto 0);
-    gtx_rx_data_i   : in std_logic_vector(31 downto 0);
-    gtx_rx_error_i  : in std_logic_vector(1 downto 0);
+    gtx_tx_kchar_o  : out std_logic_vector(5 downto 0);
+    gtx_tx_data_o   : out std_logic_vector(47 downto 0);
+    gtx_rx_kchar_i  : in std_logic_vector(1 downto 0);
+    gtx_rx_data_i   : in std_logic_vector(15 downto 0);
+    gtx_rx_error_i  : in std_logic_vector(0 downto 0);
     
     wb_mst_req_o    : out wb_req_t;
     wb_mst_res_i    : in wb_res_t;
@@ -80,29 +80,31 @@ begin
     --== SFP RX Trigger Link ==--
     --=========================--
     
-    link_rx_trigger_inst : entity work.link_rx_trigger
-    port map(
-        gtx_clk_i   => gtx_clk_i,   
-        reset_i     => reset_i,  
-        vfat2_t1_o  => open,
-        tr_error_o  => tr_error_o,        
-        rx_kchar_i  => gtx_rx_kchar_i(3 downto 2),   
-        rx_data_i   => gtx_rx_data_i(31 downto 16)      
-    );
+--    link_rx_trigger_inst : entity work.link_rx_trigger
+--    port map(
+--        gtx_clk_i   => gtx_clk_i,   
+--        reset_i     => reset_i,  
+--        vfat2_t1_o  => open,
+--        tr_error_o  => tr_error_o,        
+--        rx_kchar_i  => gtx_rx_kchar_i(3 downto 2),   
+--        rx_data_i   => gtx_rx_data_i(31 downto 16)      
+--    );
     
     --=========================--
     --== SFP TX Trigger Link ==--
     --=========================--
     
-    link_tx_trigger_inst : entity work.link_tx_trigger
+    link_tx_trigger_0_inst : entity work.link_tx_trigger
     port map(
-        gtx_clk_i       => gtx_clk_i,   
-        reset_i         => reset_i,  
-        sbit_clusters_i => sbit_clusters_i,
-        tx_kchar_o      => gtx_tx_kchar_o(3 downto 2),   
-        tx_data_o       => gtx_tx_data_o(31 downto 16)    
+        gtx_clk_i           => gtx_clk_i,   
+        reset_i             => reset_i,  
+        sbit_clusters_i     => sbit_clusters_i,
+        tx_kchar_link_0_o   => gtx_tx_kchar_o(3 downto 2),   
+        tx_data_link_0_o    => gtx_tx_data_o(31 downto 16)    
+        tx_kchar_link_1_o   => gtx_tx_kchar_o(5 downto 4),   
+        tx_data_link_1_o    => gtx_tx_data_o(47 downto 32)    
     );
-        
+    
     --==========================--
     --== SFP RX Tracking link ==--
     --==========================--
