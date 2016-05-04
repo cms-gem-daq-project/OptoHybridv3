@@ -1,0 +1,3 @@
+[submodule "src/sbit_cluster_packer"]
+	path = src/sbit_cluster_packer
+	url = https://github.com/andrewpeck/gem_cluster_packer.git
