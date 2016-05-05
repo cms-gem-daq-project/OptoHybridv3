@@ -35,16 +35,16 @@ port(
     gtx_clk_o       : out std_logic;    
     rec_clk_o       : out std_logic;    
 
-    gtx_tx_kchar_i  : in std_logic_vector(3 downto 0);
-    gtx_tx_data_i   : in std_logic_vector(31 downto 0);
-    gtx_rx_kchar_o  : out std_logic_vector(3 downto 0);
-    gtx_rx_data_o   : out std_logic_vector(31 downto 0);
-    gtx_rx_error_o  : out std_logic_vector(1 downto 0);
+    gtx_tx_kchar_i  : in std_logic_vector(5 downto 0);
+    gtx_tx_data_i   : in std_logic_vector(47 downto 0);
+    gtx_rx_kchar_o  : out std_logic_vector(1 downto 0);
+    gtx_rx_data_o   : out std_logic_vector(15 downto 0);
+    gtx_rx_error_o  : out std_logic_vector(0 downto 0);
    
-    rx_n_i          : in std_logic_vector(1 downto 0);
-    rx_p_i          : in std_logic_vector(1 downto 0);
-    tx_n_o          : out std_logic_vector(1 downto 0);
-    tx_p_o          : out std_logic_vector(1 downto 0)
+    rx_n_i          : in std_logic_vector(4 downto 0);
+    rx_p_i          : in std_logic_vector(4 downto 0);
+    tx_n_o          : out std_logic_vector(4 downto 0);
+    tx_p_o          : out std_logic_vector(4 downto 0)
     
 );
 end gtx;
@@ -69,10 +69,10 @@ begin
 		rx_error_o      => gtx_rx_error_o,
 		usr_clk_o       => gtx_clk_o,
         rec_clk_o       => rec_clk_o,
-		rx_n_i          => rx_n_i(1 downto 0),
-		rx_p_i          => rx_p_i(1 downto 0),
-		tx_n_o          => tx_n_o(1 downto 0),
-		tx_p_o          => tx_p_o(1 downto 0)
+		rx_n_i          => rx_n_i(4 downto 0),
+		rx_p_i          => rx_p_i(4 downto 0),
+		tx_n_o          => tx_n_o(4 downto 0),
+		tx_p_o          => tx_p_o(4 downto 0)
 	);   
         
 end Behavioral;
