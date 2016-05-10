@@ -27,26 +27,27 @@ use work.types_pkg.all;
 
 entity sys is
 generic(
-    N               : integer := 8
+    N                   : integer := 9
 );
 port(
 
-    ref_clk_i       : in std_logic;
-    reset_i         : in std_logic;
+    ref_clk_i           : in std_logic;
+    reset_i             : in std_logic;
     
     -- Wishbone slave
-    wb_slv_req_i    : in wb_req_t;
-    wb_slv_res_o    : out wb_res_t;
+    wb_slv_req_i        : in wb_req_t;
+    wb_slv_res_o        : out wb_res_t;
     
     --
-    vfat2_tk_mask_o : out std_logic_vector(23 downto 0);
-    vfat2_t1_sel_o  : out std_logic_vector(2 downto 0);
-    sys_loop_sbit_o : out std_logic_vector(4 downto 0);
-    vfat2_reset_o   : out std_logic;
-    sys_clk_sel_o   : out std_logic_vector(1 downto 0);
-    sys_sbit_sel_o  : out std_logic_vector(29 downto 0);
-    trigger_lim_o   : out std_logic_vector(31 downto 0);
-    zero_suppress_o : out std_logic
+    vfat2_tk_mask_o     : out std_logic_vector(23 downto 0);
+    vfat2_t1_sel_o      : out std_logic_vector(2 downto 0);
+    sys_loop_sbit_o     : out std_logic_vector(4 downto 0);
+    vfat2_reset_o       : out std_logic;
+    sys_clk_sel_o       : out std_logic_vector(1 downto 0);
+    sys_sbit_sel_o      : out std_logic_vector(29 downto 0);
+    trigger_lim_o       : out std_logic_vector(31 downto 0);
+    zero_suppress_o     : out std_logic;
+    vfat2_sbit_mask_o   : out std_logic_vector(23 downto 0)
     
 );
 end sys;
@@ -127,6 +128,8 @@ begin
     trigger_lim_o <= reg_data(6);
     
     zero_suppress_o <= reg_data(7)(0);
+
+    vfat2_sbit_mask_o <= reg_data(8)(23 downto 0);
 
 end Behavioral;
 
