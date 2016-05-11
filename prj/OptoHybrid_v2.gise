@@ -125,7 +125,7 @@
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
     </transform>
-    <transform xil_pn:end_ts="1462364349" xil_pn:in_ck="8751825793541589158" xil_pn:name="TRAN_regenerateCores" xil_pn:prop_ck="-615284182773514060" xil_pn:start_ts="1462364349">
+    <transform xil_pn:end_ts="1462982163" xil_pn:in_ck="8751825793541589158" xil_pn:name="TRAN_regenerateCores" xil_pn:prop_ck="-615284182773514060" xil_pn:start_ts="1462982163">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
       <outfile xil_pn:name="../src/ip_cores/fifo128x64.ngc"/>
@@ -155,15 +155,18 @@
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
     </transform>
-    <transform xil_pn:end_ts="1462368823" xil_pn:in_ck="-2414007990752876601" xil_pn:name="TRANEXT_xstsynthesize_virtex6" xil_pn:prop_ck="-8092135656347050540" xil_pn:start_ts="1462368817">
-      <status xil_pn:value="FailedRun"/>
+    <transform xil_pn:end_ts="1462982687" xil_pn:in_ck="-2414007990752876601" xil_pn:name="TRANEXT_xstsynthesize_virtex6" xil_pn:prop_ck="-8092135656347050540" xil_pn:start_ts="1462982163">
+      <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
       <status xil_pn:value="ReadyToRun"/>
+      <status xil_pn:value="OutOfDateForOutputs"/>
+      <status xil_pn:value="OutputChanged"/>
       <outfile xil_pn:name="_xmsgs/xst.xmsgs"/>
       <outfile xil_pn:name="optohybrid_top.lso"/>
       <outfile xil_pn:name="optohybrid_top.ngc"/>
       <outfile xil_pn:name="optohybrid_top.ngr"/>
       <outfile xil_pn:name="optohybrid_top.prj"/>
+      <outfile xil_pn:name="optohybrid_top.stx"/>
       <outfile xil_pn:name="optohybrid_top.syr"/>
       <outfile xil_pn:name="optohybrid_top.xst"/>
       <outfile xil_pn:name="optohybrid_top_xst.xrpt"/>
@@ -174,23 +177,19 @@
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
     </transform>
-    <transform xil_pn:end_ts="1462366945" xil_pn:in_ck="391559770927310521" xil_pn:name="TRANEXT_ngdbuild_FPGA" xil_pn:prop_ck="3656075267350965320" xil_pn:start_ts="1462366907">
+    <transform xil_pn:end_ts="1462982716" xil_pn:in_ck="4639681663399096989" xil_pn:name="TRANEXT_ngdbuild_FPGA" xil_pn:prop_ck="3656075267350965320" xil_pn:start_ts="1462982687">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
-      <status xil_pn:value="OutOfDateForPredecessor"/>
       <outfile xil_pn:name="_ngo"/>
       <outfile xil_pn:name="_xmsgs/ngdbuild.xmsgs"/>
       <outfile xil_pn:name="optohybrid_top.bld"/>
       <outfile xil_pn:name="optohybrid_top.ngd"/>
       <outfile xil_pn:name="optohybrid_top_ngdbuild.xrpt"/>
     </transform>
-    <transform xil_pn:end_ts="1462367195" xil_pn:in_ck="-3844611839380631810" xil_pn:name="TRANEXT_map_virtex6" xil_pn:prop_ck="4272752396906822564" xil_pn:start_ts="1462366945">
+    <transform xil_pn:end_ts="1462982931" xil_pn:in_ck="5011565813799147171" xil_pn:name="TRANEXT_map_virtex6" xil_pn:prop_ck="4272752396906822564" xil_pn:start_ts="1462982716">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
       <status xil_pn:value="ReadyToRun"/>
-      <status xil_pn:value="OutOfDateForPredecessor"/>
-      <status xil_pn:value="OutOfDateForOutputs"/>
-      <status xil_pn:value="OutputChanged"/>
       <outfile xil_pn:name="_xmsgs/map.xmsgs"/>
       <outfile xil_pn:name="optohybrid_top.pcf"/>
       <outfile xil_pn:name="optohybrid_top_map.map"/>
@@ -201,11 +200,10 @@
       <outfile xil_pn:name="optohybrid_top_summary.xml"/>
       <outfile xil_pn:name="optohybrid_top_usage.xml"/>
     </transform>
-    <transform xil_pn:end_ts="1462367318" xil_pn:in_ck="2028554463571406103" xil_pn:name="TRANEXT_par_virtex5" xil_pn:prop_ck="-1516496383113795543" xil_pn:start_ts="1462367195">
+    <transform xil_pn:end_ts="1462983065" xil_pn:in_ck="2781658209908863509" xil_pn:name="TRANEXT_par_virtex5" xil_pn:prop_ck="-1516496383113795543" xil_pn:start_ts="1462982931">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
       <status xil_pn:value="ReadyToRun"/>
-      <status xil_pn:value="OutOfDateForPredecessor"/>
       <outfile xil_pn:name="_xmsgs/par.xmsgs"/>
       <outfile xil_pn:name="optohybrid_top.ncd"/>
       <outfile xil_pn:name="optohybrid_top.pad"/>
@@ -217,23 +215,20 @@
       <outfile xil_pn:name="optohybrid_top_pad.txt"/>
       <outfile xil_pn:name="optohybrid_top_par.xrpt"/>
     </transform>
-    <transform xil_pn:end_ts="1462367406" xil_pn:in_ck="-7825079040843944583" xil_pn:name="TRANEXT_bitFile_virtex6" xil_pn:prop_ck="-3618303722886493866" xil_pn:start_ts="1462367318">
-      <status xil_pn:value="AbortedRun"/>
+    <transform xil_pn:end_ts="1462983171" xil_pn:in_ck="-2633338125238084550" xil_pn:name="TRANEXT_bitFile_virtex6" xil_pn:prop_ck="-3618303722886493866" xil_pn:start_ts="1462983065">
+      <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
-      <status xil_pn:value="OutOfDateForPredecessor"/>
       <outfile xil_pn:name="_xmsgs/bitgen.xmsgs"/>
       <outfile xil_pn:name="optohybrid_top.bgn"/>
       <outfile xil_pn:name="optohybrid_top.bit"/>
       <outfile xil_pn:name="optohybrid_top.drc"/>
       <outfile xil_pn:name="optohybrid_top.ut"/>
-      <outfile xil_pn:name="usage_statistics_webtalk.html"/>
       <outfile xil_pn:name="webtalk.log"/>
       <outfile xil_pn:name="webtalk_pn.xml"/>
     </transform>
-    <transform xil_pn:end_ts="1462367318" xil_pn:in_ck="-3844611839380631942" xil_pn:name="TRAN_postRouteTrce" xil_pn:prop_ck="445577401284416183" xil_pn:start_ts="1462367301">
+    <transform xil_pn:end_ts="1462983065" xil_pn:in_ck="-9022492761615459173" xil_pn:name="TRAN_postRouteTrce" xil_pn:prop_ck="445577401284416183" xil_pn:start_ts="1462983049">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
-      <status xil_pn:value="OutOfDateForPredecessor"/>
       <outfile xil_pn:name="_xmsgs/trce.xmsgs"/>
       <outfile xil_pn:name="optohybrid_top.twr"/>
       <outfile xil_pn:name="optohybrid_top.twx"/>

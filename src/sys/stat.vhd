@@ -98,7 +98,7 @@ begin
     --== Mapping ==--
     --=============--
     
-    reg_data(0) <= x"20160509";
+    reg_data(0) <= x"20160511";
     
     reg_data(1) <= (0 => qpll_locked_i, others => '0');
     
