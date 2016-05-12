@@ -1,0 +1,17 @@
+PROMGEN: Xilinx Prom Generator P.20131013
+Copyright (c) 1995-2013 Xilinx, Inc.  All rights reserved.
+
+promgen -w -p mcs -c FF -o C:\Users\Administrator\Documents\firmware\SliceTB\OptoHybridv2//OH-2016-05-12 -x xcf128x -u 00000000 C:/Users/Administrator/Documents/firmware/SliceTB/OptoHybridv2/OH-2016-05-12.bit -bpi_dc parallel -data_width 16 
+
+PROM C:\Users\Administrator\Documents\firmware\SliceTB\OptoHybridv2\OH-2016-05-12.prm map: Thu May 12 15:17:48 2016
+
+Calculating PROM checksum with fill value ff
+
+Format        Mcs86 (32-bit)
+Size          16384K
+PROM start    0000:0000
+PROM end      00ff:ffff
+PROM checksum b002b65a
+
+        Addr1        Addr2                     Date File(s)
+    0000:0000    0053:638b     May 12 15:07:41 2016 C:/Users/Administrator/Documents/firmware/SliceTB/OptoHybridv2/OH-2016-05-12.bit
