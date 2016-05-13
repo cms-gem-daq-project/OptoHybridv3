@@ -1,0 +1,2 @@
+vhdl work ../../qpll_pll.vhd
+vhdl work ../example_design/qpll_pll_exdes.vhd

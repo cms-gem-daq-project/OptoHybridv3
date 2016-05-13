@@ -214,47 +214,7 @@ end optohybrid_top;
 
 architecture Behavioral of optohybrid_top is
 
-    COMPONENT cluster_packer
-    PORT(
-        clock4x : IN std_logic;
-        global_reset : IN std_logic;
-        truncate_clusters : IN std_logic;
-        vfat0 : IN std_logic_vector(63 downto 0);
-        vfat1 : IN std_logic_vector(63 downto 0);
-        vfat2 : IN std_logic_vector(63 downto 0);
-        vfat3 : IN std_logic_vector(63 downto 0);
-        vfat4 : IN std_logic_vector(63 downto 0);
-        vfat5 : IN std_logic_vector(63 downto 0);
-        vfat6 : IN std_logic_vector(63 downto 0);
-        vfat7 : IN std_logic_vector(63 downto 0);
-        vfat8 : IN std_logic_vector(63 downto 0);
-        vfat9 : IN std_logic_vector(63 downto 0);
-        vfat10 : IN std_logic_vector(63 downto 0);
-        vfat11 : IN std_logic_vector(63 downto 0);
-        vfat12 : IN std_logic_vector(63 downto 0);
-        vfat13 : IN std_logic_vector(63 downto 0);
-        vfat14 : IN std_logic_vector(63 downto 0);
-        vfat15 : IN std_logic_vector(63 downto 0);
-        vfat16 : IN std_logic_vector(63 downto 0);
-        vfat17 : IN std_logic_vector(63 downto 0);
-        vfat18 : IN std_logic_vector(63 downto 0);
-        vfat19 : IN std_logic_vector(63 downto 0);
-        vfat20 : IN std_logic_vector(63 downto 0);
-        vfat21 : IN std_logic_vector(63 downto 0);
-        vfat22 : IN std_logic_vector(63 downto 0);
-        vfat23 : IN std_logic_vector(63 downto 0);          
-        cluster0 : OUT std_logic_vector(13 downto 0);
-        cluster1 : OUT std_logic_vector(13 downto 0);
-        cluster2 : OUT std_logic_vector(13 downto 0);
-        cluster3 : OUT std_logic_vector(13 downto 0);
-        cluster4 : OUT std_logic_vector(13 downto 0);
-        cluster5 : OUT std_logic_vector(13 downto 0);
-        cluster6 : OUT std_logic_vector(13 downto 0);
-        cluster7 : OUT std_logic_vector(13 downto 0)
-        );
-    END COMPONENT;
- 
-    --== Bufferes ==--
+    --== Buffers ==--
     
     signal vfat2_mclk_b         : std_logic; 
     signal vfat2_reset_b        : std_logic;
@@ -265,26 +225,21 @@ architecture Behavioral of optohybrid_top is
     signal vfat2_sda_tri_b      : std_logic_vector(5 downto 0); 
     signal vfat2_data_valid_b   : std_logic_vector(5 downto 0);
     signal vfat2_data_out_b     : std_logic_vector(23 downto 0);
-    signal vfat2_sbits_b        : sbits_array_t(23 downto 0);
-    
-    --== SBit cluster packer ==--
-    signal vfat2_sbits          : sbits_array_t(23 downto 0); -- same as vfat2_sbits_b but with mask applied
-    signal vfat3_sbits          : std64_array_t(23 downto 0);
-    signal vfat_sbit_clusters   : sbit_cluster_array_t(7 downto 0);
+    signal vfat2_sbits_b        : sbits_array_t(23 downto 0);    
  
     signal qpll_clk_b           : std_logic;
     signal qpll_reset_b         : std_logic;
     signal qpll_locked_b        : std_logic;
+    signal qpll_pll_locked_b    : std_logic;
     
-    --== Global signals & Clocks ==--
+    --== SBit cluster packer ==--
+    
+    signal vfat_sbit_clusters   : sbit_cluster_array_t(7 downto 0);
+    
+    --== Global signals ==--
 
     signal ref_clk              : std_logic;
     signal reset                : std_logic;    
-    
-    signal fpga_pll_locked      : std_logic;
-    signal ext_pll_locked       : std_logic;
-    signal rec_pll_locked       : std_logic;
-    signal clk_switch_mode      : std_logic;
 
     --== GTX ==--
     
@@ -312,11 +267,10 @@ architecture Behavioral of optohybrid_top is
     signal vfat2_t1_sel         : std_logic_vector(2 downto 0);
     signal sys_loop_sbit        : std_logic_vector(4 downto 0);
     signal vfat2_reset          : std_logic;
-    signal sys_clk_sel          : std_logic_vector(1 downto 0);
+    signal vfat2_sbit_mask      : std_logic_vector(23 downto 0);
     signal sys_sbit_sel         : std_logic_vector(29 downto 0);
     signal trigger_lim          : std_logic_vector(31 downto 0);
     signal zero_suppress        : std_logic;
-    signal vfat2_sbit_mask      : std_logic_vector(23 downto 0);
     
     --== Wishbone signals ==--
     
@@ -347,7 +301,7 @@ begin
         reset_i             => reset,
         ext_trigger_i       => ext_trigger_i,
         vfat2_t1_o          => vfat2_t1(2),
-        vfat2_sbits_i       => vfat2_sbits,
+        vfat2_sbits_i       => vfat2_sbits_b,
         sys_sbit_sel_i      => sys_sbit_sel,
         ext_sbits_o         => ext_sbits_o        
     );
@@ -443,7 +397,7 @@ begin
         vfat2_t1_o          => vfat2_t1_b,
         vfat2_data_out_i    => vfat2_data_out_b,
         vfat2_tk_data_o     => vfat2_tk_data,
-        vfat2_sbits_i       => vfat2_sbits,
+        vfat2_sbits_i       => vfat2_sbits_b,
         sys_loop_sbit_i     => sys_loop_sbit,
         wb_slv_i2c_req_i    => wb_s_req(WB_SLV_I2C_5 downto WB_SLV_I2C_0),
         wb_slv_i2c_res_o    => wb_s_res(WB_SLV_I2C_5 downto WB_SLV_I2C_0),
@@ -478,7 +432,7 @@ begin
         wb_mst_dac_req_o    => wb_m_req(WB_MST_DAC),
         wb_mst_dac_res_i    => wb_m_res(WB_MST_DAC),
         vfat2_tk_data_i     => vfat2_tk_data,
-        vfat2_sbits_i       => vfat2_sbits,
+        vfat2_sbits_i       => vfat2_sbits_b,
         vfat2_t1_o          => vfat2_t1(1)
     );    
     
@@ -519,7 +473,9 @@ begin
         vfat2_t1_i      => vfat2_t1_lst,
         gtx_tk_error_i  => gtx_tk_error,
         gtx_tr_error_i  => gtx_tr_error,
-        gtx_evt_sent_i  => gtx_evt_sent
+        gtx_evt_sent_i  => gtx_evt_sent,
+        qpll_locked_i       => qpll_locked_b,
+        qpll_pll_locked_i   => qpll_pll_locked_b
     );
     
     --============--
@@ -538,11 +494,10 @@ begin
         vfat2_t1_sel_o      => vfat2_t1_sel,
         sys_loop_sbit_o     => sys_loop_sbit,
         vfat2_reset_o       => vfat2_reset,
-        sys_clk_sel_o       => sys_clk_sel,
+        vfat2_sbit_mask_o   => vfat2_sbit_mask,
         sys_sbit_sel_o      => sys_sbit_sel,
         trigger_lim_o       => trigger_lim,
-        zero_suppress_o     => zero_suppress,
-        vfat2_sbit_mask_o   => vfat2_sbit_mask
+        zero_suppress_o     => zero_suppress
     );
     
     --============--
@@ -557,7 +512,22 @@ begin
         reset_i             => reset, 
         wb_slv_req_i        => wb_s_req(WB_SLV_STAT),
         wb_slv_res_o        => wb_s_res(WB_SLV_STAT), 
-        qpll_locked_i       => qpll_locked_b
+        qpll_locked_i       => qpll_locked_b,
+        qpll_pll_locked_i   => qpll_pll_locked_b
+    );
+    
+    --=========================--
+    --== SBit cluster packer ==--
+    --=========================--
+    
+    -- This module handles the SBits
+    sbits_inst : entity work.sbits
+    port map(        
+        ref_clk_i               => ref_clk,
+        reset_i                 => reset,        
+        vfat2_sbits_i           => vfat2_sbits_b,  
+        vfat2_sbit_mask_i       => vfat2_sbit_mask,        
+        vfat_sbit_clusters_o    => vfat_sbit_clusters
     );
     
     --=============--
@@ -695,67 +665,8 @@ begin
         --
         qpll_clk_o              => qpll_clk_b,
         qpll_reset_i            => qpll_reset_b,
-        qpll_locked_o           => qpll_locked_b
-    );
-    
-    --=========================--
-    --== SBit cluster packer ==--
-    --=========================--
-
-    -- apply sbit mask
-    vfat2_sbit_mask_gen : for I in 0 to 23 generate
-    begin
-        vfat2_sbits(I) <= vfat2_sbits_b(I) when vfat2_sbit_mask(I) = '0' else (others => '0');
-    end generate;
-
-    -- map the VFAT2 SBits (8 per VFAT) to VFAT3 like structure (64 per VFAT) that is expected by the cluster packer
-    vfat2_to_vfat3_sbit_map_gen : for I in 0 to 23 generate
-    begin
-    
-        vfat2_sbit_loop: for J in 0 to 7 generate
-        begin
-            vfat3_sbits(I)((J * 8) + 7 downto (J * 8)) <= (others => vfat2_sbits(I)(J));
-        end generate;
-        
-    end generate;
-
-    inst_cluster_packer: cluster_packer PORT MAP(
-        clock4x => ref_clk,
-        global_reset => reset,
-        truncate_clusters => '0',
-        vfat0 => vfat3_sbits(0),
-        vfat1 => vfat3_sbits(1),
-        vfat2 => vfat3_sbits(2),
-        vfat3 => vfat3_sbits(3),
-        vfat4 => vfat3_sbits(4),
-        vfat5 => vfat3_sbits(5),
-        vfat6 => vfat3_sbits(6),
-        vfat7 => vfat3_sbits(7),
-        vfat8 => vfat3_sbits(8),
-        vfat9 => vfat3_sbits(9),
-        vfat10 => vfat3_sbits(10),
-        vfat11 => vfat3_sbits(11),
-        vfat12 => vfat3_sbits(12),
-        vfat13 => vfat3_sbits(13),
-        vfat14 => vfat3_sbits(14),
-        vfat15 => vfat3_sbits(15),
-        vfat16 => vfat3_sbits(16),
-        vfat17 => vfat3_sbits(17),
-        vfat18 => vfat3_sbits(18),
-        vfat19 => vfat3_sbits(19),
-        vfat20 => vfat3_sbits(20),
-        vfat21 => vfat3_sbits(21),
-        vfat22 => vfat3_sbits(22),
-        vfat23 => vfat3_sbits(23),
-       
-        cluster0 => vfat_sbit_clusters(0),
-        cluster1 => vfat_sbit_clusters(1),
-        cluster2 => vfat_sbit_clusters(2),
-        cluster3 => vfat_sbit_clusters(3),
-        cluster4 => vfat_sbit_clusters(4),
-        cluster5 => vfat_sbit_clusters(5),
-        cluster6 => vfat_sbit_clusters(6),
-        cluster7 => vfat_sbit_clusters(7)
+        qpll_locked_o           => qpll_locked_b,
+        qpll_pll_locked_o       => qpll_pll_locked_b
     );
  
 end Behavioral;
