@@ -326,18 +326,14 @@ begin
     );
     
     -- qpll_clk
-    
-    qpll_clk_ibufgds : ibufgds
-    generic map(
-        diff_term       => true,
-        ibuf_low_pwr    => false,
-        iostandard      => "lvds_25"
-    )
+
+    qpll_pll_inst : entity work.qpll_pll
     port map(
-        i               => qpll_clk_p_i,
-        ib              => qpll_clk_n_i,
-        o               => qpll_clk_o
-    );
+        qpll_i_p        => qpll_clk_p_i,
+        qpll_i_n        => qpll_clk_n_i,
+        qpll_clk_o      => qpll_clk_o,
+        qpll_locked_o   => qpll_pll_locked_o
+    );    
 
     --==================--
     --== MCLK signals ==--

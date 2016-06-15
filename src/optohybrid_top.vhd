@@ -278,6 +278,14 @@ architecture Behavioral of optohybrid_top is
     signal wb_m_res             : wb_res_array_t((WB_MASTERS - 1) downto 0);
     signal wb_s_req             : wb_req_array_t((WB_SLAVES - 1) downto 0);
     signal wb_s_res             : wb_res_array_t((WB_SLAVES - 1) downto 0);
+    
+    --== ChipScope ==--    
+    
+    signal CONTROL0 : STD_LOGIC_VECTOR(35 DOWNTO 0);
+    signal CONTROL1 : STD_LOGIC_VECTOR(35 DOWNTO 0);
+    signal TRIG0 : STD_LOGIC_VECTOR(191 DOWNTO 0);
+    signal SYNC_IN : STD_LOGIC_VECTOR(36 DOWNTO 0);
+    signal SYNC_OUT : STD_LOGIC_VECTOR(65 DOWNTO 0);
         
 begin
 
@@ -460,20 +468,20 @@ begin
     
     counters_inst : entity work.counters
     port map(
-        ref_clk_i       => ref_clk,
-        gtx_clk_i       => gtx_clk,
-        reset_i         => reset, 
-        wb_slv_req_i    => wb_s_req(WB_SLV_CNT),
-        wb_slv_res_o    => wb_s_res(WB_SLV_CNT),
-        wb_m_req_i      => wb_m_req,      
-        wb_m_res_i      => wb_m_res,
-        wb_s_req_i      => wb_s_req,
-        wb_s_res_i      => wb_s_res,
-        vfat2_tk_data_i => vfat2_tk_data,
-        vfat2_t1_i      => vfat2_t1_lst,
-        gtx_tk_error_i  => gtx_tk_error,
-        gtx_tr_error_i  => gtx_tr_error,
-        gtx_evt_sent_i  => gtx_evt_sent,
+        ref_clk_i           => ref_clk,
+        gtx_clk_i           => gtx_clk,
+        reset_i             => reset, 
+        wb_slv_req_i        => wb_s_req(WB_SLV_CNT),
+        wb_slv_res_o        => wb_s_res(WB_SLV_CNT),
+        wb_m_req_i          => wb_m_req,      
+        wb_m_res_i          => wb_m_res,
+        wb_s_req_i          => wb_s_req,
+        wb_s_res_i          => wb_s_res,
+        vfat2_tk_data_i     => vfat2_tk_data,
+        vfat2_t1_i          => vfat2_t1_lst,
+        gtx_tk_error_i      => gtx_tk_error,
+        gtx_tr_error_i      => gtx_tr_error,
+        gtx_evt_sent_i      => gtx_evt_sent,
         qpll_locked_i       => qpll_locked_b,
         qpll_pll_locked_i   => qpll_pll_locked_b
     );
@@ -520,15 +528,41 @@ begin
     --== SBit cluster packer ==--
     --=========================--
     
-    -- This module handles the SBits
-    sbits_inst : entity work.sbits
-    port map(        
-        ref_clk_i               => ref_clk,
-        reset_i                 => reset,        
-        vfat2_sbits_i           => vfat2_sbits_b,  
-        vfat2_sbit_mask_i       => vfat2_sbit_mask,        
-        vfat_sbit_clusters_o    => vfat_sbit_clusters
+--    -- This module handles the SBits
+--    sbits_inst : entity work.sbits
+--    port map(        
+--        ref_clk_i               => ref_clk,
+--        reset_i                 => reset,        
+--        vfat2_sbits_i           => vfat2_sbits_b,  
+--        vfat2_sbit_mask_i       => vfat2_sbit_mask,        
+--        vfat_sbit_clusters_o    => vfat_sbit_clusters
+--    );
+
+    chipscope_icon_inst : entity work.chipscope_icon
+    port map(
+        CONTROL0    => CONTROL0,
+        CONTROL1    => CONTROL1
     );
+    
+    chipscope_ila_inst : entity work.chipscope_ila
+    port map(
+        CONTROL => CONTROL0,
+        CLK     => ref_clk,
+        TRIG0   => TRIG0
+    );
+    
+    chipscope_vio_inst : entity work.chipscope_vio
+    port map(
+        CONTROL     => CONTROL1,
+        CLK         => ref_clk,
+        SYNC_IN     => SYNC_IN,
+        SYNC_OUT    => SYNC_OUT
+    );
+    
+    gen_con : for I in 0 to 23 generate
+    begin
+        TRIG0(((I + 1) * 8 - 1) downto (I * 8)) <= vfat2_sbits_b(I);
+    end generate;
     
     --=============--
     --== Buffers ==--
