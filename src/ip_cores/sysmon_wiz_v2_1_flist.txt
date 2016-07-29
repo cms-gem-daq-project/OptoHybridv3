@@ -1,0 +1,26 @@
+# Output products list for <sysmon_wiz_v2_1>
+_xmsgs\pn_parser.xmsgs
+sysmon_wiz_v2_1.asy
+sysmon_wiz_v2_1.gise
+sysmon_wiz_v2_1.vhd
+sysmon_wiz_v2_1.vho
+sysmon_wiz_v2_1.xco
+sysmon_wiz_v2_1.xise
+sysmon_wiz_v2_1\doc\sysmon_wiz_ds608.pdf
+sysmon_wiz_v2_1\doc\sysmon_wiz_gsg741.pdf
+sysmon_wiz_v2_1\example_design\sysmon_wiz_v2_1_exdes.vhd
+sysmon_wiz_v2_1\implement\implement.bat
+sysmon_wiz_v2_1\implement\implement.sh
+sysmon_wiz_v2_1\implement\xst.prj
+sysmon_wiz_v2_1\implement\xst.scr
+sysmon_wiz_v2_1\simulation\functional\design.txt
+sysmon_wiz_v2_1\simulation\functional\simcmds.tcl
+sysmon_wiz_v2_1\simulation\functional\simulate_isim.bat
+sysmon_wiz_v2_1\simulation\functional\simulate_isim.sh
+sysmon_wiz_v2_1\simulation\functional\simulate_mti.do
+sysmon_wiz_v2_1\simulation\functional\simulate_ncsim.sh
+sysmon_wiz_v2_1\simulation\functional\wave.do
+sysmon_wiz_v2_1\simulation\sysmon_wiz_v2_1_tb.vhd
+sysmon_wiz_v2_1\sysmon_wiz_readme.txt
+sysmon_wiz_v2_1_flist.txt
+sysmon_wiz_v2_1_xmdf.tcl

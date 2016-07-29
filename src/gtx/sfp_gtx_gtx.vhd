@@ -78,7 +78,10 @@ generic
     -- Share RX PLL parameter
     GTX_TX_CLK_SOURCE           : string     := "TXPLL";
     -- Save power parameter
-    GTX_POWER_SAVE              : bit_vector := "0000000000"
+    GTX_POWER_SAVE              : bit_vector := "0000000000";
+    
+    RXPOLARITY                  : std_logic := '0';
+    TXPOLARITY                  : std_logic := '0'
 );
 port 
 (
@@ -515,7 +518,7 @@ begin
         PHYSTATUS                       =>      open,
         RXVALID                         =>      open,
         ----------------- Receive Ports - RX Polarity Control Ports ----------------
-        RXPOLARITY                      =>      tied_to_ground_i,
+        RXPOLARITY                      =>      RXPOLARITY,
         --------------------- Receive Ports - RX Ports for SATA --------------------
         COMINITDET                      =>      open,
         COMSASDET                       =>      open,
@@ -558,7 +561,7 @@ begin
         TXUSRCLK2                       =>      TXUSRCLK2_IN,
         ---------------- Transmit Ports - TX Driver and OOB signaling --------------
         TXBUFDIFFCTRL                   =>      "100",
-        TXDIFFCTRL                      =>      "0000",
+        TXDIFFCTRL                      =>      "0110",
         TXINHIBIT                       =>      tied_to_ground_i,
         TXN                             =>      TXN_OUT,
         TXP                             =>      TXP_OUT,
@@ -595,7 +598,7 @@ begin
         TXENPRBSTST                     =>      tied_to_ground_vec_i(2 downto 0),
         TXPRBSFORCEERR                  =>      tied_to_ground_i,
         -------------------- Transmit Ports - TX Polarity Control ------------------
-        TXPOLARITY                      =>      tied_to_ground_i,
+        TXPOLARITY                      =>      TXPOLARITY,
         ----------------- Transmit Ports - TX Ports for PCI Express ----------------
         TXDEEMPH                        =>      tied_to_ground_i,
         TXDETECTRX                      =>      tied_to_ground_i,

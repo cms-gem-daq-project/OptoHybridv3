@@ -51,25 +51,83 @@ NET "vfat2_sda_io<2>"           LOC = Y26; # G7_N
 NET "vfat2_sda_io<3>"           LOC = J20; # I5_P
 NET "vfat2_sda_io<0>"           LOC = W25; # H19_P
 
+### Clocks
+#
+#NET "vfat2_mclk_p_o<2>"         LOC = AC20; # B7
+#NET "vfat2_mclk_n_o<2>"         LOC = AD20;
+#
+#NET "vfat2_mclk_p_o<0>"         LOC = J25; # N10
+#NET "vfat2_mclk_n_o<0>"         LOC = J24;
+#
+#NET "vfat2_mclk_p_o<1>"         LOC = K19; # M7
+#NET "vfat2_mclk_n_o<1>"         LOC = J19;
+#
+### Resets
+#
+#NET "vfat2_resb_o<2>"           LOC = AC19; # B15_P
+#NET "vfat2_resb_o<0>"           LOC = K23; # N2_N
+#NET "vfat2_resb_o<1>"           LOC = H20; # I12_N
+#
+#NET "vfat2_resh_o<2>"           LOC = AD19; # B15_N
+#NET "vfat2_resh_o<0>"           LOC = K24; # N2_P
+#NET "vfat2_resh_o<1>"           LOC = H19; # I12_P
+#
+### T1s
+#
+#NET "vfat2_t1_p_o<2>"           LOC = AG20; # B19
+#NET "vfat2_t1_n_o<2>"           LOC = AG21;
+#
+#NET "vfat2_t1_p_o<0>"           LOC = L25; # A19
+#NET "vfat2_t1_n_o<0>"           LOC = L26;
+#
+#NET "vfat2_t1_p_o<1>"           LOC = K18; # M3
+#NET "vfat2_t1_n_o<1>"           LOC = K17;
+#
+### I2Cs
+#
+#NET "vfat2_scl_o<5>"            LOC = AC17; # J12_N
+#NET "vfat2_scl_o<4>"            LOC = AC27; # G16_N
+#NET "vfat2_scl_o<1>"            LOC = K21; # I17_P
+#NET "vfat2_scl_o<2>"            LOC = Y27; # H18_N
+#NET "vfat2_scl_o<3>"            LOC = J21; # I5_N
+#NET "vfat2_scl_o<0>"            LOC = W27; # H20_P
+#
+#NET "vfat2_sda_io<5>"           LOC = AC18; # J12_P
+#NET "vfat2_sda_io<4>"           LOC = AB27; # G16_P
+#NET "vfat2_sda_io<1>"           LOC = K22; # I17_N
+#NET "vfat2_sda_io<2>"           LOC = Y28; # H18_P
+#NET "vfat2_sda_io<3>"           LOC = J20; # I5_P
+#NET "vfat2_sda_io<0>"           LOC = W26; # H20_N
+
+## DACs
+
+#NET "vfat2_daco_v_i<0>"         LOC = U18; # V0_P
+#NET "vfat2_daco_v_i<1>"         LOC = A13; # L4_P
+#NET "vfat2_daco_v_i<2>"         LOC = H12; # L13_P
+#
+#NET "vfat2_daco_i_i<0>"         LOC = P25; # C13_P
+#NET "vfat2_daco_i_i<1>"         LOC = B12; # L8_P
+#NET "vfat2_daco_i_i<2>"         LOC = A11; # L14_P
+
 ## DataValids
 
 NET "vfat2_data_valid_p_i<5>"   LOC = AH23; # D12
 NET "vfat2_data_valid_n_i<5>"   LOC = AH24;
 
-NET "vfat2_data_valid_p_i<4>"   LOC = AB27; # G16
-NET "vfat2_data_valid_n_i<4>"   LOC = AC27;
+NET "vfat2_data_valid_p_i<4>"   LOC = AA26; # G18
+NET "vfat2_data_valid_n_i<4>"   LOC = AB26;
 
 NET "vfat2_data_valid_p_i<1>"   LOC = J26; # A2
 NET "vfat2_data_valid_n_i<1>"   LOC = J27;
 
-NET "vfat2_data_valid_p_i<2>"   LOC = Y28; # H18
-NET "vfat2_data_valid_n_i<2>"   LOC = Y27;
+NET "vfat2_data_valid_p_i<2>"   LOC = AA25; # G7
+NET "vfat2_data_valid_n_i<2>"   LOC = Y26;
 
 NET "vfat2_data_valid_p_i<3>"   LOC = K16; # M10
 NET "vfat2_data_valid_n_i<3>"   LOC = L16;
 
-NET "vfat2_data_valid_p_i<0>"   LOC = W27; # H20
-NET "vfat2_data_valid_n_i<0>"   LOC = W26;
+NET "vfat2_data_valid_p_i<0>"   LOC = W25; # H19
+NET "vfat2_data_valid_n_i<0>"   LOC = V25;
 
 ## VFAT2 20
 
@@ -766,3 +824,4 @@ NET "vfat2_0_sbits_n_i<7>"      LOC = D17;
 
 NET "vfat2_0_data_out_p_i"      LOC = E19; # I14
 NET "vfat2_0_data_out_n_i"      LOC = D19;
+
