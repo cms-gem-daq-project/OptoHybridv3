@@ -48,8 +48,8 @@ architecture Behavioral of link_tx_trigger is
     
 begin  
 
-    cluster_0123_data <= sbit_clusters_i(0) & sbit_clusters_i(1) & sbit_clusters_i(2) & sbit_clusters_i(3);
-    cluster_4567_data <= sbit_clusters_i(4) & sbit_clusters_i(5) & sbit_clusters_i(6) & sbit_clusters_i(7);
+    cluster_0123_data <= sbit_clusters_i(3) & sbit_clusters_i(2) & sbit_clusters_i(1) & sbit_clusters_i(0);
+    cluster_4567_data <= sbit_clusters_i(7) & sbit_clusters_i(6) & sbit_clusters_i(5) & sbit_clusters_i(4);
 
     --== STATE ==--
 
@@ -77,36 +77,36 @@ begin
         if (rising_edge(gtx_clk_i)) then
             if (reset_i = '1') then
                 tx_kchar_link_0_o <= "00";
-                tx_data_link_0_o <= x"0000";
+                tx_data_link_0_o <= x"ffff";
                 tx_kchar_link_1_o <= "00";
-                tx_data_link_1_o <= x"0000";
+                tx_data_link_1_o <= x"ffff";
             else
                 case state is
                     when COMMA => 
                         tx_kchar_link_0_o <= "01";
-                        tx_data_link_0_o <= cluster_0123_data(55 downto 48) & x"BC";
+                        tx_data_link_0_o <= cluster_0123_data(7 downto 0) & x"BC";
                         tx_kchar_link_1_o <= "01";
-                        tx_data_link_1_o <= cluster_4567_data(55 downto 48) & x"BC";
+                        tx_data_link_1_o <= cluster_4567_data(7 downto 0) & x"BC";
                     when DATA_0 => 
                         tx_kchar_link_0_o <= "00";
-                        tx_data_link_0_o <= cluster_0123_data(47 downto 32);
+                        tx_data_link_0_o <= cluster_0123_data(23 downto 8);
                         tx_kchar_link_1_o <= "00";
-                        tx_data_link_1_o <= cluster_4567_data(47 downto 32);
+                        tx_data_link_1_o <= cluster_4567_data(23 downto 8);
                     when DATA_1 => 
                         tx_kchar_link_0_o <= "00";
-                        tx_data_link_0_o <= cluster_0123_data(31 downto 16);
+                        tx_data_link_0_o <= cluster_0123_data(39 downto 24);
                         tx_kchar_link_1_o <= "00";
-                        tx_data_link_1_o <= cluster_4567_data(31 downto 16);
+                        tx_data_link_1_o <= cluster_4567_data(39 downto 24);
                     when DATA_2 => 
                         tx_kchar_link_0_o <= "00";
-                        tx_data_link_0_o <= cluster_0123_data(15 downto 0);                        
+                        tx_data_link_0_o <= cluster_0123_data(55 downto 40);
                         tx_kchar_link_1_o <= "00";
-                        tx_data_link_1_o <= cluster_4567_data(15 downto 0);                        
+                        tx_data_link_1_o <= cluster_4567_data(55 downto 40);
                     when others => 
                         tx_kchar_link_0_o <= "00";
-                        tx_data_link_0_o <= x"0000";
+                        tx_data_link_0_o <= x"ffff";
                         tx_kchar_link_1_o <= "00";
-                        tx_data_link_1_o <= x"0000";
+                        tx_data_link_1_o <= x"ffff";
                 end case;
             end if;
         end if;
