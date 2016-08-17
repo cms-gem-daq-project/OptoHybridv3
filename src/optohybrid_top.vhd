@@ -254,11 +254,18 @@ architecture Behavioral of optohybrid_top is
     
     --== SBit cluster packer ==--
     
+	signal sbit_overflow        : std_logic;
     signal vfat_sbit_clusters   : sbit_cluster_array_t(7 downto 0);
     
     --== Global signals ==--
 
     signal ref_clk              : std_logic;
+
+    signal clk_40               : std_logic;
+    signal clk_80               : std_logic;
+    signal clk_160              : std_logic;
+
+    signal mgt_refclk           : std_logic; 
     signal reset                : std_logic;    
 
     --== GTX ==--
@@ -379,18 +386,20 @@ begin
     port map(
 		mgt_refclk_n_i  => mgt_clk_n_i,
 		mgt_refclk_p_i  => mgt_clk_p_i,
+		mgt_refclk_o    => mgt_refclk,
         ref_clk_i       => ref_clk,
 		reset_i         => reset,
         gtx_clk_o       => gtx_clk,
-        tx_kchar_i      => gtx_tx_kchar,
-        tx_data_i       => gtx_tx_data,
-        rx_kchar_o      => gtx_rx_kchar,
-        rx_data_o       => gtx_rx_data,
-        rx_error_o      => gtx_rx_error,     
-		rx_n_i          => mgt_rx_n_i,
-		rx_p_i          => mgt_rx_p_i,
-		tx_n_o          => mgt_tx_n_o,
-		tx_p_o          => mgt_tx_p_o
+        rec_clk_o       => gtx_rec_clk,
+        gtx_tx_kchar_i  => gtx_tx_kchar( 1 downto 0),
+        gtx_tx_data_i   => gtx_tx_data (15 downto 0),
+        gtx_rx_kchar_o  => gtx_rx_kchar( 1 downto 0),
+        gtx_rx_data_o   => gtx_rx_data (15 downto 0),
+        gtx_rx_error_o  => gtx_rx_error,     
+		rx_n_i          => mgt_rx_n_i(0 downto 0),
+		rx_p_i          => mgt_rx_p_i(0 downto 0),
+		tx_n_o          => mgt_tx_n_o(0 downto 0),
+		tx_p_o          => mgt_tx_p_o(0 downto 0)
 	);
     
     -- This module controls the DATA of the GTX. It formats data packets to be sent over the optical link.
@@ -629,22 +638,82 @@ begin
         qpll_locked_i       => qpll_locked_b,
         qpll_pll_locked_i   => qpll_pll_locked_b
     );
-    
+
     --=========================--
     --== SBit cluster packer ==--
     --=========================--
-    
-    -- this module handles the sbits
-    -- Use clk_1x, clk_2x, and clk_4x at 40, 80, and 160 MHz respectively
+
+    -- This module handles the SBits
     sbits_inst : entity work.sbits
-    port map(        
-        gtx_clk_i               => clk_4x,
-        ttc_clk_i               => clk_1x,
-        reset_i                 => reset,        
-        vfat2_sbits_i           => vfat2_sbits_b,  
-        vfat2_sbit_mask_i       => vfat2_sbit_mask,        
-        vfat_sbit_clusters_o    => vfat_sbit_clusters
+    port map(
+        ref_clk_i               => clk_160,
+        reset_i                 => reset,
+        vfat2_sbits_i           => vfat2_sbits_b,
+        vfat2_sbit_mask_i       => vfat2_sbit_mask,
+        vfat_sbit_clusters_o    => vfat_sbit_clusters,
+        overflow_o              => sbit_overflow
     );
+
+    --=================================--
+    --== Fixed latency trigger links ==--
+    --=================================--
+
+    trigger_inst : entity work.trigger
+    port map (
+        mgt_refclk => mgt_refclk, -- 160 MHz Reference Clock from QPLL
+
+        ref_clk    => ref_clk, -- 40 MHz Clock from QPLL
+
+        clk_40     => clk_40,  -- 40 MHz Clock Derived from QPLL
+        clk_80     => clk_80,  -- 80 MHz Clock Derived from QPLL
+        clk_160    => clk_160, -- 160 MHz Clock Derived from QPLL
+
+        reset      => reset,
+
+        trg_tx_p   => mgt_tx_p_o (4 downto 1),
+        trg_tx_n   => mgt_tx_n_o (4 downto 1),
+
+        cluster0   => vfat_sbit_clusters(0),
+        cluster1   => vfat_sbit_clusters(1),
+        cluster2   => vfat_sbit_clusters(2),
+        cluster3   => vfat_sbit_clusters(3),
+        cluster4   => vfat_sbit_clusters(4),
+        cluster5   => vfat_sbit_clusters(5),
+        cluster6   => vfat_sbit_clusters(6),
+        cluster7   => vfat_sbit_clusters(7),
+
+        overflow   => sbit_overflow
+    );
+
+    --=========================--
+    --== Chipscope           ==--
+    --=========================--
+
+    chipscope_icon_inst : entity work.chipscope_icon
+    port map(
+        control0    => control0,
+        control1    => control1
+    );
+    
+    chipscope_ila_inst : entity work.chipscope_ila
+    port map(
+        control => control0,
+        clk     => ref_clk,
+        trig0   => trig0
+    );
+    
+    chipscope_vio_inst : entity work.chipscope_vio
+    port map(
+        control     => control1,
+        clk         => ref_clk,
+        sync_in     => sync_in,
+        sync_out    => sync_out
+    );
+    
+    gen_con : for i in 0 to 23 generate
+    begin
+        trig0(((i + 1) * 8 - 1) downto (i * 8)) <= vfat2_sbits_b(i);
+    end generate;
     
     --=============--
     --== Buffers ==--

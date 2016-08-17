@@ -4,13 +4,11 @@
 -- 
 -- Create Date:    08:37:33 07/07/2015 
 -- Design Name:    OptoHybrid v2
--- Module Name:    gtx - Behavioral 
+-- Module Name:    gtx_wrapper - Behavioral 
 -- Project Name:   OptoHybrid v2
 -- Target Devices: xc6vlx130t-1ff1156
 -- Tool versions:  ISE  P.20131013
 -- Description: 
---
--- This entity controls the PHY level of the GTX.
 --
 ----------------------------------------------------------------------------------
 
@@ -21,40 +19,35 @@ library unisim;
 use unisim.vcomponents.all;
 
 library work;
-use work.types_pkg.all;
 
-entity gtx is
+entity gtx_wrapper is
 port(
 
     mgt_refclk_n_i  : in std_logic;
     mgt_refclk_p_i  : in std_logic;
-    mgt_refclk_o    : out std_logic; 
+    mgt_refclk_o    : out std_logic;
     ref_clk_i       : in std_logic;
     
     reset_i         : in std_logic;
     
-    gtx_clk_o       : out std_logic;    
-
-    tx_kchar_i      : in std_logic_vector(5 downto 0);
-    tx_data_i       : in std_logic_vector(47 downto 0);
+    tx_kchar_i      : in std_logic_vector(1 downto 0);
+    tx_data_i       : in std_logic_vector(15 downto 0);
+    
     rx_kchar_o      : out std_logic_vector(1 downto 0);
     rx_data_o       : out std_logic_vector(15 downto 0);
     rx_error_o      : out std_logic_vector(0 downto 0);
-
-    gtx_tx_kchar_i  : in  std_logic_vector( 1 downto 0);
-    gtx_tx_data_i   : in  std_logic_vector(15 downto 0);
-    gtx_rx_kchar_o  : out std_logic_vector( 1 downto 0);
-    gtx_rx_data_o   : out std_logic_vector(15 downto 0);
-    gtx_rx_error_o  : out std_logic_vector( 0 downto 0);
+ 
+    usr_clk_o       : out std_logic;
+    rec_clk_o       : out std_logic;
    
-    rx_n_i          : in  std_logic_vector(0 downto 0);
-    rx_p_i          : in  std_logic_vector(0 downto 0);
-    tx_n_o          : out std_logic_vector(0 downto 0);
-    tx_p_o          : out std_logic_vector(0 downto 0)
+    rx_n_i          : in  std_logic_vector (0 downto 0);
+    rx_p_i          : in  std_logic_vector (0 downto 0);
+    tx_n_o          : out std_logic_vector (0 downto 0);
+    tx_p_o          : out std_logic_vector (0 downto 0)
 );
-end gtx;
+end gtx_wrapper;
 
-architecture Behavioral of gtx is  
+architecture Behavioral of gtx_wrapper is
 
     signal mgt_refclk       : std_logic;
     signal mgt_reset        : std_logic;
@@ -64,9 +57,9 @@ architecture Behavioral of gtx is
     signal rx_notintable    : std_logic_vector(1 downto 0);
     
     signal usr_clk          : std_logic;
-    signal usr_clk2         : std_logic;        
+    signal usr_clk2         : std_logic;
     
-begin  
+begin    
     
     ibufds_gtxe1_inst : ibufds_gtxe1
     port map(
@@ -76,6 +69,8 @@ begin
         i       => mgt_refclk_p_i,
         ib      => mgt_refclk_n_i
     );
+
+    mgt_refclk_o <= mgt_refclk;
         
     --    
 
@@ -85,7 +80,7 @@ begin
         o   => usr_clk2
     );
     
-    gtx_clk_o <= usr_clk2;
+    usr_clk_o <= usr_clk2;
     
     
     rx_error_o(0) <= rx_disperr(0) or rx_disperr(1) or rx_notintable(0) or rx_notintable(1);
@@ -101,7 +96,7 @@ begin
         GTX0_RXENMCOMMAALIGN_IN     => '1',
         GTX0_RXENPCOMMAALIGN_IN     => '1',
         GTX0_RXDATA_OUT             => rx_data_o(15 downto 0),
-        GTX0_RXRECCLK_OUT           => open,
+        GTX0_RXRECCLK_OUT           => rec_clk_o,
         GTX0_RXUSRCLK2_IN           => usr_clk2,
         GTX0_RXN_IN                 => rx_n_i(0),
         GTX0_RXP_IN                 => rx_p_i(0),
@@ -134,5 +129,5 @@ begin
             end if;
         end if;
     end process;
-        
+    
 end Behavioral;
