@@ -528,15 +528,15 @@ begin
     --== SBit cluster packer ==--
     --=========================--
     
---    -- This module handles the SBits
---    sbits_inst : entity work.sbits
---    port map(        
---        ref_clk_i               => ref_clk,
---        reset_i                 => reset,        
---        vfat2_sbits_i           => vfat2_sbits_b,  
---        vfat2_sbit_mask_i       => vfat2_sbit_mask,        
---        vfat_sbit_clusters_o    => vfat_sbit_clusters
---    );
+    -- This module handles the SBits
+    sbits_inst : entity work.sbits
+    port map(        
+        ref_clk_i               => ref_clk,
+        reset_i                 => reset,        
+        vfat2_sbits_i           => vfat2_sbits_b,  
+        vfat2_sbit_mask_i       => vfat2_sbit_mask,        
+        vfat_sbit_clusters_o    => vfat_sbit_clusters
+    );
 
     chipscope_icon_inst : entity work.chipscope_icon
     port map(
