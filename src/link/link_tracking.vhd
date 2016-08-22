@@ -40,7 +40,7 @@ end link_tracking;
 
 architecture Behavioral of link_tracking is
       
-    type state_t is (IDLE, REQ_BX, ACK_BX, SAVING);
+    type state_t is (IDLE, RUN, REQ_BX, ACK_BX, SAVING);
 
     signal state        : state_t;
       
@@ -105,23 +105,27 @@ begin
                 case state is                     
                     when IDLE =>                
                         -- Data is ready
+                        if (evt_stb /= x"000000") then 
+                            vfat2_cnt <= 0;
+                            state <= RUN;
+                        end if;
+                        evt_wr_en <= '0';  
+                        bx_rd_en <= '0';
+                    when RUN =>
                         if (evt_stb(vfat2_cnt) = '1' and evt_ack(vfat2_cnt) = '0') then
                             evt_ack(vfat2_cnt) <= '1';
                             -- Check if require new BX
                             if (last_cnt = 0) then
-                                last_cnt <= 127;
+                                last_cnt <= 31;
                                 state <= REQ_BX;
                             else
                                 state <= SAVING;
                             end if;
                         else
-                            -- Reset strobe
-                            if (evt_stb(vfat2_cnt) = '0' and evt_ack(vfat2_cnt) = '1') then
-                                evt_ack(vfat2_cnt) <= '0';
-                            end if;
+                            evt_ack(vfat2_cnt) <= '0';
                             -- Rotate VFAT2s
                             if (vfat2_cnt = 23) then
-                                vfat2_cnt <= 0;
+                                state <= IDLE;
                             else
                                 vfat2_cnt <= vfat2_cnt + 1;
                             end if;
@@ -150,7 +154,14 @@ begin
                         bx_rd_en <= '0';
                         evt_wr_en <= '1';
                         evt_wr_data <= "1010" & evt_data(vfat2_cnt).bc & "1100" & evt_data(vfat2_cnt).ec & evt_data(vfat2_cnt).flags & "1110" & evt_data(vfat2_cnt).chip_id & evt_data(vfat2_cnt).strips(127 downto 0) & evt_data(vfat2_cnt).crc & last_bx;
-                        state <= IDLE;                  
+                        -- Rotate VFAT2s
+                        evt_ack(vfat2_cnt) <= '0';
+                        if (vfat2_cnt = 23) then
+                            state <= IDLE;
+                        else
+                            vfat2_cnt <= vfat2_cnt + 1;
+                            state <= RUN; 
+                        end if;                 
                     when others =>        
                         state <= IDLE;
                         vfat2_cnt <= 0;
