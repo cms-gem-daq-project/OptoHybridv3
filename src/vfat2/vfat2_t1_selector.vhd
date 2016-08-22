@@ -26,7 +26,7 @@ port(
     reset_i         : in std_logic;
     
     -- Input T1 commands
-    vfat2_t1_i      : in t1_array_t(3 downto 0);    
+    vfat2_t1_i      : in t1_array_t(4 downto 0);    
     vfat2_t1_sel_i  : in std_logic_vector(2 downto 0);    
     trigger_lim_i   : in std_logic_vector(31 downto 0);
     
@@ -54,11 +54,12 @@ begin
                 vfat2_t1 <= (lv1a => '0', calpulse => '0', resync => '0', bc0 => '0');
             else
                 case vfat2_t1_sel_i is
-                    when "000" => vfat2_t1 <= vfat2_t1_i(0);
-                    when "001" => vfat2_t1 <= vfat2_t1_i(1);
-                    when "010" => vfat2_t1 <= vfat2_t1_i(2);
-                    when "011" => vfat2_t1 <= vfat2_t1_i(3);
-                    when "100" => vfat2_t1 <= vfat2_t1_i(0) or vfat2_t1_i(1) or vfat2_t1_i(2) or vfat2_t1_i(3);
+                    when "000" => vfat2_t1 <= vfat2_t1_i(0); -- GTX
+                    when "001" => vfat2_t1 <= vfat2_t1_i(1); -- External
+                    when "010" => vfat2_t1 <= vfat2_t1_i(2); -- Internal
+                    when "011" => vfat2_t1 <= vfat2_t1_i(4); -- Loop
+                    when "100" => vfat2_t1 <= vfat2_t1_i(0) or vfat2_t1_i(1) or vfat2_t1_i(2) or vfat2_t1_i(3) or vfat2_t1_i(4); -- All
+                    when "101" => vfat2_t1 <= vfat2_t1_i(3); -- GBT
                     when others => vfat2_t1 <= (lv1a => '0', calpulse => '0', resync => '0', bc0 => '0');
                 end case;
             end if;

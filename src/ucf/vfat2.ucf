@@ -3,6 +3,8 @@
 # The codes next to the constraints are indications relative to the schematic
 # of the OptoHybrid given by Yifan. Do not remove them, they ease the pin matching process.
 
+############# GEB v2a
+
 ### Clocks
 #
 #NET "vfat2_mclk_p_o<2>"         LOC = AC20; # B7
@@ -50,6 +52,9 @@
 #NET "vfat2_sda_io<2>"           LOC = Y26; # G7_N
 #NET "vfat2_sda_io<3>"           LOC = J20; # I5_P
 #NET "vfat2_sda_io<0>"           LOC = W25; # H19_P
+
+
+############# GEB v2b
 
 ## Clocks
 

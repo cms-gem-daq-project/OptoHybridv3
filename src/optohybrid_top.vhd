@@ -186,12 +186,6 @@ port(
     
     --== Miscellaneous ==--
     
---    tmds_d_p_io             : inout std_logic_vector(2 downto 0);
---    tmds_d_n_io             : inout std_logic_vector(2 downto 0);
---
---    tmds_clk_p_io           : inout std_logic;
---    tmds_clk_n_io           : inout std_logic;
-
     ext_clk_i               : in std_logic;
     ext_trigger_i           : in std_logic;
     ext_sbits_o             : out std_logic_vector(5 downto 0);
@@ -203,11 +197,19 @@ port(
     mgt_clk_p_i             : in std_logic;
     mgt_clk_n_i             : in std_logic;
     
-    -- the first link is the track and control link, the other 4 are the trigger links TODO: make different name for trigger links
-    mgt_rx_p_i        : in std_logic_vector(4 downto 0);
-    mgt_rx_n_i        : in std_logic_vector(4 downto 0);
-    mgt_tx_p_o        : out std_logic_vector(4 downto 0);
-    mgt_tx_n_o        : out std_logic_vector(4 downto 0)
+    mgt_rx_p_i              : in std_logic_vector(4 downto 0); -- 0 = Tracking and control
+    mgt_rx_n_i              : in std_logic_vector(4 downto 0); -- 1 to 4 = trigger links
+    mgt_tx_p_o              : out std_logic_vector(4 downto 0);
+    mgt_tx_n_o              : out std_logic_vector(4 downto 0);
+    
+    --== GBT ==--
+    
+    to_gbt_p                : out std_logic_vector(3 downto 0);
+    to_gbt_n                : out std_logic_vector(3 downto 0);       
+    from_gbt_p              : in std_logic_vector(1 downto 0);
+    from_gbt_n              : in std_logic_vector(1 downto 0);       
+    data_clk_p              : in std_logic;
+    data_clk_n              : in std_logic         
 
 );
 end optohybrid_top;
@@ -255,10 +257,18 @@ architecture Behavioral of optohybrid_top is
     signal gtx_rx_data          : std_logic_vector(15 downto 0);
     signal gtx_rx_error         : std_logic_vector(0 downto 0);
     
+    --== GBT ==--
+    
+    signal gbt_din              : std_logic_vector(15 downto 0);
+    signal gbt_dout             : std_logic_vector(31 downto 0);
+    signal gbt_valid            : std_logic;
+    signal gbt_error            : std_logic;
+    signal gbt_evt_sent         : std_logic;
+    
     --== VFAT2 ==--
     
-    signal vfat2_t1             : t1_array_t(2 downto 0);
-    signal vfat2_t1_lst         : t1_array_t(4 downto 0);
+    signal vfat2_t1             : t1_array_t(3 downto 0);
+    signal vfat2_t1_lst         : t1_array_t(5 downto 0); -- 0 = GTX, 1 = Internal, 2 = External, 3 = loop, 4 = All, 5 = GBT (for backwards compatibility put at the end)
     signal vfat2_tk_data        : tk_data_array_t(23 downto 0);
     
     --== System ==--
@@ -271,6 +281,7 @@ architecture Behavioral of optohybrid_top is
     signal sys_sbit_sel         : std_logic_vector(29 downto 0);
     signal trigger_lim          : std_logic_vector(31 downto 0);
     signal zero_suppress        : std_logic;
+    signal sys_sbit_mode        : std_logic_vector(1 downto 0);
     
     --== Wishbone signals ==--
     
@@ -281,11 +292,11 @@ architecture Behavioral of optohybrid_top is
     
     --== ChipScope ==--    
     
-    signal CONTROL0 : STD_LOGIC_VECTOR(35 DOWNTO 0);
-    signal CONTROL1 : STD_LOGIC_VECTOR(35 DOWNTO 0);
-    signal TRIG0 : STD_LOGIC_VECTOR(191 DOWNTO 0);
-    signal SYNC_IN : STD_LOGIC_VECTOR(36 DOWNTO 0);
-    signal SYNC_OUT : STD_LOGIC_VECTOR(65 DOWNTO 0);
+    signal control0             : std_logic_vector(35 downto 0);
+    signal control1             : std_logic_vector(35 downto 0);
+    signal trig0                : std_logic_vector(191 downto 0);
+    signal sync_in              : std_logic_vector(36 downto 0);
+    signal sync_out             : std_logic_vector(65 downto 0);
         
 begin
 
@@ -310,6 +321,7 @@ begin
         ext_trigger_i       => ext_trigger_i,
         vfat2_t1_o          => vfat2_t1(2),
         vfat2_sbits_i       => vfat2_sbits_b,
+        sys_sbit_mode_i     => sys_sbit_mode,
         sys_sbit_sel_i      => sys_sbit_sel,
         ext_sbits_o         => ext_sbits_o        
     );
@@ -345,24 +357,20 @@ begin
 		reset_i         => reset,
         gtx_clk_o       => gtx_clk,
         rec_clk_o       => gtx_rec_clk,
-        gtx_tx_kchar_i  => gtx_tx_kchar,
-        gtx_tx_data_i   => gtx_tx_data,
-        gtx_rx_kchar_o  => gtx_rx_kchar,
-        gtx_rx_data_o   => gtx_rx_data,
-        gtx_rx_error_o  => gtx_rx_error,     
+        tx_kchar_i      => gtx_tx_kchar,
+        tx_data_i       => gtx_tx_data,
+        rx_kchar_o      => gtx_rx_kchar,
+        rx_data_o       => gtx_rx_data,
+        rx_error_o      => gtx_rx_error,     
 		rx_n_i          => mgt_rx_n_i,
 		rx_p_i          => mgt_rx_p_i,
 		tx_n_o          => mgt_tx_n_o,
 		tx_p_o          => mgt_tx_p_o
 	);
     
-    --==========--
-    --== Link ==--
-    --==========--
-    
     -- This module controls the DATA of the GTX. It formats data packets to be sent over the optical link.
 
-    link_inst : entity work.link
+    gtx_link_inst : entity work.gtx_link
     port map(
         ref_clk_i       => ref_clk,
         gtx_clk_i       => gtx_clk,
@@ -384,6 +392,47 @@ begin
         evt_sent_o      => gtx_evt_sent,
         sbit_clusters_i => vfat_sbit_clusters        
     );
+    
+    --=========--
+    --== GBT ==--
+    --=========--
+    
+    -- This module controls the PHY of the GBT. It contains low-level functions that control the quality of the 
+    -- link and perform the resets.
+    
+    gbt_inst : entity work.gbt
+    port map(
+       to_gbt_p     => to_gbt_p,
+       to_gbt_n     => to_gbt_n,       
+       from_gbt_p   => from_gbt_p,
+       from_gbt_n   => from_gbt_n,     
+       data_clk_p   => data_clk_p,
+       data_clk_n   => data_clk_n,
+       data_o       => gbt_din,
+       data_i       => gbt_dout,
+       valid_o      => gbt_valid,    
+       header_io    => open     
+    );
+    
+    -- This module controls the DATA of the GBT. It formats data packets to be sent over the optical link.
+    
+    gbt_link_inst : entity work.gbt_link
+    port map(
+        ref_clk_i       => ref_clk,
+        reset_i         => reset,
+        data_i          => gbt_din,
+        data_o          => gbt_dout,
+        valid_i         => gbt_valid,
+        wb_mst_req_o    => wb_m_req(WB_MST_GBT),
+        wb_mst_res_i    => wb_m_res(WB_MST_GBT),
+        vfat2_tk_data_i => vfat2_tk_data,
+        vfat2_tk_mask_i => vfat2_tk_mask,
+        zero_suppress_i => zero_suppress,
+        vfat2_t1_i      => vfat2_t1_lst(4),
+        vfat2_t1_o      => vfat2_t1(3), 
+        error_o         => gbt_error,
+        evt_sent_o      => gbt_evt_sent
+    );    
 
     --===========--
     --== VFAT2 ==--
@@ -505,7 +554,8 @@ begin
         vfat2_sbit_mask_o   => vfat2_sbit_mask,
         sys_sbit_sel_o      => sys_sbit_sel,
         trigger_lim_o       => trigger_lim,
-        zero_suppress_o     => zero_suppress
+        zero_suppress_o     => zero_suppress,
+        sys_sbit_mode_o     => sys_sbit_mode
     );
     
     --============--
@@ -521,14 +571,15 @@ begin
         wb_slv_req_i        => wb_s_req(WB_SLV_STAT),
         wb_slv_res_o        => wb_s_res(WB_SLV_STAT), 
         qpll_locked_i       => qpll_locked_b,
-        qpll_pll_locked_i   => qpll_pll_locked_b
+        qpll_pll_locked_i   => qpll_pll_locked_b, 
+        gbt_valid_i         => gbt_valid
     );
     
     --=========================--
     --== SBit cluster packer ==--
     --=========================--
     
-    -- This module handles the SBits
+    -- this module handles the sbits
     sbits_inst : entity work.sbits
     port map(        
         ref_clk_i               => gtx_clk,
@@ -540,28 +591,28 @@ begin
 
     chipscope_icon_inst : entity work.chipscope_icon
     port map(
-        CONTROL0    => CONTROL0,
-        CONTROL1    => CONTROL1
+        control0    => control0,
+        control1    => control1
     );
     
     chipscope_ila_inst : entity work.chipscope_ila
     port map(
-        CONTROL => CONTROL0,
-        CLK     => ref_clk,
-        TRIG0   => TRIG0
+        control => control0,
+        clk     => ref_clk,
+        trig0   => trig0
     );
     
     chipscope_vio_inst : entity work.chipscope_vio
     port map(
-        CONTROL     => CONTROL1,
-        CLK         => ref_clk,
-        SYNC_IN     => SYNC_IN,
-        SYNC_OUT    => SYNC_OUT
+        control     => control1,
+        clk         => ref_clk,
+        sync_in     => sync_in,
+        sync_out    => sync_out
     );
     
-    gen_con : for I in 0 to 23 generate
+    gen_con : for i in 0 to 23 generate
     begin
-        TRIG0(((I + 1) * 8 - 1) downto (I * 8)) <= vfat2_sbits_b(I);
+        trig0(((i + 1) * 8 - 1) downto (i * 8)) <= vfat2_sbits_b(i);
     end generate;
     
     --=============--

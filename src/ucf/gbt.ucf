@@ -1,51 +1,20 @@
-# This file constraints the GBT signals
+NET "to_gbt_p<0>"  LOC = AD14; # K3 N = AC14 = ELink 0
+NET "to_gbt_n<0>"  LOC = AC14; # K3 P = AD14
 
-# Resets
+NET "to_gbt_p<1>"  LOC = J9; # GBT 3 N = H9 = ELink 16
+NET "to_gbt_n<1>"  LOC = H9; # GBT 3 P = J9
 
-#NET "gbt_inst/mgt_tx_reset" MAXDELAY = 3 ns;
-#NET "gbt_inst/mgt_rx_reset" MAXDELAY = 3 ns;
+NET "to_gbt_p<2>"  LOC = K13; # L19 P = K13 = ELink 24
+NET "to_gbt_n<2>"  LOC = K12; # L19 N = K12
 
+NET "to_gbt_p<3>"  LOC = L13; # L10 N = M13 = ELink 32
+NET "to_gbt_n<3>"  LOC = M13; # L10 P = L13
 
-# TX word clock
+NET "from_gbt_p<0>"  LOC = M16; # M18 N = M15 = ELink 16
+NET "from_gbt_n<0>"  LOC = M15; # M18 P = M16
 
-NET "gbt_inst/from_gbt_bank_clks_mgt_clks_tx_wordClk_noBuff<1>" TNM_NET = gbt_inst/from_gbt_bank_clks_mgt_clks_tx_wordClk_noBuff<1>;
-TIMESPEC TS_gbt_inst_from_gbt_bank_clks_mgt_clks_tx_wordClk_noBuff_1 = PERIOD "gbt_inst/from_gbt_bank_clks_mgt_clks_tx_wordClk_noBuff<1>" 4.1667 ns HIGH 50%;
+NET "from_gbt_p<1>"  LOC = H10; # L7 N = G10 = ELink 20
+NET "from_gbt_n<1>"  LOC = G10; # L7 P = H10
 
-
-# RX word clock
-
-NET "gbt_inst/from_gbt_bank_clks_mgt_clks_rx_wordClk_noBuff<1>"    TNM_NET = gbt_inst/from_gbt_bank_clks_mgt_clks_rx_wordClk_noBuff<1>;
-TIMESPEC TS_gbt_inst_from_gbt_bank_clks_mgt_clks_rx_wordClk_noBuff_1 = PERIOD "gbt_inst/from_gbt_bank_clks_mgt_clks_rx_wordClk_noBuff<1>" 4.1667 ns HIGH 50%;
-
-NET "gbt_inst/from_gbt_bank_clks_mgt_clks_rx_wordClk_noBuff<2>"    TNM_NET = gbt_inst/from_gbt_bank_clks_mgt_clks_rx_wordClk_noBuff<2>;
-TIMESPEC TS_gbt_inst_from_gbt_bank_clks_mgt_clks_rx_wordClk_noBuff_2 = PERIOD "gbt_inst/from_gbt_bank_clks_mgt_clks_rx_wordClk_noBuff<2>" 4.1667 ns HIGH 50%;
-
-NET "gbt_inst/from_gbt_bank_clks_mgt_clks_rx_wordClk_noBuff<3>"    TNM_NET = gbt_inst/from_gbt_bank_clks_mgt_clks_rx_wordClk_noBuff<3>;
-TIMESPEC TS_gbt_inst_from_gbt_bank_clks_mgt_clks_rx_wordClk_noBuff_3 = PERIOD "gbt_inst/from_gbt_bank_clks_mgt_clks_rx_wordClk_noBuff<3>" 4.1667 ns HIGH 50%;
-
-NET "gbt_inst/from_gbt_bank_clks_mgt_clks_rx_wordClk_noBuff<4>"    TNM_NET = gbt_inst/from_gbt_bank_clks_mgt_clks_rx_wordClk_noBuff<4>;
-TIMESPEC TS_gbt_inst_from_gbt_bank_clks_mgt_clks_rx_wordClk_noBuff_4 = PERIOD "gbt_inst/from_gbt_bank_clks_mgt_clks_rx_wordClk_noBuff<4>" 4.1667 ns HIGH 50%;
-
-
-# Delays
-
-#INST "gbt_inst/gbt_bank_inst/gbtTx_gen[1].gbtTx/scrambler" TNM = "GBT_TX_SCRAMBLER";
-#INST "gbt_inst/gbt_bank_inst/gbtTx_gen[1].gbtTx/txGearbox" TNM = "GBT_TX_GEARBOX";
-#TIMESPEC TS_GBTTX_SCRAMBLER_TO_GEARBOX = FROM "GBT_TX_SCRAMBLER" TO "GBT_TX_GEARBOX" 20 ns DATAPATHONLY;
-
-#INST "gbt_inst/gbt_bank_inst/gbtRx_gen[1].gbtRx/rxGearbox" TNM = "GBT_RX_GEARBOX";
-#INST "gbt_inst/gbt_bank_inst/gbtRx_gen[1].gbtRx/descrambler" TNM = "GBT_RX_DESCRAMBLER";
-#TIMESPEC TS_GBTRX_GEARBOX_TO_DESCRAMBLER = FROM  "GBT_RX_GEARBOX" TO "GBT_RX_DESCRAMBLER" 20 ns DATAPATHONLY;
-
-
-# Floorplaning
-
-INST "gbt_inst" AREA_GROUP = "gbt_core";
-AREA_GROUP "gbt_core" RANGE = CLOCKREGION_X1Y0:CLOCKREGION_X1Y0;
-     
-INST "gbt_inst/tx_pll_inst/mmcm_adv_inst" LOC = MMCM_ADV_X0Y1;
-
-INST "gbt_inst/gbt_bank_inst/mgt/mgtLatOpt_gen.mgtLatOpt/gtxLatOpt_gen[1].gtxLatOpt/gtxe1_i" LOC = GTXE1_X0Y0;
-INST "gbt_inst/gbt_bank_inst/mgt/mgtLatOpt_gen.mgtLatOpt/gtxLatOpt_gen[2].gtxLatOpt/gtxe1_i" LOC = GTXE1_X0Y1;
-INST "gbt_inst/gbt_bank_inst/mgt/mgtLatOpt_gen.mgtLatOpt/gtxLatOpt_gen[3].gtxLatOpt/gtxe1_i" LOC = GTXE1_X0Y2;
-INST "gbt_inst/gbt_bank_inst/mgt/mgtLatOpt_gen.mgtLatOpt/gtxLatOpt_gen[4].gtxLatOpt/gtxe1_i" LOC = GTXE1_X0Y3;
+NET "data_clk_p" LOC = L9; # GBT 1 N = K9 = Elink 16 clock
+NET "data_clk_n" LOC = K9; # GBT 1 P = L9

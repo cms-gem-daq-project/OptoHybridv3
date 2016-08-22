@@ -22,7 +22,7 @@ entity link_request is
 port(
 
 	ref_clk_i       : in std_logic;
-    gtx_clk_i       : in std_logic;
+    link_clk_i      : in std_logic;
 	reset_i         : in std_logic;
     
 	wb_mst_req_o    : out wb_req_t;
@@ -47,10 +47,10 @@ begin
 
     --== RX buffer ==--
     
-    fifo_gtx_rx_inst : entity work.fifo_gtx_rx
+    fifo_request_rx_inst : entity work.fifo_request_rx
     port map(
         rst     => reset_i,
-        wr_clk  => gtx_clk_i,
+        wr_clk  => link_clk_i,
         wr_en   => rx_en_i,
         din     => rx_data_i,        
         rd_clk  => ref_clk_i,
@@ -80,13 +80,13 @@ begin
     
     --== TX buffer ==--
     
-    fifo_gtx_tx_inst : entity work.fifo_gtx_tx
+    fifo_request_tx_inst : entity work.fifo_request_tx
     port map(
         rst     => reset_i,
         wr_clk  => ref_clk_i,
         wr_en   => wb_mst_res_i.ack,
         din     => wb_mst_res_i.data,        
-        rd_clk  => gtx_clk_i,
+        rd_clk  => link_clk_i,
         rd_en   => tx_en_i,
         valid   => tx_valid_o,
         dout    => tx_data_o,

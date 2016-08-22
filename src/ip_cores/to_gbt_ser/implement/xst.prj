@@ -1,0 +1,2 @@
+vhdl work ../../to_gbt_ser.vhd
+vhdl work ../example_design/to_gbt_ser_exdes.vhd

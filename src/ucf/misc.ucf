@@ -28,14 +28,14 @@ NET "ext_sbits_o[5]" LOC = M17;
 
 ## Header
 
-NET "header_io<0>"  LOC = AD17; 
-NET "header_io<1>"  LOC = AE17; 
-NET "header_io<2>"  LOC = AD16; 
-NET "header_io<3>"  LOC = AE16; 
-NET "header_io<4>"  LOC = AG13; 
-NET "header_io<5>"  LOC = AH9; 
-NET "header_io<6>"  LOC = AG15; 
-NET "header_io<7>"  LOC = AF13; 
+NET "header_io<0>"  LOC = AE17; 
+NET "header_io<1>"  LOC = AD17; 
+NET "header_io<2>"  LOC = AE16; 
+NET "header_io<3>"  LOC = AD16; 
+NET "header_io<4>"  LOC = AH9;  
+NET "header_io<5>"  LOC = AG13;
+NET "header_io<6>"  LOC = AF13;
+NET "header_io<7>"  LOC = AG15;  
 NET "header_io<8>"  LOC = AG16; 
 NET "header_io<9>"  LOC = AF15; 
 NET "header_io<10>"  LOC = AC13; 

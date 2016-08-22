@@ -44,7 +44,7 @@ port(
     vfat2_tk_data_i : in tk_data_array_t(23 downto 0);
     
     -- T1
-    vfat2_t1_i      : in t1_array_t(4 downto 0);
+    vfat2_t1_i      : in t1_array_t(5 downto 0);
     
     -- GTX
     gtx_tk_error_i  : in std_logic;

@@ -1,10 +1,10 @@
 # This file constraints the GTX signals
 
-INST gtx_inst/gtx_wrapper_inst/sfp_gtx_inst/gtx0_sfp_gtx_i/gtxe1_i LOC=GTXE1_X0Y19;
-#INST gtx_inst/gtx_wrapper_inst/sfp_gtx_inst/gtx_trig_0a_sfp_gtx_i/gtxe1_i LOC=GTXE1_X0Y12;
-#INST gtx_inst/gtx_wrapper_inst/sfp_gtx_inst/gtx_trig_1a_sfp_gtx_i/gtxe1_i LOC=GTXE1_X0Y13;
-#INST gtx_inst/gtx_wrapper_inst/sfp_gtx_inst/gtx_trig_0b_sfp_gtx_i/gtxe1_i LOC=GTXE1_X0Y14;
-#INST gtx_inst/gtx_wrapper_inst/sfp_gtx_inst/gtx_trig_1b_sfp_gtx_i/gtxe1_i LOC=GTXE1_X0Y15;
+INST gtx_inst/sfp_gtx_inst/gtx0_sfp_gtx_i/gtxe1_i LOC=GTXE1_X0Y19;
+#INST gtx_inst/sfp_gtx_inst/gtx_trig_0a_sfp_gtx_i/gtxe1_i LOC=GTXE1_X0Y12;
+#INST gtx_inst/sfp_gtx_inst/gtx_trig_1a_sfp_gtx_i/gtxe1_i LOC=GTXE1_X0Y13;
+#INST gtx_inst/sfp_gtx_inst/gtx_trig_0b_sfp_gtx_i/gtxe1_i LOC=GTXE1_X0Y14;
+#INST gtx_inst/sfp_gtx_inst/gtx_trig_1b_sfp_gtx_i/gtxe1_i LOC=GTXE1_X0Y15;
 
 NET "mgt_clk_p_i"           LOC = P6; 
 NET "mgt_clk_n_i"           LOC = P5;
