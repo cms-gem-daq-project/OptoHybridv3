@@ -22,34 +22,38 @@ use work.wb_pkg.all;
 
 entity counters is
 generic(
-    N               : integer := 109
+    N                   : integer := 117
 );
 port(
 
-    ref_clk_i       : in std_logic;
-    gtx_clk_i       : in std_logic;
-    reset_i         : in std_logic;
+    ref_clk_i           : in std_logic;
+    gtx_clk_i           : in std_logic;
+    reset_i             : in std_logic;
     
     -- Wishbone slave
-    wb_slv_req_i    : in wb_req_t;
-    wb_slv_res_o    : out wb_res_t;    
+    wb_slv_req_i        : in wb_req_t;
+    wb_slv_res_o        : out wb_res_t;    
     
     -- Wishbone request
-    wb_m_req_i      : in wb_req_array_t((WB_MASTERS - 1) downto 0);
-    wb_m_res_i      : in wb_res_array_t((WB_MASTERS - 1) downto 0);    
-    wb_s_req_i      : in wb_req_array_t((WB_SLAVES - 1) downto 0);
-    wb_s_res_i      : in wb_res_array_t((WB_SLAVES - 1) downto 0);
+    wb_m_req_i          : in wb_req_array_t((WB_MASTERS - 1) downto 0);
+    wb_m_res_i          : in wb_res_array_t((WB_MASTERS - 1) downto 0);    
+    wb_s_req_i          : in wb_req_array_t((WB_SLAVES - 1) downto 0);
+    wb_s_res_i          : in wb_res_array_t((WB_SLAVES - 1) downto 0);
     
     -- Tracking data
-    vfat2_tk_data_i : in tk_data_array_t(23 downto 0);
+    vfat2_tk_data_i     : in tk_data_array_t(23 downto 0);
     
     -- T1
-    vfat2_t1_i      : in t1_array_t(5 downto 0);
+    vfat2_t1_i          : in t1_array_t(5 downto 0);
     
     -- GTX
-    gtx_tk_error_i  : in std_logic;
-    gtx_tr_error_i  : in std_logic;
-    gtx_evt_sent_i  : in std_logic;
+    gtx_tk_error_i      : in std_logic;
+    gtx_tr_error_i      : in std_logic;
+    gtx_evt_sent_i      : in std_logic;
+    
+    -- GBT
+    gbt_link_error_i    : in std_logic;
+    gbt_evt_sent_i      : in std_logic;
     
     -- QPLL
     qpll_locked_i       : in std_logic;
@@ -182,5 +186,27 @@ begin
     qpll_lock_counter : entity work.counter_async port map(reset_i => (wb_stb(107) and wb_we), en_i => qpll_locked_i, data_o => reg_data(107));
     
     qpll_pll_locked_counter : entity work.counter_async port map(reset_i => (wb_stb(108) and wb_we), en_i => qpll_pll_locked_i, data_o => reg_data(108));
+    
+    -- 109 - 116 : GBT  
+    
+    wb_gbt_req_cnt_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(109) and wb_we), en_i => wb_m_req_i(4).stb, data_o => reg_data(109));
+    
+    wb_gbt_res_cnt_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(110) and wb_we), en_i => wb_m_res_i(4).ack, data_o => reg_data(110));
+        
+    gbt_lv1a_cnt_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(111) and wb_we), en_i => vfat2_t1_i(5).lv1a, data_o => reg_data(111));
+    
+    gbt_calpulse_cnt_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(112) and wb_we), en_i => vfat2_t1_i(5).calpulse, data_o => reg_data(112));
+    
+    gbt_resync_cnt_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(113) and wb_we), en_i => vfat2_t1_i(5).resync, data_o => reg_data(113));
+    
+    gbt_bc0_cnt_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(114) and wb_we), en_i => vfat2_t1_i(5).bc0, data_o => reg_data(114));
+    
+    gbt_link_err_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(115) and wb_we), en_i => gbt_link_error_i, data_o => reg_data(115));
+    
+    gbt_evt_sent_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(116) and wb_we), en_i => gbt_evt_sent_i, data_o => reg_data(116));
+
+
+    
+    
     
 end Behavioral;

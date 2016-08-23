@@ -27,7 +27,7 @@ use work.types_pkg.all;
 
 entity stat is
 generic(
-    N               : integer := 4
+    N               : integer := 5
 );
 port(
 
@@ -41,7 +41,8 @@ port(
     --
     qpll_locked_i       : in std_logic;
     qpll_pll_locked_i   : in std_logic;
-    gbt_valid_i         : in std_logic
+    gbt_rx_aligned_i    : in std_logic;
+    gbt_tx_aligned_i    : in std_logic
     
 );
 end stat;
@@ -100,13 +101,15 @@ begin
     --== Mapping ==--
     --=============--
     
-    reg_data(0) <= x"20160822";
+    reg_data(0) <= x"20160823";
     
     reg_data(1) <= (0 => qpll_locked_i, others => '0');
     
     reg_data(2) <= (0 => qpll_pll_locked_i, others => '0');    
     
-    reg_data(3) <= (0 => gbt_valid_i, others => '0');    
+    reg_data(3) <= (0 => gbt_rx_aligned_i, others => '0'); 
+    
+    reg_data(4) <= (0 => gbt_tx_aligned_i, others => '0');    
     
 end Behavioral;
 

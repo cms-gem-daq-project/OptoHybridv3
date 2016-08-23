@@ -103,7 +103,7 @@ begin
     --=================--
     
     vfat2_t1_lst <= vfat2_t1_loop & vfat2_t1_lst_i; 
-    vfat2_t1_lst_o <= vfat2_t1_mx & vfat2_t1_loop & vfat2_t1_lst_i;
+    vfat2_t1_lst_o <= vfat2_t1_lst_i(3) & vfat2_t1_mx & vfat2_t1_loop & vfat2_t1_lst_i(2 downto 0);
         
     vfat2_t1_selector_inst : entity work.vfat2_t1_selector
     port map(

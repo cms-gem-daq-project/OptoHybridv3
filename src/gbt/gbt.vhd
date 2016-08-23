@@ -25,6 +25,9 @@ port(
    data_o       : out std_logic_vector(15 downto 0);
    valid_o      : out std_logic;
    
+   rx_aligned_o : out std_logic;
+   tx_aligned_o : out std_logic;
+   
    header_io    : out std_logic_vector(15 downto 0)
    
 );
@@ -159,7 +162,10 @@ begin
     -- DONE
     -- to_gbt holds the data you want to send
     to_gbt <= data_i;
+    
     valid_o <= gbt_rx_aligned and gbt_tx_aligned;
+    rx_aligned_o <= gbt_rx_aligned;
+    tx_aligned_o <= gbt_tx_aligned;
     
     --===========--
     --== OTHER ==--

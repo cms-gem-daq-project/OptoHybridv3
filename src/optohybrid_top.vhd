@@ -264,10 +264,12 @@ architecture Behavioral of optohybrid_top is
     signal gbt_valid            : std_logic;
     signal gbt_error            : std_logic;
     signal gbt_evt_sent         : std_logic;
+    signal gbt_rx_aligned       : std_logic;
+    signal gbt_tx_aligned      : std_logic;
     
     --== VFAT2 ==--
     
-    signal vfat2_t1             : t1_array_t(3 downto 0);
+    signal vfat2_t1             : t1_array_t(3 downto 0); -- 0 = GTX, 1 = Internal, 2 = External, 3 = GBT (for backwards compatibility put at the end)
     signal vfat2_t1_lst         : t1_array_t(5 downto 0); -- 0 = GTX, 1 = Internal, 2 = External, 3 = loop, 4 = All, 5 = GBT (for backwards compatibility put at the end)
     signal vfat2_tk_data        : tk_data_array_t(23 downto 0);
     
@@ -411,6 +413,8 @@ begin
        data_o       => gbt_din,
        data_i       => gbt_dout,
        valid_o      => gbt_valid,    
+       rx_aligned_o => gbt_rx_aligned,
+       tx_aligned_o => gbt_tx_aligned,
        header_io    => open     
     );
     
@@ -530,7 +534,9 @@ begin
         vfat2_t1_i          => vfat2_t1_lst,
         gtx_tk_error_i      => gtx_tk_error,
         gtx_tr_error_i      => gtx_tr_error,
-        gtx_evt_sent_i      => gtx_evt_sent,
+        gtx_evt_sent_i      => gtx_evt_sent,        
+        gbt_link_error_i    => gbt_error,  
+        gbt_evt_sent_i      => gbt_evt_sent,  
         qpll_locked_i       => qpll_locked_b,
         qpll_pll_locked_i   => qpll_pll_locked_b
     );
@@ -572,7 +578,8 @@ begin
         wb_slv_res_o        => wb_s_res(WB_SLV_STAT), 
         qpll_locked_i       => qpll_locked_b,
         qpll_pll_locked_i   => qpll_pll_locked_b, 
-        gbt_valid_i         => gbt_valid
+        gbt_rx_aligned_i    => gbt_rx_aligned,
+        gbt_tx_aligned_i    => gbt_tx_aligned
     );
     
     --=========================--
