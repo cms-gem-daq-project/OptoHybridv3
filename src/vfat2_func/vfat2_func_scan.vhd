@@ -118,7 +118,7 @@ begin
         ref_clk_i       => ref_clk_i,
         reset_i         => local_reset,
         req_stb_i       => wb_stb(0),
-        req_mode_i      => reg_data(1)(1 downto 0),
+        req_mode_i      => reg_data(1)(2 downto 0),
         req_vfat2_i     => reg_data(2)(4 downto 0),
         req_channel_i   => reg_data(3)(6 downto 0),
         req_min_i       => reg_data(4)(7 downto 0),

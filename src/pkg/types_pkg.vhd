@@ -15,7 +15,7 @@ package types_pkg is
     type u32_array_t is array(integer range <>) of unsigned(31 downto 0);
     
     type std32_array_t is array(integer range <>) of std_logic_vector(31 downto 0);
-
+    
     type std64_array_t is array(integer range <>) of std_logic_vector(63 downto 0);
     
     --==================--

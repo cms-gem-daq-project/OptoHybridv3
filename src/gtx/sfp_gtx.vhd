@@ -75,6 +75,7 @@ generic
 (
     -- Simulation attributes
     WRAPPER_SIM_GTXRESET_SPEEDUP    : integer   := 0 -- Set to 1 to speed up sim reset
+    
 );
 port
 (
@@ -122,43 +123,73 @@ port
     
     --_________________________________________________________________________
     --_________________________________________________________________________
-    --GTX1  (X0Y1)
+    -- Trigger link 0 GTX
     
-    ----------------------- Receive Ports - 8b10b Decoder ----------------------
-    GTX1_RXCHARISK_OUT                      : out  std_logic_vector(1 downto 0);
-    GTX1_RXDISPERR_OUT                      : out  std_logic_vector(1 downto 0);
-    GTX1_RXNOTINTABLE_OUT                   : out  std_logic_vector(1 downto 0);
     --------------- Receive Ports - Comma Detection and Alignment --------------
-    GTX1_RXBYTEISALIGNED_OUT                : out  std_logic;
-    GTX1_RXCOMMADET_OUT                     : out  std_logic;
-    GTX1_RXENMCOMMAALIGN_IN                 : in   std_logic;
-    GTX1_RXENPCOMMAALIGN_IN                 : in   std_logic;
+    GTX_TRIG0_RXENMCOMMAALIGN_IN                 : in   std_logic;
+    GTX_TRIG0_RXENPCOMMAALIGN_IN                 : in   std_logic;
     ------------------- Receive Ports - RX Data Path interface -----------------
-    GTX1_RXDATA_OUT                         : out  std_logic_vector(15 downto 0);
-    GTX1_RXRECCLK_OUT                       : out  std_logic;
-    GTX1_RXUSRCLK2_IN                       : in   std_logic;
+    GTX_TRIG0_RXUSRCLK2_IN                       : in   std_logic;
     ------- Receive Ports - RX Driver,OOB signalling,Coupling and Eq.,CDR ------
-    GTX1_RXN_IN                             : in   std_logic;
-    GTX1_RXP_IN                             : in   std_logic;
+    GTX_TRIG0a_RXN_IN                            : in   std_logic;
+    GTX_TRIG0a_RXP_IN                            : in   std_logic;
+    GTX_TRIG0b_RXN_IN                            : in   std_logic;
+    GTX_TRIG0b_RXP_IN                            : in   std_logic;
     ------------------------ Receive Ports - RX PLL Ports ----------------------
-    GTX1_GTXRXRESET_IN                      : in   std_logic;
-    GTX1_MGTREFCLKRX_IN                     : in   std_logic;
-    GTX1_PLLRXRESET_IN                      : in   std_logic;
-    GTX1_RXPLLLKDET_OUT                     : out  std_logic;
-    GTX1_RXRESETDONE_OUT                    : out  std_logic;
+    GTX_TRIG0_GTXRXRESET_IN                      : in   std_logic;
+    GTX_TRIG0_MGTREFCLKRX_IN                     : in   std_logic;
+    GTX_TRIG0_PLLRXRESET_IN                      : in   std_logic;
     ---------------- Transmit Ports - 8b10b Encoder Control Ports --------------
-    GTX1_TXCHARISK_IN                       : in   std_logic_vector(1 downto 0);
+    GTX_TRIG0_TXCHARISK_IN                       : in   std_logic_vector(1 downto 0);
     ------------------ Transmit Ports - TX Data Path interface -----------------
-    GTX1_TXDATA_IN                          : in   std_logic_vector(15 downto 0);
-    GTX1_TXOUTCLK_OUT                       : out  std_logic;
-    GTX1_TXUSRCLK2_IN                       : in   std_logic;
+    GTX_TRIG0_TXDATA_IN                          : in   std_logic_vector(15 downto 0);
+    GTX_TRIG0a_TXOUTCLK_OUT                      : out  std_logic;
+    GTX_TRIG0b_TXOUTCLK_OUT                      : out  std_logic;
+    GTX_TRIG0_TXUSRCLK2_IN                       : in   std_logic;
     ---------------- Transmit Ports - TX Driver and OOB signaling --------------
-    GTX1_TXN_OUT                            : out  std_logic;
-    GTX1_TXP_OUT                            : out  std_logic;
+    GTX_TRIG0a_TXN_OUT                           : out  std_logic;
+    GTX_TRIG0a_TXP_OUT                           : out  std_logic;
+    GTX_TRIG0b_TXN_OUT                           : out  std_logic;
+    GTX_TRIG0b_TXP_OUT                           : out  std_logic;
     ----------------------- Transmit Ports - TX PLL Ports ----------------------
-    GTX1_GTXTXRESET_IN                      : in   std_logic;
-    GTX1_TXRESETDONE_OUT                    : out  std_logic
+    GTX_TRIG0_GTXTXRESET_IN                      : in   std_logic;
+    GTX_TRIG0a_TXRESETDONE_OUT                   : out  std_logic;
+    GTX_TRIG0b_TXRESETDONE_OUT                   : out  std_logic;
 
+    --_________________________________________________________________________
+    --_________________________________________________________________________
+    -- Trigger link 1 GTX
+    
+    --------------- Receive Ports - Comma Detection and Alignment --------------
+    GTX_TRIG1_RXENMCOMMAALIGN_IN                 : in   std_logic;
+    GTX_TRIG1_RXENPCOMMAALIGN_IN                 : in   std_logic;
+    ------------------- Receive Ports - RX Data Path interface -----------------
+    GTX_TRIG1_RXUSRCLK2_IN                       : in   std_logic;
+    ------- Receive Ports - RX Driver,OOB signalling,Coupling and Eq.,CDR ------
+    GTX_TRIG1a_RXN_IN                            : in   std_logic;
+    GTX_TRIG1a_RXP_IN                            : in   std_logic;
+    GTX_TRIG1b_RXN_IN                            : in   std_logic;
+    GTX_TRIG1b_RXP_IN                            : in   std_logic;
+    ------------------------ Receive Ports - RX PLL Ports ----------------------
+    GTX_TRIG1_GTXRXRESET_IN                      : in   std_logic;
+    GTX_TRIG1_MGTREFCLKRX_IN                     : in   std_logic;
+    GTX_TRIG1_PLLRXRESET_IN                      : in   std_logic;
+    ---------------- Transmit Ports - 8b10b Encoder Control Ports --------------
+    GTX_TRIG1_TXCHARISK_IN                       : in   std_logic_vector(1 downto 0);
+    ------------------ Transmit Ports - TX Data Path interface -----------------
+    GTX_TRIG1_TXDATA_IN                          : in   std_logic_vector(15 downto 0);
+    GTX_TRIG1a_TXOUTCLK_OUT                      : out  std_logic;
+    GTX_TRIG1b_TXOUTCLK_OUT                      : out  std_logic;
+    GTX_TRIG1_TXUSRCLK2_IN                       : in   std_logic;
+    ---------------- Transmit Ports - TX Driver and OOB signaling --------------
+    GTX_TRIG1a_TXN_OUT                           : out  std_logic;
+    GTX_TRIG1a_TXP_OUT                           : out  std_logic;
+    GTX_TRIG1b_TXN_OUT                           : out  std_logic;
+    GTX_TRIG1b_TXP_OUT                           : out  std_logic;
+    ----------------------- Transmit Ports - TX PLL Ports ----------------------
+    GTX_TRIG1_GTXTXRESET_IN                      : in   std_logic;
+    GTX_TRIG1a_TXRESETDONE_OUT                    : out  std_logic;
+    GTX_TRIG1b_TXRESETDONE_OUT                    : out  std_logic
     
 );
 
@@ -173,18 +204,21 @@ architecture RTL of sfp_gtx is
 --***************************** Signal Declarations *****************************
 
     -- ground and tied_to_vcc_i signals
-    signal  tied_to_ground_i                :   std_logic;
-    signal  tied_to_ground_vec_i            :   std_logic_vector(63 downto 0);
-    signal  tied_to_vcc_i                   :   std_logic;
+    signal  tied_to_ground_i             :   std_logic;
+    signal  tied_to_ground_vec_i         :   std_logic_vector(63 downto 0);
+    signal  tied_to_vcc_i                :   std_logic;
 
 
   
     signal  gtx0_share_rxpll_i           :   std_logic_vector(1 downto 0);
     signal  gtx0_mgtrefclkrx_i           :   std_logic_vector(1 downto 0);
   
-    signal  gtx1_share_rxpll_i           :   std_logic_vector(1 downto 0);
-    signal  gtx1_mgtrefclkrx_i           :   std_logic_vector(1 downto 0);
+    signal  gtx_trig0_share_rxpll_i      :   std_logic_vector(1 downto 0);
+    signal  gtx_trig0_mgtrefclkrx_i      :   std_logic_vector(1 downto 0);
    
+    signal  gtx_trig1_share_rxpll_i      :   std_logic_vector(1 downto 0);
+    signal  gtx_trig1_mgtrefclkrx_i      :   std_logic_vector(1 downto 0);
+
 --*************************** Component Declarations **************************
 component sfp_gtx_gtx
 generic
@@ -195,7 +229,10 @@ generic
     -- Share RX PLL parameter
     GTX_TX_CLK_SOURCE           : string     := "TXPLL";
     -- Save power parameter
-    GTX_POWER_SAVE              : bit_vector := "0000000000"
+    GTX_POWER_SAVE              : bit_vector := "0000000000";
+    
+    RXPOLARITY                  : std_logic := '0';
+    TXPOLARITY                  : std_logic := '0'
 );
 port 
 (   
@@ -253,7 +290,8 @@ begin
 
    
     gtx0_mgtrefclkrx_i <= (tied_to_ground_i & GTX0_MGTREFCLKRX_IN);
-    gtx1_mgtrefclkrx_i <= (tied_to_ground_i & GTX1_MGTREFCLKRX_IN);
+    gtx_trig0_mgtrefclkrx_i <= (tied_to_ground_i & GTX_TRIG0_MGTREFCLKRX_IN);
+    gtx_trig1_mgtrefclkrx_i <= (tied_to_ground_i & GTX_TRIG1_MGTREFCLKRX_IN);
 
  
     --------------------------- GTX Instances  -------------------------------   
@@ -272,7 +310,10 @@ begin
         -- Share RX PLL parameter
         GTX_TX_CLK_SOURCE           => "RXPLL",
         -- Save power parameter
-        GTX_POWER_SAVE              => "0000110100"
+        GTX_POWER_SAVE              => "0000110100",
+        
+        RXPOLARITY                  => '0',
+        TXPOLARITY                  => '1'
     )
     port map
     (
@@ -322,7 +363,7 @@ begin
     --_________________________________________________________________________
     --GTX1  (X0Y1)
 
-    gtx1_sfp_gtx_i : sfp_gtx_gtx
+    gtx_trig_0a_sfp_gtx_i : sfp_gtx_gtx
     generic map
     (
         -- Simulation attributes
@@ -331,52 +372,232 @@ begin
         -- Share RX PLL parameter
         GTX_TX_CLK_SOURCE           => "RXPLL",
         -- Save power parameter
-        GTX_POWER_SAVE              => "0000110100"
+        GTX_POWER_SAVE              => "0000110100",
+        
+        RXPOLARITY                  => '0',
+        TXPOLARITY                  => '0'
     )
     port map
     (
         ----------------------- Receive Ports - 8b10b Decoder ----------------------
-        RXCHARISK_OUT                   =>      GTX1_RXCHARISK_OUT,
-        RXDISPERR_OUT                   =>      GTX1_RXDISPERR_OUT,
-        RXNOTINTABLE_OUT                =>      GTX1_RXNOTINTABLE_OUT,
+        RXCHARISK_OUT                   =>      open,
+        RXDISPERR_OUT                   =>      open,
+        RXNOTINTABLE_OUT                =>      open,
         --------------- Receive Ports - Comma Detection and Alignment --------------
-        RXBYTEISALIGNED_OUT             =>      GTX1_RXBYTEISALIGNED_OUT,
-        RXCOMMADET_OUT                  =>      GTX1_RXCOMMADET_OUT,
-        RXENMCOMMAALIGN_IN              =>      GTX1_RXENMCOMMAALIGN_IN,
-        RXENPCOMMAALIGN_IN              =>      GTX1_RXENPCOMMAALIGN_IN,
+        RXBYTEISALIGNED_OUT             =>      open,
+        RXCOMMADET_OUT                  =>      open,
+        RXENMCOMMAALIGN_IN              =>      GTX_TRIG0_RXENMCOMMAALIGN_IN,
+        RXENPCOMMAALIGN_IN              =>      GTX_TRIG0_RXENPCOMMAALIGN_IN,
         ------------------- Receive Ports - RX Data Path interface -----------------
-        RXDATA_OUT                      =>      GTX1_RXDATA_OUT,
-        RXRECCLK_OUT                    =>      GTX1_RXRECCLK_OUT,
-        RXUSRCLK2_IN                    =>      GTX1_RXUSRCLK2_IN,
+        RXDATA_OUT                      =>      open,
+        RXRECCLK_OUT                    =>      open,
+        RXUSRCLK2_IN                    =>      GTX_TRIG0_RXUSRCLK2_IN,
         ------- Receive Ports - RX Driver,OOB signalling,Coupling and Eq.,CDR ------
-        RXN_IN                          =>      GTX1_RXN_IN,
-        RXP_IN                          =>      GTX1_RXP_IN,
+        RXN_IN                          =>      GTX_TRIG0a_RXN_IN,
+        RXP_IN                          =>      GTX_TRIG0a_RXP_IN,
         ------------------------ Receive Ports - RX PLL Ports ----------------------
-        GTXRXRESET_IN                   =>      GTX1_GTXRXRESET_IN,
-        MGTREFCLKRX_IN                  =>      gtx1_mgtrefclkrx_i,
-        PLLRXRESET_IN                   =>      GTX1_PLLRXRESET_IN,
-        RXPLLLKDET_OUT                  =>      GTX1_RXPLLLKDET_OUT,
-        RXRESETDONE_OUT                 =>      GTX1_RXRESETDONE_OUT,
+        GTXRXRESET_IN                   =>      GTX_TRIG0_GTXRXRESET_IN,
+        MGTREFCLKRX_IN                  =>      gtx_trig0_mgtrefclkrx_i,
+        PLLRXRESET_IN                   =>      GTX_TRIG0_PLLRXRESET_IN,
+        RXPLLLKDET_OUT                  =>      open,
+        RXRESETDONE_OUT                 =>      open,
         ---------------- Transmit Ports - 8b10b Encoder Control Ports --------------
-        TXCHARISK_IN                    =>      GTX1_TXCHARISK_IN,
+        TXCHARISK_IN                    =>      GTX_TRIG0_TXCHARISK_IN,
         ------------------ Transmit Ports - TX Data Path interface -----------------
-        TXDATA_IN                       =>      GTX1_TXDATA_IN,
-        TXOUTCLK_OUT                    =>      GTX1_TXOUTCLK_OUT,
-        TXUSRCLK2_IN                    =>      GTX1_TXUSRCLK2_IN,
+        TXDATA_IN                       =>      GTX_TRIG0_TXDATA_IN,
+        TXOUTCLK_OUT                    =>      GTX_TRIG0a_TXOUTCLK_OUT,
+        TXUSRCLK2_IN                    =>      GTX_TRIG0_TXUSRCLK2_IN,
         ---------------- Transmit Ports - TX Driver and OOB signaling --------------
-        TXN_OUT                         =>      GTX1_TXN_OUT,
-        TXP_OUT                         =>      GTX1_TXP_OUT,
+        TXN_OUT                         =>      GTX_TRIG0a_TXN_OUT,
+        TXP_OUT                         =>      GTX_TRIG0a_TXP_OUT,
         ----------------------- Transmit Ports - TX PLL Ports ----------------------
-        GTXTXRESET_IN                   =>      GTX1_GTXTXRESET_IN,
-        MGTREFCLKTX_IN                  =>      gtx1_mgtrefclkrx_i,
+        GTXTXRESET_IN                   =>      GTX_TRIG0_GTXTXRESET_IN,
+        MGTREFCLKTX_IN                  =>      gtx_trig0_mgtrefclkrx_i,
         PLLTXRESET_IN                   =>      tied_to_ground_i,
         TXPLLLKDET_OUT                  =>      open,
-        TXRESETDONE_OUT                 =>      GTX1_TXRESETDONE_OUT
+        TXRESETDONE_OUT                 =>      GTX_TRIG0a_TXRESETDONE_OUT
 
     );
 
+    --_________________________________________________________________________
+    --_________________________________________________________________________
+    --GTX2  (X0Y1)
+
+    gtx_trig_1a_sfp_gtx_i : sfp_gtx_gtx
+    generic map
+    (
+        -- Simulation attributes
+        GTX_SIM_GTXRESET_SPEEDUP    => WRAPPER_SIM_GTXRESET_SPEEDUP,
+        
+        -- Share RX PLL parameter
+        GTX_TX_CLK_SOURCE           => "RXPLL",
+        -- Save power parameter
+        GTX_POWER_SAVE              => "0000110100",
+        
+        RXPOLARITY                  => '0',
+        TXPOLARITY                  => '0'
+    )
+    port map
+    (
+        ----------------------- Receive Ports - 8b10b Decoder ----------------------
+        RXCHARISK_OUT                   =>      open,
+        RXDISPERR_OUT                   =>      open,
+        RXNOTINTABLE_OUT                =>      open,
+        --------------- Receive Ports - Comma Detection and Alignment --------------
+        RXBYTEISALIGNED_OUT             =>      open,
+        RXCOMMADET_OUT                  =>      open,
+        RXENMCOMMAALIGN_IN              =>      GTX_TRIG1_RXENMCOMMAALIGN_IN,
+        RXENPCOMMAALIGN_IN              =>      GTX_TRIG1_RXENPCOMMAALIGN_IN,
+        ------------------- Receive Ports - RX Data Path interface -----------------
+        RXDATA_OUT                      =>      open,
+        RXRECCLK_OUT                    =>      open,
+        RXUSRCLK2_IN                    =>      GTX_TRIG1_RXUSRCLK2_IN,
+        ------- Receive Ports - RX Driver,OOB signalling,Coupling and Eq.,CDR ------
+        RXN_IN                          =>      GTX_TRIG1a_RXN_IN,
+        RXP_IN                          =>      GTX_TRIG1a_RXP_IN,
+        ------------------------ Receive Ports - RX PLL Ports ----------------------
+        GTXRXRESET_IN                   =>      GTX_TRIG1_GTXRXRESET_IN,
+        MGTREFCLKRX_IN                  =>      gtx_trig1_mgtrefclkrx_i,
+        PLLRXRESET_IN                   =>      GTX_TRIG1_PLLRXRESET_IN,
+        RXPLLLKDET_OUT                  =>      open,
+        RXRESETDONE_OUT                 =>      open,
+        ---------------- Transmit Ports - 8b10b Encoder Control Ports --------------
+        TXCHARISK_IN                    =>      GTX_TRIG1_TXCHARISK_IN,
+        ------------------ Transmit Ports - TX Data Path interface -----------------
+        TXDATA_IN                       =>      GTX_TRIG1_TXDATA_IN,
+        TXOUTCLK_OUT                    =>      GTX_TRIG1a_TXOUTCLK_OUT,
+        TXUSRCLK2_IN                    =>      GTX_TRIG1_TXUSRCLK2_IN,
+        ---------------- Transmit Ports - TX Driver and OOB signaling --------------
+        TXN_OUT                         =>      GTX_TRIG1a_TXN_OUT,
+        TXP_OUT                         =>      GTX_TRIG1a_TXP_OUT,
+        ----------------------- Transmit Ports - TX PLL Ports ----------------------
+        GTXTXRESET_IN                   =>      GTX_TRIG1_GTXTXRESET_IN,
+        MGTREFCLKTX_IN                  =>      gtx_trig1_mgtrefclkrx_i,
+        PLLTXRESET_IN                   =>      tied_to_ground_i,
+        TXPLLLKDET_OUT                  =>      open,
+        TXRESETDONE_OUT                 =>      GTX_TRIG1a_TXRESETDONE_OUT
+
+    );
   
+    --_________________________________________________________________________
+    --_________________________________________________________________________
+    --GTX3  (X0Y1)
+
+    gtx_trig_0b_sfp_gtx_i : sfp_gtx_gtx
+    generic map
+    (
+        -- Simulation attributes
+        GTX_SIM_GTXRESET_SPEEDUP    => WRAPPER_SIM_GTXRESET_SPEEDUP,
+        
+        -- Share RX PLL parameter
+        GTX_TX_CLK_SOURCE           => "RXPLL",
+        -- Save power parameter
+        GTX_POWER_SAVE              => "0000110100",
+        
+        RXPOLARITY                  => '0',
+        TXPOLARITY                  => '0'
+    )
+    port map
+    (
+        ----------------------- Receive Ports - 8b10b Decoder ----------------------
+        RXCHARISK_OUT                   =>      open,
+        RXDISPERR_OUT                   =>      open,
+        RXNOTINTABLE_OUT                =>      open,
+        --------------- Receive Ports - Comma Detection and Alignment --------------
+        RXBYTEISALIGNED_OUT             =>      open,
+        RXCOMMADET_OUT                  =>      open,
+        RXENMCOMMAALIGN_IN              =>      GTX_TRIG0_RXENMCOMMAALIGN_IN,
+        RXENPCOMMAALIGN_IN              =>      GTX_TRIG0_RXENPCOMMAALIGN_IN,
+        ------------------- Receive Ports - RX Data Path interface -----------------
+        RXDATA_OUT                      =>      open,
+        RXRECCLK_OUT                    =>      open,
+        RXUSRCLK2_IN                    =>      GTX_TRIG0_RXUSRCLK2_IN,
+        ------- Receive Ports - RX Driver,OOB signalling,Coupling and Eq.,CDR ------
+        RXN_IN                          =>      GTX_TRIG0b_RXN_IN,
+        RXP_IN                          =>      GTX_TRIG0b_RXP_IN,
+        ------------------------ Receive Ports - RX PLL Ports ----------------------
+        GTXRXRESET_IN                   =>      GTX_TRIG0_GTXRXRESET_IN,
+        MGTREFCLKRX_IN                  =>      gtx_trig0_mgtrefclkrx_i,
+        PLLRXRESET_IN                   =>      GTX_TRIG0_PLLRXRESET_IN,
+        RXPLLLKDET_OUT                  =>      open,
+        RXRESETDONE_OUT                 =>      open,
+        ---------------- Transmit Ports - 8b10b Encoder Control Ports --------------
+        TXCHARISK_IN                    =>      GTX_TRIG0_TXCHARISK_IN,
+        ------------------ Transmit Ports - TX Data Path interface -----------------
+        TXDATA_IN                       =>      GTX_TRIG0_TXDATA_IN,
+        TXOUTCLK_OUT                    =>      GTX_TRIG0b_TXOUTCLK_OUT,
+        TXUSRCLK2_IN                    =>      GTX_TRIG0_TXUSRCLK2_IN,
+        ---------------- Transmit Ports - TX Driver and OOB signaling --------------
+        TXN_OUT                         =>      GTX_TRIG0b_TXN_OUT,
+        TXP_OUT                         =>      GTX_TRIG0b_TXP_OUT,
+        ----------------------- Transmit Ports - TX PLL Ports ----------------------
+        GTXTXRESET_IN                   =>      GTX_TRIG0_GTXTXRESET_IN,
+        MGTREFCLKTX_IN                  =>      gtx_trig0_mgtrefclkrx_i,
+        PLLTXRESET_IN                   =>      tied_to_ground_i,
+        TXPLLLKDET_OUT                  =>      open,
+        TXRESETDONE_OUT                 =>      GTX_TRIG0b_TXRESETDONE_OUT
+
+    );
   
+    --_________________________________________________________________________
+    --_________________________________________________________________________
+    --GTX4  (X0Y1)
+
+    gtx_trig_1b_sfp_gtx_i : sfp_gtx_gtx
+    generic map
+    (
+        -- Simulation attributes
+        GTX_SIM_GTXRESET_SPEEDUP    => WRAPPER_SIM_GTXRESET_SPEEDUP,
+        
+        -- Share RX PLL parameter
+        GTX_TX_CLK_SOURCE           => "RXPLL",
+        -- Save power parameter
+        GTX_POWER_SAVE              => "0000110100",
+        
+        RXPOLARITY                  => '0',
+        TXPOLARITY                  => '0'
+    )
+    port map
+    (
+        ----------------------- Receive Ports - 8b10b Decoder ----------------------
+        RXCHARISK_OUT                   =>      open,
+        RXDISPERR_OUT                   =>      open,
+        RXNOTINTABLE_OUT                =>      open,
+        --------------- Receive Ports - Comma Detection and Alignment --------------
+        RXBYTEISALIGNED_OUT             =>      open,
+        RXCOMMADET_OUT                  =>      open,
+        RXENMCOMMAALIGN_IN              =>      GTX_TRIG1_RXENMCOMMAALIGN_IN,
+        RXENPCOMMAALIGN_IN              =>      GTX_TRIG1_RXENPCOMMAALIGN_IN,
+        ------------------- Receive Ports - RX Data Path interface -----------------
+        RXDATA_OUT                      =>      open,
+        RXRECCLK_OUT                    =>      open,
+        RXUSRCLK2_IN                    =>      GTX_TRIG1_RXUSRCLK2_IN,
+        ------- Receive Ports - RX Driver,OOB signalling,Coupling and Eq.,CDR ------
+        RXN_IN                          =>      GTX_TRIG1b_RXN_IN,
+        RXP_IN                          =>      GTX_TRIG1b_RXP_IN,
+        ------------------------ Receive Ports - RX PLL Ports ----------------------
+        GTXRXRESET_IN                   =>      GTX_TRIG1_GTXRXRESET_IN,
+        MGTREFCLKRX_IN                  =>      gtx_trig1_mgtrefclkrx_i,
+        PLLRXRESET_IN                   =>      GTX_TRIG1_PLLRXRESET_IN,
+        RXPLLLKDET_OUT                  =>      open,
+        RXRESETDONE_OUT                 =>      open,
+        ---------------- Transmit Ports - 8b10b Encoder Control Ports --------------
+        TXCHARISK_IN                    =>      GTX_TRIG1_TXCHARISK_IN,
+        ------------------ Transmit Ports - TX Data Path interface -----------------
+        TXDATA_IN                       =>      GTX_TRIG1_TXDATA_IN,
+        TXOUTCLK_OUT                    =>      GTX_TRIG1b_TXOUTCLK_OUT,
+        TXUSRCLK2_IN                    =>      GTX_TRIG1_TXUSRCLK2_IN,
+        ---------------- Transmit Ports - TX Driver and OOB signaling --------------
+        TXN_OUT                         =>      GTX_TRIG1b_TXN_OUT,
+        TXP_OUT                         =>      GTX_TRIG1b_TXP_OUT,
+        ----------------------- Transmit Ports - TX PLL Ports ----------------------
+        GTXTXRESET_IN                   =>      GTX_TRIG1_GTXTXRESET_IN,
+        MGTREFCLKTX_IN                  =>      gtx_trig1_mgtrefclkrx_i,
+        PLLTXRESET_IN                   =>      tied_to_ground_i,
+        TXPLLLKDET_OUT                  =>      open,
+        TXRESETDONE_OUT                 =>      GTX_TRIG1b_TXRESETDONE_OUT
+
+    );
     
 
      

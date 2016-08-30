@@ -92,8 +92,8 @@ t1_name = [2, 0, 1]
 
 # Data Valid differential pairs + Inversion + renaming
 
-valid = ["D12", "G16", "A2", "H18", "M10", "H20"]
-valid_ord = [1, 1, 1, 1, 0, 0]
+valid = ["D12", "G18", "A2", "G7", "M10", "H19"]
+valid_ord = [1, 0, 1, 0, 0, 1]
 valid_name = [5, 4, 1, 2, 3, 0]
 
 # Resets + Inversion + renaming
@@ -104,9 +104,17 @@ res_name = [2, 0, 1]
 
 # I2C + Inversion + renaming
 
-scl = ["J12_N", "G18_P", "I17_P", "G7_P", "I5_N", "H19_N"]
-sda = ["J12_P", "G18_N", "I17_N", "G7_N", "I5_P", "H19_P"]
+scl = ["J12_N", "G16_N", "I17_P", "H18_N", "I5_N", "H20_P"]
+sda = ["J12_P", "G16_P", "I17_N", "H18_P", "I5_P", "H20_N"]
 i2c_name = [5, 4, 1, 2, 3, 0]
+
+# DAC
+
+dacv = ["L4_P", "L13_P"]
+dacv_name = [1, 2]
+
+daci = ["C13_P", "L8_P", "L14_P"]
+daci_name = [0, 1, 2]
 
 ##############################################################################################################################
 
@@ -479,6 +487,16 @@ for i in range(6):
 f.write("\n")
 for i in range(6):
     f.write(("NET \"vfat2_sda_io<" + str(i2c_name[i]) + ">\"").ljust(32) + "LOC = " + getLOC_S(sda[i]) + "; # " + sda[i] + "\n")
+f.write("\n")
+
+f.write("## DACs\n")
+f.write("\n")
+f.write(("NET \"vfat2_daco_v_i<0>\"").ljust(32) + "LOC = U18; # V0_P\n")
+for i in range(2):
+    f.write(("NET \"vfat2_daco_v_i<" + str(dacv_name[i]) + ">\"").ljust(32) + "LOC = " + getLOC_S(dacv[i]) + "; # " + dacv[i] + "\n")
+f.write("\n")
+for i in range(3):
+    f.write(("NET \"vfat2_daco_i_i<" + str(daci_name[i]) + ">\"").ljust(32) + "LOC = " + getLOC_S(daci[i]) + "; # " + daci[i] + "\n")
 f.write("\n")
 
 f.write("## DataValids\n")

@@ -30,8 +30,8 @@ port(
         
     -- VFAT2 control input
     vfat2_reset_i       : in std_logic;
-    vfat2_t1_lst_i      : in t1_array_t(2 downto 0);
-    vfat2_t1_lst_o      : out t1_array_t(4 downto 0);
+    vfat2_t1_lst_i      : in t1_array_t(3 downto 0);
+    vfat2_t1_lst_o      : out t1_array_t(5 downto 0);
     vfat2_t1_sel_i      : in std_logic_vector(2 downto 0);
     trigger_lim_i       : in std_logic_vector(31 downto 0);
     
@@ -65,7 +65,7 @@ end vfat2;
 
 architecture Behavioral of vfat2 is
 
-    signal vfat2_t1_lst     : t1_array_t(3 downto 0);
+    signal vfat2_t1_lst     : t1_array_t(4 downto 0);
     signal vfat2_t1_loop    : t1_t;
     signal vfat2_t1_mx      : t1_t;
 
@@ -103,7 +103,7 @@ begin
     --=================--
     
     vfat2_t1_lst <= vfat2_t1_loop & vfat2_t1_lst_i; 
-    vfat2_t1_lst_o <= vfat2_t1_mx & vfat2_t1_loop & vfat2_t1_lst_i;
+    vfat2_t1_lst_o <= vfat2_t1_lst_i(3) & vfat2_t1_mx & vfat2_t1_loop & vfat2_t1_lst_i(2 downto 0);
         
     vfat2_t1_selector_inst : entity work.vfat2_t1_selector
     port map(
