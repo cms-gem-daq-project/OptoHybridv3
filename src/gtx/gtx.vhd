@@ -1,14 +1,14 @@
 ----------------------------------------------------------------------------------
 -- Company:        IIHE - ULB
 -- Engineer:       Thomas Lenzi (thomas.lenzi@cern.ch)
--- 
--- Create Date:    08:37:33 07/07/2015 
+--
+-- Create Date:    08:37:33 07/07/2015
 -- Design Name:    OptoHybrid v2
--- Module Name:    gtx - Behavioral 
+-- Module Name:    gtx - Behavioral
 -- Project Name:   OptoHybrid v2
 -- Target Devices: xc6vlx130t-1ff1156
 -- Tool versions:  ISE  P.20131013
--- Description: 
+-- Description:
 --
 -- This entity controls the PHY level of the GTX.
 --
@@ -28,25 +28,20 @@ port(
 
     mgt_refclk_n_i  : in std_logic;
     mgt_refclk_p_i  : in std_logic;
-    mgt_refclk_o    : out std_logic; 
+    mgt_refclk_o    : out std_logic;
     ref_clk_i       : in std_logic;
-    
-    reset_i         : in std_logic;
-    
-    gtx_clk_o       : out std_logic;    
 
-    tx_kchar_i      : in std_logic_vector(5 downto 0);
-    tx_data_i       : in std_logic_vector(47 downto 0);
+    reset_i         : in std_logic;
+
+    gtx_clk_o       : out std_logic;
+    rec_clk_o       : out std_logic;
+
+    tx_kchar_i      : in std_logic_vector(1 downto 0);
+    tx_data_i       : in std_logic_vector(15 downto 0);
     rx_kchar_o      : out std_logic_vector(1 downto 0);
     rx_data_o       : out std_logic_vector(15 downto 0);
     rx_error_o      : out std_logic_vector(0 downto 0);
 
-    gtx_tx_kchar_i  : in  std_logic_vector( 1 downto 0);
-    gtx_tx_data_i   : in  std_logic_vector(15 downto 0);
-    gtx_rx_kchar_o  : out std_logic_vector( 1 downto 0);
-    gtx_rx_data_o   : out std_logic_vector(15 downto 0);
-    gtx_rx_error_o  : out std_logic_vector( 0 downto 0);
-   
     rx_n_i          : in  std_logic_vector(0 downto 0);
     rx_p_i          : in  std_logic_vector(0 downto 0);
     tx_n_o          : out std_logic_vector(0 downto 0);
@@ -54,20 +49,20 @@ port(
 );
 end gtx;
 
-architecture Behavioral of gtx is  
+architecture Behavioral of gtx is
 
     signal mgt_refclk       : std_logic;
     signal mgt_reset        : std_logic;
     signal mgt_rst_cnt      : integer range 0 to 67_108_863;
-   
-    signal rx_disperr       : std_logic_vector(1 downto 0); 
+
+    signal rx_disperr       : std_logic_vector(1 downto 0);
     signal rx_notintable    : std_logic_vector(1 downto 0);
-    
+
     signal usr_clk          : std_logic;
-    signal usr_clk2         : std_logic;        
-    
-begin  
-    
+    signal usr_clk2         : std_logic;
+
+begin
+
     ibufds_gtxe1_inst : ibufds_gtxe1
     port map(
         o       => mgt_refclk,
@@ -76,21 +71,21 @@ begin
         i       => mgt_refclk_p_i,
         ib      => mgt_refclk_n_i
     );
-        
-    --    
 
-    usr_clk_bufg : bufg 
+    --
+
+    usr_clk_bufg : bufg
     port map(
-        i   => usr_clk, 
+        i   => usr_clk,
         o   => usr_clk2
     );
-    
+
     gtx_clk_o <= usr_clk2;
-    
-    
+
+
     rx_error_o(0) <= rx_disperr(0) or rx_disperr(1) or rx_notintable(0) or rx_notintable(1);
-    
-    
+
+
     sfp_gtx_inst : entity work.sfp_gtx
     port map(
         GTX0_RXCHARISK_OUT          => rx_kchar_o(1 downto 0),

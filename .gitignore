@@ -24,3 +24,4 @@ prj/*
 *_xdb
 _ngo
 _xmsgs
+*.xmsgs

@@ -118,7 +118,6 @@ port
     ----------------------- Transmit Ports - TX PLL Ports ----------------------
     GTX0_GTXTXRESET_IN                      : in   std_logic;
     GTX0_TXRESETDONE_OUT                    : out  std_logic
-    
 );
 
 

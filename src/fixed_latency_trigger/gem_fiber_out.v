@@ -1,34 +1,34 @@
 `timescale 1ns / 1ps
 
 module   gem_fiber_out #(parameter SIM_SPEEDUP = 0) (
-	input         RST,           // PRBS Reset
-	input         TRG_SIGDET,    // ??
-	output        TRG_TDIS,      // N/A
-	output        TRG_TX_N,
-	output        TRG_TX_P,
+  input         RST,           // PRBS Reset
+  input         TRG_SIGDET,    // ??
+  output        TRG_TDIS,      // N/A
+  output        TRG_TX_N,
+  output        TRG_TX_P,
 
   input [55:0]  GEM_DATA,      // 56 bit GEM data
   input         GEM_OVERFLOW,  //  1 bit GEM has more than 8 clusters
 
-	input         TRG_TX_REFCLK, // 160 MHz Reference Clock from QPLL
-	input         TRG_TXUSRCLK,  // 160 MHz (derived from TXOUTCLK)
-	input         TRG_CLK80,     // 80  MHz (derived from TXOUTCLK)
-	input         TRG_GTXTXRST,  // GTX Transmit Data Reset
-	output        TRG_TXOUTCLK,  // 80  MHz GTX clock output
-	input         TRG_TX_PLLRST, // use !rxpll_lock ?
-	input         TRG_RST,       // Data Reset
+  input         TRG_TX_REFCLK, // 160 MHz Reference Clock from QPLL
+  input         TRG_TXUSRCLK,  // 160 MHz (derived from TXOUTCLK)
+  input         TRG_CLK80,     // 80  MHz (derived from TXOUTCLK)
+  input         TRG_GTXTXRST,  // GTX Transmit Data Reset
+  output        TRG_TXOUTCLK,  // 80  MHz GTX clock output
+  input         TRG_TX_PLLRST, // use !rxpll_lock ?
+  input         TRG_RST,       // Data Reset
 
-	input         INJ_ERR,       // PRBS Error Inject
+  input         INJ_ERR,       // PRBS Error Inject
 
-	input         ENA_TEST_PAT,  // HIGH for PRBS!  (Low will send data from GxC registers)
-	output        TRG_TX_PLL_LOCK,
-	output        TRG_TXRESETDONE,
-	output        TX_SYNC_DONE,
-	output        STRT_LTNCY,
-	output reg    LTNCY_TRIG,
-	output        MON_TX_SEL,
-	output [3:0]  MON_TRG_TX_ISK,
-	output [31:0] MON_TRG_TX_DATA
+  input         ENA_TEST_PAT,  // HIGH for PRBS!  (Low will send data from GxC registers)
+  output        TRG_TX_PLL_LOCK,
+  output        TRG_TXRESETDONE,
+  output        TX_SYNC_DONE,
+  output        STRT_LTNCY,
+  output reg    LTNCY_TRIG,
+  output        MON_TX_SEL,
+  output [3:0]  MON_TRG_TX_ISK,
+  output [31:0] MON_TRG_TX_DATA
 );
 
 wire trg_tx_dis;
@@ -68,7 +68,7 @@ assign trg_tx_dis           = 1'b0;
 assign tx_dly_align_mon_ena = 1'b0;
 
 //----------------------------------------------------------------------------------------------------------------------
-// 
+//
 //----------------------------------------------------------------------------------------------------------------------
 
   IBUF IBUF_TRG_SIGDET (.O(TRG_SD),.I(TRG_SIGDET));
@@ -76,7 +76,7 @@ assign tx_dly_align_mon_ena = 1'b0;
   OBUF  #(.DRIVE(12),.IOSTANDARD("DEFAULT"),.SLEW("SLOW")) OBUF_TRG_TDIS (.O(TRG_TDIS),.I(trg_tx_dis));
 
 //----------------------------------------------------------------------------------------------------------------------
-// 
+//
 //----------------------------------------------------------------------------------------------------------------------
 
   TRG_TX_BUF_BYPASS # ( .WRAPPER_SIM_GTXRESET_SPEEDUP   (SIM_SPEEDUP))      // Set this to 1 for simulation
@@ -117,8 +117,8 @@ assign tx_dly_align_mon_ena = 1'b0;
 // it is done in the example design.
 
   always @(posedge TRG_CLK80 or negedge TRG_TXRESETDONE) begin
-    trg_txresetdone_r  <= (!TRG_TXRESETDONE) ? 1'b0 : TRG_TXRESETDONE; 
-    trg_txresetdone_r2 <= (!TRG_TXRESETDONE) ? 1'b0 : trg_txresetdone_r; 
+    trg_txresetdone_r  <= (!TRG_TXRESETDONE) ? 1'b0 : TRG_TXRESETDONE;
+    trg_txresetdone_r2 <= (!TRG_TXRESETDONE) ? 1'b0 : trg_txresetdone_r;
   end
 
   TX_SYNC #( .SIM_TXPMASETPHASE_SPEEDUP   (SIM_SPEEDUP))
@@ -138,33 +138,33 @@ assign tx_dly_align_mon_ena = 1'b0;
 
   assign out_data    = ENA_TEST_PAT ? {prbs[47:0],prbs[7:0]} : GEM_DATA;
 
-	assign trg_tx_data = rst_tx ? 32'h50BC50BC : (tx_sel ? out_data[55:24] : {out_data[23:0],frm_sep[7:0]});
+  assign trg_tx_data = rst_tx ? 32'h50BC50BC : (tx_sel ? out_data[55:24] : {out_data[23:0],frm_sep[7:0]});
 
-	assign trg_tx_isk  = rst_tx ?  4'b0101 : (tx_sel ? 4'b0000 : 4'b0001);
+  assign trg_tx_isk  = rst_tx ?  4'b0101 : (tx_sel ? 4'b0000 : 4'b0001);
 
   // reset latches
   //---------------------------------------------------
-	always @(posedge TRG_CLK80) begin
-		rst_tx     <= TRG_RST;
-		LTNCY_TRIG <= lt_trg;
-	end
+  always @(posedge TRG_CLK80) begin
+    rst_tx     <= TRG_RST;
+    LTNCY_TRIG <= lt_trg;
+  end
 
   // transmit select
   //---------------------------------------------------
-	always @(posedge TRG_CLK80 or posedge TRG_RST) begin
-    tx_sel     <= (TRG_RST) ? 1'b1 : ~tx_sel; 
-    tx_sel_bar <= (TRG_RST) ? 1'b0 :  tx_sel; 
-	end
+  always @(posedge TRG_CLK80 or posedge TRG_RST) begin
+    tx_sel     <= (TRG_RST) ? 1'b1 : ~tx_sel;
+    tx_sel_bar <= (TRG_RST) ? 1'b0 :  tx_sel;
+  end
 
 
   //---------------------------------------------------
-	always @(posedge TRG_CLK80 or posedge rst_tx) begin
-    trgcnt <= (rst_tx) ? 8'h00 : trgcnt+1'b1; 
-	end
+  always @(posedge TRG_CLK80 or posedge rst_tx) begin
+    trgcnt <= (rst_tx) ? 8'h00 : trgcnt+1'b1;
+  end
 
   //---------------------------------------------------
   //---------------------------------------------------
-  assign lt_trg = (!rst_tx && (trgcnt==8'h00)) ? 1'b1 : 1'b0; 
+  assign lt_trg = (!rst_tx && (trgcnt==8'h00)) ? 1'b1 : 1'b0;
 
   //---------------------------------------------------
   // we should cycle through these four K-codes:  BC, F7, FB, FD to serve as
@@ -193,40 +193,40 @@ assign tx_dly_align_mon_ena = 1'b0;
     endcase
   end
 
-  assign frm_sep = (GEM_OVERFLOW) ? 8'hFC : frame_sep; 
+  assign frm_sep = (GEM_OVERFLOW) ? 8'hFC : frame_sep;
 
 
 //----------------------------------------------------------------------------------------------------------------------
 // Test pattern reset
 //----------------------------------------------------------------------------------------------------------------------
 
-	assign prbs_rst    = RST | TRG_RST | p_rst1 | p_rst2 | p_rst3 | p_rst4 | p_rst5 | p_rst6 | p_rst7 | p_rst8;
-	always @(posedge TRG_CLK80) begin
-		if (tx_sel_bar) begin
-			p_rst1 <= RST | TRG_RST;
-			p_rst2 <= p_rst1;
-			p_rst3 <= p_rst2;
-			p_rst4 <= p_rst3;
-			p_rst5 <= p_rst4;
-			p_rst6 <= p_rst5;
-			p_rst7 <= p_rst6;
-			p_rst8 <= p_rst7;
-		end
-	end
+  assign prbs_rst    = RST | TRG_RST | p_rst1 | p_rst2 | p_rst3 | p_rst4 | p_rst5 | p_rst6 | p_rst7 | p_rst8;
+  always @(posedge TRG_CLK80) begin
+    if (tx_sel_bar) begin
+      p_rst1 <= RST | TRG_RST;
+      p_rst2 <= p_rst1;
+      p_rst3 <= p_rst2;
+      p_rst4 <= p_rst3;
+      p_rst5 <= p_rst4;
+      p_rst6 <= p_rst5;
+      p_rst7 <= p_rst6;
+      p_rst8 <= p_rst7;
+    end
+  end
 
 //----------------------------------------------------------------------------------------------------------------------
 // Pseudo Random Bit Stream
 //----------------------------------------------------------------------------------------------------------------------
 
-	PRBS_tx #(.start_pattern ( 48'hFFFFFF000000))
-	tx1 (
-		.OUT_CLK_ENA (tx_sel),
-		.GEN_CLK     (TRG_CLK80),
-		.RST         (prbs_rst),
-		.INJ_ERR     (INJ_ERR),
-		.PRBS        (prbs[47:0]),
-		.STRT_LTNCY  (STRT_LTNCY)
-	);
+  PRBS_tx #(.start_pattern ( 48'hFFFFFF000000))
+  tx1 (
+    .OUT_CLK_ENA (tx_sel),
+    .GEN_CLK     (TRG_CLK80),
+    .RST         (prbs_rst),
+    .INJ_ERR     (INJ_ERR),
+    .PRBS        (prbs[47:0]),
+    .STRT_LTNCY  (STRT_LTNCY)
+  );
 
 //----------------------------------------------------------------------------------------------------------------------
 endmodule

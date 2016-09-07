@@ -3,40 +3,40 @@ module trigger_links (
   input mgt_refclk, // 160 MHz QPLL Clock
   input ref_clk,    // 40 MHz QPLL Clock
 
-  output clk_40, 
-  output clk_80, 
-  output clk_160, 
+  output clk_40,
+  output clk_80,
+  output clk_160,
 
-  input reset, 
+  input reset,
 
-  output [3:0] trg_tx_p, 
-  output [3:0] trg_tx_n, 
+  output [3:0] trg_tx_p,
+  output [3:0] trg_tx_n,
 
-  input [13:0] cluster0, 
-  input [13:0] cluster1, 
-  input [13:0] cluster2, 
-  input [13:0] cluster3, 
-  input [13:0] cluster4, 
-  input [13:0] cluster5, 
-  input [13:0] cluster6, 
-  input [13:0] cluster7, 
+  input [13:0] cluster0,
+  input [13:0] cluster1,
+  input [13:0] cluster2,
+  input [13:0] cluster3,
+  input [13:0] cluster4,
+  input [13:0] cluster5,
+  input [13:0] cluster6,
+  input [13:0] cluster7,
 
   input overflow
-); 
+);
 
-wire [55:0] link_a = {cluster3, cluster2, cluster1, cluster0}; 
-wire [55:0] link_b = {cluster7, cluster6, cluster5, cluster4}; 
+wire [55:0] link_a = {cluster3, cluster2, cluster1, cluster0};
+wire [55:0] link_b = {cluster7, cluster6, cluster5, cluster4};
 
-wire [55:0] link [3:0]; 
+wire [55:0] link [3:0];
 
-// to csc? 
-assign link[0] = link_a; 
-assign link[2] = link_b; 
-// to utca? 
-assign link[1] = link_a; 
-assign link[3] = link_b; 
+// to csc?
+assign link[0] = link_a;
+assign link[2] = link_b;
+// to utca?
+assign link[1] = link_a;
+assign link[3] = link_b;
 
-wire [3:0] tx_out_clk; 
+wire [3:0] tx_out_clk;
 wire [3:0] tx_pll_locked;
 
 SRL16E #(.INIT(16'h7FFF)) SRL16TXPLL(
@@ -59,7 +59,7 @@ assign clk_40  = ck40;
 assign clk_80  = usrclk2;
 assign clk_160 = usrclk;
 
-genvar igem; 
+genvar igem;
 generate
 for (igem=0; igem<4; igem=igem+1'b1) begin: gemgen
 gem_fiber_out  gem_fibers_out   (
