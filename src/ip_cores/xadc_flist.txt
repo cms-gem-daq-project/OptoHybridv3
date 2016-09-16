@@ -1,0 +1,27 @@
+# Output products list for <xadc>
+_xmsgs\pn_parser.xmsgs
+xadc.asy
+xadc.gise
+xadc.sym
+xadc.vhd
+xadc.vho
+xadc.xco
+xadc.xise
+xadc\doc\sysmon_wiz_ds608.pdf
+xadc\doc\sysmon_wiz_gsg741.pdf
+xadc\example_design\xadc_exdes.vhd
+xadc\implement\implement.bat
+xadc\implement\implement.sh
+xadc\implement\xst.prj
+xadc\implement\xst.scr
+xadc\simulation\functional\design.txt
+xadc\simulation\functional\simcmds.tcl
+xadc\simulation\functional\simulate_isim.bat
+xadc\simulation\functional\simulate_isim.sh
+xadc\simulation\functional\simulate_mti.do
+xadc\simulation\functional\simulate_ncsim.sh
+xadc\simulation\functional\wave.do
+xadc\simulation\xadc_tb.vhd
+xadc\sysmon_wiz_readme.txt
+xadc_flist.txt
+xadc_xmdf.tcl

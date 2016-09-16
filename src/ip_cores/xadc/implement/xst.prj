@@ -1,0 +1,2 @@
+vhdl work ../../xadc.vhd
+vhdl work ../example_design/xadc_exdes.vhd

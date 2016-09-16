@@ -63,9 +63,9 @@ use unisim.vcomponents.all;
 entity to_gbt_ser_exdes is
 generic (
   -- width of the data for the system
-  sys_w      : integer := 4;
+  sys_w      : integer := 1;
   -- width of the data for the device
-  dev_w      : integer := 32
+  dev_w      : integer := 8
 );
 port (
   PATTERN_COMPLETED_OUT     : out   std_logic_vector (1 downto 0);
@@ -85,9 +85,9 @@ architecture xilinx of to_gbt_ser_exdes is
 component to_gbt_ser is
 generic
  (-- width of the data for the system
-  sys_w       : integer := 4;
+  sys_w       : integer := 1;
   -- width of the data for the device
-  dev_w       : integer := 32);
+  dev_w       : integer := 8);
 port
  (
   -- From the device out to the system
@@ -380,38 +380,14 @@ pinsss:for pinsss in 0 to sys_w-1 generate begin
 end generate pinsss;
 end generate assign;
 
-   data_delay(0) <=                 data_in_to_device(28) &
-                data_in_to_device(24) &
-                data_in_to_device(20) &
-                data_in_to_device(16) &
-                data_in_to_device(12) &
-                data_in_to_device(8) &
-                data_in_to_device(4) &
-   data_in_to_device(0);
-   data_delay(1) <=                 data_in_to_device(29) &
-                data_in_to_device(25) &
-                data_in_to_device(21) &
-                data_in_to_device(17) &
-                data_in_to_device(13) &
-                data_in_to_device(9) &
-                data_in_to_device(5) &
-   data_in_to_device(1);
-   data_delay(2) <=                 data_in_to_device(30) &
-                data_in_to_device(26) &
-                data_in_to_device(22) &
-                data_in_to_device(18) &
-                data_in_to_device(14) &
-                data_in_to_device(10) &
+   data_delay(0) <=                 data_in_to_device(7) &
                 data_in_to_device(6) &
-   data_in_to_device(2);
-   data_delay(3) <=                 data_in_to_device(31) &
-                data_in_to_device(27) &
-                data_in_to_device(23) &
-                data_in_to_device(19) &
-                data_in_to_device(15) &
-                data_in_to_device(11) &
-                data_in_to_device(7) &
-   data_in_to_device(3);
+                data_in_to_device(5) &
+                data_in_to_device(4) &
+                data_in_to_device(3) &
+                data_in_to_device(2) &
+                data_in_to_device(1) &
+   data_in_to_device(0);
 
    process (clk_div_in) begin
    if (clk_div_in='1' and clk_div_in'event) then
@@ -458,21 +434,9 @@ end generate assign;
      if (rst_sync_int6 = '1') then
        data_delay_int1(0) <= (others => '0');
        data_delay_int2(0) <= (others => '0');
-       data_delay_int1(1) <= (others => '0');
-       data_delay_int2(1) <= (others => '0');
-       data_delay_int1(2) <= (others => '0');
-       data_delay_int2(2) <= (others => '0');
-       data_delay_int1(3) <= (others => '0');
-       data_delay_int2(3) <= (others => '0');
      else
        data_delay_int1(0) <= data_delay(0);
        data_delay_int2(0) <= data_delay_int1(0);
-       data_delay_int1(1) <= data_delay(1);
-       data_delay_int2(1) <= data_delay_int1(1);
-       data_delay_int1(2) <= data_delay(2);
-       data_delay_int2(2) <= data_delay_int1(2);
-       data_delay_int1(3) <= data_delay(3);
-       data_delay_int2(3) <= data_delay_int1(3);
      end if;
    end if;
    end process;
@@ -485,9 +449,6 @@ end generate assign;
      else
       if (equal = '0' and locked = '1' and start_check = '1') then
         if (
-      (data_delay(3) = pat_out) and
-      (data_delay(2) = pat_out) and
-      (data_delay(1) = pat_out) and
       (data_delay(0) = pat_out)) then 
           bitslip_int <= '0';
           equal <= '1';
@@ -526,9 +487,6 @@ end generate assign;
    if (clk_div_in='1' and clk_div_in'event) then
      if equal = '1' then
       if (
-        (data_delay_int2(1) = local_counter) and
-        (data_delay_int2(2) = local_counter) and
-        (data_delay_int2(3) = local_counter) and
         (data_delay_int2(0) = local_counter)) then
         if (local_counter = "11111111") then
           pattern_completed <= "11";
@@ -667,11 +625,11 @@ end generate assign;
      -------------------------------------------------------------
      in_slices: for slice_count in 0 to num_serial_bits-1 generate begin
         -- This places the first data in time on the right
-        data_in_to_device(slice_count*sys_w+sys_w-1 downto slice_count*sys_w) <=
-          iserdes_q(num_serial_bits-slice_count-1);
+        data_in_to_device(slice_count) <=
+          iserdes_q(num_serial_bits-slice_count-1)(0);
         -- To place the first data in time on the left, use the
         --   following code, instead
-        -- data_in_to_device2(slice_count*sys_w+sys_w-1 downto sys_w) <=
+        -- data_in_to_device2(slice_count) <=
         --   iserdes_q(slice_count);
      end generate in_slices;
   end generate pins;

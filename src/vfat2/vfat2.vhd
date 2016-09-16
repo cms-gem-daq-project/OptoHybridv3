@@ -30,10 +30,7 @@ port(
         
     -- VFAT2 control input
     vfat2_reset_i       : in std_logic;
-    vfat2_t1_lst_i      : in t1_array_t(3 downto 0);
-    vfat2_t1_lst_o      : out t1_array_t(5 downto 0);
-    vfat2_t1_sel_i      : in std_logic_vector(2 downto 0);
-    trigger_lim_i       : in std_logic_vector(31 downto 0);
+    vfat2_t1_i          : in t1_t;
     
     -- VFAT2 control output
     vfat2_mclk_o        : out std_logic;
@@ -45,10 +42,6 @@ port(
         
     -- VFAT2 formated tracking data
     vfat2_tk_data_o     : out tk_data_array_t(23 downto 0);
-    
-    -- SBits
-    vfat2_sbits_i       : in sbits_array_t(23 downto 0);
-    sys_loop_sbit_i     : in std_logic_vector(4 downto 0);
     
     -- Wishbone I2C slave
     wb_slv_i2c_req_i    : in wb_req_array_t(5 downto 0);
@@ -64,11 +57,6 @@ port(
 end vfat2;
 
 architecture Behavioral of vfat2 is
-
-    signal vfat2_t1_lst     : t1_array_t(4 downto 0);
-    signal vfat2_t1_loop    : t1_t;
-    signal vfat2_t1_mx      : t1_t;
-
 begin
 
     --=====================--
@@ -85,36 +73,6 @@ begin
         vfat2_reset_o   => vfat2_reset_o   
     );
     
-    --=================--
-    --== T1 loopback ==--
-    --=================--
-    
-    vfat2_t1_loopback_inst : entity work.vfat2_t1_loopback
-    port map(
-        ref_clk_i       => ref_clk_i,
-        reset_i         => reset_i,
-        vfat2_sbits_i   => vfat2_sbits_i,
-        sys_loop_sbit_i => sys_loop_sbit_i,
-        vfat2_t1_o      => vfat2_t1_loop
-    );
-    
-    --=================--
-    --== T1 selector ==--
-    --=================--
-    
-    vfat2_t1_lst <= vfat2_t1_loop & vfat2_t1_lst_i; 
-    vfat2_t1_lst_o <= vfat2_t1_lst_i(3) & vfat2_t1_mx & vfat2_t1_loop & vfat2_t1_lst_i(2 downto 0);
-        
-    vfat2_t1_selector_inst : entity work.vfat2_t1_selector
-    port map(
-        ref_clk_i       => ref_clk_i,
-        reset_i         => reset_i,
-        trigger_lim_i   => trigger_lim_i,
-        vfat2_t1_i      => vfat2_t1_lst,
-        vfat2_t1_sel_i  => vfat2_t1_sel_i,
-        vfat2_t1_o      => vfat2_t1_mx      
-    );
-    
     --================--
     --== T1 encoder ==--
     --================--
@@ -123,7 +81,7 @@ begin
     port map(
         ref_clk_i       => ref_clk_i,
         reset_i         => reset_i,
-        vfat2_t1_i      => vfat2_t1_mx,
+        vfat2_t1_i      => vfat2_t1_i,
         vfat2_t1_o      => vfat2_t1_o
     );
     

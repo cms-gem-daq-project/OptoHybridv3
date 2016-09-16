@@ -2,6 +2,7 @@
 _xmsgs\pn_parser.xmsgs
 to_gbt_ser.asy
 to_gbt_ser.gise
+to_gbt_ser.sym
 to_gbt_ser.ucf
 to_gbt_ser.vhd
 to_gbt_ser.vho

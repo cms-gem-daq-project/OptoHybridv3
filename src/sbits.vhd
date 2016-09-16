@@ -39,6 +39,14 @@ architecture Behavioral of sbits is
     signal vfat2_sbits_masked   : sbits_array_t(23 downto 0); 
     signal vfat3_sbits          : std64_array_t(23 downto 0);
     
+    --== ChipScope ==--    
+    
+    signal control0             : std_logic_vector(35 downto 0);
+    signal control1             : std_logic_vector(35 downto 0);
+    signal trig0                : std_logic_vector(191 downto 0);
+    signal sync_in              : std_logic_vector(36 downto 0);
+    signal sync_out             : std_logic_vector(65 downto 0);
+    
 begin
 
     -- Apply SBit mask
@@ -100,5 +108,33 @@ begin
         cluster6            => vfat_sbit_clusters_o(6),
         cluster7            => vfat_sbit_clusters_o(7)
     );
+
+    chipscope_icon_inst : entity work.chipscope_icon
+    port map(
+        control0    => control0,
+        control1    => control1
+    );
+    
+    chipscope_ila_inst : entity work.chipscope_ila
+    port map(
+        control => control0,
+        clk     => ref_clk_i,
+        trig0   => trig0
+    );
+    
+    chipscope_vio_inst : entity work.chipscope_vio
+    port map(
+        control     => control1,
+        clk         => ref_clk_i,
+        sync_in     => sync_in,
+        sync_out    => sync_out
+    );
+    
+    gen_con : for i in 0 to 23 generate
+    begin
+    
+        trig0(((i + 1) * 8 - 1) downto (i * 8)) <= vfat2_sbits_i(i);
+        
+    end generate;
  
 end Behavioral;
