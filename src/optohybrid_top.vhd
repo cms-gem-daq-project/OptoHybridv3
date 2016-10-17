@@ -285,6 +285,7 @@ architecture Behavioral of optohybrid_top is
     signal trigger_lim          : std_logic_vector(31 downto 0);
     signal zero_suppress        : std_logic;
     signal sys_sbit_mode        : std_logic_vector(1 downto 0);
+    signal clk_source           : std_logic;
     
     --== Wishbone signals ==--
     
@@ -301,7 +302,7 @@ begin
     --== Clocking ==--
     --==============--
     
-    ref_clk <= qpll_clk_b;
+    ref_clk <= qpll_clk_b; -- switch using clk_source_o
     
     --======================--
     --== External signals ==--
@@ -316,6 +317,7 @@ begin
         ext_trigger_i       => ext_trigger_i,
         vfat2_t1_o          => vfat2_t1(2),
         vfat2_sbits_i       => vfat2_sbits_b,
+        vfat2_sbit_mask_i   => vfat2_sbit_mask,
         sys_sbit_mode_i     => sys_sbit_mode,
         sys_sbit_sel_i      => sys_sbit_sel,
         ext_sbits_o         => ext_sbits_o        
@@ -438,7 +440,6 @@ begin
     
     trigger_inst : entity work.trigger
     port map(
-            
         ref_clk_i       => ref_clk,
         reset_i         => reset,
         vfat2_sbits_i   => vfat2_sbits_b,
@@ -571,7 +572,8 @@ begin
         sys_sbit_sel_o      => sys_sbit_sel,
         trigger_lim_o       => trigger_lim,
         zero_suppress_o     => zero_suppress,
-        sys_sbit_mode_o     => sys_sbit_mode
+        sys_sbit_mode_o     => sys_sbit_mode,
+        clk_source_o        => clk_source
     );
     
     --============--

@@ -60,11 +60,13 @@ begin
             else
                 case vfat2_t1_sel_i is
                     when "000" => vfat2_t1 <= vfat2_t1_gtx_i; -- GTX
-                    when "001" => vfat2_t1 <= vfat2_t1_ext_i; -- External
-                    when "010" => vfat2_t1 <= vfat2_t1_int_i; -- Internal
+                    when "001" => vfat2_t1 <= vfat2_t1_int_i; -- Internal
+                    when "010" => vfat2_t1 <= vfat2_t1_ext_i; -- External
                     when "011" => vfat2_t1 <= vfat2_t1_loop_i; -- Loop
                     when "100" => vfat2_t1 <= vfat2_t1_gtx_i or vfat2_t1_ext_i or vfat2_t1_int_i or vfat2_t1_loop_i or vfat2_t1_gbt_i; -- All
                     when "101" => vfat2_t1 <= vfat2_t1_gbt_i; -- GBT
+                    when "110" => vfat2_t1 <= vfat2_t1_gbt_i or vfat2_t1_gtx_i; -- GBT or GTX
+                    when "111" => vfat2_t1 <= vfat2_t1_int_i or vfat2_t1_ext_i; -- Internal or External
                     when others => vfat2_t1 <= (lv1a => '0', calpulse => '0', resync => '0', bc0 => '0');
                 end case;
             end if;

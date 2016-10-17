@@ -32,6 +32,7 @@ port(
 
     -- Sbits
     vfat2_sbits_i       : in sbits_array_t(23 downto 0);
+    vfat2_sbit_mask_i   : in std_logic_vector(23 downto 0);
     sys_sbit_mode_i     : in std_logic_vector(1 downto 0);
     sys_sbit_sel_i      : in std_logic_vector(29 downto 0);
     ext_sbits_o         : out std_logic_vector(5 downto 0)
@@ -69,7 +70,7 @@ begin
     
     or_loop : for I in 0 to 23 generate
     begin
-        ors(I) <= vfat2_sbits_i(I)(0) or vfat2_sbits_i(I)(1) or vfat2_sbits_i(I)(2) or vfat2_sbits_i(I)(3) or vfat2_sbits_i(I)(4) or vfat2_sbits_i(I)(5) or vfat2_sbits_i(I)(6) or vfat2_sbits_i(I)(7);
+        ors(I) <= (not vfat2_sbit_mask_i(I)) and (vfat2_sbits_i(I)(0) or vfat2_sbits_i(I)(1) or vfat2_sbits_i(I)(2) or vfat2_sbits_i(I)(3) or vfat2_sbits_i(I)(4) or vfat2_sbits_i(I)(5) or vfat2_sbits_i(I)(6) or vfat2_sbits_i(I)(7));
     end generate;
     
     eta_loop : for I in 0 to 7 generate

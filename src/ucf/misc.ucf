@@ -17,14 +17,23 @@
 ## External signals for Test Beam
 
 NET "ext_clk_i" CLOCK_DEDICATED_ROUTE = FALSE;
-NET "ext_clk_i" LOC = H17;
-NET "ext_trigger_i" LOC = G17;
-NET "ext_sbits_o[0]" LOC = J17;
-NET "ext_sbits_o[1]" LOC = J16;
-NET "ext_sbits_o[2]" LOC = L15;
-NET "ext_sbits_o[3]" LOC = L14;
-NET "ext_sbits_o[4]" LOC = M18;
-NET "ext_sbits_o[5]" LOC = M17;
+NET "ext_clk_i" LOC = J16;# OK
+NET "ext_trigger_i" LOC = J17;# OK
+NET "ext_sbits_o[0]" LOC = H17;#
+NET "ext_sbits_o[1]" LOC = L15;# OK
+NET "ext_sbits_o[2]" LOC = M17;# OK
+NET "ext_sbits_o[3]" LOC = M18;# OK
+NET "ext_sbits_o[4]" LOC = G17;#
+NET "ext_sbits_o[5]" LOC = L14;#
+
+#NET "ext_clk_i" LOC = H17;
+#NET "ext_trigger_i" LOC = G17;
+#NET "ext_sbits_o[0]" LOC = J17;
+#NET "ext_sbits_o[1]" LOC = J16;
+#NET "ext_sbits_o[2]" LOC = L15;
+#NET "ext_sbits_o[3]" LOC = L14;
+#NET "ext_sbits_o[4]" LOC = M18;
+#NET "ext_sbits_o[5]" LOC = M17;
 
 ## Header
 
