@@ -312,7 +312,7 @@ begin
         -- Save power parameter
         GTX_POWER_SAVE              => "0000110100",
         
-        RXPOLARITY                  => '0',
+        RXPOLARITY                  => '1', -- 1 = VTRx, 0 = SFP+
         TXPOLARITY                  => '1'
     )
     port map

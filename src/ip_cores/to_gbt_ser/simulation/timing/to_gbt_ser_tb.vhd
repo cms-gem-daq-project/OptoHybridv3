@@ -74,18 +74,18 @@ component to_gbt_ser_exdes
 port (
   PATTERN_COMPLETED_OUT     : out   std_logic_vector (1 downto 0);
   -- From the system into the device
-  DATA_IN_FROM_PINS_P      : in    std_logic_vector(3 downto 0);
-  DATA_IN_FROM_PINS_N      : in    std_logic_vector(3 downto 0);
-  DATA_OUT_TO_PINS_P         : out   std_logic_vector(3 downto 0);
-  DATA_OUT_TO_PINS_N         : out   std_logic_vector(3 downto 0);
+  DATA_IN_FROM_PINS_P      : in    std_logic_vector(0 downto 0);
+  DATA_IN_FROM_PINS_N      : in    std_logic_vector(0 downto 0);
+  DATA_OUT_TO_PINS_P         : out   std_logic_vector(0 downto 0);
+  DATA_OUT_TO_PINS_N         : out   std_logic_vector(0 downto 0);
 
   CLK_IN                   : in    std_logic;
   CLK_RESET                : in    std_logic;
   IO_RESET                 : in    std_logic);
 end component;
   constant clk_per         : time    :=  10 ns; -- 100 MHz clk
-  constant sys_w           : integer := 4;
-  constant dev_w           : integer := 32;
+  constant sys_w           : integer := 1;
+  constant dev_w           : integer := 8;
   constant num_serial_bits : integer := dev_w/sys_w;
   -- From the system into the device
   signal   data_in_from_pins_p : std_logic_vector(sys_w-1 downto 0);

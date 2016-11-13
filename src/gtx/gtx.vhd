@@ -33,7 +33,6 @@ port(
     reset_i         : in std_logic;
     
     gtx_clk_o       : out std_logic;    
-    rec_clk_o       : out std_logic;    
 
     tx_kchar_i      : in std_logic_vector(5 downto 0);
     tx_data_i       : in std_logic_vector(47 downto 0);
@@ -96,7 +95,7 @@ begin
         GTX0_RXENMCOMMAALIGN_IN     => '1',
         GTX0_RXENPCOMMAALIGN_IN     => '1',
         GTX0_RXDATA_OUT             => rx_data_o(15 downto 0),
-        GTX0_RXRECCLK_OUT           => rec_clk_o,
+        GTX0_RXRECCLK_OUT           => open,
         GTX0_RXUSRCLK2_IN           => usr_clk2,
         GTX0_RXN_IN                 => rx_n_i(0),
         GTX0_RXP_IN                 => rx_p_i(0),

@@ -38,8 +38,8 @@ port(
     vfat2_scl_o             : out std_logic_vector(5 downto 0);
     vfat2_sda_io            : inout std_logic_vector(5 downto 0);
     
---    vfat2_daco_v_i          : in std_logic_vector(2 downto 0);
---    vfat2_daco_i_i          : in std_logic_vector(2 downto 0);
+    -- vfat2_daco_v_i          : in std_logic_vector(2 downto 0);
+    -- vfat2_daco_i_i          : in std_logic_vector(2 downto 0);
     
     vfat2_data_valid_p_i    : in std_logic_vector(5 downto 0);
     vfat2_data_valid_n_i    : in std_logic_vector(5 downto 0);
@@ -191,6 +191,9 @@ port(
     ext_sbits_o             : out std_logic_vector(5 downto 0);
     
     header_io               : in std_logic_vector(15 downto 0);
+
+    xadc_p_i                : in std_logic_vector(5 downto 0);
+    xadc_n_i                : in std_logic_vector(5 downto 0);
        
     --== GTX ==--
     
@@ -245,8 +248,7 @@ architecture Behavioral of optohybrid_top is
 
     --== GTX ==--
     
-    signal gtx_clk              : std_logic;   
-    signal gtx_rec_clk          : std_logic;   
+    signal gtx_clk              : std_logic;    
     signal gtx_tk_error         : std_logic;
     signal gtx_tr_error         : std_logic;
     signal gtx_evt_sent         : std_logic;
@@ -265,12 +267,11 @@ architecture Behavioral of optohybrid_top is
     signal gbt_error            : std_logic;
     signal gbt_evt_sent         : std_logic;
     signal gbt_rx_aligned       : std_logic;
-    signal gbt_tx_aligned      : std_logic;
+    signal gbt_tx_aligned       : std_logic;
     
     --== VFAT2 ==--
     
-    signal vfat2_t1             : t1_array_t(3 downto 0); -- 0 = GTX, 1 = Internal, 2 = External, 3 = GBT (for backwards compatibility put at the end)
-    signal vfat2_t1_lst         : t1_array_t(5 downto 0); -- 0 = GTX, 1 = Internal, 2 = External, 3 = loop, 4 = All, 5 = GBT (for backwards compatibility put at the end)
+    signal vfat2_t1             : t1_array_t(5 downto 0); -- 0 = GTX, 1 = Internal, 2 = External, 3 = loop, 4 = Muxed, 5 = GBT (for backwards compatibility put at the end)
     signal vfat2_tk_data        : tk_data_array_t(23 downto 0);
     
     --== System ==--
@@ -284,6 +285,7 @@ architecture Behavioral of optohybrid_top is
     signal trigger_lim          : std_logic_vector(31 downto 0);
     signal zero_suppress        : std_logic;
     signal sys_sbit_mode        : std_logic_vector(1 downto 0);
+    signal clk_source           : std_logic;
     
     --== Wishbone signals ==--
     
@@ -291,14 +293,6 @@ architecture Behavioral of optohybrid_top is
     signal wb_m_res             : wb_res_array_t((WB_MASTERS - 1) downto 0);
     signal wb_s_req             : wb_req_array_t((WB_SLAVES - 1) downto 0);
     signal wb_s_res             : wb_res_array_t((WB_SLAVES - 1) downto 0);
-    
-    --== ChipScope ==--    
-    
-    signal control0             : std_logic_vector(35 downto 0);
-    signal control1             : std_logic_vector(35 downto 0);
-    signal trig0                : std_logic_vector(191 downto 0);
-    signal sync_in              : std_logic_vector(36 downto 0);
-    signal sync_out             : std_logic_vector(65 downto 0);
         
 begin
 
@@ -308,7 +302,7 @@ begin
     --== Clocking ==--
     --==============--
     
-    ref_clk <= qpll_clk_b;
+    ref_clk <= qpll_clk_b; -- switch using clk_source_o
     
     --======================--
     --== External signals ==--
@@ -323,6 +317,7 @@ begin
         ext_trigger_i       => ext_trigger_i,
         vfat2_t1_o          => vfat2_t1(2),
         vfat2_sbits_i       => vfat2_sbits_b,
+        vfat2_sbit_mask_i   => vfat2_sbit_mask,
         sys_sbit_mode_i     => sys_sbit_mode,
         sys_sbit_sel_i      => sys_sbit_sel,
         ext_sbits_o         => ext_sbits_o        
@@ -358,7 +353,6 @@ begin
         ref_clk_i       => ref_clk,
 		reset_i         => reset,
         gtx_clk_o       => gtx_clk,
-        rec_clk_o       => gtx_rec_clk,
         tx_kchar_i      => gtx_tx_kchar,
         tx_data_i       => gtx_tx_data,
         rx_kchar_o      => gtx_rx_kchar,
@@ -387,7 +381,7 @@ begin
         vfat2_tk_data_i => vfat2_tk_data,
         vfat2_tk_mask_i => vfat2_tk_mask,
         zero_suppress_i => zero_suppress,
-        vfat2_t1_i      => vfat2_t1_lst(4),
+        vfat2_t1_i      => vfat2_t1(4),
         vfat2_t1_o      => vfat2_t1(0), 
         tk_error_o      => gtx_tk_error,
         tr_error_o      => gtx_tr_error,
@@ -432,11 +426,33 @@ begin
         vfat2_tk_data_i => vfat2_tk_data,
         vfat2_tk_mask_i => vfat2_tk_mask,
         zero_suppress_i => zero_suppress,
-        vfat2_t1_i      => vfat2_t1_lst(4),
-        vfat2_t1_o      => vfat2_t1(3), 
+        vfat2_t1_i      => vfat2_t1(4),
+        vfat2_t1_o      => vfat2_t1(5), 
         error_o         => gbt_error,
         evt_sent_o      => gbt_evt_sent
     );    
+    
+    --=============--
+    --== Trigger ==--
+    --=============--
+    
+    -- This module controls the trigger source. 
+    
+    trigger_inst : entity work.trigger
+    port map(
+        ref_clk_i       => ref_clk,
+        reset_i         => reset,
+        vfat2_sbits_i   => vfat2_sbits_b,
+        vfat2_t1_sel_i  => vfat2_t1_sel,
+        sys_loop_sbit_i => sys_loop_sbit,
+        trigger_lim_i   => trigger_lim,
+        vfat2_t1_gtx_i  => vfat2_t1(0),    
+        vfat2_t1_gbt_i  => vfat2_t1(5), 
+        vfat2_t1_int_i  => vfat2_t1(1),
+        vfat2_t1_ext_i  => vfat2_t1(2),
+        vfat2_t1_loop_o => vfat2_t1(3),
+        vfat2_t1_mux_o  => vfat2_t1(4)
+    );
 
     --===========--
     --== VFAT2 ==--
@@ -449,17 +465,12 @@ begin
         ref_clk_i           => ref_clk,
         reset_i             => reset,
         vfat2_reset_i       => vfat2_reset,
-        vfat2_t1_lst_i      => vfat2_t1,
-        vfat2_t1_lst_o      => vfat2_t1_lst,
-        vfat2_t1_sel_i      => vfat2_t1_sel,
-        trigger_lim_i       => trigger_lim,
+        vfat2_t1_i          => vfat2_t1(4),
         vfat2_mclk_o        => vfat2_mclk_b,
         vfat2_reset_o       => vfat2_reset_b,
         vfat2_t1_o          => vfat2_t1_b,
         vfat2_data_out_i    => vfat2_data_out_b,
         vfat2_tk_data_o     => vfat2_tk_data,
-        vfat2_sbits_i       => vfat2_sbits_b,
-        sys_loop_sbit_i     => sys_loop_sbit,
         wb_slv_i2c_req_i    => wb_s_req(WB_SLV_I2C_5 downto WB_SLV_I2C_0),
         wb_slv_i2c_res_o    => wb_s_res(WB_SLV_I2C_5 downto WB_SLV_I2C_0),
         vfat2_scl_o         => vfat2_scl_b,
@@ -474,7 +485,7 @@ begin
     
     -- This modules controls the high-level VFAT2 functionnalities.
         
-    vfat2_func_inst : entity work.vfat2_func      
+    func_inst : entity work.func      
     port map(        
         ref_clk_i           => ref_clk,
         reset_i             => reset,
@@ -503,15 +514,15 @@ begin
     
     -- This module controls the xADC of the Virtex6.
     
---    adc_inst : entity work.adc
---    port map(
---        ref_clk_i       => ref_clk,
---        reset_i         => reset,
---        wb_slv_req_i    => wb_s_req(WB_SLV_ADC),
---        wb_slv_res_o    => wb_s_res(WB_SLV_ADC),
---        xadc_p_i        => xadc_p_i,
---        xadc_n_i        => xadc_n_i
---    );
+    adc_inst : entity work.adc
+    port map(
+        ref_clk_i       => ref_clk,
+        reset_i         => reset,
+        wb_slv_req_i    => wb_s_req(WB_SLV_ADC),
+        wb_slv_res_o    => wb_s_res(WB_SLV_ADC),
+        xadc_p_i        => xadc_p_i,
+        xadc_n_i        => xadc_n_i
+    );
             
     --==============--
     --== Counters ==--
@@ -531,7 +542,7 @@ begin
         wb_s_req_i          => wb_s_req,
         wb_s_res_i          => wb_s_res,
         vfat2_tk_data_i     => vfat2_tk_data,
-        vfat2_t1_i          => vfat2_t1_lst,
+        vfat2_t1_i          => vfat2_t1,
         gtx_tk_error_i      => gtx_tk_error,
         gtx_tr_error_i      => gtx_tr_error,
         gtx_evt_sent_i      => gtx_evt_sent,        
@@ -561,7 +572,8 @@ begin
         sys_sbit_sel_o      => sys_sbit_sel,
         trigger_lim_o       => trigger_lim,
         zero_suppress_o     => zero_suppress,
-        sys_sbit_mode_o     => sys_sbit_mode
+        sys_sbit_mode_o     => sys_sbit_mode,
+        clk_source_o        => clk_source
     );
     
     --============--
@@ -595,32 +607,6 @@ begin
         vfat2_sbit_mask_i       => vfat2_sbit_mask,        
         vfat_sbit_clusters_o    => vfat_sbit_clusters
     );
-
-    chipscope_icon_inst : entity work.chipscope_icon
-    port map(
-        control0    => control0,
-        control1    => control1
-    );
-    
-    chipscope_ila_inst : entity work.chipscope_ila
-    port map(
-        control => control0,
-        clk     => ref_clk,
-        trig0   => trig0
-    );
-    
-    chipscope_vio_inst : entity work.chipscope_vio
-    port map(
-        control     => control1,
-        clk         => ref_clk,
-        sync_in     => sync_in,
-        sync_out    => sync_out
-    );
-    
-    gen_con : for i in 0 to 23 generate
-    begin
-        trig0(((i + 1) * 8 - 1) downto (i * 8)) <= vfat2_sbits_b(i);
-    end generate;
     
     --=============--
     --== Buffers ==--

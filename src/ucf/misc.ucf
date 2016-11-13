@@ -17,30 +17,55 @@
 ## External signals for Test Beam
 
 NET "ext_clk_i" CLOCK_DEDICATED_ROUTE = FALSE;
-NET "ext_clk_i" LOC = H17;
-NET "ext_trigger_i" LOC = G17;
-NET "ext_sbits_o[0]" LOC = J17;
-NET "ext_sbits_o[1]" LOC = J16;
-NET "ext_sbits_o[2]" LOC = L15;
-NET "ext_sbits_o[3]" LOC = L14;
-NET "ext_sbits_o[4]" LOC = M18;
-NET "ext_sbits_o[5]" LOC = M17;
+NET "ext_clk_i" LOC = J16;# OK
+NET "ext_trigger_i" LOC = J17;# OK
+NET "ext_sbits_o[0]" LOC = H17;#
+NET "ext_sbits_o[1]" LOC = L15;# OK
+NET "ext_sbits_o[2]" LOC = M17;# OK
+NET "ext_sbits_o[3]" LOC = M18;# OK
+NET "ext_sbits_o[4]" LOC = G17;#
+NET "ext_sbits_o[5]" LOC = L14;#
+
+#NET "ext_clk_i" LOC = H17;
+#NET "ext_trigger_i" LOC = G17;
+#NET "ext_sbits_o[0]" LOC = J17;
+#NET "ext_sbits_o[1]" LOC = J16;
+#NET "ext_sbits_o[2]" LOC = L15;
+#NET "ext_sbits_o[3]" LOC = L14;
+#NET "ext_sbits_o[4]" LOC = M18;
+#NET "ext_sbits_o[5]" LOC = M17;
 
 ## Header
 
-NET "header_io<0>"  LOC = AE17; 
-NET "header_io<1>"  LOC = AD17; 
-NET "header_io<2>"  LOC = AE16; 
-NET "header_io<3>"  LOC = AD16; 
-NET "header_io<4>"  LOC = AH9;  
-NET "header_io<5>"  LOC = AG13;
-NET "header_io<6>"  LOC = AF13;
-NET "header_io<7>"  LOC = AG15;  
-NET "header_io<8>"  LOC = AG16; 
-NET "header_io<9>"  LOC = AF15; 
-NET "header_io<10>"  LOC = AC13; 
-NET "header_io<11>"  LOC = AF16; 
-NET "header_io<12>"  LOC = V23; 
-NET "header_io<13>"  LOC = AC12; 
-NET "header_io<14>"  LOC = L18; 
-NET "header_io<15>"  LOC = L19; 
+NET "header_io[0]" LOC = AE17;
+NET "header_io[1]" LOC = AD17;
+NET "header_io[2]" LOC = AE16;
+NET "header_io[3]" LOC = AD16;
+NET "header_io[4]" LOC = AH9;
+NET "header_io[5]" LOC = AG13;
+NET "header_io[6]" LOC = AF13;
+NET "header_io[7]" LOC = AG15;
+NET "header_io[8]" LOC = AG16;
+NET "header_io[9]" LOC = AF15;
+NET "header_io[10]" LOC = AC13;
+NET "header_io[11]" LOC = AF16;
+NET "header_io[12]" LOC = V23;
+NET "header_io[13]" LOC = AC12;
+NET "header_io[14]" LOC = L18;
+NET "header_io[15]" LOC = L19;
+
+# XADC 
+
+INST "adc_inst/xadc_inst/SYSMON_INST" LOC = SYSMON_X0Y0;
+NET "xadc_n_i[5]" LOC = P26;
+NET "xadc_p_i[5]" LOC = P25;
+NET "xadc_p_i[0]" LOC = U18;
+NET "xadc_n_i[0]" LOC = V17;
+NET "xadc_n_i[4]" LOC = B11;
+NET "xadc_p_i[4]" LOC = A11;
+NET "xadc_n_i[3]" LOC = J12;
+NET "xadc_p_i[3]" LOC = H12;
+NET "xadc_n_i[2]" LOC = B13;
+NET "xadc_p_i[2]" LOC = B12;
+NET "xadc_n_i[1]" LOC = A14;
+NET "xadc_p_i[1]" LOC = A13;

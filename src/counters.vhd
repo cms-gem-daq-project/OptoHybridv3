@@ -204,9 +204,5 @@ begin
     gbt_link_err_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(115) and wb_we), en_i => gbt_link_error_i, data_o => reg_data(115));
     
     gbt_evt_sent_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(116) and wb_we), en_i => gbt_evt_sent_i, data_o => reg_data(116));
-
-
-    
-    
     
 end Behavioral;

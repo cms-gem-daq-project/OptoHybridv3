@@ -29,8 +29,8 @@ port(
     wb_slv_req_i    : in wb_req_t;
     wb_slv_res_o    : out wb_res_t;
 
-    xadc_p_i        : in std_logic_vector(2 downto 0);
-    xadc_n_i        : in std_logic_vector(2 downto 0)
+    xadc_p_i        : in std_logic_vector(5 downto 0);
+    xadc_n_i        : in std_logic_vector(5 downto 0)
     
 );
 end adc;
@@ -38,7 +38,7 @@ end adc;
 architecture Behavioral of adc is  
 begin
 
-    sysmon_wiz_v2_1_inst : entity work.sysmon_wiz_v2_1
+    xadc_inst : entity work.xadc
     port map( 
         daddr_in    => wb_slv_req_i.addr(6 downto 0), 
         dclk_in     => ref_clk_i, 
@@ -46,10 +46,16 @@ begin
         di_in       => wb_slv_req_i.data(15 downto 0),
         dwe_in      => wb_slv_req_i.we, 
         reset_in    => reset_i, 
-        vauxp4      => xadc_p_i(1),
-        vauxn4      => xadc_n_i(1),
-        vauxp5      => xadc_p_i(2),
-        vauxn5      => xadc_n_i(2),
+        vauxp1      => xadc_p_i(1),
+        vauxn1      => xadc_n_i(1),
+        vauxp4      => xadc_p_i(2),
+        vauxn4      => xadc_n_i(2),
+        vauxp5      => xadc_p_i(3),
+        vauxn5      => xadc_n_i(3),
+        vauxp6      => xadc_p_i(4),
+        vauxn6      => xadc_n_i(4),
+        vauxp13     => xadc_p_i(5),
+        vauxn13     => xadc_n_i(5),
         busy_out    => open,
         channel_out => open,
         do_out      => wb_slv_res_o.data(15 downto 0),

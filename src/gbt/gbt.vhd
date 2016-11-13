@@ -149,15 +149,20 @@ begin
     );  
 
     -- Output serializer
-    to_gbt_ser_inst : entity work.to_gbt_ser
-    port map(
-        data_out_from_device    => to_gbt_raw,
-        data_out_to_pins_p      => to_gbt_p,
-        data_out_to_pins_n      => to_gbt_n,
-        clk_in                  => data_clk,
-        clk_div_in              => fabric_clk,
-        io_reset                => io_reset
-    ); 
+--    to_gbt_ser_inst : entity work.to_gbt_ser
+--    port map(
+--        data_out_from_device    => to_gbt_raw,
+--        data_out_to_pins_p      => to_gbt_p,
+--        data_out_to_pins_n      => to_gbt_n,
+--        clk_in                  => data_clk,
+--        clk_div_in              => fabric_clk,
+--        io_reset                => io_reset
+--    ); 
+
+    gbt0 : obufds generic map(iostandard  => "lvds_25") port map(i => '0', o => to_gbt_p(0), ob => to_gbt_n(0));
+    gbt1 : obufds generic map(iostandard  => "lvds_25") port map(i => '0', o => to_gbt_p(1), ob => to_gbt_n(1));
+    gbt2 : obufds generic map(iostandard  => "lvds_25") port map(i => '0', o => to_gbt_p(2), ob => to_gbt_n(2));
+    gbt3 : obufds generic map(iostandard  => "lvds_25") port map(i => '0', o => to_gbt_p(3), ob => to_gbt_n(3));
     
     -- DONE
     -- to_gbt holds the data you want to send
