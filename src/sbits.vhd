@@ -23,7 +23,9 @@ use work.types_pkg.all;
 entity sbits is
 port(
     
-    ref_clk_i               : in std_logic;
+    gtx_clk_i               : in std_logic;
+    ttc_clk_i               : in std_logic;
+    
     reset_i                 : in std_logic;
     
     vfat2_sbits_i           : in sbits_array_t(23 downto 0);    
@@ -72,9 +74,11 @@ begin
 
     cluster_packer_inst : entity work.cluster_packer 
     port map(
-        clock4x             => ref_clk_i,
+        clock4x             => gtx_clk_i,
+        clock1x             => ttc_clk_i,
         global_reset        => reset_i,
         truncate_clusters   => '0',
+        oneshot_en          => '0',
         vfat0               => vfat3_sbits(0),
         vfat1               => vfat3_sbits(1),
         vfat2               => vfat3_sbits(2),
@@ -118,14 +122,14 @@ begin
     chipscope_ila_inst : entity work.chipscope_ila
     port map(
         control => control0,
-        clk     => ref_clk_i,
+        clk     => gtx_clk_i,
         trig0   => trig0
     );
     
     chipscope_vio_inst : entity work.chipscope_vio
     port map(
         control     => control1,
-        clk         => ref_clk_i,
+        clk         => gtx_clk_i,
         sync_in     => sync_in,
         sync_out    => sync_out
     );

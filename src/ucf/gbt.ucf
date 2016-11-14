@@ -1,20 +1,49 @@
-NET "to_gbt_p<0>"  LOC = AD14; # K3 N = AC14 = ELink 0
-NET "to_gbt_n<0>"  LOC = AC14; # K3 P = AD14
+NET "to_gbt_p_o<0>"        LOC = AD14; # K3 N = AC14 = ELink 0
+NET "to_gbt_n_o<0>"        LOC = AC14; # K3 P = AD14
 
-NET "to_gbt_p<1>"  LOC = J9; # GBT 3 N = H9 = ELink 16
-NET "to_gbt_n<1>"  LOC = H9; # GBT 3 P = J9
+NET "to_gbt_p_o<1>"        LOC = J9; # GBT 3 N = H9 = ELink 16
+NET "to_gbt_n_o<1>"        LOC = H9; # GBT 3 P = J9
 
-NET "to_gbt_p<2>"  LOC = K13; # L19 P = K13 = ELink 24
-NET "to_gbt_n<2>"  LOC = K12; # L19 N = K12
+NET "to_gbt_p_o<2>"        LOC = K13; # L19 P = K13 = ELink 24
+NET "to_gbt_n_o<2>"        LOC = K12; # L19 N = K12
 
-NET "to_gbt_p<3>"  LOC = L13; # L10 N = M13 = ELink 32
-NET "to_gbt_n<3>"  LOC = M13; # L10 P = L13
+NET "to_gbt_p_o<3>"        LOC = L13; # L10 N = M13 = ELink 32
+NET "to_gbt_n_o<3>"        LOC = M13; # L10 P = L13
 
-NET "from_gbt_p<0>"  LOC = M16; # M18 N = M15 = ELink 16
-NET "from_gbt_n<0>"  LOC = M15; # M18 P = M16
+NET "from_gbt_p_i<0>"      LOC = M16 | IOSTANDARD = LVDS_25 | DIFF_TERM = FALSE; # M18 N = M15 = ELink 16
+NET "from_gbt_n_i<0>"      LOC = M15 | IOSTANDARD = LVDS_25 | DIFF_TERM = FALSE; # M18 P = M16
 
-NET "from_gbt_p<1>"  LOC = H10; # L7 N = G10 = ELink 20
-NET "from_gbt_n<1>"  LOC = G10; # L7 P = H10
+NET "from_gbt_p_i<1>"      LOC = H10 | IOSTANDARD = LVDS_25 | DIFF_TERM = FALSE; # L7 N = G10 = ELink 20
+NET "from_gbt_n_i<1>"      LOC = G10 | IOSTANDARD = LVDS_25 | DIFF_TERM = FALSE; # L7 P = H10
 
-NET "data_clk_p" LOC = L9; # GBT 1 N = K9 = Elink 16 clock
-NET "data_clk_n" LOC = K9; # GBT 1 P = L9
+## GBTx data clock -- this is 320MHz data clock (terminated outside), the phase is aligned such that rising edge is in the middle of the data bit
+## !!NOTE: this is inverted at the connection to the FPGA
+NET "gbtx_data_clk_p_i"           LOC = L9 | IOSTANDARD = LVDS_25 | DIFF_TERM = FALSE; # GBT 1 N = K9 = Elink 16 clock
+NET "gbtx_data_clk_n_i"           LOC = K9 | IOSTANDARD = LVDS_25 | DIFF_TERM = FALSE; # GBT 1 P = L9
+
+NET "gbtx_data_clk_p_i"           TNM_NET = "gbtx_data_clk_p_i";
+NET "gbtx_data_clk_n_i"           TNM_NET = "gbtx_data_clk_n_i";
+TIMESPEC TS_gbtx_data_clk_p_i =   PERIOD "gbtx_data_clk_p_i" 3.125 ns HIGH 50%;
+TIMESPEC TS_gbtx_data_clk_n_i =   PERIOD "gbtx_data_clk_n_i" TS_gbtx_data_clk_p_i PHASE 1.5625 ns HIGH 50%;
+
+# source synchronous timing for the data (we will sample on the falling edge because the clock is inverted..)
+OFFSET = IN 1.5625 ns VALID 3.125 ns BEFORE "gbtx_data_clk_p_i" FALLING;
+
+## GBTx to FPGA clock 0 -- this is a configurable GBTX clock (terminated outside), should be set to 40MHz with 180deg phase offset from the GBTX data clock
+## !!NOTE: this is inverted at the connection to the FPGA
+NET "gbtx_clk0_p_i"      	      LOC = L10 | IOSTANDARD = LVDS_25 | DIFF_TERM = FALSE;
+NET "gbtx_clk0_n_i"     	      LOC = M10 | IOSTANDARD = LVDS_25 | DIFF_TERM = FALSE;
+
+NET "gbtx_clk0_p_i"               TNM_NET = "gbtx_clk0_p_i";
+NET "gbtx_clk0_n_i"               TNM_NET = "gbtx_clk0_n_i";
+TIMESPEC TS_gbtx_clk0_p_i =       PERIOD "gbtx_clk0_p_i" 25 ns HIGH 50%;
+TIMESPEC TS_gbtx_clk0_n_i =       PERIOD "gbtx_clk0_n_i" TS_gbtx_clk0_p_i PHASE 12.5 ns HIGH 50%;
+
+#NET "gbtx_clk1_n_i"        LOC = B10 | IOSTANDARD = LVDS_25 | DIFF_TERM = FALSE;
+#NET "gbtx_clk1_p_i"        LOC = A10 | IOSTANDARD = LVDS_25 | DIFF_TERM = FALSE;
+
+#NET "gbtx_mgt_clk0_n_i"  LOC = F5;
+#NET "gbtx_mgt_clk0_p_i"  LOC = F6;
+#
+#NET "gbtx_mgt_clk1_n_i"  LOC = H5;
+#NET "gbtx_mgt_clk1_p_i"  LOC = H6;

@@ -194,7 +194,17 @@ port(
 
     xadc_p_i                : in std_logic_vector(5 downto 0);
     xadc_n_i                : in std_logic_vector(5 downto 0);
-       
+
+    -- test points
+    tp_1p_o                 : out std_logic;
+    tp_1n_o                 : out std_logic;
+    tp_4p_o                 : out std_logic;
+    tp_4n_o                 : out std_logic;
+    tp_5p_o                 : out std_logic;
+    tp_5n_o                 : out std_logic;
+    tp_20p_o                : out std_logic;
+    tp_20n_o                : out std_logic;
+    
     --== GTX ==--
     
     mgt_clk_p_i             : in std_logic;
@@ -207,12 +217,14 @@ port(
     
     --== GBT ==--
     
-    to_gbt_p                : out std_logic_vector(3 downto 0);
-    to_gbt_n                : out std_logic_vector(3 downto 0);       
-    from_gbt_p              : in std_logic_vector(1 downto 0);
-    from_gbt_n              : in std_logic_vector(1 downto 0);       
-    data_clk_p              : in std_logic;
-    data_clk_n              : in std_logic         
+    to_gbt_p_o              : out std_logic_vector(3 downto 0);
+    to_gbt_n_o              : out std_logic_vector(3 downto 0);       
+    from_gbt_p_i            : in std_logic_vector(1 downto 0);
+    from_gbt_n_i            : in std_logic_vector(1 downto 0);       
+    gbtx_data_clk_p_i       : in std_logic; -- elink clk (320MHz)
+    gbtx_data_clk_n_i       : in std_logic; -- elink clk (320MHz)
+    gbtx_clk0_p_i           : in std_logic; -- TTC clk (40MHz)
+    gbtx_clk0_n_i           : in std_logic  -- TTC clk (40MHz)
 
 );
 end optohybrid_top;
@@ -266,8 +278,8 @@ architecture Behavioral of optohybrid_top is
     signal gbt_valid            : std_logic;
     signal gbt_error            : std_logic;
     signal gbt_evt_sent         : std_logic;
-    signal gbt_rx_aligned       : std_logic;
-    signal gbt_tx_aligned       : std_logic;
+    signal gbt_clk              : std_logic;
+    signal gbt_sync_reset       : std_logic;
     
     --== VFAT2 ==--
     
@@ -302,7 +314,7 @@ begin
     --== Clocking ==--
     --==============--
     
-    ref_clk <= qpll_clk_b; -- switch using clk_source_o
+    ref_clk <= qpll_clk_b when clk_source = '0' else gbt_clk; -- switch using clk_source_o
     
     --======================--
     --== External signals ==--
@@ -322,6 +334,19 @@ begin
         sys_sbit_sel_i      => sys_sbit_sel,
         ext_sbits_o         => ext_sbits_o        
     );
+
+    --=================--
+    --== Test points ==--
+    --=================--   
+    
+    tp_1p_o  <= '0';
+    tp_1n_o  <= '0';
+    tp_4p_o  <= '0';
+    tp_4n_o  <= '0';
+    tp_5p_o  <= '0';
+    tp_5n_o  <= '0';
+    tp_20p_o <= '0';
+    tp_20n_o <= '0';
     
     --=====================--
     --== Wishbone switch ==--
@@ -398,18 +423,20 @@ begin
     
     gbt_inst : entity work.gbt
     port map(
-       to_gbt_p     => to_gbt_p,
-       to_gbt_n     => to_gbt_n,       
-       from_gbt_p   => from_gbt_p,
-       from_gbt_n   => from_gbt_n,     
-       data_clk_p   => data_clk_p,
-       data_clk_n   => data_clk_n,
-       data_o       => gbt_din,
-       data_i       => gbt_dout,
-       valid_o      => gbt_valid,    
-       rx_aligned_o => gbt_rx_aligned,
-       tx_aligned_o => gbt_tx_aligned,
-       header_io    => open     
+       sync_reset_i     => gbt_sync_reset,
+       to_gbt_p         => to_gbt_p_o,
+       to_gbt_n         => to_gbt_n_o,       
+       from_gbt_p       => from_gbt_p_i,
+       from_gbt_n       => from_gbt_n_i,     
+       data_clk_p       => gbtx_data_clk_p_i,
+       data_clk_n       => gbtx_data_clk_n_i,
+       gbt_ttc_clk_p    => gbtx_clk0_p_i,
+       gbt_ttc_clk_n    => gbtx_clk0_n_i,
+       gbt_clk_o        => gbt_clk,
+       data_o           => gbt_din,
+       data_i           => gbt_dout,
+       valid_o          => gbt_valid,    
+       header_io        => open     
     );
     
     -- This module controls the DATA of the GBT. It formats data packets to be sent over the optical link.
@@ -429,7 +456,8 @@ begin
         vfat2_t1_i      => vfat2_t1(4),
         vfat2_t1_o      => vfat2_t1(5), 
         error_o         => gbt_error,
-        evt_sent_o      => gbt_evt_sent
+        evt_sent_o      => gbt_evt_sent,
+        sync_reset_o    => gbt_sync_reset
     );    
     
     --=============--
@@ -590,8 +618,8 @@ begin
         wb_slv_res_o        => wb_s_res(WB_SLV_STAT), 
         qpll_locked_i       => qpll_locked_b,
         qpll_pll_locked_i   => qpll_pll_locked_b, 
-        gbt_rx_aligned_i    => gbt_rx_aligned,
-        gbt_tx_aligned_i    => gbt_tx_aligned
+        gbt_rx_aligned_i    => '1',
+        gbt_tx_aligned_i    => '1'
     );
     
     --=========================--
@@ -601,7 +629,8 @@ begin
     -- this module handles the sbits
     sbits_inst : entity work.sbits
     port map(        
-        ref_clk_i               => gtx_clk,
+        gtx_clk_i               => gtx_clk,
+        ttc_clk_i               => ref_clk,
         reset_i                 => reset,        
         vfat2_sbits_i           => vfat2_sbits_b,  
         vfat2_sbit_mask_i       => vfat2_sbit_mask,        

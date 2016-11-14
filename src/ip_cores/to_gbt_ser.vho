@@ -50,9 +50,9 @@
 component to_gbt_ser
 generic
  (-- width of the data for the system
-  sys_w       : integer := 1;
+  sys_w       : integer := 4;
   -- width of the data for the device
-  dev_w       : integer := 8);
+  dev_w       : integer := 32);
 port
  (
   -- From the device out to the system

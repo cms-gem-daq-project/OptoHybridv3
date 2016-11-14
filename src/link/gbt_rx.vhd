@@ -24,18 +24,20 @@ use work.types_pkg.all;
 entity gbt_rx is
 port(
 
-    ref_clk_i   : in std_logic;
-    reset_i     : in std_logic;
+    ref_clk_i       : in std_logic;
+    reset_i         : in std_logic;
     
-    data_i      : in std_logic_vector(15 downto 0);
-    valid_i     : in std_logic;
+    data_i          : in std_logic_vector(15 downto 0);
+    valid_i         : in std_logic;
 
-    vfat2_t1_o  : out t1_t;
+    vfat2_t1_o      : out t1_t;
 
-    req_en_o    : out std_logic;
-    req_data_o  : out std_logic_vector(64 downto 0);
+    req_en_o        : out std_logic;
+    req_data_o      : out std_logic_vector(64 downto 0);
 
-    error_o     : out std_logic
+    error_o         : out std_logic;
+    
+    sync_reset_o    : out std_logic
     
 );
 end gbt_rx ;
@@ -49,6 +51,8 @@ architecture Behavioral of gbt_rx is
     signal req_valid    : std_logic;
     signal req_data     : std_logic_vector(64 downto 0);
 
+    signal sync_req_cnt : integer range 0 to 127 := 0;
+    
 begin
 
     --== STATE ==--
@@ -153,5 +157,24 @@ begin
             end if;
         end if;
     end process;
+
+    --== SYNC RESET REQUEST ==--
+
+    process(ref_clk_i)
+    begin
+        if (rising_edge(ref_clk_i)) then
+            if (data_i = x"ffff") then
+                sync_req_cnt <= sync_req_cnt + 1;
+            else
+                sync_req_cnt <= 0;
+            end if;
+            
+            if (sync_req_cnt >= 100) then
+                sync_reset_o <= '1';
+            else
+                sync_reset_o <= '0';
+            end if;
+        end if;
+    end process;   
 
 end Behavioral;
