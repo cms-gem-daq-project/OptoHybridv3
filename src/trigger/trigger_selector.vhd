@@ -84,7 +84,7 @@ begin
                 if (vfat2_t1.lv1a = '1') then
                     if (trigger_lim_i = x"00000000") then
                         vfat2_t1_mux_o.lv1a <= '1';
-                    elsif (t1_cnt = unsigned(trigger_lim_i)) then
+                    elsif (t1_cnt >= unsigned(trigger_lim_i)) then
                         vfat2_t1_mux_o.lv1a <= '1';
                         t1_cnt <= x"00000001";
                     else

@@ -41,7 +41,15 @@ port(
     
     -- Wishbone scan master
     wb_mst_scan_req_o   : out wb_req_t;
-    wb_mst_scan_res_i   : in wb_res_t;
+    wb_mst_scan_res_i   : in wb_res_t;    
+    
+    -- Wishbone ULTRA scan slave
+    wb_slv_uscan_req_i  : in wb_req_t;
+    wb_slv_uscan_res_o  : out wb_res_t;
+    
+    -- Wishbone ULTRA scan master
+    wb_mst_uscan_req_o  : out wb_req_t;
+    wb_mst_uscan_res_i  : in wb_res_t;
     
     -- Wishbone T1 slave
     wb_slv_t1_req_i     : in wb_req_t;
@@ -68,9 +76,10 @@ end func;
 architecture Behavioral of func is
     
     -- Running modes
-    signal scan_running : std_logic_vector(2 downto 0);
-    signal t1_running   : std_logic_vector(1 downto 0);
-    signal dac_running  : std_logic;
+    signal scan_running     : std_logic_vector(2 downto 0);
+    signal uscan_running    : std_logic_vector(2 downto 0);
+    signal t1_running       : std_logic_vector(1 downto 0);
+    signal dac_running      : std_logic;
 
 begin
 
@@ -103,6 +112,23 @@ begin
         vfat2_sbits_i   => vfat2_sbits_i,
         vfat2_tk_data_i => vfat2_tk_data_i, 
         scan_running_o  => scan_running
+    );
+    
+    --===============================--
+    --== VFAT2 ULTRA scan routines ==--
+    --================================--
+    
+    func_uscan_inst : entity work.func_uscan
+    port map(
+        ref_clk_i       => ref_clk_i,
+        reset_i         => reset_i,
+        wb_slv_req_i    => wb_slv_uscan_req_i,
+        wb_slv_res_o    => wb_slv_uscan_res_o,
+        wb_mst_req_o    => wb_mst_uscan_req_o,
+        wb_mst_res_i    => wb_mst_uscan_res_i,
+        vfat2_sbits_i   => vfat2_sbits_i,
+        vfat2_tk_data_i => vfat2_tk_data_i, 
+        scan_running_o  => uscan_running
     );
 
     --===================--

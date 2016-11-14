@@ -21,7 +21,7 @@ use work.types_pkg.all;
 
 entity stat is
 generic(
-    N               : integer := 6
+    N               : integer := 4
 );
 port(
 
@@ -95,20 +95,13 @@ begin
     --== Mapping ==--
     --=============--
     
-    reg_data(0) <= x"20161017";
+    reg_data(0) <= x"20161114";
     
     reg_data(1) <= (0 => qpll_locked_i, others => '0');
     
     reg_data(2) <= (0 => qpll_pll_locked_i, others => '0');    
-    
-    reg_data(3) <= (0 => gbt_rx_aligned_i, others => '0'); 
-    
-    reg_data(4) <= (0 => gbt_tx_aligned_i, others => '0');    
-    
-    reg_data(5) <= (0 => qpll_locked_i,
-                    1 => qpll_pll_locked_i,
-                    2 => gbt_rx_aligned_i,
-                    3 => gbt_tx_aligned_i, others => '0');
+                    
+    reg_data(3) <= x"0202020B"; -- A for GEB v2a, B for GEB v2b
     
 end Behavioral;
 

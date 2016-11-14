@@ -48,7 +48,6 @@ port(
     vfat2_tk_data_i : in tk_data_array_t(23 downto 0);
     
     -- FIFO control
-    fifo_rst_o      : out std_logic;
     fifo_we_o       : out std_logic;
     fifo_din_o      : out std_logic_vector(31 downto 0);
     
@@ -103,7 +102,6 @@ begin
                 req_ack_o <= '0';
                 req_err_o <= '0';
                 wb_mst_req_o <= (stb => '0', we => '0', addr => (others => '0'), data => (others => '0'));
-                fifo_rst_o <= '0';
                 fifo_we_o <= '0';
                 fifo_din_o <= (others => '0');
                 scan_running_o <= (others => '0');
@@ -162,7 +160,6 @@ begin
                             end case;
                             value_counter <= '0' & unsigned(req_min_i);
                             -- Set the flags
-                            fifo_rst_o <= '1';
                             case req_mode_i is
                                 when "000" => scan_running_o <= "001";
                                 when "001" => scan_running_o <= "010";
@@ -176,8 +173,6 @@ begin
                         end if;       
                     -- Check the parameters
                     when CHECKS =>
-                        -- Enable the FIFO
-                        fifo_rst_o <= '0';
                         -- Check VFAT2
                         if (vfat2_int > 23) then
                             req_ack_o <= '0';
@@ -288,7 +283,7 @@ begin
                         else
                             delay <= delay + 1;
                         end if;
-                    -- Perform a threshold scan
+                    -- Perform a threshold scan using trigger bits
                     when SCAN_THRESHOLD =>
                         -- Change state when the counter reached its limit
                         if (event_counter = unsigned(req_events)) then
@@ -300,25 +295,9 @@ begin
                             if (vfat2_sbits_i(vfat2_int) /= empty_8bits) then
                                 hit_counter <= hit_counter + 1;
                             end if;
-                        end if;                        
-                    -- Perform a threshold scan on a signel channel
-                    when SCAN_THRESHOLD2 =>                   
-                        -- Change state when the counter reached its limit
-                        if (event_counter = unsigned(req_events)) then
-                            state <= STORE_RESULT;
-                        else
-                            -- Wait for tracking data
-                            if (vfat2_tk_data_i(vfat2_int).valid = '1' and vfat2_tk_data_i(vfat2_int).crc_ok = '1') then
-                                -- Increment the event counter
-                                event_counter <= event_counter + 1;
-                                -- Increment the hit counter
-                                if (vfat2_tk_data_i(vfat2_int).strips(channel_int) = '1') then
-                                    hit_counter <= hit_counter + 1;
-                                end if;
-                            end if;
-                        end if;                          
-                    -- Perform a latency scan
-                    when SCAN_LATENCY =>                        
+                        end if;                      
+                    -- Perform a latency scan or threshold scan using tracking data
+                    when SCAN_LATENCY | SCAN_TK =>                        
                     -- Change state when the counter reached its limit
                         if (event_counter = unsigned(req_events)) then
                             state <= STORE_RESULT;
@@ -332,9 +311,9 @@ begin
                                     hit_counter <= hit_counter + 1;
                                 end if;
                             end if;
-                        end if;                       
-                    -- Perform a scurve
-                    when SCAN_SCURVE =>                        
+                        end if;                      
+                    -- Perform a threshold scan or scurve on a single channel
+                    when SCAN_THRESHOLD2 | SCAN_SCURVE =>                   
                         -- Change state when the counter reached its limit
                         if (event_counter = unsigned(req_events)) then
                             state <= STORE_RESULT;
@@ -348,23 +327,7 @@ begin
                                     hit_counter <= hit_counter + 1;
                                 end if;
                             end if;
-                        end if;                      
-                    -- Perform a threshold scan using ORED tracking data
-                    when SCAN_TK =>                        
-                        -- Change state when the counter reached its limit
-                        if (event_counter = unsigned(req_events)) then
-                            state <= STORE_RESULT;
-                        else
-                            -- Wait for tracking data
-                            if (vfat2_tk_data_i(vfat2_int).valid = '1' and vfat2_tk_data_i(vfat2_int).crc_ok = '1') then
-                                -- Increment the event counter
-                                event_counter <= event_counter + 1;
-                                -- Increment the hit counter
-                                if (vfat2_tk_data_i(vfat2_int).hit = '1') then
-                                    hit_counter <= hit_counter + 1;
-                                end if;
-                            end if;
-                        end if;                        
+                        end if;                               
                     -- Store the results in the FIFO
                     when STORE_RESULT =>
                         -- Write in the FIFO
@@ -398,7 +361,6 @@ begin
                     --
                     when others =>
                         wb_mst_req_o <= (stb => '0', we => '0', addr => (others => '0'), data => (others => '0'));
-                        fifo_rst_o <= '0';
                         fifo_we_o <= '0';
                         fifo_din_o <= (others => '0');
                         scan_running_o <= (others => '0');

@@ -1,5 +1,55 @@
 INFO:sim:172 - Generating IP...
 Applying current project options...
 Finished applying current project options.
-Cancelled executing Tcl generator.
+WARNING:sim - A core named 'qpll_pll' already exists in the project. Output
+   products for this core may be overwritten.
+Resolving generics for 'qpll_pll'...
+WARNING:sim - A core named 'qpll_pll' already exists in the project. Output
+   products for this core may be overwritten.
+Applying external generics to 'qpll_pll'...
+Delivering associated files for 'qpll_pll'...
+WARNING:sim - Component clk_wiz_v3_6 does not have a valid model name for VHDL
+   synthesis
+Delivering EJava files for 'qpll_pll'...
+Delivered 3 files into directory
+C:/Users/Administrator/Documents/firmware/SliceTB/OptoHybridv2/src/ip_cores/tmp/
+_cg/qpll_pll
+Delivered 1 file into directory
+C:/Users/Administrator/Documents/firmware/SliceTB/OptoHybridv2/src/ip_cores/tmp/
+_cg/qpll_pll
+Generating ASY schematic symbol...
+Loading device for application Rf_Device from file '6vlx130t.nph' in environment
+C:\Xilinx\14.7\ISE_DS\ISE\.
+INFO:sim:949 - Finished generation of ASY schematic symbol.
+Generating SYM schematic symbol for 'qpll_pll'...
+Generating ISE project...
+XCO file found: qpll_pll.xco
+XMDF file found: qpll_pll_xmdf.tcl
+Adding
+C:/Users/Administrator/Documents/firmware/SliceTB/OptoHybridv2/src/ip_cores/tmp/
+_cg/qpll_pll.asy -view all -origin_type imported
+Adding
+C:/Users/Administrator/Documents/firmware/SliceTB/OptoHybridv2/src/ip_cores/tmp/
+_cg/qpll_pll.ucf -view all -origin_type created
+Adding
+C:/Users/Administrator/Documents/firmware/SliceTB/OptoHybridv2/src/ip_cores/tmp/
+_cg/qpll_pll.vhd -view all -origin_type created
+INFO:HDLCompiler:1061 - Parsing VHDL file
+   "C:/Users/Administrator/Documents/firmware/SliceTB/OptoHybridv2/src/ip_cores/
+   tmp/_cg/qpll_pll.vhd" into library work
+INFO:ProjectMgmt - Parsing design hierarchy completed successfully.
+Adding
+C:/Users/Administrator/Documents/firmware/SliceTB/OptoHybridv2/src/ip_cores/tmp/
+_cg/qpll_pll.vho -view all -origin_type imported
+INFO:TclTasksC:2116 - The automatic calculation of top has been turned-off.
+   Please set the new top explicitly by running the "project set top" command.
+   To re-calculate the new top automatically, set the "Auto Implementation Top"
+   property to true.
+Top level has been set to "/qpll_pll"
+Generating README file...
+Generating FLIST file...
+INFO:sim:948 - Finished FLIST file generation.
+Launching README viewer...
+Moving files to output directory...
+Finished moving files to output directory
 Wrote CGP file for project 'qpll_pll'.

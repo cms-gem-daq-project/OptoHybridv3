@@ -17,6 +17,7 @@
 -- 256 : mask (24 bits)
 -- 257 : read out the results (32 bits = 8x0 & 8 bits of vfat2 id & 8 bits of status & 8 bits of data
 -- 258 : local reset
+-- 259 : is module running ?
 --
 ----------------------------------------------------------------------------------
 
@@ -46,6 +47,9 @@ end func_i2c;
 
 architecture Behavioral of func_i2c is
     
+    -- Running
+    signal running      : std_logic;
+    
     -- Local reset
     signal local_reset  : std_logic;
     
@@ -54,20 +58,24 @@ architecture Behavioral of func_i2c is
     signal wb_res       : wb_res_t;
     
     -- Signals from the Wishbone Hub
-    signal wb_stb       : std_logic_vector(2 downto 0);
+    signal wb_stb       : std_logic_vector(3 downto 0);
     signal wb_we        : std_logic;
     signal wb_addr      : std_logic_vector(31 downto 0);
     signal wb_data      : std_logic_vector(31 downto 0);
     
     -- Signals for the registers
-    signal reg_ack      : std_logic_vector(2 downto 0);
-    signal reg_err      : std_logic_vector(2 downto 0);
-    signal reg_data     : std32_array_t(2 downto 0);
+    signal reg_ack      : std_logic_vector(3 downto 0);
+    signal reg_err      : std_logic_vector(3 downto 0);
+    signal reg_data     : std32_array_t(3 downto 0);
     
     -- Signals to the FIFO
     signal fifo_rst     : std_logic;
     signal fifo_we      : std_logic;
+    signal fifo_rd      : std_logic;
+    signal fifo_valid   : std_logic;
+    signal fifo_err     : std_logic;
     signal fifo_din     : std_logic_vector(31 downto 0);
+    signal fifo_dout    : std_logic_vector(31 downto 0);
 
 begin
 
@@ -77,8 +85,8 @@ begin
 
     wb_hub_inst : entity work.wb_hub
     generic map(
-        MASK        => "0000000000000001000000--",
-        SIZE        => 3,
+        MASK        => "000000000000000100000---",
+        SIZE        => 4,
         OFFSET      => 0
     )
     port map(
@@ -107,6 +115,7 @@ begin
     port map(
         ref_clk_i       => ref_clk_i,
         reset_i         => local_reset,
+        running_o       => running,
         wb_slv_req_i    => wb_req,
         wb_slv_res_o    => wb_res,
         wb_mst_req_o    => wb_mst_req_o,
@@ -150,13 +159,18 @@ begin
         rst         => (fifo_rst or local_reset),
         wr_en       => fifo_we,
         din         => fifo_din,
-        rd_en       => wb_stb(1),
-        valid       => reg_ack(1),
-        dout        => reg_data(1),
-        underflow   => reg_err(1),
+        rd_en       => fifo_rd, 
+        valid       => fifo_valid,
+        dout        => fifo_dout,
+        underflow   => fifo_err,
         full        => open,
         empty       => open
     );
+    
+    fifo_rd <= wb_stb(1) and (not running); -- Prevent read when running
+    reg_ack(1) <= '1' when running = '1' else fifo_valid;
+    reg_data(1) <= x"FFFFFFFF" when running = '1' else fifo_dout;
+    reg_err(1) <= '0' when running = '1' else fifo_err;
     
     --=================--
     --== Local reset ==--
@@ -170,6 +184,14 @@ begin
     reg_ack(2) <= wb_stb(2);
     reg_err(2) <= '0';
     reg_data(2) <= (others => '0');
+    
+    --================--
+    --== Is running ==--
+    --================--
+    
+    -- Connect signals for automatic response
+    reg_ack(3) <= wb_stb(3);
+    reg_err(3) <= '0';
+    reg_data(3)(0) <= running;       
 
 end Behavioral;
-

@@ -22,7 +22,7 @@ package wb_pkg is
     
     --== Wishbone masters ==--
     
-	constant WB_MASTERS         : positive := 5;
+	constant WB_MASTERS         : positive := 6;
     
     constant WB_MST_GTX         : integer := 0;
     
@@ -34,9 +34,11 @@ package wb_pkg is
     
     constant WB_MST_DAC         : integer := 4;
     
+    constant WB_MST_USCAN       : integer := 5;
+    
     --== Wishbone slaves ==--
     
-	constant WB_SLAVES          : positive := 15;
+	constant WB_SLAVES          : positive := 16;
     
     constant WB_SLV_I2C_0       : integer := 0;
     constant WB_SLV_I2C_1       : integer := 1;
@@ -63,6 +65,8 @@ package wb_pkg is
     
     constant WB_SLV_STAT        : integer := 14;
     
+    constant WB_SLV_USCAN       : integer := 15;
+    
     --== Wishbone addresses ==--
     
     constant WB_ADDR_I2C        : std_logic_vector(7 downto 0) := x"40";
@@ -76,6 +80,8 @@ package wb_pkg is
     constant WB_ADDR_CNT        : std_logic_vector(7 downto 0) := x"4A";
     constant WB_ADDR_SYS        : std_logic_vector(7 downto 0) := x"4B";
     constant WB_ADDR_STAT       : std_logic_vector(7 downto 0) := x"4C";
+    
+    constant WB_ADDR_USCAN      : std_logic_vector(7 downto 0) := x"4D";
    
     --== Wishbone address selection & generation ==--
     
@@ -115,6 +121,8 @@ package body wb_pkg is
         elsif (std_match(addr, WB_ADDR_SYS  & "0000000000000000--------")) then sel := WB_SLV_SYS;  
         -- Status
         elsif (std_match(addr, WB_ADDR_STAT & "0000000000000000--------")) then sel := WB_SLV_STAT;  
+        -- Ultra VFAT2 scan                                         REGS |  |            
+        elsif (std_match(addr, WB_ADDR_USCAN & "000000000000000000------")) then sel := WB_SLV_USCAN;
         --
         else sel := 99;
         end if;

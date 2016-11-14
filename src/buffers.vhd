@@ -209,6 +209,9 @@ port(
     --== QPLL buffered ==--
     
     qpll_clk_o              : out std_logic;
+    clk_1x_o                : out std_logic;
+    clk_2x_o                : out std_logic;
+    clk_4x_o                : out std_logic;
     qpll_reset_i            : in std_logic;    
     qpll_locked_o           : out std_logic;
     qpll_pll_locked_o       : out std_logic

@@ -27,6 +27,8 @@ port(
     ref_clk_i           : in std_logic;
     reset_i             : in std_logic;
     
+    remove_bad_crc_i    : in std_logic;
+    
     -- VFAT2 data out
     vfat2_data_out_i    : in std_logic;
     
@@ -39,7 +41,10 @@ end vfat2_data_decoder;
 architecture Behavioral of vfat2_data_decoder is
 
     -- The data packet is 192 bits wide but we include the two required IDLE bits in front of each packet 
-    signal data : std_logic_vector(193 downto 0); 
+    signal data             : std_logic_vector(193 downto 0); 
+    
+    -- Time lapse to prevent fake events
+    signal lapse            : integer range 0 to 255;
     
     signal empty_128bits    : std_logic_vector(127 downto 0);
     
@@ -70,7 +75,7 @@ begin
     
     process(ref_clk_i)    
         -- Holds the results of the tests
-        variable tests  : std_logic_vector(3 downto 0);        
+        variable tests  : std_logic_vector(4 downto 0);        
         -- Hold the computed CRC
         variable crc    : std_logic_vector(15 downto 0);  
         -- Check if the strips are hit
@@ -82,6 +87,7 @@ begin
                 tk_data_o <= (valid => '0', bc => (others => '0'), ec => (others => '0'), flags => (others => '0'), chip_id => (others => '0'), strips => (others => '0'), crc => (others => '0'), crc_ok => '0', hit => '0');
                 tests := (others => '0');
                 crc := (others => '0');
+                lapse <= 0;
             else
                 -- Check the 6 fixed bits 
                 case data(193 downto 188) is
@@ -110,23 +116,42 @@ begin
                         end if;
                     end loop;
                 end loop; 
+                -- Check if the time lapse is OK
+                if (lapse = 0) then
+                    tests(3) := '1';
+                else
+                    tests(3) := '0';
+                end if;
+                -- Check CRC
+                if (crc = data(15 downto 0)) then
+                    tests(4) := '1';
+                else
+                    tests(4) := '0';
+                end if;
                 -- Check if the strips are hit
                 if (data(143 downto 16) /= empty_128bits) then
                     hit := '1';
                 else
                     hit := '0';
                 end if;
-                -- Check CRC
-                if (crc = data(15 downto 0)) then
-                    tests(3) := '1';
-                else
-                    tests(3) := '0';
-                end if;
                 -- Combine the tests and assert the packet if they are valid
                 case tests is
-                    when "1111" => tk_data_o <= (valid => '1', bc => data(187 downto 176), ec => data(171 downto 164), flags => data(163 downto 160), chip_id => data(155 downto 144), strips => data(143 downto 16), crc => data(15 downto 0), crc_ok => '1', hit => hit);
-                    when "1110" => tk_data_o <= (valid => '1', bc => data(187 downto 176), ec => data(171 downto 164), flags => data(163 downto 160), chip_id => data(155 downto 144), strips => data(143 downto 16), crc => data(15 downto 0), crc_ok => '0', hit => hit);
-                    when others => tk_data_o.valid <= '0';
+                    -- Valid CRC
+                    when "11111" => 
+                        tk_data_o <= (valid => '1', bc => data(187 downto 176), ec => data(171 downto 164), flags => data(163 downto 160), chip_id => data(155 downto 144), strips => data(143 downto 16), crc => data(15 downto 0), crc_ok => '1', hit => hit);
+                        lapse <= 192;
+                    -- Invalid CRC
+                    when "11110" => 
+                        -- Return data according to the system register
+                        tk_data_o <= (valid => (not remove_bad_crc_i), bc => data(187 downto 176), ec => data(171 downto 164), flags => data(163 downto 160), chip_id => data(155 downto 144), strips => data(143 downto 16), crc => data(15 downto 0), crc_ok => '0', hit => hit);
+                        lapse <= 192;
+                    -- No data
+                    when others => 
+                        tk_data_o.valid <= '0';
+                        -- Decrease the lapse
+                        if (tests(3) = '0') then 
+                            lapse <= lapse - 1;
+                        end if;
                 end case;                
             end if;
         end if;

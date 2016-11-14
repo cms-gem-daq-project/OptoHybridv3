@@ -233,6 +233,9 @@ architecture Behavioral of optohybrid_top is
     signal vfat2_sbits_b        : sbits_array_t(23 downto 0);    
  
     signal qpll_clk_b           : std_logic;
+    signal clk_1x               : std_logic;
+    signal clk_2x               : std_logic;
+    signal clk_4x               : std_logic;
     signal qpll_reset_b         : std_logic;
     signal qpll_locked_b        : std_logic;
     signal qpll_pll_locked_b    : std_logic;
@@ -286,6 +289,7 @@ architecture Behavioral of optohybrid_top is
     signal zero_suppress        : std_logic;
     signal sys_sbit_mode        : std_logic_vector(1 downto 0);
     signal clk_source           : std_logic;
+    signal remove_bad_crc       : std_logic;
     
     --== Wishbone signals ==--
     
@@ -469,6 +473,7 @@ begin
         vfat2_mclk_o        => vfat2_mclk_b,
         vfat2_reset_o       => vfat2_reset_b,
         vfat2_t1_o          => vfat2_t1_b,
+        remove_bad_crc_i    => remove_bad_crc,
         vfat2_data_out_i    => vfat2_data_out_b,
         vfat2_tk_data_o     => vfat2_tk_data,
         wb_slv_i2c_req_i    => wb_s_req(WB_SLV_I2C_5 downto WB_SLV_I2C_0),
@@ -497,6 +502,10 @@ begin
         wb_slv_scan_res_o   => wb_s_res(WB_SLV_SCAN),
         wb_mst_scan_req_o   => wb_m_req(WB_MST_SCAN),
         wb_mst_scan_res_i   => wb_m_res(WB_MST_SCAN),
+        wb_slv_uscan_req_i  => wb_s_req(WB_SLV_USCAN),
+        wb_slv_uscan_res_o  => wb_s_res(WB_SLV_USCAN),
+        wb_mst_uscan_req_o  => wb_m_req(WB_MST_USCAN),
+        wb_mst_uscan_res_i  => wb_m_res(WB_MST_USCAN),
         wb_slv_t1_req_i     => wb_s_req(WB_SLV_T1),
         wb_slv_t1_res_o     => wb_s_res(WB_SLV_T1),
         wb_slv_dac_req_i    => wb_s_req(WB_SLV_DAC),
@@ -573,7 +582,8 @@ begin
         trigger_lim_o       => trigger_lim,
         zero_suppress_o     => zero_suppress,
         sys_sbit_mode_o     => sys_sbit_mode,
-        clk_source_o        => clk_source
+        clk_source_o        => clk_source,
+        remove_bad_crc_o    => remove_bad_crc
     );
     
     --============--
@@ -599,9 +609,11 @@ begin
     --=========================--
     
     -- this module handles the sbits
+    -- Use clk_1x, clk_2x, and clk_4x at 40, 80, and 160 MHz respectively
     sbits_inst : entity work.sbits
     port map(        
-        ref_clk_i               => gtx_clk,
+        clock1x                 => clk_1x,
+        clock4x                 => clk_4x,
         reset_i                 => reset,        
         vfat2_sbits_i           => vfat2_sbits_b,  
         vfat2_sbit_mask_i       => vfat2_sbit_mask,        
@@ -742,6 +754,9 @@ begin
         qpll_locked_i           => qpll_locked_i,
         --
         qpll_clk_o              => qpll_clk_b,
+        clk_1x_o                => clk_1x,
+        clk_2x_o                => clk_2x,
+        clk_4x_o                => clk_4x,
         qpll_reset_i            => qpll_reset_b,
         qpll_locked_o           => qpll_locked_b,
         qpll_pll_locked_o       => qpll_pll_locked_b

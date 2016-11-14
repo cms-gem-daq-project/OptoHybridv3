@@ -54,7 +54,10 @@
 -- "Output    Output      Phase     Duty      Pk-to-Pk        Phase"
 -- "Clock    Freq (MHz) (degrees) Cycle (%) Jitter (ps)  Error (ps)"
 ------------------------------------------------------------------------------
--- CLK_OUT1____40.000______0.000______50.0______232.099____191.950
+-- CLK_OUT1____40.000______0.000______50.0______247.096____196.976
+-- CLK_OUT2____40.000______0.000______50.0______247.096____196.976
+-- CLK_OUT3____80.000______0.000______50.0______200.412____196.976
+-- CLK_OUT4___160.000______0.000______50.0______169.112____196.976
 --
 ------------------------------------------------------------------------------
 -- "Input Clock   Freq (MHz)    Input Jitter (UI)"
@@ -71,6 +74,9 @@ port
   qpll_i_N         : in     std_logic;
   -- Clock out ports
   qpll_clk_o          : out    std_logic;
+  clk_1x_o          : out    std_logic;
+  clk_2x_o          : out    std_logic;
+  clk_4x_o          : out    std_logic;
   -- Status and control signals
   qpll_locked_o            : out    std_logic
  );
@@ -87,6 +93,9 @@ your_instance_name : qpll_pll
     qpll_i_N => qpll_i_N,
     -- Clock out ports
     qpll_clk_o => qpll_clk_o,
+    clk_1x_o => clk_1x_o,
+    clk_2x_o => clk_2x_o,
+    clk_4x_o => clk_4x_o,
     -- Status and control signals
     qpll_locked_o => qpll_locked_o);
 -- INST_TAG_END ------ End INSTANTIATION Template ------------

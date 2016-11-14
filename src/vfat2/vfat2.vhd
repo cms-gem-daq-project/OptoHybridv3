@@ -35,7 +35,9 @@ port(
     -- VFAT2 control output
     vfat2_mclk_o        : out std_logic;
     vfat2_reset_o       : out std_logic;
-    vfat2_t1_o          : out std_logic;    
+    vfat2_t1_o          : out std_logic;   
+    
+    remove_bad_crc_i    : in std_logic;    
     
     -- VFAT2 raw tracking data
     vfat2_data_out_i    : in std_logic_vector(23 downto 0);
@@ -96,6 +98,7 @@ begin
         port map(
             ref_clk_i           => ref_clk_i,
             reset_i             => reset_i,
+            remove_bad_crc_i    => remove_bad_crc_i,
             vfat2_data_out_i    => vfat2_data_out_i(I),
             tk_data_o           => vfat2_tk_data_o(I)
         );

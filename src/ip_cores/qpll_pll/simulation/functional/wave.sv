@@ -89,7 +89,8 @@ group set -comment {}
 group clear 0 end
 
 group insert \
-    {qpll_pll_tb.dut.clk} \
+    {qpll_pll_tb.dut.clk[1]} \
+    {qpll_pll_tb.dut.clk[2]}  \     {qpll_pll_tb.dut.clk[3]}  \     {qpll_pll_tb.dut.clk[4]}  
 
 group using {Counters}
 group set -overlay 0
@@ -97,7 +98,8 @@ group set -comment {}
 group clear 0 end
 
 group insert \
-    {qpll_pll_tb.dut.counter} \
+    {qpll_pll_tb.dut.counter[1]} \
+    {qpll_pll_tb.dut.counter[2]}  \     {qpll_pll_tb.dut.counter[3]}  \     {qpll_pll_tb.dut.counter[4]}  
 
 group using {Status/control}
 group set -overlay 0

@@ -12,7 +12,11 @@ package types_pkg is
     
     type std_array_t is array(integer range <>) of std_logic;
     
+    type u24_array_t is array(integer range <>) of unsigned(23 downto 0);
+    
     type u32_array_t is array(integer range <>) of unsigned(31 downto 0);
+    
+    type std8_array_t is array(integer range <>) of std_logic_vector(7 downto 0);
     
     type std32_array_t is array(integer range <>) of std_logic_vector(31 downto 0);
     

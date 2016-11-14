@@ -25,6 +25,7 @@ port(
 
     ref_clk_i       : in std_logic;
     reset_i         : in std_logic;
+    running_o       : out std_logic;
     
     -- Wishbone slave
     wb_slv_req_i    : in wb_req_t;
@@ -67,6 +68,7 @@ begin
         if (rising_edge(ref_clk_i)) then
             -- Reset and default values
             if (reset_i = '1') then
+                running_o <= '0';
                 wb_slv_res_o <= (ack => '0', stat => (others => '0'), data => (others => '0'));
                 wb_mst_req_o <= (stb => '0', we => '0', addr => (others => '0'), data => (others => '0'));
                 fifo_rst_o <= '0';
@@ -83,6 +85,7 @@ begin
                     -- Wait for request
                     when IDLE =>
                         -- Reset the flags
+                        running_o <= '0';
                         wb_slv_res_o.ack <= '0';
                         fifo_we_o <= '0';
                         -- On request
@@ -101,6 +104,8 @@ begin
                         end if;                     
                     -- Check the parameters
                     when CHECKS =>
+                        -- Running 
+                        running_o <= '1';
                         -- Enable the FIFO
                         fifo_rst_o <= '0';
                         -- Check the register

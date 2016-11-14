@@ -2,6 +2,7 @@
 _xmsgs\pn_parser.xmsgs
 qpll_pll.asy
 qpll_pll.gise
+qpll_pll.sym
 qpll_pll.ucf
 qpll_pll.vhd
 qpll_pll.vho

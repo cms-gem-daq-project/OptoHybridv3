@@ -27,7 +27,7 @@ use work.types_pkg.all;
 
 entity sys is
 generic(
-    N                   : integer := 10
+    N                   : integer := 11
 );
 port(
 
@@ -48,7 +48,8 @@ port(
     trigger_lim_o       : out std_logic_vector(31 downto 0);
     zero_suppress_o     : out std_logic;
     sys_sbit_mode_o     : out std_logic_vector(1 downto 0);
-    clk_source_o        : out std_logic
+    clk_source_o        : out std_logic;
+    remove_bad_crc_o    : out std_logic
     
 );
 end sys;
@@ -133,6 +134,8 @@ begin
     sys_sbit_mode_o <= reg_data(8)(1 downto 0);
     
     clk_source_o <= reg_data(9)(0);
+    
+    remove_bad_crc_o <= reg_data(10)(0);
 
 end Behavioral;
 
