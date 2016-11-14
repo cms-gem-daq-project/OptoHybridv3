@@ -218,15 +218,15 @@ assign tx_dly_align_mon_ena = 1'b0;
 // Pseudo Random Bit Stream
 //----------------------------------------------------------------------------------------------------------------------
 
-  PRBS_tx #(.start_pattern ( 48'hFFFFFF000000))
-  tx1 (
-    .OUT_CLK_ENA (tx_sel),
-    .GEN_CLK     (TRG_CLK80),
-    .RST         (prbs_rst),
-    .INJ_ERR     (INJ_ERR),
-    .PRBS        (prbs[47:0]),
-    .STRT_LTNCY  (STRT_LTNCY)
-  );
+//   PRBS_tx #(.start_pattern ( 48'hFFFFFF000000))
+//   tx1 (
+//     .OUT_CLK_ENA (tx_sel),
+//     .GEN_CLK     (TRG_CLK80),
+//     .RST         (prbs_rst),
+//     .INJ_ERR     (INJ_ERR),
+//     .PRBS        (prbs[47:0]),
+//     .STRT_LTNCY  (STRT_LTNCY)
+//   );
 
 //----------------------------------------------------------------------------------------------------------------------
 endmodule

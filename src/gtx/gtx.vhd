@@ -34,7 +34,6 @@ port(
     reset_i         : in std_logic;
 
     gtx_clk_o       : out std_logic;
-    rec_clk_o       : out std_logic;
 
     tx_kchar_i      : in std_logic_vector(1 downto 0);
     tx_data_i       : in std_logic_vector(15 downto 0);

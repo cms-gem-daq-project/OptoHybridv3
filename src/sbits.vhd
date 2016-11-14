@@ -22,19 +22,19 @@ use work.types_pkg.all;
 
 entity sbits is
 port(
-   
-    gtx_clk_i               : in std_logic;
-    ttc_clk_i               : in std_logic;
-    
+
     clk160_i                : in std_logic;
     clk40_i                 : in std_logic;
+
+    gtx_clk_i               : in std_logic;
+   
     reset_i                 : in std_logic;
 
     oneshot_en_i            : in std_logic;
 
     vfat2_sbits_i           : in sbits_array_t(23 downto 0);
     vfat2_sbit_mask_i       : in std_logic_vector(23 downto 0);
-
+   
     vfat_sbit_clusters_o    : out sbit_cluster_array_t(7 downto 0);
 
     overflow_o              : out std_logic

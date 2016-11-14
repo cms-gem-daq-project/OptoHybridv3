@@ -1,11 +1,10 @@
-module trigger_links (
+module trigger_links_v (
 
   input mgt_refclk, // 160 MHz QPLL Clock
-  input ref_clk,    // 40 MHz QPLL Clock
 
-  output clk_40,
-  output clk_80,
-  output clk_160,
+  input clk_40,
+  input clk_80,
+  input clk_160,
 
   input reset,
 
@@ -40,24 +39,11 @@ wire [3:0] tx_out_clk;
 wire [3:0] tx_pll_locked;
 
 SRL16E #(.INIT(16'h7FFF)) SRL16TXPLL(
-  .Q(txpll_rst), .A0(1'b1), .A1(1'b1), .A2(1'b1), .A3(1'b1), .CE (1'b1), .CLK(ref_clk), .D(1'b0)
+  .Q(txpll_rst), .A0(1'b1), .A1(1'b1), .A2(1'b1), .A3(1'b1), .CE (1'b1), .CLK(clk_40), .D(1'b0)
 );
 
-bufg_x2div2plus snap_mmcm (
-//.CLK_IN1                (tx_out_clk[0]    ), // 80 MHz
-  .CLK_IN1                (ref_clk          ), // 40 MHz
-
-  .CLK_OUT3               (ck40             ), // 40 MHz
-  .CLK_OUT1               (usrclk2          ), // 80 MHz
-  .CLK_OUT2               (usrclk           ), // 160 MHz
-  .RESET                  (!tx_pll_locked[0]),
-  .LOCKED                 (lock40           ),
-  .CLK_OUT3BUF            (ck40buf          )  // from Tx GTX PLL out clk
-) ;
-
-assign clk_40  = ck40;
-assign clk_80  = usrclk2;
-assign clk_160 = usrclk;
+wire usrclk   = clk_160;
+wire userclk2 = clk_80;
 
 genvar igem;
 generate

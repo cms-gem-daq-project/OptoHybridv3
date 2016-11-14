@@ -4,14 +4,13 @@ use ieee.std_logic_1164.all;
 library work;
 use work.types_pkg.all;
 
-entity trigger is
+entity trigger_links is
 port(
     mgt_refclk : in  std_logic;
 
-    ref_clk    : in  std_logic;
-    clk_40     : out std_logic;
-    clk_80     : out std_logic;
-    clk_160    : out std_logic;
+    clk_40     : in  std_logic;
+    clk_80     : in  std_logic;
+    clk_160    : in  std_logic;
 
     reset      : in  std_logic;
 
@@ -29,16 +28,15 @@ port(
 
     overflow   : in  std_logic
 );
-end trigger;
+end trigger_links;
 
-architecture Behavioral of trigger is
+architecture Behavioral of trigger_links is
     signal this_signal : std_logic;
 begin
 
-Inst_trigger_links: entity work.trigger_links
+Inst_trigger_links: entity work.trigger_links_v
 port map(
     mgt_refclk => mgt_refclk,
-    ref_clk    => ref_clk,
     clk_40     => clk_40,  -- 40 MHz Clock Derived from QPLL
     clk_80     => clk_80,  -- 80 MHz Clock Derived from QPLL
     clk_160    => clk_160, -- 160 MHz Clock Derived from QPLL

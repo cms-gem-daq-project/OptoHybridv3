@@ -261,10 +261,6 @@ architecture Behavioral of optohybrid_top is
 
     signal ref_clk              : std_logic;
 
-    signal clk_40               : std_logic;
-    signal clk_80               : std_logic;
-    signal clk_160              : std_logic;
-
     signal mgt_refclk           : std_logic;
     signal reset                : std_logic;    
 
@@ -390,7 +386,6 @@ begin
         ref_clk_i      => ref_clk,
         reset_i        => reset,
         gtx_clk_o      => gtx_clk,
-        rec_clk_o      => gtx_rec_clk,
         tx_kchar_i     => gtx_tx_kchar( 1 downto 0),
         tx_data_i      => gtx_tx_data (15 downto 0),
         rx_kchar_o     => gtx_rx_kchar( 1 downto 0),
@@ -646,8 +641,9 @@ begin
     -- This module handles the SBits
     sbits_inst : entity work.sbits
     port map(
-        clk160_i                => clk_160,
-        clk40_i                 => clk_40,
+        gtx_clk_i               => gtx_clk,
+        clk160_i                => clk_4x,
+        clk40_i                 => clk_1x,
         reset_i                 => reset,
         vfat2_sbits_i           => vfat2_sbits_b,
         vfat2_sbit_mask_i       => vfat2_sbit_mask,
@@ -660,15 +656,13 @@ begin
     --== Fixed latency trigger links ==--
     --=================================--
 
-    trigger_inst : entity work.trigger
+    trigger_links_inst : entity work.trigger_links
     port map (
         mgt_refclk => mgt_refclk, -- 160 MHz Reference Clock from QPLL
 
-        ref_clk    => ref_clk, -- 40 MHz Clock from QPLL
-
-        clk_40     => clk_40,  -- 40 MHz Clock Derived from QPLL
-        clk_80     => clk_80,  -- 80 MHz Clock Derived from QPLL
-        clk_160    => clk_160, -- 160 MHz Clock Derived from QPLL
+        clk_40     => clk_1x,  -- 40 MHz Clock Derived from QPLL
+        clk_80     => clk_2x,  -- 80 MHz Clock Derived from QPLL
+        clk_160    => clk_4x, -- 160 MHz Clock Derived from QPLL
 
         reset      => reset,
 
@@ -687,36 +681,6 @@ begin
         overflow   => sbit_overflow
     );
 
-    --=========================--
-    --== Chipscope           ==--
-    --=========================--
-
-    chipscope_icon_inst : entity work.chipscope_icon
-    port map(
-        control0    => control0,
-        control1    => control1
-    );
-    
-    chipscope_ila_inst : entity work.chipscope_ila
-    port map(
-        control => control0,
-        clk     => ref_clk,
-        trig0   => trig0
-    );
-    
-    chipscope_vio_inst : entity work.chipscope_vio
-    port map(
-        control     => control1,
-        clk         => ref_clk,
-        sync_in     => sync_in,
-        sync_out    => sync_out
-    );
-    
-    gen_con : for i in 0 to 23 generate
-    begin
-        trig0(((i + 1) * 8 - 1) downto (i * 8)) <= vfat2_sbits_b(i);
-    end generate;
-    
     --=============--
     --== Buffers ==--
     --=============--
