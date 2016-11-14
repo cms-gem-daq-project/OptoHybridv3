@@ -44,8 +44,10 @@ port(
     vfat2_t1_o      : out t1_t;
 
     error_o         : out std_logic;
-    evt_sent_o      : out std_logic
+    evt_sent_o      : out std_logic;
 
+    sync_reset_o    : out std_logic
+    
 );
 end gbt_link;
 
@@ -76,14 +78,15 @@ begin
 
     gbt_rx_inst : entity work.gbt_rx
     port map(
-        ref_clk_i   => ref_clk_i,
-        reset_i     => reset_i,
-        data_i      => data_i,
-        valid_i     => valid_i,
-        vfat2_t1_o  => vfat2_t1_o,
-        req_en_o    => g2o_req_en,
-        req_data_o  => g2o_req_data,
-        error_o     => error_o
+        ref_clk_i    => ref_clk_i,
+        reset_i      => reset_i,
+        data_i       => data_i,
+        valid_i      => valid_i,
+        vfat2_t1_o   => vfat2_t1_o,
+        req_en_o     => g2o_req_en,
+        req_data_o   => g2o_req_data,
+        error_o      => error_o,
+        sync_reset_o => sync_reset_o
     );
 
     --============--

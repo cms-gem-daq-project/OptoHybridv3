@@ -104,7 +104,7 @@ begin
                         req_valid <= '0';
                         evt_valid <= '0';
                     when TK_DATA => 
-                        if (tk_counter = 5) then -- Will be high on TK_DATA 6 and response on REG_DATA
+                        if (tk_counter = 1) then -- Will be high on TK_DATA 0 and response on REG_DATA
                             req_en_o <= '1';
                             evt_en_o <= '1';
                         else

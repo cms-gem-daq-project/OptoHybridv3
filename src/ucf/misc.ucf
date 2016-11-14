@@ -60,3 +60,18 @@ NET "xadc_n_i[2]" LOC = B13;
 NET "xadc_p_i[2]" LOC = B12;
 NET "xadc_n_i[1]" LOC = A14;
 NET "xadc_p_i[1]" LOC = A13;
+
+## Testpoints
+#NET "tp_0_o"  LOC = AE22; 
+#NET "tp_1_o"  LOC = AC24; 
+NET "tp_4n_o"  LOC = AP10;
+NET "tp_4p_o"  LOC = AN10;
+
+NET "tp_5n_o"  LOC = AE11;
+NET "tp_5p_o"  LOC = AF11;
+
+NET "tp_1n_o"  LOC = AC10;
+NET "tp_1p_o"  LOC = AB10;
+
+NET "tp_20n_o"  LOC = AD22;
+NET "tp_20p_o"  LOC = AC22;

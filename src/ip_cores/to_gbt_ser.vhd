@@ -63,9 +63,9 @@ use unisim.vcomponents.all;
 entity to_gbt_ser is
 generic
  (-- width of the data for the system
-  sys_w       : integer := 1;
+  sys_w       : integer := 4;
   -- width of the data for the device
-  dev_w       : integer := 8);
+  dev_w       : integer := 32);
 port
  (
   -- From the device out to the system
@@ -82,7 +82,7 @@ end to_gbt_ser;
 
 architecture xilinx of to_gbt_ser is
   attribute CORE_GENERATION_INFO            : string;
-  attribute CORE_GENERATION_INFO of xilinx  : architecture is "to_gbt_ser,selectio_wiz_v4_1,{component_name=to_gbt_ser,bus_dir=OUTPUTS,bus_sig_type=DIFF,bus_io_std=LVDS_25,use_serialization=true,use_phase_detector=false,serialization_factor=8,enable_bitslip=false,enable_train=false,system_data_width=1,bus_in_delay=NONE,bus_out_delay=NONE,clk_sig_type=DIFF,clk_io_std=LVCMOS18,clk_buf=BUFIO2,active_edge=RISING,clk_delay=NONE,v6_bus_in_delay=NONE,v6_bus_out_delay=NONE,v6_clk_buf=MMCM,v6_active_edge=SDR,v6_ddr_alignment=SAME_EDGE_PIPELINED,v6_oddr_alignment=SAME_EDGE,ddr_alignment=C0,v6_interface_type=NETWORKING,interface_type=NETWORKING,v6_bus_in_tap=0,v6_bus_out_tap=0,v6_clk_io_std=LVCMOS25,v6_clk_sig_type=SINGLE}";
+  attribute CORE_GENERATION_INFO of xilinx  : architecture is "to_gbt_ser,selectio_wiz_v4_1,{component_name=to_gbt_ser,bus_dir=OUTPUTS,bus_sig_type=DIFF,bus_io_std=LVDS_25,use_serialization=true,use_phase_detector=false,serialization_factor=8,enable_bitslip=false,enable_train=false,system_data_width=4,bus_in_delay=NONE,bus_out_delay=NONE,clk_sig_type=DIFF,clk_io_std=LVCMOS18,clk_buf=BUFIO2,active_edge=RISING,clk_delay=NONE,v6_bus_in_delay=NONE,v6_bus_out_delay=NONE,v6_clk_buf=MMCM,v6_active_edge=SDR,v6_ddr_alignment=SAME_EDGE_PIPELINED,v6_oddr_alignment=SAME_EDGE,ddr_alignment=C0,v6_interface_type=NETWORKING,interface_type=NETWORKING,v6_bus_in_tap=0,v6_bus_out_tap=0,v6_clk_io_std=LVCMOS25,v6_clk_sig_type=SINGLE}";
   constant clock_enable            : std_logic := '1';
   signal unused : std_logic;
   signal clk_in_int_buf            : std_logic;
@@ -224,12 +224,12 @@ begin
 
     out_slices: for slice_count in 0 to num_serial_bits-1 generate begin
         -- This places the first data in time on the right
-        oserdes_d(10-slice_count-1)(0) <=
-           DATA_OUT_FROM_DEVICE(slice_count);
+        oserdes_d(10-slice_count-1) <=
+           DATA_OUT_FROM_DEVICE(slice_count*sys_w+sys_w-1 downto slice_count*sys_w);
         -- To place the first data in time on the left, use the
         --   following code, instead
         -- oserdes_d(slice_count) <=
-        --    DATA_OUT_FROM_DEVICE(slice_count);
+        --    DATA_OUT_FROM_DEVICE(slice_count*sys_w+sys_w-1 downto slice_count*sys_w);
 
      end generate out_slices;
 

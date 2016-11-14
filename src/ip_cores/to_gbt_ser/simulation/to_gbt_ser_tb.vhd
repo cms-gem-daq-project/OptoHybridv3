@@ -73,9 +73,9 @@ architecture test of to_gbt_ser_tb is
 component to_gbt_ser_exdes
 generic (
   -- width of the data for the system
-  sys_w      : integer := 1;
+  sys_w      : integer := 4;
   -- width of the data for the device
-  dev_w      : integer := 8
+  dev_w      : integer := 32
 );
 port (
   PATTERN_COMPLETED_OUT     : out   std_logic_vector (1 downto 0);
@@ -90,8 +90,8 @@ port (
   IO_RESET                 : in    std_logic);
 end component;
   constant clk_per         : time    :=  10 ns; -- 100 MHz clk
-  constant sys_w           : integer := 1;
-  constant dev_w           : integer := 8;
+  constant sys_w           : integer := 4;
+  constant dev_w           : integer := 32;
   constant num_serial_bits : integer := dev_w/sys_w;
   -- From the system into the device
   signal   data_in_from_pins_p : std_logic_vector(sys_w-1 downto 0);
@@ -213,8 +213,8 @@ end process;
   dut : to_gbt_ser_exdes
   generic map
   (
-   sys_w => 1,
-   dev_w => 8
+   sys_w => 4,
+   dev_w => 32
    )
   port map
   (

@@ -12,171 +12,183 @@ generic(
 );
 port(
 
-   to_gbt_p     : out std_logic_vector(3 downto 0);
-   to_gbt_n     : out std_logic_vector(3 downto 0);
+   sync_reset_i     : in std_logic;
    
-   from_gbt_p   : in std_logic_vector(1 downto 0);
-   from_gbt_n   : in std_logic_vector(1 downto 0);
+   to_gbt_p         : out std_logic_vector(3 downto 0);
+   to_gbt_n         : out std_logic_vector(3 downto 0);
    
-   data_clk_p   : in std_logic;
-   data_clk_n   : in std_logic;
+   from_gbt_p       : in std_logic_vector(1 downto 0);
+   from_gbt_n       : in std_logic_vector(1 downto 0);
    
-   data_i       : in std_logic_vector(31 downto 0);
-   data_o       : out std_logic_vector(15 downto 0);
-   valid_o      : out std_logic;
+   data_clk_p       : in std_logic;
+   data_clk_n       : in std_logic;
    
-   rx_aligned_o : out std_logic;
-   tx_aligned_o : out std_logic;
+   gbt_ttc_clk_p    : in std_logic;
+   gbt_ttc_clk_n    : in std_logic;
    
-   header_io    : out std_logic_vector(15 downto 0)
+   gbt_clk_o        : out std_logic;
+   
+   data_i           : in std_logic_vector(31 downto 0);
+   data_o           : out std_logic_vector(15 downto 0);
+   valid_o          : out std_logic;
+   
+   header_io        : out std_logic_vector(15 downto 0)
    
 );
 end gbt;
 
 architecture Behavioral of gbt is
     
-    signal from_gbt_raw : std_logic_vector(15 downto 0) := (others => '0');
-    signal from_gbt : std_logic_vector(15 downto 0) := (others => '0');
+    signal from_gbt_raw     : std_logic_vector(15 downto 0) := (others => '0');
+    signal from_gbt         : std_logic_vector(15 downto 0) := (others => '0');
     
-    signal to_gbt : std_logic_vector(31 downto 0) := (others => '0');
-    signal to_gbt_mux : std_logic_vector(31 downto 0) := (others => '0');
-    signal to_gbt_raw : std_logic_vector(31 downto 0) := (others => '0');
+    signal to_gbt           : std_logic_vector(31 downto 0) := (others => '0');
+    signal to_gbt_raw       : std_logic_vector(31 downto 0) := (others => '0');
     
-    signal data_clk : std_logic := '0';
-    signal fabric_clk : std_logic := '0';
-    signal clk_reset : std_logic := '0';
-    signal io_reset : std_logic := '0';
-    signal pll_locked : std_logic := '0';
+    signal data_clk_tmp     : std_logic := '0';
+    signal fabric_clk_tmp   : std_logic := '0';
+    signal data_clk_inv     : std_logic := '0';
+    signal fabric_clk_inv   : std_logic := '0';
+    signal data_clk         : std_logic := '0';
+    signal fabric_clk       : std_logic := '0';
+    signal io_reset         : std_logic := '0';
     
-    signal gbt_rx_slip : std_logic := '0';
-    signal gbt_tx_slip : std_logic := '0';
-    
-    signal gbt_rx_aligned : std_logic := '0';
-    signal gbt_tx_aligned : std_logic := '0';    
-
 begin
 
-    -- MMCM clocks
-    gbt_clock_inst : entity work.gbt_clock
+    --================--
+    --==   Wiring   ==--
+    --================--
+    
+    gbt_clk_o <= fabric_clk;
+    data_o <= from_gbt;
+    to_gbt <= data_i;
+
+    --================--
+    --==    RESET   ==--
+    --================--
+    
+    -- power-on reset - this must be a fabric_clk synchronous pulse of a minimum of 2 and max 32 clock cycles (ISERDES spec)
+    process(fabric_clk)
+        variable countdown : integer := 400_000; -- 10ms - probably way too long, but ok for now
+        variable pulse_length : integer := 5;
+    begin
+        if (falling_edge(fabric_clk)) then
+            if (countdown > 0) then
+              io_reset <= '0';
+              countdown := countdown - 1;
+            else
+                if (sync_reset_i = '1') then
+                    pulse_length := 5;
+                end if;
+                
+                if (pulse_length > 0) then
+                    io_reset <= '1';
+                    pulse_length := pulse_length - 1;
+                else
+                    io_reset <= '0';
+                end if;
+            end if;
+        end if;
+    end process; 
+
+    --=====================--
+    --==   I/O Buffers   ==--
+    --=====================--
+    
+    --------- GBT TTC clock ---------
+    
+    i_ibufgds_clk_gbt_ttc : IBUFGDS
+    generic map(
+        iostandard      => "lvds_25"
+    )
     port map(
-        clk_in1_p   => data_clk_p,
-        clk_in1_n   => data_clk_n,
-        clk_out1    => data_clk,
-        clk_out2    => fabric_clk,
-        reset       => clk_reset,
-        locked      => pll_locked
+        I   => gbt_ttc_clk_p,
+        IB  => gbt_ttc_clk_n,
+        O   => fabric_clk_tmp
     );
     
+    i_bufg_clk_gbt_ttc : BUFG
+    port map(
+        I   => fabric_clk_tmp,
+        O   => fabric_clk_inv
+    );
+
+    fabric_clk <= not fabric_clk_inv;
+
+    --------- GBT elink clock ---------
+
+    i_ibufgds_clk_gbt_data : IBUFGDS
+    generic map(
+        iostandard      => "lvds_25"
+    )
+    port map(
+        I   => data_clk_p,
+        IB  => data_clk_n,
+        O   => data_clk_tmp
+    );
+    
+    i_bufg_clk_gbt_data : BUFG
+    port map(
+        I   => data_clk_tmp,
+        O   => data_clk_inv
+    );
+
+    data_clk <= not data_clk_inv;
+
     --================--
     --== INPUT DATA ==--
     --================--
 
     -- Input deserializer
-    from_gbt_des_inst : entity work.from_gbt_des
+    i_from_gbt_des : entity work.from_gbt_des
     port map(
         data_in_from_pins_p => from_gbt_p,
         data_in_from_pins_n => from_gbt_n,
         data_in_to_device   => from_gbt_raw,
-        bitslip             => gbt_rx_slip,
+        bitslip             => '0',
         clk_in              => data_clk,
         clk_div_in          => fabric_clk,
         io_reset            => io_reset
     );    
     
-    -- Input data formater
-    gbt_rx_data_mux_inst : entity work.gbt_rx_data_mux
-    generic map(
-        DEBUG       => DEBUG
-    )
-    port map(
-        fabric_clk  => fabric_clk,
-        reset       => io_reset,
-        din         => from_gbt_raw,
-        dout        => from_gbt
-    );   
-    
-    -- Input aligner
-    gbt_rx_aligner_inst : entity work.gbt_rx_aligner
-    port map(
-        fabric_clk  => fabric_clk,
-        reset       => io_reset,
-        from_gbt    => from_gbt,
-        bitslip     => gbt_rx_slip,
-        gbt_aligned => gbt_rx_aligned
-    );    
-    
-    -- DONE
-    -- from_gbt is the data packet to use in the code
-    data_o <= from_gbt;
-    
+    from_gbt <= not from_gbt_raw(1) & not from_gbt_raw(3) & not from_gbt_raw(5) & not from_gbt_raw(7) &
+                not from_gbt_raw(9) & not from_gbt_raw(11) & not from_gbt_raw(13) & not from_gbt_raw(15) &
+                not from_gbt_raw(0) & not from_gbt_raw(2) & not from_gbt_raw(4) & not from_gbt_raw(6) &
+                not from_gbt_raw(8) & not from_gbt_raw(10) & not from_gbt_raw(12) & not from_gbt_raw(14);
+        
     --=================--
     --== OUTPUT DATA ==--
     --=================--
-  
-     -- Output data formater  
-    gbt_tx_data_mux_inst : entity work.gbt_tx_data_mux
+
+    -- Bitslip and format the output to serializer
+    -- Static bitslip count = 3
+    i_gbt_tx_bitslip : entity work.gbt_tx_bitslip
     port map(
         fabric_clk  => fabric_clk,
         reset       => io_reset,
-        rx_aligned  => gbt_rx_aligned,
-        tx_aligned  => gbt_tx_aligned,
+        bitslip_cnt => 7,
         din         => to_gbt,
-        dout        => to_gbt_mux
-    );     
-     
-    -- Output aligner
-    gbt_tx_aligner_inst : entity work.gbt_tx_aligner
-    port map(
-        fabric_clk  => fabric_clk,
-        reset       => io_reset,
-        from_gbt    => from_gbt,
-        rx_aligned  => gbt_rx_aligned,
-        bitslip     => gbt_tx_slip,
-        gbt_aligned => gbt_tx_aligned
-    );       
-     
-    -- Output bitslip
-    gbt_tx_bitslip_inst : entity work.gbt_tx_bitslip    
-    generic map(
-        DEBUG       => DEBUG
-    )
-    port map(
-        fabric_clk  => fabric_clk,
-        reset       => io_reset,
-        bitslip     => gbt_tx_slip,
-        din         => to_gbt_mux,
         dout        => to_gbt_raw
     );  
 
     -- Output serializer
---    to_gbt_ser_inst : entity work.to_gbt_ser
---    port map(
---        data_out_from_device    => to_gbt_raw,
---        data_out_to_pins_p      => to_gbt_p,
---        data_out_to_pins_n      => to_gbt_n,
---        clk_in                  => data_clk,
---        clk_div_in              => fabric_clk,
---        io_reset                => io_reset
---    ); 
-
-    gbt0 : obufds generic map(iostandard  => "lvds_25") port map(i => '0', o => to_gbt_p(0), ob => to_gbt_n(0));
-    gbt1 : obufds generic map(iostandard  => "lvds_25") port map(i => '0', o => to_gbt_p(1), ob => to_gbt_n(1));
-    gbt2 : obufds generic map(iostandard  => "lvds_25") port map(i => '0', o => to_gbt_p(2), ob => to_gbt_n(2));
-    gbt3 : obufds generic map(iostandard  => "lvds_25") port map(i => '0', o => to_gbt_p(3), ob => to_gbt_n(3));
-    
-    -- DONE
-    -- to_gbt holds the data you want to send
-    to_gbt <= data_i;
-    
-    valid_o <= gbt_rx_aligned and gbt_tx_aligned;
-    rx_aligned_o <= gbt_rx_aligned;
-    tx_aligned_o <= gbt_tx_aligned;
+    i_to_gbt_ser : entity work.to_gbt_ser
+    port map(
+        data_out_from_device    => to_gbt_raw,
+        data_out_to_pins_p      => to_gbt_p,
+        data_out_to_pins_n      => to_gbt_n,
+        clk_in                  => data_clk_inv,
+        clk_div_in              => fabric_clk,
+        io_reset                => io_reset
+    ); 
+        
+    valid_o <= not io_reset;
     
     --===========--
     --== OTHER ==--
     --===========--
     
-    header_io <= gbt_rx_aligned & gbt_tx_aligned & from_gbt(13 downto 0);
+    header_io <= from_gbt(15 downto 0);
 
 end Behavioral;
 

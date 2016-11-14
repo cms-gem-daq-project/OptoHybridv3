@@ -34,9 +34,7 @@ port(
     
     --
     qpll_locked_i       : in std_logic;
-    qpll_pll_locked_i   : in std_logic;
-    gbt_rx_aligned_i    : in std_logic;
-    gbt_tx_aligned_i    : in std_logic
+    qpll_pll_locked_i   : in std_logic
     
 );
 end stat;
