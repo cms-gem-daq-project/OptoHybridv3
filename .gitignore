@@ -3,7 +3,26 @@
 
 # Only keep important files in the `prj`directory
 prj/*
-!prj/OptoHybrid_v2.gise
 !prj/OptoHybrid_v2.xise
 
 *.bit
+*.*bak
+*.*cmd
+*.*log
+*.err
+*.gise
+*.html
+*.jhd
+*.ncd
+*.prj
+*.spl
+*.stx
+*.tim
+*.tspec
+*.xst
+*.xwbt
+*BatchFile
+*_xdb
+_ngo
+_xmsgs
+*.xmsgs

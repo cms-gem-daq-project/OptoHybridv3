@@ -24,26 +24,26 @@ NET "mgt_rx_n_i<0>"   LOC = B6;
 NET "mgt_tx_p_o<0>"   LOC = A3;
 NET "mgt_tx_n_o<0>"   LOC = A4;
 
-# trigger links
+# trigger links // gtx_x70y150
 NET "mgt_tx_p_o<4>"    LOC = F1;
 NET "mgt_tx_n_o<4>"    LOC = F2;
-NET "mgt_rx_p_i<4>"    LOC = J3;
-NET "mgt_rx_n_i<4>"    LOC = J4;
+#NET "mgt_rx_p_i<4>"    LOC = J3;
+#NET "mgt_rx_n_i<4>"    LOC = J4;
 
 NET "mgt_tx_p_o<3>"    LOC = H1;
 NET "mgt_tx_n_o<3>"    LOC = H2;
-NET "mgt_rx_p_i<3>"    LOC = K5;
-NET "mgt_rx_n_i<3>"    LOC = K6;
+#NET "mgt_rx_p_i<3>"    LOC = K5;
+#NET "mgt_rx_n_i<3>"    LOC = K6;
 
 NET "mgt_tx_p_o<2>"    LOC = K1;
 NET "mgt_tx_n_o<2>"    LOC = K2;
-NET "mgt_rx_p_i<2>"    LOC = L3;
-NET "mgt_rx_n_i<2>"    LOC = L4;
+#NET "mgt_rx_p_i<2>"    LOC = L3;
+#NET "mgt_rx_n_i<2>"    LOC = L4;
 
 NET "mgt_tx_p_o<1>"    LOC = M1;
 NET "mgt_tx_n_o<1>"    LOC = M2;
-NET "mgt_rx_p_i<1>"    LOC = N3;
-NET "mgt_rx_n_i<1>"    LOC = N4;
+#NET "mgt_rx_p_i<1>"    LOC = N3;
+#NET "mgt_rx_n_i<1>"    LOC = N4;
 
 #NET "mgt_116_clk1_p_i"      LOC = F6; # 160 MHz
 #NET "mgt_116_clk1_n_i"      LOC = F5;

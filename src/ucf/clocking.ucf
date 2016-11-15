@@ -5,9 +5,10 @@
 NET "qpll_clk_p_i" LOC = L23;
 NET "qpll_clk_n_i" LOC = M22;
 
-# K1_P
-NET "qpll_reset_o" LOC = AE13;
-# K1_N
-NET "qpll_locked_i" LOC = AE12;
+NET "qpll_clk_b" TNM_NET = "qpll_clk_b";
+TIMESPEC "TS_qpll40" = PERIOD "qpll_clk_b" 25 ns HIGH 50%;
+
+NET "qpll_reset_o"      LOC = AE13; # K1_P
+NET "qpll_locked_i"     LOC = AE12; # K1_N
 
 NET "qpll_locked_i" CLOCK_DEDICATED_ROUTE = FALSE;

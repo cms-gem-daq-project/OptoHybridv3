@@ -209,7 +209,7 @@ port(
     
     mgt_clk_p_i             : in std_logic;
     mgt_clk_n_i             : in std_logic;
-    
+
     mgt_rx_p_i              : in std_logic_vector(4 downto 0); -- 0 = Tracking and control
     mgt_rx_n_i              : in std_logic_vector(4 downto 0); -- 1 to 4 = trigger links
     mgt_tx_p_o              : out std_logic_vector(4 downto 0);
@@ -254,11 +254,14 @@ architecture Behavioral of optohybrid_top is
     
     --== SBit cluster packer ==--
     
+    signal sbit_overflow        : std_logic;
     signal vfat_sbit_clusters   : sbit_cluster_array_t(7 downto 0);
     
     --== Global signals ==--
 
     signal ref_clk              : std_logic;
+
+    signal mgt_refclk           : std_logic;
     signal reset                : std_logic;    
 
     --== GTX ==--
@@ -377,21 +380,22 @@ begin
     
     gtx_inst : entity work.gtx
     port map(
-		mgt_refclk_n_i  => mgt_clk_n_i,
-		mgt_refclk_p_i  => mgt_clk_p_i,
-        ref_clk_i       => ref_clk,
-		reset_i         => reset,
-        gtx_clk_o       => gtx_clk,
-        tx_kchar_i      => gtx_tx_kchar,
-        tx_data_i       => gtx_tx_data,
-        rx_kchar_o      => gtx_rx_kchar,
-        rx_data_o       => gtx_rx_data,
-        rx_error_o      => gtx_rx_error,     
-		rx_n_i          => mgt_rx_n_i,
-		rx_p_i          => mgt_rx_p_i,
-		tx_n_o          => mgt_tx_n_o,
-		tx_p_o          => mgt_tx_p_o
-	);
+        mgt_refclk_n_i => mgt_clk_n_i,
+        mgt_refclk_p_i => mgt_clk_p_i,
+        mgt_refclk_o   => mgt_refclk,
+        ref_clk_i      => ref_clk,
+        reset_i        => reset,
+        gtx_clk_o      => gtx_clk,
+        tx_kchar_i     => gtx_tx_kchar( 1 downto 0),
+        tx_data_i      => gtx_tx_data (15 downto 0),
+        rx_kchar_o     => gtx_rx_kchar( 1 downto 0),
+        rx_data_o      => gtx_rx_data (15 downto 0),
+        rx_error_o     => gtx_rx_error,
+        rx_n_i         => mgt_rx_n_i(0 downto 0),
+        rx_p_i         => mgt_rx_p_i(0 downto 0),
+        tx_n_o         => mgt_tx_n_o(0 downto 0),
+        tx_p_o         => mgt_tx_p_o(0 downto 0)
+    );
     
     -- This module controls the DATA of the GTX. It formats data packets to be sent over the optical link.
 
@@ -629,23 +633,54 @@ begin
         qpll_locked_i       => qpll_locked_b,
         qpll_pll_locked_i   => qpll_pll_locked_b
     );
-    
+
     --=========================--
     --== SBit cluster packer ==--
     --=========================--
-    
-    -- this module handles the sbits
-    -- Use clk_1x, clk_2x, and clk_4x at 40, 80, and 160 MHz respectively
+
+    -- This module handles the SBits
     sbits_inst : entity work.sbits
-    port map(        
-        gtx_clk_i               => clk_4x,
-        ttc_clk_i               => clk_1x,
-        reset_i                 => reset,        
-        vfat2_sbits_i           => vfat2_sbits_b,  
-        vfat2_sbit_mask_i       => vfat2_sbit_mask,        
-        vfat_sbit_clusters_o    => vfat_sbit_clusters
+    port map(
+        gtx_clk_i               => gtx_clk,
+        clk160_i                => clk_4x,
+        clk40_i                 => clk_1x,
+        reset_i                 => reset,
+        vfat2_sbits_i           => vfat2_sbits_b,
+        vfat2_sbit_mask_i       => vfat2_sbit_mask,
+        vfat_sbit_clusters_o    => vfat_sbit_clusters,
+        oneshot_en_i            => ('1'),
+        overflow_o              => sbit_overflow
     );
-    
+
+    --=================================--
+    --== Fixed latency trigger links ==--
+    --=================================--
+
+    trigger_links_inst : entity work.trigger_links
+    port map (
+        mgt_refclk => mgt_refclk, -- 160 MHz Reference Clock from QPLL
+
+        clk_40     => clk_1x,  -- 40 MHz Clock Derived from QPLL
+        clk_80     => clk_2x,  -- 80 MHz Clock Derived from QPLL
+        clk_160    => clk_4x, -- 160 MHz Clock Derived from QPLL
+
+        reset      => reset,
+
+        trg_tx_p   => mgt_tx_p_o (4 downto 1),
+        trg_tx_n   => mgt_tx_n_o (4 downto 1),
+
+        cluster0   => vfat_sbit_clusters(0),
+        cluster1   => vfat_sbit_clusters(1),
+        cluster2   => vfat_sbit_clusters(2),
+        cluster3   => vfat_sbit_clusters(3),
+        cluster4   => vfat_sbit_clusters(4),
+        cluster5   => vfat_sbit_clusters(5),
+        cluster6   => vfat_sbit_clusters(6),
+        cluster7   => vfat_sbit_clusters(7),
+
+        overflow   => sbit_overflow
+    );
+
     --=============--
     --== Buffers ==--
     --=============--
@@ -666,102 +701,102 @@ begin
         vfat2_sda_io            => vfat2_sda_io,
         vfat2_data_valid_p_i    => vfat2_data_valid_p_i,
         vfat2_data_valid_n_i    => vfat2_data_valid_n_i,
-        vfat2_0_sbits_p_i		=> vfat2_0_sbits_p_i,
-        vfat2_0_sbits_n_i		=> vfat2_0_sbits_n_i,
-        vfat2_0_data_out_p_i	=> vfat2_0_data_out_p_i,
-        vfat2_0_data_out_n_i	=> vfat2_0_data_out_n_i,
-        vfat2_1_sbits_p_i		=> vfat2_1_sbits_p_i,
-        vfat2_1_sbits_n_i		=> vfat2_1_sbits_n_i,
-        vfat2_1_data_out_p_i	=> vfat2_1_data_out_p_i,
-        vfat2_1_data_out_n_i	=> vfat2_1_data_out_n_i,
-        vfat2_2_sbits_p_i		=> vfat2_2_sbits_p_i,
-        vfat2_2_sbits_n_i		=> vfat2_2_sbits_n_i,
-        vfat2_2_data_out_p_i	=> vfat2_2_data_out_p_i,
-        vfat2_2_data_out_n_i	=> vfat2_2_data_out_n_i,
-        vfat2_3_sbits_p_i		=> vfat2_3_sbits_p_i,
-        vfat2_3_sbits_n_i		=> vfat2_3_sbits_n_i,
-        vfat2_3_data_out_p_i	=> vfat2_3_data_out_p_i,
-        vfat2_3_data_out_n_i	=> vfat2_3_data_out_n_i,
-        vfat2_4_sbits_p_i		=> vfat2_4_sbits_p_i,
-        vfat2_4_sbits_n_i		=> vfat2_4_sbits_n_i,
-        vfat2_4_data_out_p_i	=> vfat2_4_data_out_p_i,
-        vfat2_4_data_out_n_i	=> vfat2_4_data_out_n_i,
-        vfat2_5_sbits_p_i		=> vfat2_5_sbits_p_i,
-        vfat2_5_sbits_n_i		=> vfat2_5_sbits_n_i,
-        vfat2_5_data_out_p_i	=> vfat2_5_data_out_p_i,
-        vfat2_5_data_out_n_i	=> vfat2_5_data_out_n_i,
-        vfat2_6_sbits_p_i		=> vfat2_6_sbits_p_i,
-        vfat2_6_sbits_n_i		=> vfat2_6_sbits_n_i,
-        vfat2_6_data_out_p_i	=> vfat2_6_data_out_p_i,
-        vfat2_6_data_out_n_i	=> vfat2_6_data_out_n_i,
-        vfat2_7_sbits_p_i		=> vfat2_7_sbits_p_i,
-        vfat2_7_sbits_n_i		=> vfat2_7_sbits_n_i,
-        vfat2_7_data_out_p_i	=> vfat2_7_data_out_p_i,
-        vfat2_7_data_out_n_i	=> vfat2_7_data_out_n_i,
-        vfat2_8_sbits_p_i		=> vfat2_8_sbits_p_i,
-        vfat2_8_sbits_n_i		=> vfat2_8_sbits_n_i,
-        vfat2_8_data_out_p_i	=> vfat2_8_data_out_p_i,
-        vfat2_8_data_out_n_i	=> vfat2_8_data_out_n_i,
-        vfat2_9_sbits_p_i		=> vfat2_9_sbits_p_i,
-        vfat2_9_sbits_n_i		=> vfat2_9_sbits_n_i,
-        vfat2_9_data_out_p_i	=> vfat2_9_data_out_p_i,
-        vfat2_9_data_out_n_i	=> vfat2_9_data_out_n_i,
-        vfat2_10_sbits_p_i		=> vfat2_10_sbits_p_i,
-        vfat2_10_sbits_n_i		=> vfat2_10_sbits_n_i,
-        vfat2_10_data_out_p_i	=> vfat2_10_data_out_p_i,
-        vfat2_10_data_out_n_i	=> vfat2_10_data_out_n_i,
-        vfat2_11_sbits_p_i		=> vfat2_11_sbits_p_i,
-        vfat2_11_sbits_n_i		=> vfat2_11_sbits_n_i,
-        vfat2_11_data_out_p_i	=> vfat2_11_data_out_p_i,
-        vfat2_11_data_out_n_i	=> vfat2_11_data_out_n_i,
-        vfat2_12_sbits_p_i		=> vfat2_12_sbits_p_i,
-        vfat2_12_sbits_n_i		=> vfat2_12_sbits_n_i,
-        vfat2_12_data_out_p_i	=> vfat2_12_data_out_p_i,
-        vfat2_12_data_out_n_i	=> vfat2_12_data_out_n_i,
-        vfat2_13_sbits_p_i		=> vfat2_13_sbits_p_i,
-        vfat2_13_sbits_n_i		=> vfat2_13_sbits_n_i,
-        vfat2_13_data_out_p_i	=> vfat2_13_data_out_p_i,
-        vfat2_13_data_out_n_i	=> vfat2_13_data_out_n_i,
-        vfat2_14_sbits_p_i		=> vfat2_14_sbits_p_i,
-        vfat2_14_sbits_n_i		=> vfat2_14_sbits_n_i,
-        vfat2_14_data_out_p_i	=> vfat2_14_data_out_p_i,
-        vfat2_14_data_out_n_i	=> vfat2_14_data_out_n_i,
-        vfat2_15_sbits_p_i		=> vfat2_15_sbits_p_i,
-        vfat2_15_sbits_n_i		=> vfat2_15_sbits_n_i,
-        vfat2_15_data_out_p_i	=> vfat2_15_data_out_p_i,
-        vfat2_15_data_out_n_i	=> vfat2_15_data_out_n_i,
-        vfat2_16_sbits_p_i		=> vfat2_16_sbits_p_i,
-        vfat2_16_sbits_n_i		=> vfat2_16_sbits_n_i,
-        vfat2_16_data_out_p_i	=> vfat2_16_data_out_p_i,
-        vfat2_16_data_out_n_i	=> vfat2_16_data_out_n_i,
-        vfat2_17_sbits_p_i		=> vfat2_17_sbits_p_i,
-        vfat2_17_sbits_n_i		=> vfat2_17_sbits_n_i,
-        vfat2_17_data_out_p_i	=> vfat2_17_data_out_p_i,
-        vfat2_17_data_out_n_i	=> vfat2_17_data_out_n_i,
-        vfat2_18_sbits_p_i		=> vfat2_18_sbits_p_i,
-        vfat2_18_sbits_n_i		=> vfat2_18_sbits_n_i,
-        vfat2_18_data_out_p_i	=> vfat2_18_data_out_p_i,
-        vfat2_18_data_out_n_i	=> vfat2_18_data_out_n_i,
-        vfat2_19_sbits_p_i		=> vfat2_19_sbits_p_i,
-        vfat2_19_sbits_n_i		=> vfat2_19_sbits_n_i,
-        vfat2_19_data_out_p_i	=> vfat2_19_data_out_p_i,
-        vfat2_19_data_out_n_i	=> vfat2_19_data_out_n_i,
-        vfat2_20_sbits_p_i		=> vfat2_20_sbits_p_i,
-        vfat2_20_sbits_n_i		=> vfat2_20_sbits_n_i,
-        vfat2_20_data_out_p_i	=> vfat2_20_data_out_p_i,
-        vfat2_20_data_out_n_i	=> vfat2_20_data_out_n_i,
-        vfat2_21_sbits_p_i		=> vfat2_21_sbits_p_i,
-        vfat2_21_sbits_n_i		=> vfat2_21_sbits_n_i,
-        vfat2_21_data_out_p_i	=> vfat2_21_data_out_p_i,
-        vfat2_21_data_out_n_i	=> vfat2_21_data_out_n_i,
-        vfat2_22_sbits_p_i		=> vfat2_22_sbits_p_i,
-        vfat2_22_sbits_n_i		=> vfat2_22_sbits_n_i,
-        vfat2_22_data_out_p_i	=> vfat2_22_data_out_p_i,
-        vfat2_22_data_out_n_i	=> vfat2_22_data_out_n_i,
-        vfat2_23_sbits_p_i		=> vfat2_23_sbits_p_i,
-        vfat2_23_sbits_n_i		=> vfat2_23_sbits_n_i,
-        vfat2_23_data_out_p_i	=> vfat2_23_data_out_p_i,
-        vfat2_23_data_out_n_i	=> vfat2_23_data_out_n_i,
+        vfat2_0_sbits_p_i       => vfat2_0_sbits_p_i,
+        vfat2_0_sbits_n_i       => vfat2_0_sbits_n_i,
+        vfat2_0_data_out_p_i    => vfat2_0_data_out_p_i,
+        vfat2_0_data_out_n_i    => vfat2_0_data_out_n_i,
+        vfat2_1_sbits_p_i       => vfat2_1_sbits_p_i,
+        vfat2_1_sbits_n_i       => vfat2_1_sbits_n_i,
+        vfat2_1_data_out_p_i    => vfat2_1_data_out_p_i,
+        vfat2_1_data_out_n_i    => vfat2_1_data_out_n_i,
+        vfat2_2_sbits_p_i       => vfat2_2_sbits_p_i,
+        vfat2_2_sbits_n_i       => vfat2_2_sbits_n_i,
+        vfat2_2_data_out_p_i    => vfat2_2_data_out_p_i,
+        vfat2_2_data_out_n_i    => vfat2_2_data_out_n_i,
+        vfat2_3_sbits_p_i       => vfat2_3_sbits_p_i,
+        vfat2_3_sbits_n_i       => vfat2_3_sbits_n_i,
+        vfat2_3_data_out_p_i    => vfat2_3_data_out_p_i,
+        vfat2_3_data_out_n_i    => vfat2_3_data_out_n_i,
+        vfat2_4_sbits_p_i       => vfat2_4_sbits_p_i,
+        vfat2_4_sbits_n_i       => vfat2_4_sbits_n_i,
+        vfat2_4_data_out_p_i    => vfat2_4_data_out_p_i,
+        vfat2_4_data_out_n_i    => vfat2_4_data_out_n_i,
+        vfat2_5_sbits_p_i       => vfat2_5_sbits_p_i,
+        vfat2_5_sbits_n_i       => vfat2_5_sbits_n_i,
+        vfat2_5_data_out_p_i    => vfat2_5_data_out_p_i,
+        vfat2_5_data_out_n_i    => vfat2_5_data_out_n_i,
+        vfat2_6_sbits_p_i       => vfat2_6_sbits_p_i,
+        vfat2_6_sbits_n_i       => vfat2_6_sbits_n_i,
+        vfat2_6_data_out_p_i    => vfat2_6_data_out_p_i,
+        vfat2_6_data_out_n_i    => vfat2_6_data_out_n_i,
+        vfat2_7_sbits_p_i       => vfat2_7_sbits_p_i,
+        vfat2_7_sbits_n_i       => vfat2_7_sbits_n_i,
+        vfat2_7_data_out_p_i    => vfat2_7_data_out_p_i,
+        vfat2_7_data_out_n_i    => vfat2_7_data_out_n_i,
+        vfat2_8_sbits_p_i       => vfat2_8_sbits_p_i,
+        vfat2_8_sbits_n_i       => vfat2_8_sbits_n_i,
+        vfat2_8_data_out_p_i    => vfat2_8_data_out_p_i,
+        vfat2_8_data_out_n_i    => vfat2_8_data_out_n_i,
+        vfat2_9_sbits_p_i       => vfat2_9_sbits_p_i,
+        vfat2_9_sbits_n_i       => vfat2_9_sbits_n_i,
+        vfat2_9_data_out_p_i    => vfat2_9_data_out_p_i,
+        vfat2_9_data_out_n_i    => vfat2_9_data_out_n_i,
+        vfat2_10_sbits_p_i      => vfat2_10_sbits_p_i,
+        vfat2_10_sbits_n_i      => vfat2_10_sbits_n_i,
+        vfat2_10_data_out_p_i   => vfat2_10_data_out_p_i,
+        vfat2_10_data_out_n_i   => vfat2_10_data_out_n_i,
+        vfat2_11_sbits_p_i      => vfat2_11_sbits_p_i,
+        vfat2_11_sbits_n_i      => vfat2_11_sbits_n_i,
+        vfat2_11_data_out_p_i   => vfat2_11_data_out_p_i,
+        vfat2_11_data_out_n_i   => vfat2_11_data_out_n_i,
+        vfat2_12_sbits_p_i      => vfat2_12_sbits_p_i,
+        vfat2_12_sbits_n_i      => vfat2_12_sbits_n_i,
+        vfat2_12_data_out_p_i   => vfat2_12_data_out_p_i,
+        vfat2_12_data_out_n_i   => vfat2_12_data_out_n_i,
+        vfat2_13_sbits_p_i      => vfat2_13_sbits_p_i,
+        vfat2_13_sbits_n_i      => vfat2_13_sbits_n_i,
+        vfat2_13_data_out_p_i   => vfat2_13_data_out_p_i,
+        vfat2_13_data_out_n_i   => vfat2_13_data_out_n_i,
+        vfat2_14_sbits_p_i      => vfat2_14_sbits_p_i,
+        vfat2_14_sbits_n_i      => vfat2_14_sbits_n_i,
+        vfat2_14_data_out_p_i   => vfat2_14_data_out_p_i,
+        vfat2_14_data_out_n_i   => vfat2_14_data_out_n_i,
+        vfat2_15_sbits_p_i      => vfat2_15_sbits_p_i,
+        vfat2_15_sbits_n_i      => vfat2_15_sbits_n_i,
+        vfat2_15_data_out_p_i   => vfat2_15_data_out_p_i,
+        vfat2_15_data_out_n_i   => vfat2_15_data_out_n_i,
+        vfat2_16_sbits_p_i      => vfat2_16_sbits_p_i,
+        vfat2_16_sbits_n_i      => vfat2_16_sbits_n_i,
+        vfat2_16_data_out_p_i   => vfat2_16_data_out_p_i,
+        vfat2_16_data_out_n_i   => vfat2_16_data_out_n_i,
+        vfat2_17_sbits_p_i      => vfat2_17_sbits_p_i,
+        vfat2_17_sbits_n_i      => vfat2_17_sbits_n_i,
+        vfat2_17_data_out_p_i   => vfat2_17_data_out_p_i,
+        vfat2_17_data_out_n_i   => vfat2_17_data_out_n_i,
+        vfat2_18_sbits_p_i      => vfat2_18_sbits_p_i,
+        vfat2_18_sbits_n_i      => vfat2_18_sbits_n_i,
+        vfat2_18_data_out_p_i   => vfat2_18_data_out_p_i,
+        vfat2_18_data_out_n_i   => vfat2_18_data_out_n_i,
+        vfat2_19_sbits_p_i      => vfat2_19_sbits_p_i,
+        vfat2_19_sbits_n_i      => vfat2_19_sbits_n_i,
+        vfat2_19_data_out_p_i   => vfat2_19_data_out_p_i,
+        vfat2_19_data_out_n_i   => vfat2_19_data_out_n_i,
+        vfat2_20_sbits_p_i      => vfat2_20_sbits_p_i,
+        vfat2_20_sbits_n_i      => vfat2_20_sbits_n_i,
+        vfat2_20_data_out_p_i   => vfat2_20_data_out_p_i,
+        vfat2_20_data_out_n_i   => vfat2_20_data_out_n_i,
+        vfat2_21_sbits_p_i      => vfat2_21_sbits_p_i,
+        vfat2_21_sbits_n_i      => vfat2_21_sbits_n_i,
+        vfat2_21_data_out_p_i   => vfat2_21_data_out_p_i,
+        vfat2_21_data_out_n_i   => vfat2_21_data_out_n_i,
+        vfat2_22_sbits_p_i      => vfat2_22_sbits_p_i,
+        vfat2_22_sbits_n_i      => vfat2_22_sbits_n_i,
+        vfat2_22_data_out_p_i   => vfat2_22_data_out_p_i,
+        vfat2_22_data_out_n_i   => vfat2_22_data_out_n_i,
+        vfat2_23_sbits_p_i      => vfat2_23_sbits_p_i,
+        vfat2_23_sbits_n_i      => vfat2_23_sbits_n_i,
+        vfat2_23_data_out_p_i   => vfat2_23_data_out_p_i,
+        vfat2_23_data_out_n_i   => vfat2_23_data_out_n_i,
         --
         vfat2_mclk_i            => vfat2_mclk_b,
         vfat2_reset_i           => vfat2_reset_b,
