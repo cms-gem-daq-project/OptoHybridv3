@@ -72,9 +72,9 @@ port
   CLK_IN1_N         : in  std_logic;
   -- Reset that only drives logic in example design
   COUNTER_RESET     : in  std_logic;
-  CLK_OUT           : out std_logic_vector(4 downto 1) ;
+  CLK_OUT           : out std_logic_vector(1 downto 1) ;
   -- High bits of counters driven by clocks
-  COUNT             : out std_logic_vector(4 downto 1);
+  COUNT             : out std_logic;
   -- Status and control signals
   LOCKED            : out std_logic
  );
@@ -87,23 +87,19 @@ architecture xilinx of qpll_pll_exdes is
   -- Counter width
   constant C_W        : integer := 16;
 
-  -- Number of counters
-  constant NUM_C      : integer := 4;
-  -- Array typedef
-  type ctrarr is array (1 to NUM_C) of std_logic_vector(C_W-1 downto 0);
 
   -- When the clock goes out of lock, reset the counters
   signal   locked_int : std_logic;
   signal   reset_int  : std_logic                     := '0';
-  -- Declare the clocks and counters
-  signal   clk        : std_logic_vector(NUM_C downto 1);
- 
-  signal   clk_int    : std_logic_vector(NUM_C downto 1);
-  signal   counter    : ctrarr := (( others => (others => '0')));
-  signal rst_sync : std_logic_vector(NUM_C downto 1);
-  signal rst_sync_int : std_logic_vector(NUM_C downto 1);
-  signal rst_sync_int1 : std_logic_vector(NUM_C downto 1);
-  signal rst_sync_int2 : std_logic_vector(NUM_C downto 1);
+
+  -- Declare the clocks and counter
+  signal   clk        : std_logic;
+  signal   clk_int    : std_logic;
+  signal   counter    : std_logic_vector(C_W-1 downto 0) := (others => '0');
+  signal rst_sync : std_logic;
+  signal rst_sync_int : std_logic;
+  signal rst_sync_int1 : std_logic;
+  signal rst_sync_int2 : std_logic;
 
 
 component qpll_pll is
@@ -113,9 +109,6 @@ port
   qpll_i_N         : in     std_logic;
   -- Clock out ports
   qpll_clk_o          : out    std_logic;
-  clk_1x_o          : out    std_logic;
-  clk_2x_o          : out    std_logic;
-  clk_4x_o          : out    std_logic;
   -- Status and control signals
   qpll_locked_o            : out    std_logic
  );
@@ -129,21 +122,19 @@ begin
   reset_int <= (not locked_int) or COUNTER_RESET;
 
 
-  counters_1: for count_gen in 1 to NUM_C generate begin
- process (clk(count_gen), reset_int) begin
+ process (clk, reset_int) begin
    if (reset_int = '1') then
-       rst_sync(count_gen) <= '1';
-       rst_sync_int(count_gen) <= '1';
-       rst_sync_int1(count_gen) <= '1';
-       rst_sync_int2(count_gen) <= '1';
-   elsif (clk(count_gen) 'event and clk(count_gen)='1') then
-       rst_sync(count_gen) <= '0';
-       rst_sync_int(count_gen) <= rst_sync(count_gen);
-       rst_sync_int1(count_gen) <= rst_sync_int(count_gen);
-       rst_sync_int2(count_gen) <= rst_sync_int1(count_gen);
+       rst_sync <= '1';
+       rst_sync_int <= '1';
+       rst_sync_int1 <= '1';
+       rst_sync_int2 <= '1';
+   elsif (clk 'event and clk='1') then
+       rst_sync <= '0';
+       rst_sync_int <= rst_sync;
+       rst_sync_int1 <= rst_sync_int;
+       rst_sync_int2 <= rst_sync_int1;
    end if;
  end process;
-end generate counters_1;
 
 
   -- Instantiation of the clocking network
@@ -154,51 +145,34 @@ end generate counters_1;
     qpll_i_P          => CLK_IN1_P,
     qpll_i_N          => CLK_IN1_N,
     -- Clock out ports
-    qpll_clk_o           => clk_int(1),
-    clk_1x_o           => clk_int(2),
-    clk_2x_o           => clk_int(3),
-    clk_4x_o           => clk_int(4),
+    qpll_clk_o           => clk_int,
     -- Status and control signals
     qpll_locked_o             => locked_int);
 
-
-  gen_outclk_oddr: 
-  for clk_out_pins in 1 to NUM_C generate 
-  begin
   clkout_oddr : ODDR port map
-    (Q  => CLK_OUT(clk_out_pins),
-     C  => clk(clk_out_pins),
-     CE => '1',
-     D1 => '1',
-     D2 => '0',
-     R  => '0',
-     S  => '0');
-   end generate;
+   (Q  => CLK_OUT(1),
+    C  => clk,
+    CE => '1',
+    D1 => '1',
+    D2 => '0',
+    R  => '0',
+    S  => '0');
 
   -- Connect the output clocks to the design
   -------------------------------------------
-  clk(1) <= clk_int(1);
-  clk(2) <= clk_int(2);
-  clk(3) <= clk_int(3);
-  clk(4) <= clk_int(4);
+  clk <= clk_int;
 
   -- Output clock sampling
   -------------------------------------
-  counters: for count_gen in 1 to NUM_C generate begin
-    process (clk(count_gen), rst_sync_int2(count_gen)) begin
-        if (rst_sync_int2(count_gen) = '1') then
-          counter(count_gen) <= (others => '0') after TCQ;
-        elsif (rising_edge (clk(count_gen))) then
-          counter(count_gen) <= counter(count_gen) + 1 after TCQ;
-        end if;
-    end process;
-
-    -- alias the high bit of each counter to the corresponding
-    --   bit in the output bus
-    COUNT(count_gen) <= counter(count_gen)(C_W-1);
-
-  end generate counters;
-
+  process (clk, rst_sync_int2) begin
+      if (rst_sync_int2 = '1') then
+        counter <= (others => '0') after TCQ;
+      elsif (rising_edge(clk)) then
+        counter <= counter + 1 after TCQ;
+      end if;
+  end process;
+  -- alias the high bit to the output
+  COUNT <= counter(C_W-1);
 
 
 end xilinx;

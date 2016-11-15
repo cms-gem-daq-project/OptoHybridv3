@@ -245,9 +245,6 @@ architecture Behavioral of optohybrid_top is
     signal vfat2_sbits_b        : sbits_array_t(23 downto 0);    
  
     signal qpll_clk_b           : std_logic;
-    signal clk_1x               : std_logic;
-    signal clk_2x               : std_logic;
-    signal clk_4x               : std_logic;
     signal qpll_reset_b         : std_logic;
     signal qpll_locked_b        : std_logic;
     signal qpll_pll_locked_b    : std_logic;
@@ -260,6 +257,9 @@ architecture Behavioral of optohybrid_top is
     --== Global signals ==--
 
     signal ref_clk              : std_logic;
+    signal clk_1x               : std_logic;
+    signal clk_2x               : std_logic;
+    signal clk_4x               : std_logic;
 
     signal mgt_refclk           : std_logic;
     signal reset                : std_logic;    
@@ -279,12 +279,12 @@ architecture Behavioral of optohybrid_top is
     
     --== GBT ==--
     
+    signal gbt_clk              : std_logic;
     signal gbt_din              : std_logic_vector(15 downto 0);
     signal gbt_dout             : std_logic_vector(31 downto 0);
     signal gbt_valid            : std_logic;
     signal gbt_error            : std_logic;
     signal gbt_evt_sent         : std_logic;
-    signal gbt_clk              : std_logic;
     signal gbt_sync_reset       : std_logic;
     
     --== VFAT2 ==--
@@ -321,8 +321,17 @@ begin
     --== Clocking ==--
     --==============--
     
-    ref_clk <= qpll_clk_b when clk_source = '0' else gbt_clk; -- switch using clk_source_o
-    
+    clocking_inst : entity work.clocking
+    port map(
+        qpll_clk_i      => qpll_clk_b,
+        gbt_clk_i       => gbt_clk,
+        clk_source_i    => clk_source,
+        ref_clk_o       => ref_clk,
+        clk_1x_o        => clk_1x,
+        clk_2x_o        => clk_2x,
+        clk_4x_o        => clk_4x        
+    );
+        
     --======================--
     --== External signals ==--
     --======================--   
@@ -468,6 +477,35 @@ begin
         sync_reset_o    => gbt_sync_reset
     );    
     
+    --=================================--
+    --== Fixed latency trigger links ==--
+    --=================================--
+
+    trigger_links_inst : entity work.trigger_links
+    port map (
+        mgt_refclk => mgt_refclk, -- 160 MHz Reference Clock from QPLL
+
+        clk_40     => clk_1x,  -- 40 MHz Clock Derived from QPLL
+        clk_80     => clk_2x,  -- 80 MHz Clock Derived from QPLL
+        clk_160    => clk_4x, -- 160 MHz Clock Derived from QPLL
+
+        reset      => reset,
+
+        trg_tx_p   => mgt_tx_p_o (4 downto 1),
+        trg_tx_n   => mgt_tx_n_o (4 downto 1),
+
+        cluster0   => vfat_sbit_clusters(0),
+        cluster1   => vfat_sbit_clusters(1),
+        cluster2   => vfat_sbit_clusters(2),
+        cluster3   => vfat_sbit_clusters(3),
+        cluster4   => vfat_sbit_clusters(4),
+        cluster5   => vfat_sbit_clusters(5),
+        cluster6   => vfat_sbit_clusters(6),
+        cluster7   => vfat_sbit_clusters(7),
+
+        overflow   => sbit_overflow
+    );
+
     --=============--
     --== Trigger ==--
     --=============--
@@ -651,36 +689,7 @@ begin
         oneshot_en_i            => ('1'),
         overflow_o              => sbit_overflow
     );
-
-    --=================================--
-    --== Fixed latency trigger links ==--
-    --=================================--
-
-    trigger_links_inst : entity work.trigger_links
-    port map (
-        mgt_refclk => mgt_refclk, -- 160 MHz Reference Clock from QPLL
-
-        clk_40     => clk_1x,  -- 40 MHz Clock Derived from QPLL
-        clk_80     => clk_2x,  -- 80 MHz Clock Derived from QPLL
-        clk_160    => clk_4x, -- 160 MHz Clock Derived from QPLL
-
-        reset      => reset,
-
-        trg_tx_p   => mgt_tx_p_o (4 downto 1),
-        trg_tx_n   => mgt_tx_n_o (4 downto 1),
-
-        cluster0   => vfat_sbit_clusters(0),
-        cluster1   => vfat_sbit_clusters(1),
-        cluster2   => vfat_sbit_clusters(2),
-        cluster3   => vfat_sbit_clusters(3),
-        cluster4   => vfat_sbit_clusters(4),
-        cluster5   => vfat_sbit_clusters(5),
-        cluster6   => vfat_sbit_clusters(6),
-        cluster7   => vfat_sbit_clusters(7),
-
-        overflow   => sbit_overflow
-    );
-
+    
     --=============--
     --== Buffers ==--
     --=============--
@@ -808,16 +817,13 @@ begin
         vfat2_data_valid_o      => vfat2_data_valid_b,
         vfat2_data_out_o        => vfat2_data_out_b,
         vfat2_sbits_o           => vfat2_sbits_b,
-        -- QPLL
+        -- Clocking
         qpll_clk_p_i            => qpll_clk_p_i,
         qpll_clk_n_i            => qpll_clk_n_i,
         qpll_reset_o            => qpll_reset_o,
         qpll_locked_i           => qpll_locked_i,
         --
         qpll_clk_o              => qpll_clk_b,
-        clk_1x_o                => clk_1x,
-        clk_2x_o                => clk_2x,
-        clk_4x_o                => clk_4x,
         qpll_reset_i            => qpll_reset_b,
         qpll_locked_o           => qpll_locked_b,
         qpll_pll_locked_o       => qpll_pll_locked_b
