@@ -43,8 +43,8 @@ SRL16E #(.INIT(16'h7FFF)) SRL16TXPLL(
   .Q(txpll_rst), .A0(1'b1), .A1(1'b1), .A2(1'b1), .A3(1'b1), .CE (1'b1), .CLK(clk_40), .D(1'b0)
 );
 
-wire usrclk   = clk_160;
-wire userclk2 = clk_80;
+wire usrclk  = clk_160;
+wire usrclk2 = clk_80;
 
 genvar igem;
 generate
