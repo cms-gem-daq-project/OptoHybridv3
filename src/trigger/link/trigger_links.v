@@ -33,8 +33,8 @@ assign link[0] = link_r;  // CR (CSC right link)
 assign link[1] = link_l;  // CL (csc left link)
 
 // to utca
-assign link[3] = link_r;  // GR (GEM right link)
-assign link[4] = link_l;  // GL (GEM left link)
+assign link[2] = link_r;  // GR (GEM right link)
+assign link[3] = link_l;  // GL (GEM left link)
 
 wire [3:0] tx_out_clk;
 wire [3:0] tx_pll_locked;
