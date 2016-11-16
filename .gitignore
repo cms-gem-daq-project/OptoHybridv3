@@ -5,6 +5,8 @@
 prj/*
 !prj/OptoHybrid_v2.xise
 
+*.bit
+*.mcs
 *.*bak
 *.*cmd
 *.*log
