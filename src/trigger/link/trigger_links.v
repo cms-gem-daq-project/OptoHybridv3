@@ -23,17 +23,18 @@ module trigger_links_v (
   input overflow
 );
 
-wire [55:0] link_a = {cluster3, cluster2, cluster1, cluster0};
-wire [55:0] link_b = {cluster7, cluster6, cluster5, cluster4};
+wire [55:0] link_r = {cluster3, cluster2, cluster1, cluster0};
+wire [55:0] link_l = {cluster7, cluster6, cluster5, cluster4};
 
 wire [55:0] link [3:0];
 
-// to csc?
-assign link[0] = link_a;
-assign link[2] = link_b;
-// to utca?
-assign link[1] = link_a;
-assign link[3] = link_b;
+// to csc
+assign link[0] = link_r;  // CR (CSC right link)
+assign link[1] = link_l;  // CL (csc left link)
+
+// to utca
+assign link[2] = link_r;  // GR (GEM right link)
+assign link[3] = link_l;  // GL (GEM left link)
 
 wire [3:0] tx_out_clk;
 wire [3:0] tx_pll_locked;
@@ -42,8 +43,8 @@ SRL16E #(.INIT(16'h7FFF)) SRL16TXPLL(
   .Q(txpll_rst), .A0(1'b1), .A1(1'b1), .A2(1'b1), .A3(1'b1), .CE (1'b1), .CLK(clk_40), .D(1'b0)
 );
 
-wire usrclk   = clk_160;
-wire userclk2 = clk_80;
+wire usrclk  = clk_160;
+wire usrclk2 = clk_80;
 
 genvar igem;
 generate
