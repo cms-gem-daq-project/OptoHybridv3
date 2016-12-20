@@ -81,6 +81,8 @@ architecture Behavioral of func_scan is
     
     -- Scan status
     signal scan_running : std_logic_vector(2 downto 0);
+    signal scan_error   : std_logic;
+    signal scan_data    : std_logic;
 
 begin
 
@@ -133,7 +135,8 @@ begin
         vfat2_tk_data_i => vfat2_tk_data_i,
         fifo_we_o       => fifo_we,
         fifo_din_o      => fifo_din,
-        scan_running_o  => scan_running
+        scan_running_o  => scan_running,
+        scan_error_o    => scan_error
     );
     
     --===============--
@@ -172,7 +175,7 @@ begin
     fifo256x32_inst : entity work.fifo256x32
     port map(
         clk         => ref_clk_i,
-        rst         => wb_stb(0),  -- Reset the fifo when a new scan is started
+        rst         => (wb_stb(0) or local_reset),  -- Reset the fifo when a new scan is started
         wr_en       => fifo_we,
         din         => fifo_din,
         rd_en       => wb_stb(8),
@@ -180,7 +183,7 @@ begin
         dout        => reg_data(8),
         underflow   => reg_err(8),
         full        => open,
-        empty       => open
+        empty       => scan_data
     );
     
     --=================--
@@ -194,7 +197,7 @@ begin
     -- Connect signals for automatic response
     reg_ack(9) <= wb_stb(9);
     reg_err(9) <= '0';
-    reg_data(9) <= x"0000000" & '0' & scan_running;
+    reg_data(9) <= x"000000" & "00" & (not scan_data) & scan_error & '0' & scan_running;
         
     --=================--
     --== Local reset ==--

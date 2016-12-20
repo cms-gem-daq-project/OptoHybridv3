@@ -52,7 +52,9 @@ port(
     fifo_din_o      : out std32_array_t(23 downto 0);
 
     -- Running mode
-    scan_running_o  : out std_logic_vector(2 downto 0)
+    scan_running_o  : out std_logic_vector(2 downto 0);
+    scan_error_o    : out std_logic;
+    scan_mask_o     : out std_logic_vector(23 downto 0)
 
 );
 end func_uscan_req;
@@ -71,9 +73,9 @@ architecture Behavioral of func_uscan_req is
     signal req_mode         : std_logic_vector(2 downto 0);
     signal req_mask         : std_logic_vector(23 downto 0);
     signal req_channel      : std_logic_vector(6 downto 0);
-    signal req_min          : std_logic_vector(7 downto 0);
-    signal req_max          : std_logic_vector(7 downto 0);
-    signal req_step         : std_logic_vector(7 downto 0);
+    signal req_min          : std_logic_vector(8 downto 0);
+    signal req_max          : std_logic_vector(8 downto 0);
+    signal req_step         : std_logic_vector(8 downto 0);
     signal req_events       : std_logic_vector(23 downto 0);
 
     -- Helpers
@@ -113,6 +115,8 @@ begin
                 req_err_o <= '0';
                 wb_mst_req_o <= (stb => '0', we => '0', addr => (others => '0'), data => (others => '0'));
                 scan_running_o <= (others => '0');
+                scan_error_o <= '0';                
+                scan_mask_o <= (others => '0');
                 state_global <= IDLE;
                 req_mode <= (others => '0');
                 req_mask <= (others => '0');
@@ -143,14 +147,14 @@ begin
                             req_mode <= req_mode_i;
                             req_mask <= req_mask_i;
                             req_channel <= req_channel_i;
-                            req_min <= req_min_i;
+                            req_min <= '0' & req_min_i;
                             case req_max_i is
-                                when x"00" => req_max <= x"FF";
-                                when others => req_max <= req_max_i;
+                                when x"00" => req_max <= '0' & x"FF";
+                                when others => req_max <= '0' & req_max_i;
                             end case;
                             case req_step_i is
-                                when x"00" => req_step <= x"01";
-                                when others => req_step <= req_step_i;
+                                when x"00" => req_step <= '0' & x"01";
+                                when others => req_step <= '0' & req_step_i;
                             end case;
                             case req_events_i is
                                 when x"000000" => req_events <= x"FFFFFF";
@@ -187,15 +191,18 @@ begin
                         if (unsigned(req_min) > unsigned(req_max)) then
                             req_ack_o <= '0';
                             req_err_o <= '1';
+                            scan_error_o <= '1';
                             state_global <= IDLE;
                         -- Check if at least one VFAT2 is unmasked
                         elsif (req_mask = x"FFFFFF") then
                             req_ack_o <= '0';
                             req_err_o <= '1';
+                            scan_error_o <= '1';
                             state_global <= IDLE;                            
                         else
                             req_ack_o <= '1';
                             req_err_o <= '0';
+                            scan_error_o <= '0';
                             vfat2_int0 <= 0;
                             state_global <= REQ_RUNNING;
                         end if;                               
@@ -308,6 +315,7 @@ begin
                             -- Or restore the latency value
                             else
                                 vfat2_int3 <= 0;
+                                scan_mask_o <= req_mask;
                                 state_global <= REQ_RESTORE;
                             end if;                       
                         end if;  
@@ -340,6 +348,8 @@ begin
                         req_err_o <= '0';
                         wb_mst_req_o <= (stb => '0', we => '0', addr => (others => '0'), data => (others => '0'));
                         scan_running_o <= (others => '0');
+                        scan_error_o <= '0';                              
+                         scan_mask_o <= (others => '0');
                         state_global <= IDLE;
                         req_mode <= (others => '0');
                         req_mask <= (others => '0');
@@ -440,7 +450,7 @@ begin
                                     -- Increment the event counter
                                     event_counter(I) <= event_counter(I) + 1;
                                     -- Increment the hit counter
-                                    if (vfat2_tk_data_i(I).strips(I) = '1') then
+                                    if (vfat2_tk_data_i(I).strips(channel_int) = '1') then
                                         hit_counter(I) <= hit_counter(I) + 1;
                                     end if;
                                 end if;

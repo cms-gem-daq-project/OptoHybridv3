@@ -22,7 +22,7 @@ use work.wb_pkg.all;
 
 entity counters is
 generic(
-    N                   : integer := 117
+    N                   : integer := 166
 );
 port(
 
@@ -40,7 +40,8 @@ port(
     wb_s_req_i          : in wb_req_array_t((WB_SLAVES - 1) downto 0);
     wb_s_res_i          : in wb_res_array_t((WB_SLAVES - 1) downto 0);
     
-    -- Tracking data
+    -- Tracking data    
+    vfat2_sbits_i       : in sbits_array_t(23 downto 0);
     vfat2_tk_data_i     : in tk_data_array_t(23 downto 0);
     
     -- T1
@@ -74,6 +75,9 @@ architecture Behavioral of counters is
     signal reg_ack      : std_logic_vector((N - 1) downto 0);
     signal reg_err      : std_logic_vector((N - 1) downto 0);
     signal reg_data     : std32_array_t((N - 1) downto 0);
+    
+    -- Sbits    
+    signal ors          : std_logic_vector(23 downto 0);
 
 begin
 
@@ -204,5 +208,20 @@ begin
     gbt_link_err_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(115) and wb_we), en_i => gbt_link_error_i, data_o => reg_data(115));
     
     gbt_evt_sent_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(116) and wb_we), en_i => gbt_evt_sent_i, data_o => reg_data(116));
+    
+    -- 117 - 141 : Rates
+    
+    sbit_timer_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(117) and wb_we), en_i => '1', data_o => reg_data(117));
+
+    tr_rate_loop : for I in 0 to 23 generate
+    begin
+        ors(I) <= (vfat2_sbits_i(I)(0) or vfat2_sbits_i(I)(1) or vfat2_sbits_i(I)(2) or vfat2_sbits_i(I)(3) or vfat2_sbits_i(I)(4) or vfat2_sbits_i(I)(5) or vfat2_sbits_i(I)(6) or vfat2_sbits_i(I)(7));
+        tr_rate_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(118 + I) and wb_we), en_i => ors(I), data_o => reg_data(118 + I));
+    end generate; 
+    
+    tk_rate_loop : for I in 0 to 23 generate
+    begin
+        tk_rate_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(142 + I) and wb_we), en_i => (vfat2_tk_data_i(I).valid and vfat2_tk_data_i(I).hit), data_o => reg_data(142 + I));
+    end generate;   
     
 end Behavioral;

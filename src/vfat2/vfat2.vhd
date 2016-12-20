@@ -26,6 +26,7 @@ entity vfat2 is
 port(        
 
     ref_clk_i           : in std_logic;
+    clk_4x_i            : in std_logic;
     reset_i             : in std_logic;
         
     -- VFAT2 control input
@@ -97,6 +98,7 @@ begin
         vfat2_data_decoder_inst : entity work.vfat2_data_decoder
         port map(
             ref_clk_i           => ref_clk_i,
+            clk_4x_i            => clk_4x_i,
             reset_i             => reset_i,
             remove_bad_crc_i    => remove_bad_crc_i,
             vfat2_data_out_i    => vfat2_data_out_i(I),

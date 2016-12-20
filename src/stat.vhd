@@ -93,13 +93,13 @@ begin
     --== Mapping ==--
     --=============--
     
-    reg_data(0) <= x"20161115";
+    reg_data(0) <= x"20161214";
     
     reg_data(1) <= (0 => qpll_locked_i, others => '0');
     
     reg_data(2) <= (0 => qpll_pll_locked_i, others => '0');    
                     
-    reg_data(3) <= x"0202030B"; -- A for GEB v2a, B for GEB v2b
+    reg_data(3) <= x"0202070B"; -- A for GEB v2a, B for GEB v2b
     
 end Behavioral;
 

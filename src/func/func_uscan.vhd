@@ -15,7 +15,7 @@
 -- Register map:
 -- 0 : start the scan
 -- 1 : scan type (2 bits)
--- 2 : VFAT2 ID (5 bits)
+-- 2 : mask (5 bits)
 -- 3 : channel to scan (7 bits)
 -- 4 : minimum value (8 bits)
 -- 5 : maximum value (8 bits)
@@ -80,6 +80,10 @@ architecture Behavioral of func_uscan is
 
     -- Scan status
     signal scan_running : std_logic_vector(2 downto 0);
+    signal scan_error   : std_logic;
+    signal scan_data    : std_logic_vector(23 downto 0);
+    signal scan_data_or : std_logic;
+    signal scan_mask    : std_logic_vector(23 downto 0);
 
 begin
 
@@ -132,7 +136,9 @@ begin
         vfat2_tk_data_i => vfat2_tk_data_i,
         fifo_we_o       => fifo_we,
         fifo_din_o      => fifo_din,
-        scan_running_o  => scan_running
+        scan_running_o  => scan_running,
+        scan_error_o    => scan_error,
+        scan_mask_o     => scan_mask
     );
 
     --===============--
@@ -174,7 +180,7 @@ begin
         fifo256x32_inst : entity work.fifo256x32
         port map(
             clk         => ref_clk_i,
-            rst         => wb_stb(0), -- Reset the fifo when a new scan is started
+            rst         => (wb_stb(0) or local_reset), -- Reset the fifo when a new scan is started
             wr_en       => fifo_we(I),
             din         => fifo_din(I),
             rd_en       => wb_stb(8 + I),
@@ -182,7 +188,7 @@ begin
             dout        => reg_data(8 + I),
             underflow   => reg_err(8 + I),
             full        => open,
-            empty       => open
+            empty       => scan_data(I)
         );
     
     end generate;
@@ -198,8 +204,9 @@ begin
     -- Connect signals for automatic response
     reg_ack(32) <= wb_stb(32);
     reg_err(32) <= '0';
-    reg_data(32) <= x"0000000" & '0' & scan_running;
-
+    reg_data(32) <= scan_mask & "00" & scan_data_or & scan_error & '0' & scan_running;
+    scan_data_or <= (not scan_data(0)) or (not scan_data(1)) or (not scan_data(2)) or (not scan_data(3)) or (not scan_data(4)) or (not scan_data(5)) or (not scan_data(6)) or (not scan_data(7)) or (not scan_data(8)) or (not scan_data(9)) or (not scan_data(10)) or (not scan_data(11)) or (not scan_data(12)) or (not scan_data(13)) or (not scan_data(14)) or (not scan_data(15)) or (not scan_data(16)) or (not scan_data(17)) or (not scan_data(18)) or (not scan_data(19)) or (not scan_data(20)) or (not scan_data(21)) or (not scan_data(22)) or (not scan_data(23));
+    
     --=================--
     --== Local reset ==--
     --=================--

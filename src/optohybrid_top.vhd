@@ -312,14 +312,50 @@ architecture Behavioral of optohybrid_top is
     signal wb_m_res             : wb_res_array_t((WB_MASTERS - 1) downto 0);
     signal wb_s_req             : wb_req_array_t((WB_SLAVES - 1) downto 0);
     signal wb_s_res             : wb_res_array_t((WB_SLAVES - 1) downto 0);
+    
+    --== ChipScope ==--    
+    
+    signal control0             : std_logic_vector(35 downto 0);
+    signal control1             : std_logic_vector(35 downto 0);
+    signal trig0                : std_logic_vector(191 downto 0);
+    signal sync_in              : std_logic_vector(36 downto 0);
+    signal sync_out             : std_logic_vector(65 downto 0);
         
 begin
+    
+--    --===============--
+--    --== ChipScope ==--
+--    --===============--
+--
+    chipscope_icon_inst : entity work.chipscope_icon
+    port map(
+        control0    => control0,
+        control1    => control1
+    );
+    
+    chipscope_ila_inst : entity work.chipscope_ila
+    port map(
+        control => control0,
+        clk     => gtx_clk,
+        trig0   => trig0
+    );
+    
+    trig0(23 downto 0) <= vfat2_data_out_b;
+    
+    vfat2_t_loop : for I in 0 to 23 generate
+    begin
+        trig0(24 + I) <= vfat2_tk_data(I).valid;
+    end generate;
+    
+    chipscope_vio_inst : entity work.chipscope_vio
+    port map(
+        control     => control1,
+        clk         => gtx_clk,
+        sync_in     => sync_in,
+        sync_out    => sync_out
+    );
 
     reset <= '0';
-    
-    --==============--
-    --== Clocking ==--
-    --==============--
     
     clocking_inst : entity work.clocking
     port map(
@@ -537,6 +573,7 @@ begin
     vfat2_inst : entity work.vfat2      
     port map(        
         ref_clk_i           => ref_clk,
+        clk_4x_i            => clk_4x,
         reset_i             => reset,
         vfat2_reset_i       => vfat2_reset,
         vfat2_t1_i          => vfat2_t1(4),
@@ -628,7 +665,8 @@ begin
         gbt_link_error_i    => gbt_error,  
         gbt_evt_sent_i      => gbt_evt_sent,  
         qpll_locked_i       => qpll_locked_b,
-        qpll_pll_locked_i   => qpll_pll_locked_b
+        qpll_pll_locked_i   => qpll_pll_locked_b,        
+        vfat2_sbits_i       => vfat2_sbits_b
     );
     
     --============--

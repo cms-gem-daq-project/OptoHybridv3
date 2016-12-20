@@ -52,6 +52,7 @@ port(
     fifo_din_o      : out std_logic_vector(31 downto 0);
     
     -- Running mode
+    scan_error_o    : out std_logic;
     scan_running_o  : out std_logic_vector(2 downto 0)
     
 );
@@ -67,9 +68,9 @@ architecture Behavioral of func_scan_req is
     signal req_mode         : std_logic_vector(2 downto 0);
     signal req_vfat2        : std_logic_vector(4 downto 0);
     signal req_channel      : std_logic_vector(6 downto 0);
-    signal req_min          : std_logic_vector(7 downto 0);
-    signal req_max          : std_logic_vector(7 downto 0);
-    signal req_step         : std_logic_vector(7 downto 0);
+    signal req_min          : std_logic_vector(8 downto 0);
+    signal req_max          : std_logic_vector(8 downto 0);
+    signal req_step         : std_logic_vector(8 downto 0);
     signal req_events       : std_logic_vector(23 downto 0);
     
     -- Helpers
@@ -105,6 +106,7 @@ begin
                 fifo_we_o <= '0';
                 fifo_din_o <= (others => '0');
                 scan_running_o <= (others => '0');
+                scan_error_o <= '0';
                 state <= IDLE;
                 req_mode <= (others => '0');
                 req_vfat2 <= (others => '0');
@@ -136,14 +138,14 @@ begin
                             req_mode <= req_mode_i;
                             req_vfat2 <= req_vfat2_i;
                             req_channel <= req_channel_i;
-                            req_min <= req_min_i;
+                            req_min <= '0' & req_min_i;
                             case req_max_i is
-                                when x"00" => req_max <= x"FF";
-                                when others => req_max <= req_max_i;
+                                when x"00" => req_max <= '0' & x"FF";
+                                when others => req_max <= '0' & req_max_i;
                             end case;
                             case req_step_i is
-                                when x"00" => req_step <= x"01";
-                                when others => req_step <= req_step_i;
+                                when x"00" => req_step <= '0' & x"01";
+                                when others => req_step <= '0' & req_step_i;
                             end case;
                             case req_events_i is
                                 when x"000000" => req_events <= x"FFFFFF";
@@ -177,15 +179,15 @@ begin
                         if (vfat2_int > 23) then
                             req_ack_o <= '0';
                             req_err_o <= '1';
+                            scan_error_o <= '1';
                             state <= IDLE;                        
                         -- Check if the min < max
                         elsif (unsigned(req_min) > unsigned(req_max)) then
                             req_ack_o <= '0';
                             req_err_o <= '1';
+                            scan_error_o <= '1';
                             state <= IDLE;      
                         else
-                            req_ack_o <= '1';
-                            req_err_o <= '0';
                             state <= REQ_RUNNING;   
                         end if;                        
                     -- Prepare the scan
@@ -205,13 +207,15 @@ begin
                             -- If the data is valid and the VFAT2 is on
                             if (wb_mst_res_i.stat = WB_NO_ERR and wb_mst_res_i.data(0) = '1') then
                                 -- change state
+                                req_ack_o <= '1';
+                                req_err_o <= '0';
+                                scan_error_o <= '0';
                                 state <= REQ_CURRENT;
                             -- Or
                             else
-                                -- Store an error in the FIFO
-                                fifo_we_o <= '1';
-                                fifo_din_o <= x"F0000000";
-                                -- end the scan
+                                req_ack_o <= '0';
+                                req_err_o <= '1';
+                                scan_error_o <= '1';
                                 state <= IDLE;
                             end if;
                         end if;                        
@@ -234,10 +238,7 @@ begin
                                 state <= REQ_I2C;
                             -- Or
                             else
-                                -- Store an error in the FIFO
-                                fifo_we_o <= '1';
-                                fifo_din_o <= x"FF000000";
-                                -- end the scan
+                                scan_error_o <= '1';
                                 state <= IDLE;
                             end if;
                         end if;                        
@@ -364,6 +365,7 @@ begin
                         fifo_we_o <= '0';
                         fifo_din_o <= (others => '0');
                         scan_running_o <= (others => '0');
+                        scan_error_o <= '0';
                         state <= IDLE;
                         req_mode <= (others => '0');
                         req_vfat2 <= (others => '0');

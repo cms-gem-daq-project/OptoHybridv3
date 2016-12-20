@@ -5,10 +5,35 @@
 NET "qpll_clk_p_i" LOC = L23;
 NET "qpll_clk_n_i" LOC = M22;
 
-NET "qpll_clk_b" TNM_NET = "qpll_clk_b";
-TIMESPEC "TS_qpll40" = PERIOD "qpll_clk_b" 25 ns HIGH 50%;
-
 NET "qpll_reset_o"      LOC = AE13; # K1_P
 NET "qpll_locked_i"     LOC = AE12; # K1_N
 
 NET "qpll_locked_i" CLOCK_DEDICATED_ROUTE = FALSE;
+
+
+
+
+NET "qpll_clk_b" TNM_NET = "qpll_clk_b";
+TIMESPEC "TS_qpll_clk_b" = PERIOD "qpll_clk_b" 25 ns HIGH 50%;
+
+NET "gbt_clk" TNM_NET = "gbt_clk";
+TIMESPEC "TS_gbt_clk" = PERIOD "gbt_clk" 25 ns HIGH 50%;
+
+NET "ref_clk" TNM_NET = "ref_clk";
+TIMESPEC "TS_ref_clk" = PERIOD "ref_clk" 6.25 ns HIGH 50%;
+
+NET "clk_1x" TNM_NET = "clk_1x";
+TIMESPEC "TS_clk_1x" = PERIOD "clk_1x" 25 ns HIGH 50%;
+
+NET "clk_2x" TNM_NET = "clk_2x";
+TIMESPEC "TS_clk_2x" = PERIOD "mgt_refclk" 12.5 ns HIGH 50%;
+
+NET "clk_4x" TNM_NET = "clk_4x";
+TIMESPEC "TS_clk_4x" = PERIOD "clk_4x" 6.25 ns HIGH 50%;
+
+NET "gtx_clk" TNM_NET = "gtx_clk";
+TIMESPEC "TS_gtx_clk" = PERIOD "gtx_clk" 6.25 ns HIGH 50%;
+
+NET "gtx_inst/mgt_refclk" TNM_NET = "mgt_refclk";
+TIMESPEC "TS_mgt_refclk" = PERIOD "mgt_refclk" 6.25 ns HIGH 50%;
+
