@@ -327,33 +327,33 @@ begin
 --    --== ChipScope ==--
 --    --===============--
 --
-    chipscope_icon_inst : entity work.chipscope_icon
-    port map(
-        control0    => control0,
-        control1    => control1
-    );
-    
-    chipscope_ila_inst : entity work.chipscope_ila
-    port map(
-        control => control0,
-        clk     => gtx_clk,
-        trig0   => trig0
-    );
-    
-    trig0(23 downto 0) <= vfat2_data_out_b;
-    
-    vfat2_t_loop : for I in 0 to 23 generate
-    begin
-        trig0(24 + I) <= vfat2_tk_data(I).valid;
-    end generate;
-    
-    chipscope_vio_inst : entity work.chipscope_vio
-    port map(
-        control     => control1,
-        clk         => gtx_clk,
-        sync_in     => sync_in,
-        sync_out    => sync_out
-    );
+--    chipscope_icon_inst : entity work.chipscope_icon
+--    port map(
+--        control0    => control0,
+--        control1    => control1
+--    );
+--    
+--    chipscope_ila_inst : entity work.chipscope_ila
+--    port map(
+--        control => control0,
+--        clk     => gtx_clk,
+--        trig0   => trig0
+--    );
+--    
+--    trig0(23 downto 0) <= vfat2_data_out_b;
+--    
+--    vfat2_t_loop : for I in 0 to 23 generate
+--    begin
+--        trig0(24 + I) <= vfat2_tk_data(I).valid;
+--    end generate;
+--    
+--    chipscope_vio_inst : entity work.chipscope_vio
+--    port map(
+--        control     => control1,
+--        clk         => gtx_clk,
+--        sync_in     => sync_in,
+--        sync_out    => sync_out
+--    );
 
     reset <= '0';
     
