@@ -41,10 +41,13 @@ architecture Behavioral of clocking is
 
 begin
 
-    clk <= qpll_clk_i when clk_source_i = '0' else gbt_clk_i; -- switch using clk_source_o
-    
-    -- qpll_clk
+    ------ !!!!!
+    -- Modified version !!!!
+    -- GBT clock by default !!!! 0 = GBT, 1 = QPLL
+    -- Revert when not needed anymore !!!!
 
+    clk <= qpll_clk_i when clk_source_i = '1' else gbt_clk_i; -- switch using clk_source
+    
     clk_gen_inst : entity work.clk_gen
     port map(
         clk_i       => clk,

@@ -114,16 +114,18 @@ begin
                             wb_slv_res_o <= (ack => '1', stat => WB_ERR_I2C_REG, data => (others => '0'));
                             state <= IDLE;
                         else
-                            -- Move on
+                            -- Ack and move on
+                            wb_slv_res_o <= (ack => '1', stat => WB_NO_ERR, data => (others => '0'));
                             state <= REQ_I2C;
                         end if;                                                    
                     -- Send an I2C request
                     when REQ_I2C =>
+                        -- Reset ack
+                        wb_slv_res_o.ack <= '0';
                         -- Reset the write enable 
                         fifo_we_o <= '0';
                         -- When reached the maximum number of VFAT2s then send an acknowledge
                         if (vfat2_counter = 24) then
-                            wb_slv_res_o <= (ack => '1', stat => WB_NO_ERR, data => (others => '0'));
                             state <= IDLE;
                         else
                             -- Send an I2C request if needed

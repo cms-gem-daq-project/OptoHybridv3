@@ -11,8 +11,6 @@ NET "qpll_locked_i"     LOC = AE12; # K1_N
 NET "qpll_locked_i" CLOCK_DEDICATED_ROUTE = FALSE;
 
 
-
-
 NET "qpll_clk_b" TNM_NET = "qpll_clk_b";
 TIMESPEC "TS_qpll_clk_b" = PERIOD "qpll_clk_b" 25 ns HIGH 50%;
 

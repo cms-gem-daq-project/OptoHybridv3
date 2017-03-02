@@ -45,7 +45,7 @@ port(
     wb_slv_res_o    : out wb_res_t;
     
     -- Output T1 commands
-    vfat2_t1_0      : out t1_t; 
+    vfat2_t1_o      : out t1_t; 
     
     -- T1 running mode
     t1_running_o  : out std_logic_vector(1 downto 0)
@@ -107,7 +107,7 @@ begin
     port map(
         ref_clk_i       => ref_clk_i,
         reset_i         => local_reset,
-        req_en_i        => (wb_stb(0) and wb_we),
+        req_en_i        => reg_data(0)(0),
         req_op_mode_i   => reg_data(1)(1 downto 0),
         req_type_i      => reg_data(2)(1 downto 0),
         req_events_i    => reg_data(3),
@@ -117,9 +117,7 @@ begin
         req_cal_seq_i   => (reg_data(9) & reg_data(8)),
         req_sync_seq_i  => (reg_data(11) & reg_data(10)),
         req_bc0_seq_i   => (reg_data(13) & reg_data(12)),
-        req_ack_o       => reg_ack(0),
-        req_err_o       => reg_err(0),
-        vfat2_t1_0      => vfat2_t1_0,
+        vfat2_t1_o      => vfat2_t1_o,
         t1_running_o    => t1_running
     );
             
@@ -127,6 +125,7 @@ begin
     --== Registers ==--
     --===============--
    
+    -- 0 : start or stop (1 bit)
     -- 1 : operation mode (2 bits)
     -- 2 : type (2 bits)
     -- 3 : number of events (32 bits)
@@ -139,17 +138,17 @@ begin
    
     registers_inst : entity work.registers
     generic map(
-        SIZE        => 13
+        SIZE        => 14
     )
     port map(
         ref_clk_i   => ref_clk_i,
         reset_i     => local_reset,
-        stb_i       => wb_stb(13 downto 1),
+        stb_i       => wb_stb(13 downto 0),
         we_i        => wb_we,
         data_i      => wb_data,
-        ack_o       => reg_ack(13 downto 1),
-        err_o       => reg_err(13 downto 1),
-        data_o      => reg_data(13 downto 1)
+        ack_o       => reg_ack(13 downto 0),
+        err_o       => reg_err(13 downto 0),
+        data_o      => reg_data(13 downto 0)
     );
     
     --=================--

@@ -21,7 +21,7 @@ use work.types_pkg.all;
 
 entity stat is
 generic(
-    N               : integer := 4
+    N               : integer := 5
 );
 port(
 
@@ -32,9 +32,12 @@ port(
     wb_slv_req_i        : in wb_req_t;
     wb_slv_res_o        : out wb_res_t;
     
-    --
+    -- QPLL
     qpll_locked_i       : in std_logic;
-    qpll_pll_locked_i   : in std_logic
+    qpll_pll_locked_i   : in std_logic;
+    
+    -- SEM
+    sem_critical_i      : in std_logic
     
 );
 end stat;
@@ -93,13 +96,15 @@ begin
     --== Mapping ==--
     --=============--
     
-    reg_data(0) <= x"20161214";
+    reg_data(0) <= x"20170302";
     
     reg_data(1) <= (0 => qpll_locked_i, others => '0');
     
     reg_data(2) <= (0 => qpll_pll_locked_i, others => '0');    
                     
-    reg_data(3) <= x"0202070B"; -- A for GEB v2a, B for GEB v2b
+    reg_data(3) <= x"02020A0B"; -- A for GEB v2a, B for GEB v2b
+    
+    reg_data(4) <= (0 => sem_critical_i, others => '0');
     
 end Behavioral;
 

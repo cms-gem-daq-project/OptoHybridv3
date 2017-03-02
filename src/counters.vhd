@@ -22,7 +22,7 @@ use work.wb_pkg.all;
 
 entity counters is
 generic(
-    N                   : integer := 166
+    N                   : integer := 167
 );
 port(
 
@@ -58,7 +58,10 @@ port(
     
     -- QPLL
     qpll_locked_i       : in std_logic;
-    qpll_pll_locked_i   : in std_logic
+    qpll_pll_locked_i   : in std_logic;
+    
+    -- SEM
+    sem_correction_i    : in std_logic
     
 );
 end counters;
@@ -224,4 +227,7 @@ begin
         tk_rate_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(142 + I) and wb_we), en_i => (vfat2_tk_data_i(I).valid and vfat2_tk_data_i(I).hit), data_o => reg_data(142 + I));
     end generate;   
     
+    -- 166 : SEM
+    sem_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(166) and wb_we), en_i => sem_correction_i, data_o => reg_data(166));
+
 end Behavioral;

@@ -141,7 +141,7 @@ begin
         reset_i         => reset_i,
         wb_slv_req_i    => wb_slv_t1_req_i,
         wb_slv_res_o    => wb_slv_t1_res_o,
-        vfat2_t1_0      => vfat2_t1_o,
+        vfat2_t1_o      => vfat2_t1_o,
         t1_running_o    => t1_running
     );
     
