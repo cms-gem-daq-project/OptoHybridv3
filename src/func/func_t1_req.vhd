@@ -50,7 +50,7 @@ end func_t1_req;
 
 architecture Behavioral of func_t1_req is
  
-    type state_t is (IDLE, CHECKS, MODE_0, MODE_1, MODE_2);
+    type state_t is (IDLE, CHECKS, MODE_0, MODE_1, MODE_2, RST);
     
     signal state            : state_t;
       
@@ -137,10 +137,10 @@ begin
                     when CHECKS =>                            
                         -- interval >= 3
                         if (req_mode(1) = '0' and unsigned(interval) < 3) then     
-                            state <= IDLE;
+                            state <= RST;
                         -- 3 < delay < interval + 3
                         elsif (req_mode = "01" and (unsigned(delay) < 3 or unsigned(delay) > unsigned(interval) - 3)) then
-                            state <= IDLE;
+                            state <= RST;
                         -- Move on
                         else
                             -- Select the mode
@@ -148,7 +148,7 @@ begin
                                 when "00" => state <= MODE_0;
                                 when "01" => state <= MODE_1;
                                 when "10" => state <= MODE_2;
-                                when others => state <= IDLE;
+                                when others => state <= RST;
                             end case;
                         end if;
                     -- MODE_0 send simple pulses
@@ -166,7 +166,7 @@ begin
                                 time_counter <= (others => '0');
                                 -- Check event counter
                                 if (event_counter = unsigned(events_limit) - 1) then
-                                    state <= IDLE;
+                                    state <= RST;
                                 else
                                     -- Increment the event counter
                                     event_counter <= event_counter + 1;
@@ -205,7 +205,7 @@ begin
                                 time_counter <= (others => '0');
                                 -- Check event counter
                                 if (event_counter = unsigned(events_limit) - 1) then
-                                    state <= IDLE;
+                                    state <= RST;
                                 else
                                     -- Increment the event counter
                                     event_counter <= event_counter + 1;
@@ -241,7 +241,7 @@ begin
                                 time_counter <= (others => '0');
                                 -- Check event counter
                                 if (event_counter = unsigned(events_limit) - 1) then
-                                    state <= IDLE;
+                                    state <= RST;
                                 else
                                     -- Increment the event counter
                                     event_counter <= event_counter + 1;
@@ -259,6 +259,14 @@ begin
                             end if;
                         end if;   
                     --
+                    when RST => 
+                        -- Reset the flags
+                        vfat2_t1_o <= (lv1a => '0', calpulse => '0', resync => '0', bc0 => '0');          
+                        t1_running_o <= (others => '0');
+                        -- Wait for the enable to reset
+                        if (req_en_i = '0') then
+                            state <= IDLE;
+                        end if;
                     when others =>
                         vfat2_t1_o <= (lv1a => '0', calpulse => '0', resync => '0', bc0 => '0');  
                         state <= IDLE;
