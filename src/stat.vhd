@@ -96,13 +96,15 @@ begin
     --== Mapping ==--
     --=============--
     
-    reg_data(0) <= x"20170307";
+    reg_data(0) <= x"20170330";
     
     reg_data(1) <= (0 => qpll_locked_i, others => '0');
     
     reg_data(2) <= (0 => qpll_pll_locked_i, others => '0');    
                     
-    reg_data(3) <= x"02020B0B"; -- A for GEB v2a, B for GEB v2b
+    reg_data(3) <= x"02020CEB"; 
+    -- E for QPLL, F for GBT
+    -- A for GEB v2a, B for GEB v2b
     
     reg_data(4) <= (0 => sem_critical_i, others => '0');
     

@@ -62,7 +62,7 @@ end func_uscan_req;
 architecture Behavioral of func_uscan_req is
 
     type state_global_t is (IDLE, CHECKS, REQ_RUNNING, ACK_RUNNING, REQ_CURRENT, ACK_CURRENT, REQ_I2C, ACK_I2C, WAIT_DELAY, VFAT2_BUSY, REQ_RESTORE, ACK_RESTORE);
-    type state_vfat2_t is (IDLE, SCAN_THRESHOLD, SCAN_THRESHOLD2, SCAN_LATENCY, SCAN_SCURVE, SCAN_TK, STORE_RESULT, VFAT2_WAIT);
+    type state_vfat2_t is (IDLE, SCAN_THRESHOLD, SCAN_THRESHOLD_DELAY, SCAN_THRESHOLD2, SCAN_LATENCY, SCAN_SCURVE, SCAN_TK, STORE_RESULT, VFAT2_WAIT);
 
     type state_vfat2_array_t is array(integer range <>) of state_vfat2_t;
 
@@ -93,6 +93,7 @@ architecture Behavioral of func_uscan_req is
     signal value_counter    : unsigned(8 downto 0);
     signal event_counter    : u24_array_t(23 downto 0);
     signal hit_counter      : u24_array_t(23 downto 0);
+    signal vfat2_delay      : u24_array_t(23 downto 0);
     signal delay            : unsigned(15 downto 0);
     
     -- VFAT2 statuses
@@ -416,12 +417,21 @@ begin
                             if (event_counter(I) = unsigned(req_events)) then
                                 state_vfat(I) <= STORE_RESULT;
                             else
+                                vfat2_delay(I) <= (others => '0');
+                                state_vfat(I) <= SCAN_THRESHOLD_DELAY;
                                 -- Increment the event counter
                                 event_counter(I) <= event_counter(I) + 1;
                                 -- Increment the hit counter
                                 if (vfat2_sbits_i(I) /= empty_8bits) then
                                     hit_counter(I) <= hit_counter(I) + 1;
                                 end if;
+                            end if;
+                        -- Wait for MSP duration
+                        when SCAN_THRESHOLD_DELAY => 
+                            if (vfat2_delay(I) = 9) then 
+                                state_vfat(I) <= SCAN_THRESHOLD;
+                            else
+                                vfat2_delay(I) <= vfat2_delay(I) + 1;
                             end if;
                         -- Perform a latency scan or threshold scan using tracking data
                         when SCAN_LATENCY | SCAN_TK =>

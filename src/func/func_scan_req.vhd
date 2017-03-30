@@ -60,7 +60,7 @@ end func_scan_req;
 
 architecture Behavioral of func_scan_req is
 
-    type state_t is (IDLE, CHECKS, REQ_RUNNING, ACK_RUNNING, REQ_CURRENT, ACK_CURRENT, REQ_I2C, ACK_I2C, WAIT_DELAY, SCAN_THRESHOLD, SCAN_THRESHOLD2, SCAN_LATENCY, SCAN_SCURVE, SCAN_TK, STORE_RESULT, REQ_RESTORE, ACK_RESTORE);
+    type state_t is (IDLE, CHECKS, REQ_RUNNING, ACK_RUNNING, REQ_CURRENT, ACK_CURRENT, REQ_I2C, ACK_I2C, WAIT_DELAY, SCAN_THRESHOLD, SCAN_THRESHOLD_DELAY, SCAN_THRESHOLD2, SCAN_LATENCY, SCAN_SCURVE, SCAN_TK, STORE_RESULT, REQ_RESTORE, ACK_RESTORE);
         
     signal state            : state_t;
     
@@ -86,6 +86,7 @@ architecture Behavioral of func_scan_req is
     signal event_counter    : unsigned(23 downto 0);
     signal hit_counter      : unsigned(23 downto 0);
     signal delay            : unsigned(15 downto 0);    
+    signal thr_delay        : integer range 0 to 9;    
     
     -- Utility
     signal empty_8bits      : std_logic_vector(7 downto 0);
@@ -123,6 +124,7 @@ begin
                 event_counter <= (others => '0');
                 hit_counter <= (others => '0');
                 delay <= (others => '0');
+                thr_delay <= 0;
             else
                 case state is                
                     -- Wait for request
@@ -290,13 +292,22 @@ begin
                         if (event_counter = unsigned(req_events)) then
                             state <= STORE_RESULT;
                         else
+                            thr_delay <= 0;
+                            state <= SCAN_THRESHOLD_DELAY;
                             -- Increment the event counter
                             event_counter <= event_counter + 1;
                             -- Increment the hit counter
                             if (vfat2_sbits_i(vfat2_int) /= empty_8bits) then
                                 hit_counter <= hit_counter + 1;
                             end if;
-                        end if;                      
+                        end if;   
+                    -- Wait for MSP duration
+                    when SCAN_THRESHOLD_DELAY => 
+                        if (thr_delay = 9) then 
+                            state <= SCAN_THRESHOLD;
+                        else
+                            thr_delay <= thr_delay + 1;
+                        end if;
                     -- Perform a latency scan or threshold scan using tracking data
                     when SCAN_LATENCY | SCAN_TK =>                        
                     -- Change state when the counter reached its limit
@@ -381,6 +392,8 @@ begin
                         value_counter <= (others => '0');
                         event_counter <= (others => '0');
                         hit_counter <= (others => '0');                                                
+                        delay <= (others => '0');                                                
+                        thr_delay <= 0;                                                
                 end case;
             end if;
         end if;

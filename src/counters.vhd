@@ -22,7 +22,7 @@ use work.wb_pkg.all;
 
 entity counters is
 generic(
-    N                   : integer := 167
+    N                   : integer := 191
 );
 port(
 
@@ -229,5 +229,12 @@ begin
     
     -- 166 : SEM
     sem_inst : entity work.counter port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(166) and wb_we), en_i => sem_correction_i, data_o => reg_data(166));
+
+    -- 167 - 190 : Delay counters (Sbit to L1A)    
+    delay_loop : for I in 0 to 23 generate
+    begin
+        delay_inst : entity work.timer port map(ref_clk_i => ref_clk_i, reset_i => (wb_stb(167 + I) and wb_we), start_i => ors(I), stop_i => vfat2_t1_i(4).lv1a, data_o => reg_data(167 + I));  
+    end generate;  
+    
 
 end Behavioral;
