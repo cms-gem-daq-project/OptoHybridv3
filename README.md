@@ -1,3 +1,7 @@
+### Version 2.2.D.FB
+
+Added parametrization file to change the configuration of the project (default clock, version)
+
 ### Version 2.2.B.B
 Bug fix in the T1 controller which was running constantly.
 
