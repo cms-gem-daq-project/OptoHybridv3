@@ -18,7 +18,7 @@ use ieee.numeric_std.all;
 
 library work;
 use work.types_pkg.all;
-
+use work.param_pkg.all;
 
 entity clocking is
 port(
@@ -41,7 +41,16 @@ architecture Behavioral of clocking is
 
 begin
 
-    clk <= qpll_clk_i when clk_source_i = '0' else gbt_clk_i; -- switch using clk_source
+    default_gbt_clk : if USE_DEFAULT_GBT_CLK = TRUE generate
+    begin
+        clk <= gbt_clk_i when clk_source_i = '0' else qpll_clk_i; -- switch using clk_source
+    end generate;
+    
+    default_qpll_clk : if USE_DEFAULT_GBT_CLK = FALSE generate
+    begin
+        clk <= qpll_clk_i when clk_source_i = '0' else gbt_clk_i; -- switch using clk_source    
+    end generate;
+    
     
     clk_gen_inst : entity work.clk_gen
     port map(

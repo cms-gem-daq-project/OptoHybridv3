@@ -18,6 +18,7 @@ use ieee.numeric_std.all;
 
 library work;
 use work.types_pkg.all;
+use work.param_pkg.all;
 
 entity stat is
 generic(
@@ -96,15 +97,21 @@ begin
     --== Mapping ==--
     --=============--
     
-    reg_data(0) <= x"20170330";
+    reg_data(0) <= RELEASE_YEAR & RELEASE_MONTH & RELEASE_DAY;
     
     reg_data(1) <= (0 => qpll_locked_i, others => '0');
     
-    reg_data(2) <= (0 => qpll_pll_locked_i, others => '0');    
+    reg_data(2) <= (0 => qpll_pll_locked_i, others => '0');   
                     
-    reg_data(3) <= x"02020CEB"; 
-    -- E for QPLL, F for GBT
-    -- A for GEB v2a, B for GEB v2b
+    default_gbt_clk : if USE_DEFAULT_GBT_CLK = TRUE generate
+    begin
+        reg_data(3) <= MAJOR_VERSION & MINOR_VERSION & RELEASE_VERSION & x"FB"; 
+    end generate;
+    
+    default_qpll_clk : if USE_DEFAULT_GBT_CLK = FALSE generate
+    begin
+        reg_data(3) <= MAJOR_VERSION & MINOR_VERSION & RELEASE_VERSION & x"EB"; 
+    end generate;    
     
     reg_data(4) <= (0 => sem_critical_i, others => '0');
     
