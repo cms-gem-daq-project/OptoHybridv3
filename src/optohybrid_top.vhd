@@ -353,16 +353,20 @@ begin
 
     --=================--
     --== Test points ==--
-    --=================--   
+    --=================-- 
     
-    tp_1p_o  <= '0';
-    tp_1n_o  <= '0';
-    tp_4p_o  <= '0';
-    tp_4n_o  <= '0';
-    tp_5p_o  <= '0';
-    tp_5n_o  <= '0';
-    tp_20p_o <= '0';
-    tp_20n_o <= '0';
+    tp_inst : entity work.tp
+    port map(
+        gbt_clk_i   => gbt_clk,
+        tp_1p_o     => tp_1p_o,
+        tp_1n_o     => tp_1n_o,
+        tp_4p_o     => tp_4p_o,
+        tp_4n_o     => tp_4n_o,
+        tp_5p_o     => tp_5p_o,
+        tp_5n_o     => tp_5n_o,
+        tp_20p_o    => tp_20p_o,
+        tp_20n_o    => tp_20n_o
+    ); 
     
     --=====================--
     --== Wishbone switch ==--

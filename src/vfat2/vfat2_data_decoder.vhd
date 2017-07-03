@@ -179,9 +179,14 @@ begin
                             lapse <= 192;
                         -- Invalid CRC
                         when "0111" => 
-                            -- Return data according to the system register
-                            tk_data_o <= (valid => not remove_bad_crc_i, bc => data(188 downto 177), ec => data(172 downto 165), flags => data(164 downto 161), chip_id => data(156 downto 145), strips => data(144 downto 17), crc => data(16 downto 1), crc_ok => '0', hit => hit);
-                            lapse <= 192;
+                            -- Remove bad CRC events 
+                            if (remove_bad_crc_i = '1') then                                
+                                tk_data_o.valid <= '0';
+                            else
+                                -- Return data according to the system register
+                                tk_data_o <= (valid => '1', bc => data(188 downto 177), ec => data(172 downto 165), flags => data(164 downto 161), chip_id => data(156 downto 145), strips => data(144 downto 17), crc => data(16 downto 1), crc_ok => '0', hit => hit);
+                                lapse <= 192;
+                            end if;
                         -- No data
                         when others => 
                             tk_data_o.valid <= '0';

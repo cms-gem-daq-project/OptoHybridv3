@@ -24,6 +24,7 @@
 -- 8 : read out the results (32 bits = 8 bits of value & 24 bits of number of events hit)
 -- 9 : status (2 bits)
 -- 10 : local reset
+-- 11 : scan direction (1 bit)
 --
 ----------------------------------------------------------------------------------
 
@@ -64,15 +65,15 @@ architecture Behavioral of func_scan is
     signal local_reset  : std_logic;
     
     -- Signals from the Wishbone Splitter
-    signal wb_stb       : std_logic_vector(10 downto 0);
+    signal wb_stb       : std_logic_vector(11 downto 0);
     signal wb_we        : std_logic;
     signal wb_addr      : std_logic_vector(31 downto 0);
     signal wb_data      : std_logic_vector(31 downto 0);
     
     -- Signals for the registers
-    signal reg_ack      : std_logic_vector(10 downto 0);
-    signal reg_err      : std_logic_vector(10 downto 0);
-    signal reg_data     : std32_array_t(10 downto 0);
+    signal reg_ack      : std_logic_vector(11 downto 0);
+    signal reg_err      : std_logic_vector(11 downto 0);
+    signal reg_data     : std32_array_t(11 downto 0);
     
     -- Signals to the FIFO
     signal fifo_rst     : std_logic;
@@ -92,7 +93,7 @@ begin
 
     wb_splitter_inst : entity work.wb_splitter
     generic map(
-        SIZE        => 11,
+        SIZE        => 12,
         OFFSET      => 0
     )
     port map(
@@ -127,6 +128,7 @@ begin
         req_max_i       => reg_data(5)(7 downto 0),
         req_step_i      => reg_data(6)(7 downto 0),
         req_events_i    => reg_data(7)(23 downto 0),
+        req_dir_i       => reg_data(11)(0),
         req_ack_o       => reg_ack(0),
         req_err_o       => reg_err(0),
         wb_mst_req_o    => wb_mst_req_o,
@@ -165,6 +167,23 @@ begin
         err_o       => reg_err(7 downto 1),
         data_o      => reg_data(7 downto 1)        
     );
+    
+    -- 11 : scan direction (1 bit)
+    
+    registers2_inst : entity work.registers
+    generic map(
+        SIZE        => 1
+    )
+    port map(
+        ref_clk_i   => ref_clk_i,
+        reset_i     => local_reset,
+        stb_i       => wb_stb(11 downto 11),
+        we_i        => wb_we,
+        data_i      => wb_data,
+        ack_o       => reg_ack(11 downto 11),
+        err_o       => reg_err(11 downto 11),
+        data_o      => reg_data(11 downto 11)        
+    );    
     
     --=======================--
     --== FIFO with results ==--

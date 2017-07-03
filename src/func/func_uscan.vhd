@@ -21,9 +21,10 @@
 -- 5 : maximum value (8 bits)
 -- 6 : stepping (8 bits)
 -- 7 : number of events (24 bits)
--- 8 : read out the results (32 bits = 8 bits of value & 24 bits of number of events hit)
--- 9 : status (2 bits)
--- 10 : local reset
+-- 8 - 31 : read out the results (32 bits = 8 bits of value & 24 bits of number of events hit)
+-- 32 : status (2 bits)
+-- 33 : local reset
+-- 34 : scan direction (1 bit)
 --
 ----------------------------------------------------------------------------------
 
@@ -64,15 +65,15 @@ architecture Behavioral of func_uscan is
     signal local_reset  : std_logic;
 
     -- Signals from the Wishbone Splitter
-    signal wb_stb       : std_logic_vector(33 downto 0);
+    signal wb_stb       : std_logic_vector(34 downto 0);
     signal wb_we        : std_logic;
     signal wb_addr      : std_logic_vector(31 downto 0);
     signal wb_data      : std_logic_vector(31 downto 0);
 
     -- Signals for the registers
-    signal reg_ack      : std_logic_vector(33 downto 0);
-    signal reg_err      : std_logic_vector(33 downto 0);
-    signal reg_data     : std32_array_t(33 downto 0);
+    signal reg_ack      : std_logic_vector(34 downto 0);
+    signal reg_err      : std_logic_vector(34 downto 0);
+    signal reg_data     : std32_array_t(34 downto 0);
 
     -- Signals to the FIFO
     signal fifo_we      : std_logic_vector(23 downto 0);
@@ -93,7 +94,7 @@ begin
 
     wb_splitter_inst : entity work.wb_splitter
     generic map(
-        SIZE        => 34,
+        SIZE        => 35,
         OFFSET      => 0
     )
     port map(
@@ -128,6 +129,7 @@ begin
         req_max_i       => reg_data(5)(7 downto 0),
         req_step_i      => reg_data(6)(7 downto 0),
         req_events_i    => reg_data(7)(23 downto 0),
+        req_dir_i       => reg_data(34)(0),
         req_ack_o       => reg_ack(0),
         req_err_o       => reg_err(0),
         wb_mst_req_o    => wb_mst_req_o,
@@ -167,6 +169,23 @@ begin
         err_o       => reg_err(7 downto 1),
         data_o      => reg_data(7 downto 1)
     );
+    
+    -- 34 : scan direction (1 bit)
+    
+    registers2_inst : entity work.registers
+    generic map(
+        SIZE        => 1
+    )
+    port map(
+        ref_clk_i   => ref_clk_i,
+        reset_i     => local_reset,
+        stb_i       => wb_stb(34 downto 34),
+        we_i        => wb_we,
+        data_i      => wb_data,
+        ack_o       => reg_ack(34 downto 34),
+        err_o       => reg_err(34 downto 34),
+        data_o      => reg_data(34 downto 34)        
+    );  
 
     --=======================--
     --== FIFO with results ==--

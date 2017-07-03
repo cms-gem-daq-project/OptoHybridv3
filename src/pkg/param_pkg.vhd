@@ -8,11 +8,11 @@ package param_pkg is
     
     constant MAJOR_VERSION          : std_logic_vector(7 downto 0) := x"02";
     constant MINOR_VERSION          : std_logic_vector(7 downto 0) := x"02";
-    constant RELEASE_VERSION        : std_logic_vector(7 downto 0) := x"0D";
+    constant RELEASE_VERSION        : std_logic_vector(7 downto 0) := x"0F";
     
     constant RELEASE_YEAR           : std_logic_vector(15 downto 0) := x"2017";
-    constant RELEASE_MONTH          : std_logic_vector(7 downto 0) := x"05";
-    constant RELEASE_DAY            : std_logic_vector(7 downto 0) := x"05";
+    constant RELEASE_MONTH          : std_logic_vector(7 downto 0) := x"07";
+    constant RELEASE_DAY            : std_logic_vector(7 downto 0) := x"03";
         
 end param_pkg;
 

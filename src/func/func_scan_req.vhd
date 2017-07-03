@@ -35,6 +35,7 @@ port(
     req_max_i       : in std_logic_vector(7 downto 0);
     req_step_i      : in std_logic_vector(7 downto 0);
     req_events_i    : in std_logic_vector(23 downto 0);
+    req_dir_i       : in std_logic;
     
     req_ack_o       : out std_logic;
     req_err_o       : out std_logic;
@@ -72,6 +73,7 @@ architecture Behavioral of func_scan_req is
     signal req_max          : std_logic_vector(8 downto 0);
     signal req_step         : std_logic_vector(8 downto 0);
     signal req_events       : std_logic_vector(23 downto 0);
+    signal req_dir          : std_logic;
     
     -- Helpers
     signal vfat2_int        : integer range 0 to 23;
@@ -116,6 +118,7 @@ begin
                 req_max <= (others => '0');
                 req_step <= (others => '0');
                 req_events <= (others => '0');
+                req_dir <= '0';
                 vfat2_int <= 0;
                 channel_int <= 0;
                 register_id <= (others => '0');
@@ -153,6 +156,7 @@ begin
                                 when x"000000" => req_events <= x"FFFFFF";
                                 when others => req_events <= req_events_i;
                             end case;
+                            req_dir <= req_dir_i;
                             -- Set the helpers
                             vfat2_int <= to_integer(unsigned(req_vfat2_i));
                             channel_int <= to_integer(unsigned(req_channel_i));
@@ -162,7 +166,11 @@ begin
                                 when "011" => register_id <= x"91";
                                 when others => register_id <= x"10";
                             end case;
-                            value_counter <= '0' & unsigned(req_min_i);
+                            if (req_dir_i = '0') then
+                                value_counter <= '0' & unsigned(req_min_i);
+                            else
+                                value_counter <= '0' & unsigned(req_max_i);                          
+                            end if;
                             -- Set the flags
                             case req_mode_i is
                                 when "000" => scan_running_o <= "001";
@@ -346,15 +354,20 @@ begin
                         fifo_we_o <= '1';
                         fifo_din_o <= std_logic_vector(value_counter(7 downto 0)) & std_logic_vector(hit_counter);
                         -- Check the value for its limit
-                        if (value_counter + unsigned(req_step) <= unsigned(req_max)) then
+                        if ((req_dir = '0') and (value_counter + unsigned(req_step) <= unsigned(req_max))) then 
                             -- Increment the value counter
                             value_counter <= value_counter + unsigned(req_step);
+                            -- and repeat the procedure
+                            state <= REQ_I2C;   
+                        elsif ((req_dir = '1') and (value_counter - unsigned(req_step) >= unsigned(req_min))) then 
+                            -- Increment the value counter
+                            value_counter <= value_counter - unsigned(req_step);
                             -- and repeat the procedure
                             state <= REQ_I2C;
                         -- Or restore the latency value
                         else
-                            state <= REQ_RESTORE;
-                        end if;                        
+                            state <= REQ_RESTORE;    
+                        end if;
                     -- Restore the value
                     when REQ_RESTORE => 
                         -- Reset the write enable 
@@ -385,6 +398,7 @@ begin
                         req_max <= (others => '0');
                         req_step <= (others => '0');
                         req_events <= (others => '0');
+                        req_dir <= '0';
                         vfat2_int <= 0;
                         channel_int <= 0;
                         register_id <= (others => '0');

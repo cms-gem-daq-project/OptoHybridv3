@@ -35,6 +35,7 @@ port(
     req_max_i       : in std_logic_vector(7 downto 0);
     req_step_i      : in std_logic_vector(7 downto 0);
     req_events_i    : in std_logic_vector(23 downto 0);
+    req_dir_i       : in std_logic;
 
     req_ack_o       : out std_logic;
     req_err_o       : out std_logic;
@@ -77,6 +78,7 @@ architecture Behavioral of func_uscan_req is
     signal req_max          : std_logic_vector(8 downto 0);
     signal req_step         : std_logic_vector(8 downto 0);
     signal req_events       : std_logic_vector(23 downto 0);
+    signal req_dir          : std_logic;
 
     -- Helpers
     signal vfat2_int0       : integer range 0 to 31;
@@ -126,6 +128,7 @@ begin
                 req_max <= (others => '0');
                 req_step <= (others => '0');
                 req_events <= (others => '0');
+                req_dir <= '0';
                 vfat2_int0 <= 0;
                 vfat2_int1 <= 0;
                 vfat2_int2 <= 0;
@@ -161,6 +164,7 @@ begin
                                 when x"000000" => req_events <= x"FFFFFF";
                                 when others => req_events <= req_events_i;
                             end case;
+                            req_dir <= req_dir_i;
                             -- Set the helpers
                             vfat2_int0 <= 0;
                             vfat2_int1 <= 0;
@@ -173,7 +177,11 @@ begin
                                 when "011" => register_id <= x"91";
                                 when others => register_id <= x"10";
                             end case;
-                            value_counter <= '0' & unsigned(req_min_i);
+                            if (req_dir_i = '0') then
+                                value_counter <= '0' & unsigned(req_min_i);
+                            else
+                                value_counter <= '0' & unsigned(req_max_i);                          
+                            end if;
                             -- Set the flags
                             case req_mode_i is
                                 when "000" => scan_running_o <= "001";
@@ -305,11 +313,17 @@ begin
                     -- Wait for all VFAT2s to be done
                     when VFAT2_BUSY =>
                         -- If all VFAT2s are done (add mask for masked VFAT2s)
-                        if ((vfat2_done or req_mask) = x"FFFFFF") then
+                        if ((vfat2_done or req_mask) = x"FFFFFF") then     
                             -- Check the value for its limit
-                            if (value_counter + unsigned(req_step) <= unsigned(req_max)) then
+                            if ((req_dir = '0') and (value_counter + unsigned(req_step) <= unsigned(req_max))) then 
                                 -- Increment the value counter
                                 value_counter <= value_counter + unsigned(req_step);
+                                -- and repeat the procedure
+                                vfat2_int2 <= 0;
+                                state_global <= REQ_I2C;
+                            elsif ((req_dir = '1') and (value_counter - unsigned(req_step) >= unsigned(req_min))) then 
+                                -- Increment the value counter
+                                value_counter <= value_counter - unsigned(req_step);
                                 -- and repeat the procedure
                                 vfat2_int2 <= 0;
                                 state_global <= REQ_I2C;
@@ -317,7 +331,7 @@ begin
                             else
                                 vfat2_int3 <= 0;
                                 scan_mask_o <= req_mask;
-                                state_global <= REQ_RESTORE;
+                                state_global <= REQ_RESTORE;  
                             end if;                       
                         end if;  
                     -- Change the value to the minimum
@@ -359,6 +373,7 @@ begin
                         req_max <= (others => '0');
                         req_step <= (others => '0');
                         req_events <= (others => '0');
+                        req_dir <= '0';
                         vfat2_int0 <= 0;
                         vfat2_int1 <= 0;
                         vfat2_int2 <= 0;
