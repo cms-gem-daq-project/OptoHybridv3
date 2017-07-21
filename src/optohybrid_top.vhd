@@ -260,6 +260,7 @@ architecture Behavioral of optohybrid_top is
     signal clk_1x               : std_logic;
     signal clk_2x               : std_logic;
     signal clk_4x               : std_logic;
+    signal clk_4x_90            : std_logic;
 
     signal mgt_refclk           : std_logic;
     signal reset                : std_logic;    
@@ -329,7 +330,8 @@ begin
         ref_clk_o       => ref_clk,
         clk_1x_o        => clk_1x,
         clk_2x_o        => clk_2x,
-        clk_4x_o        => clk_4x        
+        clk_4x_o        => clk_4x,
+        clk_4x_90_o     => clk_4x_90
     );
         
     --======================--
@@ -705,8 +707,9 @@ begin
     sbits_inst : entity work.sbits
     port map(
         gtx_clk_i               => gtx_clk,
-        clk160_i                => clk_4x,
         clk40_i                 => clk_1x,
+        clk160_i                => clk_4x,
+        clk160_90_i             => clk_4x_90,
         reset_i                 => reset,
         vfat2_sbits_i           => vfat2_sbits_b,
         vfat2_sbit_mask_i       => vfat2_sbit_mask,

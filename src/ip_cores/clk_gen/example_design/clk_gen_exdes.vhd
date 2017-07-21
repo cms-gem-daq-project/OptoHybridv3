@@ -71,9 +71,11 @@ port
   CLK_IN1           : in  std_logic;
   -- Reset that only drives logic in example design
   COUNTER_RESET     : in  std_logic;
-  CLK_OUT           : out std_logic_vector(4 downto 1) ;
+  CLK_OUT           : out std_logic_vector(5 downto 1) ;
   -- High bits of counters driven by clocks
-  COUNT             : out std_logic_vector(4 downto 1)
+  COUNT             : out std_logic_vector(5 downto 1);
+  -- Status and control signals
+  LOCKED            : out std_logic
  );
 end clk_gen_exdes;
 
@@ -85,11 +87,12 @@ architecture xilinx of clk_gen_exdes is
   constant C_W        : integer := 16;
 
   -- Number of counters
-  constant NUM_C      : integer := 4;
+  constant NUM_C      : integer := 5;
   -- Array typedef
   type ctrarr is array (1 to NUM_C) of std_logic_vector(C_W-1 downto 0);
 
-  -- Reset for counters when lock status changes
+  -- When the clock goes out of lock, reset the counters
+  signal   locked_int : std_logic;
   signal   reset_int  : std_logic                     := '0';
   -- Declare the clocks and counters
   signal   clk        : std_logic_vector(NUM_C downto 1);
@@ -110,13 +113,19 @@ port
   ref_clk_o          : out    std_logic;
   clk_1x_o          : out    std_logic;
   clk_2x_o          : out    std_logic;
-  clk_4x_o          : out    std_logic
+  clk_4x_o          : out    std_logic;
+  clk_4x_90_o          : out    std_logic;
+  -- Status and control signals
+  LOCKED            : out    std_logic
  );
 end component;
 
 begin
-  -- Create reset for the counters
-  reset_int <= COUNTER_RESET;
+  -- Alias output to internally used signal
+  LOCKED    <= locked_int;
+
+  -- When the clock goes out of lock, reset the counters
+  reset_int <= (not locked_int) or COUNTER_RESET;
 
 
   counters_1: for count_gen in 1 to NUM_C generate begin
@@ -146,7 +155,10 @@ end generate counters_1;
     ref_clk_o           => clk_int(1),
     clk_1x_o           => clk_int(2),
     clk_2x_o           => clk_int(3),
-    clk_4x_o           => clk_int(4));
+    clk_4x_o           => clk_int(4),
+    clk_4x_90_o           => clk_int(5),
+    -- Status and control signals
+    LOCKED             => locked_int);
 
 
   gen_outclk_oddr: 
@@ -168,6 +180,7 @@ end generate counters_1;
   clk(2) <= clk_int(2);
   clk(3) <= clk_int(3);
   clk(4) <= clk_int(4);
+  clk(5) <= clk_int(5);
 
   -- Output clock sampling
   -------------------------------------

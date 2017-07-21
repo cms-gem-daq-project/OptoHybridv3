@@ -59,6 +59,7 @@
 -- CLK_OUT2____40.000______0.000______50.0______247.096____196.976
 -- CLK_OUT3____80.000______0.000______50.0______200.412____196.976
 -- CLK_OUT4___160.000______0.000______50.0______169.112____196.976
+-- CLK_OUT5___160.000_____90.000______50.0______169.112____196.976
 --
 ------------------------------------------------------------------------------
 -- "Input Clock   Freq (MHz)    Input Jitter (UI)"
@@ -82,13 +83,16 @@ port
   ref_clk_o          : out    std_logic;
   clk_1x_o          : out    std_logic;
   clk_2x_o          : out    std_logic;
-  clk_4x_o          : out    std_logic
+  clk_4x_o          : out    std_logic;
+  clk_4x_90_o          : out    std_logic;
+  -- Status and control signals
+  LOCKED            : out    std_logic
  );
 end clk_gen;
 
 architecture xilinx of clk_gen is
   attribute CORE_GENERATION_INFO : string;
-  attribute CORE_GENERATION_INFO of xilinx : architecture is "clk_gen,clk_wiz_v3_6,{component_name=clk_gen,use_phase_alignment=true,use_min_o_jitter=false,use_max_i_jitter=false,use_dyn_phase_shift=false,use_inclk_switchover=false,use_dyn_reconfig=false,feedback_source=FDBK_AUTO,primtype_sel=MMCM_ADV,num_out_clk=4,clkin1_period=25.000,clkin2_period=10.0,use_power_down=false,use_reset=false,use_locked=false,use_inclk_stopped=false,use_status=false,use_freeze=false,use_clk_valid=false,feedback_type=SINGLE,clock_mgr_type=MANUAL,manual_override=false}";
+  attribute CORE_GENERATION_INFO of xilinx : architecture is "clk_gen,clk_wiz_v3_6,{component_name=clk_gen,use_phase_alignment=true,use_min_o_jitter=false,use_max_i_jitter=false,use_dyn_phase_shift=false,use_inclk_switchover=false,use_dyn_reconfig=false,feedback_source=FDBK_AUTO,primtype_sel=MMCM_ADV,num_out_clk=5,clkin1_period=25.000,clkin2_period=10.0,use_power_down=false,use_reset=false,use_locked=true,use_inclk_stopped=false,use_status=false,use_freeze=false,use_clk_valid=false,feedback_type=SINGLE,clock_mgr_type=MANUAL,manual_override=false}";
   -- Input clock buffering / unused connectors
   signal clkin1      : std_logic;
   -- Output clock buffering / unused connectors
@@ -103,7 +107,7 @@ architecture xilinx of clk_gen is
   signal clkout2b_unused  : std_logic;
   signal clkout3          : std_logic;
   signal clkout3b_unused  : std_logic;
-  signal clkout4_unused   : std_logic;
+  signal clkout4          : std_logic;
   signal clkout5_unused   : std_logic;
   signal clkout6_unused   : std_logic;
   -- Dynamic programming unused signals
@@ -112,7 +116,6 @@ architecture xilinx of clk_gen is
   -- Dynamic phase shift unused signals
   signal psdone_unused    : std_logic;
   -- Unused status signals
-  signal locked_unused    : std_logic;
   signal clkfbstopped_unused : std_logic;
   signal clkinstopped_unused : std_logic;
 begin
@@ -158,6 +161,10 @@ begin
     CLKOUT3_PHASE        => 0.000,
     CLKOUT3_DUTY_CYCLE   => 0.500,
     CLKOUT3_USE_FINE_PS  => FALSE,
+    CLKOUT4_DIVIDE       => 6,
+    CLKOUT4_PHASE        => 90.000,
+    CLKOUT4_DUTY_CYCLE   => 0.500,
+    CLKOUT4_USE_FINE_PS  => FALSE,
     CLKIN1_PERIOD        => 25.000,
     REF_JITTER1          => 0.010)
   port map
@@ -172,7 +179,7 @@ begin
     CLKOUT2B            => clkout2b_unused,
     CLKOUT3             => clkout3,
     CLKOUT3B            => clkout3b_unused,
-    CLKOUT4             => clkout4_unused,
+    CLKOUT4             => clkout4,
     CLKOUT5             => clkout5_unused,
     CLKOUT6             => clkout6_unused,
     -- Input clock control
@@ -195,7 +202,7 @@ begin
     PSINCDEC            => '0',
     PSDONE              => psdone_unused,
     -- Other control and status signals
-    LOCKED              => locked_unused,
+    LOCKED              => LOCKED,
     CLKINSTOPPED        => clkinstopped_unused,
     CLKFBSTOPPED        => clkfbstopped_unused,
     PWRDWN              => '0',
@@ -230,5 +237,10 @@ begin
   port map
    (O   => clk_4x_o,
     I   => clkout3);
+
+  clkout5_buf : BUFG
+  port map
+   (O   => clk_4x_90_o,
+    I   => clkout4);
 
 end xilinx;

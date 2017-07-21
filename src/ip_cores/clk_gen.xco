@@ -1,7 +1,7 @@
 ##############################################################
 #
 # Xilinx Core Generator version 14.7
-# Date: Tue Nov 15 08:40:09 2016
+# Date: Fri Jul 21 18:35:02 2017
 #
 ##############################################################
 #
@@ -49,7 +49,7 @@ CSET clk_out3_port=clk_2x_o
 CSET clk_out3_use_fine_ps_gui=false
 CSET clk_out4_port=clk_4x_o
 CSET clk_out4_use_fine_ps_gui=false
-CSET clk_out5_port=CLK_OUT5
+CSET clk_out5_port=clk_4x_90_o
 CSET clk_out5_use_fine_ps_gui=false
 CSET clk_out6_port=CLK_OUT6
 CSET clk_out6_use_fine_ps_gui=false
@@ -89,9 +89,9 @@ CSET clkout4_requested_phase=0.000
 CSET clkout4_used=true
 CSET clkout5_drives=BUFG
 CSET clkout5_requested_duty_cycle=50.000
-CSET clkout5_requested_out_freq=100.000
-CSET clkout5_requested_phase=0.000
-CSET clkout5_used=false
+CSET clkout5_requested_out_freq=160.000
+CSET clkout5_requested_phase=90
+CSET clkout5_used=true
 CSET clkout6_drives=BUFG
 CSET clkout6_requested_duty_cycle=50.000
 CSET clkout6_requested_out_freq=100.000
@@ -170,9 +170,9 @@ CSET mmcm_clkout3_duty_cycle=0.500
 CSET mmcm_clkout3_phase=0.000
 CSET mmcm_clkout3_use_fine_ps=false
 CSET mmcm_clkout4_cascade=false
-CSET mmcm_clkout4_divide=1
+CSET mmcm_clkout4_divide=6
 CSET mmcm_clkout4_duty_cycle=0.500
-CSET mmcm_clkout4_phase=0.000
+CSET mmcm_clkout4_phase=90.000
 CSET mmcm_clkout4_use_fine_ps=false
 CSET mmcm_clkout5_divide=1
 CSET mmcm_clkout5_duty_cycle=0.500
@@ -189,7 +189,7 @@ CSET mmcm_notes=None
 CSET mmcm_ref_jitter1=0.010
 CSET mmcm_ref_jitter2=0.010
 CSET mmcm_startup_wait=false
-CSET num_out_clks=4
+CSET num_out_clks=5
 CSET override_dcm=false
 CSET override_dcm_clkgen=false
 CSET override_mmcm=false
@@ -251,7 +251,7 @@ CSET use_freeze=false
 CSET use_freq_synth=true
 CSET use_inclk_stopped=false
 CSET use_inclk_switchover=false
-CSET use_locked=false
+CSET use_locked=true
 CSET use_max_i_jitter=false
 CSET use_min_o_jitter=false
 CSET use_min_power=false
@@ -266,4 +266,4 @@ CSET use_status=false
 MISC pkg_timestamp=2012-05-10T12:44:55Z
 # END Extra information
 GENERATE
-# CRC: cfe9600e
+# CRC: 2db59425
