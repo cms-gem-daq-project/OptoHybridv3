@@ -1,7 +1,7 @@
 ##############################################################
 #
 # Xilinx Core Generator version 14.7
-# Date: Sat Jul 22 00:55:40 2017
+# Date: Sat Jul 22 23:18:36 2017
 #
 ##############################################################
 #
@@ -41,13 +41,13 @@ SELECT Clocking_Wizard xilinx.com:ip:clk_wiz:3.6
 # BEGIN Parameters
 CSET calc_done=DONE
 CSET clk_in_sel_port=CLK_IN_SEL
-CSET clk_out1_port=clk_1x_o
+CSET clk_out1_port=clk40_o
 CSET clk_out1_use_fine_ps_gui=false
-CSET clk_out2_port=clk_2x_o
+CSET clk_out2_port=clk80_o
 CSET clk_out2_use_fine_ps_gui=false
-CSET clk_out3_port=clk_4x_o
+CSET clk_out3_port=clk160_o
 CSET clk_out3_use_fine_ps_gui=false
-CSET clk_out4_port=clk_4x_90_o
+CSET clk_out4_port=clk160_90_o
 CSET clk_out4_use_fine_ps_gui=false
 CSET clk_out5_port=clk_4x_90_o
 CSET clk_out5_use_fine_ps_gui=false
@@ -145,27 +145,27 @@ CSET in_freq_units=Units_MHz
 CSET in_jitter_units=Units_UI
 CSET input_clk_stopped_port=INPUT_CLK_STOPPED
 CSET jitter_options=UI
-CSET jitter_sel=No_Jitter
+CSET jitter_sel=Min_O_Jitter
 CSET locked_port=locked_o
 CSET mmcm_bandwidth=OPTIMIZED
-CSET mmcm_clkfbout_mult_f=24.000
+CSET mmcm_clkfbout_mult_f=28.000
 CSET mmcm_clkfbout_phase=0.000
 CSET mmcm_clkfbout_use_fine_ps=false
 CSET mmcm_clkin1_period=25.000
 CSET mmcm_clkin2_period=10.0
-CSET mmcm_clkout0_divide_f=24.000
+CSET mmcm_clkout0_divide_f=28.000
 CSET mmcm_clkout0_duty_cycle=0.500
 CSET mmcm_clkout0_phase=0.000
 CSET mmcm_clkout0_use_fine_ps=false
-CSET mmcm_clkout1_divide=12
+CSET mmcm_clkout1_divide=14
 CSET mmcm_clkout1_duty_cycle=0.500
 CSET mmcm_clkout1_phase=0.000
 CSET mmcm_clkout1_use_fine_ps=false
-CSET mmcm_clkout2_divide=6
+CSET mmcm_clkout2_divide=7
 CSET mmcm_clkout2_duty_cycle=0.500
 CSET mmcm_clkout2_phase=0.000
 CSET mmcm_clkout2_use_fine_ps=false
-CSET mmcm_clkout3_divide=6
+CSET mmcm_clkout3_divide=7
 CSET mmcm_clkout3_duty_cycle=0.500
 CSET mmcm_clkout3_phase=90.000
 CSET mmcm_clkout3_use_fine_ps=false
@@ -195,7 +195,7 @@ CSET override_dcm_clkgen=false
 CSET override_mmcm=false
 CSET override_pll=false
 CSET platform=nt64
-CSET pll_bandwidth=OPTIMIZED
+CSET pll_bandwidth=HIGH
 CSET pll_clk_feedback=CLKFBOUT
 CSET pll_clkfbout_mult=4
 CSET pll_clkfbout_phase=0.000
@@ -226,7 +226,7 @@ CSET power_down_port=POWER_DOWN
 CSET prim_in_freq=40.000
 CSET prim_in_jitter=0.010
 CSET prim_source=Global_buffer
-CSET primary_port=clk_i
+CSET primary_port=clk40_i
 CSET primitive=MMCM
 CSET primtype_sel=MMCM_ADV
 CSET psclk_port=PSCLK
@@ -266,4 +266,4 @@ CSET use_status=false
 MISC pkg_timestamp=2012-05-10T12:44:55Z
 # END Extra information
 GENERATE
-# CRC: 7ddef5ad
+# CRC: a6fe9d1c

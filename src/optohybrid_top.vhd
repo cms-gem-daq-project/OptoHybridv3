@@ -1,17 +1,9 @@
 ----------------------------------------------------------------------------------
--- Company:        IIHE - ULB
--- Engineer:       Thomas Lenzi (thomas.lenzi@cern.ch)
---
--- Create Date:    13:13:21 03/12/2015
--- Design Name:    OptoHybrid v2
--- Module Name:    optohybrid_top - Behavioral
--- Project Name:   OptoHybrid v2
--- Target Devices: xc6vlx130t-1ff1156
--- Tool versions:  ISE  P.20131013
--- Description:
---
--- Top Level of the design
---
+-- CMS Muon Endcap
+-- GEM Collaboration
+-- Optohybrid v3 Firmware -- Top Logic
+-- 2017/07/21 -- Initial port to version 3 electronics
+-- 2017/07/22 -- Additional MMCM added to monitor and dejitter the eport clock
 ----------------------------------------------------------------------------------
 
 library ieee;
@@ -51,12 +43,12 @@ port(
     elink_i : in std_logic_vector (1 downto 0) ;
     elink_o : in std_logic_vector (1 downto 0) ;
 
-    sca_io     : inout  std_logic_vector (3 downto 0);
+    sca_io  : inout  std_logic_vector (3 downto 0);
 
-    hdmi_p                  : inout std_logic_vector (3 downto 0);
-    hdmi_n                  : inout std_logic_vector (3 downto 0);
+    hdmi_p  : inout std_logic_vector (3 downto 0);
+    hdmi_n  : inout std_logic_vector (3 downto 0);
 
-    led_o                   : out std_logic_vector (15 downto 0);
+    led_o   : out std_logic_vector (15 downto 0);
 
     gbt_txvalid : out std_logic;
     gbt_txready : in std_logic;
@@ -79,54 +71,54 @@ port(
 
     --== VFAT2s Data ==--
 
-    vfat0_SoT_p_i  : in std_logic;
-    vfat0_SoT_n_i  : in std_logic;
-    vfat1_SoT_p_i  : in std_logic;
-    vfat1_SoT_n_i  : in std_logic;
-    vfat2_SoT_p_i  : in std_logic;
-    vfat2_SoT_n_i  : in std_logic;
-    vfat3_SoT_p_i  : in std_logic;
-    vfat3_SoT_n_i  : in std_logic;
-    vfat4_SoT_p_i  : in std_logic;
-    vfat4_SoT_n_i  : in std_logic;
-    vfat5_SoT_p_i  : in std_logic;
-    vfat5_SoT_n_i  : in std_logic;
-    vfat6_SoT_p_i  : in std_logic;
-    vfat6_SoT_n_i  : in std_logic;
-    vfat7_SoT_p_i  : in std_logic;
-    vfat7_SoT_n_i  : in std_logic;
-    vfat8_SoT_p_i  : in std_logic;
-    vfat8_SoT_n_i  : in std_logic;
-    vfat9_SoT_p_i  : in std_logic;
-    vfat9_SoT_n_i  : in std_logic;
-    vfat10_SoT_p_i : in std_logic;
-    vfat10_SoT_n_i : in std_logic;
-    vfat11_SoT_p_i : in std_logic;
-    vfat11_SoT_n_i : in std_logic;
-    vfat12_SoT_p_i : in std_logic;
-    vfat12_SoT_n_i : in std_logic;
-    vfat13_SoT_p_i : in std_logic;
-    vfat13_SoT_n_i : in std_logic;
-    vfat14_SoT_p_i : in std_logic;
-    vfat14_SoT_n_i : in std_logic;
-    vfat15_SoT_p_i : in std_logic;
-    vfat15_SoT_n_i : in std_logic;
-    vfat16_SoT_p_i : in std_logic;
-    vfat16_SoT_n_i : in std_logic;
-    vfat17_SoT_p_i : in std_logic;
-    vfat17_SoT_n_i : in std_logic;
-    vfat18_SoT_p_i : in std_logic;
-    vfat18_SoT_n_i : in std_logic;
-    vfat19_SoT_p_i : in std_logic;
-    vfat19_SoT_n_i : in std_logic;
-    vfat20_SoT_p_i : in std_logic;
-    vfat20_SoT_n_i : in std_logic;
-    vfat21_SoT_p_i : in std_logic;
-    vfat21_SoT_n_i : in std_logic;
-    vfat22_SoT_p_i : in std_logic;
-    vfat22_SoT_n_i : in std_logic;
-    vfat23_SoT_p_i : in std_logic;
-    vfat23_SoT_n_i : in std_logic;
+    vfat0_sof_p_i  : in std_logic;
+    vfat0_sof_n_i  : in std_logic;
+    vfat1_sof_p_i  : in std_logic;
+    vfat1_sof_n_i  : in std_logic;
+    vfat2_sof_p_i  : in std_logic;
+    vfat2_sof_n_i  : in std_logic;
+    vfat3_sof_p_i  : in std_logic;
+    vfat3_sof_n_i  : in std_logic;
+    vfat4_sof_p_i  : in std_logic;
+    vfat4_sof_n_i  : in std_logic;
+    vfat5_sof_p_i  : in std_logic;
+    vfat5_sof_n_i  : in std_logic;
+    vfat6_sof_p_i  : in std_logic;
+    vfat6_sof_n_i  : in std_logic;
+    vfat7_sof_p_i  : in std_logic;
+    vfat7_sof_n_i  : in std_logic;
+    vfat8_sof_p_i  : in std_logic;
+    vfat8_sof_n_i  : in std_logic;
+    vfat9_sof_p_i  : in std_logic;
+    vfat9_sof_n_i  : in std_logic;
+    vfat10_sof_p_i : in std_logic;
+    vfat10_sof_n_i : in std_logic;
+    vfat11_sof_p_i : in std_logic;
+    vfat11_sof_n_i : in std_logic;
+    vfat12_sof_p_i : in std_logic;
+    vfat12_sof_n_i : in std_logic;
+    vfat13_sof_p_i : in std_logic;
+    vfat13_sof_n_i : in std_logic;
+    vfat14_sof_p_i : in std_logic;
+    vfat14_sof_n_i : in std_logic;
+    vfat15_sof_p_i : in std_logic;
+    vfat15_sof_n_i : in std_logic;
+    vfat16_sof_p_i : in std_logic;
+    vfat16_sof_n_i : in std_logic;
+    vfat17_sof_p_i : in std_logic;
+    vfat17_sof_n_i : in std_logic;
+    vfat18_sof_p_i : in std_logic;
+    vfat18_sof_n_i : in std_logic;
+    vfat19_sof_p_i : in std_logic;
+    vfat19_sof_n_i : in std_logic;
+    vfat20_sof_p_i : in std_logic;
+    vfat20_sof_n_i : in std_logic;
+    vfat21_sof_p_i : in std_logic;
+    vfat21_sof_n_i : in std_logic;
+    vfat22_sof_p_i : in std_logic;
+    vfat22_sof_n_i : in std_logic;
+    vfat23_sof_p_i : in std_logic;
+    vfat23_sof_n_i : in std_logic;
 
     vfat0_sbits_p_i  : in std_logic_vector(7 downto 0);
     vfat0_sbits_n_i  : in std_logic_vector(7 downto 0);
@@ -192,7 +184,7 @@ architecture Behavioral of optohybrid_top is
 
     --== Global signals ==--
 
-    signal mmcm_locked          : std_logic;
+    signal mmcms_locked          : std_logic;
 
     signal clock                : std_logic;
     signal gbt_eclk             : std_logic;
@@ -205,7 +197,11 @@ architecture Behavioral of optohybrid_top is
     signal mgt_refclk           : std_logic;
     signal reset                : std_logic;
 
+    signal clock_source         : std_logic;
+
 begin
+
+    clock_source <= '1'; -- 0=select dskw clock, 1=select eport clock
 
     reset       <= '0';
     gbt_txvalid <= '1';
@@ -219,20 +215,26 @@ begin
 
     clocking_inst : entity work.clocking
     port map(
-        gbt_eclk_p      => gbt_eclk_p,
-        gbt_eclk_n      => gbt_eclk_n,
 
-        gbt_dclk_p      => gbt_dclk_p,
-        gbt_dclk_n      => gbt_dclk_n,
+        clock_source_i     => clock_source,
 
-        gbt_eclk_o      => gbt_eclk,
+        gbt_eclk_p         => gbt_eclk_p,
+        gbt_eclk_n         => gbt_eclk_n,
 
-        mmcm_locked_o   => mmcm_locked,
+        gbt_dclk_p         => gbt_dclk_p,
+        gbt_dclk_n         => gbt_dclk_n,
 
-        clk_1x_o        => clk_1x,
-        clk_2x_o        => clk_2x,
-        clk_4x_o        => clk_4x,
-        clk_4x_90_o     => clk_4x_90
+        mmcms_locked_o     => mmcms_locked,
+
+        eprt_mmcm_locked_o => open,
+        dskw_mmcm_locked_o => open,
+
+        gbt_eclk_o         => gbt_eclk,
+
+        clk_1x_o           => clk_1x,
+        clk_2x_o           => clk_2x,
+        clk_4x_o           => clk_4x,
+        clk_4x_90_o        => clk_4x_90
     );
 
     --=================================--
@@ -241,12 +243,12 @@ begin
 
     trigger_links_inst : entity work.trigger_links
     port map (
-        mgt_clk_p => mgt_clk_p_i, -- 160 MHz Reference Clock
-        mgt_clk_n => mgt_clk_n_i, -- 160 MHz Reference Clock
+        mgt_clk_p => mgt_clk_p_i, -- 160 MHz Reference Clock Positive
+        mgt_clk_n => mgt_clk_n_i, -- 160 MHz Reference Clock Negative
 
         clk_40     => clk_1x, -- 40 MHz  Logic Clock
         clk_80     => clk_2x, -- 80 MHz  User Clock 2
-        clk_160    => clk_4x, -- 160 MHz User CLock
+        clk_160    => clk_4x, -- 160 MHz User Clock
 
         reset      => reset,
 
@@ -320,54 +322,54 @@ begin
         vfat23_sbits_p_i => vfat23_sbits_p_i,
         vfat23_sbits_n_i => vfat23_sbits_n_i,
 
-        vfat0_SoT_p_i   => vfat0_SoT_p_i ,
-        vfat0_SoT_n_i   => vfat0_SoT_n_i ,
-        vfat1_SoT_p_i   => vfat1_SoT_p_i ,
-        vfat1_SoT_n_i   => vfat1_SoT_n_i ,
-        vfat2_SoT_p_i   => vfat2_SoT_p_i ,
-        vfat2_SoT_n_i   => vfat2_SoT_n_i ,
-        vfat3_SoT_p_i   => vfat3_SoT_p_i ,
-        vfat3_SoT_n_i   => vfat3_SoT_n_i ,
-        vfat4_SoT_p_i   => vfat4_SoT_p_i ,
-        vfat4_SoT_n_i   => vfat4_SoT_n_i ,
-        vfat5_SoT_p_i   => vfat5_SoT_p_i ,
-        vfat5_SoT_n_i   => vfat5_SoT_n_i ,
-        vfat6_SoT_p_i   => vfat6_SoT_p_i ,
-        vfat6_SoT_n_i   => vfat6_SoT_n_i ,
-        vfat7_SoT_p_i   => vfat7_SoT_p_i ,
-        vfat7_SoT_n_i   => vfat7_SoT_n_i ,
-        vfat8_SoT_p_i   => vfat8_SoT_p_i ,
-        vfat8_SoT_n_i   => vfat8_SoT_n_i ,
-        vfat9_SoT_p_i   => vfat9_SoT_p_i ,
-        vfat9_SoT_n_i   => vfat9_SoT_n_i ,
-        vfat10_SoT_p_i  => vfat10_SoT_p_i,
-        vfat10_SoT_n_i  => vfat10_SoT_n_i,
-        vfat11_SoT_p_i  => vfat11_SoT_p_i,
-        vfat11_SoT_n_i  => vfat11_SoT_n_i,
-        vfat12_SoT_p_i  => vfat12_SoT_p_i,
-        vfat12_SoT_n_i  => vfat12_SoT_n_i,
-        vfat13_SoT_p_i  => vfat13_SoT_p_i,
-        vfat13_SoT_n_i  => vfat13_SoT_n_i,
-        vfat14_SoT_p_i  => vfat14_SoT_p_i,
-        vfat14_SoT_n_i  => vfat14_SoT_n_i,
-        vfat15_SoT_p_i  => vfat15_SoT_p_i,
-        vfat15_SoT_n_i  => vfat15_SoT_n_i,
-        vfat16_SoT_p_i  => vfat16_SoT_p_i,
-        vfat16_SoT_n_i  => vfat16_SoT_n_i,
-        vfat17_SoT_p_i  => vfat17_SoT_p_i,
-        vfat17_SoT_n_i  => vfat17_SoT_n_i,
-        vfat18_SoT_p_i  => vfat18_SoT_p_i,
-        vfat18_SoT_n_i  => vfat18_SoT_n_i,
-        vfat19_SoT_p_i  => vfat19_SoT_p_i,
-        vfat19_SoT_n_i  => vfat19_SoT_n_i,
-        vfat20_SoT_p_i  => vfat20_SoT_p_i,
-        vfat20_SoT_n_i  => vfat20_SoT_n_i,
-        vfat21_SoT_p_i  => vfat21_SoT_p_i,
-        vfat21_SoT_n_i  => vfat21_SoT_n_i,
-        vfat22_SoT_p_i  => vfat22_SoT_p_i,
-        vfat22_SoT_n_i  => vfat22_SoT_n_i,
-        vfat23_SoT_p_i  => vfat23_SoT_p_i,
-        vfat23_SoT_n_i  => vfat23_SoT_n_i,
+        vfat0_sof_p_i   => vfat0_sof_p_i,
+        vfat0_sof_n_i   => vfat0_sof_n_i,
+        vfat1_sof_p_i   => vfat1_sof_p_i,
+        vfat1_sof_n_i   => vfat1_sof_n_i,
+        vfat2_sof_p_i   => vfat2_sof_p_i,
+        vfat2_sof_n_i   => vfat2_sof_n_i,
+        vfat3_sof_p_i   => vfat3_sof_p_i,
+        vfat3_sof_n_i   => vfat3_sof_n_i,
+        vfat4_sof_p_i   => vfat4_sof_p_i,
+        vfat4_sof_n_i   => vfat4_sof_n_i,
+        vfat5_sof_p_i   => vfat5_sof_p_i,
+        vfat5_sof_n_i   => vfat5_sof_n_i,
+        vfat6_sof_p_i   => vfat6_sof_p_i,
+        vfat6_sof_n_i   => vfat6_sof_n_i,
+        vfat7_sof_p_i   => vfat7_sof_p_i,
+        vfat7_sof_n_i   => vfat7_sof_n_i,
+        vfat8_sof_p_i   => vfat8_sof_p_i,
+        vfat8_sof_n_i   => vfat8_sof_n_i,
+        vfat9_sof_p_i   => vfat9_sof_p_i,
+        vfat9_sof_n_i   => vfat9_sof_n_i,
+        vfat10_sof_p_i  => vfat10_sof_p_i,
+        vfat10_sof_n_i  => vfat10_sof_n_i,
+        vfat11_sof_p_i  => vfat11_sof_p_i,
+        vfat11_sof_n_i  => vfat11_sof_n_i,
+        vfat12_sof_p_i  => vfat12_sof_p_i,
+        vfat12_sof_n_i  => vfat12_sof_n_i,
+        vfat13_sof_p_i  => vfat13_sof_p_i,
+        vfat13_sof_n_i  => vfat13_sof_n_i,
+        vfat14_sof_p_i  => vfat14_sof_p_i,
+        vfat14_sof_n_i  => vfat14_sof_n_i,
+        vfat15_sof_p_i  => vfat15_sof_p_i,
+        vfat15_sof_n_i  => vfat15_sof_n_i,
+        vfat16_sof_p_i  => vfat16_sof_p_i,
+        vfat16_sof_n_i  => vfat16_sof_n_i,
+        vfat17_sof_p_i  => vfat17_sof_p_i,
+        vfat17_sof_n_i  => vfat17_sof_n_i,
+        vfat18_sof_p_i  => vfat18_sof_p_i,
+        vfat18_sof_n_i  => vfat18_sof_n_i,
+        vfat19_sof_p_i  => vfat19_sof_p_i,
+        vfat19_sof_n_i  => vfat19_sof_n_i,
+        vfat20_sof_p_i  => vfat20_sof_p_i,
+        vfat20_sof_n_i  => vfat20_sof_n_i,
+        vfat21_sof_p_i  => vfat21_sof_p_i,
+        vfat21_sof_n_i  => vfat21_sof_n_i,
+        vfat22_sof_p_i  => vfat22_sof_p_i,
+        vfat22_sof_n_i  => vfat22_sof_n_i,
+        vfat23_sof_p_i  => vfat23_sof_p_i,
+        vfat23_sof_n_i  => vfat23_sof_n_i,
 
         trigger_units_o => trigger_units
     );
@@ -389,16 +391,18 @@ begin
         vfat_sbit_clusters_o    => sbit_clusters,
         cluster_count_o         => cluster_count,
         overflow_o              => sbit_overflow
+
     );
 
     led_control : entity work.led_control
     port map (
         -- clocks
+        reset         => reset,
         clock         => clock,
         gbt_eclk      => gbt_eclk,
 
         -- signals
-        mmcm_locked   => mmcm_locked,
+        mmcm_locked   => mmcms_locked,
         gbt_rxready   => gbt_rxready ,
         gbt_rxvalid   => gbt_rxvalid,
         cluster_count => cluster_count,

@@ -108,12 +108,12 @@ architecture xilinx of clk_gen_exdes is
 component clk_gen is
 port
  (-- Clock in ports
-  clk_i           : in     std_logic;
+  clk40_i           : in     std_logic;
   -- Clock out ports
-  clk_1x_o          : out    std_logic;
-  clk_2x_o          : out    std_logic;
-  clk_4x_o          : out    std_logic;
-  clk_4x_90_o          : out    std_logic;
+  clk40_o          : out    std_logic;
+  clk80_o          : out    std_logic;
+  clk160_o          : out    std_logic;
+  clk160_90_o          : out    std_logic;
   -- Status and control signals
   locked_o            : out    std_logic
  );
@@ -149,12 +149,12 @@ end generate counters_1;
   clknetwork : clk_gen
   port map
    (-- Clock in ports
-    clk_i            => CLK_IN1,
+    clk40_i            => CLK_IN1,
     -- Clock out ports
-    clk_1x_o           => clk_int(1),
-    clk_2x_o           => clk_int(2),
-    clk_4x_o           => clk_int(3),
-    clk_4x_90_o           => clk_int(4),
+    clk40_o           => clk_int(1),
+    clk80_o           => clk_int(2),
+    clk160_o           => clk_int(3),
+    clk160_90_o           => clk_int(4),
     -- Status and control signals
     locked_o             => locked_int);
 

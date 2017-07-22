@@ -54,10 +54,10 @@
 -- "Output    Output      Phase     Duty      Pk-to-Pk        Phase"
 -- "Clock    Freq (MHz) (degrees) Cycle (%) Jitter (ps)  Error (ps)"
 ------------------------------------------------------------------------------
--- CLK_OUT1____40.000______0.000______50.0______247.096____196.976
--- CLK_OUT2____80.000______0.000______50.0______200.412____196.976
--- CLK_OUT3___160.000______0.000______50.0______169.112____196.976
--- CLK_OUT4___160.000_____90.000______50.0______169.112____196.976
+-- CLK_OUT1____40.000______0.000______50.0______211.217____176.321
+-- CLK_OUT2____80.000______0.000______50.0______174.099____176.321
+-- CLK_OUT3___160.000______0.000______50.0______150.623____176.321
+-- CLK_OUT4___160.000_____90.000______50.0______150.623____176.321
 --
 ------------------------------------------------------------------------------
 -- "Input Clock   Freq (MHz)    Input Jitter (UI)"
@@ -70,12 +70,12 @@
 component clk_gen
 port
  (-- Clock in ports
-  clk_i           : in     std_logic;
+  clk40_i           : in     std_logic;
   -- Clock out ports
-  clk_1x_o          : out    std_logic;
-  clk_2x_o          : out    std_logic;
-  clk_4x_o          : out    std_logic;
-  clk_4x_90_o          : out    std_logic;
+  clk40_o          : out    std_logic;
+  clk80_o          : out    std_logic;
+  clk160_o          : out    std_logic;
+  clk160_90_o          : out    std_logic;
   -- Status and control signals
   locked_o            : out    std_logic
  );
@@ -88,12 +88,12 @@ end component;
 your_instance_name : clk_gen
   port map
    (-- Clock in ports
-    clk_i => clk_i,
+    clk40_i => clk40_i,
     -- Clock out ports
-    clk_1x_o => clk_1x_o,
-    clk_2x_o => clk_2x_o,
-    clk_4x_o => clk_4x_o,
-    clk_4x_90_o => clk_4x_90_o,
+    clk40_o => clk40_o,
+    clk80_o => clk80_o,
+    clk160_o => clk160_o,
+    clk160_90_o => clk160_90_o,
     -- Status and control signals
     locked_o => locked_o);
 -- INST_TAG_END ------ End INSTANTIATION Template ------------

@@ -1,15 +1,9 @@
 ----------------------------------------------------------------------------------
--- Company:        IIHE - ULB
--- Engineer:       Thomas Lenzi (thomas.lenzi@cern.ch)
---
--- Create Date:    12:59:03 09/30/2015
--- Design Name:    OptoHybrid v2
--- Module Name:    clocking - Behavioral
--- Project Name:   OptoHybrid v2
--- Target Devices: xc6vlx130t-1ff1156
--- Tool versions:  ISE  P.20131013
--- Description:
---
+-- CMS Muon Endcap
+-- GEM Collaboration
+-- Optohybrid v3 Firmware -- Clocking
+-- 2017/07/21 -- Initial port to version 3 electronics
+-- 2017/07/22 -- Additional MMCM added to monitor and dejitter the eport clock
 ----------------------------------------------------------------------------------
 
 library ieee;
@@ -26,6 +20,8 @@ use work.param_pkg.all;
 entity clocking is
 port(
 
+    clock_source_i : in std_logic;
+
     gbt_eclk_p  : in std_logic_vector (1 downto 0) ;
     gbt_eclk_n  : in std_logic_vector (1 downto 0) ;
 
@@ -37,9 +33,12 @@ port(
     clk_4x_o        : out std_logic;
     clk_4x_90_o     : out std_logic;
 
-    mmcm_locked_o   : out std_logic;
+    dskw_mmcm_locked_o   : out std_logic;
+    eprt_mmcm_locked_o   : out std_logic;
 
-    gbt_eclk_o      : out std_logic
+    mmcms_locked_o   : out std_logic;
+
+    gbt_eclk_o : out std_logic
 
 );
 end clocking;
@@ -51,6 +50,18 @@ architecture Behavioral of clocking is
     signal gbt_dclk : std_logic ;
     signal eclk_ibufgds : std_logic;
     signal dclk_ibufgds : std_logic;
+
+    signal eprt_clk40       : std_logic;
+    signal eprt_clk80       : std_logic;
+    signal eprt_clk160      : std_logic;
+    signal eprt_clk160_90   : std_logic;
+    signal eprt_mmcm_locked : std_logic;
+
+    signal dskw_clk40       : std_logic;
+    signal dskw_clk80       : std_logic;
+    signal dskw_clk160      : std_logic;
+    signal dskw_clk160_90   : std_logic;
+    signal dskw_mmcm_locked : std_logic;
 
 begin
 
@@ -69,7 +80,7 @@ begin
     bufg_eclk : BUFG
     port map(
         I   => eclk_ibufgds,
-        O   => gbt_eclk_o
+        O   => gbt_eclk
     );
 
     --------- GBT DSKW Clock ---------
@@ -90,18 +101,38 @@ begin
         O   => gbt_dclk
     );
 
-    --------- MMCM ---------
+    --------- Deskew Clock ---------
 
     clk_gen_inst : entity work.clk_gen
     port map(
-        clk_i       => gbt_dclk,
-        clk_1x_o    => clk_1x_o,
-        clk_2x_o    => clk_2x_o,
-        clk_4x_o    => clk_4x_o,
-        clk_4x_90_o => clk_4x_90_o,
-        locked_o    => mmcm_locked_o
+        clk40_i     => gbt_dclk,
+        clk40_o     => dskw_clk40,
+        clk80_o     => dskw_clk80,
+        clk160_o    => dskw_clk160,
+        clk160_90_o => dskw_clk160_90,
+        locked_o    => dskw_mmcm_locked_o
     );
 
+    --------- Eport Clock ---------
+
+    eclk_gen_inst : entity work.eprt_clk_gen
+    port map(
+        clk80_i     => gbt_eclk,
+        clk40_o     => dskw_clk40,
+        clk80_o     => dskw_clk80,
+        clk160_o    => dskw_clk160,
+        clk160_90_o => dskw_clk160_90,
+        locked_o    => eprt_mmcm_locked_o
+    );
+
+    clk_1x_o    <= eprt_clk40      when (clock_source_i='1') else dskw_clk40;
+    clk_2x_o    <= eprt_clk80      when (clock_source_i='1') else dskw_clk80;
+    clk_4x_o    <= eprt_clk160     when (clock_source_i='1') else dskw_clk160;
+    clk_4x_90_o <= eprt_clk160_90  when (clock_source_i='1') else dskw_clk160_90;
+
+    mmcms_locked_o <= dskw_mmcm_locked and eprt_mmcm_locked;
+    dskw_mmcm_locked_o <= dskw_mmcm_locked;
+    eprt_mmcm_locked_o <= eprt_mmcm_locked;
 
 end Behavioral;
 

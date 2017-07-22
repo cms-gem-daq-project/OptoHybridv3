@@ -1,7 +1,7 @@
 ##############################################################
 #
 # Xilinx Core Generator version 14.7
-# Date: Tue Nov 15 08:42:33 2016
+# Date: Sat Jul 22 22:36:23 2017
 #
 ##############################################################
 #
@@ -41,13 +41,13 @@ SELECT Clocking_Wizard xilinx.com:ip:clk_wiz:3.6
 # BEGIN Parameters
 CSET calc_done=DONE
 CSET clk_in_sel_port=CLK_IN_SEL
-CSET clk_out1_port=qpll_clk_o
+CSET clk_out1_port=clk40_o
 CSET clk_out1_use_fine_ps_gui=false
-CSET clk_out2_port=clk_1x_o
+CSET clk_out2_port=clk80_o
 CSET clk_out2_use_fine_ps_gui=false
-CSET clk_out3_port=clk_2x_o
+CSET clk_out3_port=clk160_o
 CSET clk_out3_use_fine_ps_gui=false
-CSET clk_out4_port=clk_4x_o
+CSET clk_out4_port=clk160_90_o
 CSET clk_out4_use_fine_ps_gui=false
 CSET clk_out5_port=CLK_OUT5
 CSET clk_out5_use_fine_ps_gui=false
@@ -64,29 +64,29 @@ CSET clkfb_out_n_port=CLKFB_OUT_N
 CSET clkfb_out_p_port=CLKFB_OUT_P
 CSET clkfb_out_port=CLKFB_OUT
 CSET clkfb_stopped_port=CLKFB_STOPPED
-CSET clkin1_jitter_ps=250.0
+CSET clkin1_jitter_ps=125.0
 CSET clkin1_ui_jitter=0.010
 CSET clkin2_jitter_ps=100.0
 CSET clkin2_ui_jitter=0.010
 CSET clkout1_drives=BUFG
 CSET clkout1_requested_duty_cycle=50.000
-CSET clkout1_requested_out_freq=40.000
+CSET clkout1_requested_out_freq=40
 CSET clkout1_requested_phase=0.000
 CSET clkout2_drives=BUFG
 CSET clkout2_requested_duty_cycle=50.000
-CSET clkout2_requested_out_freq=40.000
+CSET clkout2_requested_out_freq=80
 CSET clkout2_requested_phase=0.000
-CSET clkout2_used=false
+CSET clkout2_used=true
 CSET clkout3_drives=BUFG
 CSET clkout3_requested_duty_cycle=50.000
-CSET clkout3_requested_out_freq=80.000
+CSET clkout3_requested_out_freq=160
 CSET clkout3_requested_phase=0.000
-CSET clkout3_used=false
+CSET clkout3_used=true
 CSET clkout4_drives=BUFG
 CSET clkout4_requested_duty_cycle=50.000
-CSET clkout4_requested_out_freq=160.000
-CSET clkout4_requested_phase=0.000
-CSET clkout4_used=false
+CSET clkout4_requested_out_freq=160
+CSET clkout4_requested_phase=90
+CSET clkout4_used=true
 CSET clkout5_drives=BUFG
 CSET clkout5_requested_duty_cycle=50.000
 CSET clkout5_requested_out_freq=100.000
@@ -103,7 +103,7 @@ CSET clkout7_requested_out_freq=100.000
 CSET clkout7_requested_phase=0.000
 CSET clkout7_used=false
 CSET clock_mgr_type=MANUAL
-CSET component_name=qpll_pll
+CSET component_name=eprt_clk_gen
 CSET daddr_port=DADDR
 CSET dclk_port=DCLK
 CSET dcm_clk_feedback=1X
@@ -145,29 +145,29 @@ CSET in_freq_units=Units_MHz
 CSET in_jitter_units=Units_UI
 CSET input_clk_stopped_port=INPUT_CLK_STOPPED
 CSET jitter_options=UI
-CSET jitter_sel=No_Jitter
-CSET locked_port=qpll_locked_o
+CSET jitter_sel=Min_O_Jitter
+CSET locked_port=locked_o
 CSET mmcm_bandwidth=OPTIMIZED
-CSET mmcm_clkfbout_mult_f=25.000
+CSET mmcm_clkfbout_mult_f=14.000
 CSET mmcm_clkfbout_phase=0.000
 CSET mmcm_clkfbout_use_fine_ps=false
-CSET mmcm_clkin1_period=25.000
+CSET mmcm_clkin1_period=12.500
 CSET mmcm_clkin2_period=10.0
-CSET mmcm_clkout0_divide_f=25.000
+CSET mmcm_clkout0_divide_f=28.000
 CSET mmcm_clkout0_duty_cycle=0.500
 CSET mmcm_clkout0_phase=0.000
 CSET mmcm_clkout0_use_fine_ps=false
-CSET mmcm_clkout1_divide=24
+CSET mmcm_clkout1_divide=14
 CSET mmcm_clkout1_duty_cycle=0.500
 CSET mmcm_clkout1_phase=0.000
 CSET mmcm_clkout1_use_fine_ps=false
-CSET mmcm_clkout2_divide=12
+CSET mmcm_clkout2_divide=7
 CSET mmcm_clkout2_duty_cycle=0.500
 CSET mmcm_clkout2_phase=0.000
 CSET mmcm_clkout2_use_fine_ps=false
-CSET mmcm_clkout3_divide=6
+CSET mmcm_clkout3_divide=7
 CSET mmcm_clkout3_duty_cycle=0.500
-CSET mmcm_clkout3_phase=0.000
+CSET mmcm_clkout3_phase=90.000
 CSET mmcm_clkout3_use_fine_ps=false
 CSET mmcm_clkout4_cascade=false
 CSET mmcm_clkout4_divide=1
@@ -189,13 +189,13 @@ CSET mmcm_notes=None
 CSET mmcm_ref_jitter1=0.010
 CSET mmcm_ref_jitter2=0.010
 CSET mmcm_startup_wait=false
-CSET num_out_clks=1
+CSET num_out_clks=4
 CSET override_dcm=false
 CSET override_dcm_clkgen=false
 CSET override_mmcm=false
 CSET override_pll=false
-CSET platform=nt64
-CSET pll_bandwidth=OPTIMIZED
+CSET platform=lin64
+CSET pll_bandwidth=HIGH
 CSET pll_clk_feedback=CLKFBOUT
 CSET pll_clkfbout_mult=4
 CSET pll_clkfbout_phase=0.000
@@ -223,10 +223,10 @@ CSET pll_divclk_divide=1
 CSET pll_notes=None
 CSET pll_ref_jitter=0.010
 CSET power_down_port=POWER_DOWN
-CSET prim_in_freq=40.000
+CSET prim_in_freq=80.000
 CSET prim_in_jitter=0.010
-CSET prim_source=Differential_clock_capable_pin
-CSET primary_port=qpll_i
+CSET prim_source=Single_ended_clock_capable_pin
+CSET primary_port=clk80_i
 CSET primitive=MMCM
 CSET primtype_sel=MMCM_ADV
 CSET psclk_port=PSCLK
@@ -266,4 +266,4 @@ CSET use_status=false
 MISC pkg_timestamp=2012-05-10T12:44:55Z
 # END Extra information
 GENERATE
-# CRC: 3c5bd533
+# CRC: 6849b1b4

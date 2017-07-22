@@ -5,6 +5,8 @@ module led_control (
   input gbt_rxready,
   input gbt_rxvalid,
 
+  input reset,
+
   input [7:0] cluster_count,
 
   output reg [15:0] led_out
@@ -74,7 +76,7 @@ module led_control (
     .clk_i           (clock),
     .reset_i         (reset),
     .increment_i     (cluster_count),
-    .rate_o          (open),
+    .rate_o          (),
     .progress_bar_o  (progress_bar)
   );
 

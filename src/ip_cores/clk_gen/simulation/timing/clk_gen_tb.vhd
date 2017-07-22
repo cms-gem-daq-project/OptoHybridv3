@@ -98,16 +98,16 @@ architecture test of clk_gen_tb is
   signal CLK_OUT : std_logic_vector(4 downto 1);
 --Freq Check using the M & D values setting and actual Frequency generated
   signal period1 : time := 0 ps;
-constant  ref_period1_clkin1 : time := (25.000*1*24.000/24.000)*1000 ps;
+constant  ref_period1_clkin1 : time := (25.000*1*28.000/28.000)*1000 ps;
    signal prev_rise1 : time := 0 ps;
   signal period2 : time := 0 ps;
-constant  ref_period2_clkin1 : time := (25.000*1*12/24.000)*1000 ps;
+constant  ref_period2_clkin1 : time := (25.000*1*14/28.000)*1000 ps;
    signal prev_rise2 : time := 0 ps;
   signal period3 : time := 0 ps;
-constant  ref_period3_clkin1 : time := (25.000*1*6/24.000)*1000 ps;
+constant  ref_period3_clkin1 : time := (25.000*1*7/28.000)*1000 ps;
    signal prev_rise3 : time := 0 ps;
   signal period4 : time := 0 ps;
-constant  ref_period4_clkin1 : time := (25.000*1*6/24.000)*1000 ps;
+constant  ref_period4_clkin1 : time := (25.000*1*7/28.000)*1000 ps;
    signal prev_rise4 : time := 0 ps;
 
 component clk_gen_exdes

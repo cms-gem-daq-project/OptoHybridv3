@@ -55,10 +55,10 @@
 -- "Output    Output      Phase     Duty      Pk-to-Pk        Phase"
 -- "Clock    Freq (MHz) (degrees) Cycle (%) Jitter (ps)  Error (ps)"
 ------------------------------------------------------------------------------
--- CLK_OUT1____40.000______0.000______50.0______247.096____196.976
--- CLK_OUT2____80.000______0.000______50.0______200.412____196.976
--- CLK_OUT3___160.000______0.000______50.0______169.112____196.976
--- CLK_OUT4___160.000_____90.000______50.0______169.112____196.976
+-- CLK_OUT1____40.000______0.000______50.0______211.217____176.321
+-- CLK_OUT2____80.000______0.000______50.0______174.099____176.321
+-- CLK_OUT3___160.000______0.000______50.0______150.623____176.321
+-- CLK_OUT4___160.000_____90.000______50.0______150.623____176.321
 --
 ------------------------------------------------------------------------------
 -- "Input Clock   Freq (MHz)    Input Jitter (UI)"
@@ -77,12 +77,12 @@ use unisim.vcomponents.all;
 entity clk_gen is
 port
  (-- Clock in ports
-  clk_i           : in     std_logic;
+  clk40_i           : in     std_logic;
   -- Clock out ports
-  clk_1x_o          : out    std_logic;
-  clk_2x_o          : out    std_logic;
-  clk_4x_o          : out    std_logic;
-  clk_4x_90_o          : out    std_logic;
+  clk40_o          : out    std_logic;
+  clk80_o          : out    std_logic;
+  clk160_o          : out    std_logic;
+  clk160_90_o          : out    std_logic;
   -- Status and control signals
   locked_o            : out    std_logic
  );
@@ -90,7 +90,7 @@ end clk_gen;
 
 architecture xilinx of clk_gen is
   attribute CORE_GENERATION_INFO : string;
-  attribute CORE_GENERATION_INFO of xilinx : architecture is "clk_gen,clk_wiz_v3_6,{component_name=clk_gen,use_phase_alignment=true,use_min_o_jitter=false,use_max_i_jitter=false,use_dyn_phase_shift=false,use_inclk_switchover=false,use_dyn_reconfig=false,feedback_source=FDBK_AUTO,primtype_sel=MMCM_ADV,num_out_clk=4,clkin1_period=25.000,clkin2_period=10.0,use_power_down=false,use_reset=false,use_locked=true,use_inclk_stopped=false,use_status=false,use_freeze=false,use_clk_valid=false,feedback_type=SINGLE,clock_mgr_type=MANUAL,manual_override=false}";
+  attribute CORE_GENERATION_INFO of xilinx : architecture is "clk_gen,clk_wiz_v3_6,{component_name=clk_gen,use_phase_alignment=true,use_min_o_jitter=true,use_max_i_jitter=false,use_dyn_phase_shift=false,use_inclk_switchover=false,use_dyn_reconfig=false,feedback_source=FDBK_AUTO,primtype_sel=MMCM_ADV,num_out_clk=4,clkin1_period=25.000,clkin2_period=10.0,use_power_down=false,use_reset=false,use_locked=true,use_inclk_stopped=false,use_status=false,use_freeze=false,use_clk_valid=false,feedback_type=SINGLE,clock_mgr_type=MANUAL,manual_override=false}";
   -- Input clock buffering / unused connectors
   signal clkin1      : std_logic;
   -- Output clock buffering / unused connectors
@@ -124,7 +124,7 @@ begin
   clkin1_buf : BUFG
   port map
    (O => clkin1,
-    I => clk_i);
+    I => clk40_i);
 
 
   -- Clocking primitive
@@ -140,22 +140,22 @@ begin
     COMPENSATION         => "ZHOLD",
     STARTUP_WAIT         => FALSE,
     DIVCLK_DIVIDE        => 1,
-    CLKFBOUT_MULT_F      => 24.000,
+    CLKFBOUT_MULT_F      => 28.000,
     CLKFBOUT_PHASE       => 0.000,
     CLKFBOUT_USE_FINE_PS => FALSE,
-    CLKOUT0_DIVIDE_F     => 24.000,
+    CLKOUT0_DIVIDE_F     => 28.000,
     CLKOUT0_PHASE        => 0.000,
     CLKOUT0_DUTY_CYCLE   => 0.500,
     CLKOUT0_USE_FINE_PS  => FALSE,
-    CLKOUT1_DIVIDE       => 12,
+    CLKOUT1_DIVIDE       => 14,
     CLKOUT1_PHASE        => 0.000,
     CLKOUT1_DUTY_CYCLE   => 0.500,
     CLKOUT1_USE_FINE_PS  => FALSE,
-    CLKOUT2_DIVIDE       => 6,
+    CLKOUT2_DIVIDE       => 7,
     CLKOUT2_PHASE        => 0.000,
     CLKOUT2_DUTY_CYCLE   => 0.500,
     CLKOUT2_USE_FINE_PS  => FALSE,
-    CLKOUT3_DIVIDE       => 6,
+    CLKOUT3_DIVIDE       => 7,
     CLKOUT3_PHASE        => 90.000,
     CLKOUT3_DUTY_CYCLE   => 0.500,
     CLKOUT3_USE_FINE_PS  => FALSE,
@@ -212,24 +212,24 @@ begin
 
   clkout1_buf : BUFG
   port map
-   (O   => clk_1x_o,
+   (O   => clk40_o,
     I   => clkout0);
 
 
 
   clkout2_buf : BUFG
   port map
-   (O   => clk_2x_o,
+   (O   => clk80_o,
     I   => clkout1);
 
   clkout3_buf : BUFG
   port map
-   (O   => clk_4x_o,
+   (O   => clk160_o,
     I   => clkout2);
 
   clkout4_buf : BUFG
   port map
-   (O   => clk_4x_90_o,
+   (O   => clk160_90_o,
     I   => clkout3);
 
 end xilinx;

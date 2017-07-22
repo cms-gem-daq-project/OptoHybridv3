@@ -1,10 +1,10 @@
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Company: TAMU
 -- Engineer: Evaldas Juska (evaldas.juska@cern.ch, evka85@gmail.com)
--- 
+--
 -- Create Date:    15:04 2016-05-10
 -- Module Name:    rate_counter
--- Description:    this module counts the rate in Hz of a given signal  
+-- Description:    this module counts the rate in Hz of a given signal
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -31,12 +31,12 @@ entity rate_counter is
 end rate_counter;
 
 architecture rate_counter_arch of rate_counter is
-    
+
     constant max_count  : unsigned(g_COUNTER_WIDTH - 1 downto 0) := (others => '1');
     signal count        : unsigned(g_COUNTER_WIDTH - 1 downto 0) := (others => '0');
-    signal increment    : std_logic_vector(g_COUNTER_WIDTH - 1 downto 0) := (others => '0');
+    signal increment    : std_logic_vector(g_INCREMENTER_WIDTH - 1 downto 0) := (others => '0');
     signal timer        : unsigned(31 downto 0);
-    
+
 begin
 
     increment(g_INCREMENTER_WIDTH - 1 downto 0) <= increment_i;
@@ -67,6 +67,6 @@ begin
             end if;
         end if;
     end process;
-    
+
 
 end rate_counter_arch;
