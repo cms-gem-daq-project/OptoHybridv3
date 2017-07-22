@@ -98,19 +98,13 @@ begin
 
     reg_data(0) <= RELEASE_YEAR & RELEASE_MONTH & RELEASE_DAY;
 
-    reg_data(1) <= (0 => mmcm_locked_i, others => '0');
-
+    reg_data(1) <= (0 => mmcm_locked_i    , others => '0');
     reg_data(2) <= (0 => gbt_clk_source_i , others => '0');
-
-    reg_data(4) <= (0 => sem_critical_i, others => '0');
-
-    reg_data(4) <= (0 => gbt_rxready, others => '0');
-
-    reg_data(5) <= (0 => gbt_rxvalid, others => '0');
-
-    reg_data(6) <= (0 => gbt_txready, others => '0');
-
-    reg_data(7) <= (0 => gbt_txvalid, others => '0');
+    reg_data(4) <= (0 => sem_critical_i   , others => '0');
+    reg_data(4) <= (0 => gbt_rxready      , others => '0');
+    reg_data(5) <= (0 => gbt_rxvalid      , others => '0');
+    reg_data(6) <= (0 => gbt_txready      , others => '0');
+    reg_data(7) <= (0 => gbt_txvalid      , others => '0');
 
 end Behavioral;
 

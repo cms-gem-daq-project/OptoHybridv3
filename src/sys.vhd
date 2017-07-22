@@ -1,10 +1,10 @@
 ----------------------------------------------------------------------------------
 -- Company:        IIHE - ULB
 -- Engineer:       Thomas Lenzi (thomas.lenzi@cern.ch)
--- 
--- Create Date:    08:44:34 08/18/2015 
+--
+-- Create Date:    08:44:34 08/18/2015
 -- Design Name:    OptoHybrid v2
--- Module Name:    sys - Behavioral 
+-- Module Name:    sys - Behavioral
 -- Project Name:   OptoHybrid v2
 -- Target Devices: xc6vlx130t-1ff1156
 -- Tool versions:  ISE  P.20131013
@@ -33,35 +33,30 @@ port(
 
     ref_clk_i           : in std_logic;
     reset_i             : in std_logic;
-    
+
     -- Wishbone slave
     wb_slv_req_i        : in wb_req_t;
     wb_slv_res_o        : out wb_res_t;
-    
+
     --
-    vfat2_tk_mask_o     : out std_logic_vector(23 downto 0);
-    vfat2_t1_sel_o      : out std_logic_vector(2 downto 0);
-    sys_loop_sbit_o     : out std_logic_vector(4 downto 0);
-    vfat2_reset_o       : out std_logic;
-    vfat2_sbit_mask_o   : out std_logic_vector(23 downto 0);
     sys_sbit_sel_o      : out std_logic_vector(29 downto 0);
-    trigger_lim_o       : out std_logic_vector(31 downto 0);
-    zero_suppress_o     : out std_logic;
-    sys_sbit_mode_o     : out std_logic_vector(1 downto 0);
-    clk_source_o        : out std_logic;
-    remove_bad_crc_o    : out std_logic
-    
+    sys_loop_sbit_o     : out std_logic_vector(4 downto 0);
+    sys_sbit_mode_o     : out std_logic_vector (1 downto 0);
+
+    vfat_reset_o       : out std_logic;
+    vfat_sbit_mask_o   : out std_logic_vector(23 downto 0)
+
 );
 end sys;
 
 architecture Behavioral of sys is
-    
+
     -- Signals from the Wishbone Hub
     signal wb_stb       : std_logic_vector((N - 1) downto 0);
     signal wb_we        : std_logic;
     signal wb_addr      : std_logic_vector(31 downto 0);
     signal wb_data      : std_logic_vector(31 downto 0);
-    
+
     -- Signals for the registers
     signal reg_ack      : std_logic_vector((N - 1) downto 0);
     signal reg_err      : std_logic_vector((N - 1) downto 0);
@@ -91,7 +86,7 @@ begin
         err_i       => reg_err,
         data_i      => reg_data
     );
-    
+
     --===============--
     --== Registers ==--
     --===============--
@@ -110,32 +105,21 @@ begin
         err_o       => reg_err,
         data_o      => reg_data
     );
-    
+
     --=============--
     --== Mapping ==--
     --=============--
-    
-    vfat2_tk_mask_o <= reg_data(0)(23 downto 0);
-    
-    vfat2_t1_sel_o <= reg_data(1)(2 downto 0);
-    
-    sys_loop_sbit_o <= reg_data(2)(4 downto 0);
-    
-    vfat2_reset_o <= wb_stb(3) and wb_we;    
 
-    vfat2_sbit_mask_o <= reg_data(4)(23 downto 0);
-    
-    sys_sbit_sel_o <= reg_data(5)(29 downto 0);    
-    
-    trigger_lim_o <= reg_data(6);
-    
-    zero_suppress_o <= reg_data(7)(0);
-    
+
+    sys_loop_sbit_o <= reg_data(2)(4 downto 0);
+
+    vfat_reset_o <= wb_stb(3) and wb_we;
+
+    vfat_sbit_mask_o <= reg_data(4)(23 downto 0);
+
+    sys_sbit_sel_o <= reg_data(5)(29 downto 0);
+
     sys_sbit_mode_o <= reg_data(8)(1 downto 0);
-    
-    clk_source_o <= reg_data(9)(0);
-    
-    remove_bad_crc_o <= reg_data(10)(0);
 
 end Behavioral;
 

@@ -1,5 +1,15 @@
+----------------------------------------------------------------------------------
+-- CMS Muon Endcap
+-- GEM Collaboration
+-- Optohybrid v3 Firmware -- GBT SerDes
+-- 2017/07/24 -- Conversion to 16 bit (2 elinks only)
+-- 2017/07/24 -- Addition of flip-flop synchronization stages for X-domain transit
+----------------------------------------------------------------------------------
+
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
 
 library unisim;
 use unisim.vcomponents.all;
@@ -11,129 +21,78 @@ generic(
     DEBUG : boolean := FALSE
 );
 port(
+    -- reset
+    sync_reset_i     : in std_logic;
 
-   sync_reset_i     : in std_logic;
-   
-   to_gbt_p         : out std_logic_vector(3 downto 0);
-   to_gbt_n         : out std_logic_vector(3 downto 0);
-   
-   from_gbt_p       : in std_logic_vector(1 downto 0);
-   from_gbt_n       : in std_logic_vector(1 downto 0);
-   
-   data_clk_p       : in std_logic;
-   data_clk_n       : in std_logic;
-   
-   gbt_ttc_clk_p    : in std_logic;
-   gbt_ttc_clk_n    : in std_logic;
-   
-   gbt_clk_o        : out std_logic;
-   
-   data_i           : in std_logic_vector(31 downto 0);
-   data_o           : out std_logic_vector(15 downto 0);
-   valid_o          : out std_logic;
-   
-   header_io        : out std_logic_vector(15 downto 0)
-   
+    -- input clocks
+    data_clk_i       : in std_logic;
+    frame_clk_i      : in std_logic;
+    clock            : in std_logic;
+
+    -- serial data
+    elink_o_p        : out std_logic_vector(1 downto 0);
+    elink_o_n        : out std_logic_vector(1 downto 0);
+
+    elink_i_p        : in  std_logic_vector(1 downto 0);
+    elink_i_n        : in  std_logic_vector(1 downto 0);
+
+    -- parallel data
+    data_i           : in std_logic_vector (15 downto 0);
+    data_o           : out std_logic_vector(15 downto 0);
+    valid_o          : out std_logic
 );
 end gbt;
 
 architecture Behavioral of gbt is
-    
+
     signal from_gbt_raw     : std_logic_vector(15 downto 0) := (others => '0');
     signal from_gbt         : std_logic_vector(15 downto 0) := (others => '0');
-    
-    signal to_gbt           : std_logic_vector(31 downto 0) := (others => '0');
-    signal to_gbt_raw       : std_logic_vector(31 downto 0) := (others => '0');
-    
-    signal data_clk_tmp     : std_logic := '0';
-    signal fabric_clk_tmp   : std_logic := '0';
-    signal data_clk_inv     : std_logic := '0';
-    signal fabric_clk_inv   : std_logic := '0';
-    signal data_clk         : std_logic := '0';
-    signal fabric_clk       : std_logic := '0';
+
+    signal to_gbt           : std_logic_vector(15 downto 0) := (others => '0');
+    signal to_gbt_raw       : std_logic_vector(15 downto 0) := (others => '0');
+
     signal io_reset         : std_logic := '0';
-    
+
+    signal from_gbt_s1      : std_logic_vector(15 downto 0) := (others => '0');
+    signal from_gbt_s2      : std_logic_vector(15 downto 0) := (others => '0');
+
+    signal   to_gbt_s1      : std_logic_vector(15 downto 0) := (others => '0');
+    signal   to_gbt_s2      : std_logic_vector(15 downto 0) := (others => '0');
+
+    signal data_clk_inv : std_logic;
+
 begin
 
-    --================--
-    --==   Wiring   ==--
-    --================--
-    
-    gbt_clk_o <= fabric_clk;
-    data_o <= from_gbt;
-    to_gbt <= data_i;
+    data_clk_inv <= not data_clk_i;
 
     --================--
     --==    RESET   ==--
     --================--
-    
-    -- power-on reset - this must be a fabric_clk synchronous pulse of a minimum of 2 and max 32 clock cycles (ISERDES spec)
-    process(fabric_clk)
-        variable countdown : integer := 400_000; -- 10ms - probably way too long, but ok for now
-        variable pulse_length : integer := 5;
+
+    -- power-on reset - this must be a clock synchronous pulse of a minimum of 2 and max 32 clock cycles (ISERDES spec)
+
+    process(clock)
+        variable countdown    : integer := 400_000; -- 10ms - probably way too long, but ok for now
+        variable pulse_length : unsigned (2 downto 0) := to_unsigned(5,3);
     begin
-        if (falling_edge(fabric_clk)) then
+        if (falling_edge(clock)) then
             if (countdown > 0) then
               io_reset <= '0';
               countdown := countdown - 1;
             else
                 if (sync_reset_i = '1') then
-                    pulse_length := 5;
+                    pulse_length := to_unsigned(5,3);
                 end if;
-                
+
                 if (pulse_length > 0) then
                     io_reset <= '1';
-                    pulse_length := pulse_length - 1;
+                    pulse_length := pulse_length - to_unsigned(1,3);
                 else
                     io_reset <= '0';
                 end if;
             end if;
         end if;
-    end process; 
-
-    --=====================--
-    --==   I/O Buffers   ==--
-    --=====================--
-    
-    --------- GBT TTC clock ---------
-    
-    i_ibufgds_clk_gbt_ttc : IBUFGDS
-    generic map(
-        iostandard      => "lvds_25"
-    )
-    port map(
-        I   => gbt_ttc_clk_p,
-        IB  => gbt_ttc_clk_n,
-        O   => fabric_clk_tmp
-    );
-    
-    i_bufg_clk_gbt_ttc : BUFG
-    port map(
-        I   => fabric_clk_tmp,
-        O   => fabric_clk_inv
-    );
-
-    fabric_clk <= not fabric_clk_inv;
-
-    --------- GBT elink clock ---------
-
-    i_ibufgds_clk_gbt_data : IBUFGDS
-    generic map(
-        iostandard      => "lvds_25"
-    )
-    port map(
-        I   => data_clk_p,
-        IB  => data_clk_n,
-        O   => data_clk_tmp
-    );
-    
-    i_bufg_clk_gbt_data : BUFG
-    port map(
-        I   => data_clk_tmp,
-        O   => data_clk_inv
-    );
-
-    data_clk <= not data_clk_inv;
+    end process;
 
     --================--
     --== INPUT DATA ==--
@@ -142,53 +101,73 @@ begin
     -- Input deserializer
     i_from_gbt_des : entity work.from_gbt_des
     port map(
-        data_in_from_pins_p => from_gbt_p,
-        data_in_from_pins_n => from_gbt_n,
+        data_in_from_pins_p => elink_i_p,
+        data_in_from_pins_n => elink_i_n,
         data_in_to_device   => from_gbt_raw,
         bitslip             => '0',
-        clk_in              => data_clk,
-        clk_div_in          => fabric_clk,
+        clk_in              => data_clk_i,
+        clk_div_in          => frame_clk_i,
         io_reset            => io_reset
-    );    
-    
-    from_gbt <= not from_gbt_raw(1) & not from_gbt_raw(3) & not from_gbt_raw(5) & not from_gbt_raw(7) &
-                not from_gbt_raw(9) & not from_gbt_raw(11) & not from_gbt_raw(13) & not from_gbt_raw(15) &
-                not from_gbt_raw(0) & not from_gbt_raw(2) & not from_gbt_raw(4) & not from_gbt_raw(6) &
-                not from_gbt_raw(8) & not from_gbt_raw(10) & not from_gbt_raw(12) & not from_gbt_raw(14);
-        
+    );
+
+    -- remap to account for how the Xilinx IPcore assigns the output pins
+    from_gbt <= not from_gbt_raw(1) & not from_gbt_raw(3) & not from_gbt_raw(5) & not from_gbt_raw(7) & not from_gbt_raw(9) & not from_gbt_raw(11) & not from_gbt_raw(13) & not from_gbt_raw(15)  &
+                not from_gbt_raw(0) & not from_gbt_raw(2) & not from_gbt_raw(4) & not from_gbt_raw(6) & not from_gbt_raw(8) & not from_gbt_raw(10) & not from_gbt_raw(12) & not from_gbt_raw(14);
+
     --=================--
     --== OUTPUT DATA ==--
     --=================--
 
     -- Bitslip and format the output to serializer
     -- Static bitslip count = 3
+
     i_gbt_tx_bitslip : entity work.gbt_tx_bitslip
     port map(
-        fabric_clk  => fabric_clk,
+        fabric_clk  => frame_clk_i,
         reset       => io_reset,
         bitslip_cnt => 7,
-        din         => to_gbt,
+        din         => to_gbt, -- 16 bit data input, synchronized to frame-clock
         dout        => to_gbt_raw
-    );  
+    );
 
     -- Output serializer
     i_to_gbt_ser : entity work.to_gbt_ser
     port map(
         data_out_from_device    => to_gbt_raw,
-        data_out_to_pins_p      => to_gbt_p,
-        data_out_to_pins_n      => to_gbt_n,
+        data_out_to_pins_p      => elink_o_p,
+        data_out_to_pins_n      => elink_o_n,
         clk_in                  => data_clk_inv,
-        clk_div_in              => fabric_clk,
+        clk_div_in              => frame_clk_i,
         io_reset                => io_reset
-    ); 
-        
+    );
+
     valid_o <= not io_reset;
-    
-    --===========--
-    --== OTHER ==--
-    --===========--
-    
-    header_io <= from_gbt(15 downto 0);
+
+    --=====================--
+    --== DOMAIN CROSSING ==--
+    --=====================--
+
+    -- transition data from sampling clock to fabric clock
+    -- and vice versa
+
+    process(clock)
+    begin
+        if (rising_edge(clock)) then
+            from_gbt_s1 <= from_gbt;
+            from_gbt_s2 <= from_gbt_s1;
+        end if;
+    end process;
+
+    process(frame_clk_i)
+    begin
+        if (rising_edge(frame_clk_i)) then
+            to_gbt_s1 <= data_i;
+            to_gbt_s2 <= to_gbt_s1;
+        end if;
+    end process;
+
+
+    data_o <= from_gbt_s2; -- synchronized from "from_gbt"
+    to_gbt <= to_gbt_s2; -- synchronized from data_i
 
 end Behavioral;
-

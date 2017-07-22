@@ -40,13 +40,16 @@ port(
 
     --== Miscellaneous ==--
 
-    elink_i : in std_logic_vector (1 downto 0) ;
-    elink_o : in std_logic_vector (1 downto 0) ;
+    elink_i_p : in  std_logic_vector (1 downto 0) ;
+    elink_i_n : in  std_logic_vector (1 downto 0) ;
 
-    sca_io  : inout  std_logic_vector (3 downto 0);
+    elink_o_p : out std_logic_vector (1 downto 0) ;
+    elink_o_n : out std_logic_vector (1 downto 0) ;
 
-    hdmi_p  : inout std_logic_vector (3 downto 0);
-    hdmi_n  : inout std_logic_vector (3 downto 0);
+    sca_io  : in  std_logic_vector (3 downto 0); -- set as input for now
+
+    hdmi_p  : in  std_logic_vector (3 downto 0); -- set as input for now
+    hdmi_n  : in  std_logic_vector (3 downto 0); -- set as input for now
 
     led_o   : out std_logic_vector (15 downto 0);
 
@@ -63,11 +66,11 @@ port(
 
     --== GTX ==--
 
-    mgt_clk_p_i             : in std_logic;
-    mgt_clk_n_i             : in std_logic;
+    mgt_clk_p_i : in std_logic;
+    mgt_clk_n_i : in std_logic;
 
-    mgt_tx_p_o              : out std_logic_vector(3 downto 0);
-    mgt_tx_n_o              : out std_logic_vector(3 downto 0);
+    mgt_tx_p_o  : out std_logic_vector(3 downto 0);
+    mgt_tx_n_o  : out std_logic_vector(3 downto 0);
 
     --== VFAT2s Data ==--
 
@@ -177,36 +180,58 @@ architecture Behavioral of optohybrid_top is
     --== SBit cluster packer ==--
 
     signal sbit_overflow : std_logic;
-    signal sbit_mask     : std_logic_vector     (23 downto 0);
-    signal sbit_clusters : sbit_cluster_array_t (7  downto 0);
     signal cluster_count : std_logic_vector     (7  downto 0);
-    signal trigger_units : trigger_unit_array_t (23 downto 0);
 
     --== Global signals ==--
 
-    signal mmcms_locked          : std_logic;
+    signal mmcms_locked : std_logic;
 
-    signal clock                : std_logic;
-    signal gbt_eclk             : std_logic;
+    signal clock        : std_logic;
 
-    signal clk_1x               : std_logic;
-    signal clk_2x               : std_logic;
-    signal clk_4x               : std_logic;
-    signal clk_4x_90            : std_logic;
+    signal gbt_clk1x    : std_logic;
+    signal gbt_clk8x    : std_logic;
 
-    signal mgt_refclk           : std_logic;
-    signal reset                : std_logic;
+    signal clk_1x       : std_logic;
+    signal clk_2x       : std_logic;
+    signal clk_4x       : std_logic;
+    signal clk_4x_90    : std_logic;
 
-    signal clock_source         : std_logic;
+    signal mgt_refclk   : std_logic;
+    signal reset        : std_logic;
+
+    signal clock_source : std_logic;
+
+    signal ttc_resync   : std_logic;
+    signal ttc_l1a      : std_logic;
+    signal ttc_bc0      : std_logic;
+
+    --== Wishbone signals ==--
+
+    signal wb_m_req : wb_req_array_t((WB_MASTERS - 1) downto 0);
+    signal wb_m_res : wb_res_array_t((WB_MASTERS - 1) downto 0);
+    signal wb_s_req : wb_req_array_t((WB_SLAVES - 1) downto 0);
+    signal wb_s_res : wb_res_array_t((WB_SLAVES - 1) downto 0);
+
+
+    --== Configuration ==--
+
+    signal sys_loop_sbit  : std_logic_vector(4 downto 0);
+    signal vfat_reset     : std_logic;
+    signal sbit_mask      : std_logic_vector(23 downto 0);
+    signal sys_sbit_sel   : std_logic_vector(29 downto 0);
+    signal sys_sbit_mode  : std_logic_vector(1 downto 0);
+
+    signal sem_correction : std_logic;
+    signal sem_critical   : std_logic;
+
+
+
 
 begin
-
-    clock_source <= '1'; -- 0=select dskw clock, 1=select eport clock
 
     reset       <= '0';
     gbt_txvalid <= '1';
     ext_reset   <= (others => reset);
-    sbit_mask   <= (others => '0');
     clock       <= clk_1x;
 
     --==============--
@@ -216,63 +241,132 @@ begin
     clocking_inst : entity work.clocking
     port map(
 
-        clock_source_i     => clock_source,
+        gbt_dclk_p         => gbt_dclk_p, -- phase shiftable 40MHz ttc clocks
+        gbt_dclk_n         => gbt_dclk_n, --
 
-        gbt_eclk_p         => gbt_eclk_p,
-        gbt_eclk_n         => gbt_eclk_n,
-
-        gbt_dclk_p         => gbt_dclk_p,
-        gbt_dclk_n         => gbt_dclk_n,
+        gbt_eclk_p         => gbt_eclk_p, -- phase shiftable 40MHz ttc clocks
+        gbt_eclk_n         => gbt_eclk_n, --
 
         mmcms_locked_o     => mmcms_locked,
 
         eprt_mmcm_locked_o => open,
         dskw_mmcm_locked_o => open,
 
-        gbt_eclk_o         => gbt_eclk,
+        gbt_clk1x_o        => gbt_clk1x, -- 40  MHz e-port aligned GBT clock (DO NOT SHIFT)
+        gbt_clk8x_o        => gbt_clk8x, -- 320 MHz e-port aligned GBT clock (DO NOT SHIFT)
 
-        clk_1x_o           => clk_1x,
+        clk_1x_o           => clk_1x, -- phase shiftable logic clocks
         clk_2x_o           => clk_2x,
         clk_4x_o           => clk_4x,
         clk_4x_90_o        => clk_4x_90
     );
 
-    --=================================--
-    --== Fixed latency trigger links ==--
-    --=================================--
+    --=====================--
+    --== Wishbone switch ==--
+    --=====================--
 
-    trigger_links_inst : entity work.trigger_links
-    port map (
-        mgt_clk_p => mgt_clk_p_i, -- 160 MHz Reference Clock Positive
-        mgt_clk_n => mgt_clk_n_i, -- 160 MHz Reference Clock Negative
+    -- This module is the Wishbone switch which redirects requests from the masters to the slaves.
 
-        clk_40     => clk_1x, -- 40 MHz  Logic Clock
-        clk_80     => clk_2x, -- 80 MHz  User Clock 2
-        clk_160    => clk_4x, -- 160 MHz User Clock
+    wb_switch_inst : entity work.wb_switch
+    port map(
+        ref_clk_i   => clock,
+        reset_i     => reset,
 
-        reset      => reset,
+        wb_req_i    => wb_m_req,
+        wb_req_o    => wb_s_req,
 
-        trg_tx_p   => mgt_tx_p_o (3 downto 0),
-        trg_tx_n   => mgt_tx_n_o (3 downto 0),
-
-        cluster0   => sbit_clusters(0),
-        cluster1   => sbit_clusters(1),
-        cluster2   => sbit_clusters(2),
-        cluster3   => sbit_clusters(3),
-        cluster4   => sbit_clusters(4),
-        cluster5   => sbit_clusters(5),
-        cluster6   => sbit_clusters(6),
-        cluster7   => sbit_clusters(7),
-
-        overflow   => sbit_overflow
+        wb_res_i    => wb_s_res,
+        wb_res_o    => wb_m_res
     );
 
+    --===================--
+    --== Configuration ==--
+    --===================--
+
+    sys_inst : entity work.sys
+    port map(
+        ref_clk_i           => clock,
+        reset_i             => reset,
+
+        wb_slv_req_i        => wb_s_req(WB_SLV_SYS),
+        wb_slv_res_o        => wb_s_res(WB_SLV_SYS),
+
+      --vfat_reset_o        => vfat_reset,
+        vfat_sbit_mask_o    => sbit_mask,
+        sys_loop_sbit_o     => sys_loop_sbit,
+        sys_sbit_sel_o      => sys_sbit_sel,
+        sys_sbit_mode_o     => sys_sbit_mode
+
+        --sem_critical_i      => sem_critical
+    );
+
+    --=========--
+    --== GBT ==--
+    --=========--
+
+    gbt_controller : entity work.gbt_controller
+    port map(
+
+        -- reset
+        reset_i => reset,
+
+        -- input clocks
+
+        frame_clk_i => gbt_clk1x, -- 40 MHz frame clock
+        data_clk_i  => gbt_clk8x, -- 320 MHz sampling clock
+
+        clock_i => clock,         -- 320 MHz sampling clock
+
+        -- elinks
+        elink_i_p  =>  elink_i_p,
+        elink_i_n  =>  elink_i_n,
+
+        elink_o_p  =>  elink_o_p,
+        elink_o_n  =>  elink_o_n,
+
+        -- wishbone master
+        wb_mst_req_o    => wb_m_req(WB_MST_GBT),
+        wb_mst_res_i    => wb_m_res(WB_MST_GBT),
+
+        -- decoded TTC
+        resync_o        => ttc_resync,
+        l1a_o           => ttc_l1a,
+        bc0_o           => ttc_bc0
+
+    );
+
+
     --=========================--
-    --== SBit cluster packer ==--
+    --== Trigger Data        ==--
     --=========================--
 
-    trigger_units_inst : entity work.trigger_units
+    trigger : entity work.trigger
     port map (
+
+        -- reset
+        reset => reset,
+
+        -- clocks
+        mgt_clk_p => mgt_clk_p_i,
+        mgt_clk_n => mgt_clk_n_i,
+
+        clk_40 => clk_1x,
+        clk_80 => clk_2x,
+        clk_160 => clk_4x,
+        clk_160_90 => clk_4x_90,
+
+        -- mgt pairs
+        mgt_tx_p => mgt_tx_p_o,
+        mgt_tx_n => mgt_tx_n_o,
+
+        -- config
+        oneshot_en_i    => ('1'),
+        sbit_mask_i     => (sbit_mask),
+        cluster_count_o => cluster_count,
+        overflow_o      => sbit_overflow,
+
+        -- sbits follow
+
         vfat0_sbits_p_i  => vfat0_sbits_p_i,
         vfat0_sbits_n_i  => vfat0_sbits_n_i,
         vfat1_sbits_p_i  => vfat1_sbits_p_i,
@@ -369,37 +463,22 @@ begin
         vfat22_sof_p_i  => vfat22_sof_p_i,
         vfat22_sof_n_i  => vfat22_sof_n_i,
         vfat23_sof_p_i  => vfat23_sof_p_i,
-        vfat23_sof_n_i  => vfat23_sof_n_i,
-
-        trigger_units_o => trigger_units
-    );
-
-    sbits_inst : entity work.sbits
-    port map(
-
-        clk40_i                 => clk_1x,
-        clk160_i                => clk_4x,
-        clk160_90_i             => clk_4x_90,
-
-        reset_i                 => reset,
-        oneshot_en_i            => ('1'),
-
-        trigger_unit_i          => trigger_units,
-
-        sbit_mask_i             => (sbit_mask),
-
-        vfat_sbit_clusters_o    => sbit_clusters,
-        cluster_count_o         => cluster_count,
-        overflow_o              => sbit_overflow
+        vfat23_sof_n_i  => vfat23_sof_n_i
 
     );
+
+    --==========--
+    --== LEDS ==--
+    --==========--
 
     led_control : entity work.led_control
     port map (
-        -- clocks
+        -- reset
         reset         => reset,
-        clock         => clock,
-        gbt_eclk      => gbt_eclk,
+
+        -- clocks
+        clock         => clk_1x,
+        gbt_eclk      => gbt_clk1x,
 
         -- signals
         mmcm_locked   => mmcms_locked,
@@ -409,6 +488,24 @@ begin
 
         -- led outputs
         led_out       => led_o
+    );
+
+
+    --=========--
+    --== SEM ==--
+    --=========--
+
+    sem_mon_inst : entity work.sem_mon
+    port map(
+        clk_i               => clock,
+        heartbeat_o         => open,
+        initialization_o    => open,
+        observation_o       => open,
+        correction_o        => sem_correction,
+        classification_o    => open,
+        injection_o         => open,
+        essential_o         => open,
+        uncorrectable_o     => sem_critical
     );
 
 end Behavioral;

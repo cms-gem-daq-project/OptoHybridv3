@@ -31,12 +31,12 @@ port(
     reset_i     : in std_logic;
 
     -- Requests
-    wb_req_i    : in wb_req_array_t((WB_MASTERS - 1) downto 0); -- From masters requests
-    wb_req_o    : out wb_req_array_t((WB_SLAVES - 1) downto 0); -- To slaves requests
+    wb_req_i    : in  wb_req_array_t((WB_MASTERS - 1) downto 0); -- From masters requests
+    wb_req_o    : out wb_req_array_t((WB_SLAVES  - 1) downto 0); -- To slaves requests
 
     -- Responses
-    wb_res_i    : in wb_res_array_t((WB_SLAVES - 1) downto 0); -- From slaves responses
-    wb_res_o    : out wb_res_array_t((WB_MASTERS - 1) downto 0) -- To masters responses
+    wb_res_i    : in  wb_res_array_t((WB_SLAVES  - 1) downto 0); -- From slaves responses
+    wb_res_o    : out wb_res_array_t((WB_MASTERS - 1) downto 0)  -- To masters responses
 
 );
 end wb_switch;
