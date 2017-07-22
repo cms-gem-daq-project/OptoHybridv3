@@ -7,13 +7,13 @@ package types_pkg is
     --============--
     --== Common ==--
     --============--
-   
+
     type int_array_t is array(integer range <>) of integer;
-    
+
     type std_array_t is array(integer range <>) of std_logic;
-    
+
     type u24_array_t is array(integer range <>) of unsigned(23 downto 0);
-    
+
     type u32_array_t is array(integer range <>) of unsigned(31 downto 0);
 
     type std8_array_t is array(integer range <>) of std_logic_vector(7 downto 0);
@@ -21,19 +21,21 @@ package types_pkg is
     type std32_array_t is array(integer range <>) of std_logic_vector(31 downto 0);
 
     type std64_array_t is array(integer range <>) of std_logic_vector(63 downto 0);
-    
+
     --==================--
     --== Trigger data ==--
     --==================--
 
-    type trigger_port_t is record
+    type trigger_unit_t is record
         start_of_frame_p : std_logic;
         start_of_frame_n : std_logic;
         trig_data_p      : std_logic_vector (7 downto 0);
         trig_data_n      : std_logic_vector (7 downto 0);
     end record;
 
-    type trigger_port_array_t is array (integer range <>) of trigger_port_t;
+    subtype transmission_unit is std_logic_vector(7 downto 0);
+
+    type trigger_unit_array_t is array (integer range <>) of trigger_unit_t;
 
     subtype sbits_t is std_logic_vector(63 downto 0);
 
@@ -42,7 +44,7 @@ package types_pkg is
     subtype sbit_cluster_t is std_logic_vector(13 downto 0);
 
     type sbit_cluster_array_t is array(integer range<>) of sbit_cluster_t;
-    
+
     --===================--
     --== Tracking data ==--
     --===================--
@@ -54,13 +56,13 @@ package types_pkg is
         flags   : std_logic_vector(3 downto 0);
         chip_id : std_logic_vector(11 downto 0);
         strips  : std_logic_vector(127 downto 0);
-        crc     : std_logic_vector(15 downto 0);  
+        crc     : std_logic_vector(15 downto 0);
         crc_ok  : std_logic;
         hit     : std_logic;
     end record;
 
     type tk_data_array_t is array(integer range <>) of tk_data_t;
-        
+
     --================--
     --== T1 command ==--
     --================--
@@ -73,7 +75,7 @@ package types_pkg is
     end record;
 
     type t1_array_t is array(integer range <>) of t1_t;
-    
+
     function "or"(a : t1_t; b : t1_t) return t1_t;
 
     --==============--
@@ -88,7 +90,7 @@ package types_pkg is
     end record;
 
     type wb_req_array_t is array(integer range <>) of wb_req_t;
-    
+
 
     type wb_res_t is record
         ack     : std_logic;
@@ -100,7 +102,7 @@ package types_pkg is
 
 end types_pkg;
 
-package body types_pkg is 
+package body types_pkg is
 
     function "or"(a : t1_t; b : t1_t) return t1_t is
         variable res    : t1_t;

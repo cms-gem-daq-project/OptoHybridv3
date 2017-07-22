@@ -90,8 +90,8 @@ group clear 0 end
 
 group insert \
     {clk_gen_tb.dut.clk[1]} \
-    {clk_gen_tb.dut.clk[2]}  \     {clk_gen_tb.dut.clk[3]}  \     {clk_gen_tb.dut.clk[4]}  \  
-    {clk_gen_tb.dut.clk[5]} 
+    {clk_gen_tb.dut.clk[2]}  \     {clk_gen_tb.dut.clk[3]}  \     {clk_gen_tb.dut.clk[4]}  
+
 group using {Counters}
 group set -overlay 0
 group set -comment {}
@@ -99,8 +99,8 @@ group clear 0 end
 
 group insert \
     {clk_gen_tb.dut.counter[1]} \
-    {clk_gen_tb.dut.counter[2]}  \     {clk_gen_tb.dut.counter[3]}  \     {clk_gen_tb.dut.counter[4]}  \  
-    {clk_gen_tb.dut.counter[5]} 
+    {clk_gen_tb.dut.counter[2]}  \     {clk_gen_tb.dut.counter[3]}  \     {clk_gen_tb.dut.counter[4]}  
+
 group using {Status/control}
 group set -overlay 0
 group set -comment {}

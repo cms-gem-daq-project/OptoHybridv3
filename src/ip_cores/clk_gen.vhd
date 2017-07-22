@@ -56,10 +56,9 @@
 -- "Clock    Freq (MHz) (degrees) Cycle (%) Jitter (ps)  Error (ps)"
 ------------------------------------------------------------------------------
 -- CLK_OUT1____40.000______0.000______50.0______247.096____196.976
--- CLK_OUT2____40.000______0.000______50.0______247.096____196.976
--- CLK_OUT3____80.000______0.000______50.0______200.412____196.976
--- CLK_OUT4___160.000______0.000______50.0______169.112____196.976
--- CLK_OUT5___160.000_____90.000______50.0______169.112____196.976
+-- CLK_OUT2____80.000______0.000______50.0______200.412____196.976
+-- CLK_OUT3___160.000______0.000______50.0______169.112____196.976
+-- CLK_OUT4___160.000_____90.000______50.0______169.112____196.976
 --
 ------------------------------------------------------------------------------
 -- "Input Clock   Freq (MHz)    Input Jitter (UI)"
@@ -80,7 +79,6 @@ port
  (-- Clock in ports
   clk_i           : in     std_logic;
   -- Clock out ports
-  ref_clk_o          : out    std_logic;
   clk_1x_o          : out    std_logic;
   clk_2x_o          : out    std_logic;
   clk_4x_o          : out    std_logic;
@@ -92,7 +90,7 @@ end clk_gen;
 
 architecture xilinx of clk_gen is
   attribute CORE_GENERATION_INFO : string;
-  attribute CORE_GENERATION_INFO of xilinx : architecture is "clk_gen,clk_wiz_v3_6,{component_name=clk_gen,use_phase_alignment=true,use_min_o_jitter=false,use_max_i_jitter=false,use_dyn_phase_shift=false,use_inclk_switchover=false,use_dyn_reconfig=false,feedback_source=FDBK_AUTO,primtype_sel=MMCM_ADV,num_out_clk=5,clkin1_period=25.000,clkin2_period=10.0,use_power_down=false,use_reset=false,use_locked=true,use_inclk_stopped=false,use_status=false,use_freeze=false,use_clk_valid=false,feedback_type=SINGLE,clock_mgr_type=MANUAL,manual_override=false}";
+  attribute CORE_GENERATION_INFO of xilinx : architecture is "clk_gen,clk_wiz_v3_6,{component_name=clk_gen,use_phase_alignment=true,use_min_o_jitter=false,use_max_i_jitter=false,use_dyn_phase_shift=false,use_inclk_switchover=false,use_dyn_reconfig=false,feedback_source=FDBK_AUTO,primtype_sel=MMCM_ADV,num_out_clk=4,clkin1_period=25.000,clkin2_period=10.0,use_power_down=false,use_reset=false,use_locked=true,use_inclk_stopped=false,use_status=false,use_freeze=false,use_clk_valid=false,feedback_type=SINGLE,clock_mgr_type=MANUAL,manual_override=false}";
   -- Input clock buffering / unused connectors
   signal clkin1      : std_logic;
   -- Output clock buffering / unused connectors
@@ -107,7 +105,7 @@ architecture xilinx of clk_gen is
   signal clkout2b_unused  : std_logic;
   signal clkout3          : std_logic;
   signal clkout3b_unused  : std_logic;
-  signal clkout4          : std_logic;
+  signal clkout4_unused   : std_logic;
   signal clkout5_unused   : std_logic;
   signal clkout6_unused   : std_logic;
   -- Dynamic programming unused signals
@@ -149,22 +147,18 @@ begin
     CLKOUT0_PHASE        => 0.000,
     CLKOUT0_DUTY_CYCLE   => 0.500,
     CLKOUT0_USE_FINE_PS  => FALSE,
-    CLKOUT1_DIVIDE       => 24,
+    CLKOUT1_DIVIDE       => 12,
     CLKOUT1_PHASE        => 0.000,
     CLKOUT1_DUTY_CYCLE   => 0.500,
     CLKOUT1_USE_FINE_PS  => FALSE,
-    CLKOUT2_DIVIDE       => 12,
+    CLKOUT2_DIVIDE       => 6,
     CLKOUT2_PHASE        => 0.000,
     CLKOUT2_DUTY_CYCLE   => 0.500,
     CLKOUT2_USE_FINE_PS  => FALSE,
     CLKOUT3_DIVIDE       => 6,
-    CLKOUT3_PHASE        => 0.000,
+    CLKOUT3_PHASE        => 90.000,
     CLKOUT3_DUTY_CYCLE   => 0.500,
     CLKOUT3_USE_FINE_PS  => FALSE,
-    CLKOUT4_DIVIDE       => 6,
-    CLKOUT4_PHASE        => 90.000,
-    CLKOUT4_DUTY_CYCLE   => 0.500,
-    CLKOUT4_USE_FINE_PS  => FALSE,
     CLKIN1_PERIOD        => 25.000,
     REF_JITTER1          => 0.010)
   port map
@@ -179,7 +173,7 @@ begin
     CLKOUT2B            => clkout2b_unused,
     CLKOUT3             => clkout3,
     CLKOUT3B            => clkout3b_unused,
-    CLKOUT4             => clkout4,
+    CLKOUT4             => clkout4_unused,
     CLKOUT5             => clkout5_unused,
     CLKOUT6             => clkout6_unused,
     -- Input clock control
@@ -218,29 +212,24 @@ begin
 
   clkout1_buf : BUFG
   port map
-   (O   => ref_clk_o,
+   (O   => clk_1x_o,
     I   => clkout0);
 
 
 
   clkout2_buf : BUFG
   port map
-   (O   => clk_1x_o,
+   (O   => clk_2x_o,
     I   => clkout1);
 
   clkout3_buf : BUFG
   port map
-   (O   => clk_2x_o,
+   (O   => clk_4x_o,
     I   => clkout2);
 
   clkout4_buf : BUFG
   port map
-   (O   => clk_4x_o,
-    I   => clkout3);
-
-  clkout5_buf : BUFG
-  port map
    (O   => clk_4x_90_o,
-    I   => clkout4);
+    I   => clkout3);
 
 end xilinx;

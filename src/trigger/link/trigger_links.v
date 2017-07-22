@@ -1,6 +1,7 @@
-module trigger_links_v (
+module trigger_links (
 
-  input mgt_refclk, // 160 MHz QPLL Clock
+  input mgt_clk_p, // 160 MHz Reference Clock
+  input mgt_clk_n, // 160 MHz Reference Clock
 
   input clk_40,
   input clk_80,
@@ -21,6 +22,15 @@ module trigger_links_v (
   input [13:0] cluster7,
 
   input overflow
+);
+
+IBUFDS_GTXE1 ibufds_mgt
+(
+    .I       (mgt_clk_p_i),
+    .IB      (mgt_clk_n_i),
+    .O       (mgt_refclk),
+    .ODIV2   (),
+    .CEB     (1'b0)
 );
 
 wire [55:0] link_r = {cluster3, cluster2, cluster1, cluster0};
@@ -59,7 +69,7 @@ gem_fiber_out  gem_fibers_out   (
   .GEM_DATA            (link[igem][55:0]),
   .GEM_OVERFLOW        (overflow),
 
-  .TRG_TX_REFCLK       (mgt_refclk),          // QPLL 160 from MGT clk
+  .TRG_TX_REFCLK       (mgt_clk),             // QPLL 160 from MGT clk
   .TRG_TXUSRCLK        (usrclk),              // get 160 from TXOUTCLK (times 2)
   .TRG_CLK80           (usrclk2),             // get 80 from TXOUTCLK
   .TRG_GTXTXRST        (1'b0),                // maybe Manual "reset" only

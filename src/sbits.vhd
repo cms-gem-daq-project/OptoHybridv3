@@ -27,15 +27,15 @@ port(
     clk160_90_i             : in std_logic;
     clk40_i                 : in std_logic;
 
-    gtx_clk_i               : in std_logic;
-
     reset_i                 : in std_logic;
 
     oneshot_en_i            : in std_logic;
 
     vfat_sbit_clusters_o    : out sbit_cluster_array_t(7 downto 0);
 
-    trigger_port_i          : in trigger_port_array_t (23 downto 0);
+    sbit_mask_i        : in std_logic_vector (23 downto 0);
+
+    trigger_unit_i          : in trigger_unit_array_t (23 downto 0);
 
     overflow_o              : out std_logic
 
@@ -60,105 +60,105 @@ begin
 
     clk160_180 <= not clk160_i;
 
-    sbits_p <=  trigger_port_i(23).trig_data_p
-              & trigger_port_i(22).trig_data_p
-              & trigger_port_i(21).trig_data_p
-              & trigger_port_i(20).trig_data_p
-              & trigger_port_i(19).trig_data_p
-              & trigger_port_i(18).trig_data_p
-              & trigger_port_i(17).trig_data_p
-              & trigger_port_i(16).trig_data_p
-              & trigger_port_i(15).trig_data_p
-              & trigger_port_i(14).trig_data_p
-              & trigger_port_i(13).trig_data_p
-              & trigger_port_i(12).trig_data_p
-              & trigger_port_i(11).trig_data_p
-              & trigger_port_i(10).trig_data_p
-              &  trigger_port_i(9).trig_data_p
-              &  trigger_port_i(8).trig_data_p
-              &  trigger_port_i(7).trig_data_p
-              &  trigger_port_i(6).trig_data_p
-              &  trigger_port_i(5).trig_data_p
-              &  trigger_port_i(4).trig_data_p
-              &  trigger_port_i(3).trig_data_p
-              &  trigger_port_i(2).trig_data_p
-              &  trigger_port_i(1).trig_data_p
-              &  trigger_port_i(0).trig_data_p;
+    sbits_p <=  trigger_unit_i(23).trig_data_p
+              & trigger_unit_i(22).trig_data_p
+              & trigger_unit_i(21).trig_data_p
+              & trigger_unit_i(20).trig_data_p
+              & trigger_unit_i(19).trig_data_p
+              & trigger_unit_i(18).trig_data_p
+              & trigger_unit_i(17).trig_data_p
+              & trigger_unit_i(16).trig_data_p
+              & trigger_unit_i(15).trig_data_p
+              & trigger_unit_i(14).trig_data_p
+              & trigger_unit_i(13).trig_data_p
+              & trigger_unit_i(12).trig_data_p
+              & trigger_unit_i(11).trig_data_p
+              & trigger_unit_i(10).trig_data_p
+              &  trigger_unit_i(9).trig_data_p
+              &  trigger_unit_i(8).trig_data_p
+              &  trigger_unit_i(7).trig_data_p
+              &  trigger_unit_i(6).trig_data_p
+              &  trigger_unit_i(5).trig_data_p
+              &  trigger_unit_i(4).trig_data_p
+              &  trigger_unit_i(3).trig_data_p
+              &  trigger_unit_i(2).trig_data_p
+              &  trigger_unit_i(1).trig_data_p
+              &  trigger_unit_i(0).trig_data_p;
 
-    sbits_n <=  trigger_port_i(23).trig_data_n
-              & trigger_port_i(22).trig_data_n
-              & trigger_port_i(21).trig_data_n
-              & trigger_port_i(20).trig_data_n
-              & trigger_port_i(19).trig_data_n
-              & trigger_port_i(18).trig_data_n
-              & trigger_port_i(17).trig_data_n
-              & trigger_port_i(16).trig_data_n
-              & trigger_port_i(15).trig_data_n
-              & trigger_port_i(14).trig_data_n
-              & trigger_port_i(13).trig_data_n
-              & trigger_port_i(12).trig_data_n
-              & trigger_port_i(11).trig_data_n
-              & trigger_port_i(10).trig_data_n
-              &  trigger_port_i(9).trig_data_n
-              &  trigger_port_i(8).trig_data_n
-              &  trigger_port_i(7).trig_data_n
-              &  trigger_port_i(6).trig_data_n
-              &  trigger_port_i(5).trig_data_n
-              &  trigger_port_i(4).trig_data_n
-              &  trigger_port_i(3).trig_data_n
-              &  trigger_port_i(2).trig_data_n
-              &  trigger_port_i(1).trig_data_n
-              &  trigger_port_i(0).trig_data_n;
+    sbits_n <=  trigger_unit_i(23).trig_data_n
+              & trigger_unit_i(22).trig_data_n
+              & trigger_unit_i(21).trig_data_n
+              & trigger_unit_i(20).trig_data_n
+              & trigger_unit_i(19).trig_data_n
+              & trigger_unit_i(18).trig_data_n
+              & trigger_unit_i(17).trig_data_n
+              & trigger_unit_i(16).trig_data_n
+              & trigger_unit_i(15).trig_data_n
+              & trigger_unit_i(14).trig_data_n
+              & trigger_unit_i(13).trig_data_n
+              & trigger_unit_i(12).trig_data_n
+              & trigger_unit_i(11).trig_data_n
+              & trigger_unit_i(10).trig_data_n
+              &  trigger_unit_i(9).trig_data_n
+              &  trigger_unit_i(8).trig_data_n
+              &  trigger_unit_i(7).trig_data_n
+              &  trigger_unit_i(6).trig_data_n
+              &  trigger_unit_i(5).trig_data_n
+              &  trigger_unit_i(4).trig_data_n
+              &  trigger_unit_i(3).trig_data_n
+              &  trigger_unit_i(2).trig_data_n
+              &  trigger_unit_i(1).trig_data_n
+              &  trigger_unit_i(0).trig_data_n;
 
-    start_of_frame_p <=  trigger_port_i(23).start_of_frame_p
-                       & trigger_port_i(22).start_of_frame_p
-                       & trigger_port_i(21).start_of_frame_p
-                       & trigger_port_i(20).start_of_frame_p
-                       & trigger_port_i(19).start_of_frame_p
-                       & trigger_port_i(18).start_of_frame_p
-                       & trigger_port_i(17).start_of_frame_p
-                       & trigger_port_i(16).start_of_frame_p
-                       & trigger_port_i(15).start_of_frame_p
-                       & trigger_port_i(14).start_of_frame_p
-                       & trigger_port_i(13).start_of_frame_p
-                       & trigger_port_i(12).start_of_frame_p
-                       & trigger_port_i(11).start_of_frame_p
-                       & trigger_port_i(10).start_of_frame_p
-                       & trigger_port_i(9).start_of_frame_p
-                       & trigger_port_i(8).start_of_frame_p
-                       & trigger_port_i(7).start_of_frame_p
-                       & trigger_port_i(6).start_of_frame_p
-                       & trigger_port_i(5).start_of_frame_p
-                       & trigger_port_i(4).start_of_frame_p
-                       & trigger_port_i(3).start_of_frame_p
-                       & trigger_port_i(2).start_of_frame_p
-                       & trigger_port_i(1).start_of_frame_p
-                       & trigger_port_i(0).start_of_frame_p;
+    start_of_frame_p <=  trigger_unit_i(23).start_of_frame_p
+                       & trigger_unit_i(22).start_of_frame_p
+                       & trigger_unit_i(21).start_of_frame_p
+                       & trigger_unit_i(20).start_of_frame_p
+                       & trigger_unit_i(19).start_of_frame_p
+                       & trigger_unit_i(18).start_of_frame_p
+                       & trigger_unit_i(17).start_of_frame_p
+                       & trigger_unit_i(16).start_of_frame_p
+                       & trigger_unit_i(15).start_of_frame_p
+                       & trigger_unit_i(14).start_of_frame_p
+                       & trigger_unit_i(13).start_of_frame_p
+                       & trigger_unit_i(12).start_of_frame_p
+                       & trigger_unit_i(11).start_of_frame_p
+                       & trigger_unit_i(10).start_of_frame_p
+                       & trigger_unit_i(9).start_of_frame_p
+                       & trigger_unit_i(8).start_of_frame_p
+                       & trigger_unit_i(7).start_of_frame_p
+                       & trigger_unit_i(6).start_of_frame_p
+                       & trigger_unit_i(5).start_of_frame_p
+                       & trigger_unit_i(4).start_of_frame_p
+                       & trigger_unit_i(3).start_of_frame_p
+                       & trigger_unit_i(2).start_of_frame_p
+                       & trigger_unit_i(1).start_of_frame_p
+                       & trigger_unit_i(0).start_of_frame_p;
 
-    start_of_frame_n <=  trigger_port_i(23).start_of_frame_n
-                       & trigger_port_i(22).start_of_frame_n
-                       & trigger_port_i(21).start_of_frame_n
-                       & trigger_port_i(20).start_of_frame_n
-                       & trigger_port_i(19).start_of_frame_n
-                       & trigger_port_i(18).start_of_frame_n
-                       & trigger_port_i(17).start_of_frame_n
-                       & trigger_port_i(16).start_of_frame_n
-                       & trigger_port_i(15).start_of_frame_n
-                       & trigger_port_i(14).start_of_frame_n
-                       & trigger_port_i(13).start_of_frame_n
-                       & trigger_port_i(12).start_of_frame_n
-                       & trigger_port_i(11).start_of_frame_n
-                       & trigger_port_i(10).start_of_frame_n
-                       & trigger_port_i(9).start_of_frame_n
-                       & trigger_port_i(8).start_of_frame_n
-                       & trigger_port_i(7).start_of_frame_n
-                       & trigger_port_i(6).start_of_frame_n
-                       & trigger_port_i(5).start_of_frame_n
-                       & trigger_port_i(4).start_of_frame_n
-                       & trigger_port_i(3).start_of_frame_n
-                       & trigger_port_i(2).start_of_frame_n
-                       & trigger_port_i(1).start_of_frame_n
-                       & trigger_port_i(0).start_of_frame_n;
+    start_of_frame_n <=  trigger_unit_i(23).start_of_frame_n
+                       & trigger_unit_i(22).start_of_frame_n
+                       & trigger_unit_i(21).start_of_frame_n
+                       & trigger_unit_i(20).start_of_frame_n
+                       & trigger_unit_i(19).start_of_frame_n
+                       & trigger_unit_i(18).start_of_frame_n
+                       & trigger_unit_i(17).start_of_frame_n
+                       & trigger_unit_i(16).start_of_frame_n
+                       & trigger_unit_i(15).start_of_frame_n
+                       & trigger_unit_i(14).start_of_frame_n
+                       & trigger_unit_i(13).start_of_frame_n
+                       & trigger_unit_i(12).start_of_frame_n
+                       & trigger_unit_i(11).start_of_frame_n
+                       & trigger_unit_i(10).start_of_frame_n
+                       & trigger_unit_i(9).start_of_frame_n
+                       & trigger_unit_i(8).start_of_frame_n
+                       & trigger_unit_i(7).start_of_frame_n
+                       & trigger_unit_i(6).start_of_frame_n
+                       & trigger_unit_i(5).start_of_frame_n
+                       & trigger_unit_i(4).start_of_frame_n
+                       & trigger_unit_i(3).start_of_frame_n
+                       & trigger_unit_i(2).start_of_frame_n
+                       & trigger_unit_i(1).start_of_frame_n
+                       & trigger_unit_i(0).start_of_frame_n;
 
 
     trig_alignment : entity work.trig_alignment

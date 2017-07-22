@@ -71,9 +71,9 @@ port
   CLK_IN1           : in  std_logic;
   -- Reset that only drives logic in example design
   COUNTER_RESET     : in  std_logic;
-  CLK_OUT           : out std_logic_vector(5 downto 1) ;
+  CLK_OUT           : out std_logic_vector(4 downto 1) ;
   -- High bits of counters driven by clocks
-  COUNT             : out std_logic_vector(5 downto 1);
+  COUNT             : out std_logic_vector(4 downto 1);
   -- Status and control signals
   LOCKED            : out std_logic
  );
@@ -87,7 +87,7 @@ architecture xilinx of clk_gen_exdes is
   constant C_W        : integer := 16;
 
   -- Number of counters
-  constant NUM_C      : integer := 5;
+  constant NUM_C      : integer := 4;
   -- Array typedef
   type ctrarr is array (1 to NUM_C) of std_logic_vector(C_W-1 downto 0);
 
@@ -110,7 +110,6 @@ port
  (-- Clock in ports
   clk_i           : in     std_logic;
   -- Clock out ports
-  ref_clk_o          : out    std_logic;
   clk_1x_o          : out    std_logic;
   clk_2x_o          : out    std_logic;
   clk_4x_o          : out    std_logic;
@@ -152,11 +151,10 @@ end generate counters_1;
    (-- Clock in ports
     clk_i            => CLK_IN1,
     -- Clock out ports
-    ref_clk_o           => clk_int(1),
-    clk_1x_o           => clk_int(2),
-    clk_2x_o           => clk_int(3),
-    clk_4x_o           => clk_int(4),
-    clk_4x_90_o           => clk_int(5),
+    clk_1x_o           => clk_int(1),
+    clk_2x_o           => clk_int(2),
+    clk_4x_o           => clk_int(3),
+    clk_4x_90_o           => clk_int(4),
     -- Status and control signals
     LOCKED             => locked_int);
 
@@ -180,7 +178,6 @@ end generate counters_1;
   clk(2) <= clk_int(2);
   clk(3) <= clk_int(3);
   clk(4) <= clk_int(4);
-  clk(5) <= clk_int(5);
 
   -- Output clock sampling
   -------------------------------------
