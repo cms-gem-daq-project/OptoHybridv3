@@ -64,17 +64,10 @@ port(
     gbt_rxvalid : in std_logic;
     gbt_rxready : in std_logic;
 
-    ext_reset : out std_logic_vector (11 downto 0);
+    ext_reset   : out std_logic_vector (11 downto 0);
 
-    ---- test points
-    --tp_1p_o                 : out std_logic;
-    --tp_1n_o                 : out std_logic;
-    --tp_4p_o                 : out std_logic;
-    --tp_4n_o                 : out std_logic;
-    --tp_5p_o                 : out std_logic;
-    --tp_5n_o                 : out std_logic;
-    --tp_20p_o                : out std_logic;
-    --tp_20n_o                : out std_logic;
+    --== VFAT Mezzanine ==--
+
 
     --== GTX ==--
 
@@ -194,9 +187,12 @@ architecture Behavioral of optohybrid_top is
     signal sbit_overflow : std_logic;
     signal sbit_mask     : std_logic_vector     (23 downto 0);
     signal sbit_clusters : sbit_cluster_array_t (7  downto 0);
+    signal cluster_count : std_logic_vector     (7  downto 0);
     signal trigger_units : trigger_unit_array_t (23 downto 0);
 
     --== Global signals ==--
+
+    signal mmcm_locked          : std_logic;
 
     signal clock                : std_logic;
     signal gbt_eclk             : std_logic;
@@ -209,31 +205,13 @@ architecture Behavioral of optohybrid_top is
     signal mgt_refclk           : std_logic;
     signal reset                : std_logic;
 
-    --== SEM ==--
-
-    signal sem_correction       : std_logic;
-    signal sem_critical         : std_logic;
-
-    --== System ==--
-
-    signal sys_loop_sbit        : std_logic_vector(4 downto 0);
-    signal sys_sbit_sel         : std_logic_vector(29 downto 0);
-    signal sys_sbit_mode        : std_logic_vector(1 downto 0);
-
-    --== Wishbone signals ==--
-
-    signal wb_m_req             : wb_req_array_t((WB_MASTERS - 1) downto 0);
-    signal wb_m_res             : wb_res_array_t((WB_MASTERS - 1) downto 0);
-    signal wb_s_req             : wb_req_array_t((WB_SLAVES - 1) downto 0);
-    signal wb_s_res             : wb_res_array_t((WB_SLAVES - 1) downto 0);
-
 begin
 
     reset       <= '0';
     gbt_txvalid <= '1';
-    ext_reset   <= (others => '0');
+    ext_reset   <= (others => reset);
     sbit_mask   <= (others => '0');
-    clock <= clk_1x;
+    clock       <= clk_1x;
 
     --==============--
     --== Clocking ==--
@@ -249,39 +227,26 @@ begin
 
         gbt_eclk_o      => gbt_eclk,
 
+        mmcm_locked_o   => mmcm_locked,
+
         clk_1x_o        => clk_1x,
         clk_2x_o        => clk_2x,
         clk_4x_o        => clk_4x,
         clk_4x_90_o     => clk_4x_90
     );
 
-    --============--
-    --== Status ==--
-    --============--
-
-    -- This module holds the status registers that describe the state of the OH.
---
---    stat_inst : entity work.stat
---    port map(
---        ref_clk_i           => clock,
---        reset_i             => reset,
---        wb_slv_req_i        => wb_s_req(WB_SLV_STAT),
---        wb_slv_res_o        => wb_s_res(WB_SLV_STAT),
---        sem_critical_i      => sem_critical
---    );
---
     --=================================--
     --== Fixed latency trigger links ==--
     --=================================--
 
     trigger_links_inst : entity work.trigger_links
     port map (
-        mgt_clk_p => mgt_clk_p_i, -- 160 MHz Reference Clock from QPLL
-        mgt_clk_n => mgt_clk_n_i, -- 160 MHz Reference Clock from QPLL
+        mgt_clk_p => mgt_clk_p_i, -- 160 MHz Reference Clock
+        mgt_clk_n => mgt_clk_n_i, -- 160 MHz Reference Clock
 
-        clk_40     => clk_1x, -- 40 MHz Clock Derived from QPLL
-        clk_80     => clk_2x, -- 80 MHz Clock Derived from QPLL
-        clk_160    => clk_4x, -- 160 MHz Clock Derived from QPLL
+        clk_40     => clk_1x, -- 40 MHz  Logic Clock
+        clk_80     => clk_2x, -- 80 MHz  User Clock 2
+        clk_160    => clk_4x, -- 160 MHz User CLock
 
         reset      => reset,
 
@@ -407,7 +372,6 @@ begin
         trigger_units_o => trigger_units
     );
 
-    -- This module handles the SBits
     sbits_inst : entity work.sbits
     port map(
 
@@ -420,10 +384,27 @@ begin
 
         trigger_unit_i          => trigger_units,
 
-        sbit_mask_i             => (x"000000"),
+        sbit_mask_i             => (sbit_mask),
 
         vfat_sbit_clusters_o    => sbit_clusters,
+        cluster_count_o         => cluster_count,
         overflow_o              => sbit_overflow
+    );
+
+    led_control : entity work.led_control
+    port map (
+        -- clocks
+        clock         => clock,
+        gbt_eclk      => gbt_eclk,
+
+        -- signals
+        mmcm_locked   => mmcm_locked,
+        gbt_rxready   => gbt_rxready ,
+        gbt_rxvalid   => gbt_rxvalid,
+        cluster_count => cluster_count,
+
+        -- led outputs
+        led_out       => led_o
     );
 
 end Behavioral;

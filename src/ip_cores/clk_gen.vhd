@@ -84,7 +84,7 @@ port
   clk_4x_o          : out    std_logic;
   clk_4x_90_o          : out    std_logic;
   -- Status and control signals
-  LOCKED            : out    std_logic
+  locked_o            : out    std_logic
  );
 end clk_gen;
 
@@ -196,7 +196,7 @@ begin
     PSINCDEC            => '0',
     PSDONE              => psdone_unused,
     -- Other control and status signals
-    LOCKED              => LOCKED,
+    LOCKED              => locked_o,
     CLKINSTOPPED        => clkinstopped_unused,
     CLKFBSTOPPED        => clkfbstopped_unused,
     PWRDWN              => '0',

@@ -33,7 +33,9 @@ port(
 
     vfat_sbit_clusters_o    : out sbit_cluster_array_t(7 downto 0);
 
-    sbit_mask_i        : in std_logic_vector (23 downto 0);
+    sbit_mask_i             : in std_logic_vector (23 downto 0);
+
+    cluster_count_o         : out std_logic_vector (7 downto 0);
 
     trigger_unit_i          : in trigger_unit_array_t (23 downto 0);
 
@@ -162,22 +164,25 @@ begin
 
 
     trig_alignment : entity work.trig_alignment
-
     port map (
 
-    sbits_p => sbits_p,
-    sbits_n => sbits_n,
-    start_of_frame_p => start_of_frame_p,
-    start_of_frame_n => start_of_frame_n,
+        sbit_mask  => sbit_mask_i,
+
+        reset => reset_i,
+
+        sbits_p => sbits_p,
+        sbits_n => sbits_n,
+        start_of_frame_p => start_of_frame_p,
+        start_of_frame_n => start_of_frame_n,
 
 
-    fastclk_0    =>  clk160_i,
-    fastclk_90   =>  clk160_90_i,
-    fastclk_180  =>  clk160_180,
-    clock        =>  clk40_i,
+        fastclk_0    =>  clk160_i,
+        fastclk_90   =>  clk160_90_i,
+        fastclk_180  =>  clk160_180,
+        clock        =>  clk40_i,
 
-    phase_err => open,
-    sbits => sbits
+        phase_err => open,
+        sbits => sbits
     );
 
     vfat_sbits (0)  <= sbits (63   downto 0);
@@ -210,6 +215,7 @@ begin
         clock4x             => clk160_i,
         clock1x             => clk40_i,
         global_reset        => reset_i,
+        cluster_count       => cluster_count_o,
         truncate_clusters   => '0',
         oneshot_en          => oneshot_en_i,
         vfat0               => vfat_sbits(0),

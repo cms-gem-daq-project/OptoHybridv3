@@ -7,6 +7,9 @@ module frame_aligner (
 
   input start_of_frame,
 
+  input reset,
+  input mask,
+
   input clock,
   input fastclock,
 
@@ -121,7 +124,7 @@ assign sbits = sbits_reg;
 // use the remaining 1/2 clock to transfer to the cluster finder on the posedge of its inputs
 always @(negedge clock) begin
   // kill the outputs if we aren't aligned to SOF
-  if (~sof_aligned)
+  if (reset || mask || ~sof_aligned)
     sbits_reg <= {MXSBITS{1'b0}};
   else
     sbits_reg <= {

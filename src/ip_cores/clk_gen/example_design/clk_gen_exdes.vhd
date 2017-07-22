@@ -115,7 +115,7 @@ port
   clk_4x_o          : out    std_logic;
   clk_4x_90_o          : out    std_logic;
   -- Status and control signals
-  LOCKED            : out    std_logic
+  locked_o            : out    std_logic
  );
 end component;
 
@@ -156,7 +156,7 @@ end generate counters_1;
     clk_4x_o           => clk_int(3),
     clk_4x_90_o           => clk_int(4),
     -- Status and control signals
-    LOCKED             => locked_int);
+    locked_o             => locked_int);
 
 
   gen_outclk_oddr: 

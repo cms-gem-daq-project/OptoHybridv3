@@ -1,7 +1,11 @@
 module trig_alignment (
 
+  input [23:0]  sbit_mask,
+
   input [191:0] sbits_p,
   input [191:0] sbits_n,
+
+  input reset,
 
   input [23:0]  start_of_frame_p,
   input [23:0]  start_of_frame_n,
@@ -106,6 +110,9 @@ for (ifat=0; ifat<24; ifat=ifat+1) begin: fatloop2
   frame_align (
     .d0 (d0[ifat*8 +: 8]),
     .d1 (d1[ifat*8 +: 8]),
+
+    .mask (sbit_mask[ifat]),
+    .reset (reset),
 
     .start_of_frame (start_of_frame_d0[ifat]),
     .clock          (clock),

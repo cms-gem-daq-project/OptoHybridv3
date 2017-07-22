@@ -77,7 +77,7 @@ port
   clk_4x_o          : out    std_logic;
   clk_4x_90_o          : out    std_logic;
   -- Status and control signals
-  LOCKED            : out    std_logic
+  locked_o            : out    std_logic
  );
 end component;
 
@@ -95,5 +95,5 @@ your_instance_name : clk_gen
     clk_4x_o => clk_4x_o,
     clk_4x_90_o => clk_4x_90_o,
     -- Status and control signals
-    LOCKED => LOCKED);
+    locked_o => locked_o);
 -- INST_TAG_END ------ End INSTANTIATION Template ------------

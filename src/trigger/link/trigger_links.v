@@ -26,8 +26,8 @@ module trigger_links (
 
 IBUFDS_GTXE1 ibufds_mgt
 (
-    .I       (mgt_clk_p_i),
-    .IB      (mgt_clk_n_i),
+    .I       (mgt_clk_p),
+    .IB      (mgt_clk_n),
     .O       (mgt_refclk),
     .ODIV2   (),
     .CEB     (1'b0)
@@ -69,7 +69,7 @@ gem_fiber_out  gem_fibers_out   (
   .GEM_DATA            (link[igem][55:0]),
   .GEM_OVERFLOW        (overflow),
 
-  .TRG_TX_REFCLK       (mgt_clk),             // QPLL 160 from MGT clk
+  .TRG_TX_REFCLK       (mgt_refclk),             // QPLL 160 from MGT clk
   .TRG_TXUSRCLK        (usrclk),              // get 160 from TXOUTCLK (times 2)
   .TRG_CLK80           (usrclk2),             // get 80 from TXOUTCLK
   .TRG_GTXTXRST        (1'b0),                // maybe Manual "reset" only

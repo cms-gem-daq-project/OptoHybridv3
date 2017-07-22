@@ -26,7 +26,6 @@ use work.param_pkg.all;
 entity clocking is
 port(
 
-
     gbt_eclk_p  : in std_logic_vector (1 downto 0) ;
     gbt_eclk_n  : in std_logic_vector (1 downto 0) ;
 
@@ -37,6 +36,8 @@ port(
     clk_2x_o        : out std_logic;
     clk_4x_o        : out std_logic;
     clk_4x_90_o     : out std_logic;
+
+    mmcm_locked_o   : out std_logic;
 
     gbt_eclk_o      : out std_logic
 
@@ -97,7 +98,8 @@ begin
         clk_1x_o    => clk_1x_o,
         clk_2x_o    => clk_2x_o,
         clk_4x_o    => clk_4x_o,
-        clk_4x_90_o => clk_4x_90_o
+        clk_4x_90_o => clk_4x_90_o,
+        locked_o    => mmcm_locked_o
     );
 
 
