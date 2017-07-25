@@ -39,7 +39,6 @@ port(
 
     -- status
     error_o         : out std_logic;
-    evt_sent_o      : out std_logic;
 
     -- slow reset
     sync_reset_o    : out std_logic

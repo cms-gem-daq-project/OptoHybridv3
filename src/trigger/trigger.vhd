@@ -44,128 +44,14 @@ port(
     cluster_count_o         : out std_logic_vector (7 downto 0);
     overflow_o              : out std_logic;
 
+    active_vfats_o          : out std_logic_vector (23 downto 0);
+
     -- sbits
-    vfat0_sbits_p_i       : in std_logic_vector(7 downto 0);
-    vfat0_sbits_n_i       : in std_logic_vector(7 downto 0);
+    vfat_sof_p     : in std_logic_vector (23 downto 0);
+    vfat_sof_n     : in std_logic_vector (23 downto 0);
 
-    vfat1_sbits_p_i       : in std_logic_vector(7 downto 0);
-    vfat1_sbits_n_i       : in std_logic_vector(7 downto 0);
-
-    vfat2_sbits_p_i       : in std_logic_vector(7 downto 0);
-    vfat2_sbits_n_i       : in std_logic_vector(7 downto 0);
-
-    vfat3_sbits_p_i       : in std_logic_vector(7 downto 0);
-    vfat3_sbits_n_i       : in std_logic_vector(7 downto 0);
-
-    vfat4_sbits_p_i       : in std_logic_vector(7 downto 0);
-    vfat4_sbits_n_i       : in std_logic_vector(7 downto 0);
-
-    vfat5_sbits_p_i       : in std_logic_vector(7 downto 0);
-    vfat5_sbits_n_i       : in std_logic_vector(7 downto 0);
-
-    vfat6_sbits_p_i       : in std_logic_vector(7 downto 0);
-    vfat6_sbits_n_i       : in std_logic_vector(7 downto 0);
-
-    vfat7_sbits_p_i       : in std_logic_vector(7 downto 0);
-    vfat7_sbits_n_i       : in std_logic_vector(7 downto 0);
-
-    vfat8_sbits_p_i       : in std_logic_vector(7 downto 0);
-    vfat8_sbits_n_i       : in std_logic_vector(7 downto 0);
-
-    vfat9_sbits_p_i       : in std_logic_vector(7 downto 0);
-    vfat9_sbits_n_i       : in std_logic_vector(7 downto 0);
-
-    vfat10_sbits_p_i      : in std_logic_vector(7 downto 0);
-    vfat10_sbits_n_i      : in std_logic_vector(7 downto 0);
-
-    vfat11_sbits_p_i      : in std_logic_vector(7 downto 0);
-    vfat11_sbits_n_i      : in std_logic_vector(7 downto 0);
-
-    vfat12_sbits_p_i      : in std_logic_vector(7 downto 0);
-    vfat12_sbits_n_i      : in std_logic_vector(7 downto 0);
-
-    vfat13_sbits_p_i      : in std_logic_vector(7 downto 0);
-    vfat13_sbits_n_i      : in std_logic_vector(7 downto 0);
-
-    vfat14_sbits_p_i      : in std_logic_vector(7 downto 0);
-    vfat14_sbits_n_i      : in std_logic_vector(7 downto 0);
-
-    vfat15_sbits_p_i      : in std_logic_vector(7 downto 0);
-    vfat15_sbits_n_i      : in std_logic_vector(7 downto 0);
-
-    vfat16_sbits_p_i      : in std_logic_vector(7 downto 0);
-    vfat16_sbits_n_i      : in std_logic_vector(7 downto 0);
-
-    vfat17_sbits_p_i      : in std_logic_vector(7 downto 0);
-    vfat17_sbits_n_i      : in std_logic_vector(7 downto 0);
-
-    vfat18_sbits_p_i      : in std_logic_vector(7 downto 0);
-    vfat18_sbits_n_i      : in std_logic_vector(7 downto 0);
-
-    vfat19_sbits_p_i      : in std_logic_vector(7 downto 0);
-    vfat19_sbits_n_i      : in std_logic_vector(7 downto 0);
-
-    vfat20_sbits_p_i      : in std_logic_vector(7 downto 0);
-    vfat20_sbits_n_i      : in std_logic_vector(7 downto 0);
-
-    vfat21_sbits_p_i      : in std_logic_vector(7 downto 0);
-    vfat21_sbits_n_i      : in std_logic_vector(7 downto 0);
-
-    vfat22_sbits_p_i      : in std_logic_vector(7 downto 0);
-    vfat22_sbits_n_i      : in std_logic_vector(7 downto 0);
-
-    vfat23_sbits_p_i      : in std_logic_vector(7 downto 0);
-    vfat23_sbits_n_i      : in std_logic_vector(7 downto 0);
-
-    vfat0_sof_p_i  : in std_logic;
-    vfat0_sof_n_i  : in std_logic;
-    vfat1_sof_p_i  : in std_logic;
-    vfat1_sof_n_i  : in std_logic;
-    vfat2_sof_p_i  : in std_logic;
-    vfat2_sof_n_i  : in std_logic;
-    vfat3_sof_p_i  : in std_logic;
-    vfat3_sof_n_i  : in std_logic;
-    vfat4_sof_p_i  : in std_logic;
-    vfat4_sof_n_i  : in std_logic;
-    vfat5_sof_p_i  : in std_logic;
-    vfat5_sof_n_i  : in std_logic;
-    vfat6_sof_p_i  : in std_logic;
-    vfat6_sof_n_i  : in std_logic;
-    vfat7_sof_p_i  : in std_logic;
-    vfat7_sof_n_i  : in std_logic;
-    vfat8_sof_p_i  : in std_logic;
-    vfat8_sof_n_i  : in std_logic;
-    vfat9_sof_p_i  : in std_logic;
-    vfat9_sof_n_i  : in std_logic;
-    vfat10_sof_p_i : in std_logic;
-    vfat10_sof_n_i : in std_logic;
-    vfat11_sof_p_i : in std_logic;
-    vfat11_sof_n_i : in std_logic;
-    vfat12_sof_p_i : in std_logic;
-    vfat12_sof_n_i : in std_logic;
-    vfat13_sof_p_i : in std_logic;
-    vfat13_sof_n_i : in std_logic;
-    vfat14_sof_p_i : in std_logic;
-    vfat14_sof_n_i : in std_logic;
-    vfat15_sof_p_i : in std_logic;
-    vfat15_sof_n_i : in std_logic;
-    vfat16_sof_p_i : in std_logic;
-    vfat16_sof_n_i : in std_logic;
-    vfat17_sof_p_i : in std_logic;
-    vfat17_sof_n_i : in std_logic;
-    vfat18_sof_p_i : in std_logic;
-    vfat18_sof_n_i : in std_logic;
-    vfat19_sof_p_i : in std_logic;
-    vfat19_sof_n_i : in std_logic;
-    vfat20_sof_p_i : in std_logic;
-    vfat20_sof_n_i : in std_logic;
-    vfat21_sof_p_i : in std_logic;
-    vfat21_sof_n_i : in std_logic;
-    vfat22_sof_p_i : in std_logic;
-    vfat22_sof_n_i : in std_logic;
-    vfat23_sof_p_i : in std_logic;
-    vfat23_sof_n_i : in std_logic
-
+    vfat_sbits_p : in std_logic_vector (191 downto 0);
+    vfat_sbits_n : in std_logic_vector (191 downto 0)
 );
 end trigger;
 
@@ -191,103 +77,13 @@ begin
 
     trigger_units_inst : entity work.trigger_units
     port map (
-        vfat0_sbits_p_i  => vfat0_sbits_p_i,
-        vfat0_sbits_n_i  => vfat0_sbits_n_i,
-        vfat1_sbits_p_i  => vfat1_sbits_p_i,
-        vfat1_sbits_n_i  => vfat1_sbits_n_i,
-        vfat2_sbits_p_i  => vfat2_sbits_p_i,
-        vfat2_sbits_n_i  => vfat2_sbits_n_i,
-        vfat3_sbits_p_i  => vfat3_sbits_p_i,
-        vfat3_sbits_n_i  => vfat3_sbits_n_i,
-        vfat4_sbits_p_i  => vfat4_sbits_p_i,
-        vfat4_sbits_n_i  => vfat4_sbits_n_i,
-        vfat5_sbits_p_i  => vfat5_sbits_p_i,
-        vfat5_sbits_n_i  => vfat5_sbits_n_i,
-        vfat6_sbits_p_i  => vfat6_sbits_p_i,
-        vfat6_sbits_n_i  => vfat6_sbits_n_i,
-        vfat7_sbits_p_i  => vfat7_sbits_p_i,
-        vfat7_sbits_n_i  => vfat7_sbits_n_i,
-        vfat8_sbits_p_i  => vfat8_sbits_p_i,
-        vfat8_sbits_n_i  => vfat8_sbits_n_i,
-        vfat9_sbits_p_i  => vfat9_sbits_p_i,
-        vfat9_sbits_n_i  => vfat9_sbits_n_i,
-        vfat10_sbits_p_i => vfat10_sbits_p_i,
-        vfat10_sbits_n_i => vfat10_sbits_n_i,
-        vfat11_sbits_p_i => vfat11_sbits_p_i,
-        vfat11_sbits_n_i => vfat11_sbits_n_i,
-        vfat12_sbits_p_i => vfat12_sbits_p_i,
-        vfat12_sbits_n_i => vfat12_sbits_n_i,
-        vfat13_sbits_p_i => vfat13_sbits_p_i,
-        vfat13_sbits_n_i => vfat13_sbits_n_i,
-        vfat14_sbits_p_i => vfat14_sbits_p_i,
-        vfat14_sbits_n_i => vfat14_sbits_n_i,
-        vfat15_sbits_p_i => vfat15_sbits_p_i,
-        vfat15_sbits_n_i => vfat15_sbits_n_i,
-        vfat16_sbits_p_i => vfat16_sbits_p_i,
-        vfat16_sbits_n_i => vfat16_sbits_n_i,
-        vfat17_sbits_p_i => vfat17_sbits_p_i,
-        vfat17_sbits_n_i => vfat17_sbits_n_i,
-        vfat18_sbits_p_i => vfat18_sbits_p_i,
-        vfat18_sbits_n_i => vfat18_sbits_n_i,
-        vfat19_sbits_p_i => vfat19_sbits_p_i,
-        vfat19_sbits_n_i => vfat19_sbits_n_i,
-        vfat20_sbits_p_i => vfat20_sbits_p_i,
-        vfat20_sbits_n_i => vfat20_sbits_n_i,
-        vfat21_sbits_p_i => vfat21_sbits_p_i,
-        vfat21_sbits_n_i => vfat21_sbits_n_i,
-        vfat22_sbits_p_i => vfat22_sbits_p_i,
-        vfat22_sbits_n_i => vfat22_sbits_n_i,
-        vfat23_sbits_p_i => vfat23_sbits_p_i,
-        vfat23_sbits_n_i => vfat23_sbits_n_i,
 
-        vfat0_sof_p_i   => vfat0_sof_p_i,
-        vfat0_sof_n_i   => vfat0_sof_n_i,
-        vfat1_sof_p_i   => vfat1_sof_p_i,
-        vfat1_sof_n_i   => vfat1_sof_n_i,
-        vfat2_sof_p_i   => vfat2_sof_p_i,
-        vfat2_sof_n_i   => vfat2_sof_n_i,
-        vfat3_sof_p_i   => vfat3_sof_p_i,
-        vfat3_sof_n_i   => vfat3_sof_n_i,
-        vfat4_sof_p_i   => vfat4_sof_p_i,
-        vfat4_sof_n_i   => vfat4_sof_n_i,
-        vfat5_sof_p_i   => vfat5_sof_p_i,
-        vfat5_sof_n_i   => vfat5_sof_n_i,
-        vfat6_sof_p_i   => vfat6_sof_p_i,
-        vfat6_sof_n_i   => vfat6_sof_n_i,
-        vfat7_sof_p_i   => vfat7_sof_p_i,
-        vfat7_sof_n_i   => vfat7_sof_n_i,
-        vfat8_sof_p_i   => vfat8_sof_p_i,
-        vfat8_sof_n_i   => vfat8_sof_n_i,
-        vfat9_sof_p_i   => vfat9_sof_p_i,
-        vfat9_sof_n_i   => vfat9_sof_n_i,
-        vfat10_sof_p_i  => vfat10_sof_p_i,
-        vfat10_sof_n_i  => vfat10_sof_n_i,
-        vfat11_sof_p_i  => vfat11_sof_p_i,
-        vfat11_sof_n_i  => vfat11_sof_n_i,
-        vfat12_sof_p_i  => vfat12_sof_p_i,
-        vfat12_sof_n_i  => vfat12_sof_n_i,
-        vfat13_sof_p_i  => vfat13_sof_p_i,
-        vfat13_sof_n_i  => vfat13_sof_n_i,
-        vfat14_sof_p_i  => vfat14_sof_p_i,
-        vfat14_sof_n_i  => vfat14_sof_n_i,
-        vfat15_sof_p_i  => vfat15_sof_p_i,
-        vfat15_sof_n_i  => vfat15_sof_n_i,
-        vfat16_sof_p_i  => vfat16_sof_p_i,
-        vfat16_sof_n_i  => vfat16_sof_n_i,
-        vfat17_sof_p_i  => vfat17_sof_p_i,
-        vfat17_sof_n_i  => vfat17_sof_n_i,
-        vfat18_sof_p_i  => vfat18_sof_p_i,
-        vfat18_sof_n_i  => vfat18_sof_n_i,
-        vfat19_sof_p_i  => vfat19_sof_p_i,
-        vfat19_sof_n_i  => vfat19_sof_n_i,
-        vfat20_sof_p_i  => vfat20_sof_p_i,
-        vfat20_sof_n_i  => vfat20_sof_n_i,
-        vfat21_sof_p_i  => vfat21_sof_p_i,
-        vfat21_sof_n_i  => vfat21_sof_n_i,
-        vfat22_sof_p_i  => vfat22_sof_p_i,
-        vfat22_sof_n_i  => vfat22_sof_n_i,
-        vfat23_sof_p_i  => vfat23_sof_p_i,
-        vfat23_sof_n_i  => vfat23_sof_n_i,
+        -- sbits
+        vfat_sof_p   => vfat_sof_p,
+        vfat_sof_n   => vfat_sof_n,
+
+        vfat_sbits_p => vfat_sbits_p,
+        vfat_sbits_n => vfat_sbits_n,
 
         trigger_units_o => trigger_units
     );
@@ -306,6 +102,8 @@ begin
 
         sbit_mask_i             => (sbit_mask_i),
 
+        active_vfats_o          => active_vfats_o,
+
         vfat_sbit_clusters_o    => sbit_clusters,
         cluster_count_o         => cluster_count_o,
         overflow_o              => sbit_overflow
@@ -319,11 +117,11 @@ begin
     trigger_links_inst : entity work.trigger_links
     port map (
 
-        mgt_clk_p => mgt_clk_p, -- 160 MHz Reference Clock Positive
-        mgt_clk_n => mgt_clk_n, -- 160 MHz Reference Clock Negative
+        mgt_clk_p  => mgt_clk_p, -- 160 MHz Reference Clock Positive
+        mgt_clk_n  => mgt_clk_n, -- 160 MHz Reference Clock Negative
 
-        clk_40     => clk_40, -- 40 MHz  Logic Clock
-        clk_80     => clk_80, -- 80 MHz  User Clock 2
+        clk_40     => clk_40,  -- 40 MHz  Logic Clock
+        clk_80     => clk_80,  -- 80 MHz  User Clock 2
         clk_160    => clk_160, -- 160 MHz User Clock
 
         reset      => reset,

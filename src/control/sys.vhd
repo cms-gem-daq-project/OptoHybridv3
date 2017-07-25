@@ -4,11 +4,17 @@
 --
 -- Create Date:    08:44:34 08/18/2015
 -- Design Name:    OptoHybrid v2
--- Module Name:    stat - Behavioral
+-- Module Name:    sys - Behavioral
 -- Project Name:   OptoHybrid v2
 -- Target Devices: xc6vlx130t-1ff1156
 -- Tool versions:  ISE  P.20131013
 -- Description:
+--
+-- 0 : VFAT2 mask for tracking data - 24 bits
+-- 1 : VFAT2 T1 selection
+-- 2 : VFAT2 reset
+-- 3 : referenc clock select
+-- 4 : SBit select
 --
 ----------------------------------------------------------------------------------
 
@@ -18,11 +24,10 @@ use ieee.numeric_std.all;
 
 library work;
 use work.types_pkg.all;
-use work.param_pkg.all;
 
-entity stat is
+entity sys is
 generic(
-    N               : integer := 5
+    N                   : integer := 11
 );
 port(
 
@@ -33,16 +38,19 @@ port(
     wb_slv_req_i        : in wb_req_t;
     wb_slv_res_o        : out wb_res_t;
 
-    -- MMCM
-    mmcm_locked_i       : in std_logic;
+    -- outputs
 
-    -- SEM
-    sem_critical_i      : in std_logic
+    sys_sbit_sel_o      : out std_logic_vector(29 downto 0);
+    sys_loop_sbit_o     : out std_logic_vector(4 downto 0);
+    sys_sbit_mode_o     : out std_logic_vector (1 downto 0);
+
+    vfat_reset_o       : out std_logic;
+    vfat_sbit_mask_o   : out std_logic_vector(23 downto 0)
 
 );
-end stat;
+end sys;
 
-architecture Behavioral of stat is
+architecture Behavioral of sys is
 
     -- Signals from the Wishbone Hub
     signal wb_stb       : std_logic_vector((N - 1) downto 0);
@@ -67,44 +75,59 @@ begin
         OFFSET      => 0
     )
     port map(
+        -- fabric clock
         ref_clk_i   => ref_clk_i,
+
+        -- reset
         reset_i     => reset_i,
+
+        -- requestinput
         wb_req_i    => wb_slv_req_i,
-        wb_res_o    => wb_slv_res_o,
+
+        -- strobe
         stb_o       => wb_stb,
         we_o        => wb_we,
-        addr_o      => wb_addr,
-        data_o      => wb_data,
         ack_i       => reg_ack,
         err_i       => reg_err,
-        data_i      => reg_data
+
+        data_i      => reg_data,     -- 32 bit data input
+        wb_res_o    => wb_slv_res_o, -- 32 bit response to wishbone bus
+
+        addr_o      => wb_addr, -- 32 bit address
+        data_o      => wb_data  -- 32 bit data output from wishbone bus
     );
 
-    --========================--
-    --== Automatic response ==--
-    --========================--
+    --===============--
+    --== Registers ==--
+    --===============--
 
-    ack_err_loop : for I in 0 to (N - 1) generate
-    begin
+    registers_inst : entity work.registers
+    generic map(
+        SIZE        => N
+    )
+    port map(
+        ref_clk_i   => ref_clk_i,
+        reset_i     => reset_i,
 
-        reg_ack(I) <= wb_stb(I);
-        reg_err(I) <= '0';
+        stb_i       => wb_stb,
+        we_i        => wb_we,
+        data_i      => wb_data,
 
-    end generate;
+        ack_o       => reg_ack,
+        err_o       => reg_err,
+        data_o      => reg_data
+    );
 
     --=============--
     --== Mapping ==--
     --=============--
 
-    reg_data(0) <= RELEASE_YEAR & RELEASE_MONTH & RELEASE_DAY;
 
-    reg_data(1) <= (0 => mmcm_locked_i    , others => '0');
-    reg_data(2) <= (0 => gbt_clk_source_i , others => '0');
-    reg_data(4) <= (0 => sem_critical_i   , others => '0');
-    reg_data(4) <= (0 => gbt_rxready      , others => '0');
-    reg_data(5) <= (0 => gbt_rxvalid      , others => '0');
-    reg_data(6) <= (0 => gbt_txready      , others => '0');
-    reg_data(7) <= (0 => gbt_txvalid      , others => '0');
+    sys_loop_sbit_o  <= reg_data(2)(4 downto 0)  ;
+    vfat_reset_o     <= wb_stb  (3) and wb_we    ;
+    vfat_sbit_mask_o <= reg_data(4)(23 downto 0) ;
+    sys_sbit_sel_o   <= reg_data(5)(29 downto 0) ;
+    sys_sbit_mode_o  <= reg_data(8)(1 downto 0)  ;
 
 end Behavioral;
 

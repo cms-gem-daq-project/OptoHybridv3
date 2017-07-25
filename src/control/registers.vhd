@@ -1,14 +1,14 @@
 ----------------------------------------------------------------------------------
 -- Company:        IIHE - ULB
 -- Engineer:       Thomas Lenzi (thomas.lenzi@cern.ch)
--- 
--- Create Date:    15:17:59 07/09/2015 
+--
+-- Create Date:    15:17:59 07/09/2015
 -- Design Name:    OptoHybrid v2
--- Module Name:    registers - Behavioral 
+-- Module Name:    registers - Behavioral
 -- Project Name:   OptoHybrid v2
 -- Target Devices: xc6vlx130t-1ff1156
 -- Tool versions:  ISE  P.20131013
--- Description: 
+-- Description:
 --
 -- Generates N read/write registers
 --
@@ -26,23 +26,23 @@ generic(
 
     -- Number of registers
     SIZE        : integer := 4
-    
+
 );
 port(
 
     ref_clk_i   : in std_logic;
     reset_i     : in std_logic;
-    
-    -- Request 
+
+    -- Request
     stb_i       : in std_logic_vector((SIZE - 1) downto 0);
     we_i        : in std_logic;
     data_i      : in std_logic_vector(31 downto 0);
-    
+
     -- Response
     ack_o       : out std_logic_vector((SIZE - 1) downto 0);
     err_o       : out std_logic_vector((SIZE - 1) downto 0);
     data_o      : out std32_array_t((SIZE - 1) downto 0)
-    
+
 );
 end registers;
 
@@ -56,7 +56,7 @@ begin
     -- Each register in independant, so we can generate a loop
     registers_gen : for I in 0 to (SIZE - 1) generate
     begin
-    
+
         process(ref_clk_i)
         begin
             if (rising_edge(ref_clk_i)) then
@@ -84,7 +84,7 @@ begin
                 end if;
             end if;
         end process;
-    
+
     end generate;
 
 end Behavioral;

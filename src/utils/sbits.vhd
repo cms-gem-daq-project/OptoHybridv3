@@ -16,6 +16,7 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.std_logic_misc.all;
 
 library work;
 use work.types_pkg.all;
@@ -39,6 +40,8 @@ port(
 
     trigger_unit_i          : in trigger_unit_array_t (23 downto 0);
 
+    active_vfats_o          : out std_logic_vector (23 downto 0);
+
     overflow_o              : out std_logic
 
 );
@@ -58,8 +61,11 @@ architecture Behavioral of sbits is
 
     signal sbits                    : std_logic_vector (1535 downto 0);
 
+    signal active_vfats_s1          : std_logic_vector (191 downto 0);
+
 begin
 
+    -- don't need to do a 180 on the clock-- use local inverters for deserialization to save 1 global clock
     clk160_180 <= not clk160_i;
 
     sbits_p <=  trigger_unit_i(23).trig_data_p
@@ -172,18 +178,21 @@ begin
 
         sbits_p => sbits_p,
         sbits_n => sbits_n,
+
         start_of_frame_p => start_of_frame_p,
         start_of_frame_n => start_of_frame_n,
 
 
-        fastclk_0    =>  clk160_i,
-        fastclk_90   =>  clk160_90_i,
-        fastclk_180  =>  clk160_180,
-        clock        =>  clk40_i,
+        fastclk_0   => clk160_i,
+        fastclk_90  => clk160_90_i,
+        fastclk_180 => clk160_180,
+        clock       => clk40_i,
 
         phase_err => open,
         sbits => sbits
     );
+
+    -- combinatorial renaming for input to module
 
     vfat_sbits (0)  <= sbits (63   downto 0);
     vfat_sbits (1)  <= sbits (127  downto 64);
@@ -209,6 +218,28 @@ begin
     vfat_sbits (21) <= sbits (1407 downto 1344);
     vfat_sbits (22) <= sbits (1471 downto 1408);
     vfat_sbits (23) <= sbits (1535 downto 1472);
+
+    -- I don't want to do 64 bit reduction in 1 clock... split it over 2 to add slack to PAR and timing
+
+    active_vfat_s1 : for I in 0 to (191) generate
+    begin
+    process (clk40_i)
+    begin
+        if (rising_edge(clk40_i)) then
+            active_vfats_s1 (I)   <= or_reduce (sbits (8*(I+1)-1 downto (8*I)));
+        end if;
+    end process;
+    end generate;
+
+    active_vfat_s2 : for I in 0 to (23) generate
+    begin
+    process (clk40_i)
+    begin
+        if (rising_edge(clk40_i)) then
+            active_vfats_o (I)   <= or_reduce (active_vfats_s1 (8*(I+1)-1 downto (8*I)));
+        end if;
+    end process;
+    end generate;
 
     cluster_packer_inst : entity work.cluster_packer
     port map(
@@ -252,12 +283,5 @@ begin
         cluster7            => vfat_sbit_clusters_o(7),
         overflow            => overflow_o
     );
-
---    gen_con : for i in 0 to 23 generate
---    begin
---
---        trig0(((i + 1) * 8 - 1) downto (i * 8)) <= vfat2_sbits_i(i);
---
---    end generate;
 
 end Behavioral;

@@ -16,38 +16,34 @@ package wb_pkg is
     constant WB_ERR_SLAVE       : std_logic_vector(3 downto 0) := x"E";
     constant WB_ERR_TIMEOUT     : std_logic_vector(3 downto 0) := x"F";
 
+    constant WB_ERR_I2C_CHIPID  : std_logic_vector(3 downto 0) := x"1";
+    constant WB_ERR_I2C_REG     : std_logic_vector(3 downto 0) := x"2";
+    constant WB_ERR_I2C_ACK     : std_logic_vector(3 downto 0) := x"3";
+
     --== Wishbone masters ==--
 
-    constant WB_MASTERS         : positive := 6;
-    constant WB_MST_GBT         : integer  := 1;
+	constant WB_MASTERS         : positive := 1;
+    constant WB_MST_GBT         : integer  := 0;
 
     --== Wishbone slaves ==--
 
-    constant WB_SLAVES          : positive := 15;
+	constant WB_SLAVES          : positive := 3;
 
-    constant WB_SLV_CNT         : integer := 12;
-    constant WB_SLV_SYS         : integer := 13;
-    constant WB_SLV_STAT        : integer := 14;
+    constant WB_SLV_CNT         : integer := 0;
+
+    constant WB_SLV_SYS         : integer := 1;
+
+    constant WB_SLV_STAT        : integer := 2;
 
     --== Wishbone addresses ==--
 
-    constant WB_ADDR_I2C        : std_logic_vector(7 downto 0) := x"40";
-    constant WB_ADDR_EI2C       : std_logic_vector(7 downto 0) := x"41";
-    constant WB_ADDR_SCAN       : std_logic_vector(7 downto 0) := x"42";
-    constant WB_ADDR_T1         : std_logic_vector(7 downto 0) := x"43";
-    constant WB_ADDR_DAC        : std_logic_vector(7 downto 0) := x"44";
-
-    constant WB_ADDR_ADC        : std_logic_vector(7 downto 0) := x"48";
-    constant WB_ADDR_CLK        : std_logic_vector(7 downto 0) := x"49";
-    constant WB_ADDR_CNT        : std_logic_vector(7 downto 0) := x"4A";
-    constant WB_ADDR_SYS        : std_logic_vector(7 downto 0) := x"4B";
-    constant WB_ADDR_STAT       : std_logic_vector(7 downto 0) := x"4C";
-
-    constant WB_ADDR_USCAN      : std_logic_vector(7 downto 0) := x"4D";
+    constant WB_ADDR_CNT        : std_logic_vector(7 downto 0) := x"40";
+    constant WB_ADDR_SYS        : std_logic_vector(7 downto 0) := x"41";
+    constant WB_ADDR_STAT       : std_logic_vector(7 downto 0) := x"42";
 
     --== Wishbone address selection & generation ==--
 
-    function wb_addr_sel(signal addr : in std_logic_vector(31 downto 0)) return integer;
+	function wb_addr_sel(signal addr : in std_logic_vector(31 downto 0)) return integer;
 
 end wb_pkg;
 
@@ -58,12 +54,15 @@ package body wb_pkg is
     function wb_addr_sel(signal addr : in std_logic_vector(31 downto 0)) return integer is
         variable sel : integer;
     begin
+
+        -- lowest 8 bits are used by the wishbone splitters as individual register addresses
+
         -- Counters
-        if    (std_match(addr, WB_ADDR_CNT  & "0000000000000000--------")) then sel := WB_SLV_CNT;
+        if    (std_match(addr, WB_ADDR_CNT   & "0000000000000000--------")) then sel := WB_SLV_CNT;
         -- System
-        elsif (std_match(addr, WB_ADDR_SYS  & "0000000000000000--------")) then sel := WB_SLV_SYS;
+        elsif (std_match(addr, WB_ADDR_SYS   & "0000000000000000--------")) then sel := WB_SLV_SYS;
         -- Status
-        elsif (std_match(addr, WB_ADDR_STAT & "0000000000000000--------")) then sel := WB_SLV_STAT;
+        elsif (std_match(addr, WB_ADDR_STAT  & "0000000000000000--------")) then sel := WB_SLV_STAT;
         --
         else sel := 99;
         end if;

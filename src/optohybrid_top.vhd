@@ -53,13 +53,13 @@ port(
 
     led_o   : out std_logic_vector (15 downto 0);
 
-    gbt_txvalid : out std_logic;
-    gbt_txready : in std_logic;
+    gbt_txvalid_o : out std_logic;
+    gbt_txready_i : in std_logic;
 
-    gbt_rxvalid : in std_logic;
-    gbt_rxready : in std_logic;
+    gbt_rxvalid_i : in std_logic;
+    gbt_rxready_i : in std_logic;
 
-    ext_reset   : out std_logic_vector (11 downto 0);
+    ext_reset_o : out std_logic_vector (11 downto 0);
 
     --== VFAT Mezzanine ==--
 
@@ -72,105 +72,13 @@ port(
     mgt_tx_p_o  : out std_logic_vector(3 downto 0);
     mgt_tx_n_o  : out std_logic_vector(3 downto 0);
 
-    --== VFAT2s Data ==--
+    --== VFAT Trigger Data ==--
 
-    vfat0_sof_p_i  : in std_logic;
-    vfat0_sof_n_i  : in std_logic;
-    vfat1_sof_p_i  : in std_logic;
-    vfat1_sof_n_i  : in std_logic;
-    vfat2_sof_p_i  : in std_logic;
-    vfat2_sof_n_i  : in std_logic;
-    vfat3_sof_p_i  : in std_logic;
-    vfat3_sof_n_i  : in std_logic;
-    vfat4_sof_p_i  : in std_logic;
-    vfat4_sof_n_i  : in std_logic;
-    vfat5_sof_p_i  : in std_logic;
-    vfat5_sof_n_i  : in std_logic;
-    vfat6_sof_p_i  : in std_logic;
-    vfat6_sof_n_i  : in std_logic;
-    vfat7_sof_p_i  : in std_logic;
-    vfat7_sof_n_i  : in std_logic;
-    vfat8_sof_p_i  : in std_logic;
-    vfat8_sof_n_i  : in std_logic;
-    vfat9_sof_p_i  : in std_logic;
-    vfat9_sof_n_i  : in std_logic;
-    vfat10_sof_p_i : in std_logic;
-    vfat10_sof_n_i : in std_logic;
-    vfat11_sof_p_i : in std_logic;
-    vfat11_sof_n_i : in std_logic;
-    vfat12_sof_p_i : in std_logic;
-    vfat12_sof_n_i : in std_logic;
-    vfat13_sof_p_i : in std_logic;
-    vfat13_sof_n_i : in std_logic;
-    vfat14_sof_p_i : in std_logic;
-    vfat14_sof_n_i : in std_logic;
-    vfat15_sof_p_i : in std_logic;
-    vfat15_sof_n_i : in std_logic;
-    vfat16_sof_p_i : in std_logic;
-    vfat16_sof_n_i : in std_logic;
-    vfat17_sof_p_i : in std_logic;
-    vfat17_sof_n_i : in std_logic;
-    vfat18_sof_p_i : in std_logic;
-    vfat18_sof_n_i : in std_logic;
-    vfat19_sof_p_i : in std_logic;
-    vfat19_sof_n_i : in std_logic;
-    vfat20_sof_p_i : in std_logic;
-    vfat20_sof_n_i : in std_logic;
-    vfat21_sof_p_i : in std_logic;
-    vfat21_sof_n_i : in std_logic;
-    vfat22_sof_p_i : in std_logic;
-    vfat22_sof_n_i : in std_logic;
-    vfat23_sof_p_i : in std_logic;
-    vfat23_sof_n_i : in std_logic;
+    vfat_sof_p     : in std_logic_vector (23 downto 0);
+    vfat_sof_n     : in std_logic_vector (23 downto 0);
 
-    vfat0_sbits_p_i  : in std_logic_vector(7 downto 0);
-    vfat0_sbits_n_i  : in std_logic_vector(7 downto 0);
-    vfat1_sbits_p_i  : in std_logic_vector(7 downto 0);
-    vfat1_sbits_n_i  : in std_logic_vector(7 downto 0);
-    vfat2_sbits_p_i  : in std_logic_vector(7 downto 0);
-    vfat2_sbits_n_i  : in std_logic_vector(7 downto 0);
-    vfat3_sbits_p_i  : in std_logic_vector(7 downto 0);
-    vfat3_sbits_n_i  : in std_logic_vector(7 downto 0);
-    vfat4_sbits_p_i  : in std_logic_vector(7 downto 0);
-    vfat4_sbits_n_i  : in std_logic_vector(7 downto 0);
-    vfat5_sbits_p_i  : in std_logic_vector(7 downto 0);
-    vfat5_sbits_n_i  : in std_logic_vector(7 downto 0);
-    vfat6_sbits_p_i  : in std_logic_vector(7 downto 0);
-    vfat6_sbits_n_i  : in std_logic_vector(7 downto 0);
-    vfat7_sbits_p_i  : in std_logic_vector(7 downto 0);
-    vfat7_sbits_n_i  : in std_logic_vector(7 downto 0);
-    vfat8_sbits_p_i  : in std_logic_vector(7 downto 0);
-    vfat8_sbits_n_i  : in std_logic_vector(7 downto 0);
-    vfat9_sbits_p_i  : in std_logic_vector(7 downto 0);
-    vfat9_sbits_n_i  : in std_logic_vector(7 downto 0);
-    vfat10_sbits_p_i : in std_logic_vector(7 downto 0);
-    vfat10_sbits_n_i : in std_logic_vector(7 downto 0);
-    vfat11_sbits_p_i : in std_logic_vector(7 downto 0);
-    vfat11_sbits_n_i : in std_logic_vector(7 downto 0);
-    vfat12_sbits_p_i : in std_logic_vector(7 downto 0);
-    vfat12_sbits_n_i : in std_logic_vector(7 downto 0);
-    vfat13_sbits_p_i : in std_logic_vector(7 downto 0);
-    vfat13_sbits_n_i : in std_logic_vector(7 downto 0);
-    vfat14_sbits_p_i : in std_logic_vector(7 downto 0);
-    vfat14_sbits_n_i : in std_logic_vector(7 downto 0);
-    vfat15_sbits_p_i : in std_logic_vector(7 downto 0);
-    vfat15_sbits_n_i : in std_logic_vector(7 downto 0);
-    vfat16_sbits_p_i : in std_logic_vector(7 downto 0);
-    vfat16_sbits_n_i : in std_logic_vector(7 downto 0);
-    vfat17_sbits_p_i : in std_logic_vector(7 downto 0);
-    vfat17_sbits_n_i : in std_logic_vector(7 downto 0);
-    vfat18_sbits_p_i : in std_logic_vector(7 downto 0);
-    vfat18_sbits_n_i : in std_logic_vector(7 downto 0);
-    vfat19_sbits_p_i : in std_logic_vector(7 downto 0);
-    vfat19_sbits_n_i : in std_logic_vector(7 downto 0);
-    vfat20_sbits_p_i : in std_logic_vector(7 downto 0);
-    vfat20_sbits_n_i : in std_logic_vector(7 downto 0);
-    vfat21_sbits_p_i : in std_logic_vector(7 downto 0);
-    vfat21_sbits_n_i : in std_logic_vector(7 downto 0);
-    vfat22_sbits_p_i : in std_logic_vector(7 downto 0);
-    vfat22_sbits_n_i : in std_logic_vector(7 downto 0);
-    vfat23_sbits_p_i : in std_logic_vector(7 downto 0);
-    vfat23_sbits_n_i : in std_logic_vector(7 downto 0)
+    vfat_sbits_p : in std_logic_vector (191 downto 0);
+    vfat_sbits_n : in std_logic_vector (191 downto 0)
 
 );
 end optohybrid_top;
@@ -181,58 +89,77 @@ architecture Behavioral of optohybrid_top is
 
     signal sbit_overflow : std_logic;
     signal cluster_count : std_logic_vector     (7  downto 0);
+    signal active_vfats  : std_logic_vector     (23 downto 0);
 
     --== Global signals ==--
 
-    signal mmcms_locked : std_logic;
+    signal mmcms_locked     : std_logic;
+    signal dskw_mmcm_locked : std_logic;
+    signal eprt_mmcm_locked : std_logic;
 
-    signal clock        : std_logic;
+    signal clock            : std_logic;
 
-    signal gbt_clk1x    : std_logic;
-    signal gbt_clk8x    : std_logic;
+    signal gbt_clk1x        : std_logic;
+    signal gbt_clk8x        : std_logic;
 
-    signal clk_1x       : std_logic;
-    signal clk_2x       : std_logic;
-    signal clk_4x       : std_logic;
-    signal clk_4x_90    : std_logic;
+    signal clk_1x           : std_logic;
+    signal clk_2x           : std_logic;
+    signal clk_4x           : std_logic;
+    signal clk_4x_90        : std_logic;
 
-    signal mgt_refclk   : std_logic;
-    signal reset        : std_logic;
+    signal gbt_txvalid      : std_logic;
+    signal gbt_txready      : std_logic;
+    signal gbt_rxvalid      : std_logic;
+    signal gbt_rxready      : std_logic;
 
-    signal clock_source : std_logic;
+    signal gbt_link_error   : std_logic;
 
-    signal ttc_resync   : std_logic;
-    signal ttc_l1a      : std_logic;
-    signal ttc_bc0      : std_logic;
+    signal mgt_refclk       : std_logic;
+    signal reset            : std_logic;
 
-    --== Wishbone signals ==--
+    signal clock_source     : std_logic;
+
+    signal ttc_resync       : std_logic;
+    signal ttc_l1a          : std_logic;
+    signal ttc_bc0          : std_logic;
+
+    --== Wishbone ==--
 
     signal wb_m_req : wb_req_array_t((WB_MASTERS - 1) downto 0);
     signal wb_m_res : wb_res_array_t((WB_MASTERS - 1) downto 0);
-    signal wb_s_req : wb_req_array_t((WB_SLAVES - 1) downto 0);
-    signal wb_s_res : wb_res_array_t((WB_SLAVES - 1) downto 0);
-
 
     --== Configuration ==--
 
-    signal sys_loop_sbit  : std_logic_vector(4 downto 0);
     signal vfat_reset     : std_logic;
     signal sbit_mask      : std_logic_vector(23 downto 0);
-    signal sys_sbit_sel   : std_logic_vector(29 downto 0);
-    signal sys_sbit_mode  : std_logic_vector(1 downto 0);
 
     signal sem_correction : std_logic;
     signal sem_critical   : std_logic;
 
+    --== Stupid HDMI ==--
 
-
+    signal ext_trigger_i  : std_logic;
+    signal ext_sbits_o    : std_logic_vector(5  downto 0);
 
 begin
 
+    -- internal wiring
     reset       <= '0';
     gbt_txvalid <= '1';
-    ext_reset   <= (others => reset);
     clock       <= clk_1x;
+
+
+    -- external wiring
+
+    ext_trigger_i <= hdmi_p(0);
+    ext_sbits_o   <= hdmi_n(3 downto 0) & hdmi_p(3 downto 2);
+
+    gbt_txvalid_o <= gbt_txvalid;
+    gbt_rxready   <= gbt_rxready_i;
+    gbt_rxvalid   <= gbt_rxvalid_i;
+    gbt_txready   <= gbt_txready_i;
+
+    ext_reset_o   <= (others => reset);
 
     --==============--
     --== Clocking ==--
@@ -249,8 +176,8 @@ begin
 
         mmcms_locked_o     => mmcms_locked,
 
-        eprt_mmcm_locked_o => open,
-        dskw_mmcm_locked_o => open,
+        eprt_mmcm_locked_o => eprt_mmcm_locked,
+        dskw_mmcm_locked_o => dskw_mmcm_locked,
 
         gbt_clk1x_o        => gbt_clk1x, -- 40  MHz e-port aligned GBT clock (DO NOT SHIFT)
         gbt_clk8x_o        => gbt_clk8x, -- 320 MHz e-port aligned GBT clock (DO NOT SHIFT)
@@ -261,50 +188,11 @@ begin
         clk_4x_90_o        => clk_4x_90
     );
 
-    --=====================--
-    --== Wishbone switch ==--
-    --=====================--
-
-    -- This module is the Wishbone switch which redirects requests from the masters to the slaves.
-
-    wb_switch_inst : entity work.wb_switch
-    port map(
-        ref_clk_i   => clock,
-        reset_i     => reset,
-
-        wb_req_i    => wb_m_req,
-        wb_req_o    => wb_s_req,
-
-        wb_res_i    => wb_s_res,
-        wb_res_o    => wb_m_res
-    );
-
-    --===================--
-    --== Configuration ==--
-    --===================--
-
-    sys_inst : entity work.sys
-    port map(
-        ref_clk_i           => clock,
-        reset_i             => reset,
-
-        wb_slv_req_i        => wb_s_req(WB_SLV_SYS),
-        wb_slv_res_o        => wb_s_res(WB_SLV_SYS),
-
-      --vfat_reset_o        => vfat_reset,
-        vfat_sbit_mask_o    => sbit_mask,
-        sys_loop_sbit_o     => sys_loop_sbit,
-        sys_sbit_sel_o      => sys_sbit_sel,
-        sys_sbit_mode_o     => sys_sbit_mode
-
-        --sem_critical_i      => sem_critical
-    );
-
     --=========--
     --== GBT ==--
     --=========--
 
-    gbt_controller : entity work.gbt_controller
+    gbt_io : entity work.gbt_io
     port map(
 
         -- reset
@@ -324,6 +212,10 @@ begin
         elink_o_p  =>  elink_o_p,
         elink_o_n  =>  elink_o_n,
 
+        -- status
+
+        gbt_link_error_o => gbt_link_error,
+
         -- wishbone master
         wb_mst_req_o    => wb_m_req(WB_MST_GBT),
         wb_mst_res_i    => wb_m_res(WB_MST_GBT),
@@ -335,24 +227,91 @@ begin
 
     );
 
+    --=============--
+    --== Control ==--
+    --=============--
 
-    --=========================--
-    --== Trigger Data        ==--
-    --=========================--
+    control : entity work.control
+    port map (
+
+        --== TTC ==--
+
+        clock_i                =>   clock,
+        gbt_clock_i            =>   gbt_clk1x,
+        reset_i                =>   reset,
+
+        ttc_l1a                =>   ttc_l1a,
+        ttc_bc0                =>   ttc_bc0,
+        ttc_resync             =>   ttc_resync,
+
+        wb_m_req_i             =>   wb_m_req,
+        wb_m_res_o             =>   wb_m_res,
+
+        -------------------
+        -- status inputs --
+        -------------------
+
+        -- MMCM
+        mmcms_locked_i     => mmcms_locked,
+        dskw_mmcm_locked_i => dskw_mmcm_locked,
+        eprt_mmcm_locked_i => eprt_mmcm_locked,
+
+        -- SEM
+        sem_critical_i => sem_critical,
+
+        -- GBT
+
+        gbt_rxready_i => gbt_rxready,
+        gbt_rxvalid_i => gbt_rxvalid,
+        gbt_txready_i => gbt_txready,
+        gbt_txvalid_i => gbt_txvalid,
+
+        -- Trigger
+
+        active_vfats_i  => active_vfats,
+        sbit_overflow_i => sbit_overflow,
+        cluster_count_i => cluster_count,
+
+        -- GBT
+        gbt_link_error_i => gbt_link_error,
+
+        -- SEM
+        sem_correction_i => sem_correction,
+
+        -- HDMI
+        ext_trigger_i => ext_trigger_i,
+
+        --------------------
+        -- config outputs --
+        --------------------
+
+        -- VFAT
+        vfat_reset_o => vfat_reset,
+        sbit_mask_o  => sbit_mask,
+        ext_sbits_o  => ext_sbits_o,
+
+        -- LEDs
+        led_o => led_o
+
+    );
+
+    --==================--
+    --== Trigger Data ==--
+    --==================--
 
     trigger : entity work.trigger
     port map (
 
         -- reset
-        reset => reset,
+        reset  => reset,
 
         -- clocks
         mgt_clk_p => mgt_clk_p_i,
         mgt_clk_n => mgt_clk_n_i,
 
-        clk_40 => clk_1x,
-        clk_80 => clk_2x,
-        clk_160 => clk_4x,
+        clk_40     => clk_1x,
+        clk_80     => clk_2x,
+        clk_160    => clk_4x,
         clk_160_90 => clk_4x_90,
 
         -- mgt pairs
@@ -365,131 +324,19 @@ begin
         cluster_count_o => cluster_count,
         overflow_o      => sbit_overflow,
 
+        -- sbit_ors
+
+        active_vfats_o   => active_vfats,
+
         -- sbits follow
 
-        vfat0_sbits_p_i  => vfat0_sbits_p_i,
-        vfat0_sbits_n_i  => vfat0_sbits_n_i,
-        vfat1_sbits_p_i  => vfat1_sbits_p_i,
-        vfat1_sbits_n_i  => vfat1_sbits_n_i,
-        vfat2_sbits_p_i  => vfat2_sbits_p_i,
-        vfat2_sbits_n_i  => vfat2_sbits_n_i,
-        vfat3_sbits_p_i  => vfat3_sbits_p_i,
-        vfat3_sbits_n_i  => vfat3_sbits_n_i,
-        vfat4_sbits_p_i  => vfat4_sbits_p_i,
-        vfat4_sbits_n_i  => vfat4_sbits_n_i,
-        vfat5_sbits_p_i  => vfat5_sbits_p_i,
-        vfat5_sbits_n_i  => vfat5_sbits_n_i,
-        vfat6_sbits_p_i  => vfat6_sbits_p_i,
-        vfat6_sbits_n_i  => vfat6_sbits_n_i,
-        vfat7_sbits_p_i  => vfat7_sbits_p_i,
-        vfat7_sbits_n_i  => vfat7_sbits_n_i,
-        vfat8_sbits_p_i  => vfat8_sbits_p_i,
-        vfat8_sbits_n_i  => vfat8_sbits_n_i,
-        vfat9_sbits_p_i  => vfat9_sbits_p_i,
-        vfat9_sbits_n_i  => vfat9_sbits_n_i,
-        vfat10_sbits_p_i => vfat10_sbits_p_i,
-        vfat10_sbits_n_i => vfat10_sbits_n_i,
-        vfat11_sbits_p_i => vfat11_sbits_p_i,
-        vfat11_sbits_n_i => vfat11_sbits_n_i,
-        vfat12_sbits_p_i => vfat12_sbits_p_i,
-        vfat12_sbits_n_i => vfat12_sbits_n_i,
-        vfat13_sbits_p_i => vfat13_sbits_p_i,
-        vfat13_sbits_n_i => vfat13_sbits_n_i,
-        vfat14_sbits_p_i => vfat14_sbits_p_i,
-        vfat14_sbits_n_i => vfat14_sbits_n_i,
-        vfat15_sbits_p_i => vfat15_sbits_p_i,
-        vfat15_sbits_n_i => vfat15_sbits_n_i,
-        vfat16_sbits_p_i => vfat16_sbits_p_i,
-        vfat16_sbits_n_i => vfat16_sbits_n_i,
-        vfat17_sbits_p_i => vfat17_sbits_p_i,
-        vfat17_sbits_n_i => vfat17_sbits_n_i,
-        vfat18_sbits_p_i => vfat18_sbits_p_i,
-        vfat18_sbits_n_i => vfat18_sbits_n_i,
-        vfat19_sbits_p_i => vfat19_sbits_p_i,
-        vfat19_sbits_n_i => vfat19_sbits_n_i,
-        vfat20_sbits_p_i => vfat20_sbits_p_i,
-        vfat20_sbits_n_i => vfat20_sbits_n_i,
-        vfat21_sbits_p_i => vfat21_sbits_p_i,
-        vfat21_sbits_n_i => vfat21_sbits_n_i,
-        vfat22_sbits_p_i => vfat22_sbits_p_i,
-        vfat22_sbits_n_i => vfat22_sbits_n_i,
-        vfat23_sbits_p_i => vfat23_sbits_p_i,
-        vfat23_sbits_n_i => vfat23_sbits_n_i,
+        vfat_sbits_p    => vfat_sbits_p,
+        vfat_sbits_n    => vfat_sbits_n,
 
-        vfat0_sof_p_i   => vfat0_sof_p_i,
-        vfat0_sof_n_i   => vfat0_sof_n_i,
-        vfat1_sof_p_i   => vfat1_sof_p_i,
-        vfat1_sof_n_i   => vfat1_sof_n_i,
-        vfat2_sof_p_i   => vfat2_sof_p_i,
-        vfat2_sof_n_i   => vfat2_sof_n_i,
-        vfat3_sof_p_i   => vfat3_sof_p_i,
-        vfat3_sof_n_i   => vfat3_sof_n_i,
-        vfat4_sof_p_i   => vfat4_sof_p_i,
-        vfat4_sof_n_i   => vfat4_sof_n_i,
-        vfat5_sof_p_i   => vfat5_sof_p_i,
-        vfat5_sof_n_i   => vfat5_sof_n_i,
-        vfat6_sof_p_i   => vfat6_sof_p_i,
-        vfat6_sof_n_i   => vfat6_sof_n_i,
-        vfat7_sof_p_i   => vfat7_sof_p_i,
-        vfat7_sof_n_i   => vfat7_sof_n_i,
-        vfat8_sof_p_i   => vfat8_sof_p_i,
-        vfat8_sof_n_i   => vfat8_sof_n_i,
-        vfat9_sof_p_i   => vfat9_sof_p_i,
-        vfat9_sof_n_i   => vfat9_sof_n_i,
-        vfat10_sof_p_i  => vfat10_sof_p_i,
-        vfat10_sof_n_i  => vfat10_sof_n_i,
-        vfat11_sof_p_i  => vfat11_sof_p_i,
-        vfat11_sof_n_i  => vfat11_sof_n_i,
-        vfat12_sof_p_i  => vfat12_sof_p_i,
-        vfat12_sof_n_i  => vfat12_sof_n_i,
-        vfat13_sof_p_i  => vfat13_sof_p_i,
-        vfat13_sof_n_i  => vfat13_sof_n_i,
-        vfat14_sof_p_i  => vfat14_sof_p_i,
-        vfat14_sof_n_i  => vfat14_sof_n_i,
-        vfat15_sof_p_i  => vfat15_sof_p_i,
-        vfat15_sof_n_i  => vfat15_sof_n_i,
-        vfat16_sof_p_i  => vfat16_sof_p_i,
-        vfat16_sof_n_i  => vfat16_sof_n_i,
-        vfat17_sof_p_i  => vfat17_sof_p_i,
-        vfat17_sof_n_i  => vfat17_sof_n_i,
-        vfat18_sof_p_i  => vfat18_sof_p_i,
-        vfat18_sof_n_i  => vfat18_sof_n_i,
-        vfat19_sof_p_i  => vfat19_sof_p_i,
-        vfat19_sof_n_i  => vfat19_sof_n_i,
-        vfat20_sof_p_i  => vfat20_sof_p_i,
-        vfat20_sof_n_i  => vfat20_sof_n_i,
-        vfat21_sof_p_i  => vfat21_sof_p_i,
-        vfat21_sof_n_i  => vfat21_sof_n_i,
-        vfat22_sof_p_i  => vfat22_sof_p_i,
-        vfat22_sof_n_i  => vfat22_sof_n_i,
-        vfat23_sof_p_i  => vfat23_sof_p_i,
-        vfat23_sof_n_i  => vfat23_sof_n_i
+        vfat_sof_p    => vfat_sof_p,
+        vfat_sof_n    => vfat_sof_n
 
     );
-
-    --==========--
-    --== LEDS ==--
-    --==========--
-
-    led_control : entity work.led_control
-    port map (
-        -- reset
-        reset         => reset,
-
-        -- clocks
-        clock         => clk_1x,
-        gbt_eclk      => gbt_clk1x,
-
-        -- signals
-        mmcm_locked   => mmcms_locked,
-        gbt_rxready   => gbt_rxready ,
-        gbt_rxvalid   => gbt_rxvalid,
-        cluster_count => cluster_count,
-
-        -- led outputs
-        led_out       => led_o
-    );
-
 
     --=========--
     --== SEM ==--

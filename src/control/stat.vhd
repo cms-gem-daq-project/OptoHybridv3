@@ -4,17 +4,11 @@
 --
 -- Create Date:    08:44:34 08/18/2015
 -- Design Name:    OptoHybrid v2
--- Module Name:    sys - Behavioral
+-- Module Name:    stat - Behavioral
 -- Project Name:   OptoHybrid v2
 -- Target Devices: xc6vlx130t-1ff1156
 -- Tool versions:  ISE  P.20131013
 -- Description:
---
--- 0 : VFAT2 mask for tracking data - 24 bits
--- 1 : VFAT2 T1 selection
--- 2 : VFAT2 reset
--- 3 : referenc clock select
--- 4 : SBit select
 --
 ----------------------------------------------------------------------------------
 
@@ -24,10 +18,11 @@ use ieee.numeric_std.all;
 
 library work;
 use work.types_pkg.all;
+use work.param_pkg.all;
 
-entity sys is
+entity stat is
 generic(
-    N                   : integer := 11
+    N               : integer := 5
 );
 port(
 
@@ -38,18 +33,25 @@ port(
     wb_slv_req_i        : in wb_req_t;
     wb_slv_res_o        : out wb_res_t;
 
-    --
-    sys_sbit_sel_o      : out std_logic_vector(29 downto 0);
-    sys_loop_sbit_o     : out std_logic_vector(4 downto 0);
-    sys_sbit_mode_o     : out std_logic_vector (1 downto 0);
+    -- MMCM
+    mmcms_locked_i       : in std_logic;
+    dskw_mmcm_locked_i   : in std_logic;
+    eprt_mmcm_locked_i   : in std_logic;
 
-    vfat_reset_o       : out std_logic;
-    vfat_sbit_mask_o   : out std_logic_vector(23 downto 0)
+    -- SEM
+    sem_critical_i      : in std_logic;
+
+    -- GBT
+
+    gbt_rxready_i : in std_logic;
+    gbt_rxvalid_i : in std_logic;
+    gbt_txready_i : in std_logic;
+    gbt_txvalid_i : in std_logic
 
 );
-end sys;
+end stat;
 
-architecture Behavioral of sys is
+architecture Behavioral of stat is
 
     -- Signals from the Wishbone Hub
     signal wb_stb       : std_logic_vector((N - 1) downto 0);
@@ -87,39 +89,27 @@ begin
         data_i      => reg_data
     );
 
-    --===============--
-    --== Registers ==--
-    --===============--
+    --========================--
+    --== Automatic response ==--
+    --========================--
 
-    registers_inst : entity work.registers
-    generic map(
-        SIZE        => N
-    )
-    port map(
-        ref_clk_i   => ref_clk_i,
-        reset_i     => reset_i,
-        stb_i       => wb_stb,
-        we_i        => wb_we,
-        data_i      => wb_data,
-        ack_o       => reg_ack,
-        err_o       => reg_err,
-        data_o      => reg_data
-    );
+    ack_err_loop : for I in 0 to (N - 1) generate
+    begin
+
+        reg_ack(I) <= wb_stb(I);
+        reg_err(I) <= '0';
+
+    end generate;
 
     --=============--
     --== Mapping ==--
     --=============--
 
+    reg_data(0) <= RELEASE_YEAR & RELEASE_MONTH & RELEASE_DAY;
+    reg_data(1) <= (31 downto 3 => '0') & eprt_mmcm_locked_i & dskw_mmcm_locked_i & mmcms_locked_i;
+    reg_data(2) <= (31 downto 1 => '0') & sem_critical_i;
+    reg_data(3) <= (31 downto 4 => '0') & gbt_rxready_i & gbt_rxvalid_i & gbt_txready_i & gbt_txvalid_i;
 
-    sys_loop_sbit_o <= reg_data(2)(4 downto 0);
-
-    vfat_reset_o <= wb_stb(3) and wb_we;
-
-    vfat_sbit_mask_o <= reg_data(4)(23 downto 0);
-
-    sys_sbit_sel_o <= reg_data(5)(29 downto 0);
-
-    sys_sbit_mode_o <= reg_data(8)(1 downto 0);
 
 end Behavioral;
 

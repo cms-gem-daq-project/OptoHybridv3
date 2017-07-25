@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------------
 -- CMS Muon Endcap
 -- GEM Collaboration
--- Optohybrid v3 Firmware -- GBT Controller
+-- Optohybrid v3 Firmware -- GBT io
 -- 2017/07/24 -- Initial. Wrapper around GBT components to simplify top-level
 ----------------------------------------------------------------------------------
 
@@ -15,7 +15,7 @@ library work;
 use work.types_pkg.all;
 use work.wb_pkg.all;
 
-entity gbt_controller is
+entity gbt_io is
 generic(
     DEBUG : boolean := FALSE
 );
@@ -34,6 +34,8 @@ port(
     elink_o_p : out std_logic_vector (1 downto 0);
     elink_o_n : out std_logic_vector (1 downto 0);
 
+    gbt_link_error_o : out std_logic;
+
     l1a_o    : out std_logic;
     bc0_o    : out std_logic;
     resync_o : out std_logic;
@@ -43,18 +45,15 @@ port(
     wb_mst_res_i : in  wb_res_t
 );
 
-end gbt_controller;
+end gbt_io;
 
-architecture Behavioral of gbt_controller is
+architecture Behavioral of gbt_io is
 
     signal gbt_dout  : std_logic_vector(15 downto 0) := (others => '0');
     signal gbt_din   : std_logic_vector(15 downto 0) := (others => '0');
 
     signal gbt_valid      : std_logic;
     signal gbt_sync_reset : std_logic;
-
-    signal gbt_error : std_logic;
-    signal gbt_evt_sent : std_logic;
 
 begin
     --=========--
@@ -77,6 +76,7 @@ begin
 
        elink_i_p       => elink_i_p,   -- input e-links
        elink_i_n       => elink_i_n,   -- input e-links
+
 
        -- parallel data
        data_o           => gbt_din,           -- Parallel data out
@@ -110,8 +110,7 @@ begin
         bc0_o           => bc0_o,
 
         -- outputs
-        error_o         => gbt_error,
-        evt_sent_o      => gbt_evt_sent,
+        error_o         => gbt_link_error_o,
 
         -- slow reset
         sync_reset_o    => gbt_sync_reset

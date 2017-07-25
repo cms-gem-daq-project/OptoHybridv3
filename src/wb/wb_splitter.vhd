@@ -1,14 +1,14 @@
 ----------------------------------------------------------------------------------
 -- Company:        IIHE - ULB
 -- Engineer:       Thomas Lenzi (thomas.lenzi@cern.ch)
--- 
--- Create Date:    08:20:43 08/11/2015 
+--
+-- Create Date:    08:20:43 08/11/2015
 -- Design Name:    OptoHybrid v2
--- Module Name:    wb_splitter - Behavioral 
+-- Module Name:    wb_splitter - Behavioral
 -- Project Name:   OptoHybrid v2
 -- Target Devices: xc6vlx130t-1ff1156
 -- Tool versions:  ISE  P.20131013
--- Description: 
+-- Description:
 --
 -- Splits a Wishbone request in individual signal busses or forwards the request
 --
@@ -25,32 +25,32 @@ use work.wb_pkg.all;
 
 entity wb_splitter is
 generic(
-    
+
     -- Parameters of the split
-    SIZE        : integer := 8;    
+    SIZE        : integer := 8;
     OFFSET      : integer := 0
-    
+
 );
 port(
 
     ref_clk_i   : in std_logic;
     reset_i     : in std_logic;
-    
+
     -- Wishbone slave
-    wb_req_i    : in wb_req_t;
-    wb_res_o    : out wb_res_t;
-    
+    wb_req_i    : in wb_req_t;  -- containts stb, we, addr, data
+    wb_res_o    : out wb_res_t; -- contains ack, stat, data
+
     -- Request
-    stb_o       : out std_logic_vector((SIZE - 1) downto 0);
-    we_o        : out std_logic;
+    stb_o       : out std_logic_vector((SIZE - 1) downto 0); -- The strobe output [STB_O] indicates a valid data transfer cycle.
+    we_o        : out std_logic; -- The write enable output [WE_O] indicates whether the current local bus cycle is a READ or WRITE cycle.
     addr_o      : out std_logic_vector(31 downto 0);
     data_o      : out std_logic_vector(31 downto 0);
-    
-    -- Response 
-    ack_i       : in std_logic_vector((SIZE - 1) downto 0);
-    err_i       : in std_logic_vector((SIZE - 1) downto 0);
-    data_i      : in std32_array_t((SIZE - 1) downto 0)
-    
+
+    -- Response
+    ack_i       : in std_logic_vector((SIZE - 1) downto 0); -- The acknowledge input [ACK_I], when asserted, indicates the normal termination of a bus cycle.
+    err_i       : in std_logic_vector((SIZE - 1) downto 0); -- The error input [ERR_I] indicates an abnormal cycle termination.
+    data_i      : in std32_array_t   ((SIZE - 1) downto 0)
+
 );
 end wb_splitter;
 
@@ -60,35 +60,35 @@ architecture Behavioral of wb_splitter is
     constant NBITS  : integer := integer(ceil(log2(real(SIZE))));
 
     type state_t is (IDLE, ACK);
-    
+
     signal state    : state_t;
-    
-    signal timeout  : unsigned(31 downto 0);
-    
+
+    signal timeout  : unsigned(31 downto 0) := x"ffffffff";
+
 begin
 
-    process(ref_clk_i)    
+    process(ref_clk_i)
         -- Selected data bus
-        variable sel_bus    : integer range 0 to (SIZE - 1);        
+        variable sel_bus    : integer range 0 to (SIZE - 1);
     begin
         if (rising_edge(ref_clk_i)) then
             -- Reset & default values
             if (reset_i = '1') then
                 wb_res_o <= (ack => '0', stat => (others => '0'), data => (others => '0'));
-                stb_o <= (others => '0');
-                we_o <= '0';
-                addr_o <= (others => '0');
-                data_o <= (others => '0');
-                sel_bus := 0;
-                state <= IDLE;
-                timeout <= (others => '0');
+                stb_o    <= (others => '0');
+                we_o     <= '0';
+                addr_o   <= (others => '0');
+                data_o   <= (others => '0');
+                sel_bus  := 0;
+                state    <= IDLE;
+                timeout  <= (others => '0');
             else
                 case state is
                     -- Wait for a strobe
                     when IDLE =>
                         -- Reset the acknowledgment
                         wb_res_o.ack <= '0';
-                        -- Handle an input strobe 
+                        -- Handle an input strobe
                         if (wb_req_i.stb = '1') then
                             -- Set timeout
                             timeout <= to_unsigned(WB_TIMEOUT - 4, 32);
@@ -99,7 +99,7 @@ begin
                             we_o <= wb_req_i.we;
                             addr_o <= wb_req_i.addr;
                             data_o <= wb_req_i.data;
-                            -- Acknowledgment 
+                            -- Acknowledgment
                             state <= ACK;
                         end if;
                     -- wait for the acknowledgment
@@ -126,14 +126,16 @@ begin
                         end if;
                     --
                     when others =>
+
+                        sel_bus  := 0;
+
+                        state    <= IDLE;
                         wb_res_o <= (ack => '0', stat => (others => '0'), data => (others => '0'));
-                        stb_o <= (others => '0');
-                        we_o <= '0';
-                        addr_o <= (others => '0');
-                        data_o <= (others => '0');
-                        sel_bus := 0;
-                        state <= IDLE;
-                        timeout <= (others => '0');
+                        stb_o    <= (others => '0');
+                        we_o     <= '0';
+                        addr_o   <= (others => '0');
+                        data_o   <= (others => '0');
+                        timeout  <= (others => '0');
                 end case;
             end if;
         end if;
