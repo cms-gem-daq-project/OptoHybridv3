@@ -1,5 +1,14 @@
+----------------------------------------------------------------------------------
+-- CMS Muon Endcap
+-- GEM Collaboration
+-- Optohybrid v3 Firmware -- Counters
+-- 2017/07/25 -- Initial. Wrapper around OH control modules
+-- 2017/07/25 -- Clear many synthesis warnings from module
+----------------------------------------------------------------------------------
+
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.std_logic_misc.all;
 
 use IEEE.Numeric_STD.all;
 
@@ -55,9 +64,6 @@ port(
     -- SEM
     sem_correction_i    : in std_logic;
 
-    -- HDMI
-    ext_trigger_i : in std_logic;
-
     --------------------
     -- config outputs --
     --------------------
@@ -68,11 +74,14 @@ port(
     ext_sbits_o         : out std_logic_vector(5 downto 0);
 
     -- LEDs
-    led_o              : out std_logic_vector(15 downto 0)
+    led_o              : out std_logic_vector(15 downto 0);
 
+    -- sump
 
+    sump_o : out std_logic
 
 );
+
 end control;
 
 architecture Behavioral of control is
@@ -83,6 +92,7 @@ architecture Behavioral of control is
     signal sys_sbit_sel   : std_logic_vector(29 downto 0);
     signal sys_sbit_mode  : std_logic_vector(1  downto 0);
     signal sys_loop_sbit  : std_logic_vector(4  downto 0);
+    signal cluster_rate  : std_logic_vector(31  downto 0);
 
     --== Wishbone ==--
 
@@ -90,6 +100,11 @@ architecture Behavioral of control is
 
     signal wb_s_req : wb_req_array_t((WB_SLAVES - 1) downto 0);
     signal wb_s_res : wb_res_array_t((WB_SLAVES - 1) downto 0);
+
+    signal wb_sump : std_logic;
+    signal sys_sump : std_logic;
+    signal stat_sump : std_logic;
+    signal counters_sump : std_logic;
 
 begin
 
@@ -130,9 +145,11 @@ begin
         vfat_sbit_mask_o    => sbit_mask,
         sys_loop_sbit_o     => sys_loop_sbit,
         sys_sbit_sel_o      => sys_sbit_sel,
-        sys_sbit_mode_o     => sys_sbit_mode
+        sys_sbit_mode_o     => sys_sbit_mode,
+
 
         --sem_critical_i      => sem_critical
+        sump_o              => sys_sump
     );
 
     --============--
@@ -159,7 +176,14 @@ begin
         dskw_mmcm_locked_i  => dskw_mmcm_locked_i,
         eprt_mmcm_locked_i  => eprt_mmcm_locked_i,
 
-        sem_critical_i      => sem_critical_i
+        -- sbits
+
+        cluster_rate_i      => cluster_rate,
+        -- sem
+
+        sem_critical_i      => sem_critical_i,
+
+        sump_o              => stat_sump
     );
 
     --==============--
@@ -195,7 +219,9 @@ begin
         eprt_mmcm_locked_i  => eprt_mmcm_locked_i,
         dskw_mmcm_locked_i  => dskw_mmcm_locked_i,
 
-        sem_correction_i    => sem_correction_i
+        sem_correction_i    => sem_correction_i,
+
+        sump_o              => counters_sump
     );
 
     --==========--
@@ -217,6 +243,8 @@ begin
         gbt_rxvalid   => gbt_rxvalid_i,
         cluster_count => cluster_count_i,
 
+        cluster_rate  => cluster_rate,
+
         -- led outputs
         led_out       => led_o
     );
@@ -231,8 +259,7 @@ begin
     external_inst : entity work.external
     port map(
         clock               => clock_i,
-        reset_i             => reset_i,
-        ext_trigger_i       => ext_trigger_i,
+
         active_vfats_i      => active_vfats_i,
 
         sys_sbit_mode_i     => sys_sbit_mode,
@@ -240,5 +267,21 @@ begin
         ext_sbits_o         => ext_sbits_o
     );
 
+    --=============--
+    --== Sump    ==--
+    --=============--
+
+    wb_sump <=  -- master
+                   or_reduce(wb_m_req_i(0).addr) or or_reduce(wb_m_req_i(0).data) or wb_m_req_i(0).we
+                or or_reduce(wb_m_res(0).stat) or or_reduce(wb_m_res(0).data)
+
+                -- slaves
+                or or_reduce(wb_s_req(0).data) or or_reduce(wb_s_req(1).data) or or_reduce(wb_s_req(2).data)
+                or or_reduce(wb_s_req(0).addr) or or_reduce(wb_s_req(1).addr) or or_reduce(wb_s_req(2).addr)
+                or or_reduce(wb_s_res(0).stat) or or_reduce(wb_s_res(1).stat) or or_reduce(wb_s_res(2).stat)
+                or or_reduce(wb_s_res(0).data) or or_reduce(wb_s_res(1).data) or or_reduce(wb_s_res(2).data)
+                or wb_s_req(0).we or wb_s_req(1).we or wb_s_req(2).we;
+
+    sump_o <= wb_sump or sys_sump or stat_sump or counters_sump;
 
 end Behavioral;

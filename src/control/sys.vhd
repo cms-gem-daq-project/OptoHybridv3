@@ -1,26 +1,15 @@
 ----------------------------------------------------------------------------------
--- Company:        IIHE - ULB
--- Engineer:       Thomas Lenzi (thomas.lenzi@cern.ch)
---
--- Create Date:    08:44:34 08/18/2015
--- Design Name:    OptoHybrid v2
--- Module Name:    sys - Behavioral
--- Project Name:   OptoHybrid v2
--- Target Devices: xc6vlx130t-1ff1156
--- Tool versions:  ISE  P.20131013
--- Description:
---
--- 0 : VFAT2 mask for tracking data - 24 bits
--- 1 : VFAT2 T1 selection
--- 2 : VFAT2 reset
--- 3 : referenc clock select
--- 4 : SBit select
---
+-- CMS Muon Endcap
+-- GEM Collaboration
+-- Optohybrid v3 Firmware -- Counters
+-- 2017/07/24 -- Initial port to version 3 electronics
+-- 2017/07/25 -- Clear synthesis warnings from module
 ----------------------------------------------------------------------------------
 
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+use ieee.std_logic_misc.all;
 
 library work;
 use work.types_pkg.all;
@@ -45,7 +34,11 @@ port(
     sys_sbit_mode_o     : out std_logic_vector (1 downto 0);
 
     vfat_reset_o       : out std_logic;
-    vfat_sbit_mask_o   : out std_logic_vector(23 downto 0)
+    vfat_sbit_mask_o   : out std_logic_vector(23 downto 0);
+
+    -- Sump
+
+    sump_o : out std_logic
 
 );
 end sys;
@@ -128,6 +121,12 @@ begin
     vfat_sbit_mask_o <= reg_data(4)(23 downto 0) ;
     sys_sbit_sel_o   <= reg_data(5)(29 downto 0) ;
     sys_sbit_mode_o  <= reg_data(8)(1 downto 0)  ;
+
+    --=============--
+    --== Sump    ==--
+    --=============--
+
+    sump_o <= or_reduce(wb_addr) or or_reduce(wb_data);
 
 end Behavioral;
 

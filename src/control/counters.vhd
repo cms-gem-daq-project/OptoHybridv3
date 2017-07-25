@@ -1,20 +1,15 @@
 ----------------------------------------------------------------------------------
--- Company:        IIHE - ULB
--- Engineer:       Thomas Lenzi (thomas.lenzi@cern.ch)
---
--- Create Date:    08:44:34 08/18/2015
--- Design Name:    OptoHybrid v2
--- Module Name:    counters - Behavioral
--- Project Name:   OptoHybrid v2
--- Target Devices: xc6vlx130t-1ff1156
--- Tool versions:  ISE  P.20131013
--- Description:
---
+-- CMS Muon Endcap
+-- GEM Collaboration
+-- Optohybrid v3 Firmware -- Counters
+-- 2017/07/24 -- Initial port to version 3 electronics
+-- 2017/07/25 -- Clear synthesis warnings from module
 ----------------------------------------------------------------------------------
 
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+use ieee.std_logic_misc.all;
 
 library work;
 use work.types_pkg.all;
@@ -59,7 +54,11 @@ port(
     ttc_resync : in std_logic;
 
     -- SEM
-    sem_correction_i    : in std_logic
+    sem_correction_i    : in std_logic;
+
+    -- SUMP
+
+    sump_o : out std_logic
 
 );
 end counters;
@@ -72,7 +71,7 @@ architecture Behavioral of counters is
     signal wb_stb       : std_logic_vector((N - 1) downto 0);
     signal wb_we        : std_logic;
     signal wb_addr      : std_logic_vector(31 downto 0);
-  --signal wb_data      : std_logic_vector(31 downto 0);
+    signal wb_data      : std_logic_vector(31 downto 0);
 
     -- Signals for the registers
     signal reg_ack      : std_logic_vector((N - 1) downto 0);
@@ -83,6 +82,10 @@ architecture Behavioral of counters is
     signal ors          : std_logic_vector (23 downto 0);
 
     signal cnt_en       : std_logic_vector ((N-1) downto 0);
+
+    signal reset_en     : std_logic_vector ((N-1) downto 0);
+
+    signal wb_sump : std_logic;
 
 begin
 
@@ -103,7 +106,7 @@ begin
         stb_o       => wb_stb,
         we_o        => wb_we,
         addr_o      => wb_addr,
-        data_o      => open,
+        data_o      => wb_data,
         ack_i       => reg_ack,
         err_i       => reg_err,
         data_i      => reg_data
@@ -125,10 +128,13 @@ begin
 
     counter_loop : for I in 0 to (N_COUNTERS-1) generate
     begin
+
+    reset_en (I) <= wb_stb  (I) and wb_we;
+
     u_counter_loop : entity work.counter
     port map (
         ref_clk_i => clock,
-        reset_i   => (wb_stb  (I) and wb_we), -- reset counter by writing to the register
+        reset_i   => reset_en(I), -- reset counter by writing to the register
         en_i      => cnt_en  (I),
         data_o    => reg_data(I)
     );
@@ -177,17 +183,34 @@ begin
 
     -- time from the OR of s-bits to the L1A for each VFAT
 
+
     timer_loop : for I in 0 to (N_TIMERS-1) generate
     begin
+
+        reset_en (N_COUNTERS+I) <= wb_stb  (N_COUNTERS+I) and wb_we;
+
         u_timer_loop : entity work.timer
         port map(
             ref_clk_i => clock,
-            reset_i   => (wb_stb(N_COUNTERS + I) and wb_we),
+            reset_i   => reset_en(N_COUNTERS+I),
             start_i   => active_vfats_i(I),
             stop_i    => ttc_l1a,
             data_o    => reg_data(N_COUNTERS + I)
         );
     end generate;
 
+    -- sump unused signals
+
+    wb_sump <=     or_reduce(wb_m_req_i(0).addr) or or_reduce(wb_m_req_i(0).data)
+                or or_reduce(wb_s_req_i(0).data) or or_reduce(wb_s_req_i(1).data) or or_reduce(wb_s_req_i(2).data)
+                or or_reduce(wb_m_res_i(0).stat) or or_reduce(wb_m_res_i(0).data)
+                or or_reduce(wb_s_req_i(0).addr) or or_reduce(wb_s_req_i(1).addr) or or_reduce(wb_s_req_i(2).addr)
+                or or_reduce(wb_s_res_i(0).stat) or or_reduce(wb_s_res_i(1).stat) or or_reduce(wb_s_res_i(2).stat)
+                or or_reduce(wb_s_res_i(0).data) or or_reduce(wb_s_res_i(1).data) or or_reduce(wb_s_res_i(2).data)
+                or wb_m_req_i(0).we
+                or wb_s_req_i(0).we or wb_s_req_i(1).we or wb_s_req_i(2).we;
+
+
+    sump_o <= wb_sump or or_reduce(wb_addr) or or_reduce(wb_data);
 
 end Behavioral;

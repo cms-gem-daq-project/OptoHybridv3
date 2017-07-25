@@ -1,17 +1,9 @@
 ----------------------------------------------------------------------------------
--- Company:        IIHE - ULB
--- Engineer:       Thomas Lenzi (thomas.lenzi@cern.ch)
---
--- Create Date:    15:17:59 07/09/2015
--- Design Name:    OptoHybrid v2
--- Module Name:    registers - Behavioral
--- Project Name:   OptoHybrid v2
--- Target Devices: xc6vlx130t-1ff1156
--- Tool versions:  ISE  P.20131013
--- Description:
---
--- Generates N read/write registers
---
+-- CMS Muon Endcap
+-- GEM Collaboration
+-- Optohybrid v3 Firmware -- Registers
+-- 2017/07/24 -- Initial port to version 3 electronics
+-- 2017/07/25 -- Clear synthesis warnings from module
 ----------------------------------------------------------------------------------
 
 library ieee;
@@ -51,7 +43,11 @@ architecture Behavioral of registers is
     -- Hold the value of the registers in memory
     signal registers    : std32_array_t((SIZE - 1) downto 0);
 
+    constant err : std_logic_vector ((SIZE - 1) downto 0) := (others => '0');
+
 begin
+
+    err_o <= err;
 
     -- Each register in independant, so we can generate a loop
     registers_gen : for I in 0 to (SIZE - 1) generate
@@ -63,7 +59,6 @@ begin
                 -- Reset the signals to their defautl value
                 if (reset_i = '1') then
                     ack_o(I) <= '0';
-                    err_o(I) <= '0';
                     data_o(I) <= (others => '0');
                     registers(I) <= (others => '0');
                 else

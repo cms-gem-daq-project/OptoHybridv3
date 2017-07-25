@@ -37,7 +37,7 @@ port(
     reset_i     : in std_logic;
 
     -- Wishbone slave
-    wb_req_i    : in wb_req_t;  -- containts stb, we, addr, data
+    wb_req_i    : in  wb_req_t; -- containts stb, we, addr, data
     wb_res_o    : out wb_res_t; -- contains ack, stat, data
 
     -- Request

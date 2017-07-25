@@ -19,7 +19,7 @@ entity rate_counter is
         g_INCREMENTER_WIDTH     : integer := 8;
         g_PROGRESS_BAR_WIDTH    : integer := 13;
         g_PROGRESS_BAR_STEP     : integer := 20_000;
-        g_SPEEDUP_FACTOR        : integer := 4 -- shifts the wait period to the right by this amount, then shifts the count to the left by the same amount (so step size still represents true value)
+        g_SPEEDUP_FACTOR        : integer := 0 -- shifts the wait period to the right by this amount, then shifts the count to the left by the same amount (so step size still represents true value)
     );
     port(
         clk_i           : in  std_logic;
@@ -33,9 +33,9 @@ end rate_counter;
 architecture rate_counter_arch of rate_counter is
 
     constant max_count  : unsigned(g_COUNTER_WIDTH - 1 downto 0) := (others => '1');
-    signal count        : unsigned(g_COUNTER_WIDTH - 1 downto 0) := (others => '0');
+    signal count        : unsigned(g_COUNTER_WIDTH - 1 downto 0) := (others => '1');
     signal increment    : std_logic_vector(g_INCREMENTER_WIDTH - 1 downto 0) := (others => '0');
-    signal timer        : unsigned(31 downto 0);
+    signal timer        : unsigned(31 downto 0) := x"ffffffff";
 
 begin
 

@@ -4,6 +4,7 @@
 -- Optohybrid v3 Firmware -- Top Logic
 -- 2017/07/21 -- Initial port to version 3 electronics
 -- 2017/07/22 -- Additional MMCM added to monitor and dejitter the eport clock
+-- 2017/07/25 -- Restructure top level module to improve organization
 ----------------------------------------------------------------------------------
 
 library ieee;
@@ -138,7 +139,6 @@ architecture Behavioral of optohybrid_top is
 
     --== Stupid HDMI ==--
 
-    signal ext_trigger_i  : std_logic;
     signal ext_sbits_o    : std_logic_vector(5  downto 0);
 
 begin
@@ -151,7 +151,6 @@ begin
 
     -- external wiring
 
-    ext_trigger_i <= hdmi_p(0);
     ext_sbits_o   <= hdmi_n(3 downto 0) & hdmi_p(3 downto 2);
 
     gbt_txvalid_o <= gbt_txvalid;
@@ -165,7 +164,7 @@ begin
     --== Clocking ==--
     --==============--
 
-    clocking_inst : entity work.clocking
+    clocking : entity work.clocking
     port map(
 
         gbt_dclk_p         => gbt_dclk_p, -- phase shiftable 40MHz ttc clocks
@@ -277,9 +276,6 @@ begin
 
         -- SEM
         sem_correction_i => sem_correction,
-
-        -- HDMI
-        ext_trigger_i => ext_trigger_i,
 
         --------------------
         -- config outputs --
