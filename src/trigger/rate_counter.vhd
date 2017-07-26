@@ -24,9 +24,9 @@ entity rate_counter is
     port(
         clk_i           : in  std_logic;
         reset_i         : in  std_logic;
-        increment_i     : in  std_logic_vector(g_INCREMENTER_WIDTH - 1 downto 0);
-        rate_o          : out std_logic_vector(g_COUNTER_WIDTH - 1 downto 0);
-        progress_bar_o  : out std_logic_vector(g_PROGRESS_BAR_WIDTH - 1 downto 0)
+        increment_i     : in  std_logic_vector(g_INCREMENTER_WIDTH  - 1 downto 0) := (others => '0');
+        rate_o          : out std_logic_vector(g_COUNTER_WIDTH      - 1 downto 0) := (others => '0');
+        progress_bar_o  : out std_logic_vector(g_PROGRESS_BAR_WIDTH - 1 downto 0) := (others => '0')
     );
 end rate_counter;
 
@@ -56,7 +56,7 @@ begin
                     timer <= (others => '0');
                     count <= (others => '0');
                     rate_o <= std_logic_vector(count);
-                    for i in 0 to g_PROGRESS_BAR_WIDTH - 1 loop
+                    for i in 0 to (g_PROGRESS_BAR_WIDTH - 1) loop
                         if (count > to_unsigned(g_PROGRESS_BAR_STEP * (i + 1), g_COUNTER_WIDTH)) then
                             progress_bar_o(i) <= '1';
                         else

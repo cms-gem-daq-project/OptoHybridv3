@@ -10,8 +10,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
-use IEEE.Numeric_STD.all;
-
+use ieee.numeric_std.all;
 
 library work;
 use work.types_pkg.all;

@@ -117,7 +117,7 @@ begin
         locked_o    => mmcm_locked(1)
     );
 
-    mmcms_locked_o <= mmcm_locked(0) and mmcm_locked(1);
+    mmcms_locked_o     <= mmcm_locked(0) and mmcm_locked(1);
 
     dskw_mmcm_locked_o <= mmcm_locked(0);
     eprt_mmcm_locked_o <= mmcm_locked(1);

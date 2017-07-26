@@ -72,24 +72,18 @@ begin
     -- power-on reset - this must be a clock synchronous pulse of a minimum of 2 and max 32 clock cycles (ISERDES spec)
 
     process(clock)
-        variable countdown    : integer := 400_000; -- 10ms - probably way too long, but ok for now
-        variable pulse_length : unsigned (2 downto 0) := to_unsigned(5,3);
+        variable pulse_length : unsigned (3 downto 0) := to_unsigned(15,4);
     begin
         if (falling_edge(clock)) then
-            if (countdown > 0) then
-              io_reset <= '0';
-              countdown := countdown - 1;
-            else
-                if (sync_reset_i = '1') then
-                    pulse_length := to_unsigned(5,3);
-                end if;
+            if (sync_reset_i = '1') then
+                pulse_length := to_unsigned(15,4);
+            end if;
 
-                if (pulse_length > 0) then
-                    io_reset <= '1';
-                    pulse_length := pulse_length - to_unsigned(1,3);
-                else
-                    io_reset <= '0';
-                end if;
+            if (pulse_length > 0) then
+                io_reset <= '1';
+                pulse_length := pulse_length - to_unsigned(1,4);
+            else
+                io_reset <= '0';
             end if;
         end if;
     end process;
