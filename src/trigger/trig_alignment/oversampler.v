@@ -39,6 +39,9 @@ ibufds (
   .OB (_rxd)
 );
 
+//----------------------------------------------------------------------------------------------------------------------
+// Delays
+//----------------------------------------------------------------------------------------------------------------------
 
 IODELAYE1 #(
   .IDELAY_TYPE           ("FIXED"),
@@ -81,6 +84,10 @@ delay1   (
     .DATAOUT     (_rxd_delay45),
     .CNTVALUEOUT ()
   );
+
+//----------------------------------------------------------------------------------------------------------------------
+// Serdes
+//----------------------------------------------------------------------------------------------------------------------
 
   wire [7:0] q;
 
@@ -156,20 +163,22 @@ iserdes_odd   (
     );
 
 
-    reg [7:0] qq;
-    reg       qqq7;
+    wire [7:0] i = q;
+    reg  [7:0] ii=0;
+    reg  [7:0] id=0;
+    reg        i7dd=0;
 
-    reg [3:0] eq4 = 0;
+    reg  [3:0] eq4 = 0;
 
     always @(posedge fastclock) begin
-      qq   <= q;
 
-      qqq7 <= qq[7];
+      ii   <=   i;
+      id   <=  (ii^8'h55); // uninvert even bits
 
-      eq4[0] <= ~(qq[0]^qq[1]) || ~(qq[4]^qq[5]);
-      eq4[1] <= ~(qq[1]^qq[2]) || ~(qq[5]^qq[6]);
-      eq4[2] <= ~(qq[2]^qq[3]) || ~(qq[6]^qq[7]);
-      eq4[3] <= ~(qq[3]^qq[4]) || ~(qqq7 ^qq[0]);
+      eq4[0] <= (ii[0]==ii[1]) || (ii[4]==ii[5]);
+      eq4[1] <= (ii[1]==ii[2]) || (ii[5]==ii[6]);
+      eq4[2] <= (ii[2]==ii[3]) || (ii[6]==ii[7]);
+      eq4[3] <= (ii[3]==ii[4]) || (id[7]==ii[0]);
 
     end
 
@@ -190,10 +199,10 @@ iserdes_odd   (
     always @(posedge fastclock) begin
 
       case (sel)
-      2'd0: d01_mux[1:0] <= {qq[0],qq[4]}; // eq00,  45 and 225 degree samples
-      2'd1: d01_mux[1:0] <= {qq[1],qq[5]}; // eq01,   0 and 180 degree samples
-      2'd2: d01_mux[1:0] <= {qq[3],qq[7]}; // eq10,  90 and 270 degree samples
-      2'd3: d01_mux[1:0] <= {qq[2],qq[6]}; // eq11, 225 and 315 degree samples
+      2'd0: d01_mux[1:0] <= {id[0],id[4]}; // eq00,  45 and 225 degree samples
+      2'd1: d01_mux[1:0] <= {id[1],id[5]}; // eq01,   0 and 180 degree samples
+      2'd3: d01_mux[1:0] <= {id[2],id[6]}; // eq11, 225 and 315 degree samples
+      2'd2: d01_mux[1:0] <= {id[3],id[7]}; // eq10,  90 and 270 degree samples
       endcase
 
       case (sel)
@@ -238,18 +247,18 @@ iserdes_odd   (
         case (phase_sm)
           sm_00: begin
             if (eq4[0]) phase_sm <= sm_10;
-            if (eq4[1]) phase_sm <= sm_01;
+            if (eq4[3]) phase_sm <= sm_01;
           end
           sm_01: begin
-          if (eq4[3]) phase_sm <= sm_00;
+          if (eq4[1]) phase_sm <= sm_00;
           if (eq4[0]) phase_sm <= sm_11;
           end
         sm_11: begin
-          if (eq4[3]) phase_sm <= sm_10;
+          if (eq4[1]) phase_sm <= sm_10;
           if (eq4[2]) phase_sm <= sm_01;
         end
         sm_10: begin
-          if (eq4[1]) phase_sm <= sm_11;
+          if (eq4[3]) phase_sm <= sm_11;
           if (eq4[2]) phase_sm <= sm_00;
         end
         endcase

@@ -246,7 +246,7 @@ begin
         clock4x             => clk160_i,
         clock1x             => clk40_i,
         global_reset        => reset_i,
-        cluster_count       => cluster_count_o,
+        cluster_count_o     => cluster_count_o,
         truncate_clusters   => '0',
         oneshot_en          => oneshot_en_i,
         vfat0               => vfat_sbits(0),

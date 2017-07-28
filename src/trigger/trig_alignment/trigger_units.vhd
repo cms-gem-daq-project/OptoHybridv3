@@ -36,7 +36,7 @@ begin
     trigger_units_o(I).trig_data_p      <= vfat_sbits_p ((I+1)*8-1 downto I*8);
     trigger_units_o(I).trig_data_n      <= vfat_sbits_n ((I+1)*8-1 downto I*8);
     trigger_units_o(I).start_of_frame_p <= vfat_sof_p(I);
-    trigger_units_o(I).start_of_frame_n <= vfat_sof_p(I);
+    trigger_units_o(I).start_of_frame_n <= vfat_sof_n(I);
     end generate;
 
 end Behavioral;
