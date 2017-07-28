@@ -51,7 +51,7 @@ architecture Behavioral of gbt is
     signal to_gbt           : std_logic_vector(15 downto 0) := (others => '0');
     signal to_gbt_raw       : std_logic_vector(15 downto 0) := (others => '0');
 
-    signal io_reset         : std_logic := '0';
+    signal io_reset         : std_logic := '1';
 
     signal from_gbt_s1      : std_logic_vector(15 downto 0) := (others => '0');
     signal from_gbt_s2      : std_logic_vector(15 downto 0) := (others => '0');
@@ -74,7 +74,7 @@ begin
     process(clock)
         variable pulse_length : unsigned (3 downto 0) := to_unsigned(15,4);
     begin
-        if (falling_edge(clock)) then
+        if (falling_edge(frame_clk_i)) then
             if (sync_reset_i = '1') then
                 pulse_length := to_unsigned(15,4);
             end if;
@@ -105,8 +105,9 @@ begin
     );
 
     -- remap to account for how the Xilinx IPcore assigns the output pins
-    from_gbt <= not from_gbt_raw(1) & not from_gbt_raw(3) & not from_gbt_raw(5) & not from_gbt_raw(7) & not from_gbt_raw(9) & not from_gbt_raw(11) & not from_gbt_raw(13) & not from_gbt_raw(15)  &
-                not from_gbt_raw(0) & not from_gbt_raw(2) & not from_gbt_raw(4) & not from_gbt_raw(6) & not from_gbt_raw(8) & not from_gbt_raw(10) & not from_gbt_raw(12) & not from_gbt_raw(14);
+    -- the not is from a dumbass polswap
+    from_gbt <= from_gbt_raw(1) & from_gbt_raw(3) & from_gbt_raw(5) & from_gbt_raw(7) & from_gbt_raw(9) & from_gbt_raw(11) & from_gbt_raw(13) & from_gbt_raw(15)  &
+                from_gbt_raw(0) & from_gbt_raw(2) & from_gbt_raw(4) & from_gbt_raw(6) & from_gbt_raw(8) & from_gbt_raw(10) & from_gbt_raw(12) & from_gbt_raw(14);
 
     --=================--
     --== OUTPUT DATA ==--

@@ -170,21 +170,27 @@ begin
 
     --== SYNC RESET REQUEST ==--
 
-    process(clock)
-    begin
-        if (rising_edge(clock)) then
-            if (data_i = x"ffff") then
-                sync_req_cnt <= sync_req_cnt + 1;
-            else
-                sync_req_cnt <= 0;
-            end if;
+    -- this logic is seriously fucked
+    -- reset the serdes if we receive enough ffffs but these are inverted so
+    -- that is just receive enough zeroes and we suicide. disable for now... don't see why this is needed anyway
 
-            if (sync_req_cnt >= 100) then
-                sync_reset_o <= '1';
-            else
-                sync_reset_o <= '0';
-            end if;
-        end if;
-    end process;
+    -- process(clock)
+    -- begin
+    --     if (rising_edge(clock)) then
+    --         if (data_i = x"ffff") then
+    --             sync_req_cnt <= sync_req_cnt + 1;
+    --         else
+    --             sync_req_cnt <= 0;
+    --         end if;
+
+    --         if (sync_req_cnt >= 100) then
+    --             sync_reset_o <= '1';
+    --         else
+    --             sync_reset_o <= '0';
+    --         end if;
+    --     end if;
+    -- end process;
+
+    sync_reset_o <= '0';
 
 end Behavioral;

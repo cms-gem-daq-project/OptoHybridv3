@@ -143,7 +143,6 @@ architecture Behavioral of optohybrid_top is
 begin
 
     -- internal wiring
-    reset       <= '0';
     gbt_txvalid <= '1';
     clock       <= clk_1x;
 
@@ -184,6 +183,14 @@ begin
         clk_2x_o           => clk_2x,
         clk_4x_o           => clk_4x,
         clk_4x_90_o        => clk_4x_90
+    );
+
+    reset_ctl : entity work.reset
+    port map (
+        clock_i        => clock,
+        mmcms_locked_i => mmcms_locked,
+        ready_o        => open,
+        reset_o        => reset
     );
 
     --=========--
