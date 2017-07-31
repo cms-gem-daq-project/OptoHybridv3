@@ -31,6 +31,7 @@ port(
     l1a_o           : out std_logic;
     bc0_o           : out std_logic;
     resync_o        : out std_logic;
+    reset_fats_o    : out std_logic;
 
     -- 65 bit output packet to fifo
     req_en_o        : out std_logic;
@@ -47,7 +48,7 @@ end gbt_rx ;
 
 architecture Behavioral of gbt_rx is
 
-    type state_t is (SYNCING, FRAME_BEGIN, ADDR_0, ADDR_1, FRAME_MIDDLE, DATA_0, DATA_1, FRAME_END);
+    type state_t is (SYNCING, FRAME_BEGIN, ADDR_0, ADDR_1, DATA_0, DATA_1, DATA_2, FRAME_END);
 
     signal req_valid    : std_logic;
     signal req_data     : std_logic_vector(64 downto 0);
@@ -68,16 +69,21 @@ begin
                 state <= SYNCING;
             else
                 case state is
-                    when SYNCING      => state <= FRAME_END; -- start by looking at the FRAME_END as it contains a fixed value
+                    when SYNCING      =>
+                        if (data_i(11 downto 0) = x"ABC") then
+                            state <= FRAME_BEGIN;
+                        end if;
                     when FRAME_BEGIN  => state <= ADDR_0;
                     when ADDR_0       => state <= ADDR_1;
-                    when ADDR_1       => state <= FRAME_MIDDLE;
-                    when FRAME_MIDDLE => state <= DATA_0;
-                    when DATA_0       => state <= DATA_1;
-                    when DATA_1       => state <= FRAME_END;
+                    when ADDR_1       => state <= DATA_0;
+                    when DATA_0 => state <= DATA_1;
+                    when DATA_1       => state <= DATA_2;
+                    when DATA_2       => state <= FRAME_END;
                     when FRAME_END    =>
                         if (data_i(11 downto 0) = x"ABC") then
                             state <= FRAME_BEGIN;
+                        else
+                            state <= SYNCING;
                         end if;
                     when others => state <= SYNCING;
                 end case;
@@ -118,13 +124,15 @@ begin
             else
                 case state is
                     when SYNCING =>
-                        l1a_o    <= '0';
-                        resync_o <= '0';
-                        bc0_o    <= '0';
+                        l1a_o        <= '0';
+                        reset_fats_o <= '0';
+                        resync_o     <= '0';
+                        bc0_o        <= '0';
                     when others  =>
-                        l1a_o    <= data_i(15);
-                        resync_o <= data_i(13);
-                        bc0_o    <= data_i(12);
+                        l1a_o        <= data_i(15);
+                        reset_fats_o <= data_i(14);
+                        resync_o     <= data_i(13);
+                        bc0_o        <= data_i(12);
                 end case;
             end if;
         end if;
@@ -143,25 +151,21 @@ begin
             else
                 case state is
                     when FRAME_BEGIN =>
-                        req_en_o <= '0';
-                        req_valid <= data_i(11);
-                        req_data(64) <= data_i(10);
-                        req_data(63 downto 56) <= data_i(7 downto 0);
-                    when ADDR_0 =>
-                        req_data(55 downto 44) <= data_i(11 downto 0);
-                    when ADDR_1 =>
-                        req_data(43 downto 32) <= data_i(11 downto 0);
-                    when FRAME_MIDDLE =>
-                        req_data(31 downto 24) <= data_i(7 downto 0);
-                    when DATA_0 =>
-                        req_data(23 downto 12) <= data_i(11 downto 0);
-                    when DATA_1 =>
-                        req_data(11 downto 0) <= data_i(11 downto 0);
+                                   req_en_o               <= '0';
+                                   req_valid              <= data_i(11);          -- request valid
+                                   req_data(64)           <= data_i(10);          -- write enable
+                                   req_data(63 downto 56) <= data_i(7 downto 0);  -- address[31:24]
+                    when ADDR_0 => req_data(55 downto 44) <= data_i(11 downto 0); -- address[23:12]
+                    when ADDR_1 => req_data(43 downto 32) <= data_i(11 downto 0); -- address[11:0]
+                    when DATA_0 => req_data(31 downto 24) <= data_i (7 downto 0); -- data [31:24]
+                    when DATA_1 => req_data(23 downto 12) <= data_i(11 downto 0); -- data [23:12]
+                    when DATA_2 => req_data(11 downto 0)  <= data_i(11 downto 0); -- data [11:0]
+
                     when FRAME_END =>
-                        req_en_o <= req_valid;
-                        req_data_o <= req_data;
+                        req_en_o   <= req_valid; -- fifo_wr
+                        req_data_o <= req_data;  -- 65 bit stable output (1 bit WE, 32 bit adr, 32 bit data)
                     when others =>
-                        req_en_o <= '0';
+                        req_en_o  <= '0';
                         req_valid <= '0';
                 end case;
             end if;
@@ -173,6 +177,7 @@ begin
     -- this logic is seriously fucked
     -- reset the serdes if we receive enough ffffs but these are inverted so
     -- that is just receive enough zeroes and we suicide. disable for now... don't see why this is needed anyway
+    -- but if it is, should use a better pattern.... e.g. trigger on 5555 or aaaa agnostic to alignment
 
     -- process(clock)
     -- begin
