@@ -104,6 +104,7 @@ architecture Behavioral of control is
     signal wb_sump : std_logic;
     signal sys_sump : std_logic;
     signal stat_sump : std_logic;
+    signal loop_sump : std_logic;
     signal counters_sump : std_logic;
 
 begin
@@ -224,6 +225,20 @@ begin
         sump_o              => counters_sump
     );
 
+    --==============--
+    --== Loopback ==--
+    --==============--
+
+    loop_inst : entity work.loopback
+    port map(
+        ref_clk_i           => clock_i,
+        reset_i             => reset_i,
+        wb_slv_req_i        => wb_s_req(WB_SLV_LOOP),
+        wb_slv_res_o        => wb_s_res(WB_SLV_LOOP),
+
+        sump_o              => loop_sump
+    );
+
     --==========--
     --== LEDS ==--
     --==========--
@@ -282,6 +297,6 @@ begin
                 or or_reduce(wb_s_res(0).data) or or_reduce(wb_s_res(1).data) or or_reduce(wb_s_res(2).data)
                 or wb_s_req(0).we or wb_s_req(1).we or wb_s_req(2).we;
 
-    sump_o <= wb_sump or sys_sump or stat_sump or counters_sump;
+    sump_o <= wb_sump or sys_sump or stat_sump or counters_sump or loop_sump;
 
 end Behavioral;

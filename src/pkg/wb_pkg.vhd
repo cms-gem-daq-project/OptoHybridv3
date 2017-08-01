@@ -27,19 +27,22 @@ package wb_pkg is
 
     --== Wishbone slaves ==--
 
-	constant WB_SLAVES          : positive := 3;
+	constant WB_SLAVES          : positive := 4;
 
-    constant WB_SLV_CNT         : integer := 0;
+    constant WB_SLV_LOOP        : integer := 0;
 
-    constant WB_SLV_SYS         : integer := 1;
+    constant WB_SLV_CNT         : integer := 1;
 
-    constant WB_SLV_STAT        : integer := 2;
+    constant WB_SLV_SYS         : integer := 2;
+
+    constant WB_SLV_STAT        : integer := 3;
 
     --== Wishbone addresses ==--
 
-    constant WB_ADDR_CNT        : std_logic_vector(7 downto 0) := x"40";
-    constant WB_ADDR_SYS        : std_logic_vector(7 downto 0) := x"41";
-    constant WB_ADDR_STAT       : std_logic_vector(7 downto 0) := x"42";
+    constant WB_ADDR_LOOP       : std_logic_vector(7 downto 0) := x"40";
+    constant WB_ADDR_CNT        : std_logic_vector(7 downto 0) := x"41";
+    constant WB_ADDR_SYS        : std_logic_vector(7 downto 0) := x"42";
+    constant WB_ADDR_STAT       : std_logic_vector(7 downto 0) := x"43";
 
     --== Wishbone address selection & generation ==--
 
@@ -57,8 +60,10 @@ package body wb_pkg is
 
         -- lowest 8 bits are used by the wishbone splitters as individual register addresses
 
+        -- Loopback
+        if    (std_match(addr, WB_ADDR_LOOP  & "0000000000000000--------")) then sel := WB_SLV_LOOP;
         -- Counters
-        if    (std_match(addr, WB_ADDR_CNT   & "0000000000000000--------")) then sel := WB_SLV_CNT;
+        elsif (std_match(addr, WB_ADDR_CNT   & "0000000000000000--------")) then sel := WB_SLV_CNT;
         -- System
         elsif (std_match(addr, WB_ADDR_SYS   & "0000000000000000--------")) then sel := WB_SLV_SYS;
         -- Status
