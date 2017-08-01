@@ -44,6 +44,4 @@ src/ip_cores/*
 !*.xcix
 !*.xci
 !src/ip_cores/*.xco
-!src/ip_cores/*.cgp
-!src/ip_cores/*.vhd
-!src/ip_cores/*.ngc
+tags
