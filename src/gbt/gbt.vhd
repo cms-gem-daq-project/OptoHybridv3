@@ -21,6 +21,9 @@ generic(
     DEBUG : boolean := FALSE
 );
 port(
+
+    reset_i          : in std_logic;
+
     -- reset
     sync_reset_i     : in std_logic;
 
@@ -61,6 +64,8 @@ architecture Behavioral of gbt is
 
     signal data_clk_inv : std_logic;
 
+    signal pulse_length     : std_logic_vector (3 downto 0) := x"f";
+
 begin
 
     data_clk_inv <= not data_clk_i;
@@ -71,22 +76,28 @@ begin
 
     -- power-on reset - this must be a clock synchronous pulse of a minimum of 2 and max 32 clock cycles (ISERDES spec)
 
-    process(clock)
-        variable pulse_length : unsigned (3 downto 0) := to_unsigned(15,4);
+    process(frame_clk_i)
     begin
-        if (falling_edge(frame_clk_i)) then
-            if (sync_reset_i = '1') then
-                pulse_length := to_unsigned(15,4);
-            end if;
-
-            if (pulse_length > 0) then
-                io_reset <= '1';
-                pulse_length := pulse_length - to_unsigned(1,4);
-            else
-                io_reset <= '0';
-            end if;
-        end if;
+    if (falling_edge(frame_clk_i)) then
+        io_reset <= reset_i;
+    end if;
     end process;
+
+--    process(clock)
+--    begin
+--        if (falling_edge(frame_clk_i)) then
+--            if (sync_reset_i = '1') then
+--                pulse_length <= x"f";
+--            else
+--                if (pulse_length /= 0) then
+--                    io_reset <= '1';
+--                    pulse_length <= std_logic_vector(unsigned(pulse_length) - unsigned(1,4));
+--                else
+--                    io_reset <= '0';
+--                end if;
+--            end if;
+--        end if;
+--    end process;
 
     --================--
     --== INPUT DATA ==--
@@ -104,8 +115,9 @@ begin
         io_reset            => io_reset
     );
 
-    -- remap to account for how the Xilinx IPcore assigns the output pins
-    -- the not is from a dumbass polswap
+    -- remap to account for how the Xilinx IPcore assigns the output pins (?)
+    -- from_gbt <= from_gbt_raw(1) & from_gbt_raw(3) & from_gbt_raw(5) & from_gbt_raw(7) & from_gbt_raw(9) & from_gbt_raw(11) & from_gbt_raw(13) & from_gbt_raw(15)  &
+    --             from_gbt_raw(0) & from_gbt_raw(2) & from_gbt_raw(4) & from_gbt_raw(6) & from_gbt_raw(8) & from_gbt_raw(10) & from_gbt_raw(12) & from_gbt_raw(14);
     from_gbt <= from_gbt_raw(1) & from_gbt_raw(3) & from_gbt_raw(5) & from_gbt_raw(7) & from_gbt_raw(9) & from_gbt_raw(11) & from_gbt_raw(13) & from_gbt_raw(15)  &
                 from_gbt_raw(0) & from_gbt_raw(2) & from_gbt_raw(4) & from_gbt_raw(6) & from_gbt_raw(8) & from_gbt_raw(10) & from_gbt_raw(12) & from_gbt_raw(14);
 

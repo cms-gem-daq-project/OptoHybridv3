@@ -150,13 +150,14 @@ begin
             cnt_en(1) <= wb_m_res_i(0).ack;
 
             -- wishbone slaves strobe and ack
-            cnt_en(2)  <= wb_s_req_i( 0).stb;
-            cnt_en(3)  <= wb_s_req_i( 1).stb;
-            cnt_en(4)  <= wb_s_req_i( 2).stb;
+            -- skip loop
+            cnt_en(2)  <= wb_s_req_i( 1).stb;
+            cnt_en(3)  <= wb_s_req_i( 2).stb;
+            cnt_en(4)  <= wb_s_req_i( 3).stb;
 
-            cnt_en(5) <= wb_s_res_i( 0).ack;
-            cnt_en(6) <= wb_s_res_i( 1).ack;
-            cnt_en(7) <= wb_s_res_i( 2).ack;
+            cnt_en(5) <= wb_s_res_i( 1).ack;
+            cnt_en(6) <= wb_s_res_i( 2).ack;
+            cnt_en(7) <= wb_s_res_i( 3).ack;
 
             -- ttc
             cnt_en(8) <= ttc_l1a;

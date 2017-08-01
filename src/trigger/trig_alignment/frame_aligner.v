@@ -18,22 +18,13 @@ module frame_aligner (
   output [MXSBITS-1:0] sbits
 );
 
-// Startup -- keeps outputs off during powerup
-//---------------------------------------------
-
-wire [3:0] powerup_dly = 4'd8;
-
-reg powerup_ff  = 0;
-SRL16E u_startup (.CLK(clock),.CE(!powerup),.D(1'b1),.A0(powerup_dly[0]),.A1(powerup_dly[1]),.A2(powerup_dly[2]),.A3(powerup_dly[3]),.Q(powerup));
-always @(posedge clock) powerup_ff <= powerup;
-wire ready = powerup_ff;
-
 parameter DDR=0;
 parameter MXSBITS=64+64*DDR;
 parameter MXIO = 8;
 parameter WORD_SIZE = MXSBITS / MXIO;
 
 wire posneg;
+reg ready=0;
 
 wire [7:0] d0_dly_pos;
 wire [7:0] d1_dly_pos;
@@ -155,7 +146,7 @@ assign sbits = sbits_reg;
 
 always @(posedge clock) begin
   // kill the outputs if we aren't aligned to SOF
-  if (reset || mask || ~sof_aligned)
+  if (reset || mask || ~ready)
     sbits_reg <= {MXSBITS{1'b0}};
   else
     sbits_reg <= {
@@ -192,6 +183,12 @@ assign posneg = (sof_aligned_pos);
 assign sof_delayed = posneg ? sof_dly0b : sof_dly180b;
 
 wire sof_aligned = sof_aligned_pos || sof_aligned_neg;
+
+reg [7:0] sof_r;
+always @(posedge clock) begin
+  sof_r <= {sof_r[6:0],sof_aligned};
+  ready <= &sof_r;
+end
 
 // can't check this every clock cycle because there is latency between changing it and the result propagating to the output
 reg check_sof = 0;

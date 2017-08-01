@@ -63,6 +63,7 @@ begin
     gbt_inst : entity work.gbt
     port map(
         -- reset
+       reset_i          => reset_i,
        sync_reset_i     => gbt_sync_reset,    -- reset input
 
        -- input clocks

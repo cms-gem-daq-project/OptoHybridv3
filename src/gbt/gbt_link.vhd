@@ -104,13 +104,13 @@ begin
         clock     => clock,
 
         -- parallel data input from fifo
-        valid_i     => valid_i,
-        req_valid_i => oh_tx_valid,
-        req_data_i  => oh_tx_data,
-        req_en_o    => oh_tx_req,
+        valid_i     => valid_i,     -- SERDES ready (reset done)
+        req_valid_i => oh_tx_valid, -- 16 bit write request from OH logic (through request fifo)
+        req_data_i  => oh_tx_data,  -- 16 bit data from OH logic
+        req_en_o    => oh_tx_req,   -- valid data output flag (valid packet received)
 
         -- parallel data output to serializer
-        data_o      => data_o
+        data_o      => data_o       -- 16 bit output
     );
 
     --========================--
@@ -128,12 +128,12 @@ begin
         -- reset
         reset_i         => reset_i,
 
-        -- rx parallel data
+        -- rx parallel data (from GBT)
         wb_mst_req_o    => wb_mst_req_o, -- 32 bit adr + 32 bit data + we
         rx_en_i         => gbt_rx_req,
         rx_data_i       => gbt_rx_data,  -- 32 bit adr + 32 bit data
 
-        -- tx parallel data
+        -- tx parallel data (to GBT)
         wb_mst_res_i    => wb_mst_res_i, -- 32 bit data
         tx_en_i         => oh_tx_req,
         tx_valid_o      => oh_tx_valid,

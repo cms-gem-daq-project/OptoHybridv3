@@ -70,7 +70,12 @@ begin
                 wb_mst_req_o <= (stb => '0', we => '0', addr => (others => '0'), data => (others => '0'));
             else
                 if (rd_valid = '1') then
-                    wb_mst_req_o <= (stb => '1', we => rd_data(64), addr => rd_data(63 downto 32), data => rd_data(31 downto 0));
+                    wb_mst_req_o <= (
+                                    stb => '1',
+                                    we   => rd_data(64),
+                                    addr => rd_data(63 downto 32),
+                                    data => rd_data(31 downto 0)
+                    );
                 else
                     wb_mst_req_o.stb <= '0';
                 end if;

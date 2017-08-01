@@ -32,7 +32,7 @@ parameter DDR = 0;
 reg clk160    = 0;
 reg clk12G8   = 0;
 reg clk1280   = 0;
-reg clk320    = 0;
+reg clk320    = 1;
 reg clk40     = 0;
 reg clk640    = 0;
 reg clk320_90 = 0;
@@ -102,10 +102,95 @@ wire [23:0] sof;
 genvar ifat;
 generate
 for (ifat=0; ifat<24; ifat=ifat+1) begin: fatloop
-  sr32 srfp (clk12G8, 1'b1, 5'd31-SOF_OFFSET [ifat*5+:4],  sotd0, sof[ifat]);
+  sr32 srfp (clk12G8, 1'b1, 5'd31-SOF_OFFSET [ifat*5+:4] - 20*SOF_POSNEG[ifat],  sotd0, sof[ifat]);
   //sr32 srfp (clk12G8, 1'b1, 5'd31 - SOF_OFFSET [ifat*5+:4],  sotd0, sof[ifat]);
 end
 endgenerate
+
+//----------------------------------------------------------------------------------------------------------------------
+//
+//----------------------------------------------------------------------------------------------------------------------
+
+// gbt data
+
+wire        wr_en    = 1'b1;
+wire        wr_valid = 1'b1;
+wire [31:0] address  = {8'h40, 24'h0}; // 32'h0; // write to loopback
+wire [31:0] data     = 32'h55555555;
+wire [11:0] frame_end= 12'hABC;
+
+wire l1a      = 1'b1;
+wire bc0      = 1'b1;
+wire resync   = 1'b1;
+wire calpulse = 1'b1;
+
+wire [3:0] gbt_ttc = {l1a, calpulse, resync, bc0};
+
+wire [65:0] gbt_packet = {wr_en, wr_valid, address[31:0], data[31:0]};
+
+reg[15:0] gbt_dout;
+
+reg [2:0] gbt_frame=0;
+
+always @(posedge clk40) begin
+  case (gbt_frame)
+    3'd0: gbt_frame <= 3'd1; // begin
+    3'd1: gbt_frame <= 3'd2; // addr
+    3'd2: gbt_frame <= 3'd3; // addr
+    3'd3: gbt_frame <= 3'd4; // data
+    3'd4: gbt_frame <= 3'd5; // data
+    3'd5: gbt_frame <= 3'd6; // data
+    3'd6: gbt_frame <= 3'd0; // end
+  endcase
+end
+
+
+always @(posedge clk40) begin
+  case (gbt_frame)
+    3'd6: gbt_dout <= {gbt_ttc,wr_valid,wr_en,2'b00,address[31:24]}; // begin
+    3'd0: gbt_dout <= {gbt_ttc,                     address[23:12]}; // addr
+    3'd1: gbt_dout <= {gbt_ttc,                     address[11:0 ]}; // addr
+    3'd2: gbt_dout <= {gbt_ttc, 4'd0,               data   [31:24]}; // data
+    3'd3: gbt_dout <= {gbt_ttc,                     data   [23:12]}; // data
+    3'd4: gbt_dout <= {gbt_ttc,                     data   [11:0] }; // data
+    3'd5: gbt_dout <= {gbt_ttc,                     frame_end     }; // end
+  endcase
+end
+
+reg [1:0] clk40_sync;
+
+reg [2:0] bit=0;
+
+always @(negedge clk320) begin
+
+  clk40_sync[0] <= clk40;
+  clk40_sync[1] <= clk40_sync[0];
+
+  if (clk40_sync[1:0] == 2'b01) // catch the rising edge of clk40
+      bit <= 3'd7;
+  else
+      bit <= bit-1'b1;
+end
+
+
+// Elinks
+
+reg [15:0] to_gbt_1;
+reg [15:0] to_gbt;
+always @(negedge clk320) begin
+  to_gbt_1 <= gbt_dout;
+  to_gbt   <= to_gbt_1;
+end
+
+wire [1:0] elink_i_p;
+assign elink_i_p [1]= to_gbt [bit+8]; // msb first
+assign elink_i_p [0]= to_gbt [bit  ]; // msb first
+
+wire [1:0] elink_i_n = ~elink_i_p;
+
+//----------------------------------------------------------------------------------------------------------------------
+//
+//----------------------------------------------------------------------------------------------------------------------
 
 // 320 MHz clocks. don't know why there are two
 
@@ -114,13 +199,15 @@ wire [1:0] gbt_eclk_n = {2{~clk320}};
 
 // 40 MHz clocks
 
-wire [1:0] gbt_dclk_p = {2{ clk40}}; // fixed and phase shiftable
-wire [1:0] gbt_dclk_n = {2{~clk40}};
+reg [1:0] gbtclk;
+always @(*) begin
+  gbtclk[0] <= #6.8  clk40; // logic clock
+  gbtclk[1] <= #0.00 clk40; // frame clock
+end
 
-// Elinks
+wire [1:0] gbt_dclk_p =  gbtclk; // fixed and phase shiftable
+wire [1:0] gbt_dclk_n = ~gbtclk;
 
-wire [1:0] elink_i_p = 2'b00;
-wire [1:0] elink_i_n = 2'b00;
 
 wire [1:0] elink_o_p;
 wire [1:0] elink_o_n;
@@ -200,7 +287,4 @@ optohybrid_top optohybrid_top (
     .mgt_tx_n_o    (mgt_tx_n_o)
 );
 
-
-
 endmodule
-
