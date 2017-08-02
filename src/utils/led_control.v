@@ -38,8 +38,8 @@ module led_control (
 
   wire clk = clock;
 
-  reg [19:0] clk_cnt;
-  reg        clk_led;
+  reg [19:0] clk_cnt=0;
+  reg        clk_led=0;
   always @(posedge clk) begin
     clk_cnt <= clk_cnt + 1'b1;
 
@@ -47,12 +47,12 @@ module led_control (
       clk_led <= ~ clk_led;
   end
 
-  // count to 19 bits for 80 MHz clock to divide to 4 Hz
+  // count to 20 bits for 40 MHz clock to divide to 4 Hz
 
   wire eclk = gbt_eclk;
 
-  reg [19:0] eclk_cnt;
-  reg        eclk_led;
+  reg [19:0] eclk_cnt=0;
+  reg        eclk_led=0;
   always @(posedge eclk) begin
     eclk_cnt <= eclk_cnt + 1'b1;
 

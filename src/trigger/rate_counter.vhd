@@ -14,19 +14,20 @@ use ieee.numeric_std.all;
 
 entity rate_counter is
     generic(
-        g_CLK_FREQUENCY         : std_logic_vector(31 downto 0) := x"02638e98";
-        g_COUNTER_WIDTH         : integer := 26;
-        g_INCREMENTER_WIDTH     : integer := 8;
-        g_PROGRESS_BAR_WIDTH    : integer := 13;
-        g_PROGRESS_BAR_STEP     : integer := 20_000;
-        g_SPEEDUP_FACTOR        : integer := 0 -- shifts the wait period to the right by this amount, then shifts the count to the left by the same amount (so step size still represents true value)
+        g_CLK_FREQUENCY         : natural := 40079000;
+        g_COUNTER_WIDTH         : natural := 26;     --
+        g_INCREMENTER_WIDTH     : natural := 8;      -- allow for incrementing more than 1 step per clock
+        g_PROGRESS_BAR_WIDTH    : natural := 13;     -- number of indicators in the bar (FULLSCALE = WIDTH*STEP)
+        g_PROGRESS_BAR_STEP     : natural := 20_000; -- hertz per indicator
+        g_SPEEDUP_FACTOR        : natural := 19      -- changes the "refresh" rate of the indicator by sampling at a higher rate
+                                                     -- each step is a power-of-two speedup 0=1hz, 1=2hz, 2=4hz, 3=8hz, etc
     );
     port(
         clk_i           : in  std_logic;
         reset_i         : in  std_logic;
-        increment_i     : in  std_logic_vector(g_INCREMENTER_WIDTH  - 1 downto 0) := (others => '0');
-        rate_o          : out std_logic_vector(g_COUNTER_WIDTH      - 1 downto 0) := (others => '0');
-        progress_bar_o  : out std_logic_vector(g_PROGRESS_BAR_WIDTH - 1 downto 0) := (others => '0')
+        increment_i     : in  std_logic_vector(g_INCREMENTER_WIDTH  - 1 downto 0) := (others => '0'); -- step size input
+        rate_o          : out std_logic_vector(g_COUNTER_WIDTH      - 1 downto 0) := (others => '0'); -- rate in Hz
+        progress_bar_o  : out std_logic_vector(g_PROGRESS_BAR_WIDTH - 1 downto 0) := (others => '0')  -- thermometer of rate
     );
 end rate_counter;
 
@@ -34,39 +35,61 @@ architecture rate_counter_arch of rate_counter is
 
     constant max_count  : unsigned(g_COUNTER_WIDTH - 1 downto 0) := (others => '1');
     signal count        : unsigned(g_COUNTER_WIDTH - 1 downto 0) := (others => '1');
-    signal increment    : std_logic_vector(g_INCREMENTER_WIDTH - 1 downto 0) := (others => '0');
+    signal increment    : unsigned(g_INCREMENTER_WIDTH - 1 downto 0) := (others => '0');
     signal timer        : unsigned(31 downto 0) := x"ffffffff";
+    signal time_max     : unsigned(31 downto 0) ;
+
+    -- cast to unsigned to use in ISIM (isim doesn't support Radix on integers / naturals
+    signal clk_frequency     : unsigned (31 downto 0) := to_unsigned(g_CLK_FREQUENCY,32);
+    signal speedup_factor    : unsigned (31 downto 0) := to_unsigned(g_SPEEDUP_FACTOR,32);
+    signal progress_bar_step : unsigned (31 downto 0) := to_unsigned(g_PROGRESS_BAR_STEP,32);
+
+    signal rate              : unsigned (31 downto 0) := (others => '0');
 
 begin
 
-    increment(g_INCREMENTER_WIDTH - 1 downto 0) <= increment_i;
+
+    time_max <= shift_right(clk_frequency, g_SPEEDUP_FACTOR);  -- sll divides by speedup
+
+    increment <= unsigned(increment_i);
 
     p_count:
     process (clk_i) is
     begin
         if rising_edge(clk_i) then
+
             if reset_i = '1' then
                 count <= (others => '0');
                 timer <= (others => '0');
+                rate  <= (others => '0');
             else
-                if timer < unsigned(unsigned(g_CLK_FREQUENCY) srl g_SPEEDUP_FACTOR) then -- sll divides by speedup
+                if (timer < time_max) then
                     timer <= timer + 1;
-                    count <= unsigned(count + unsigned(increment)) sll g_SPEEDUP_FACTOR ;
+                    count <= count + increment;
                 else
+
+                    -- restart counter
                     timer <= (others => '0');
                     count <= (others => '0');
-                    rate_o <= std_logic_vector(count);
-                    for i in 0 to (g_PROGRESS_BAR_WIDTH - 1) loop
-                        if (count > to_unsigned(g_PROGRESS_BAR_STEP * (i + 1), g_COUNTER_WIDTH)) then
-                            progress_bar_o(i) <= '1';
-                        else
-                            progress_bar_o(i) <= '0';
-                        end if;
-                    end loop;
+
+                    -- rate output
+                    rate <= shift_left(count, g_SPEEDUP_FACTOR);
+
                 end if;
             end if;
+
+            -- progress bar indicators
+            for i in 0 to (g_PROGRESS_BAR_WIDTH - 1) loop
+                if (rate > (progress_bar_step * (i + 1)) ) then
+                    progress_bar_o(i) <= '1';
+                else
+                    progress_bar_o(i) <= '0';
+                end if;
+            end loop;
+
         end if;
     end process;
 
+    rate_o <= std_logic_vector(rate);
 
 end rate_counter_arch;
