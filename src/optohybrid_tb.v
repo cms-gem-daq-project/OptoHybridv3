@@ -116,7 +116,8 @@ endgenerate
 wire        wr_en    = 1'b1;
 wire        wr_valid = 1'b1;
 wire [31:0] address  = {8'h40, 24'h0}; // 32'h0; // write to loopback
-wire [31:0] data     = 32'h55555555;
+reg  [31:0] data     = 32'h12345678;
+//reg  [31:0] mask     = 32'hffffffff;
 wire [11:0] frame_end= 12'hABC;
 
 wire l1a      = 1'b1;
@@ -285,6 +286,47 @@ optohybrid_top optohybrid_top (
 
     .mgt_tx_p_o    (mgt_tx_p_o),
     .mgt_tx_n_o    (mgt_tx_n_o)
+);
+
+// for loopback need to take serialized elink s-bit outputs, deserialize them,
+// feed them into this module, parse the 16 bit packets, recover the data
+// :(
+
+reg  [15:0] elink_o_fifo;
+reg  [15:0] elink_o_parallel;
+wire [15:0] fifo_dly;
+always @(posedge gbt_eclk_p[0]) begin
+  // this may need to be bitslipped... depending on the phase alignment of the clocks
+  elink_o_fifo[7:0]  <= {elink_o_fifo[ 6:0],elink_o_p[0]};
+  elink_o_fifo[15:8] <= {elink_o_fifo[14:8],elink_o_p[1]};
+end
+
+wire [3:0] dly_adr = 4'd3;
+genvar ibit;
+generate
+for (ibit=0; ibit<16; ibit=ibit+1) begin: gen_bitloop
+  SRL16E dly (.CLK(~gbt_eclk_p[0]),.CE(1'b1),.D(elink_o_fifo[ibit]),.A0(dly_adr[0]),.A1(dly_adr[1]),.A2(dly_adr[2]),.A3(dly_adr[3]),.Q(fifo_dly[ibit]));
+end
+endgenerate
+
+
+always @(posedge clk40) begin
+  elink_o_parallel <= fifo_dly;
+end
+
+wire [31:0] gbt_rx_request;
+wire        gbt_rx_valid;
+
+link_gbt_rx i_gbt_rx_link (
+      .ttc_clk_40_i            ( clk40),
+      .reset_i                 ( 1'b0),
+
+      // inputs
+      .gbt_rx_data_i           ( elink_o_parallel),
+
+      // outputs
+      .req_en_o                ( gbt_rx_valid),
+      .req_data_o              ( gbt_rx_request)
 );
 
 endmodule

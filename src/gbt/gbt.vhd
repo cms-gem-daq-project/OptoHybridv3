@@ -52,7 +52,7 @@ architecture Behavioral of gbt is
     signal from_gbt         : std_logic_vector(15 downto 0) := (others => '0');
 
     signal to_gbt           : std_logic_vector(15 downto 0) := (others => '0');
-    signal to_gbt_raw       : std_logic_vector(15 downto 0) := (others => '0');
+    signal to_gbt_bitslipped       : std_logic_vector(15 downto 0) := (others => '0');
 
     signal io_reset         : std_logic := '1';
 
@@ -132,15 +132,16 @@ begin
     port map(
         fabric_clk  => frame_clk_i,
         reset       => io_reset,
+        --bitslip_cnt => 0,
         bitslip_cnt => 7,
         din         => to_gbt, -- 16 bit data input, synchronized to frame-clock
-        dout        => to_gbt_raw
+        dout        => to_gbt_bitslipped
     );
 
     -- Output serializer
     i_to_gbt_ser : entity work.to_gbt_ser
     port map(
-        data_out_from_device    => to_gbt_raw,
+        data_out_from_device    => to_gbt_bitslipped,
         data_out_to_pins_p      => elink_o_p,
         data_out_to_pins_n      => elink_o_n,
         clk_in                  => data_clk_inv,

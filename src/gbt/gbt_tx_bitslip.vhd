@@ -17,7 +17,6 @@ architecture behavioral of gbt_tx_bitslip is
     signal buf2     : std_logic_vector(15 downto 0); -- buffer for elink 2
 
     signal data     : std_logic_vector(15 downto 0);
-    signal data_inv : std_logic_vector(15 downto 0);
 
 begin
 
@@ -38,13 +37,19 @@ begin
         end if;
     end process;
 
-    -- Rearrange data
+    -- Rearrange data to account for how the serdes handles the bits
 
-    data_inv <= (not  data(15 downto 0));
+--    dout     <= data(1) & data(3)  & data(5)  & data(7)   & data(9) & data(11) & data(13) & data(15)  &
+--                data(0) & data(2)  & data(4)  & data(6)   & data(8) & data(10) & data(12) & data(14);
+--
 
-    dout     <= not data_inv(1) & not data_inv(3)  & not data_inv(5)  & not data_inv(7)   &
-                not data_inv(9) & not data_inv(11) & not data_inv(13) & not data_inv(15)  &
-                not data_inv(0) & not data_inv(2)  & not data_inv(4)  & not data_inv(6)   &
-                not data_inv(8) & not data_inv(10) & not data_inv(12) & not data_inv(14);
+        dout <= data(8)  & data(0) &
+                data(9)  & data(1) &
+                data(10) & data(2) &
+                data(11) & data(3) &
+                data(12) & data(4) &
+                data(13) & data(5) &
+                data(14) & data(6) &
+                data(15) & data(7);
 
 end behavioral;
