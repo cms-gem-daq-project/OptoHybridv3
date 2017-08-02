@@ -32,7 +32,7 @@ wire [191:0] d1;
 
 wire [23:0] start_of_frame_d0;
 wire [23:0] start_of_frame_d1;
-wire [1:0] vfat_phase_sel [23:0];
+wire [2:0] vfat_phase_sel [23:0];
 
 wire [23:0] alignment_err;
 wire [23:0] sot_phase_err;

@@ -37,7 +37,7 @@ wire sof_dly180;
 
 // delay sof by a to compensate for the s-bit even/odd fifo output equivalent delay
 wire sof_dly0b, sof_dly180b;
-wire [3:0] srl_adr2 = 4'd4;
+wire [3:0] srl_adr2 = 4'd3;
 
 
 reg [3:0] srl_adr=0; // frame alignment srl_adr
@@ -51,15 +51,17 @@ SRL16E  srlsof180b (.CLK(~fastclock),.CE(1'b1),.D(sof_dly180),.A0(srl_adr2[0]),.
 
 // data delay
 
-wire [4:0] srl_adr0 = srl_adr + 4'd1;
+wire [4:0] srl_adr0 = srl_adr;
 wire [4:0] srl_adr1 = srl_adr;
 
 genvar ibit;
 generate
   for (ibit=0; ibit<8; ibit=ibit+1) begin: bloop
+  // odd bits
   SRL16E srldat0_pos (.CLK( fastclock),.CE(1'b1),.D(d0[ibit]),.A0(srl_adr0[0]),.A1(srl_adr0[1]),.A2(srl_adr0[2]),.A3(srl_adr0[3]),.Q(d0_dly_pos[ibit]));
   SRL16E srldat0_neg (.CLK(~fastclock),.CE(1'b1),.D(d0[ibit]),.A0(srl_adr0[0]),.A1(srl_adr0[1]),.A2(srl_adr0[2]),.A3(srl_adr0[3]),.Q(d0_dly_neg[ibit]));
 
+  // even bits
   SRL16E srldat1_pos (.CLK( fastclock),.CE(1'b1),.D(d1[ibit]),.A0(srl_adr1[0]),.A1(srl_adr1[1]),.A2(srl_adr1[2]),.A3(srl_adr1[3]),.Q(d1_dly_pos[ibit]));
   SRL16E srldat1_neg (.CLK(~fastclock),.CE(1'b1),.D(d1[ibit]),.A0(srl_adr1[0]),.A1(srl_adr1[1]),.A2(srl_adr1[2]),.A3(srl_adr1[3]),.Q(d1_dly_neg[ibit]));
   end

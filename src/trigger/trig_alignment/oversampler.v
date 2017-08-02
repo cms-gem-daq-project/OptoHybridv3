@@ -192,20 +192,23 @@ iserdes_odd   (
 
     reg [1:0] d01_mux;
 
-    wire [1:0] sel;
+    wire [2:0] time_sel_local;
 
-    assign phase_sel_out = sel;
+    wire [1:0] sample_sel = time_sel_local[1:0];
+    wire         inv_sel  = time_sel_local[2];
+
+    assign phase_sel_out = time_sel_local;
 
     always @(posedge fastclock) begin
 
-      case (sel)
+      case (sample_sel)
       2'd0: d01_mux[1:0] <= {id[0],id[4]}; // eq00,  45 and 225 degree samples
       2'd1: d01_mux[1:0] <= {id[1],id[5]}; // eq01,   0 and 180 degree samples
       2'd3: d01_mux[1:0] <= {id[2],id[6]}; // eq11, 225 and 315 degree samples
       2'd2: d01_mux[1:0] <= {id[3],id[7]}; // eq10,  90 and 270 degree samples
       endcase
 
-      case (sel)
+      case (sample_sel)
       2'd0: phase_err <= phase_err4[2'b00]; // eq00,  45 and 225 degree samples
       2'd1: phase_err <= phase_err4[2'b01]; // eq01,   0 and 180 degree samples
       2'd2: phase_err <= phase_err4[2'b10]; // eq10,  90 and 270 degree samples
@@ -217,12 +220,12 @@ iserdes_odd   (
     // we can use this feature to implement DDR delays without having a double data rate clock
     generate
     if (POSNEG) begin
-      assign d0 = d01_mux[1];
-      assign d1 = d01_mux[0];
+      assign d0 = d01_mux[~inv_sel];
+      assign d1 = d01_mux[ inv_sel];
     end
     else begin
-      assign d0 = d01_mux[0];
-      assign d1 = d01_mux[1];
+      assign d0 = d01_mux[ inv_sel];
+      assign d1 = d01_mux[~inv_sel];
     end
     endgenerate
 
@@ -230,14 +233,26 @@ iserdes_odd   (
 
     // manual control by external input
     if (PHASE_SEL_MANUAL) begin
-      assign sel = phase_sel_in; // external input
+      assign time_sel_local = phase_sel_in; // external input
     end
 
     // automatic control by state machine
     else begin
 
+      // check if the SOF signal is coming out on d1 instead of d0 and align the data accordingly
+      // by asserting the inv_sel signal
+
+      reg data_on_d1 = 0;
+      always @(negedge fastclock) begin
+        if (d01_mux[0+1'b1*POSNEG])
+          data_on_d1 <= 1'b0;
+        else if (d01_mux[1-1'b1*POSNEG])
+          data_on_d1 <= 1'b1;
+      end
+      assign time_sel_local [2] = data_on_d1;
+
       reg [1:0] phase_sm=2'd0;
-      assign sel = phase_sm; // sm controlled
+      assign time_sel_local[1:0] = phase_sm; // sm controlled
       parameter sm_00 = 2'd0;
       parameter sm_01 = 2'd1;
       parameter sm_10 = 2'd2;
