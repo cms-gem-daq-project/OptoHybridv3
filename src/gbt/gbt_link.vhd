@@ -55,7 +55,7 @@ architecture Behavioral of gbt_link is
 
     signal oh_tx_req       : std_logic;
     signal oh_tx_valid    : std_logic;
-    signal oh_tx_data     : std_logic_vector(15 downto 0);
+    signal oh_tx_data     : std_logic_vector(31 downto 0);
 
 begin
 
@@ -105,12 +105,12 @@ begin
 
         -- parallel data input from fifo
         valid_i     => valid_i,     -- SERDES ready (reset done)
-        req_valid_i => oh_tx_valid, -- 16 bit write request from OH logic (through request fifo)
-        req_data_i  => oh_tx_data,  -- 16 bit data from OH logic
-        req_en_o    => oh_tx_req,   -- valid data output flag (valid packet received)
+        req_valid_i => oh_tx_valid, -- 1  bit write request from OH logic (through request fifo)
+        req_data_i  => oh_tx_data,  -- 32 bit data from OH logic
+        req_en_o    => oh_tx_req,   -- fifo read enable
 
         -- parallel data output to serializer
-        data_o      => data_o       -- 16 bit output
+        data_o      => data_o       -- 16 bit output frames
     );
 
     --========================--
@@ -137,7 +137,7 @@ begin
         wb_mst_res_i    => wb_mst_res_i, -- 32 bit data
         tx_en_i         => oh_tx_req,
         tx_valid_o      => oh_tx_valid,
-        tx_data_o       => oh_tx_data    -- 16 bit data
+        tx_data_o       => oh_tx_data    -- 32 bit data
     );
 
 end Behavioral;

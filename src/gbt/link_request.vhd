@@ -33,7 +33,7 @@ port(
 
     tx_en_i         : in std_logic;
     tx_valid_o      : out std_logic;
-    tx_data_o       : out std_logic_vector(15 downto 0)
+    tx_data_o       : out std_logic_vector(31 downto 0)
 
 );
 end link_request;
@@ -50,15 +50,16 @@ begin
     fifo_request_rx_inst : entity work.fifo_request_rx
     port map(
         rst     => reset_i,
-        wr_clk  => ext_clock_i,
+        clk     => fabric_clock_i,
         wr_en   => rx_en_i,
         din     => rx_data_i,
-        rd_clk  => fabric_clock_i,
         rd_en   => '1',
         valid   => rd_valid,
         dout    => rd_data,
         full    => open,
-        empty   => open
+        empty   => open,
+        sbiterr => open,
+        dbiterr => open
     );
 
     --== Request processing ==--
@@ -88,15 +89,16 @@ begin
     fifo_request_tx_inst : entity work.fifo_request_tx
     port map(
         rst     => reset_i,
-        wr_clk  => fabric_clock_i,
+        clk     => fabric_clock_i,
         wr_en   => wb_mst_res_i.ack,
         din     => wb_mst_res_i.data,
-        rd_clk  => ext_clock_i,
         rd_en   => tx_en_i,
         valid   => tx_valid_o,
         dout    => tx_data_o,
         full    => open,
-        empty   => open
+        empty   => open,
+        sbiterr => open,
+        dbiterr => open
     );
 
 end Behavioral;

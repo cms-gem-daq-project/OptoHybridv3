@@ -31,13 +31,13 @@ port(
 
     req_en_o    : out std_logic;
     req_valid_i : in std_logic;
-    req_data_i  : in std_logic_vector(15 downto 0)
+    req_data_i  : in std_logic_vector(31 downto 0)
 );
 end gbt_tx;
 
 architecture Behavioral of gbt_tx is
 
-    type state_t is (SYNCING, HEADER00, HEADER01, REG_DATA);
+    type state_t is (SYNCING, HEADER, REG_DATA0, REG_DATA1);
 
     signal state        : state_t;
 
@@ -55,11 +55,11 @@ begin
                 state <= SYNCING;
             else
                 case state is
-                    when SYNCING  => state <= HEADER00;
-                    when HEADER00 => state <= HEADER01;
-                    when HEADER01 => state <= REG_DATA;
-                    when REG_DATA => state <= HEADER00;
-                    when others   => state <= SYNCING;
+                    when SYNCING   => state <= HEADER;
+                    when HEADER    => state <= REG_DATA0;
+                    when REG_DATA0 => state <= REG_DATA1;
+                    when REG_DATA1 => state <= HEADER;
+                    when others    => state <= SYNCING;
                 end case;
             end if;
         end if;
@@ -79,12 +79,20 @@ begin
                     when SYNCING =>
                         req_en_o <= '0';
                         req_valid <= '0';
-                    when REG_DATA =>
+                    when HEADER =>
                         req_en_o <= '1';
+                    when REG_DATA0 =>
+                        req_en_o  <= '0';
                         req_valid <= req_valid_i;
-                        req_data  <= req_data_i;
+                        req_data  <= req_data_i(31 downto 16);
+                    when REG_DATA1 =>
+                        req_en_o  <= '0';
+                        req_valid <= req_valid_i;
+                        req_data  <= req_data_i(15 downto 0);
                     when others =>
-                        req_en_o <= '0';
+                        req_en_o  <= '0';
+                        req_valid <= '0';
+                        req_data  <= (others => '0');
                 end case;
             end if;
         end if;
@@ -99,11 +107,13 @@ begin
                 data_o <= (others => '0');
             else
                 case state is
-                    when HEADER00 =>
-                        data_o <= x"BCBC";
-                    when HEADER01 =>
-                        data_o <= req_valid & '1' & "00" & x"000";
-                    when REG_DATA =>
+                    when SYNCING =>
+                        data_o <= (others => '0');
+                    when HEADER =>
+                        data_o <= x"BCBC" and (req_valid & "111" & x"fff");
+                    when REG_DATA0 =>
+                        data_o <= req_data;
+                    when REG_DATA1 =>
                         data_o <= req_data;
                     when others =>
                         data_o <= (others => '0');
