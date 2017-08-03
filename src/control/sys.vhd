@@ -1,7 +1,12 @@
 ----------------------------------------------------------------------------------
 -- CMS Muon Endcap
 -- GEM Collaboration
--- Optohybrid v3 Firmware -- Counters
+-- Optohybrid v3 Firmware -- System
+-- T. Lenzi, A. Peck
+----------------------------------------------------------------------------------
+-- Description:
+--   This module provides writable registers to control the optohybrid
+----------------------------------------------------------------------------------
 -- 2017/07/24 -- Initial port to version 3 electronics
 -- 2017/07/25 -- Clear synthesis warnings from module
 ----------------------------------------------------------------------------------

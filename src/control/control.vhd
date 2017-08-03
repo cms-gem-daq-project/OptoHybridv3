@@ -1,7 +1,9 @@
 ----------------------------------------------------------------------------------
 -- CMS Muon Endcap
 -- GEM Collaboration
--- Optohybrid v3 Firmware -- Counters
+-- Optohybrid v3 Firmware -- Control
+-- A. Peck
+----------------------------------------------------------------------------------
 -- 2017/07/25 -- Initial. Wrapper around OH control modules
 -- 2017/07/25 -- Clear many synthesis warnings from module
 ----------------------------------------------------------------------------------

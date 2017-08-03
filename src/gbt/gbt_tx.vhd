@@ -1,15 +1,14 @@
 ----------------------------------------------------------------------------------
--- Company:        IIHE - ULB
--- Engineer:       Thomas Lenzi (thomas.lenzi@cern.ch)
---
--- Create Date:    08:37:33 07/07/2015
--- Design Name:    OptoHybrid v2
--- Module Name:    gbt_tx_tracking - Behavioral
--- Project Name:   OptoHybrid v2
--- Target Devices: xc6vlx130t-1ff1156
--- Tool versions:  ISE  P.20131013
+-- CMS Muon Endcap
+-- GEM Collaboration
+-- Optohybrid v3 Firmware -- GBT Transmit Packet Builder
+-- T. Lenzi, E. Juska, A. Peck
+----------------------------------------------------------------------------------
 -- Description:
---
+--   This module generates data packets for transmission to the CTP-7
+--   takes 32 bit register data and formats it into 16-bit frames with a header
+----------------------------------------------------------------------------------
+-- 2017/07/24 -- Initial working version adapted from v2
 ----------------------------------------------------------------------------------
 
 library ieee;

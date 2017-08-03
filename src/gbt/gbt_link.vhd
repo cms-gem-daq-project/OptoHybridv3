@@ -2,6 +2,13 @@
 -- CMS Muon Endcap
 -- GEM Collaboration
 -- Optohybrid v3 Firmware -- GBT Link Parser
+-- T. Lenzi, E. Juska, A. Peck
+----------------------------------------------------------------------------------
+-- Description:
+--   This module counts receives builds wishbone requests received from the GBT
+--   and puts them into a FIFO for handling in the OH, and takes wishbone responses
+--   from the OH and builds packets to send out to the GBTx
+----------------------------------------------------------------------------------
 -- 2017/07/24 -- Removal of VFAT2 event building and Calpulse
 ----------------------------------------------------------------------------------
 

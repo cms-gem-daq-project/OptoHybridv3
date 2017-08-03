@@ -2,6 +2,8 @@
 -- CMS Muon Endcap
 -- GEM Collaboration
 -- Optohybrid v3 Firmware -- Top Logic
+-- T. Lenzi, E. Juska, A. Peck
+----------------------------------------------------------------------------------
 -- 2017/07/21 -- Initial port to version 3 electronics
 -- 2017/07/22 -- Additional MMCM added to monitor and dejitter the eport clock
 -- 2017/07/25 -- Restructure top level module to improve organization

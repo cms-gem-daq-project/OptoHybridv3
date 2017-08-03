@@ -2,6 +2,11 @@
 -- CMS Muon Endcap
 -- GEM Collaboration
 -- Optohybrid v3 Firmware -- Status
+-- T. Lenzi, A. Peck
+----------------------------------------------------------------------------------
+-- Description:
+--   This module provides readable registers to monitor the status of the OH
+----------------------------------------------------------------------------------
 -- 2017/07/24 -- Initial port to version 3 electronics
 -- 2017/07/25 -- Clear synthesis warnings from module
 ----------------------------------------------------------------------------------

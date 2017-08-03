@@ -1,9 +1,13 @@
 ----------------------------------------------------------------------------------
--- Company:        University
--- Engineer:       John Smith   (john.smith@email.com)
---
--- Produce Trigger units from VFAT trigger inputs
---
+-- CMS Muon Endcap
+-- GEM Collaboration
+-- Optohybrid v3 Firmware -- Trigger Units
+-- A. Peck
+----------------------------------------------------------------------------------
+-- Description:
+--   Wrap up s-bits into a trigger_unit object
+----------------------------------------------------------------------------------
+-- 2017/07/24 -- Initial
 ----------------------------------------------------------------------------------
 
 library ieee;

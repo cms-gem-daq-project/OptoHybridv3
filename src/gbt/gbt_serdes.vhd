@@ -2,6 +2,11 @@
 -- CMS Muon Endcap
 -- GEM Collaboration
 -- Optohybrid v3 Firmware -- GBT SerDes
+-- T. Lenzi, E. Juska, A. Peck
+----------------------------------------------------------------------------------
+-- Description:
+--   This module serializes and deserializes e-link data to and from the GBTx
+----------------------------------------------------------------------------------
 -- 2017/07/24 -- Conversion to 16 bit (2 elinks only)
 -- 2017/07/24 -- Addition of flip-flop synchronization stages for X-domain transit
 ----------------------------------------------------------------------------------

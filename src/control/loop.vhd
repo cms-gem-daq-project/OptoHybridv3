@@ -2,8 +2,11 @@
 -- CMS Muon Endcap
 -- GEM Collaboration
 -- Optohybrid v3 Firmware -- Loopback
--- 2017/07/24 -- Initial port to version 3 electronics
--- 2017/07/25 -- Clear synthesis warnings from module
+-- A. Peck
+----------------------------------------------------------------------------------
+-- Description:
+--   Provides a loopback register on the wishbone bus
+----------------------------------------------------------------------------------
 -- 2017/07/31 -- Port from stat.vhd
 ----------------------------------------------------------------------------------
 
@@ -99,4 +102,3 @@ begin
     sump_o <= or_reduce(wb_addr) or or_reduce(wb_data) or wb_we;
 
 end Behavioral;
-

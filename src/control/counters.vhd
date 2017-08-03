@@ -2,6 +2,12 @@
 -- CMS Muon Endcap
 -- GEM Collaboration
 -- Optohybrid v3 Firmware -- Counters
+-- T. Lenzi, A. Peck
+----------------------------------------------------------------------------------
+-- Description:
+--   This module implements all counters in the OH and the wishbone interface to
+--   read them out
+----------------------------------------------------------------------------------
 -- 2017/07/24 -- Initial port to version 3 electronics
 -- 2017/07/25 -- Clear synthesis warnings from module
 ----------------------------------------------------------------------------------

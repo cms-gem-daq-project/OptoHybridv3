@@ -1,7 +1,12 @@
 ----------------------------------------------------------------------------------
 -- CMS Muon Endcap
 -- GEM Collaboration
--- Optohybrid v3 Firmware -- GBT io
+-- Optohybrid v3 Firmware -- GBT
+-- A. Peck
+----------------------------------------------------------------------------------
+-- Description:
+--   This module implements all functionality required for communicating with GBTx
+----------------------------------------------------------------------------------
 -- 2017/07/24 -- Initial. Wrapper around GBT components to simplify top-level
 ----------------------------------------------------------------------------------
 

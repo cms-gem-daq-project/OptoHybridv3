@@ -2,6 +2,12 @@
 // CMS Muon Endcap
 // GEM Collaboration
 // Optohybrid v3 Firmware -- Stupid HDMI Controller
+// T. Lenzi, A. Peck
+//--------------------------------------------------------------------------------
+// Description:
+//   This module controls the HDMI outputs to provide programmable combinations
+//   of S-bits
+//--------------------------------------------------------------------------------
 // 2017/07/24 -- Initial port to version 3 electronics
 // 2017/07/25 -- Port to Verilog
 // 2017/07/25 -- Clear synthesis warnings from module

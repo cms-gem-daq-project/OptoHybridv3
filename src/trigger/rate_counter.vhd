@@ -1,12 +1,16 @@
-------------------------------------------------------------------------------------------------------------------------------------------------------
--- Company: TAMU
--- Engineer: Evaldas Juska (evaldas.juska@cern.ch, evka85@gmail.com)
---
--- Create Date:    15:04 2016-05-10
--- Module Name:    rate_counter
--- Description:    this module counts the rate in Hz of a given signal
-------------------------------------------------------------------------------------------------------------------------------------------------------
-
+----------------------------------------------------------------------------------
+-- CMS Muon Endcap
+-- GEM Collaboration
+-- Optohybrid v3 Firmware -- Rate Counter
+-- E. Juska, A. Peck
+----------------------------------------------------------------------------------
+-- Description:
+--   This module counts the rate in Hz of a given signal
+--   the rate is output both as a rate (in Hertz) as well as a "thermometer" style
+--   output with indicator corresponding to a generic-defined step size
+----------------------------------------------------------------------------------
+-- 2017/08/02 -- Initial working version with thermometer adapted from CTP-7
+----------------------------------------------------------------------------------
 
 library ieee;
 use ieee.std_logic_1164.all;

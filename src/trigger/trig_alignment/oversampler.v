@@ -1,5 +1,16 @@
-// adapted from Xilinx OVERSAMPLE.vhd XAPP8812
-
+//--------------------------------------------------------------------------------
+// CMS Muon Endcap
+// GEM Collaboration
+// Optohybrid v3 Firmware -- Oversampler
+// A. Peck
+//--------------------------------------------------------------------------------
+// Description:
+//   adapted from Xilinx OVERSAMPLE.vhd XAPP8812
+//   This module oversamples the incoming bitstream at multiple phases and provides
+//   edge-detection
+//--------------------------------------------------------------------------------
+// 2017/07/24 -- Initial
+//--------------------------------------------------------------------------------
 
 module oversampler (
 

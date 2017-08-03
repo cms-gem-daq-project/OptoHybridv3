@@ -1,15 +1,13 @@
 ----------------------------------------------------------------------------------
--- Company:        IIHE - ULB
--- Engineer:       Thomas Lenzi (thomas.lenzi@cern.ch)
---
--- Create Date:    08:37:33 07/07/2015
--- Design Name:    OptoHybrid v2
--- Module Name:    link_request - Behavioral
--- Project Name:   OptoHybrid v2
--- Target Devices: xc6vlx130t-1ff1156
--- Tool versions:  ISE  P.20131013
+-- CMS Muon Endcap
+-- GEM Collaboration
+-- Optohybrid v3 Firmware -- Link Request
+-- T. Lenzi, A. Peck
+----------------------------------------------------------------------------------
 -- Description:
---
+--   This module buffers wishbone requests to and from the OH
+----------------------------------------------------------------------------------
+-- 2017/08/01 -- Initial working version with thermometer adapted from v2
 ----------------------------------------------------------------------------------
 
 library ieee;

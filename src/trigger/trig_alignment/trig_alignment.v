@@ -1,3 +1,16 @@
+//--------------------------------------------------------------------------------
+// CMS Muon Endcap
+// GEM Collaboration
+// Optohybrid v3 Firmware -- Trigger Alignment
+// A. Peck
+//--------------------------------------------------------------------------------
+// Description:
+//   This module takes in 192 s-bits and 24 start-of-frame signals and outputs
+//   1536 (or x2 at DDR) aligned S-bits
+//--------------------------------------------------------------------------------
+// 2017/07/24 -- Initial
+//--------------------------------------------------------------------------------
+
 module trig_alignment (
 
   input [23:0]  sbit_mask,

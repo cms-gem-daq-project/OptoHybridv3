@@ -1,3 +1,15 @@
+----------------------------------------------------------------------------------
+-- CMS Muon Endcap
+-- GEM Collaboration
+-- Optohybrid v3 Firmware -- GBT Tx Bitslip
+-- T. Lenzi, A. Peck
+----------------------------------------------------------------------------------
+-- Description:
+--   This module slips bits to accomodate different tx frame alignments
+----------------------------------------------------------------------------------
+-- 2017/07/27 -- Adaptation from v2 electronics
+----------------------------------------------------------------------------------
+
 library ieee;
 use ieee.std_logic_1164.all;
 
@@ -38,10 +50,6 @@ begin
     end process;
 
     -- Rearrange data to account for how the serdes handles the bits
-
---    dout     <= data(1) & data(3)  & data(5)  & data(7)   & data(9) & data(11) & data(13) & data(15)  &
---                data(0) & data(2)  & data(4)  & data(6)   & data(8) & data(10) & data(12) & data(14);
---
 
         dout <= data(8)  & data(0) &
                 data(9)  & data(1) &

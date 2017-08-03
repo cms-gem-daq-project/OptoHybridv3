@@ -1,5 +1,16 @@
-// takes in 8 serial data streams from a single VFAT, and phase aligns them to 40 MHz LHC clock
-// align the bitstream to the frame clock and deserialize to 40MHz
+//--------------------------------------------------------------------------------
+// CMS Muon Endcap
+// GEM Collaboration
+// Optohybrid v3 Firmware -- Frame Alignment
+// A. Peck
+//--------------------------------------------------------------------------------
+// Description:
+//   This module takes in 8 serial data streams from a single VFAT, and phase
+//   aligns them to 40 MHz LHC clock, aligns the bitstream to the frame clock
+//   and deserialize to 40MHz
+//--------------------------------------------------------------------------------
+// 2017/07/24 -- Initial
+//--------------------------------------------------------------------------------
 
 module frame_aligner (
   input [MXIO-1:0] d0, // data from posedge of ddr

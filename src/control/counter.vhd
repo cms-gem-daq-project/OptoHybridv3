@@ -1,15 +1,11 @@
 ----------------------------------------------------------------------------------
--- Company:        IIHE - ULB
--- Engineer:       Thomas Lenzi (thomas.lenzi@cern.ch)
---
--- Create Date:    15:17:59 07/09/2015
--- Design Name:    OptoHybrid v2
--- Module Name:    counter - Behavioral
--- Project Name:   OptoHybrid v2
--- Target Devices: xc6vlx130t-1ff1156
--- Tool versions:  ISE  P.20131013
+-- CMS Muon Endcap
+-- GEM Collaboration
+-- Optohybrid v3 Firmware -- Counter
+-- T. Lenzi
+----------------------------------------------------------------------------------
 -- Description:
---
+--   This module implements base level functionality for a single counter
 ----------------------------------------------------------------------------------
 
 library ieee;
