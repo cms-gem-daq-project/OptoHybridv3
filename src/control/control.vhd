@@ -253,10 +253,11 @@ begin
         gbt_eclk      => gbt_clock_i,
 
         -- signals
-        mmcm_locked   => mmcms_locked_i,
-        gbt_rxready   => gbt_rxready_i,
-        gbt_rxvalid   => gbt_rxvalid_i,
-        cluster_count => cluster_count_i,
+        mmcm_locked          => mmcms_locked_i,
+        gbt_rxready          => gbt_rxready_i,
+        gbt_rxvalid          => gbt_rxvalid_i,
+        gbt_request_received => wb_m_req_i(0).stb,
+        cluster_count        => cluster_count_i,
 
         cluster_rate  => cluster_rate,
 

@@ -2,8 +2,10 @@ module led_control (
   input clock,
   input mmcm_locked,
   input gbt_eclk,
+
   input gbt_rxready,
   input gbt_rxvalid,
+  input gbt_request_received,
 
   input reset,
 
@@ -22,12 +24,14 @@ module led_control (
 
   wire [15:0] led_cylon;
   wire [15:0] led_logic;
+  wire [15:0] led_err;
+
 
   always @(posedge clock) begin
     if (mmcm_locked)
       led_out <= (cylon_mode) ? led_cylon : led_logic;
     else
-      led_out <= clk_led;
+      led_out <= led_err;
  end
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -68,10 +72,10 @@ module led_control (
 
 
   rate_counter #(
-    .g_CLK_FREQUENCY         (32'd40000000), // 40MHz LHC frequency
+    .g_CLK_FREQUENCY         (32'd40079000), // 40MHz LHC frequency
     .g_COUNTER_WIDTH         (32'd32),
     .g_INCREMENTER_WIDTH     (32'd8),
-    .g_PROGRESS_BAR_WIDTH    (32'd12),       // we'll have 13 LEDs as a rate progress bar
+    .g_PROGRESS_BAR_WIDTH    (32'd12),       // we'll have 12 LEDs as a rate progress bar
     .g_PROGRESS_BAR_STEP     (32'd20000),    // each bar is 20KHz
     .g_SPEEDUP_FACTOR        (32'd4)         // update 16 times per second
   )
@@ -92,22 +96,36 @@ module led_control (
   assign led_cylon [15:12] = led_logic[15:12];
 
   // go into cylon mode if we've seen a cluster this run
-  reg clustered = 0;
+  reg first_sbit_seen = 0;
   always @(posedge clock) begin
     if (cluster_count > 0)
-      clustered <= 1'b1;
+      first_sbit_seen <= 1'b1;
   end
 
-  assign cylon_mode = clustered;
+  // once we see s-bits, leave cylon mode and start the rate counter
+  assign cylon_mode = ~first_sbit_seen;
+
+//----------------------------------------------------------------------------------------------------------------------
+// Error Mode
+//----------------------------------------------------------------------------------------------------------------------
+
+  err_indicator u_err_ind (clock, 2'd0, ~mmcm_locked, led_err[15:0]);
+
+//----------------------------------------------------------------------------------------------------------------------
+// GBT Req Rx
+//----------------------------------------------------------------------------------------------------------------------
+
+  wire gbt_flash;
+  x_flashsm flash_gbt (gbt_request_received, 1'b0, clock, gbt_flash);
 
 //----------------------------------------------------------------------------------------------------------------------
 // Logic LED Assignments
 //----------------------------------------------------------------------------------------------------------------------
 
   assign led_logic [11:0] = progress_bar;
-  assign led_logic [12]   = clk_led;
-  assign led_logic [13]   = eclk_led;
-  assign led_logic [14]   = mmcm_locked;
+  assign led_logic [12]   = gbt_flash;
+  assign led_logic [13]   = clk_led;
+  assign led_logic [14]   = eclk_led;
   assign led_logic [15]   = gbt_rxready && gbt_rxvalid;
 
 endmodule
