@@ -197,7 +197,7 @@ begin
     --== GBT ==--
     --=========--
 
-    gbt_io : entity work.gbt_io
+    gbt : entity work.gbt
     port map(
 
         -- reset
