@@ -79,7 +79,7 @@ delay0   (
     .IDELAY_TYPE           ("FIXED"),
     .IDELAY_VALUE          (TAP_OFFSET + NUM_TAPS), // ~50 ps per tap, need to adjust
     .HIGH_PERFORMANCE_MODE ("TRUE"),
-    .REFCLK_FREQUENCY      (310))
+    .REFCLK_FREQUENCY      (200))
 delay1   (
     .C           (1'b0),
     .T           (1'b1),
