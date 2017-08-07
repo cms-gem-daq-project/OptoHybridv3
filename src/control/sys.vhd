@@ -34,12 +34,21 @@ port(
 
     -- outputs
 
-    sys_sbit_sel_o      : out std_logic_vector(29 downto 0);
-    sys_loop_sbit_o     : out std_logic_vector(4 downto 0);
-    sys_sbit_mode_o     : out std_logic_vector (1 downto 0);
+    sys_sbit_sel_o      : out std_logic_vector(29 downto 0) := (others => '0');
+    sys_loop_sbit_o     : out std_logic_vector( 4 downto 0) := "00000";
+    sys_sbit_mode_o     : out std_logic_vector( 1 downto 0) := "00";
 
-    vfat_reset_o       : out std_logic;
-    vfat_sbit_mask_o   : out std_logic_vector(23 downto 0);
+    vfat_reset_o        : out std_logic                     := '0';
+
+    vfat_sbit_mask_o    : out std_logic_vector(23 downto 0) := x"000000";
+
+    -- ttc / fmm
+
+    fmm_ignore_startstop_o : out std_logic                      := '1';
+    fmm_force_stop_o       : out std_logic                      := '0';
+    fmm_dont_wait_o        : out std_logic                      := '0';
+
+    ttc_bxn_offset_o       : out std_logic_vector (11 downto 0) := x"000";
 
     -- Sump
 
@@ -120,12 +129,51 @@ begin
     --== Mapping ==--
     --=============--
 
+    -- copy to register; allows initializtion in ports list
+    -- better fanout anyway...
 
-    sys_loop_sbit_o  <= reg_data(2)(4 downto 0)  ;
-    vfat_reset_o     <= wb_stb  (3) and wb_we    ;
-    vfat_sbit_mask_o <= reg_data(4)(23 downto 0) ;
-    sys_sbit_sel_o   <= reg_data(5)(29 downto 0) ;
-    sys_sbit_mode_o  <= reg_data(8)(1 downto 0)  ;
+    process (ref_clk_i)
+    begin
+
+        if (rising_edge(ref_clk_i)) then
+
+            -- ADR=2
+            if (reg_ack(2)='1') then
+                sys_loop_sbit_o  <= reg_data(2)(4 downto 0)  ;
+            end if;
+
+            -- ADR=3
+            vfat_reset_o     <= wb_stb  (3) and wb_we    ;
+
+            -- ADR=4
+            if (reg_ack(4)='1') then
+            vfat_sbit_mask_o <= reg_data(4)(23 downto 0) ;
+            end if;
+
+            -- ADR=5
+            if (reg_ack(4)='1') then
+            sys_sbit_sel_o   <= reg_data(5)(29 downto 0) ;
+            end if;
+
+            -- ADR=8
+            if (reg_ack(8)='1') then
+            sys_sbit_mode_o  <= reg_data(8)(1 downto 0)  ;
+            end if;
+
+            -- ADR=9
+            if (reg_ack(9)='1') then
+            fmm_ignore_startstop_o <= reg_data(9)(0)  ;
+            fmm_force_stop_o       <= reg_data(9)(1)  ;
+            fmm_dont_wait_o        <= reg_data(9)(2)  ;
+            end if;
+
+            -- ADR=10
+            if (reg_ack(10)='1') then
+            ttc_bxn_offset_o       <= reg_data(10)(11 downto 0)  ;
+            end if;
+
+        end if;
+    end process;
 
     --=============--
     --== Sump    ==--

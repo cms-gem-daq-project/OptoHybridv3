@@ -71,14 +71,24 @@ port(
     --------------------
 
     -- VFAT
-    vfat_reset_o       : out std_logic;
-    sbit_mask_o   : out std_logic_vector(23 downto 0);
-    ext_sbits_o         : out std_logic_vector(5 downto 0);
+    vfat_reset_o : out std_logic;
+    sbit_mask_o  : out std_logic_vector(23 downto 0);
+    ext_sbits_o  : out std_logic_vector(5 downto 0);
 
     -- LEDs
     led_o              : out std_logic_vector(15 downto 0);
 
-    -- sump
+
+    -------------
+    -- outputs --
+    -------------
+
+    trig_stop_o   : out std_logic;
+    bxn_counter_o : out std_logic_vector (11 downto 0);
+
+    -----------
+    -- sump  --
+    -----------
 
     sump_o : out std_logic
 
@@ -90,11 +100,26 @@ architecture Behavioral of control is
 
     --== Sbits ==--
 
-    signal sbit_mask : std_logic_vector (23 downto 0);
-    signal sys_sbit_sel   : std_logic_vector(29 downto 0);
-    signal sys_sbit_mode  : std_logic_vector(1  downto 0);
-    signal sys_loop_sbit  : std_logic_vector(4  downto 0);
+    signal sbit_mask     : std_logic_vector(23 downto 0);
+    signal sys_sbit_sel  : std_logic_vector(29 downto 0);
+    signal sys_sbit_mode : std_logic_vector(1  downto 0);
+    signal sys_loop_sbit : std_logic_vector(4  downto 0);
     signal cluster_rate  : std_logic_vector(31  downto 0);
+
+    --== TTC FMM ==--
+
+    signal fmm_ignore_startstop : std_logic;
+    signal fmm_force_stop       : std_logic;
+    signal fmm_dont_wait        : std_logic;
+
+    --== TTC Sync ==--
+
+    signal ttc_bxn_offset    : std_logic_vector (11 downto 0);
+    signal ttc_orbit_counter : std_logic_vector (31 downto 0);
+    signal ttc_bxn_counter   : std_logic_vector (11 downto 0);
+
+    signal bx0_sync_err      : std_logic;
+    signal bxn_sync_err      : std_logic;
 
     --== Wishbone ==--
 
@@ -114,6 +139,7 @@ begin
     sbit_mask_o <= sbit_mask;
 
     wb_m_res_o  <= wb_m_res;
+
     --=====================--
     --== Wishbone switch ==--
     --=====================--
@@ -144,12 +170,22 @@ begin
         wb_slv_req_i        => wb_s_req(WB_SLV_SYS),
         wb_slv_res_o        => wb_s_res(WB_SLV_SYS),
 
+        -- sbit control
         vfat_reset_o        => vfat_reset_o,
         vfat_sbit_mask_o    => sbit_mask,
+
+        -- hdmi control
         sys_loop_sbit_o     => sys_loop_sbit,
         sys_sbit_sel_o      => sys_sbit_sel,
         sys_sbit_mode_o     => sys_sbit_mode,
 
+        -- fmm control
+        fmm_ignore_startstop_o => fmm_ignore_startstop,
+        fmm_force_stop_o       => fmm_force_stop,
+        fmm_dont_wait_o        => fmm_dont_wait,
+
+        -- ttc control
+        ttc_bxn_offset_o       => ttc_bxn_offset,
 
         --sem_critical_i      => sem_critical
         sump_o              => sys_sump
@@ -283,6 +319,61 @@ begin
         sys_sbit_mode_i     => sys_sbit_mode,
         sys_sbit_sel_i      => sys_sbit_sel,
         ext_sbits_o         => ext_sbits_o
+    );
+
+
+    --=================--
+    --== TTC Sync    ==--
+    --=================--
+
+    ttc_inst : entity work.ttc
+
+    port map (
+
+        -- clock & reset
+        clock => clock_i,
+        reset => reset_i,
+
+        -- ttc commands
+        ttc_bx0    => ttc_bc0,
+        ttc_resync => ttc_resync,
+
+        -- control
+        bxn_offset => ttc_bxn_offset,
+
+        -- output
+       orbit_counter => ttc_orbit_counter,
+       bxn_counter   => ttc_bxn_counter,
+       bx0_sync_err  => bx0_sync_err,
+       bxn_sync_err  => bxn_sync_err
+
+    );
+
+    bxn_counter_o   <= ttc_bxn_counter;
+
+    --=================--
+    --== Trigger FMM ==--
+    --=================--
+
+    fmm_inst : entity work.fmm
+    port map (
+
+        -- clock & reset
+        clock => clock_i,
+        reset => reset_i,
+
+        -- ttc commands
+        ttc_bx0    => ttc_bc0,
+        ttc_resync => ttc_resync,
+
+        -- control
+        ignore_startstop   => fmm_ignore_startstop,
+        force_stop_trigger => fmm_force_stop,
+        dont_wait          => fmm_dont_wait,
+
+        -- output
+        fmm_trig_stop => trig_stop_o
+
     );
 
     --=============--

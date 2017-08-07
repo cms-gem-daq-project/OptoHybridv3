@@ -138,6 +138,10 @@ architecture Behavioral of optohybrid_top is
     signal sem_correction : std_logic;
     signal sem_critical   : std_logic;
 
+    --== TTC ==--
+
+    signal bxn_counter  : std_logic_vector(11 downto 0);
+
     --== Stupid HDMI ==--
 
     signal ext_sbits_o    : std_logic_vector(5  downto 0);
@@ -285,6 +289,12 @@ begin
         -- SEM
         sem_correction_i => sem_correction,
 
+        ---------
+        -- TTC --
+        ---------
+
+        bxn_counter_o => bxn_counter,
+
         --------------------
         -- config outputs --
         --------------------
@@ -327,6 +337,7 @@ begin
         sbit_mask_i     => (sbit_mask),
         cluster_count_o => cluster_count,
         overflow_o      => sbit_overflow,
+        bxn_counter_i   => bxn_counter,
 
         -- sbit_ors
 

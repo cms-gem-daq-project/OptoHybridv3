@@ -35,6 +35,10 @@ port(
     mgt_tx_p : out std_logic_vector(3 downto 0);
     mgt_tx_n : out std_logic_vector(3 downto 0);
 
+    -- ttc
+
+    bxn_counter_i : in std_logic_vector(11 downto 0);
+
     -- cluster packer
 
     oneshot_en_i            : in std_logic;
@@ -122,6 +126,8 @@ begin
         clk_40     => clk_40,  -- 40 MHz  Logic Clock
         clk_80     => clk_80,  -- 80 MHz  User Clock 2
         clk_160    => clk_160, -- 160 MHz User Clock
+
+        bxn_counter => bxn_counter_i,
 
         reset      => reset,
 

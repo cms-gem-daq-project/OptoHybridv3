@@ -9,6 +9,7 @@ module   gem_fiber_out #(parameter SIM_SPEEDUP = 0) (
 
   input [55:0]  GEM_DATA,      // 56 bit GEM data
   input         GEM_OVERFLOW,  //  1 bit GEM has more than 8 clusters
+  input [11:0]  BXN_COUNTER ,  //  12 bit bxn counter
 
   input         TRG_TX_REFCLK, // 160 MHz Reference Clock from QPLL
   input         TRG_TXUSRCLK,  // 160 MHz (derived from TXOUTCLK)
@@ -173,7 +174,17 @@ assign tx_dly_align_mon_ena = 1'b0;
   // we should send the "FC" K-code instead of the usual choice.
   //---------------------------------------------------
 
-  reg [7:0] frame_sep;
+  reg [7:0] frame_sep_lcl;
+  reg [7:0] frame_sep_ttc;
+
+  parameter FRAME_CTRL_TTC = 1;
+
+  reg [2:0] frame_sep_src=FRAME_CTRL_TTC;
+
+  wire [7:0] frame_sep = FRAME_CTRL_TTC ? frame_sep_ttc : frame_sep_lcl;
+
+  //-local (ttc independent) counter ---------------------------------------------------------------------------------
+
   reg [2:0] frame_sep_cnt=0;
 
   always @(posedge TRG_CLK80) begin
@@ -182,19 +193,27 @@ assign tx_dly_align_mon_ena = 1'b0;
 
   always @(*) begin
     case (frame_sep_cnt)
-      3'd0: frame_sep <= 8'hBC; // bc
-      3'd1: frame_sep <= 8'hBC; // bc
-      3'd2: frame_sep <= 8'hF7; // f7
-      3'd3: frame_sep <= 8'hF7; // f7
-      3'd4: frame_sep <= 8'hFB; // fb
-      3'd5: frame_sep <= 8'hFB; // fb
-      3'd6: frame_sep <= 8'hFD; // fd
-      3'd7: frame_sep <= 8'hFD; // fd
+      3'd0: frame_sep_lcl <= 8'hBC; // bc
+      3'd1: frame_sep_lcl <= 8'hBC; // bc
+      3'd2: frame_sep_lcl <= 8'hF7; // f7
+      3'd3: frame_sep_lcl <= 8'hF7; // f7
+      3'd4: frame_sep_lcl <= 8'hFB; // fb
+      3'd5: frame_sep_lcl <= 8'hFB; // fb
+      3'd6: frame_sep_lcl <= 8'hFD; // fd
+      3'd7: frame_sep_lcl <= 8'hFD; // fd
+    endcase
+  end
+
+  always @(*) begin
+    case (BXN_COUNTER[1:0])
+      2'd0: frame_sep_lcl <= 8'hBC; // bc
+      2'd1: frame_sep_lcl <= 8'hF7; // f7
+      2'd2: frame_sep_lcl <= 8'hFB; // fb
+      2'd3: frame_sep_lcl <= 8'hFD; // fd
     endcase
   end
 
   assign frm_sep = (GEM_OVERFLOW) ? 8'hFC : frame_sep;
-
 
 //----------------------------------------------------------------------------------------------------------------------
 // Test pattern reset
