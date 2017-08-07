@@ -51,54 +51,18 @@ end clocking;
 architecture Behavioral of clocking is
 
     signal gbt_dclk     : std_logic_vector (1 downto 0);
-    signal dclk_ibufgds : std_logic_vector (1 downto 0);
 
     signal mmcm_locked : std_logic_vector(1 downto 0);
 
 begin
-
-    --------- GBT DSKW TTC Clock 0 ---------
-
-    ibufgds_dclk0 : IBUFGDS
-    generic map(
-        iostandard      => "lvds_25"
-    )
-    port map(
-        I   => gbt_dclk_p(0),
-        IB  => gbt_dclk_n(0),
-        O   => dclk_ibufgds(0)
-    );
-
-    bufg_dclk0 : BUFG
-    port map(
-        I   => dclk_ibufgds(0),
-        O   => gbt_dclk(0)
-    );
-
-    --------- GBT DSKW TTC Clock 1 ---------
-
-    ibufgds_dclk1 : IBUFGDS
-    generic map(
-        iostandard      => "lvds_25"
-    )
-    port map(
-        I   => gbt_dclk_p(1),
-        IB  => gbt_dclk_n(1),
-        O   => dclk_ibufgds(1)
-    );
-
-    bufg_dclk1 : BUFG
-    port map(
-        I   => dclk_ibufgds(1),
-        O   => gbt_dclk(1)
-    );
 
     --------- MMCMs ---------
 
     clk_gen0 : entity work.clk_gen
     port map(
 
-        clk40_i     => gbt_dclk(0),
+        clk40_i_p   => gbt_dclk_p(0),
+        clk40_i_n   => gbt_dclk_n(0),
 
         clk40_o     => clk_1x_o,
         clk80_o     => clk_2x_o,
@@ -110,7 +74,8 @@ begin
     clk_gen1 : entity work.eprt_clk_gen
     port map(
 
-        clk40_i     => gbt_dclk(1),
+        clk40_i_p   => gbt_dclk_p(1),
+        clk40_i_n   => gbt_dclk_n(1),
 
         clk40_o     => gbt_clk1x_o,
         clk320_o    => gbt_clk8x_o,
