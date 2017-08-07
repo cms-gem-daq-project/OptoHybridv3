@@ -38,6 +38,8 @@ port(
     clk_4x_o        : out std_logic;
     clk_4x_90_o     : out std_logic;
 
+    delay_refclk_o  : out std_logic;
+
     -- mmcm locked status monitors
     dskw_mmcm_locked_o   : out std_logic;
     eprt_mmcm_locked_o   : out std_logic;
@@ -79,6 +81,7 @@ begin
 
         clk40_o     => gbt_clk1x_o,
         clk320_o    => gbt_clk8x_o,
+        clk200_o    => delay_refclk_o,
         locked_o    => mmcm_locked(1)
     );
 

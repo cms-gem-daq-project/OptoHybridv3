@@ -30,6 +30,8 @@ port(
     clk_160 : in std_logic;
     clk_160_90 : in std_logic;
 
+    delay_refclk_i : in std_logic;
+
     reset : in std_logic;
 
     mgt_tx_p : out std_logic_vector(3 downto 0);
@@ -97,6 +99,7 @@ begin
         clk40_i                 => clk_40,
         clk160_i                => clk_160,
         clk160_90_i             => clk_160_90,
+        delay_refclk_i          => delay_refclk_i,
 
         reset_i                 => reset,
         oneshot_en_i            => ('1'),

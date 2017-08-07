@@ -55,10 +55,10 @@ ibufds (
 //----------------------------------------------------------------------------------------------------------------------
 
 IODELAYE1 #(
-  .IDELAY_TYPE           ("FIXED"),
-  .IDELAY_VALUE          (TAP_OFFSET + 0),
-  .HIGH_PERFORMANCE_MODE ("TRUE"),
-  .REFCLK_FREQUENCY      (200))
+    .IDELAY_TYPE           ("FIXED"),
+    .IDELAY_VALUE          (TAP_OFFSET + 0),
+    .HIGH_PERFORMANCE_MODE ("TRUE"),
+    .REFCLK_FREQUENCY      (192))
 delay0   (
     .C           (1'b0),
     .T           (1'b1),
@@ -73,13 +73,13 @@ delay0   (
     .ODATAIN     (1'b0),
     .DATAOUT     (rxd_delay0),
     .CNTVALUEOUT ()
-  );
+);
 
-  IODELAYE1 #(
+IODELAYE1 #(
     .IDELAY_TYPE           ("FIXED"),
     .IDELAY_VALUE          (TAP_OFFSET + NUM_TAPS), // ~50 ps per tap, need to adjust
     .HIGH_PERFORMANCE_MODE ("TRUE"),
-    .REFCLK_FREQUENCY      (200))
+    .REFCLK_FREQUENCY      (192))
 delay1   (
     .C           (1'b0),
     .T           (1'b1),
@@ -94,7 +94,7 @@ delay1   (
     .ODATAIN     (1'b0),
     .DATAOUT     (_rxd_delay45),
     .CNTVALUEOUT ()
-  );
+);
 
 //----------------------------------------------------------------------------------------------------------------------
 // Serdes

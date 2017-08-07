@@ -27,6 +27,7 @@ port(
     clk160_i                : in std_logic;
     clk160_90_i             : in std_logic;
     clk40_i                 : in std_logic;
+    delay_refclk_i          : in std_logic;
 
     reset_i                 : in std_logic;
 
@@ -183,10 +184,11 @@ begin
         start_of_frame_n => start_of_frame_n,
 
 
-        fastclk_0   => clk160_i,
-        fastclk_90  => clk160_90_i,
-        fastclk_180 => clk160_180,
-        clock       => clk40_i,
+        fastclk_0    => clk160_i,
+        fastclk_90   => clk160_90_i,
+        fastclk_180  => clk160_180,
+        clock        => clk40_i,
+        delay_refclk => delay_refclk_i,
 
         phase_err => open,
         sbits => sbits

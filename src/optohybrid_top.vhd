@@ -109,6 +109,8 @@ architecture Behavioral of optohybrid_top is
     signal clk_4x           : std_logic;
     signal clk_4x_90        : std_logic;
 
+    signal delay_refclk     : std_logic;
+
     signal gbt_txvalid      : std_logic;
     signal gbt_txready      : std_logic;
     signal gbt_rxvalid      : std_logic;
@@ -188,7 +190,9 @@ begin
         clk_1x_o           => clk_1x, -- phase shiftable logic clocks
         clk_2x_o           => clk_2x,
         clk_4x_o           => clk_4x,
-        clk_4x_90_o        => clk_4x_90
+        clk_4x_90_o        => clk_4x_90,
+
+        delay_refclk_o     => delay_refclk
     );
 
     reset_ctl : entity work.reset
@@ -327,6 +331,8 @@ begin
         clk_80     => clk_2x,
         clk_160    => clk_4x,
         clk_160_90 => clk_4x_90,
+
+        delay_refclk_i => delay_refclk,
 
         -- mgt pairs
         mgt_tx_p => mgt_tx_p_o,

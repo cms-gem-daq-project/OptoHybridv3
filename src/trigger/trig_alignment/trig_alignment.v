@@ -26,6 +26,9 @@ module trig_alignment (
   input fastclk_0,
   input fastclk_90,
   input fastclk_180,
+
+  input delay_refclk,
+
   input clock,
 
   output [191:0] phase_err,
@@ -53,6 +56,10 @@ wire [23:0] sot_phase_err;
 wire [23:0] sof_dly;
 
 `include "tap_delays.v"
+
+wire idelay_ready;
+
+IDELAYCTRL idelayctl (.RDY(idelay_ready),.REFCLK(delay_refclk), .RST(reset));
 
 // use the start of frame signals to produce a phase alignment parameter for each transmission unit
 genvar ifat;
@@ -125,7 +132,7 @@ for (ifat=0; ifat<24; ifat=ifat+1) begin: fatloop2
     .d1 (d1[ifat*8 +: 8]),
 
     .mask (sbit_mask[ifat]),
-    .reset (reset),
+    .reset (reset || !(delay_ready)),
 
     .start_of_frame (start_of_frame_d0[ifat]),
     .clock          (clock),
