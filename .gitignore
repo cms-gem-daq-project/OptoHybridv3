@@ -45,3 +45,5 @@ src/ip_cores/*
 !*.xci
 !src/ip_cores/*.xco
 tags
+
+iseconfig

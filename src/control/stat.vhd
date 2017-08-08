@@ -22,7 +22,7 @@ use work.param_pkg.all;
 
 entity stat is
 generic(
-    N               : integer := 6
+    N               : integer := 10
 );
 port(
 
@@ -49,6 +49,16 @@ port(
     gbt_txvalid_i : in std_logic;
 
     cluster_rate_i : in std_logic_vector (31 downto 0);
+
+    -- TTC
+
+    ttc_bxn_counter_i     : in std_logic_vector (11 downto 0);
+    ttc_bx0_counter_lcl_i : in std_logic_vector (31 downto 0);
+    ttc_bx0_counter_rxd_i : in std_logic_vector (31 downto 0);
+    ttc_orbit_counter_i   : in std_logic_vector (31 downto 0);
+
+    ttc_bx0_sync_err : in std_logic;
+    ttc_bxn_sync_err : in std_logic;
 
     -- Sump
 
@@ -116,9 +126,13 @@ begin
     reg_data(2) <= (31 downto 1 => '0') & sem_critical_i;
     reg_data(3) <= (31 downto 4 => '0') & gbt_rxready_i & gbt_rxvalid_i & gbt_txready_i & gbt_txvalid_i;
     reg_data(4) <= cluster_rate_i;
+    reg_data(5) <= ttc_bx0_counter_lcl_i;
+    reg_data(6) <= ttc_bx0_counter_rxd_i;
+    reg_data(7) <= ttc_orbit_counter_i;
+    reg_data(8) <= (31 downto 12 => '0') & ttc_bxn_counter_i (11 downto 0);
 
     -- dummb readout to shut up ISE
-    reg_data(5) <= (31 downto 0 => '1');
+    reg_data(9) <= (31 downto 0 => '1');
 
     --=============--
     --== Sump    ==--

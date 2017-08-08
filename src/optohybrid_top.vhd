@@ -1,4 +1,4 @@
-----------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
 -- CMS Muon Endcap
 -- GEM Collaboration
 -- Optohybrid v3 Firmware -- Top Logic
@@ -123,6 +123,7 @@ architecture Behavioral of optohybrid_top is
 
     signal clock_source     : std_logic;
 
+    signal ttc_reset_vfats  : std_logic;
     signal ttc_resync       : std_logic;
     signal ttc_l1a          : std_logic;
     signal ttc_bc0          : std_logic;
@@ -164,7 +165,7 @@ begin
     gbt_rxvalid   <= gbt_rxvalid_i;
     gbt_txready   <= gbt_txready_i;
 
-    ext_reset_o   <= (others => '1');
+    ext_reset_o   <= (others => ttc_reset_vfats);
 
     --==============--
     --== Clocking ==--
@@ -236,6 +237,7 @@ begin
         wb_mst_res_i    => wb_m_res(WB_MST_GBT),
 
         -- decoded TTC
+        reset_vfats_o   => ttc_reset_vfats,
         resync_o        => ttc_resync,
         l1a_o           => ttc_l1a,
         bc0_o           => ttc_bc0

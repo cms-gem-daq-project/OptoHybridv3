@@ -41,9 +41,10 @@ port(
 
     gbt_link_error_o : out std_logic;
 
-    l1a_o    : out std_logic;
-    bc0_o    : out std_logic;
-    resync_o : out std_logic;
+    l1a_o         : out std_logic;
+    bc0_o         : out std_logic;
+    resync_o      : out std_logic;
+    reset_vfats_o : out std_logic;
 
     -- wishbone
     wb_mst_req_o : out wb_req_t;
@@ -58,7 +59,6 @@ architecture Behavioral of gbt is
     signal gbt_din   : std_logic_vector(15 downto 0) := (others => '0');
 
     signal gbt_valid      : std_logic;
-    signal gbt_sync_reset : std_logic;
 
 begin
     --=========--
@@ -69,7 +69,6 @@ begin
     port map(
         -- reset
        reset_i          => reset_i,
-       sync_reset_i     => gbt_sync_reset,    -- reset input
 
        -- input clocks
        data_clk_i       => data_clk_i,  -- 320 MHz sampling clock
@@ -111,15 +110,13 @@ begin
         wb_mst_res_i    => wb_mst_res_i,
 
         -- decoded TTC
+        reset_vfats_o   => reset_vfats_o,
         resync_o        => resync_o,
         l1a_o           => l1a_o,
         bc0_o           => bc0_o,
 
         -- outputs
-        error_o         => gbt_link_error_o,
-
-        -- slow reset
-        sync_reset_o    => gbt_sync_reset
+        error_o         => gbt_link_error_o
 
     );
 

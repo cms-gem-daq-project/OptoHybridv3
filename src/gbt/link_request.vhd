@@ -20,7 +20,6 @@ entity link_request is
 port(
 
     fabric_clock_i  : in std_logic;
-    ext_clock_i     : in std_logic;
     reset_i         : in std_logic;
 
     wb_mst_req_o    : out wb_req_t;

@@ -16,62 +16,85 @@
 
 ## External signals for Test Beam
 
-NET "ext_clk_i" CLOCK_DEDICATED_ROUTE = FALSE;
-NET "ext_clk_i" LOC = M17;
-NET "ext_trigger_i" LOC = M18; # M18 for ULB; L14 for others
-NET "ext_sbits_o[0]" LOC = G17;
-NET "ext_sbits_o[1]" LOC = H17;
-NET "ext_sbits_o[2]" LOC = J17;
-NET "ext_sbits_o[3]" LOC = J16;
-NET "ext_sbits_o[4]" LOC = L15;
-NET "ext_sbits_o[5]" LOC = L14; # L14 for ULB; M18 for others
+#NET "ext_clk_i" CLOCK_DEDICATED_ROUTE = FALSE;
+#NET "ext_clk_i" LOC = M17;
+#NET "ext_trigger_i" LOC = M18; # M18 for ULB; L14 for others
+#NET "ext_sbits_o[0]" LOC = G17;
+#NET "ext_sbits_o[1]" LOC = H17;
+#NET "ext_sbits_o[2]" LOC = J17;
+#NET "ext_sbits_o[3]" LOC = J16;
+#NET "ext_sbits_o[4]" LOC = L15;
+#NET "ext_sbits_o[5]" LOC = L14; # L14 for ULB; M18 for others
 
 ## Header
 
-NET "header_io[0]" LOC = AE17;
-NET "header_io[1]" LOC = AD17;
-NET "header_io[2]" LOC = AE16;
-NET "header_io[3]" LOC = AD16;
-NET "header_io[4]" LOC = AH9;
-NET "header_io[5]" LOC = AG13;
-NET "header_io[6]" LOC = AF13;
-NET "header_io[7]" LOC = AG15;
-NET "header_io[8]" LOC = AG16;
-NET "header_io[9]" LOC = AF15;
-NET "header_io[10]" LOC = AC13;
-NET "header_io[11]" LOC = AF16;
-NET "header_io[12]" LOC = V23;
-NET "header_io[13]" LOC = AC12;
-NET "header_io[14]" LOC = L18;
-NET "header_io[15]" LOC = L19;
+NET "led_o[0]"  LOC = H27  ; # vdiff_e_13_p
+NET "led_o[1]"  LOC = G28  ; # vdiff_e_13_n
+NET "led_o[2]"  LOC = B25  ; # vdiff_e_4_p
+NET "led_o[3]"  LOC = A25  ; # vdiff_e_4_n
+NET "led_o[4]"  LOC = B27  ; # vdiff_e_6_p
+NET "led_o[5]"  LOC = A26  ; # vdiff_e_6_n
+NET "led_o[6]"  LOC = C27  ; # vdiff_e_8_n
+NET "led_o[7]"  LOC = B27  ; # vdiff_e_8_p
+NET "led_o[8]"  LOC = C14  ; # vdiff_l_2_n
+NET "led_o[9]"  LOC = D14  ; # vdiff_l_2_p
+NET "led_o[10]" LOC = C13  ; # vdiff_l_12_p
+NET "led_o[11]" LOC = C12  ; # vdiff_l_12_n
+NET "led_o[12]" LOC = B15  ; # vdiff_m_16_n
+NET "led_o[13]" LOC = A15  ; # vdiff_m_16_p
+NET "led_o[14]" LOC = G26  ; # vdiff_e_7_p
+NET "led_o[15]" LOC = G27  ; # vdiff_e_7_n
 
-# XADC 
+# XADC
 
 INST "adc_inst/xadc_inst/SYSMON_INST" LOC = SYSMON_X0Y0;
-NET "xadc_n_i[5]" LOC = P26;
-NET "xadc_p_i[5]" LOC = P25;
-NET "xadc_p_i[0]" LOC = U18;
-NET "xadc_n_i[0]" LOC = V17;
-NET "xadc_n_i[4]" LOC = B11;
-NET "xadc_p_i[4]" LOC = A11;
-NET "xadc_n_i[3]" LOC = J12;
-NET "xadc_p_i[3]" LOC = H12;
-NET "xadc_n_i[2]" LOC = B13;
-NET "xadc_p_i[2]" LOC = B12;
-NET "xadc_n_i[1]" LOC = A14;
-NET "xadc_p_i[1]" LOC = A13;
 
-## Testpoints
-#NET "tp_0_o"  LOC = AE22; 
-#NET "tp_1_o"  LOC = AC24; 
-NET "tp_4n_o"  LOC = AP10;
-NET "tp_4p_o"  LOC = AN10;
+# GBT
 
-NET "tp_5n_o"  LOC = AE11;
-NET "tp_5p_o"  LOC = AF11;
+# NET "gbt_txvalid_o" LOC =      ; # hardwired, apparently
+NET "gbt_txready_i" LOC = AF13 ; # v_diff_k_13_p
+NET "gbt_rxvalid_i" LOC = AJ10 ; # R_side_2_n
+NET "gbt_rxready_i" LOC = AH9  ; # R_side_2_p
 
-NET "tp_1n_o"  LOC = AC10;
-NET "tp_1p_o"  LOC = AB10;
+# VFAT resets (schematic counts from zero)
 
-NET "tp_20n_o"  LOC = AD22;
-NET "tp_20p_o"  LOC = AC22;
+NET "ext_reset_o<0>"  LOC = A16  ; #v_diff_m_12_p
+NET "ext_reset_o<1>"  LOC = D15  ; #v_diff_m_20_p
+NET "ext_reset_o<2>"  LOC = C15  ; #v_diff_m_20_n
+NET "ext_reset_o<3>"  LOC = W26  ; #v_diff_h_20_n
+NET "ext_reset_o<4>"  LOC = W27  ; #v_diff_h_20_p
+NET "ext_reset_o<5>"  LOC = Y27  ; #v_diff_h_18_n
+NET "ext_reset_o<6>"  LOC = AK31 ; #v_diff_f_16_n
+NET "ext_reset_o<7>"  LOC = AL31 ; #v_diff_f_16_p
+NET "ext_reset_o<8>"  LOC = AL30 ; #v_diff_f_20_p
+NET "ext_reset_o<9>"  LOC = AM23 ; #v_diff_b_16_p
+NET "ext_reset_o<10>" LOC = AL23 ; #v_diff_b_16_n
+NET "ext_reset_o<11>" LOC = AP24 ; #v_diff_d_20_n
+
+
+
+NET "mgt_clk_p_i<0>" LOC = H6; #
+NET "mgt_clk_n_i<0>" LOC = H5; #
+
+NET "mgt_clk_p_i<1>" LOC = F6; #
+NET "mgt_clk_n_i<1>" LOC = F5; #
+
+NET "mgt_tx_p_o<0>" LOC = M1; #
+NET "mgt_tx_n_o<0>" LOC = M2; #
+NET "mgt_tx_p_o<1>" LOC = K1; #
+NET "mgt_tx_n_o<1>" LOC = K2; #
+NET "mgt_tx_p_o<2>" LOC = H1; #
+NET "mgt_tx_n_o<2>" LOC = H2; #
+NET "mgt_tx_p_o<3>" LOC = F1; #
+NET "mgt_tx_n_o<3>" LOC = F2; #
+
+# VFAT Trigger Data
+
+#0-23
+#NET "vfat_sof_p<0>" LOC =     ;
+#NET "vfat_sof_n<0>" LOC =     ;
+
+#0-191
+#NET "vfat_sbits_p<0>" LOC =     ;
+#NET "vfat_sbits_n<0>" LOC =     ;
+

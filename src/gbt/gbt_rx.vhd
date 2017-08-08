@@ -40,17 +40,14 @@ port(
     l1a_o           : out std_logic;
     bc0_o           : out std_logic;
     resync_o        : out std_logic;
-    reset_fats_o    : out std_logic;
+    reset_vfats_o   : out std_logic;
 
     -- 65 bit output packet to fifo
     req_en_o        : out std_logic;
     req_data_o      : out std_logic_vector(64 downto 0);
 
     -- status
-    error_o         : out std_logic;
-
-    -- slow reset output
-    sync_reset_o    : out std_logic
+    error_o         : out std_logic
 
 );
 end gbt_rx ;
@@ -75,6 +72,8 @@ begin
     -- 10 bit decoding (1 320 MHz e-link, 1 80 MHz e-link)
 
     g_ten_seq : IF (not g_16BIT) GENERATE
+
+    frame_end_valid <= (data_i(11 downto 8) & data_i (6) & data_i(2)) = "101010"; -- use a 6 bit end frame symbol
 
     process(clock)
     begin
@@ -116,6 +115,8 @@ begin
     -- 16 bit decoding (two 320 MHz e-links)
 
     g_sixteen_seq : IF (g_16BIT) GENERATE
+
+    frame_end_valid <= data_i(11 downto 0) = x"ABC"; -- 12 bit DAV
 
     process(clock)
     begin
@@ -182,15 +183,15 @@ begin
             else
                 case state is
                     when SYNCING =>
-                        l1a_o        <= '0';
-                        reset_fats_o <= '0';
-                        resync_o     <= '0';
-                        bc0_o        <= '0';
+                        l1a_o         <= '0';
+                        reset_vfats_o <= '0';
+                        resync_o      <= '0';
+                        bc0_o         <= '0';
                     when others  =>
-                        l1a_o        <= data_i(15);
-                        reset_fats_o <= data_i(14);
-                        resync_o     <= data_i(13);
-                        bc0_o        <= data_i(12);
+                        l1a_o         <= data_i(15);
+                        reset_vfats_o <= data_i(14);
+                        resync_o      <= data_i(13);
+                        bc0_o         <= data_i(12);
                 end case;
             end if;
         end if;
@@ -207,9 +208,6 @@ begin
     --== REQUEST ==--
 
     g_ten : IF (not g_16BIT) GENERATE
-
-    -- use a 6 bit end frame symbol
-    frame_end_valid <= data_i(11 downto 8) & data_i (6) & data_i(2) = x"A" & "10";
 
     process(clock)
     begin
@@ -273,8 +271,6 @@ begin
 
     g_sixteen : IF (g_16BIT) GENERATE
 
-    frame_end_valid <= data_i(11 downto 0) = x"ABC";
-
     process(clock)
     begin
         if (rising_edge(clock)) then
@@ -331,7 +327,5 @@ begin
     --         end if;
     --     end if;
     -- end process;
-
-    sync_reset_o <= '0';
 
 end Behavioral;

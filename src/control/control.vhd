@@ -114,9 +114,11 @@ architecture Behavioral of control is
 
     --== TTC Sync ==--
 
-    signal ttc_bxn_offset    : std_logic_vector (11 downto 0);
-    signal ttc_orbit_counter : std_logic_vector (31 downto 0);
-    signal ttc_bxn_counter   : std_logic_vector (11 downto 0);
+    signal ttc_bxn_offset      : std_logic_vector (11 downto 0);
+    signal ttc_orbit_counter   : std_logic_vector (31 downto 0);
+    signal ttc_bxn_counter     : std_logic_vector (11 downto 0);
+    signal ttc_bx0_counter_lcl : std_logic_vector (31 downto 0); -- bc0 counter local    bc0s
+    signal ttc_bx0_counter_rxd : std_logic_vector (31 downto 0); -- bc0 counter received bc0s
 
     signal bx0_sync_err      : std_logic;
     signal bxn_sync_err      : std_logic;
@@ -218,11 +220,21 @@ begin
         -- sbits
 
         cluster_rate_i      => cluster_rate,
+
         -- sem
 
         sem_critical_i      => sem_critical_i,
 
-        sump_o              => stat_sump
+        -- ttc
+
+        ttc_bxn_counter_i     => ttc_bxn_counter,
+        ttc_bx0_counter_lcl_i => ttc_bx0_counter_lcl,
+        ttc_bx0_counter_rxd_i => ttc_bx0_counter_rxd,
+        ttc_orbit_counter_i   => ttc_orbit_counter,
+        ttc_bx0_sync_err      => bx0_sync_err,
+        ttc_bxn_sync_err      => bxn_sync_err,
+
+        sump_o                => stat_sump
     );
 
     --==============--
@@ -342,10 +354,12 @@ begin
         bxn_offset => ttc_bxn_offset,
 
         -- output
-       orbit_counter => ttc_orbit_counter,
-       bxn_counter   => ttc_bxn_counter,
-       bx0_sync_err  => bx0_sync_err,
-       bxn_sync_err  => bxn_sync_err
+       orbit_counter   => ttc_orbit_counter,
+       bxn_counter     => ttc_bxn_counter,
+       bx0_counter_lcl => ttc_bx0_counter_lcl,
+       bx0_counter_rxd => ttc_bx0_counter_rxd,
+       bx0_sync_err    => bx0_sync_err,
+       bxn_sync_err    => bxn_sync_err
 
     );
 

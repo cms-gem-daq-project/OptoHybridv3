@@ -15,6 +15,7 @@
 //
 //--------------------------------------------------------------------------------
 // 2017/08/03 -- Initial port from TMB sequencer
+// 2017/08/07 -- Add bc0 counters (local and received)
 //--------------------------------------------------------------------------------
 
 module ttc (
@@ -31,6 +32,9 @@ module ttc (
 
   output reg [MXCNT-1:0] orbit_counter,
   output reg [MXBXN-1:0] bxn_counter,
+
+  output reg [MXCNT-1:0] bx0_counter_lcl,
+  output reg [MXCNT-1:0] bx0_counter_rxd,
 
   output     bx0_sync_err, // sync error on bx0
   output reg bxn_sync_err  // bunch counter sync error
@@ -104,6 +108,23 @@ module ttc (
   end
 
   assign bx0_sync_err = bxn_sync_err || bxn_preset; // single clock strobe of sync error at bx0
+
+  //--------------------------------------------------------------------------------------------------------------------
+  // BX0 Counters
+  //--------------------------------------------------------------------------------------------------------------------
+
+  initial bx0_counter_rxd = 0;
+  initial bx0_counter_lcl = 0;
+
+  always @(posedge clock) begin
+
+      if      (ttc_resync) bx0_counter_rxd = 0;
+      else if (ttc_bx0)    bx0_counter_rxd = bx0_counter_rxd + 1'b1;
+
+      if      (ttc_resync) bx0_counter_lcl = 0;
+      else if (ttc_bx0)    bx0_counter_lcl = bx0_counter_lcl + 1'b1;
+
+  end
 
   //--------------------------------------------------------------------------------------------------------------------
   // Orbit Counter

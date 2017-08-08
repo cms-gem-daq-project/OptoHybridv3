@@ -29,9 +29,6 @@ port(
 
     reset_i          : in std_logic;
 
-    -- reset
-    sync_reset_i     : in std_logic;
-
     -- input clocks
     data_clk_i       : in std_logic;
     frame_clk_i      : in std_logic;

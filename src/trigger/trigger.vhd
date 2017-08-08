@@ -44,7 +44,6 @@ port(
     -- cluster packer
 
     oneshot_en_i            : in std_logic;
-    vfat_sbit_clusters_o    : out sbit_cluster_array_t(7 downto 0);
     sbit_mask_i             : in std_logic_vector (23 downto 0);
     cluster_count_o         : out std_logic_vector (7 downto 0);
     overflow_o              : out std_logic;

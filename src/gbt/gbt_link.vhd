@@ -43,12 +43,10 @@ port(
     l1a_o           : out std_logic;
     bc0_o           : out std_logic;
     resync_o        : out std_logic;
+    reset_vfats_o   : out std_logic;
 
     -- status
-    error_o         : out std_logic;
-
-    -- slow reset
-    sync_reset_o    : out std_logic
+    error_o         : out std_logic
 
 );
 end gbt_link;
@@ -83,19 +81,17 @@ begin
         valid_i      => valid_i,
 
         -- decoded ttc commands
-        l1a_o        => l1a_o,
-        bc0_o        => bc0_o,
-        resync_o     => resync_o,
+        l1a_o         => l1a_o,
+        bc0_o         => bc0_o,
+        resync_o      => resync_o,
+        reset_vfats_o => reset_vfats_o,
 
         -- 65 bit output packet to fifo
         req_en_o     => gbt_rx_req,
         req_data_o   => gbt_rx_data,
 
         -- status
-        error_o      => error_o,
-
-        -- slow reset output
-        sync_reset_o => sync_reset_o
+        error_o      => error_o
     );
 
     --============--
@@ -130,7 +126,6 @@ begin
     port map(
         -- clocks
         fabric_clock_i  => clock, -- 40 MHz logic clock
-        ext_clock_i     => clock, -- 40 MHz logic clock -- sync is handled in GBT module
 
         -- reset
         reset_i         => reset_i,

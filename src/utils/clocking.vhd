@@ -21,8 +21,8 @@ entity clocking is
 port(
 
     -- fixed phase 320 MHz e-port clocks
-    gbt_eclk_p  : in std_logic_vector (1 downto 0);
-    gbt_eclk_n  : in std_logic_vector (1 downto 0);
+    -- gbt_eclk_p  : in std_logic_vector (1 downto 0);
+    -- gbt_eclk_n  : in std_logic_vector (1 downto 0);
 
     -- programmable frequency/phase deskew clocks
     gbt_dclk_p : in std_logic_vector(1 downto 0);
