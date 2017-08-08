@@ -27,7 +27,7 @@ package wb_pkg is
 
     --== Wishbone slaves ==--
 
-	constant WB_SLAVES          : positive := 4;
+	constant WB_SLAVES          : positive := 5;
 
     constant WB_SLV_LOOP        : integer := 0;
 
@@ -37,12 +37,15 @@ package wb_pkg is
 
     constant WB_SLV_STAT        : integer := 3;
 
+    constant WB_SLV_ADC         : integer := 4;
+
     --== Wishbone addresses ==--
 
     constant WB_ADDR_LOOP       : std_logic_vector(7 downto 0) := x"40";
     constant WB_ADDR_CNT        : std_logic_vector(7 downto 0) := x"41";
     constant WB_ADDR_SYS        : std_logic_vector(7 downto 0) := x"42";
     constant WB_ADDR_STAT       : std_logic_vector(7 downto 0) := x"43";
+    constant WB_ADDR_ADC        : std_logic_vector(7 downto 0) := x"44";
 
     --== Wishbone address selection & generation ==--
 
@@ -68,6 +71,8 @@ package body wb_pkg is
         elsif (std_match(addr, WB_ADDR_SYS   & "0000000000000000--------")) then sel := WB_SLV_SYS;
         -- Status
         elsif (std_match(addr, WB_ADDR_STAT  & "0000000000000000--------")) then sel := WB_SLV_STAT;
+        -- ADC
+        elsif (std_match(addr, WB_ADDR_ADC   & "0000000000000000--------")) then sel := WB_SLV_ADC;
         --
         else sel := 99;
         end if;

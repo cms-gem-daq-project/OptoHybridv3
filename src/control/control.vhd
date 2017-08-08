@@ -66,6 +66,10 @@ port(
     -- SEM
     sem_correction_i    : in std_logic;
 
+    -- Analog input
+    adc_vp         : in  std_logic;
+    adc_vn         : in  std_logic;
+
     --------------------
     -- config outputs --
     --------------------
@@ -122,6 +126,12 @@ architecture Behavioral of control is
 
     signal bx0_sync_err      : std_logic;
     signal bxn_sync_err      : std_logic;
+
+    --== ADC ==--
+
+    signal overtemp       : std_logic;
+    signal vccaux_alarm   : std_logic;
+    signal vccint_alarm   : std_logic;
 
     --== Wishbone ==--
 
@@ -388,6 +398,22 @@ begin
         -- output
         fmm_trig_stop => trig_stop_o
 
+    );
+
+    --====================--
+    --== System Monitor ==--
+    --====================--
+
+    adc_inst : entity work.adc port map(
+        ref_clk_i       => clock_i,
+        reset_i         => reset_i,
+        wb_slv_req_i    => wb_s_req (WB_SLV_ADC),
+        wb_slv_res_o    => wb_s_res (WB_SLV_ADC),
+        overtemp_o      => overtemp,
+        vccaux_alarm_o  => vccaux_alarm,
+        vccint_alarm_o  => vccint_alarm,
+        adc_vp          => adc_vp,
+        adc_vn          => adc_vn
     );
 
     --=============--
