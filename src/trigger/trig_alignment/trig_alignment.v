@@ -56,6 +56,7 @@ wire [23:0] sot_phase_err;
 wire [23:0] sof_dly;
 
 wire [23:0] sof_sump;
+wire [191:0] sbit_sump;
 
 wire [192*3-1:0] phase_sel_sump;
 
@@ -141,7 +142,7 @@ for (ipin=0; ipin<192; ipin=ipin+1) begin: sampler
     .phase_sel_out    (phase_sel_sump[ipin*3+:3]),
     .phase_err        (phase_err[ipin]),
 
-    .sump             (),
+    .sump             (sbit_sump[ipin]),
 
     .d0(d0[ipin]),
     .d1(d1[ipin])
@@ -173,6 +174,6 @@ for (ifat=0; ifat<24; ifat=ifat+1) begin: fatloop2
 end
 endgenerate
 
-assign sump = (|phase_err) || (|alignment_err) || (|sot_phase_err) || (|start_of_frame_d1) || (|sof_dly) || (|phase_sel_sump) || (|sof_sump);
+assign sump = (|phase_err) || (|alignment_err) || (|sot_phase_err) || (|start_of_frame_d1) || (|sof_dly) || (|phase_sel_sump) || (|sof_sump) || (|sbit_sump);
 
 endmodule
