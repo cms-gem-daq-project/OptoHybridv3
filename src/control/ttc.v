@@ -29,11 +29,11 @@ module ttc (
 
   input  [MXBXN-1:0] bxn_offset, // BXN offset at reset
 
-  output [MXCNT-1:0] orbit_counter,
-  output [MXBXN-1:0] bxn_counter,
+  output reg [MXCNT-1:0] orbit_counter,
+  output reg [MXBXN-1:0] bxn_counter,
 
-  output bx0_sync_err, // sync error on bx0
-  output bxn_sync_err  // bunch counter sync error
+  output     bx0_sync_err, // sync error on bx0
+  output reg bxn_sync_err  // bunch counter sync error
 
 );
 
@@ -79,7 +79,7 @@ module ttc (
   // BXN Counter
   //--------------------------------------------------------------------------------------------------------------------
 
-  reg [MXBXN-1:0] bxn_counter  = 0;
+  initial bxn_counter  = 0;
 
   always @(posedge clock) begin
     if      (bxn_preset) bxn_counter  <= bxn_offset_lim;  // Counter
@@ -91,7 +91,7 @@ module ttc (
   // Synchronization
   //--------------------------------------------------------------------------------------------------------------------
 
-  reg bxn_sync_err = 0;
+  initial bxn_sync_err = 0;
 
   wire bxn_sync = bxn_counter == bxn_offset_lim; // BXN now at offset value (i.e. local bx0)
 
@@ -111,7 +111,7 @@ module ttc (
 
   // counts bx0s from bx counter
 
-  reg [MXCNT-1:0] orbit_counter = 0;
+  initial orbit_counter = 0;
 
   wire orbit_cnt_reset = ttc_resync;
   wire orbit_cnt_ovf   = (orbit_counter == {MXCNT{1'b1}});

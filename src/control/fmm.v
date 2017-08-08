@@ -33,7 +33,7 @@ module fmm (
   input dont_wait,
 
   // output
-  output fmm_trig_stop
+  output reg fmm_trig_stop
 
 );
 
@@ -109,7 +109,7 @@ module fmm (
   end
 
   // FMM Control signals
-  reg fmm_trig_stop = 1;                  // Power up stop state
+  initial fmm_trig_stop = 1;                  // Power up stop state
 
   always @(posedge clock) begin
   if   (reset)  fmm_trig_stop <= 1;                   // sync reset

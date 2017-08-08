@@ -34,8 +34,8 @@ port(
 
     --== Clocking ==--
 
-    gbt_eclk_p  : in std_logic_vector (1 downto 0) ;
-    gbt_eclk_n  : in std_logic_vector (1 downto 0) ;
+ -- gbt_eclk_p  : in std_logic_vector (1 downto 0) ;
+ -- gbt_eclk_n  : in std_logic_vector (1 downto 0) ;
 
     gbt_dclk_p : in std_logic_vector (1 downto 0) ;
     gbt_dclk_n : in std_logic_vector (1 downto 0) ;
@@ -55,7 +55,7 @@ port(
 
     led_o   : out std_logic_vector (15 downto 0);
 
-    gbt_txvalid_o : out std_logic;
+    -- gbt_txvalid_o : out std_logic;
     gbt_txready_i : in std_logic;
 
     gbt_rxvalid_i : in std_logic;
@@ -68,8 +68,8 @@ port(
 
     --== GTX ==--
 
-    mgt_clk_p_i : in std_logic;
-    mgt_clk_n_i : in std_logic;
+    mgt_clk_p_i : in std_logic_vector (1 downto 0);
+    mgt_clk_n_i : in std_logic_vector (1 downto 0);
 
     mgt_tx_p_o  : out std_logic_vector(3 downto 0);
     mgt_tx_n_o  : out std_logic_vector(3 downto 0);
@@ -159,12 +159,12 @@ begin
 
     ext_sbits_o   <= hdmi_n(3 downto 0) & hdmi_p(3 downto 2);
 
-    gbt_txvalid_o <= gbt_txvalid;
+    -- gbt_txvalid_o <= gbt_txvalid;
     gbt_rxready   <= gbt_rxready_i;
     gbt_rxvalid   <= gbt_rxvalid_i;
     gbt_txready   <= gbt_txready_i;
 
-    ext_reset_o   <= (others => reset);
+    ext_reset_o   <= (others => '1');
 
     --==============--
     --== Clocking ==--
@@ -176,8 +176,8 @@ begin
         gbt_dclk_p         => gbt_dclk_p, -- phase shiftable 40MHz ttc clocks
         gbt_dclk_n         => gbt_dclk_n, --
 
-        gbt_eclk_p         => gbt_eclk_p, -- phase shiftable 40MHz ttc clocks
-        gbt_eclk_n         => gbt_eclk_n, --
+     -- gbt_eclk_p         => gbt_eclk_p, -- 320 MHz fixed clocks
+     -- gbt_eclk_n         => gbt_eclk_n, -- do not use
 
         mmcms_locked_o     => mmcms_locked,
 
@@ -324,8 +324,8 @@ begin
         reset  => reset,
 
         -- clocks
-        mgt_clk_p => mgt_clk_p_i,
-        mgt_clk_n => mgt_clk_n_i,
+        mgt_clk_p => mgt_clk_p_i(0),
+        mgt_clk_n => mgt_clk_n_i(0),
 
         clk_40     => clk_1x,
         clk_80     => clk_2x,

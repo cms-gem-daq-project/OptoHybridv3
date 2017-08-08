@@ -23,13 +23,15 @@ module oversampler (
   input fastclock90,
   input fastclock180,
 
-  input  [1:0] phase_sel_in,
-  output [1:0] phase_sel_out,
+  input  [2:0] phase_sel_in,
+  output [2:0] phase_sel_out,
 
   output reg phase_err,
 
   output d0,
-  output d1
+  output d1,
+
+  output sump
 
 );
 
@@ -291,5 +293,7 @@ iserdes_odd   (
       end
     end
     endgenerate
+
+    assign sump = |phase_sel_in; // sump the phase_sel_in to supress warnings when this is unused (for self-aligned SOF)
 
 endmodule
