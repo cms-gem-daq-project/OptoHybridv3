@@ -64,6 +64,11 @@ architecture Behavioral of gbt_serdes is
     signal   to_gbt_s1      : std_logic_vector(15 downto 0) := (others => '0');
     signal   to_gbt_s2      : std_logic_vector(15 downto 0) := (others => '0');
 
+    -- ignore timing on s1 for metastability chain
+    attribute ASYNC_REG     : string;
+    attribute ASYNC_REG of from_gbt_s1: signal is "TRUE";
+    attribute ASYNC_REG of   to_gbt_s1: signal is "TRUE";
+
     signal data_clk_inv : std_logic;
 
     signal pulse_length     : std_logic_vector (3 downto 0) := x"f";
@@ -118,8 +123,6 @@ begin
     );
 
     -- remap to account for how the Xilinx IPcore assigns the output pins (?)
-    -- from_gbt <= from_gbt_raw(1) & from_gbt_raw(3) & from_gbt_raw(5) & from_gbt_raw(7) & from_gbt_raw(9) & from_gbt_raw(11) & from_gbt_raw(13) & from_gbt_raw(15)  &
-    --             from_gbt_raw(0) & from_gbt_raw(2) & from_gbt_raw(4) & from_gbt_raw(6) & from_gbt_raw(8) & from_gbt_raw(10) & from_gbt_raw(12) & from_gbt_raw(14);
     from_gbt <= from_gbt_raw(1) & from_gbt_raw(3) & from_gbt_raw(5) & from_gbt_raw(7) & from_gbt_raw(9) & from_gbt_raw(11) & from_gbt_raw(13) & from_gbt_raw(15)  &
                 from_gbt_raw(0) & from_gbt_raw(2) & from_gbt_raw(4) & from_gbt_raw(6) & from_gbt_raw(8) & from_gbt_raw(10) & from_gbt_raw(12) & from_gbt_raw(14);
 
@@ -178,6 +181,6 @@ begin
 
 
     data_o <= from_gbt_s2; -- synchronized from "from_gbt"
-    to_gbt <= to_gbt_s2; -- synchronized from data_i
+    to_gbt <= to_gbt_s2;   -- synchronized from data_i
 
 end Behavioral;
