@@ -22,7 +22,7 @@ use work.types_pkg.all;
 
 entity gbt_rx is
     generic(
-        g_16BIT : boolean := true
+        g_16BIT : boolean := false
     );
 port(
 
@@ -66,89 +66,6 @@ architecture Behavioral of gbt_rx is
     signal frame_end_valid : boolean;
 
 begin
-
-    --== STATE ==--
-
-    -- 10 bit decoding (1 320 MHz e-link, 1 80 MHz e-link)
-
-    g_ten_seq : IF (not g_16BIT) GENERATE
-
-    frame_end_valid <= (data_i(11 downto 8) & data_i (6) & data_i(2)) = "101010"; -- use a 6 bit end frame symbol
-
-    process(clock)
-    begin
-        if (rising_edge(clock)) then
-
-            if (reset_i = '1' or valid_i = '0') then
-                state <= SYNCING;
-            else
-                case state is
-                    when SYNCING      =>
-                        if (frame_end_valid) then
-                            state <= FRAME_BEGIN;
-                        end if;
-                    when FRAME_BEGIN  => state <= ADDR_0;
-                    when ADDR_0       => state <= ADDR_1;
-                    when ADDR_1       => state <= ADDR_2;
-                    when ADDR_2       => state <= ADDR_3;
-                    when ADDR_3       => state <= ADDR_4;
-                    when ADDR_4       => state <= DATA_0;
-                    when DATA_0       => state <= DATA_1;
-                    when DATA_1       => state <= DATA_2;
-                    when DATA_2       => state <= DATA_3;
-                    when DATA_3       => state <= DATA_4;
-                    when DATA_4       => state <= FRAME_END;
-                    when FRAME_END    =>
-                        if (frame_end_valid) then
-                            state <= FRAME_BEGIN;
-                        else
-                            state <= SYNCING;
-                        end if;
-                    when others => state <= SYNCING;
-                end case;
-            end if;
-        end if;
-    end process;
-
-    END GENERATE g_ten_seq;
-
-    -- 16 bit decoding (two 320 MHz e-links)
-
-    g_sixteen_seq : IF (g_16BIT) GENERATE
-
-    frame_end_valid <= data_i(11 downto 0) = x"ABC"; -- 12 bit DAV
-
-    process(clock)
-    begin
-        if (rising_edge(clock)) then
-
-            if (reset_i = '1' or valid_i = '0') then
-                state <= SYNCING;
-            else
-                case state is
-                    when SYNCING      =>
-                        if (frame_end_valid) then
-                            state <= FRAME_BEGIN;
-                        end if;
-                    when FRAME_BEGIN  => state <= ADDR_0;
-                    when ADDR_0       => state <= ADDR_1;
-                    when ADDR_1       => state <= DATA_0;
-                    when DATA_0       => state <= DATA_1;
-                    when DATA_1       => state <= DATA_2;
-                    when DATA_2       => state <= FRAME_END;
-                    when FRAME_END    =>
-                        if (frame_end_valid) then
-                            state <= FRAME_BEGIN;
-                        else
-                            state <= SYNCING;
-                        end if;
-                    when others => state <= SYNCING;
-                end case;
-            end if;
-        end if;
-    end process;
-
-    END GENERATE g_sixteen_seq;
 
     --== ERROR ==--
 
@@ -205,9 +122,50 @@ begin
     -- we choose the "centered" bits picked out from the 80MHz sample on the
     -- 320 MHz deserializer, or it should be 2,6
 
-    --== REQUEST ==--
+    --== STATE ==--
+
+    -- 10 bit decoding (1 320 MHz e-link, 1 80 MHz e-link)
 
     g_ten : IF (not g_16BIT) GENERATE
+
+    frame_end_valid <= (data_i(11 downto 8) & data_i (6) & data_i(2)) = "101010"; -- use a 6 bit end frame symbol
+
+    process(clock)
+    begin
+        if (rising_edge(clock)) then
+
+            if (reset_i = '1' or valid_i = '0') then
+                state <= SYNCING;
+            else
+                case state is
+                    when SYNCING      =>
+                        if (frame_end_valid) then
+                            state <= FRAME_BEGIN;
+                        end if;
+                    when FRAME_BEGIN  => state <= ADDR_0;
+                    when ADDR_0       => state <= ADDR_1;
+                    when ADDR_1       => state <= ADDR_2;
+                    when ADDR_2       => state <= ADDR_3;
+                    when ADDR_3       => state <= ADDR_4;
+                    when ADDR_4       => state <= DATA_0;
+                    when DATA_0       => state <= DATA_1;
+                    when DATA_1       => state <= DATA_2;
+                    when DATA_2       => state <= DATA_3;
+                    when DATA_3       => state <= DATA_4;
+                    when DATA_4       => state <= FRAME_END;
+                    when FRAME_END    =>
+                        if (frame_end_valid) then
+                            state <= FRAME_BEGIN;
+                        else
+                            state <= SYNCING;
+                        end if;
+                    when others => state <= SYNCING;
+                end case;
+            end if;
+        end if;
+    end process;
+
+    --== REQUEST ==--
 
     process(clock)
     begin
@@ -269,7 +227,41 @@ begin
 
     END GENERATE g_ten;
 
+    -- 16 bit decoding (two 320 MHz e-links)
+
     g_sixteen : IF (g_16BIT) GENERATE
+
+    frame_end_valid <= data_i(11 downto 0) = x"ABC"; -- 12 bit DAV
+
+    process(clock)
+    begin
+        if (rising_edge(clock)) then
+
+            if (reset_i = '1' or valid_i = '0') then
+                state <= SYNCING;
+            else
+                case state is
+                    when SYNCING      =>
+                        if (frame_end_valid) then
+                            state <= FRAME_BEGIN;
+                        end if;
+                    when FRAME_BEGIN  => state <= ADDR_0;
+                    when ADDR_0       => state <= ADDR_1;
+                    when ADDR_1       => state <= DATA_0;
+                    when DATA_0       => state <= DATA_1;
+                    when DATA_1       => state <= DATA_2;
+                    when DATA_2       => state <= FRAME_END;
+                    when FRAME_END    =>
+                        if (frame_end_valid) then
+                            state <= FRAME_BEGIN;
+                        else
+                            state <= SYNCING;
+                        end if;
+                    when others => state <= SYNCING;
+                end case;
+            end if;
+        end if;
+    end process;
 
     process(clock)
     begin
