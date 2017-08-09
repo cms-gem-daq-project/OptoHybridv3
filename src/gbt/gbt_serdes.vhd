@@ -99,21 +99,25 @@ begin
     --      Put the flip-flop in the FPGA logic in front of the ISERDESE1/OSERDESE1 pair
     --      Put a timing constraint on the flip-flop to ISERDESE1/OSERDESE1 of one CLKDIV period or less.
 
-    process(frame_clk_i)
+    process(iserdes_clkdiv)
     begin
-
     if (rising_edge(iserdes_clkdiv)) then
         iserdes_reset <= reset_i;
     end if;
+    end process;
 
+    process(oserdes_clkdiv)
+    begin
     if (rising_edge(oserdes_clkdiv)) then
         oserdes_reset <= reset_i;
     end if;
+    end process;
 
+    process(frame_clk_i)
+    begin
     if (rising_edge(frame_clk_i)) then
         valid_o <= not reset_i;
     end if;
-
     end process;
 
     --================--
@@ -153,8 +157,8 @@ begin
     port map(
         fabric_clk  => oserdes_clkdiv,
         reset       => oserdes_reset,
-      --bitslip_cnt => 0,
-        bitslip_cnt => 7,
+        bitslip_cnt => 0,
+      --bitslip_cnt => 7,
         din         => to_gbt, -- 16 bit data input, synchronized to frame-clock
         dout        => to_gbt_bitslipped
     );
