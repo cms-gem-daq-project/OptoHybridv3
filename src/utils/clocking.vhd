@@ -4,6 +4,7 @@
 -- Optohybrid v3 Firmware -- Clocking
 -- 2017/07/21 -- Initial port to version 3 electronics
 -- 2017/07/22 -- Additional MMCM added to monitor and dejitter the eport clock
+-- 2017/08/09 -- 200MHz iodelay refclk added to primary MMCM
 ----------------------------------------------------------------------------------
 
 library ieee;
@@ -70,6 +71,7 @@ begin
         clk80_o     => clk_2x_o,
         clk160_o    => clk_4x_o,
         clk160_90_o => clk_4x_90_o,
+        clk200_o    => delay_refclk_o,
         locked_o    => mmcm_locked(0)
     );
 
@@ -81,7 +83,6 @@ begin
 
         clk40_o     => gbt_clk1x_o,
         clk320_o    => gbt_clk8x_o,
-        clk200_o    => delay_refclk_o,
         locked_o    => mmcm_locked(1)
     );
 
