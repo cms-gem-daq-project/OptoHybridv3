@@ -22,7 +22,7 @@ use work.types_pkg.all;
 
 entity gbt_rx is
     generic(
-        g_16BIT : boolean := false
+        g_16BIT : boolean := true
     );
 port(
 
@@ -34,7 +34,6 @@ port(
 
     -- parallel data input from deserializer
     data_i          : in std_logic_vector(15 downto 0);
-    valid_i         : in std_logic;
 
     -- decoded ttc commands
     l1a_o           : out std_logic;
@@ -65,14 +64,24 @@ architecture Behavioral of gbt_rx is
 
     signal frame_end_valid : boolean;
 
+    signal reset : std_logic;
+
 begin
+
+    -- fanout reset tree
+
+    process (clock) begin
+        if (rising_edge(clock)) then
+            reset <= reset_i;
+        end if;
+    end process;
 
     --== ERROR ==--
 
     process(clock)
     begin
         if (rising_edge(clock)) then
-            if (reset_i = '1') then
+            if (reset = '1') then
                 error_o <= '0';
             else
                 case state is
@@ -93,7 +102,7 @@ begin
     process(clock)
     begin
         if (rising_edge(clock)) then
-            if (reset_i = '1') then
+            if (reset = '1') then
                 l1a_o    <= '0';
                 resync_o <= '0';
                 bc0_o    <= '0';
@@ -134,7 +143,7 @@ begin
     begin
         if (rising_edge(clock)) then
 
-            if (reset_i = '1' or valid_i = '0') then
+            if (reset = '1') then
                 state <= SYNCING;
             else
                 case state is
@@ -170,7 +179,7 @@ begin
     process(clock)
     begin
         if (rising_edge(clock)) then
-            if (reset_i = '1') then
+            if (reset = '1') then
                 req_en_o   <= '0';
                 req_data_o <= (others => '0');
                 req_valid  <= '0';
@@ -237,7 +246,7 @@ begin
     begin
         if (rising_edge(clock)) then
 
-            if (reset_i = '1' or valid_i = '0') then
+            if (reset = '1') then
                 state <= SYNCING;
             else
                 case state is
@@ -266,11 +275,11 @@ begin
     process(clock)
     begin
         if (rising_edge(clock)) then
-            if (reset_i = '1') then
-                req_en_o <= '0';
+            if (reset = '1') then
+                req_en_o   <= '0';
                 req_data_o <= (others => '0');
-                req_valid <= '0';
-                req_data <= (others => '0');
+                req_valid  <= '0';
+                req_data   <= (others => '0');
             else
                 case state is
                     when FRAME_BEGIN =>

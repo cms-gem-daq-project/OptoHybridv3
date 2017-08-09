@@ -293,11 +293,11 @@ reg  [15:0] elink_o_parallel;
 wire [15:0] fifo_dly;
 always @(posedge gbt_eclk_p[0]) begin
   // this may need to be bitslipped... depending on the phase alignment of the clocks
-  elink_o_fifo[7:0]  <= {elink_o_fifo[ 6:0],elink_o_p[0]};
-  elink_o_fifo[15:8] <= {elink_o_fifo[14:8],elink_o_p[1]};
+  elink_o_fifo[7:0]  <= {elink_o_fifo[ 6:0], elink_o_p[0]};
+  elink_o_fifo[15:8] <= {elink_o_fifo[14:8],~elink_o_p[1]}; // account for polarity swap
 end
 
-wire [3:0] dly_adr = 4'd3;
+wire [3:0] dly_adr = 4'd2;
 genvar ibit;
 generate
 for (ibit=0; ibit<16; ibit=ibit+1) begin: gen_bitloop

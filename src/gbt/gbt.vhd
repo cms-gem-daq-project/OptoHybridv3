@@ -58,8 +58,6 @@ architecture Behavioral of gbt is
     signal gbt_dout  : std_logic_vector(15 downto 0) := (others => '0');
     signal gbt_din   : std_logic_vector(15 downto 0) := (others => '0');
 
-    signal gbt_valid : std_logic;
-
     signal reset     : std_logic;
 
 begin
@@ -97,8 +95,7 @@ begin
 
        -- parallel data
        data_o           => gbt_din,           -- Parallel data out
-       data_i           => gbt_dout,          -- Parallel data in
-       valid_o          => gbt_valid          -- Data valid
+       data_i           => gbt_dout           -- Parallel data in
     );
 
     -- decodes GBT frames to build packets
@@ -115,7 +112,6 @@ begin
         -- parallel data
         data_i          => gbt_din,
         data_o          => gbt_dout,
-        valid_i         => gbt_valid,
 
         -- wishbone master
         wb_mst_req_o    => wb_mst_req_o,

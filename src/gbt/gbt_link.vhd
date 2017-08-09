@@ -33,7 +33,6 @@ port(
     -- parallel data to/from serdes
     data_i          : in std_logic_vector (15 downto 0);
     data_o          : out std_logic_vector(15 downto 0);
-    valid_i         : in std_logic;
 
     -- wishbone
     wb_mst_req_o    : out wb_req_t;
@@ -55,14 +54,23 @@ architecture Behavioral of gbt_link is
 
     --== GTX requests ==--
 
-    signal gbt_rx_req       : std_logic;
-    signal gbt_rx_data     : std_logic_vector(64 downto 0);
+    signal gbt_rx_req  : std_logic; -- rx fifo write request
+    signal gbt_rx_data : std_logic_vector(64 downto 0);
 
-    signal oh_tx_req       : std_logic;
-    signal oh_tx_valid    : std_logic;
-    signal oh_tx_data     : std_logic_vector(31 downto 0);
+    signal oh_tx_req   : std_logic; -- tx fifo read request
+    signal oh_tx_valid : std_logic; -- tx fifo data available
+    signal oh_tx_data  : std_logic_vector(31 downto 0);
+
+    signal reset       : std_logic;
 
 begin
+
+    -- reset fanout
+    process (clock) begin
+        if (rising_edge(clock)) then
+            reset <= reset_i;
+        end if;
+    end process;
 
     --============--
     --== GBT RX ==--
@@ -71,14 +79,13 @@ begin
     gbt_rx_inst : entity work.gbt_rx
     port map(
         -- reset
-        reset_i      => reset_i,
+        reset_i      => reset,
 
         -- ttc clock input
         clock      => clock,
 
         -- parallel data input from deserializer
         data_i       => data_i,
-        valid_i      => valid_i,
 
         -- decoded ttc commands
         l1a_o         => l1a_o,
@@ -101,13 +108,12 @@ begin
     gbt_tx_inst : entity work.gbt_tx
     port map(
         -- reset
-        reset_i     => reset_i,
+        reset_i     => reset,
 
         -- ttc clock input
         clock     => clock,
 
         -- parallel data input from fifo
-        valid_i     => valid_i,     -- SERDES ready (reset done)
         req_valid_i => oh_tx_valid, -- 1  bit write request from OH logic (through request fifo)
         req_data_i  => oh_tx_data,  -- 32 bit data from OH logic
         req_en_o    => oh_tx_req,   -- fifo read enable
@@ -128,7 +134,7 @@ begin
         fabric_clock_i  => clock, -- 40 MHz logic clock
 
         -- reset
-        reset_i         => reset_i,
+        reset_i         => reset,
 
         -- rx parallel data (from GBT)
         wb_mst_req_o    => wb_mst_req_o, -- 32 bit adr + 32 bit data + we
@@ -136,10 +142,14 @@ begin
         rx_data_i       => gbt_rx_data,  -- 32 bit adr + 32 bit data
 
         -- tx parallel data (to GBT)
+
+        -- input
         wb_mst_res_i    => wb_mst_res_i, -- 32 bit data
-        tx_en_i         => oh_tx_req,
-        tx_valid_o      => oh_tx_valid,
-        tx_data_o       => oh_tx_data    -- 32 bit data
+        tx_en_i         => oh_tx_req,    -- read enable
+
+        -- output
+        tx_valid_o      => oh_tx_valid, -- data available
+        tx_data_o       => oh_tx_data   -- 32 bit data
     );
 
 end Behavioral;

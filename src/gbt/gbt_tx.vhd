@@ -22,7 +22,7 @@ library work;
 
 entity gbt_tx is
     generic(
-        g_16BIT : boolean := false
+        g_16BIT : boolean := true
     );
 port(
 
@@ -30,7 +30,6 @@ port(
     reset_i     : in std_logic;
 
     data_o      : out std_logic_vector(15 downto 0);
-    valid_i     : in std_logic;
 
     req_en_o    : out std_logic;
     req_valid_i : in std_logic;
@@ -47,7 +46,17 @@ architecture Behavioral of gbt_tx is
     signal req_valid    : std_logic;
     signal frame        : std_logic_vector (15 downto 0);
 
+    signal reset : std_logic;
+
 begin
+
+    -- fanout reset tree
+
+    process (clock) begin
+        if (rising_edge(clock)) then
+            reset <= reset_i;
+        end if;
+    end process;
 
     --=========================--
     --== 16 bit decoding     ==--
@@ -60,15 +69,28 @@ begin
     process(clock)
     begin
         if (rising_edge(clock)) then
-            if (reset_i = '1' or valid_i = '0') then
+            if (reset = '1') then
                 state <= SYNCING;
             else
                 case state is
-                    when SYNCING   => state <= HEADER;
+
+                    when SYNCING   =>
+                        if (req_valid_i='1') then
+                            state <= HEADER;
+                        end if;
+
                     when HEADER    => state <= REG_DATA0;
+
                     when REG_DATA0 => state <= REG_DATA1;
-                    when REG_DATA1 => state <= HEADER;
-                    when others    => state <= SYNCING;
+
+                    when REG_DATA1 =>
+                        if (req_valid_i='1') then
+                            state <= HEADER;
+                        else
+                            state <= SYNCING;
+                        end if;
+
+                    when others => state <= SYNCING;
                 end case;
             end if;
         end if;
@@ -79,25 +101,30 @@ begin
     process(clock)
     begin
         if (rising_edge(clock)) then
-            if (reset_i = '1') then
+            if (reset = '1') then
                 req_en_o <= '0';
                 req_valid <= '0';
             else
                 case state is
+
                     when SYNCING =>
-                        req_en_o <= '0';
-                        req_valid <= '0';
-                    when HEADER =>
                         req_en_o <= '1';
+                        req_valid <= req_valid_i;
+
+                    when HEADER =>
+                        req_en_o <= '0';
+
                     when REG_DATA0 =>
-                        req_en_o  <= '0';
-                        req_valid <= req_valid_i;
+                        req_en_o <= '1'; -- prefect to account for fifo latency
+
                     when REG_DATA1 =>
-                        req_en_o  <= '0';
+                        req_en_o <= '0';
                         req_valid <= req_valid_i;
+
                     when others =>
                         req_en_o  <= '0';
                         req_valid <= '0';
+
                 end case;
             end if;
         end if;
@@ -108,20 +135,37 @@ begin
     process(clock)
     begin
         if (rising_edge(clock)) then
-            if (reset_i = '1') then
+            if (reset = '1') then
                 frame <= (others => '0');
             else
                 case state is
                     when SYNCING =>
-                        frame <= (others => '0');
+                        frame <= x"FCFC";
+
                     when HEADER =>
-                        frame <= x"BCBC" and (req_valid & "111" & x"fff");
+                        if (req_valid='1') then
+                            frame <= x"BCBC";
+                        else
+                            frame <= x"FCFC";
+                        end if;
+
                     when REG_DATA0 =>
-                        frame <= req_data_i(31 downto 16);
+                        if (req_valid='0') then
+                            frame <= x"0000";
+                        else
+                            frame <= req_data_i(31 downto 16);
+                        end if;
+
                     when REG_DATA1 =>
-                        frame <= req_data_i(15 downto 0);
+                        if (req_valid='0') then
+                            frame <= x"0000";
+                        else
+                            frame <= req_data_i(15 downto 0);
+                        end if;
+
                     when others =>
                         frame <= (others => '0');
+
                 end case;
             end if;
         end if;
@@ -132,9 +176,9 @@ begin
 
     END GENERATE g_sixteen;
 
-    --=========================--
-    --== 10 bit decoding     ==--
-    --=========================--
+    --=====================--
+    --== 10 bit encoding ==--
+    --=====================--
 
     --== STATE ==--
 
@@ -143,17 +187,29 @@ begin
     process(clock)
     begin
         if (rising_edge(clock)) then
-            if (reset_i = '1' or valid_i = '0') then
+            if (reset = '1') then
                 state <= SYNCING;
             else
                 case state is
-                    when SYNCING   => state <= HEADER;
+
+                    when SYNCING   =>
+                        if (req_valid_i='1') then
+                            state <= HEADER;
+                        end if;
+
                     when HEADER    => state <= REG_DATA0;
                     when REG_DATA0 => state <= REG_DATA1;
                     when REG_DATA1 => state <= REG_DATA2;
                     when REG_DATA2 => state <= REG_DATA3;
-                    when REG_DATA3 => state <= HEADER;
-                    when others    => state <= SYNCING;
+
+                    when REG_DATA3 =>
+                        if (req_valid_i='1') then
+                            state <= HEADER;
+                        else
+                            state <= SYNCING;
+                        end if;
+
+                    when others => state <= SYNCING;
                 end case;
             end if;
         end if;
@@ -164,31 +220,36 @@ begin
     process(clock)
     begin
         if (rising_edge(clock)) then
-            if (reset_i = '1') then
+            if (reset = '1') then
                 req_en_o <= '0';
                 req_valid <= '0';
             else
                 case state is
+
                     when SYNCING =>
-                        req_en_o  <= '0';
-                        req_valid <= '0';
+                        req_en_o <= '1';
+                        req_valid <= req_valid_i;
+
                     when HEADER =>
-                        req_en_o  <= '1';
+                        req_en_o <= '0';
+
                     when REG_DATA0 =>
                         req_en_o  <= '0';
-                        req_valid <= req_valid_i;
+
                     when REG_DATA1 =>
                         req_en_o  <= '0';
-                        req_valid <= req_valid_i;
+
                     when REG_DATA2 =>
-                        req_en_o  <= '0';
-                        req_valid <= req_valid_i;
+                        req_en_o  <= '1'; -- prefect to account for fifo latency
+
                     when REG_DATA3 =>
                         req_en_o  <= '0';
                         req_valid <= req_valid_i;
+
                     when others =>
                         req_en_o  <= '0';
                         req_valid <= '0';
+
                 end case;
             end if;
         end if;
@@ -199,22 +260,48 @@ begin
     process(clock)
     begin
         if (rising_edge(clock)) then
-            if (reset_i = '1') then
+            if (reset = '1') then
                 frame <= (others => '0');
             else
                 case state is
                     when SYNCING =>
-                        frame <= (others => '0');
+                        frame <= x"00FC";
+
                     when HEADER =>
-                        frame <= "000000" & (("11" & x"BC" ) and ("11" & req_valid & "111" & x"f")); -- 3BC or 3EC for valid or not
+                        if (req_valid='1') then
+                            frame <= x"00BC";
+                        else
+                            frame <= x"00FC";
+                        end if;
+
                     when REG_DATA0 =>
-                        frame <= "000000" & "00" & req_data_i(31 downto 24);
+                        if (req_valid='0') then
+                            frame <= x"0000";
+                        else
+                            frame <= "000000" & "01" & req_data_i(31 downto 24);
+                        end if;
+
                     when REG_DATA1 =>
-                        frame <= "000000" & "01" & req_data_i(23 downto 16);
+                        if (req_valid='0') then
+                            frame <= x"0000";
+                        else
+                            frame <= "000000" & "01" & req_data_i(23 downto 16);
+                        end if;
+
                     when REG_DATA2 =>
-                        frame <= "000000" & "10" & req_data_i(15 downto 8);
+                        if (req_valid='0') then
+                            frame <= x"0000";
+                        else
+                            frame <= "000000" & "01" & req_data_i(15 downto 8);
+                        end if;
+
                     when REG_DATA3 =>
-                        frame <= "000000" & "11" & req_data_i(7 downto 0);
+                        if (req_valid='0') then
+                            frame <= x"0000";
+                        else
+                            frame <= "000000" & "01" & req_data_i(7 downto 0);
+                        end if;
+
                     when others =>
                         frame <= (others => '0');
                 end case;

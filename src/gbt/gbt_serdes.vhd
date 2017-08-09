@@ -9,6 +9,7 @@
 ----------------------------------------------------------------------------------
 -- 2017/07/24 -- Conversion to 16 bit (2 elinks only)
 -- 2017/07/24 -- Addition of flip-flop synchronization stages for X-domain transit
+-- 2017/08/09 -- rework of module to cleanup and document source
 ----------------------------------------------------------------------------------
 
 library ieee;
@@ -55,6 +56,7 @@ architecture Behavioral of gbt_serdes is
 
     signal to_gbt            : std_logic_vector(15 downto 0) := (others => '0');
     signal to_gbt_bitslipped : std_logic_vector(15 downto 0) := (others => '0');
+    signal to_gbt_remap      : std_logic_vector(15 downto 0) := (others => '0');
     signal to_gbt_polswap    : std_logic_vector(15 downto 0) := (others => '0');
 
     signal iserdes_reset     : std_logic := '1';
@@ -113,13 +115,6 @@ begin
     end if;
     end process;
 
-    process(frame_clk_i)
-    begin
-    if (rising_edge(frame_clk_i)) then
-        valid_o <= not reset_i;
-    end if;
-    end process;
-
     --================--
     --== INPUT DATA ==--
     --================--
@@ -150,23 +145,7 @@ begin
     --== OUTPUT DATA ==--
     --=================--
 
-    -- Bitslip and format the output to serializer
-    -- Static bitslip count = 3 (empirically derived... needs to be updated)
-
-    i_gbt_tx_bitslip : entity work.gbt_tx_bitslip
-    port map(
-        fabric_clk  => oserdes_clkdiv,
-        reset       => oserdes_reset,
-        bitslip_cnt => 0,
-      --bitslip_cnt => 7,
-        din         => to_gbt, -- 16 bit data input, synchronized to frame-clock
-        dout        => to_gbt_bitslipped
-    );
-
-    -- To ensure that data flows out of all OSERDESE1 blocks in a multiple bit output structure:
-    --  1) Place a register in front of the OSERDESE1 inputs.
-    --  2) Clock the register by the CLKDIV clock of the OSERDESE1.
-    --  3) Use the same reset signal for the register as for the OSERDESE1.
+    -- tx polarity swaps
 
     process(oserdes_clk)
     begin
@@ -174,25 +153,73 @@ begin
         if (oserdes_reset='1') then
             to_gbt_polswap <= (others => '0');
         else
+
             -- OH v3a has POLARITY SWAP on elink 1
-            to_gbt_polswap <= not to_gbt_bitslipped(8)  & to_gbt_bitslipped(0) &
-                              not to_gbt_bitslipped(9)  & to_gbt_bitslipped(1) &
-                              not to_gbt_bitslipped(10) & to_gbt_bitslipped(2) &
-                              not to_gbt_bitslipped(11) & to_gbt_bitslipped(3) &
-                              not to_gbt_bitslipped(12) & to_gbt_bitslipped(4) &
-                              not to_gbt_bitslipped(13) & to_gbt_bitslipped(5) &
-                              not to_gbt_bitslipped(14) & to_gbt_bitslipped(6) &
-                              not to_gbt_bitslipped(15) & to_gbt_bitslipped(7);
+            to_gbt_polswap <= not to_gbt (15 downto 8) & to_gbt (7 downto 0);
+
         end if;
     end if;
     end process;
+
+    -- Bitslip the output to serializer
+
+    i_gbt_tx_bitslip : entity work.gbt_tx_bitslip
+    port map(
+        fabric_clk  => oserdes_clkdiv,
+        reset       => oserdes_reset,
+        bitslip_cnt => 0,
+        din         => to_gbt_polswap, -- 16 bit data input, synchronized to frame-clock
+        dout        => to_gbt_bitslipped
+    );
+
+
+    -- Rearrange data to account for how the serdes handles the bits
+    --     ie, if data comes in 0, 1, 2, 3, 4, 5, 6, 7,
+    --         the output will be 3210, 7654
+    -------------------------------------------------------------
+
+    process(oserdes_clk)
+    begin
+    if (falling_edge(oserdes_clk)) then
+        if (oserdes_reset='1') then
+            to_gbt_remap   <= (others => '0');
+        else
+
+
+            -- dout <=    data(15) & data(7) &
+            --            data(14) & data(6) &
+            --            data(13) & data(5) &
+            --            data(12) & data(4) &
+            --            data(11) & data(3) &
+            --            data(10) & data(2) &
+            --            data(9)  & data(1) &
+            --            data(8)  & data(0) ;
+
+            to_gbt_remap <= to_gbt_bitslipped(8)  & to_gbt_bitslipped(0) &
+                            to_gbt_bitslipped(9)  & to_gbt_bitslipped(1) &
+                            to_gbt_bitslipped(10) & to_gbt_bitslipped(2) &
+                            to_gbt_bitslipped(11) & to_gbt_bitslipped(3) &
+                            to_gbt_bitslipped(12) & to_gbt_bitslipped(4) &
+                            to_gbt_bitslipped(13) & to_gbt_bitslipped(5) &
+                            to_gbt_bitslipped(14) & to_gbt_bitslipped(6) &
+                            to_gbt_bitslipped(15) & to_gbt_bitslipped(7);
+        end if;
+    end if;
+    end process;
+
+
+    -- To ensure that data flows out of all OSERDESE1 blocks in a multiple bit output structure:
+    --  1) Place a register in front of the OSERDESE1 inputs.
+    --  2) Clock the register by the CLKDIV clock of the OSERDESE1.
+    --  3) Use the same reset signal for the register as for the OSERDESE1.
+
 
     -- Output serializer
     -- we want to output the data on the falling edge of the clock so that the GBT can sample on the rising edge
 
     i_to_gbt_ser : entity work.to_gbt_ser
     port map(
-        data_out_from_device    => to_gbt_polswap,
+        data_out_from_device    => to_gbt_remap,
         data_out_to_pins_p      => elink_o_p,
         data_out_to_pins_n      => elink_o_n,
         clk_in                  => oserdes_clk,
