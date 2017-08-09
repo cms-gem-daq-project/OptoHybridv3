@@ -20,19 +20,26 @@ module led_control (
 // LED Source
 //----------------------------------------------------------------------------------------------------------------------
 
+
   wire cylon_mode;
 
   wire [15:0] led_cylon;
   wire [15:0] led_logic;
   wire [15:0] led_err;
 
+  reg [15:0] led;
 
+  //synthesis attribute IOB of led_out is "TRUE"
   always @(posedge clock) begin
+      led_out <= led;
+  end
+
+  always @(*) begin
     if (mmcm_locked)
-      led_out <= (cylon_mode) ? led_cylon : led_logic;
+      led <= (cylon_mode) ? led_cylon : led_logic;
     else
-      led_out <= led_err;
- end
+      led <= led_err;
+  end
 
 //----------------------------------------------------------------------------------------------------------------------
 // LED Blinkers
