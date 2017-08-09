@@ -122,7 +122,7 @@ module ttc (
       else if (ttc_bx0)    bx0_counter_rxd = bx0_counter_rxd + 1'b1;
 
       if      (ttc_resync) bx0_counter_lcl = 0;
-      else if (ttc_bx0)    bx0_counter_lcl = bx0_counter_lcl + 1'b1;
+      else if (bx0_local)  bx0_counter_lcl = bx0_counter_lcl + 1'b1;
 
   end
 
