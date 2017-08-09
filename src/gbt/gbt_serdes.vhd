@@ -50,19 +50,20 @@ end gbt_serdes;
 
 architecture Behavioral of gbt_serdes is
 
-    signal from_gbt_raw     : std_logic_vector(15 downto 0) := (others => '0');
-    signal from_gbt         : std_logic_vector(15 downto 0) := (others => '0');
+    signal from_gbt_raw      : std_logic_vector(15 downto 0) := (others => '0');
+    signal from_gbt          : std_logic_vector(15 downto 0) := (others => '0');
 
-    signal to_gbt           : std_logic_vector(15 downto 0) := (others => '0');
-    signal to_gbt_bitslipped       : std_logic_vector(15 downto 0) := (others => '0');
+    signal to_gbt            : std_logic_vector(15 downto 0) := (others => '0');
+    signal to_gbt_bitslipped : std_logic_vector(15 downto 0) := (others => '0');
+    signal to_gbt_polswap    : std_logic_vector(15 downto 0) := (others => '0');
 
-    signal io_reset         : std_logic := '1';
+    signal io_reset          : std_logic := '1';
 
-    signal from_gbt_s1      : std_logic_vector(15 downto 0) := (others => '0');
-    signal from_gbt_s2      : std_logic_vector(15 downto 0) := (others => '0');
+    signal from_gbt_s1       : std_logic_vector(15 downto 0) := (others => '0');
+    signal from_gbt_s2       : std_logic_vector(15 downto 0) := (others => '0');
 
-    signal   to_gbt_s1      : std_logic_vector(15 downto 0) := (others => '0');
-    signal   to_gbt_s2      : std_logic_vector(15 downto 0) := (others => '0');
+    signal   to_gbt_s1       : std_logic_vector(15 downto 0) := (others => '0');
+    signal   to_gbt_s2       : std_logic_vector(15 downto 0) := (others => '0');
 
     -- ignore timing on s1 for metastability chain
     attribute ASYNC_REG     : string;
@@ -143,10 +144,23 @@ begin
         dout        => to_gbt_bitslipped
     );
 
+    -- OH v3a has POLARITY SWAP on elink 1
+
+    to_gbt_polswap <= not to_gbt_bitslipped(8)  & to_gbt_bitslipped(0) &
+                      not to_gbt_bitslipped(9)  & to_gbt_bitslipped(1) &
+                      not to_gbt_bitslipped(10) & to_gbt_bitslipped(2) &
+                      not to_gbt_bitslipped(11) & to_gbt_bitslipped(3) &
+                      not to_gbt_bitslipped(12) & to_gbt_bitslipped(4) &
+                      not to_gbt_bitslipped(13) & to_gbt_bitslipped(5) &
+                      not to_gbt_bitslipped(14) & to_gbt_bitslipped(6) &
+                      not to_gbt_bitslipped(15) & to_gbt_bitslipped(7);
+
     -- Output serializer
+    -- we want to output the data on the falling edge of the clock so that the GBT can sample on the rising edge
+
     i_to_gbt_ser : entity work.to_gbt_ser
     port map(
-        data_out_from_device    => to_gbt_bitslipped,
+        data_out_from_device    => to_gbt_polswap,
         data_out_to_pins_p      => elink_o_p,
         data_out_to_pins_n      => elink_o_n,
         clk_in                  => data_clk_inv,
