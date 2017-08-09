@@ -64,6 +64,8 @@ wire [192*3-1:0] phase_sel_sump;
 
 wire idelay_ready;
 
+
+(* IODELAY_GROUP = "IODLY_GROUP" *)
 IDELAYCTRL idelayctl (
 
     // The ready (RDY) signal indicates when the IDELAYE2 and

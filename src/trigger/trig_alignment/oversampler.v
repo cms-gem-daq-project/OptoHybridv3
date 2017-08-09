@@ -56,6 +56,7 @@ ibufds (
 // Delays
 //----------------------------------------------------------------------------------------------------------------------
 
+(* IODELAY_GROUP = "IODLY_GROUP" *)
 IODELAYE1 #(
     .IDELAY_TYPE           ("FIXED"),
     .IDELAY_VALUE          (TAP_OFFSET + 0),
@@ -77,6 +78,7 @@ delay0   (
     .CNTVALUEOUT ()
 );
 
+(* IODELAY_GROUP = "IODLY_GROUP" *)
 IODELAYE1 #(
     .IDELAY_TYPE           ("FIXED"),
     .IDELAY_VALUE          (TAP_OFFSET + NUM_TAPS), // ~50 ps per tap, need to adjust
