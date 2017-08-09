@@ -39,6 +39,7 @@ port(
 
     -- ttc
 
+    trig_stop_i : in std_logic;
     bxn_counter_i : in std_logic_vector(11 downto 0);
 
     -- cluster packer
@@ -94,6 +95,8 @@ begin
 
     sbits_inst : entity work.sbits
     port map(
+
+        trig_stop_i             => trig_stop_i,
 
         clk40_i                 => clk_40,
         clk160_i                => clk_160,

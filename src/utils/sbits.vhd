@@ -33,6 +33,8 @@ port(
 
     oneshot_en_i            : in std_logic;
 
+    trig_stop_i             : in std_logic;
+
     vfat_sbit_clusters_o    : out sbit_cluster_array_t(7 downto 0);
 
     sbit_mask_i             : in std_logic_vector (23 downto 0);
@@ -60,11 +62,19 @@ architecture Behavioral of sbits is
 
     signal clk160_180               : std_logic;
 
+    signal trig_stop                : std_logic;
+
     signal sbits                    : std_logic_vector (1535 downto 0);
 
     signal active_vfats_s1          : std_logic_vector (191 downto 0);
 
 begin
+
+    process (clk40_i) begin
+        if (rising_edge(clk40_i)) then
+            trig_stop <= trig_stop_i;
+        end if;
+    end process;
 
     -- don't need to do a 180 on the clock-- use local inverters for deserialization to save 1 global clock
     clk160_180 <= not clk160_i;

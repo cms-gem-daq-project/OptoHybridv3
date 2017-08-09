@@ -217,8 +217,8 @@ wire [1:0] elink_o_n;
 wire [3:0] sca_io = {4'b0000};
 
 // HDMI
-wire [3:0] hdmi_p = {4'b0000};
-wire [3:0] hdmi_n = {4'b0000};
+wire [3:0] hdmi_p ;
+wire [3:0] hdmi_n ;
 
 // GBTx Control
 wire gbt_txready_i = 1'b1;
@@ -237,8 +237,6 @@ wire [191:0] vfat_sbits_n = ~tu_p;
 
 wire [15:0] led_o;
 
-wire gbt_txvalid_o;
-
 wire [11:0] ext_reset_o;
 
 wire [3:0] mgt_tx_p_o;
@@ -246,8 +244,8 @@ wire [3:0] mgt_tx_n_o;
 
 optohybrid_top optohybrid_top (
 
-    .gbt_eclk_p    (gbt_eclk_p),
-    .gbt_eclk_n    (gbt_eclk_n),
+    //.gbt_eclk_p    (gbt_eclk_p),
+    //.gbt_eclk_n    (gbt_eclk_n),
 
     .gbt_dclk_p    (gbt_dclk_p),
     .gbt_dclk_n    (gbt_dclk_n),
@@ -279,8 +277,6 @@ optohybrid_top optohybrid_top (
     .vfat_sbits_n  (vfat_sbits_n),
 
     .led_o         (led_o),
-
-    .gbt_txvalid_o (gbt_txvalid_o),
 
     .ext_reset_o   (ext_reset_o),
 
