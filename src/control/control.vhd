@@ -52,7 +52,6 @@ port(
     gbt_rxready_i : in std_logic;
     gbt_rxvalid_i : in std_logic;
     gbt_txready_i : in std_logic;
-    gbt_txvalid_i : in std_logic;
 
     -- Trigger
 
@@ -220,7 +219,6 @@ begin
         gbt_rxready_i       => gbt_rxready_i,
         gbt_rxvalid_i       => gbt_rxvalid_i,
         gbt_txready_i       => gbt_txready_i,
-        gbt_txvalid_i       => gbt_txvalid_i,
 
         -- mmcms
         mmcms_locked_i      => mmcms_locked_i,

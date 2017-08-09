@@ -46,7 +46,6 @@ port(
     gbt_rxready_i : in std_logic;
     gbt_rxvalid_i : in std_logic;
     gbt_txready_i : in std_logic;
-    gbt_txvalid_i : in std_logic;
 
     cluster_rate_i : in std_logic_vector (31 downto 0);
 
@@ -124,7 +123,7 @@ begin
     reg_data(0) <=                        RELEASE_YEAR & RELEASE_MONTH & RELEASE_DAY;
     reg_data(1) <= (31 downto 3 => '0') & eprt_mmcm_locked_i & dskw_mmcm_locked_i & mmcms_locked_i;
     reg_data(2) <= (31 downto 1 => '0') & sem_critical_i;
-    reg_data(3) <= (31 downto 4 => '0') & gbt_rxready_i & gbt_rxvalid_i & gbt_txready_i & gbt_txvalid_i;
+    reg_data(3) <= (31 downto 3 => '0') & gbt_rxready_i & gbt_rxvalid_i & gbt_txready_i;
     reg_data(4) <= cluster_rate_i;
     reg_data(5) <= ttc_bx0_counter_lcl_i;
     reg_data(6) <= ttc_bx0_counter_rxd_i;

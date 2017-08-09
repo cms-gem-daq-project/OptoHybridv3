@@ -111,7 +111,6 @@ architecture Behavioral of optohybrid_top is
 
     signal delay_refclk     : std_logic;
 
-    signal gbt_txvalid      : std_logic;
     signal gbt_txready      : std_logic;
     signal gbt_rxvalid      : std_logic;
     signal gbt_rxready      : std_logic;
@@ -201,6 +200,10 @@ begin
         clock_i        => clock,
         mmcms_locked_i => mmcms_locked,
         ready_o        => open,
+        gbt_rxready_i  => gbt_rxready,
+        gbt_rxvalid_i  => gbt_rxvalid,
+        gbt_txready_i  => gbt_txready,
+        ready_o        => open, -- !reset
         reset_o        => reset
     );
 
@@ -281,7 +284,6 @@ begin
         gbt_rxready_i => gbt_rxready,
         gbt_rxvalid_i => gbt_rxvalid,
         gbt_txready_i => gbt_txready,
-        gbt_txvalid_i => gbt_txvalid,
 
         -- Trigger
 
