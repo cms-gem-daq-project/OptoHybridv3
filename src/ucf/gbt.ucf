@@ -3,58 +3,46 @@
 ########################################################################################################################
 
 # outputs
+NET "elink_o_p<0>" LOC = AG16; # GBTx DOUT 28
+NET "elink_o_n<0>" LOC = AF16; #
 
-NET "olink_o_p<0>" LOC = AG16; # GBTx DOUT 28
-NET "olink_o_n<0>" LOC = AF16; #
-
-# POLSWAP
-NET "olink_o_p<1>" LOC = L18; # GBTx DOUT 36
-NET "olink_o_n<1>" LOC = L19; #
+# POLSWAPed, make sure to account in firmware
+NET "elink_o_p<1>" LOC = L19;
+NET "elink_o_n<1>" LOC = L18;
 
 # inputs
 
-NET "elink_i_p<0>" LOC = AG15 | IOSTANDARD = LVDS_25 | DIFF_TERM = FALSE; # GBTx DIN 28
-NET "elink_i_n<0>" LOC = AF15 | IOSTANDARD = LVDS_25 | DIFF_TERM = FALSE; #
+NET "elink_i_p<0>" LOC = AG15 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE; # GBTx DIN 28
+NET "elink_i_n<0>" LOC = AF15 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE; #
 
-NET "elink_i_p<1>" LOC = AD24 | IOSTANDARD = LVDS_25 | DIFF_TERM = FALSE; # GBTx DIN 36
-NET "elink_i_n<1>" LOC = AE24 | IOSTANDARD = LVDS_25 | DIFF_TERM = FALSE; #
-
+NET "elink_i_p<1>" LOC = AD24 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE; # GBTx DIN 36
+NET "elink_i_n<1>" LOC = AE24 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE; #
 
 ########################################################################################################################
 # GBT E-Port Clocks
 ########################################################################################################################
-
-## GBTx data clock -- these are 320MHz data clock (terminated outside), the phase is aligned such that rising edge is in the middle of the data bit
-
-# gbt dclk28 = fdck28_from_gbt = v_diff_k_10 = AC13, AC12
-NET "gbt_eclk_p<0>"   LOC = AC13 | IOSTANDARD = LVDS_25 | DIFF_TERM = FALSE;
-NET "gbt_eclk_n<0>"   LOC = AC12 | IOSTANDARD = LVDS_25 | DIFF_TERM = FALSE;
-
-# gbt dclk36 = fdck36_from_gbt = GC_J = J9/H9
-NET "gbt_eclk_p<1>"   LOC = J9 | IOSTANDARD = LVDS_25 | DIFF_TERM = FALSE;
-NET "gbt_eclk_n<1>"   LOC = H9 | IOSTANDARD = LVDS_25 | DIFF_TERM = FALSE;
-
-TIMESPEC TS_gbt_eclk_p_i =   PERIOD "gbt_eclk_p_i" 3.125 ns HIGH 50%;
-TIMESPEC TS_gbt_eclk_n_i =   PERIOD "gbt_eclk_n_i" TS_gbt_eclk_p_i PHASE 1.5625 ns HIGH 50%;
-
-# source synchronous timing for the data (we will sample on the falling edge because the clock is inverted..)
-OFFSET = IN 1.5625 ns VALID 3.125 ns BEFORE "gbt_eclk_p_i" FALLING;
-
+### GBTx data clock -- these are 320MHz data clock (terminated outside), the phase is aligned such that rising edge is in the middle of the data bit
+## gbt dclk28 = fdck28_from_gbt = v_diff_k_10 = AC13, AC12
+#NET "gbt_eclk_p<0>"   LOC = AC13 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE;
+#NET "gbt_eclk_n<0>"   LOC = AC12 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE;
+#
+## gbt dclk36 = fdck36_from_gbt = GC_J = J9/H9
+#NET "gbt_eclk_p<1>"   LOC = J9 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE;
+#NET "gbt_eclk_n<1>"   LOC = H9 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE;
+#
 ########################################################################################################################
 # GBT Deskew Clocks
 ########################################################################################################################
-
 ## GBTx to FPGA clock 0 -- this is a configurable GBTX clock (terminated outside),
 #  should be set to 40MHz with 180deg phase offset from the GBTX data clock. why :((
 #  what does this even mean :(( they are at different frequencies
-
 #clockdes6 = clk0_to_fpga =  v_diff_b_10 = AP20, AP21
-NET "gbt_dclk_p<0>"  LOC = AP20 | IOSTANDARD = LVDS_25 | DIFF_TERM = FALSE;
-NET "gbt_dclk_n<0>"  LOC = AP21 | IOSTANDARD = LVDS_25 | DIFF_TERM = FALSE;
+NET "gbt_dclk_p<0>"  LOC = AP20 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE;
+NET "gbt_dclk_n<0>"  LOC = AP21 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE;
 
 #clockdes1 = clk1_to_fpga =  GC_A = A10, B10
-NET "gbt_dclk_p<1>"  LOC = A10 | IOSTANDARD = LVDS_25 | DIFF_TERM = FALSE;
-NET "gbt_dclk_n<1>"  LOC = B10 | IOSTANDARD = LVDS_25 | DIFF_TERM = FALSE;
+NET "gbt_dclk_p<1>"  LOC = A10 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE;
+NET "gbt_dclk_n<1>"  LOC = B10 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE;
 
 
 NET "gbt_dclk_p<0>"      TNM_NET = "gbt_dclk_p";

@@ -1,21 +1,14 @@
 # This file constraints miscellaneous signals
-
 ## HDMI
-
 #NET "tmds_d_p_io<0>"    LOC = M17; # M8_N # J3
 #NET "tmds_d_n_io<0>"    LOC = M18;        # J2
-
 #NET "tmds_d_p_io<1>"    LOC = L14; # M11_N # J11
 #NET "tmds_d_n_io<1>"    LOC = L15;         # J10
-
 #NET "tmds_d_p_io<2>"    LOC = J16; # M15_N # J9
 #NET "tmds_d_n_io<2>"    LOC = J17;         # J8
-
 #NET "tmds_clk_p_io"     LOC = H17; # M4_P # J5
 #NET "tmds_clk_n_io"     LOC = G17;        # J4
-
 ## External signals for Test Beam
-
 #NET "ext_clk_i" CLOCK_DEDICATED_ROUTE = FALSE;
 #NET "ext_clk_i" LOC = M17;
 #NET "ext_trigger_i" LOC = M18; # M18 for ULB; L14 for others
@@ -25,39 +18,34 @@
 #NET "ext_sbits_o[3]" LOC = J16;
 #NET "ext_sbits_o[4]" LOC = L15;
 #NET "ext_sbits_o[5]" LOC = L14; # L14 for ULB; M18 for others
-
 ## Header
-
-NET "led_o[0]"  LOC = H27  ; # vdiff_e_13_p
-NET "led_o[1]"  LOC = G28  ; # vdiff_e_13_n
-NET "led_o[2]"  LOC = B25  ; # vdiff_e_4_p
-NET "led_o[3]"  LOC = A25  ; # vdiff_e_4_n
-NET "led_o[4]"  LOC = B27  ; # vdiff_e_6_p
-NET "led_o[5]"  LOC = A26  ; # vdiff_e_6_n
-NET "led_o[6]"  LOC = C27  ; # vdiff_e_8_n
-NET "led_o[7]"  LOC = B27  ; # vdiff_e_8_p
-NET "led_o[8]"  LOC = C14  ; # vdiff_l_2_n
-NET "led_o[9]"  LOC = D14  ; # vdiff_l_2_p
-NET "led_o[10]" LOC = C13  ; # vdiff_l_12_p
-NET "led_o[11]" LOC = C12  ; # vdiff_l_12_n
-NET "led_o[12]" LOC = B15  ; # vdiff_m_16_n
-NET "led_o[13]" LOC = A15  ; # vdiff_m_16_p
-NET "led_o[14]" LOC = G26  ; # vdiff_e_7_p
-NET "led_o[15]" LOC = G27  ; # vdiff_e_7_n
-
+# INST "led_o" IOB=TRUE;
+NET "led_o<0>"  LOC = H27  ; # vdiff_e_13_p
+NET "led_o<1>"  LOC = G28  ; # vdiff_e_13_n
+NET "led_o<2>"  LOC = B25  ; # vdiff_e_4_p
+NET "led_o<3>"  LOC = A25  ; # vdiff_e_4_n
+NET "led_o<4>"  LOC = B26  ; # vdiff_e_6_p
+NET "led_o<5>"  LOC = A26  ; # vdiff_e_6_n
+NET "led_o<6>"  LOC = C27  ; # vdiff_e_8_n
+NET "led_o<7>"  LOC = B27  ; # vdiff_e_8_p
+NET "led_o<8>"  LOC = C14  ; # vdiff_l_2_n
+NET "led_o<9>"  LOC = D14  ; # vdiff_l_2_p
+NET "led_o<10>" LOC = C13  ; # vdiff_l_12_p
+NET "led_o<11>" LOC = C12  ; # vdiff_l_12_n
+NET "led_o<12>" LOC = B15  ; # vdiff_m_16_n
+NET "led_o<13>" LOC = A15  ; # vdiff_m_16_p
+NET "led_o<14>" LOC = G26  ; # vdiff_e_7_p
+NET "led_o<15>" LOC = G27  ; # vdiff_e_7_n
 # XADC
-
-INST "adc_inst/xadc_inst/SYSMON_INST" LOC = SYSMON_X0Y0;
+INST "control/adc_inst/xadc_inst/SYSMON_INST" LOC = SYSMON_X0Y0;
 
 # GBT
-
 # NET "gbt_txvalid_o" LOC =      ; # hardwired, apparently
 NET "gbt_txready_i" LOC = AF13 ; # v_diff_k_13_p
 NET "gbt_rxvalid_i" LOC = AJ10 ; # R_side_2_n
 NET "gbt_rxready_i" LOC = AH9  ; # R_side_2_p
-
 # VFAT resets (schematic counts from zero)
-
+# INST "ext_reset_o" IOB=TRUE;
 NET "ext_reset_o<0>"  LOC = A16  ; #v_diff_m_12_p
 NET "ext_reset_o<1>"  LOC = D15  ; #v_diff_m_20_p
 NET "ext_reset_o<2>"  LOC = C15  ; #v_diff_m_20_n
@@ -72,13 +60,10 @@ NET "ext_reset_o<10>" LOC = AL23 ; #v_diff_b_16_n
 NET "ext_reset_o<11>" LOC = AP24 ; #v_diff_d_20_n
 
 
-
-NET "mgt_clk_p_i<0>" LOC = H6; #
-NET "mgt_clk_n_i<0>" LOC = H5; #
-
-NET "mgt_clk_p_i<1>" LOC = F6; #
-NET "mgt_clk_n_i<1>" LOC = F5; #
-
+NET "mgt_clk_p_i" LOC = H6; #
+NET "mgt_clk_n_i" LOC = H5; #
+#NET "mgt_clk_p_i<1>" LOC = F6; #
+#NET "mgt_clk_n_i<1>" LOC = F5; #
 NET "mgt_tx_p_o<0>" LOC = M1; #
 NET "mgt_tx_n_o<0>" LOC = M2; #
 NET "mgt_tx_p_o<1>" LOC = K1; #
@@ -87,14 +72,11 @@ NET "mgt_tx_p_o<2>" LOC = H1; #
 NET "mgt_tx_n_o<2>" LOC = H2; #
 NET "mgt_tx_p_o<3>" LOC = F1; #
 NET "mgt_tx_n_o<3>" LOC = F2; #
-
 # VFAT Trigger Data
-
 #0-23
 #NET "vfat_sof_p<0>" LOC =     ;
 #NET "vfat_sof_n<0>" LOC =     ;
-
 #0-191
 #NET "vfat_sbits_p<0>" LOC =     ;
 #NET "vfat_sbits_n<0>" LOC =     ;
-
+NET "trigger/sbits_inst/trig_alignment/*/q<*>" MAXDELAY = 0.600 ns;
