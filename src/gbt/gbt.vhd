@@ -30,7 +30,7 @@ port(
 
     clock_i : in std_logic; -- 40 MHz logic clock
 
-    frame_clk_i : in std_logic; -- 40 MHz frame clock  from GBT
+    frame_clk_i : in std_logic; -- 40 MHz phase shiftable frame clock from GBT
     data_clk_i  : in std_logic; -- 320 MHz frame clock  from GBT
 
     elink_i_p : in  std_logic_vector (1 downto 0);
@@ -58,17 +58,29 @@ architecture Behavioral of gbt is
     signal gbt_dout  : std_logic_vector(15 downto 0) := (others => '0');
     signal gbt_din   : std_logic_vector(15 downto 0) := (others => '0');
 
-    signal gbt_valid      : std_logic;
+    signal gbt_valid : std_logic;
+
+    signal reset     : std_logic;
 
 begin
+
+    -- fanout reset tree
+
+    process (clock_i) begin
+        if (rising_edge(clock_i)) then
+            reset <= reset_i;
+        end if;
+    end process;
+
     --=========--
     --== GBT ==--
     --=========--
 
+    -- at 320 MHz performs ser-des on incoming
     gbt_serdes_inst : entity work.gbt_serdes
     port map(
         -- reset
-       reset_i          => reset_i,
+       reset_i          => reset,
 
        -- input clocks
        data_clk_i       => data_clk_i,  -- 320 MHz sampling clock
@@ -89,13 +101,13 @@ begin
        valid_o          => gbt_valid          -- Data valid
     );
 
-    -- This module controls the DATA of the GBT
+    -- decodes GBT frames to build packets
 
     gbt_link_inst : entity work.gbt_link
     port map(
 
         -- reset
-        reset_i         => reset_i,
+        reset_i         => reset,
 
         -- clock inputs
         clock           => clock_i, -- 40 MHz ttc fabric clock

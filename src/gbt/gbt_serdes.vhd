@@ -57,7 +57,8 @@ architecture Behavioral of gbt_serdes is
     signal to_gbt_bitslipped : std_logic_vector(15 downto 0) := (others => '0');
     signal to_gbt_polswap    : std_logic_vector(15 downto 0) := (others => '0');
 
-    signal io_reset          : std_logic := '1';
+    signal iserdes_reset     : std_logic := '1';
+    signal oserdes_reset     : std_logic := '1';
 
     signal from_gbt_s1       : std_logic_vector(15 downto 0) := (others => '0');
     signal from_gbt_s2       : std_logic_vector(15 downto 0) := (others => '0');
@@ -71,41 +72,49 @@ architecture Behavioral of gbt_serdes is
     attribute ASYNC_REG of   to_gbt_s1: signal is "TRUE";
 
     signal data_clk_inv : std_logic;
+    signal oserdes_clk : std_logic;
+    signal oserdes_clkdiv : std_logic;
+    signal iserdes_clk : std_logic;
+    signal iserdes_clkdiv : std_logic;
 
     signal pulse_length     : std_logic_vector (3 downto 0) := x"f";
 
 begin
 
-    data_clk_inv <= not data_clk_i;
+    oserdes_clk    <= not data_clk_i;
+    oserdes_clkdiv <= frame_clk_i;
+
+    iserdes_clk    <= data_clk_i;
+    iserdes_clkdiv <= frame_clk_i;
 
     --================--
     --==    RESET   ==--
     --================--
 
     -- power-on reset - this must be a clock synchronous pulse of a minimum of 2 and max 32 clock cycles (ISERDES spec)
+    --  1)  Wait until all MMCM/PLL used in the design are locked.
+    --  2)  Reset should only be deasserted when it is known that CLK and CLKDIV are stable and present.
+    --  3)  Wait until all IDELAYCTRL components, when used, show RDY high.
+    --  4)  Use on the reset net one flip-flop clocked by CLKDIV per ISERDESE1/OSERDESE1 pair.
+    --      Put the flip-flop in the FPGA logic in front of the ISERDESE1/OSERDESE1 pair
+    --      Put a timing constraint on the flip-flop to ISERDESE1/OSERDESE1 of one CLKDIV period or less.
 
     process(frame_clk_i)
     begin
-    if (falling_edge(frame_clk_i)) then
-        io_reset <= reset_i;
-    end if;
-    end process;
 
---    process(clock)
---    begin
---        if (falling_edge(frame_clk_i)) then
---            if (sync_reset_i = '1') then
---                pulse_length <= x"f";
---            else
---                if (pulse_length /= 0) then
---                    io_reset <= '1';
---                    pulse_length <= std_logic_vector(unsigned(pulse_length) - unsigned(1,4));
---                else
---                    io_reset <= '0';
---                end if;
---            end if;
---        end if;
---    end process;
+    if (rising_edge(iserdes_clkdiv)) then
+        iserdes_reset <= reset_i;
+    end if;
+
+    if (rising_edge(oserdes_clkdiv)) then
+        oserdes_reset <= reset_i;
+    end if;
+
+    if (rising_edge(frame_clk_i)) then
+        valid_o <= not reset_i;
+    end if;
+
+    end process;
 
     --================--
     --== INPUT DATA ==--
@@ -118,42 +127,61 @@ begin
         data_in_from_pins_n => elink_i_n,
         data_in_to_device   => from_gbt_raw,
         bitslip             => '0',
-        clk_in              => data_clk_i,
-        clk_div_in          => frame_clk_i,
-        io_reset            => io_reset
+        clk_in              => iserdes_clk,
+        clk_div_in          => iserdes_clkdiv,
+        io_reset            => iserdes_reset
     );
 
-    -- remap to account for how the Xilinx IPcore assigns the output pins (?)
-    from_gbt <= from_gbt_raw(1) & from_gbt_raw(3) & from_gbt_raw(5) & from_gbt_raw(7) & from_gbt_raw(9) & from_gbt_raw(11) & from_gbt_raw(13) & from_gbt_raw(15)  &
-                from_gbt_raw(0) & from_gbt_raw(2) & from_gbt_raw(4) & from_gbt_raw(6) & from_gbt_raw(8) & from_gbt_raw(10) & from_gbt_raw(12) & from_gbt_raw(14);
+
+    -- remap to account for how the Xilinx IPcore assigns the output pins
+    -- flip-flop for routing and alignment
+    process (iserdes_clkdiv) begin
+        if (rising_edge(iserdes_clkdiv)) then
+            from_gbt <= from_gbt_raw(1) & from_gbt_raw(3) & from_gbt_raw(5) & from_gbt_raw(7) & from_gbt_raw(9) & from_gbt_raw(11) & from_gbt_raw(13) & from_gbt_raw(15)  &
+                        from_gbt_raw(0) & from_gbt_raw(2) & from_gbt_raw(4) & from_gbt_raw(6) & from_gbt_raw(8) & from_gbt_raw(10) & from_gbt_raw(12) & from_gbt_raw(14);
+        end if;
+    end process;
 
     --=================--
     --== OUTPUT DATA ==--
     --=================--
 
     -- Bitslip and format the output to serializer
-    -- Static bitslip count = 3
+    -- Static bitslip count = 3 (empirically derived... needs to be updated)
 
     i_gbt_tx_bitslip : entity work.gbt_tx_bitslip
     port map(
-        fabric_clk  => frame_clk_i,
-        reset       => io_reset,
-        --bitslip_cnt => 0,
+        fabric_clk  => oserdes_clkdiv,
+        reset       => oserdes_reset,
+      --bitslip_cnt => 0,
         bitslip_cnt => 7,
         din         => to_gbt, -- 16 bit data input, synchronized to frame-clock
         dout        => to_gbt_bitslipped
     );
 
-    -- OH v3a has POLARITY SWAP on elink 1
+    -- To ensure that data flows out of all OSERDESE1 blocks in a multiple bit output structure:
+    --  1) Place a register in front of the OSERDESE1 inputs.
+    --  2) Clock the register by the CLKDIV clock of the OSERDESE1.
+    --  3) Use the same reset signal for the register as for the OSERDESE1.
 
-    to_gbt_polswap <= not to_gbt_bitslipped(8)  & to_gbt_bitslipped(0) &
-                      not to_gbt_bitslipped(9)  & to_gbt_bitslipped(1) &
-                      not to_gbt_bitslipped(10) & to_gbt_bitslipped(2) &
-                      not to_gbt_bitslipped(11) & to_gbt_bitslipped(3) &
-                      not to_gbt_bitslipped(12) & to_gbt_bitslipped(4) &
-                      not to_gbt_bitslipped(13) & to_gbt_bitslipped(5) &
-                      not to_gbt_bitslipped(14) & to_gbt_bitslipped(6) &
-                      not to_gbt_bitslipped(15) & to_gbt_bitslipped(7);
+    process(oserdes_clk)
+    begin
+    if (falling_edge(oserdes_clk)) then
+        if (oserdes_reset='1') then
+            to_gbt_polswap <= (others => '0');
+        else
+            -- OH v3a has POLARITY SWAP on elink 1
+            to_gbt_polswap <= not to_gbt_bitslipped(8)  & to_gbt_bitslipped(0) &
+                              not to_gbt_bitslipped(9)  & to_gbt_bitslipped(1) &
+                              not to_gbt_bitslipped(10) & to_gbt_bitslipped(2) &
+                              not to_gbt_bitslipped(11) & to_gbt_bitslipped(3) &
+                              not to_gbt_bitslipped(12) & to_gbt_bitslipped(4) &
+                              not to_gbt_bitslipped(13) & to_gbt_bitslipped(5) &
+                              not to_gbt_bitslipped(14) & to_gbt_bitslipped(6) &
+                              not to_gbt_bitslipped(15) & to_gbt_bitslipped(7);
+        end if;
+    end if;
+    end process;
 
     -- Output serializer
     -- we want to output the data on the falling edge of the clock so that the GBT can sample on the rising edge
@@ -163,12 +191,10 @@ begin
         data_out_from_device    => to_gbt_polswap,
         data_out_to_pins_p      => elink_o_p,
         data_out_to_pins_n      => elink_o_n,
-        clk_in                  => data_clk_inv,
+        clk_in                  => oserdes_clk,
         clk_div_in              => frame_clk_i,
-        io_reset                => io_reset
+        io_reset                => oserdes_reset
     );
-
-    valid_o <= not io_reset;
 
     --=====================--
     --== DOMAIN CROSSING ==--
@@ -177,6 +203,7 @@ begin
     -- transition data from sampling clock to fabric clock
     -- and vice versa
 
+    -- data from gbt to FPGA clock domain
     process(clock)
     begin
         if (rising_edge(clock)) then
@@ -185,16 +212,18 @@ begin
         end if;
     end process;
 
-    process(frame_clk_i)
+    data_o <= from_gbt_s2; -- synchronized from "from_gbt"
+
+    -- data from FPGA clock domain to GBT frame clock
+
+    process(oserdes_clkdiv)
     begin
-        if (rising_edge(frame_clk_i)) then
+        if (rising_edge(oserdes_clkdiv)) then
             to_gbt_s1 <= data_i;
             to_gbt_s2 <= to_gbt_s1;
         end if;
     end process;
 
-
-    data_o <= from_gbt_s2; -- synchronized from "from_gbt"
     to_gbt <= to_gbt_s2;   -- synchronized from data_i
 
 end Behavioral;
