@@ -206,10 +206,10 @@ assign tx_dly_align_mon_ena = 1'b0;
 
   always @(*) begin
     case (BXN_COUNTER[1:0])
-      2'd0: frame_sep_lcl <= 8'hBC; // bc
-      2'd1: frame_sep_lcl <= 8'hF7; // f7
-      2'd2: frame_sep_lcl <= 8'hFB; // fb
-      2'd3: frame_sep_lcl <= 8'hFD; // fd
+      2'd0: frame_sep_ttc <= 8'hBC; // bc
+      2'd1: frame_sep_ttc <= 8'hF7; // f7
+      2'd2: frame_sep_ttc <= 8'hFB; // fb
+      2'd3: frame_sep_ttc <= 8'hFD; // fd
     endcase
   end
 
