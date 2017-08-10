@@ -288,14 +288,26 @@ optohybrid_top optohybrid_top (
 // feed them into this module, parse the 16 bit packets, recover the data
 // :(
 
-reg  [15:0] elink_o_fifo;
+
+reg  [15:0] fifo_tmp;
+
 reg  [15:0] elink_o_parallel;
+
 wire [15:0] fifo_dly;
+
 always @(posedge gbt_eclk_p[0]) begin
-  // this may need to be bitslipped... depending on the phase alignment of the clocks
-  elink_o_fifo[7:0]  <= {elink_o_fifo[ 6:0], elink_o_p[0]};
-  elink_o_fifo[15:8] <= {elink_o_fifo[14:8],~elink_o_p[1]}; // account for polarity swap
+// this may need to be bitslipped... depending on the phase alignment of the clocks
+fifo_tmp[7:0]  <= {fifo_tmp[ 6:0], elink_o_p[0]};
+fifo_tmp[15:8] <= {fifo_tmp[14:8],~elink_o_p[1]}; // account for polarity swap
 end
+
+`define tenbit
+
+`ifdef tenbit
+    wire  [15:0] elink_o_fifo = {6'b0, fifo_tmp[13], fifo_tmp[10], fifo_tmp[7:0]};
+`else
+    wire  [15:0] elink_o_fifo = fifo_tmp;
+`endif
 
 wire [3:0] dly_adr = 4'd2;
 genvar ibit;

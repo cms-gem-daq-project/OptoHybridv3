@@ -22,7 +22,7 @@ library work;
 
 entity gbt_tx is
     generic(
-        g_16BIT : boolean := true
+        g_16BIT : boolean := false
     );
 port(
 

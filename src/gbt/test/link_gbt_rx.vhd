@@ -16,7 +16,7 @@ use unisim.vcomponents.all;
 
 entity link_gbt_rx is
     generic(
-        g_16BIT : boolean := true
+        g_16BIT : boolean := false
     );
 port(
 
@@ -96,7 +96,7 @@ begin
                                          oh_data_0  <= oh_data;
 
                     when REG_DATA1 =>    req_en_o   <= '1';
-                                         req_data_o <= oh_data & oh_data_0;
+                                         req_data_o <= oh_data_0 & oh_data;
 
                     when others    =>    req_en_o   <= '0';
                                          req_data_o <= (others => '0');
@@ -163,7 +163,7 @@ begin
                                          oh_data_2  <= oh_data;
 
                     when REG_DATA3 =>    req_en_o   <= '1';
-                                         req_data_o <= oh_data_0 (7 downto 0) & oh_data_1 (7 downto 0) & oh_data_2 (7 downto 0) & oh_data;
+                                         req_data_o <= oh_data_0 (7 downto 0) & oh_data_1 (7 downto 0) & oh_data_2 (7 downto 0) & oh_data (7 downto 0);
 
                     when others    =>    req_en_o   <= '0';
                                          req_data_o <= (others => '0');
