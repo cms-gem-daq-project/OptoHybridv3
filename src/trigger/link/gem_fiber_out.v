@@ -144,7 +144,7 @@ assign tx_dly_align_mon_ena = 1'b0;
 
   always @(posedge TRG_CLK80) begin
     trg_tx_data_reg <= rst_tx ? 32'h50BC50BC : (tx_sel ? out_data[55:24] : {out_data[23:0],frm_sep[7:0]});
-    trg_tx_isk_reg  <= rst_tx ?  4'b0101 : (tx_sel ? 4'b0000 : 4'b0001);
+    trg_tx_isk_reg  <= rst_tx ? 4'b0101      : (tx_sel ? 4'b0000 : 4'b0001);
   end
 
   assign trg_tx_data = trg_tx_data_reg;

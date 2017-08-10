@@ -79,4 +79,3 @@ NET "mgt_tx_n_o<3>" LOC = F2; #
 #0-191
 #NET "vfat_sbits_p<0>" LOC =     ;
 #NET "vfat_sbits_n<0>" LOC =     ;
-NET "trigger/sbits_inst/trig_alignment/*/q<*>" MAXDELAY = 1.000 ns;
