@@ -41,10 +41,12 @@ architecture Behavioral of gbt_tx is
 
     type state_t is (SYNCING, HEADER, REG_DATA0, REG_DATA1, REG_DATA2, REG_DATA3);
 
-    signal state        : state_t;
+    signal state : state_t;
 
-    signal req_valid    : std_logic;
-    signal frame        : std_logic_vector (15 downto 0);
+    signal req_valid : std_logic;
+    signal frame     : std_logic_vector (15 downto 0);
+    signal elink0    : std_logic_vector (7 downto 0);
+    signal elink1    : std_logic_vector (7 downto 0);
 
     signal reset : std_logic;
 
@@ -278,7 +280,7 @@ begin
                         if (req_valid='0') then
                             frame <= x"0000";
                         else
-                            frame <= "000000" & "01" & req_data_i(31 downto 24);
+                            frame <= "000000" & "00" & req_data_i(31 downto 24);
                         end if;
 
                     when REG_DATA1 =>
@@ -292,14 +294,14 @@ begin
                         if (req_valid='0') then
                             frame <= x"0000";
                         else
-                            frame <= "000000" & "01" & req_data_i(15 downto 8);
+                            frame <= "000000" & "10" & req_data_i(15 downto 8);
                         end if;
 
                     when REG_DATA3 =>
                         if (req_valid='0') then
                             frame <= x"0000";
                         else
-                            frame <= "000000" & "01" & req_data_i(7 downto 0);
+                            frame <= "000000" & "11" & req_data_i(7 downto 0);
                         end if;
 
                     when others =>
@@ -310,9 +312,14 @@ begin
     end process;
 
     -- duplicate the 2 MSBS to transmit at 320 MHz
-    data_o (15 downto 0) <= frame (9) & frame (9) & frame(9) & frame(9) &
-                            frame (8) & frame (8) & frame(8) & frame(8) &
-                            frame (7 downto 0);
+    -- this emulates 80MHz on one of the e-links but allows the rest of the firmware to be agnostic to the change
+
+    elink0 <= frame (1) & frame (1) & frame(1) & frame(1) &
+              frame (0) & frame (0) & frame(0) & frame(0);
+
+    elink1 <= frame (9 downto 2);
+
+    data_o (15 downto 0) <= elink1 & elink0;
 
     END GENERATE g_ten;
 
