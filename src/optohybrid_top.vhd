@@ -153,12 +153,21 @@ architecture Behavioral of optohybrid_top is
 
     signal ext_sbits_o    : std_logic_vector(5  downto 0);
 
+    --== IOB Constraints for Outputs ==--
+
     attribute IOB : string;
-    attribute IOB of ext_reset_o : signal is "TRUE";
-    attribute IOB of gbt_rxready : signal is "TRUE";
-    attribute IOB of gbt_rxvalid : signal is "TRUE";
-    attribute IOB of gbt_txready : signal is "TRUE";
-    attribute IOB of sca_io      : signal is "TRUE";
+    attribute KEEP : string;
+
+    -- don't remove duplicates for fanout, needed to pack into iob
+    attribute KEEP of ext_reset_o : signal is "TRUE";
+
+    attribute IOB  of led_o       : signal is "FORCE";
+    attribute IOB  of ext_reset_o : signal is "FORCE";
+    attribute IOB  of gbt_rxready : signal is "FORCE";
+    attribute IOB  of gbt_rxvalid : signal is "FORCE";
+    attribute IOB  of gbt_txready : signal is "FORCE";
+    attribute IOB  of sca_io      : signal is "FORCE";
+    attribute IOB  of ext_sbits_o : signal is "FORCE";
 
 begin
 

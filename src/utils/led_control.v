@@ -29,7 +29,7 @@ module led_control (
 
   reg [15:0] led;
 
-  //synthesis attribute IOB of led_out is "TRUE"
+  //synthesis attribute IOB of led_out is "FORCE"
   always @(posedge clock) begin
       led_out <= led;
   end
