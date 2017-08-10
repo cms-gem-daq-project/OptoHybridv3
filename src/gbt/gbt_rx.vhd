@@ -62,7 +62,7 @@ architecture Behavioral of gbt_rx is
 
     signal sync_req_cnt : integer range 0 to 127 := 0;
 
-    signal frame_end_valid : boolean;
+    signal sync_valid : boolean;
 
     signal reset : std_logic;
 
@@ -137,7 +137,7 @@ begin
 
     g_ten : IF (not g_16BIT) GENERATE
 
-    frame_end_valid <= (data_i(11 downto 8) & data_i (6) & data_i(2)) = "101010"; -- use a 6 bit end frame symbol
+    sync_valid <= (data_i(11 downto 8) & data_i (6) & data_i(2)) = "101010"; -- use a 6 bit end frame symbol
 
     process(clock)
     begin
@@ -148,7 +148,7 @@ begin
             else
                 case state is
                     when SYNCING      =>
-                        if (frame_end_valid) then
+                        if (sync_valid) then
                             state <= FRAME_BEGIN;
                         end if;
                     when FRAME_BEGIN  => state <= ADDR_0;
@@ -163,7 +163,7 @@ begin
                     when DATA_3       => state <= DATA_4;
                     when DATA_4       => state <= FRAME_END;
                     when FRAME_END    =>
-                        if (frame_end_valid) then
+                        if (sync_valid) then
                             state <= FRAME_BEGIN;
                         else
                             state <= SYNCING;
@@ -222,7 +222,6 @@ begin
                     when DATA_4 =>
                                    req_data(5  downto  2) <= data_i(11 downto 8);   -- data[5:2]
                                    req_data(1  downto  0) <= data_i(6) & data_i(2); -- data[1:0]
-
                     when FRAME_END =>
                         req_en_o   <= req_valid; -- fifo_wr
                         req_data_o <= req_data;  -- 65 bit stable output (1 bit WE, 32 bit adr, 32 bit data)
@@ -240,7 +239,7 @@ begin
 
     g_sixteen : IF (g_16BIT) GENERATE
 
-    frame_end_valid <= data_i(11 downto 0) = x"ABC"; -- 12 bit DAV
+    sync_valid <= data_i(11 downto 0) = x"ABC"; -- 12 bit DAV
 
     process(clock)
     begin
@@ -251,7 +250,7 @@ begin
             else
                 case state is
                     when SYNCING      =>
-                        if (frame_end_valid) then
+                        if (sync_valid) then
                             state <= FRAME_BEGIN;
                         end if;
                     when FRAME_BEGIN  => state <= ADDR_0;
@@ -261,7 +260,7 @@ begin
                     when DATA_1       => state <= DATA_2;
                     when DATA_2       => state <= FRAME_END;
                     when FRAME_END    =>
-                        if (frame_end_valid) then
+                        if (sync_valid) then
                             state <= FRAME_BEGIN;
                         else
                             state <= SYNCING;
@@ -279,8 +278,7 @@ begin
                 req_en_o   <= '0';
                 req_data_o <= (others => '0');
                 req_valid  <= '0';
-                req_data   <= (others => '0');
-            else
+                req_data   <= (others => '0'); else
                 case state is
                     when FRAME_BEGIN =>
                                    req_en_o               <= '0';
