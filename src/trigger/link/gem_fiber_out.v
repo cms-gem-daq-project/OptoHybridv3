@@ -10,6 +10,7 @@ module   gem_fiber_out #(parameter SIM_SPEEDUP = 0) (
   input [55:0]  GEM_DATA,      // 56 bit GEM data
   input         GEM_OVERFLOW,  //  1 bit GEM has more than 8 clusters
   input [11:0]  BXN_COUNTER ,  //  12 bit bxn counter
+  input         BC0_LOCAL   ,  //  1  bit bx0 flag
 
   input         TRG_TX_REFCLK, // 160 MHz Reference Clock from QPLL
   input         TRG_TXUSRCLK,  // 160 MHz (derived from TXOUTCLK)
@@ -35,7 +36,9 @@ module   gem_fiber_out #(parameter SIM_SPEEDUP = 0) (
 wire trg_tx_dis;
 
 //Inputs to TRG GTX transmitter
+reg  [ 3:0] trg_tx_isk_reg;
 wire [ 3:0] trg_tx_isk;
+reg  [31:0] trg_tx_data_reg;
 wire [31:0] trg_tx_data;
 wire        tx_dlyaligndisable;
 wire        tx_dlyalignreset;
@@ -139,9 +142,14 @@ assign tx_dly_align_mon_ena = 1'b0;
 
   assign out_data    = ENA_TEST_PAT ? {prbs[47:0],prbs[7:0]} : GEM_DATA;
 
-  assign trg_tx_data = rst_tx ? 32'h50BC50BC : (tx_sel ? out_data[55:24] : {out_data[23:0],frm_sep[7:0]});
+  always @(posedge TRG_CLK80) begin
+    trg_tx_data_reg <= rst_tx ? 32'h50BC50BC : (tx_sel ? out_data[55:24] : {out_data[23:0],frm_sep[7:0]});
+    trg_tx_isk_reg  <= rst_tx ?  4'b0101 : (tx_sel ? 4'b0000 : 4'b0001);
+  end
 
-  assign trg_tx_isk  = rst_tx ?  4'b0101 : (tx_sel ? 4'b0000 : 4'b0001);
+  assign trg_tx_data = trg_tx_data_reg;
+
+  assign trg_tx_isk  = trg_tx_isk_reg;
 
   // reset latches
   //---------------------------------------------------
@@ -213,7 +221,9 @@ assign tx_dly_align_mon_ena = 1'b0;
     endcase
   end
 
-  assign frm_sep = (GEM_OVERFLOW) ? 8'hFC : frame_sep;
+  assign frm_sep = ttc_bc0 ? 8'h50 :
+                   (GEM_OVERFLOW) ? 8'hFC
+                             : frame_sep;
 
 //----------------------------------------------------------------------------------------------------------------------
 // Test pattern reset
