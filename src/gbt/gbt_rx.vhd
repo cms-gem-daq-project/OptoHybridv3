@@ -22,7 +22,7 @@ use work.types_pkg.all;
 
 entity gbt_rx is
     generic(
-        g_16BIT : boolean := true
+        g_16BIT : boolean := false
     );
 port(
 
@@ -61,6 +61,8 @@ architecture Behavioral of gbt_rx is
     signal state        : state_t;
 
     signal sync_req_cnt : integer range 0 to 127 := 0;
+
+    signal data6 : std_logic_vector (5 downto 0);
 
     signal sync_valid : boolean;
 
@@ -137,7 +139,9 @@ begin
 
     g_ten : IF (not g_16BIT) GENERATE
 
-    sync_valid <= (data_i(11 downto 8) & data_i (6) & data_i(2)) = "101010"; -- use a 6 bit end frame symbol
+    data6 <= data_i (11 downto 8) & data_i (6) & data_i(2);
+
+    sync_valid <= (data6 = "101010"); -- use a 6 bit end frame symbol
 
     process(clock)
     begin
@@ -188,40 +192,30 @@ begin
                 case state is
                     when FRAME_BEGIN =>
                                    req_en_o               <= '0';
-                                   req_valid              <= data_i(11);            -- request valid
-                                   req_data(64)           <= data_i(10);            -- write enable
-                                   req_data(63 downto 62) <= data_i(9 downto 8);    -- address[31:30]
-                                   req_data(61 downto 60) <= data_i(6) & data_i(2); -- address[29:28]
+                                   req_valid              <= data6(5);              -- request valid
+                                   req_data(64)           <= data6(4);              -- write enable
+                                   req_data(63 downto 60) <= data6(3 downto 0);     -- address[31:28]
                     when ADDR_0 =>
-                                   req_data(59 downto 56) <= data_i(11 downto 8);   -- address[27:24]
-                                   req_data(55 downto 54) <= data_i(6) & data_i(2); -- address[23:22]
+                                   req_data(59 downto 54) <= data6              ;   -- address[27:22]
                     when ADDR_1 =>
-                                   req_data(53 downto 50) <= data_i(11 downto 8);   -- address[21:18]
-                                   req_data(49 downto 48) <= data_i(6) & data_i(2); -- address[17:16]
+                                   req_data(53 downto 48) <= data6              ;   -- address[21:16]
                     when ADDR_2 =>
-                                   req_data(47 downto 44) <= data_i(11 downto 8);   -- address[15:12]
-                                   req_data(43 downto 42) <= data_i(6) & data_i(2); -- address[11:10]
+                                   req_data(47 downto 42) <= data6              ;   -- address[15:10]
                     when ADDR_3 =>
-                                   req_data(41 downto 38) <= data_i(11 downto 8);   -- address[9:6]
-                                   req_data(37 downto 36) <= data_i(6) & data_i(2); -- address[5:4]
+                                   req_data(41 downto 36) <= data6              ;   -- address[9:4]
                     when ADDR_4 =>
-                                   req_data(35 downto 32) <= data_i(11 downto 8);   -- address[3:0]
-                                   req_data(31 downto 30) <= data_i(6) & data_i(2); -- data[31:30]
+                                   req_data(35 downto 32) <= data6(5 downto 2)  ;   -- address[3:0]
+                                   req_data(31 downto 30) <= data6(1 downto 0)  ;   -- data[31:30]
                     when DATA_0 =>
-                                   req_data(29 downto 26) <= data_i(11 downto 8);   -- data[29:26]
-                                   req_data(25 downto 24) <= data_i(6) & data_i(2); -- data[25:24]
+                                   req_data(29 downto 24) <= data6              ;   -- data[29:24]
                     when DATA_1 =>
-                                   req_data(23 downto 20) <= data_i(11 downto 8);   -- data[23:20]
-                                   req_data(19 downto 18) <= data_i(6) & data_i(2); -- data[19:18]
+                                   req_data(23 downto 18) <= data6              ;   -- data[23:18]
                     when DATA_2 =>
-                                   req_data(17 downto 14) <= data_i(11 downto 8);   -- data[17:14]
-                                   req_data(13 downto 12) <= data_i(6) & data_i(2); -- data[13:12]
+                                   req_data(17 downto 12) <= data6              ;   -- data[17:12]
                     when DATA_3 =>
-                                   req_data(11 downto  8) <= data_i(11 downto 8);   -- data[11:8]
-                                   req_data(7  downto  6) <= data_i(6) & data_i(2); -- data[7:6]
+                                   req_data(11 downto  6) <= data6              ;   -- data[11:6]
                     when DATA_4 =>
-                                   req_data(5  downto  2) <= data_i(11 downto 8);   -- data[5:2]
-                                   req_data(1  downto  0) <= data_i(6) & data_i(2); -- data[1:0]
+                                   req_data(5  downto  0) <= data6              ;   -- data[5:0]
                     when FRAME_END =>
                         req_en_o   <= req_valid; -- fifo_wr
                         req_data_o <= req_data;  -- 65 bit stable output (1 bit WE, 32 bit adr, 32 bit data)
@@ -238,6 +232,8 @@ begin
     -- 16 bit decoding (two 320 MHz e-links)
 
     g_sixteen : IF (g_16BIT) GENERATE
+
+    data6 <= (others => '0'); -- not used in 16 bit mode
 
     sync_valid <= data_i(11 downto 0) = x"ABC"; -- 12 bit DAV
 

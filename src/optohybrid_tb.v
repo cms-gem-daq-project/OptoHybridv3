@@ -117,8 +117,7 @@ wire        wr_en    = 1'b1;
 wire        wr_valid = 1'b1;
 wire [31:0] address  = {8'h40, 24'h0}; // 32'h0; // write to loopback
 reg  [31:0] data     = 32'h12345678;
-//reg  [31:0] mask     = 32'hffffffff;
-wire [11:0] frame_end= 12'hABC;
+wire  [5:0] frame_start = 6'h2A;
 
 wire l1a      = 1'b1;
 wire bc0      = 1'b1;
@@ -129,63 +128,140 @@ wire [3:0] gbt_ttc = {l1a, calpulse, resync, bc0};
 
 wire [65:0] gbt_packet = {wr_en, wr_valid, address[31:0], data[31:0]};
 
-reg[15:0] gbt_dout;
+`define tenbit_tx
 
-reg [2:0] gbt_frame=0;
+`ifdef tenbit_tx
 
-always @(posedge clk40) begin
-  case (gbt_frame)
-    3'd0: gbt_frame <= 3'd1; // begin
-    3'd1: gbt_frame <= 3'd2; // addr
-    3'd2: gbt_frame <= 3'd3; // addr
-    3'd3: gbt_frame <= 3'd4; // data
-    3'd4: gbt_frame <= 3'd5; // data
-    3'd5: gbt_frame <= 3'd6; // data
-    3'd6: gbt_frame <= 3'd0; // end
-  endcase
-end
+    reg [9:0] gbt_dout;
 
+    reg [3:0] gbt_frame=0;
 
-always @(posedge clk40) begin
-  case (gbt_frame)
-    3'd6: gbt_dout <= {gbt_ttc,wr_valid,wr_en,2'b00,address[31:24]}; // begin
-    3'd0: gbt_dout <= {gbt_ttc,                     address[23:12]}; // addr
-    3'd1: gbt_dout <= {gbt_ttc,                     address[11:0 ]}; // addr
-    3'd2: gbt_dout <= {gbt_ttc, 4'd0,               data   [31:24]}; // data
-    3'd3: gbt_dout <= {gbt_ttc,                     data   [23:12]}; // data
-    3'd4: gbt_dout <= {gbt_ttc,                     data   [11:0] }; // data
-    3'd5: gbt_dout <= {gbt_ttc,                     frame_end     }; // end
-  endcase
-end
-
-reg [1:0] clk40_sync;
-
-reg [2:0] bit=0;
-
-always @(negedge clk320) begin
-
-  clk40_sync[0] <= clk40;
-  clk40_sync[1] <= clk40_sync[0];
-
-  if (clk40_sync[1:0] == 2'b01) // catch the rising edge of clk40
-      bit <= 3'd7;
-  else
-      bit <= bit-1'b1;
-end
+    always @(posedge clk40) begin
+    case (gbt_frame)
+        4'h0: gbt_frame <= 4'h1; // start of transmit
+        4'h1: gbt_frame <= 4'h2; // begin
+        4'h2: gbt_frame <= 4'h3; // addr0
+        4'h3: gbt_frame <= 4'h4; // addr1
+        4'h4: gbt_frame <= 4'h5; // addr2
+        4'h5: gbt_frame <= 4'h6; // addr3
+        4'h6: gbt_frame <= 4'h7; // addr4
+        4'h7: gbt_frame <= 4'h8; // data0
+        4'h8: gbt_frame <= 4'h9; // data1
+        4'h9: gbt_frame <= 4'hA; // data2
+        4'hA: gbt_frame <= 4'hB; // data3
+        4'hB: gbt_frame <= 4'h0; // data4
+    endcase
+    end
 
 
-// Elinks
+    always @(posedge clk40) begin
+    case (gbt_frame) // prefetch
+        4'h0: gbt_dout <= {gbt_ttc,               frame_start                             }; // 0x2A
+        4'h1: gbt_dout <= {gbt_ttc,wr_valid,wr_en,            address[31:28]              }; // begin
+        4'h2: gbt_dout <= {gbt_ttc,                           address[27:22]              }; // addr0
+        4'h3: gbt_dout <= {gbt_ttc,                           address[21:16]              }; // addr1
+        4'h4: gbt_dout <= {gbt_ttc,                           address[15:10]              }; // addr2
+        4'h5: gbt_dout <= {gbt_ttc,                           address[ 9: 4]              }; // addr3
+        4'h6: gbt_dout <= {gbt_ttc,                           address[ 3: 0], data[31:30] }; // addr4
+        4'h7: gbt_dout <= {gbt_ttc,                                           data[29:24] }; // data0
+        4'h8: gbt_dout <= {gbt_ttc,                                           data[23:18] }; // data1
+        4'h9: gbt_dout <= {gbt_ttc,                                           data[17:12] }; // data2
+        4'hA: gbt_dout <= {gbt_ttc,                                           data[11: 6] }; // data3
+        4'hB: gbt_dout <= {gbt_ttc,                                           data[ 5: 0] }; // data4
+    endcase
+    end
 
-reg [15:0] to_gbt_1;
-reg [15:0] to_gbt;
-always @(negedge clk320) begin
-  to_gbt_1 <= gbt_dout;
-  to_gbt   <= to_gbt_1;
-end
+    reg [1:0] clk40_sync;
 
-wire [1:0] elink_i_p;
-assign elink_i_p [1]= to_gbt [bit+8]; // msb first
-assign elink_i_p [0]= to_gbt [bit  ]; // msb first
+    reg [2:0] bitsel=0;
+
+    always @(negedge clk320) begin
+
+    clk40_sync[0] <= clk40;
+    clk40_sync[1] <= clk40_sync[0];
+
+    if (clk40_sync[1:0] == 2'b01) // catch the rising edge of clk40
+        bitsel <= 3'd7;
+    else
+        bitsel <= bitsel-1'b1;
+    end
+
+
+    // Elinks
+    reg [9:0] to_gbt_1;
+    reg [9:0] to_gbt;
+    always @(negedge clk320) begin
+    to_gbt_1 <= gbt_dout;
+    to_gbt   <= to_gbt_1;
+    end
+
+    wire [1:0] elink_i_p;
+    assign elink_i_p [1]= to_gbt [bitsel+2];                  // 320 MHz
+    assign elink_i_p [0]= bitsel[2] ? to_gbt [1] : to_gbt[0]; // 80  MHz
+
+
+`else
+
+    reg[15:0] gbt_dout;
+
+    reg [2:0] gbt_frame=0;
+
+    always @(posedge clk40) begin
+    case (gbt_frame)
+        3'd0: gbt_frame <= 3'd1; // begin
+        3'd1: gbt_frame <= 3'd2; // addr
+        3'd2: gbt_frame <= 3'd3; // addr
+        3'd3: gbt_frame <= 3'd4; // data
+        3'd4: gbt_frame <= 3'd5; // data
+        3'd5: gbt_frame <= 3'd6; // data
+        3'd6: gbt_frame <= 3'd0; // end
+    endcase
+    end
+
+
+    always @(posedge clk40) begin
+    case (gbt_frame)
+        3'd6: gbt_dout <= {gbt_ttc,wr_valid,wr_en,2'b00,address[31:24]}; // begin
+        3'd0: gbt_dout <= {gbt_ttc,                     address[23:12]}; // addr
+        3'd1: gbt_dout <= {gbt_ttc,                     address[11:0 ]}; // addr
+        3'd2: gbt_dout <= {gbt_ttc, 4'd0,               data   [31:24]}; // data
+        3'd3: gbt_dout <= {gbt_ttc,                     data   [23:12]}; // data
+        3'd4: gbt_dout <= {gbt_ttc,                     data   [11:0] }; // data
+        3'd5: gbt_dout <= {gbt_ttc,                     frame_end     }; // end
+    endcase
+    end
+
+    reg [1:0] clk40_sync;
+
+    reg [2:0] bit=0;
+
+    always @(negedge clk320) begin
+
+    clk40_sync[0] <= clk40;
+    clk40_sync[1] <= clk40_sync[0];
+
+    if (clk40_sync[1:0] == 2'b01) // catch the rising edge of clk40
+        bit <= 3'd7;
+    else
+        bit <= bit-1'b1;
+    end
+
+
+
+    // Elinks
+
+    reg [15:0] to_gbt_1;
+    reg [15:0] to_gbt;
+    always @(negedge clk320) begin
+    to_gbt_1 <= gbt_dout;
+    to_gbt   <= to_gbt_1;
+    end
+
+    wire [1:0] elink_i_p;
+    assign elink_i_p [1]= to_gbt [bit+8]; // msb first
+    assign elink_i_p [0]= to_gbt [bit  ]; // msb first
+
+`endif
 
 wire [1:0] elink_i_n = ~elink_i_p;
 
@@ -301,10 +377,10 @@ fifo_tmp[7:0]  <= {fifo_tmp[ 6:0], elink_o_p[0]};
 fifo_tmp[15:8] <= {fifo_tmp[14:8],~elink_o_p[1]}; // account for polarity swap
 end
 
-`define tenbit
+`define tenbit_rx
 
-`ifdef tenbit
-    wire  [15:0] elink_o_fifo = {6'b0, fifo_tmp[13], fifo_tmp[10], fifo_tmp[7:0]};
+`ifdef tenbit_rx
+    wire  [15:0] elink_o_fifo = {6'b0, fifo_tmp[15:8], fifo_tmp[6], fifo_tmp[2]};
 `else
     wire  [15:0] elink_o_fifo = fifo_tmp;
 `endif
@@ -325,16 +401,24 @@ end
 wire [31:0] gbt_rx_request;
 wire        gbt_rx_valid;
 
-link_gbt_rx i_gbt_rx_link (
-      .ttc_clk_40_i            ( clk40),
-      .reset_i                 ( 1'b0),
+link_gbt_rx
+#(
+    `ifdef tenbit_rx
+    .g_16BIT (0)
+    `else
+    .g_16BIT (1)
+    `endif
+)
+i_gbt_rx_link (
+    .ttc_clk_40_i  (clk40),
+    .reset_i       (1'b0),
 
-      // inputs
-      .gbt_rx_data_i           ( elink_o_parallel),
+    // inputs
+    .gbt_rx_data_i (elink_o_parallel),
 
-      // outputs
-      .req_en_o                ( gbt_rx_valid),
-      .req_data_o              ( gbt_rx_request)
+    // outputs
+    .req_en_o      (gbt_rx_valid),
+    .req_data_o    (gbt_rx_request)
 );
 
 endmodule
