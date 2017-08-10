@@ -197,6 +197,10 @@ iserdes_odd   (
 
     end
 
+  //--------------------------------------------------------------------------------------------------------------------
+  // Edge Detection
+  //--------------------------------------------------------------------------------------------------------------------
+
     wire [3:0] phase_err4;
 
     // refer to XAPP881 figure 7 state machine
@@ -246,12 +250,25 @@ iserdes_odd   (
 
     generate
 
+    //----------------------------------------------------------------------------------------------------------------
     // manual control by external input
+    //----------------------------------------------------------------------------------------------------------------
+
     if (PHASE_SEL_MANUAL) begin
-      assign time_sel_local = phase_sel_in; // external input
+
+        // fanout & force use of the clock to squelch warning in manual mode
+        reg [2:0] phase_sel_in_r = 3'd0;
+        always @(posedge clock) begin
+            phase_sel_in_r <= phase_sel_in;
+        end
+
+      assign time_sel_local = phase_sel_in_r; // external input
     end
 
+    //----------------------------------------------------------------------------------------------------------------
     // automatic control by state machine
+    //----------------------------------------------------------------------------------------------------------------
+
     else begin
 
       // check if the SOF signal is coming out on d1 instead of d0 and align the data accordingly
