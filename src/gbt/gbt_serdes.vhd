@@ -55,9 +55,10 @@ architecture Behavioral of gbt_serdes is
     signal from_gbt          : std_logic_vector(15 downto 0) := (others => '0');
 
     signal to_gbt            : std_logic_vector(15 downto 0) := (others => '0');
+    signal to_gbt_polswap    : std_logic_vector(15 downto 0) := (others => '0');
     signal to_gbt_bitslipped : std_logic_vector(15 downto 0) := (others => '0');
     signal to_gbt_remap      : std_logic_vector(15 downto 0) := (others => '0');
-    signal to_gbt_polswap    : std_logic_vector(15 downto 0) := (others => '0');
+    signal to_gbt_reg        : std_logic_vector(15 downto 0) := (others => '0');
 
     signal iserdes_reset     : std_logic := '1';
     signal oserdes_reset     : std_logic := '1';
@@ -147,9 +148,9 @@ begin
 
     -- tx polarity swaps
 
-    process(oserdes_clk)
+    process(oserdes_clkdiv)
     begin
-    if (falling_edge(oserdes_clk)) then
+    if (rising_edge(oserdes_clkdiv)) then
         if (oserdes_reset='1') then
             to_gbt_polswap <= (others => '0');
         else
@@ -178,9 +179,9 @@ begin
     --         the output will be 3210, 7654
     -------------------------------------------------------------
 
-    process(oserdes_clk)
+    process(oserdes_clkdiv)
     begin
-    if (falling_edge(oserdes_clk)) then
+    if (rising_edge(oserdes_clkdiv)) then
         if (oserdes_reset='1') then
             to_gbt_remap   <= (others => '0');
         else
@@ -207,6 +208,15 @@ begin
     end if;
     end process;
 
+    -- register input to the oserdes for better timing
+
+    process(oserdes_clk)
+    begin
+    if (rising_edge(oserdes_clk)) then
+            to_gbt_reg <= to_gbt_remap;
+    end if;
+    end process;
+
 
     -- To ensure that data flows out of all OSERDESE1 blocks in a multiple bit output structure:
     --  1) Place a register in front of the OSERDESE1 inputs.
@@ -223,7 +233,7 @@ begin
         data_out_to_pins_p      => elink_o_p,
         data_out_to_pins_n      => elink_o_n,
         clk_in                  => oserdes_clk,
-        clk_div_in              => frame_clk_i,
+        clk_div_in              => oserdes_clkdiv,
         io_reset                => oserdes_reset
     );
 
