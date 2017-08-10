@@ -221,7 +221,7 @@ assign tx_dly_align_mon_ena = 1'b0;
     endcase
   end
 
-  assign frm_sep = ttc_bc0 ? 8'h50 :
+  assign frm_sep = BC0_LOCAL ? 8'h50 :
                    (GEM_OVERFLOW) ? 8'hFC
                              : frame_sep;
 
