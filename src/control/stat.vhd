@@ -79,7 +79,15 @@ architecture Behavioral of stat is
     signal reg_err      : std_logic_vector((N - 1) downto 0);
     signal reg_data     : std32_array_t((N - 1) downto 0);
 
+    signal reset : std_logic;
+
 begin
+
+    process (ref_clk_i) begin
+        if (rising_edge(ref_clk_i)) then
+            reset <= reset_i;
+        end if;
+    end process;
 
     --===============================--
     --== Wishbone request splitter ==--
@@ -92,7 +100,7 @@ begin
     )
     port map(
         ref_clk_i   => ref_clk_i,
-        reset_i     => reset_i,
+        reset_i     => reset,
         wb_req_i    => wb_slv_req_i,
         wb_res_o    => wb_slv_res_o,
         stb_o       => wb_stb,

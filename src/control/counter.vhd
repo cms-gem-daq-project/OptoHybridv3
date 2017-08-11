@@ -7,6 +7,8 @@
 -- Description:
 --   This module implements base level functionality for a single counter
 ----------------------------------------------------------------------------------
+-- 08/10/2017 -- Add reset fanout
+----------------------------------------------------------------------------------
 
 library ieee;
 use ieee.std_logic_1164.all;
@@ -31,13 +33,19 @@ end counter;
 architecture Behavioral of counter is
 
     signal data : unsigned(31 downto 0) := x"ffffffff";
+    signal reset : std_logic;
 
 begin
 
+    process (ref_clk_i) begin
+    if (rising_edge(ref_clk_i)) then
+        reset <= reset_i;
+    end if;
+    end process;
     process(ref_clk_i)
     begin
         if (rising_edge(ref_clk_i)) then
-            if (reset_i = '1') then
+            if (reset = '1') then
                 data_o <= (others => '0');
                 data <= (others => '0');
             else

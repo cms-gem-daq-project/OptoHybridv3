@@ -10,6 +10,7 @@
 ----------------------------------------------------------------------------------
 -- 2017/07/24 -- Initial port to version 3 electronics
 -- 2017/07/25 -- Clear synthesis warnings from module
+-- 2017/08/10 -- Add reset fanout tree
 ----------------------------------------------------------------------------------
 
 library ieee;
@@ -93,7 +94,15 @@ architecture Behavioral of counters is
 
     signal wb_sump : std_logic;
 
+    signal reset : std_logic;
+
 begin
+
+    process (clock) begin
+        if (rising_edge(clock)) then
+            reset <= reset_i;
+        end if;
+    end process;
 
     --===============================--
     --== Wishbone request splitter ==--
@@ -106,7 +115,7 @@ begin
     )
     port map(
         ref_clk_i   => clock,
-        reset_i     => reset_i,
+        reset_i     => reset,
         wb_req_i    => wb_slv_req_i,
         wb_res_o    => wb_slv_res_o,
         stb_o       => wb_stb,

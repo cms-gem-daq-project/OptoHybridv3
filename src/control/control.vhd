@@ -342,6 +342,8 @@ begin
     port map(
         clock               => clock_i,
 
+        reset_i             => reset,
+
         active_vfats_i      => active_vfats_i,
 
         sys_sbit_mode_i     => sys_sbit_mode,
@@ -389,8 +391,8 @@ begin
     port map (
 
         -- clock & reset
-        clock => clock_i,
-        reset => reset,
+        clock   => clock_i,
+        reset_i => reset,
 
         -- ttc commands
         ttc_bx0    => ttc_bc0,

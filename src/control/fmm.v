@@ -21,7 +21,7 @@ module fmm (
 
   // clock & reset
   input clock,
-  input reset,
+  input reset_i,
 
   // ttc commands
   input ttc_bx0,
@@ -36,6 +36,11 @@ module fmm (
   output reg fmm_trig_stop
 
 );
+
+  reg reset=0;
+  always @(posedge clock) begin
+    reset <= reset_i;
+  end
 
   //-------------------------------------------------------------------------------------------------------------------
   //  FMM Section:
