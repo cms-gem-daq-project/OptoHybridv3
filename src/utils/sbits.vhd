@@ -68,7 +68,17 @@ architecture Behavioral of sbits is
 
     signal active_vfats_s1          : std_logic_vector (191 downto 0);
 
+    signal reset : std_logic;
+
 begin
+
+    -- reset fanout
+
+    process (clk40_i) begin
+        if (rising_edge(clk40_i)) then
+            reset <= reset_i;
+        end if;
+    end process;
 
     process (clk40_i) begin
         if (rising_edge(clk40_i)) then
@@ -185,7 +195,7 @@ begin
 
         sbit_mask  => sbit_mask_i,
 
-        reset => reset_i,
+        reset_i => reset,
 
         sbits_p => sbits_p,
         sbits_n => sbits_n,
@@ -257,7 +267,7 @@ begin
     port map(
         clock4x             => clk160_i,
         clock1x             => clk40_i,
-        global_reset        => reset_i,
+        global_reset        => reset,
         cluster_count_o     => cluster_count_o,
         truncate_clusters   => '0',
         oneshot_en          => oneshot_en_i,

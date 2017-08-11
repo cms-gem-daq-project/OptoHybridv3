@@ -23,7 +23,7 @@ use work.wb_pkg.all;
 
 entity counters is
 generic(
-    N_COUNTERS          : integer := 17;
+    N_COUNTERS          : integer := 21;
     N_TIMERS            : integer := 24
 );
 port(
@@ -156,33 +156,36 @@ begin
             cnt_en(1) <= wb_m_res_i(0).ack;
 
             -- wishbone slaves strobe and ack
-            -- skip loop
-            cnt_en(2)  <= wb_s_req_i( 1).stb;
-            cnt_en(3)  <= wb_s_req_i( 2).stb;
-            cnt_en(4)  <= wb_s_req_i( 3).stb;
+            cnt_en(2)  <= wb_s_req_i( 0).stb;
+            cnt_en(3)  <= wb_s_req_i( 1).stb;
+            cnt_en(4)  <= wb_s_req_i( 2).stb;
+            cnt_en(5)  <= wb_s_req_i( 3).stb;
+            cnt_en(6)  <= wb_s_req_i( 4).stb;
 
-            cnt_en(5) <= wb_s_res_i( 1).ack;
-            cnt_en(6) <= wb_s_res_i( 2).ack;
-            cnt_en(7) <= wb_s_res_i( 3).ack;
+            cnt_en(7)  <= wb_s_res_i( 0).ack;
+            cnt_en(8)  <= wb_s_res_i( 1).ack;
+            cnt_en(9)  <= wb_s_res_i( 2).ack;
+            cnt_en(10) <= wb_s_res_i( 3).ack;
+            cnt_en(11) <= wb_s_res_i( 4).ack;
 
             -- ttc
-            cnt_en(8) <= ttc_l1a;
-            cnt_en(9) <= ttc_resync;
-            cnt_en(10) <= ttc_bc0;
+            cnt_en(12) <= ttc_l1a;
+            cnt_en(13) <= ttc_resync;
+            cnt_en(14) <= ttc_bc0;
 
             -- mmcms
-            cnt_en(11) <= (not eprt_mmcm_locked_i);
-            cnt_en(12) <= (not dskw_mmcm_locked_i);
-            cnt_en(13) <= (not mmcms_locked_i);
+            cnt_en(15) <= (not eprt_mmcm_locked_i);
+            cnt_en(16) <= (not dskw_mmcm_locked_i);
+            cnt_en(17) <= (not mmcms_locked_i);
 
             -- gbt
-            cnt_en(14) <= gbt_link_error_i;
+            cnt_en(18) <= gbt_link_error_i;
 
             -- sem correction
-            cnt_en(15) <= sem_correction_i;
+            cnt_en(19) <= sem_correction_i;
 
             -- sbit overflow
-            cnt_en(16) <= sbit_overflow_i;
+            cnt_en(20) <= sbit_overflow_i;
 
         end if;
     end process;

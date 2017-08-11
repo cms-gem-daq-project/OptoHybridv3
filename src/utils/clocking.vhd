@@ -57,7 +57,11 @@ architecture Behavioral of clocking is
 
     signal mmcm_locked : std_logic_vector(1 downto 0);
 
+    signal clock : std_logic;
+
 begin
+
+    clk_1x_o <= clock;
 
     --------- MMCMs ---------
 
@@ -67,7 +71,7 @@ begin
         clk40_i_p   => gbt_dclk_p(0),
         clk40_i_n   => gbt_dclk_n(0),
 
-        clk40_o     => clk_1x_o,
+        clk40_o     => clock,
         clk80_o     => clk_2x_o,
         clk160_o    => clk_4x_o,
         clk160_90_o => clk_4x_90_o,
@@ -88,7 +92,12 @@ begin
 
     mmcms_locked_o     <= mmcm_locked(0) and mmcm_locked(1);
 
-    dskw_mmcm_locked_o <= mmcm_locked(0);
-    eprt_mmcm_locked_o <= mmcm_locked(1);
+    -- fanout
+    process (clock) begin
+    if (rising_edge(clock)) then
+        dskw_mmcm_locked_o <= mmcm_locked(0);
+        eprt_mmcm_locked_o <= mmcm_locked(1);
+    end if;
+    end process;
 
 end Behavioral;

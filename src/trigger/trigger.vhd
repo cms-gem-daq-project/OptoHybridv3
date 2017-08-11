@@ -32,7 +32,7 @@ port(
 
     delay_refclk_i : in std_logic;
 
-    reset : in std_logic;
+    reset_i : in std_logic;
 
     mgt_tx_p : out std_logic_vector(3 downto 0);
     mgt_tx_n : out std_logic_vector(3 downto 0);
@@ -76,7 +76,15 @@ architecture Behavioral of trigger is
     signal sbit_overflow : std_logic;
     signal sbit_clusters : sbit_cluster_array_t (7  downto 0);
 
+    signal reset : std_logic;
+
 begin
+
+    process (clk_40) begin
+        if (rising_edge(clk_40)) then
+            reset <= reset_i;
+        end if;
+    end process;
 
     overflow_o <= sbit_overflow;
 

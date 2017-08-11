@@ -145,7 +145,15 @@ architecture Behavioral of control is
     signal loop_sump : std_logic;
     signal counters_sump : std_logic;
 
+    signal reset : std_logic;
+
 begin
+
+    process (clock_i) begin
+        if (rising_edge(clock_i)) then
+            reset <= reset_i;
+        end if;
+    end process;
 
     sbit_mask_o <= sbit_mask;
 
@@ -160,7 +168,7 @@ begin
     wb_switch_inst : entity work.wb_switch
     port map(
         ref_clk_i   => clock_i,
-        reset_i     => reset_i,
+        reset_i     => reset,
 
         wb_req_i    => wb_m_req_i,
         wb_req_o    => wb_s_req,
@@ -176,7 +184,7 @@ begin
     sys_inst : entity work.sys
     port map(
         ref_clk_i           => clock_i,
-        reset_i             => reset_i,
+        reset_i             => reset,
 
         wb_slv_req_i        => wb_s_req(WB_SLV_SYS),
         wb_slv_res_o        => wb_s_res(WB_SLV_SYS),
@@ -211,7 +219,7 @@ begin
     stat_inst : entity work.stat
     port map(
         ref_clk_i           => clock_i,
-        reset_i             => reset_i,
+        reset_i             => reset,
         wb_slv_req_i        => wb_s_req(WB_SLV_STAT),
         wb_slv_res_o        => wb_s_res(WB_SLV_STAT),
 
@@ -254,7 +262,7 @@ begin
     counters_inst : entity work.counters
     port map(
         clock               => clock_i,
-        reset_i             => reset_i,
+        reset_i             => reset,
 
         -- wishbone
         wb_slv_req_i        => wb_s_req(WB_SLV_CNT),
@@ -290,7 +298,7 @@ begin
     loop_inst : entity work.loopback
     port map(
         ref_clk_i           => clock_i,
-        reset_i             => reset_i,
+        reset_i             => reset,
         wb_slv_req_i        => wb_s_req(WB_SLV_LOOP),
         wb_slv_res_o        => wb_s_res(WB_SLV_LOOP),
 
@@ -304,7 +312,7 @@ begin
     led_control : entity work.led_control
     port map (
         -- reset
-        reset         => reset_i,
+        reset         => reset,
 
         -- clocks
         clock         => clock_i,
@@ -352,7 +360,7 @@ begin
 
         -- clock & reset
         clock => clock_i,
-        reset => reset_i,
+        reset => reset,
 
         -- ttc commands
         ttc_bx0    => ttc_bc0,
@@ -382,7 +390,7 @@ begin
 
         -- clock & reset
         clock => clock_i,
-        reset => reset_i,
+        reset => reset,
 
         -- ttc commands
         ttc_bx0    => ttc_bc0,
@@ -404,7 +412,7 @@ begin
 
     adc_inst : entity work.adc port map(
         ref_clk_i       => clock_i,
-        reset_i         => reset_i,
+        reset_i         => reset,
         wb_slv_req_i    => wb_s_req (WB_SLV_ADC),
         wb_slv_res_o    => wb_s_res (WB_SLV_ADC),
         overtemp_o      => overtemp,

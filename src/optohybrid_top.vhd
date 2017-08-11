@@ -159,6 +159,8 @@ architecture Behavioral of optohybrid_top is
     attribute KEEP : string;
 
     -- don't remove duplicates for fanout, needed to pack into iob
+    signal ext_reset : std_logic_vector (11 downto 0);
+    attribute KEEP of ext_reset   : signal is "TRUE";
     attribute KEEP of ext_reset_o : signal is "TRUE";
 
     attribute IOB  of led_o       : signal is "FORCE";
@@ -185,7 +187,8 @@ begin
         gbt_rxvalid   <= gbt_rxvalid_i;
         gbt_txready   <= gbt_txready_i;
 
-        ext_reset_o   <= (others => ttc_reset_vfats);
+        ext_reset     <= (others => ttc_reset_vfats);
+        ext_reset_o   <= ext_reset;
 
         -- hdmi_n(3) <= ext_sbits_o(5);
         -- hdmi_n(2) <= ext_sbits_o(4);
@@ -361,7 +364,7 @@ begin
     port map (
 
         -- reset
-        reset  => reset,
+        reset_i  => reset,
 
         -- clocks
         mgt_clk_p => mgt_clk_p_i,

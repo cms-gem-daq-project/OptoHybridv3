@@ -82,6 +82,8 @@ architecture Behavioral of gbt_serdes is
 
     signal pulse_length     : std_logic_vector (3 downto 0) := x"f";
 
+    signal reset : std_logic;
+
 begin
 
     oserdes_clk    <= not data_clk_i;
@@ -102,17 +104,23 @@ begin
     --      Put the flip-flop in the FPGA logic in front of the ISERDESE1/OSERDESE1 pair
     --      Put a timing constraint on the flip-flop to ISERDESE1/OSERDESE1 of one CLKDIV period or less.
 
+    process (frame_clk_i) begin
+    if (rising_edge(frame_clk_i)) then
+        reset <= reset_i;
+    end if;
+    end process;
+
     process(iserdes_clkdiv)
     begin
     if (rising_edge(iserdes_clkdiv)) then
-        iserdes_reset <= reset_i;
+        iserdes_reset <= reset;
     end if;
     end process;
 
     process(oserdes_clkdiv)
     begin
     if (rising_edge(oserdes_clkdiv)) then
-        oserdes_reset <= reset_i;
+        oserdes_reset <= reset;
     end if;
     end process;
 
