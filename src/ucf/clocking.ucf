@@ -1,3 +1,13 @@
 # This file constraints the clocking signals
+#Created by Constraints Editor (xc6vlx130t-ff1156-1) - 2017/08/10
 
+INST "elink_i_n<0>" TNM = elink_i;
+INST "elink_i_n<1>" TNM = elink_i;
+INST "elink_i_p<0>" TNM = elink_i;
+INST "elink_i_p<1>" TNM = elink_i;
 
+TIMEGRP "elink_i" OFFSET = IN 1 ns VALID 2 ns BEFORE "gbt_dclk_p<0>" RISING;
+TIMEGRP "elink_i" OFFSET = IN 1 ns VALID 2 ns BEFORE "gbt_dclk_p<0>" FALLING;
+
+TIMEGRP "elink_o" OFFSET = OUT 1 ns AFTER "gbt_dclk_p<0>" RISING;
+TIMEGRP "elink_o" OFFSET = OUT 1 ns AFTER "gbt_dclk_p<0>" FALLING;

@@ -59,7 +59,6 @@ NET "ext_reset_o<9>"  LOC = AM23 ; #v_diff_b_16_p
 NET "ext_reset_o<10>" LOC = AL23 ; #v_diff_b_16_n
 NET "ext_reset_o<11>" LOC = AP24 ; #v_diff_d_20_n
 
-
 NET "mgt_clk_p_i" LOC = H6; #
 NET "mgt_clk_n_i" LOC = H5; #
 #NET "mgt_clk_p_i<1>" LOC = F6; #
