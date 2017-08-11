@@ -42,28 +42,40 @@ module frame_aligner (
   reg posneg=0;
   reg ready=0;
 
-  wire [7:0] d0_dly_pos;
-  wire [7:0] d1_dly_pos;
+  wire [7:0] d0_dly_pos_srl;
+  wire [7:0] d1_dly_pos_srl;
 
-  wire [7:0] d0_dly_neg;
-  wire [7:0] d1_dly_neg;
+  wire [7:0] d0_dly_neg_srl;
+  wire [7:0] d1_dly_neg_srl;
+
+  reg [7:0] d0_dly_pos;
+  reg [7:0] d1_dly_pos;
+
+  reg [7:0] d0_dly_neg;
+  reg [7:0] d1_dly_neg;
 
   wire sof_dly;
   wire sof_dly180;
 
-  // delay sof by a to compensate for the s-bit even/odd fifo output equivalent delay
-  wire sof_dly0b, sof_dly180b;
+  wire sof_dly0b_srl, sof_dly180b_srl;
+  reg sof_dly0b, sof_dly180b;
   wire [3:0] srl_adr2 = 4'd3;
-
 
   reg [3:0] srl_adr=0; // frame alignment srl_adr
 
   SRL16E  srlsof0a   (.CLK( fastclock),.CE(1'b1),.D(start_of_frame),.A0(srl_adr[0]),.A1(srl_adr[1]),.A2(srl_adr[2]),.A3(srl_adr[3]),.Q(sof_dly));
   SRL16E  srlsof180a (.CLK(~fastclock),.CE(1'b1),.D(start_of_frame),.A0(srl_adr[0]),.A1(srl_adr[1]),.A2(srl_adr[2]),.A3(srl_adr[3]),.Q(sof_dly180));
 
-  // use SRL instead of flip-flops
-  SRL16E  srlsof0b   (.CLK( fastclock),.CE(1'b1),.D(sof_dly   ),.A0(srl_adr2[0]),.A1(srl_adr2[1]),.A2(srl_adr2[2]),.A3(srl_adr2[3]),.Q(sof_dly0b));
-  SRL16E  srlsof180b (.CLK(~fastclock),.CE(1'b1),.D(sof_dly180),.A0(srl_adr2[0]),.A1(srl_adr2[1]),.A2(srl_adr2[2]),.A3(srl_adr2[3]),.Q(sof_dly180b));
+  // delay sof by 3 to compensate for the s-bit even/odd fifo output equivalent delay
+  SRL16E  srlsof0b   (.CLK( fastclock),.CE(1'b1),.D(sof_dly   ),.A0(srl_adr2[0]),.A1(srl_adr2[1]),.A2(srl_adr2[2]),.A3(srl_adr2[3]),.Q(sof_dly0b_srl));
+  SRL16E  srlsof180b (.CLK(~fastclock),.CE(1'b1),.D(sof_dly180),.A0(srl_adr2[0]),.A1(srl_adr2[1]),.A2(srl_adr2[2]),.A3(srl_adr2[3]),.Q(sof_dly180b_srl));
+
+  // reg for fanout
+  always @(posedge fastclock)
+    sof_dly0b <= sof_dly0b_srl;
+
+  always @(negedge fastclock)
+    sof_dly180b <= sof_dly180b_srl;
 
   // data delay
 
@@ -74,17 +86,24 @@ module frame_aligner (
   generate
     for (ibit=0; ibit<8; ibit=ibit+1) begin: bloop
     // odd bits
-    SRL16E srldat0_pos (.CLK( fastclock),.CE(1'b1),.D(d0[ibit]),.A0(srl_adr0[0]),.A1(srl_adr0[1]),.A2(srl_adr0[2]),.A3(srl_adr0[3]),.Q(d0_dly_pos[ibit]));
-    SRL16E srldat0_neg (.CLK(~fastclock),.CE(1'b1),.D(d0[ibit]),.A0(srl_adr0[0]),.A1(srl_adr0[1]),.A2(srl_adr0[2]),.A3(srl_adr0[3]),.Q(d0_dly_neg[ibit]));
+    SRL16E srldat0_pos (.CLK( fastclock),.CE(1'b1),.D(d0[ibit]),.A0(srl_adr0[0]),.A1(srl_adr0[1]),.A2(srl_adr0[2]),.A3(srl_adr0[3]),.Q(d0_dly_pos_srl[ibit]));
+    SRL16E srldat0_neg (.CLK(~fastclock),.CE(1'b1),.D(d0[ibit]),.A0(srl_adr0[0]),.A1(srl_adr0[1]),.A2(srl_adr0[2]),.A3(srl_adr0[3]),.Q(d0_dly_neg_srl[ibit]));
 
     // even bits
-    SRL16E srldat1_pos (.CLK( fastclock),.CE(1'b1),.D(d1[ibit]),.A0(srl_adr1[0]),.A1(srl_adr1[1]),.A2(srl_adr1[2]),.A3(srl_adr1[3]),.Q(d1_dly_pos[ibit]));
-    SRL16E srldat1_neg (.CLK(~fastclock),.CE(1'b1),.D(d1[ibit]),.A0(srl_adr1[0]),.A1(srl_adr1[1]),.A2(srl_adr1[2]),.A3(srl_adr1[3]),.Q(d1_dly_neg[ibit]));
+    SRL16E srldat1_pos (.CLK( fastclock),.CE(1'b1),.D(d1[ibit]),.A0(srl_adr1[0]),.A1(srl_adr1[1]),.A2(srl_adr1[2]),.A3(srl_adr1[3]),.Q(d1_dly_pos_srl[ibit]));
+    SRL16E srldat1_neg (.CLK(~fastclock),.CE(1'b1),.D(d1[ibit]),.A0(srl_adr1[0]),.A1(srl_adr1[1]),.A2(srl_adr1[2]),.A3(srl_adr1[3]),.Q(d1_dly_neg_srl[ibit]));
     end
   endgenerate
 
-  wire [7:0] d0_dly = posneg ? d0_dly_pos : d0_dly_neg;
-  wire [7:0] d1_dly = posneg ? d1_dly_pos : d1_dly_neg;
+  always @(posedge fastclock) begin
+    d0_dly_pos <= d0_dly_pos_srl;
+    d1_dly_pos <= d1_dly_pos_srl;
+  end
+
+  always @(negedge fastclock) begin
+    d0_dly_neg <= d0_dly_neg_srl;
+    d1_dly_neg <= d1_dly_neg_srl;
+  end
 
   // fifo rising (even) and falling (odd) bits separately, interleave leater
   reg [WORD_SIZE/2-1:0] sbit_fifo_odd_pos  [MXIO-1:0];
