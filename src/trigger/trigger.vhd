@@ -32,6 +32,8 @@ port(
 
     delay_refclk_i : in std_logic;
 
+    cluster_clk    : in std_logic;
+
     reset_i : in std_logic;
 
     mgt_tx_p : out std_logic_vector(3 downto 0);
@@ -106,6 +108,7 @@ begin
 
         trig_stop_i             => trig_stop_i,
 
+        cluster_clk             => cluster_clk,
         clk40_i                 => clk_40,
         clk160_i                => clk_160,
         clk160_90_i             => clk_160_90,

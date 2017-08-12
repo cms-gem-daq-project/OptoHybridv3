@@ -29,6 +29,8 @@ port(
     clk40_i                 : in std_logic;
     delay_refclk_i          : in std_logic;
 
+    cluster_clk : in std_logic;
+
     reset_i                 : in std_logic;
 
     oneshot_en_i            : in std_logic;
@@ -267,8 +269,9 @@ begin
     port map(
         clock4x             => clk160_i,
         clock1x             => clk40_i,
-        global_reset        => reset,
+        reset_i             => reset,
         cluster_count_o     => cluster_count_o,
+        frame_clock         => cluster_clk,
         truncate_clusters   => '0',
         oneshot_en          => oneshot_en_i,
         vfat0               => vfat_sbits(0),

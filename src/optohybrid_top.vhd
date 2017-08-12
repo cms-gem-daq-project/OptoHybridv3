@@ -114,6 +114,7 @@ architecture Behavioral of optohybrid_top is
     signal clk_4x_90        : std_logic;
 
     signal delay_refclk     : std_logic;
+    signal cluster_clk      : std_logic;
 
     signal gbt_txready      : std_logic;
     signal gbt_rxvalid      : std_logic;
@@ -226,6 +227,7 @@ begin
         clk_4x_o           => clk_4x,
         clk_4x_90_o        => clk_4x_90,
 
+        cluster_clk_o      => cluster_clk,
         delay_refclk_o     => delay_refclk
     );
 
@@ -233,11 +235,9 @@ begin
     port map (
         clock_i        => clock,
         mmcms_locked_i => mmcms_locked,
-        ready_o        => open,
         gbt_rxready_i  => gbt_rxready,
         gbt_rxvalid_i  => gbt_rxvalid,
         gbt_txready_i  => gbt_txready,
-        ready_o        => open, -- !reset
         reset_o        => reset
     );
 
@@ -376,6 +376,8 @@ begin
         clk_160_90 => clk_4x_90,
 
         delay_refclk_i => delay_refclk,
+
+        cluster_clk => cluster_clk,
 
         -- mgt pairs
         mgt_tx_p => mgt_tx_p_o,

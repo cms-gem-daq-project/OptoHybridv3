@@ -20,12 +20,10 @@ module reset (
   input gbt_rxvalid_i,
   input gbt_txready_i,
 
-  output reg ready_o,
   output reg reset_o
 );
 
   initial reset_o <= 1'b1;
-  initial ready_o <= 1'b0;
 
   reg reset_start=1'b1;
   always @ (posedge clock_i)
@@ -38,6 +36,5 @@ module reset (
   wire ready = powerup_ff;
 
   always @(posedge clock_i) reset_o <= !ready;
-  always @(posedge clock_i) ready_o <=  ready;
 
 endmodule
