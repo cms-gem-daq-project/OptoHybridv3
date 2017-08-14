@@ -237,7 +237,7 @@ begin
 
     i_to_gbt_ser : entity work.to_gbt_ser
     port map(
-        data_out_from_device    => to_gbt_remap,
+        data_out_from_device    => to_gbt_reg,
         data_out_to_pins_p      => elink_o_p,
         data_out_to_pins_n      => elink_o_n,
         clk_in                  => oserdes_clk,
