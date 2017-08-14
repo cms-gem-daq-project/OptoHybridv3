@@ -33,8 +33,6 @@ port(
 
     reset_i                 : in std_logic;
 
-    oneshot_en_i            : in std_logic;
-
     trig_stop_i             : in std_logic;
 
     vfat_sbit_clusters_o    : out sbit_cluster_array_t(7 downto 0);
@@ -42,6 +40,8 @@ port(
     sbit_mask_i             : in std_logic_vector (23 downto 0);
 
     cluster_count_o         : out std_logic_vector (7 downto 0);
+
+    trigger_deadtime_i      : in  std_logic_vector (3 downto 0);
 
     trigger_unit_i          : in trigger_unit_array_t (23 downto 0);
 
@@ -266,14 +266,16 @@ begin
     end generate;
 
     cluster_packer_inst : entity work.cluster_packer
+
+    generic map (ONESHOT_EN => 1, TRUNCATE_CLUSTERS => 1)
+
     port map(
         clock4x             => clk160_i,
         clock1x             => clk40_i,
         reset_i             => reset,
-        cluster_count_o     => cluster_count_o,
+        cluster_count       => cluster_count_o,
         frame_clock         => cluster_clk,
-        truncate_clusters   => '0',
-        oneshot_en          => oneshot_en_i,
+        deadtime_i          => trigger_deadtime_i,
         vfat0               => vfat_sbits(0),
         vfat1               => vfat_sbits(1),
         vfat2               => vfat_sbits(2),

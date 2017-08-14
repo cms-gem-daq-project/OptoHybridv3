@@ -139,8 +139,9 @@ architecture Behavioral of optohybrid_top is
 
     --== Configuration ==--
 
-    signal vfat_reset     : std_logic;
-    signal sbit_mask      : std_logic_vector(23 downto 0);
+    signal vfat_reset       : std_logic;
+    signal sbit_mask        : std_logic_vector(23 downto 0);
+    signal trigger_deadtime : std_logic_vector(3 downto 0);
 
     signal sem_correction : std_logic;
     signal sem_critical   : std_logic;
@@ -347,9 +348,10 @@ begin
         --------------------
 
         -- VFAT
-        vfat_reset_o => vfat_reset,
-        sbit_mask_o  => sbit_mask,
-        ext_sbits_o  => ext_sbits_o,
+        vfat_reset_o       => ctrl_reset_vfats,
+        sbit_mask_o        => sbit_mask,
+        trigger_deadtime_o => trigger_deadtime,
+        ext_sbits_o        => ext_sbits_o,
 
         -- LEDs
         led_o => led_o
@@ -384,11 +386,11 @@ begin
         mgt_tx_n => mgt_tx_n_o,
 
         -- config
-        oneshot_en_i    => ('1'),
-        sbit_mask_i     => (sbit_mask),
-        cluster_count_o => cluster_count,
-        overflow_o      => sbit_overflow,
-        bxn_counter_i   => bxn_counter,
+        trigger_deadtime_i => trigger_deadtime,
+        sbit_mask_i        => sbit_mask,
+        cluster_count_o    => cluster_count,
+        overflow_o         => sbit_overflow,
+        bxn_counter_i      => bxn_counter,
 
         -- sbit_ors
 

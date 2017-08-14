@@ -46,9 +46,9 @@ port(
 
     -- cluster packer
 
-    oneshot_en_i            : in std_logic;
-    sbit_mask_i             : in std_logic_vector (23 downto 0);
+    sbit_mask_i             : in  std_logic_vector (23 downto 0);
     cluster_count_o         : out std_logic_vector (7 downto 0);
+    trigger_deadtime_i      : in  std_logic_vector (3 downto 0);
     overflow_o              : out std_logic;
 
     active_vfats_o          : out std_logic_vector (23 downto 0);
@@ -115,7 +115,6 @@ begin
         delay_refclk_i          => delay_refclk_i,
 
         reset_i                 => reset,
-        oneshot_en_i            => ('1'),
 
         trigger_unit_i          => trigger_units,
 
@@ -124,6 +123,7 @@ begin
         active_vfats_o          => active_vfats_o,
 
         vfat_sbit_clusters_o    => sbit_clusters,
+        trigger_deadtime_i      => trigger_deadtime_i,
         cluster_count_o         => cluster_count_o,
         overflow_o              => sbit_overflow
 

@@ -21,7 +21,7 @@ use work.types_pkg.all;
 
 entity sys is
 generic(
-    N                   : integer := 11
+    N                   : integer := 12
 );
 port(
 
@@ -38,9 +38,10 @@ port(
     sys_loop_sbit_o     : out std_logic_vector( 4 downto 0) := "00000";
     sys_sbit_mode_o     : out std_logic_vector( 1 downto 0) := "00";
 
-    vfat_reset_o        : out std_logic                     := '0';
+    vfat_reset_o        : out std_logic := '0';
 
-    vfat_sbit_mask_o    : out std_logic_vector(23 downto 0) := x"000000";
+    vfat_sbit_mask_o        : out std_logic_vector(23 downto 0) := x"000000";
+    vfat_trigger_deadtime_o : out std_logic_vector(3  downto 0) := x"f";
 
     -- ttc / fmm
 
@@ -170,6 +171,11 @@ begin
             -- ADR=10
             if (reg_ack(10)='1') then
             ttc_bxn_offset_o       <= reg_data(10)(11 downto 0)  ;
+            end if;
+
+            -- ADR=A
+            if (reg_ack(11)='1') then
+            vfat_trigger_deadtime_o <= reg_data(4)(3 downto 0) ;
             end if;
 
         end if;

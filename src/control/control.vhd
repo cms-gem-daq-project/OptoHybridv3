@@ -74,9 +74,10 @@ port(
     --------------------
 
     -- VFAT
-    vfat_reset_o : out std_logic;
-    sbit_mask_o  : out std_logic_vector(23 downto 0);
-    ext_sbits_o  : out std_logic_vector(5 downto 0);
+    vfat_reset_o       : out std_logic;
+    sbit_mask_o        : out std_logic_vector(23 downto 0);
+    trigger_deadtime_o : out std_logic_vector(3 downto 0);
+    ext_sbits_o        : out std_logic_vector(5 downto 0);
 
     -- LEDs
     led_o              : out std_logic_vector(15 downto 0);
@@ -103,7 +104,6 @@ architecture Behavioral of control is
 
     --== Sbits ==--
 
-    signal sbit_mask     : std_logic_vector(23 downto 0);
     signal sys_sbit_sel  : std_logic_vector(29 downto 0);
     signal sys_sbit_mode : std_logic_vector(1  downto 0);
     signal sys_loop_sbit : std_logic_vector(4  downto 0);
@@ -155,7 +155,6 @@ begin
         end if;
     end process;
 
-    sbit_mask_o <= sbit_mask;
 
     wb_m_res_o  <= wb_m_res;
 
@@ -190,8 +189,9 @@ begin
         wb_slv_res_o        => wb_s_res(WB_SLV_SYS),
 
         -- sbit control
-        vfat_reset_o        => vfat_reset_o,
-        vfat_sbit_mask_o    => sbit_mask,
+        vfat_reset_o            => vfat_reset_o,
+        vfat_sbit_mask_o        => sbit_mask_o,
+        vfat_trigger_deadtime_o => trigger_deadtime_o,
 
         -- hdmi control
         sys_loop_sbit_o     => sys_loop_sbit,
