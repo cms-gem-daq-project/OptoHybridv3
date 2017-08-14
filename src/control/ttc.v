@@ -41,10 +41,10 @@ module ttc (
 
 );
 
-  parameter MXBXN     = 12;       // Number BXN bits, LHC bunchs numbered 0 to 3563
-  parameter LHC_CYCLE = 12'd3564; // LHC period, max BXN count+1
-  parameter MXCNT     = 32;       // Maximum counter length
-  parameter MXUPT     = 16;       // Maximum counter length
+  parameter        MXBXN     = 12;       // Number BXN bits, LHC bunchs numbered 0 to 3563
+  parameter [12:0] LHC_CYCLE = 12'd3564; // LHC period, max BXN count+1
+  parameter        MXCNT     = 32;       // Maximum counter length
+  parameter        MXUPT     = 16;       // Maximum counter length
 
   // Bunch Crossing Counter, counts 0 to 3563, presets at resync or bxreset, stops counting, resumes at bx0
 
@@ -55,7 +55,7 @@ module ttc (
   reg [MXBXN-1:0] bxn_offset_lim     = 0;
 
   always @(posedge clock) begin
-  bxn_offset_lim <= (bxn_offset >= LHC_CYCLE) ? (LHC_CYCLE-1'b1) : (bxn_offset);
+    bxn_offset_lim <= (bxn_offset >= LHC_CYCLE) ? (LHC_CYCLE-1'b1) : (bxn_offset);
   end
 
   //--------------------------------------------------------------------------------------------------------------------
