@@ -13,6 +13,7 @@ NET "elink_i_p<0>" LOC = AG15 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE; # GBTx D
 NET "elink_i_n<0>" LOC = AF15 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE; #
 NET "elink_i_p<1>" LOC = AD24 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE; # GBTx DIN 36
 NET "elink_i_n<1>" LOC = AE24 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE; #
+
 ########################################################################################################################
 # GBT E-Port Clocks
 ########################################################################################################################
@@ -25,9 +26,11 @@ NET "elink_i_n<1>" LOC = AE24 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE; #
 #NET "gbt_eclk_p<1>"   LOC = J9 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE;
 #NET "gbt_eclk_n<1>"   LOC = H9 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE;
 #
+
 ########################################################################################################################
 # GBT Deskew Clocks
 ########################################################################################################################
+
 ## GBTx to FPGA clock 0 -- this is a configurable GBTX clock (terminated outside),
 #  should be set to 40MHz with 180deg phase offset from the GBTX data clock. why :((
 #  what does this even mean :(( they are at different frequencies
@@ -45,9 +48,6 @@ NET "gbt_dclk_n<0>"      TNM_NET = "gbt_dclk_n";
 
 NET "gbt_dclk_p<1>"      TNM_NET = "gbt_dclk_p";
 NET "gbt_dclk_n<1>"      TNM_NET = "gbt_dclk_n";
-
-TIMESPEC TS_gbt_dclk_p = PERIOD "gbt_dclk_p" 25 ns HIGH 50%;
-TIMESPEC TS_gbt_dclk_n = PERIOD "gbt_dclk_n" TS_gbt_dclk_p PHASE 12.5 ns HIGH 50%;
 
 # NET "gtx_inst/mgt_refclk" TNM_NET = "mgt_refclk";
 # TIMESPEC "TS_mgt_refclk" = PERIOD "mgt_refclk" 6.25 ns HIGH 50%;

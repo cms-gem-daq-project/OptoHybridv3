@@ -20,6 +20,7 @@
 #NET "ext_sbits_o[5]" LOC = L14; # L14 for ULB; M18 for others
 ## Header
 # INST "led_o" IOB=TRUE;
+
 NET "led_o<0>"  LOC = H27  ; # vdiff_e_13_p
 NET "led_o<1>"  LOC = G28  ; # vdiff_e_13_n
 NET "led_o<2>"  LOC = B25  ; # vdiff_e_4_p
@@ -36,6 +37,34 @@ NET "led_o<12>" LOC = B15  ; # vdiff_m_16_n
 NET "led_o<13>" LOC = A15  ; # vdiff_m_16_p
 NET "led_o<14>" LOC = G26  ; # vdiff_e_7_p
 NET "led_o<15>" LOC = G27  ; # vdiff_e_7_n
+
+INST "led_o<0>" TNM = led_o;
+INST "led_o<1>" TNM = led_o;
+INST "led_o<2>" TNM = led_o;
+INST "led_o<3>" TNM = led_o;
+INST "led_o<4>" TNM = led_o;
+INST "led_o<5>" TNM = led_o;
+INST "led_o<6>" TNM = led_o;
+INST "led_o<7>" TNM = led_o;
+INST "led_o<8>" TNM = led_o;
+INST "led_o<9>" TNM = led_o;
+INST "led_o<10>" TNM = led_o;
+INST "led_o<11>" TNM = led_o;
+INST "led_o<12>" TNM = led_o;
+INST "led_o<13>" TNM = led_o;
+INST "led_o<14>" TNM = led_o;
+INST "led_o<15>" TNM = led_o;
+
+INST "ext_sbits_o<0>" TNM = ext_sbits_o;
+INST "ext_sbits_o<1>" TNM = ext_sbits_o;
+INST "ext_sbits_o<2>" TNM = ext_sbits_o;
+INST "ext_sbits_o<3>" TNM = ext_sbits_o;
+INST "ext_sbits_o<4>" TNM = ext_sbits_o;
+INST "ext_sbits_o<5>" TNM = ext_sbits_o;
+
+TIMEGRP "led_o"       OFFSET = IN 12.5 ns VALID 25 ns BEFORE "gbt_dclk_p<0>" RISING;
+TIMEGRP "ext_sbits_o" OFFSET = IN 12.5 ns VALID 25 ns BEFORE "gbt_dclk_p<0>" RISING;
+
 # XADC
 INST "control/adc_inst/xadc_inst/SYSMON_INST" LOC = SYSMON_X0Y0;
 

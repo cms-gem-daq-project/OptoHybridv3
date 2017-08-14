@@ -1,13 +1,19 @@
-# This file constraints the clocking signals
-#Created by Constraints Editor (xc6vlx130t-ff1156-1) - 2017/08/10
+NET "gbt_dclk_p<0>" TNM_NET = "TN_gbt_dclk0";
+TIMESPEC TS_gbt_dclk0 = PERIOD "TN_gbt_dclk0" 25 ns HIGH 50%;
+
+NET "gbt_dclk_p<1>" TNM_NET = "TN_gbt_dclk1";
+TIMESPEC TS_gbt_dclk1 = PERIOD "TN_gbt_dclk1" 25 ns HIGH 50%;
+
+# ELINKS
+
+INST "elink_o_n<0>" TNM = elink_o;
+INST "elink_o_n<1>" TNM = elink_o;
+INST "elink_o_p<0>" TNM = elink_o;
+INST "elink_o_p<1>" TNM = elink_o;
 
 INST "elink_i_n<0>" TNM = elink_i;
 INST "elink_i_n<1>" TNM = elink_i;
 INST "elink_i_p<0>" TNM = elink_i;
 INST "elink_i_p<1>" TNM = elink_i;
 
-TIMEGRP "elink_i" OFFSET = IN 1 ns VALID 2 ns BEFORE "gbt_dclk_p<0>" RISING;
-TIMEGRP "elink_i" OFFSET = IN 1 ns VALID 2 ns BEFORE "gbt_dclk_p<0>" FALLING;
-
-TIMEGRP "elink_o" OFFSET = OUT 1 ns AFTER "gbt_dclk_p<0>" RISING;
-TIMEGRP "elink_o" OFFSET = OUT 1 ns AFTER "gbt_dclk_p<0>" FALLING;
+TIMEGRP "elink_i" OFFSET = IN 1.5625 ns VALID 3.125 ns BEFORE "gbt_dclk_p<1>" RISING;

@@ -48,17 +48,24 @@ port(
     elink_o_p : out std_logic_vector (1 downto 0) ;
     elink_o_n : out std_logic_vector (1 downto 0) ;
 
-    sca_io  : in  std_logic_vector (3 downto 0); -- set as input for now
-
-    hdmi_p  : out  std_logic_vector (3 downto 0); -- set as input for now
-    hdmi_n  : out  std_logic_vector (3 downto 0); -- set as input for now
-
-    led_o   : out std_logic_vector (15 downto 0);
-
     gbt_txready_i : in std_logic;
 
     gbt_rxvalid_i : in std_logic;
     gbt_rxready_i : in std_logic;
+
+    --== SCA ==--
+
+    sca_io  : in  std_logic_vector (3 downto 0); -- set as input for now
+
+    --== HDMI  ==--
+
+    ext_sbits_o : out  std_logic_vector (5 downto 0);
+
+    --== LEDs ==--
+
+    led_o   : out std_logic_vector (15 downto 0);
+
+    --== VFAT Reset ==--
 
     ext_reset_o : out std_logic_vector (11 downto 0);
 
@@ -75,13 +82,13 @@ port(
     mgt_clk_p_i : in std_logic;
     mgt_clk_n_i : in std_logic;
 
-    mgt_tx_p_o  : out std_logic_vector(3 downto 0);
-    mgt_tx_n_o  : out std_logic_vector(3 downto 0);
+    mgt_tx_p_o : out std_logic_vector(3 downto 0);
+    mgt_tx_n_o : out std_logic_vector(3 downto 0);
 
     --== VFAT Trigger Data ==--
 
-    vfat_sof_p     : in std_logic_vector (23 downto 0);
-    vfat_sof_n     : in std_logic_vector (23 downto 0);
+    vfat_sof_p : in std_logic_vector (23 downto 0);
+    vfat_sof_n : in std_logic_vector (23 downto 0);
 
     vfat_sbits_p : in std_logic_vector (191 downto 0);
     vfat_sbits_n : in std_logic_vector (191 downto 0)
@@ -127,7 +134,9 @@ architecture Behavioral of optohybrid_top is
 
     signal clock_source     : std_logic;
 
+    signal ctrl_reset_vfats : std_logic;
     signal ttc_reset_vfats  : std_logic;
+    signal reset_vfats      : std_logic;
     signal ttc_resync       : std_logic;
     signal ttc_l1a          : std_logic;
     signal ttc_bc0          : std_logic;
@@ -150,10 +159,6 @@ architecture Behavioral of optohybrid_top is
 
     signal bxn_counter  : std_logic_vector(11 downto 0);
     signal trig_stop    : std_logic;
-
-    --== Stupid HDMI ==--
-
-    signal ext_sbits_o    : std_logic_vector(5  downto 0);
 
     --== IOB Constraints for Outputs ==--
 
@@ -189,15 +194,11 @@ begin
         gbt_rxvalid   <= gbt_rxvalid_i;
         gbt_txready   <= gbt_txready_i;
 
-        ext_reset     <= (others => ttc_reset_vfats);
-        ext_reset_o   <= ext_reset;
+        reset_vfats <= (ttc_reset_vfats or ctrl_reset_vfats);
 
-        -- hdmi_n(3) <= ext_sbits_o(5);
-        -- hdmi_n(2) <= ext_sbits_o(4);
-        -- hdmi_n(1) <= ext_sbits_o(3);
-        -- hdmi_n(0) <= ext_sbits_o(2);
-        -- hdmi_p(3) <= ext_sbits_o(1);
-        -- hdmi_p(2) <= ext_sbits_o(0);
+        ext_reset   <= (others => reset_vfats);
+
+        ext_reset_o   <= ext_reset;
 
     end if;
     end process;
