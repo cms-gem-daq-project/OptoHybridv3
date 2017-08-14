@@ -10,7 +10,7 @@ module   gem_fiber_out #(parameter SIM_SPEEDUP = 0) (
   input [55:0]  GEM_DATA,      // 56 bit GEM data
   input         GEM_OVERFLOW,  //  1 bit GEM has more than 8 clusters
   input [11:0]  BXN_COUNTER ,  //  12 bit bxn counter
-  input         BC0_LOCAL   ,  //  1  bit bx0 flag
+  input         BC0         ,  //  1  bit bx0 flag
 
   input         TRG_TX_REFCLK, // 160 MHz Reference Clock from QPLL
   input         TRG_TXUSRCLK,  // 160 MHz (derived from TXOUTCLK)
@@ -221,9 +221,7 @@ assign tx_dly_align_mon_ena = 1'b0;
     endcase
   end
 
-  assign frm_sep = BC0_LOCAL ? 8'h50 :
-                   (GEM_OVERFLOW) ? 8'hFC
-                             : frame_sep;
+  assign frm_sep = BC0 ? 8'h50 : (GEM_OVERFLOW) ? 8'hFC : frame_sep;
 
 //----------------------------------------------------------------------------------------------------------------------
 // Test pattern reset

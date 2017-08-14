@@ -391,6 +391,7 @@ begin
         cluster_count_o    => cluster_count,
         overflow_o         => sbit_overflow,
         bxn_counter_i      => bxn_counter,
+        ttc_bx0_i          => ttc_bc0,
 
         -- sbit_ors
 

@@ -43,6 +43,7 @@ port(
 
     trig_stop_i : in std_logic;
     bxn_counter_i : in std_logic_vector(11 downto 0);
+    ttc_bx0_i     : in std_logic;
 
     -- cluster packer
 
@@ -144,6 +145,7 @@ begin
         clk_160    => clk_160, -- 160 MHz User Clock
 
         bxn_counter => bxn_counter_i,
+        ttc_bx0     => ttc_bx0_i    ,
 
         reset      => reset,
 

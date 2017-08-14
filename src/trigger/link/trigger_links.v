@@ -22,6 +22,7 @@ module trigger_links (
   input [13:0] cluster7,
 
   input [11:0] bxn_counter,
+  input        ttc_bx0,
 
   input overflow
 );
@@ -72,6 +73,7 @@ gem_fiber_out  gem_fibers_out   (
   .GEM_OVERFLOW        (overflow),
 
   .BXN_COUNTER         (bxn_counter),
+  .BC0                 (ttc_bx0),
 
   .TRG_TX_REFCLK       (mgt_refclk),             // QPLL 160 from MGT clk
   .TRG_TXUSRCLK        (usrclk),              // get 160 from TXOUTCLK (times 2)
