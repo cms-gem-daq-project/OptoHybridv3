@@ -64,8 +64,6 @@ architecture Behavioral of sbits is
 
     signal clk160_180               : std_logic;
 
-    signal trig_stop                : std_logic;
-
     signal sbits                    : std_logic_vector (1535 downto 0);
 
     signal active_vfats_s1          : std_logic_vector (191 downto 0);
@@ -79,12 +77,6 @@ begin
     process (clk40_i) begin
         if (rising_edge(clk40_i)) then
             reset <= reset_i;
-        end if;
-    end process;
-
-    process (clk40_i) begin
-        if (rising_edge(clk40_i)) then
-            trig_stop <= trig_stop_i;
         end if;
     end process;
 
@@ -270,6 +262,7 @@ begin
     generic map (ONESHOT_EN => 1, TRUNCATE_CLUSTERS => 1)
 
     port map(
+        trig_stop_i         => trig_stop_i,
         clock4x             => clk160_i,
         clock1x             => clk40_i,
         reset_i             => reset,
