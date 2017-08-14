@@ -101,9 +101,9 @@ architecture Behavioral of counters is
 
     signal reset        : std_logic;
 
-    signal snap_id    : integer := 0;
-    signal reset_id   : integer := 1;
-    signal resync_id  : integer := 15;
+    constant snap_id    : integer := 0;
+    constant reset_id   : integer := 1;
+    constant resync_id  : integer := 15;
 
 begin
 
