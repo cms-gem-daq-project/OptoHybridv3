@@ -168,7 +168,6 @@ architecture Behavioral of optohybrid_top is
     -- don't remove duplicates for fanout, needed to pack into iob
     signal ext_reset : std_logic_vector (11 downto 0);
     attribute KEEP of ext_reset   : signal is "TRUE";
-    attribute KEEP of ext_reset_o : signal is "TRUE";
 
     attribute IOB  of led_o       : signal is "FORCE";
     attribute IOB  of ext_reset_o : signal is "FORCE";

@@ -9,6 +9,7 @@
 ----------------------------------------------------------------------------------
 -- 2017/07/24 -- Initial port to version 3 electronics
 -- 2017/07/25 -- Clear synthesis warnings from module
+-- 2017/08/14 -- Add TTC counters
 ----------------------------------------------------------------------------------
 
 library ieee;
@@ -22,7 +23,7 @@ use work.param_pkg.all;
 
 entity stat is
 generic(
-    N               : integer := 10
+    N               : integer := 13
 );
 port(
 
@@ -128,18 +129,28 @@ begin
     --== Mapping ==--
     --=============--
 
-    reg_data(0) <=                        RELEASE_YEAR & RELEASE_MONTH & RELEASE_DAY;
-    reg_data(1) <= (31 downto 3 => '0') & eprt_mmcm_locked_i & dskw_mmcm_locked_i & mmcms_locked_i;
-    reg_data(2) <= (31 downto 1 => '0') & sem_critical_i;
-    reg_data(3) <= (31 downto 3 => '0') & gbt_rxready_i & gbt_rxvalid_i & gbt_txready_i;
-    reg_data(4) <= cluster_rate_i;
-    reg_data(5) <= ttc_bx0_counter_lcl_i;
-    reg_data(6) <= ttc_bx0_counter_rxd_i;
-    reg_data(7) <= ttc_orbit_counter_i;
-    reg_data(8) <= (31 downto 12 => '0') & ttc_bxn_counter_i (11 downto 0);
+    reg_data(0)  <=                         RELEASE_YEAR & RELEASE_MONTH & RELEASE_DAY;
+    reg_data(1)  <=                         MAJOR_VERSION & MINOR_VERSION & RELEASE_VERSION & x"0A"; -- MMmmVVXX
+    reg_data(2)  <= (31 downto 3  => '0') &  eprt_mmcm_locked_i & dskw_mmcm_locked_i & mmcms_locked_i;
+    reg_data(3)  <= (31 downto 1  => '0') &  sem_critical_i;
+    reg_data(4)  <= (31 downto 3  => '0') &  gbt_rxready_i & gbt_rxvalid_i & gbt_txready_i;
+    reg_data(5)  <=                         cluster_rate_i;
+    reg_data(6)  <=                         ttc_bx0_counter_lcl_i;
+    reg_data(7)  <=                         ttc_bx0_counter_rxd_i;
+    reg_data(8)  <=                         ttc_orbit_counter_i;
+    reg_data(9)  <= (31 downto 12 => '0') & ttc_bxn_counter_i (11 downto 0);
+    reg_data(10) <= (31 downto 1  => '0') & ttc_bx0_sync_err;
+    reg_data(11) <= (31 downto 1  => '0') & ttc_bxn_sync_err;
+
+    -- Firmware version  - 32 bits
+    --   Major    8 bits
+    --   Minor    8 bits
+    --   Version  8 bits
+    --   Patch    8 bits  = A for GEB v3a compatible
+
 
     -- dummb readout to shut up ISE
-    reg_data(9) <= (31 downto 0 => '1');
+    reg_data(12) <= (31 downto 0 => '1');
 
     --=============--
     --== Sump    ==--

@@ -123,8 +123,8 @@ architecture Behavioral of control is
     signal ttc_bx0_counter_lcl : std_logic_vector (31 downto 0); -- bc0 counter local    bc0s
     signal ttc_bx0_counter_rxd : std_logic_vector (31 downto 0); -- bc0 counter received bc0s
 
-    signal bx0_sync_err      : std_logic;
-    signal bxn_sync_err      : std_logic;
+    signal ttc_bx0_sync_err      : std_logic;
+    signal ttc_bxn_sync_err      : std_logic;
 
     --== ADC ==--
 
@@ -143,7 +143,6 @@ architecture Behavioral of control is
     signal sys_sump : std_logic;
     signal stat_sump : std_logic;
     signal loop_sump : std_logic;
-    signal counters_sump : std_logic;
 
     signal reset : std_logic;
 
@@ -206,7 +205,7 @@ begin
         -- ttc control
         ttc_bxn_offset_o       => ttc_bxn_offset,
 
-        --sem_critical_i      => sem_critical
+        -- sump
         sump_o              => sys_sump
     );
 
@@ -247,8 +246,8 @@ begin
         ttc_bx0_counter_lcl_i => ttc_bx0_counter_lcl,
         ttc_bx0_counter_rxd_i => ttc_bx0_counter_rxd,
         ttc_orbit_counter_i   => ttc_orbit_counter,
-        ttc_bx0_sync_err      => bx0_sync_err,
-        ttc_bxn_sync_err      => bxn_sync_err,
+        ttc_bx0_sync_err      => ttc_bx0_sync_err,
+        ttc_bxn_sync_err      => ttc_bxn_sync_err,
 
         sump_o                => stat_sump
     );
@@ -275,6 +274,7 @@ begin
         ttc_l1a             => ttc_l1a,
         ttc_bc0             => ttc_bc0,
         ttc_resync          => ttc_resync,
+        ttc_bx0_sync_err    => ttc_bx0_sync_err,
 
         sbit_overflow_i     => sbit_overflow_i,
 
@@ -286,9 +286,7 @@ begin
         eprt_mmcm_locked_i  => eprt_mmcm_locked_i,
         dskw_mmcm_locked_i  => dskw_mmcm_locked_i,
 
-        sem_correction_i    => sem_correction_i,
-
-        sump_o              => counters_sump
+        sem_correction_i    => sem_correction_i
     );
 
     --==============--
@@ -376,8 +374,8 @@ begin
        bxn_counter     => ttc_bxn_counter,
        bx0_counter_lcl => ttc_bx0_counter_lcl,
        bx0_counter_rxd => ttc_bx0_counter_rxd,
-       bx0_sync_err    => bx0_sync_err,
-       bxn_sync_err    => bxn_sync_err
+       bx0_sync_err    => ttc_bx0_sync_err,
+       bxn_sync_err    => ttc_bxn_sync_err
 
     );
 
@@ -439,6 +437,6 @@ begin
                 or or_reduce(wb_s_res(0).data) or or_reduce(wb_s_res(1).data) or or_reduce(wb_s_res(2).data)
                 or wb_s_req(0).we or wb_s_req(1).we or wb_s_req(2).we;
 
-    sump_o <= wb_sump or sys_sump or stat_sump or counters_sump or loop_sump;
+    sump_o <= wb_sump or sys_sump or stat_sump or loop_sump;
 
 end Behavioral;

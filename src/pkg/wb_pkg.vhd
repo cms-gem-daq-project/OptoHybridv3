@@ -64,7 +64,7 @@ package body wb_pkg is
         -- lowest 8 bits are used by the wishbone splitters as individual register addresses
 
         -- Loopback
-        if    (std_match(addr, WB_ADDR_LOOP  & "0000000000000000--------")) then sel := WB_SLV_LOOP;
+        if    (std_match(addr, WB_ADDR_LOOP  & "000000000000000000000000")) then sel := WB_SLV_LOOP;
         -- Counters
         elsif (std_match(addr, WB_ADDR_CNT   & "0000000000000000--------")) then sel := WB_SLV_CNT;
         -- System

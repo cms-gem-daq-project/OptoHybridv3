@@ -36,7 +36,7 @@ port(
 
     sys_sbit_sel_o      : out std_logic_vector(29 downto 0) := (others => '0');
     sys_loop_sbit_o     : out std_logic_vector( 4 downto 0) := "00000";
-    sys_sbit_mode_o     : out std_logic_vector( 1 downto 0) := "00";
+    sys_sbit_mode_o     : out std_logic_vector( 1 downto 0) := "11";
 
     vfat_reset_o        : out std_logic := '0';
 
@@ -138,44 +138,52 @@ begin
 
         if (rising_edge(ref_clk_i)) then
 
+            -- ADR=0
+            if (reg_ack(0)='1') then
+                sys_loop_sbit_o  <= reg_data(0)(4 downto 0)  ;
+            end if;
+
+            -- ADR=1
+            vfat_reset_o     <= wb_stb  (1) and wb_we    ;
+
             -- ADR=2
             if (reg_ack(2)='1') then
-                sys_loop_sbit_o  <= reg_data(2)(4 downto 0)  ;
+            vfat_sbit_mask_o <= reg_data(2)(23 downto 0) ;
             end if;
 
             -- ADR=3
-            vfat_reset_o     <= wb_stb  (3) and wb_we    ;
+            if (reg_ack(3)='1') then
+            sys_sbit_sel_o   <= reg_data(3)(29 downto 0) ;
+            end if;
 
             -- ADR=4
             if (reg_ack(4)='1') then
-            vfat_sbit_mask_o <= reg_data(4)(23 downto 0) ;
+            sys_sbit_mode_o  <= reg_data(4)(1 downto 0)  ;
             end if;
 
             -- ADR=5
-            if (reg_ack(4)='1') then
-            sys_sbit_sel_o   <= reg_data(5)(29 downto 0) ;
+            if (reg_ack(5)='1') then
+            fmm_ignore_startstop_o <= reg_data(5)(0)  ;
+            end if;
+
+            -- ADR=6
+            if (reg_ack(6)='1') then
+            fmm_force_stop_o       <= reg_data(6)(0)  ;
+            end if;
+
+            -- ADR=7
+            if (reg_ack(7)='1') then
+            fmm_dont_wait_o        <= reg_data(7)(0)  ;
             end if;
 
             -- ADR=8
             if (reg_ack(8)='1') then
-            sys_sbit_mode_o  <= reg_data(8)(1 downto 0)  ;
+            ttc_bxn_offset_o       <= reg_data(8)(11 downto 0)  ;
             end if;
 
             -- ADR=9
             if (reg_ack(9)='1') then
-            fmm_ignore_startstop_o <= reg_data(9)(0)  ;
-            fmm_force_stop_o       <= reg_data(9)(1)  ;
-            fmm_dont_wait_o        <= reg_data(9)(2)  ;
-            end if;
-
-            -- ADR=10
-            if (reg_ack(10)='1') then
-            ttc_bxn_offset_o       <= reg_data(10)(11 downto 0)  ;
-            end if;
-
-            -- ADR=A
-            if (reg_ack(11)='1') then
-            vfat_trigger_deadtime_o <= reg_data(4)(3 downto 0) ;
+            vfat_trigger_deadtime_o <= reg_data(9)(3 downto 0) ;
             end if;
 
         end if;
