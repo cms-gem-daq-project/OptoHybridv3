@@ -18,6 +18,7 @@ use ieee.std_logic_misc.all;
 
 library work;
 use work.types_pkg.all;
+use work.wb_pkg.all;
 
 entity sys is
 generic(
@@ -61,7 +62,7 @@ architecture Behavioral of sys is
     -- Signals from the Wishbone Hub
     signal wb_stb       : std_logic_vector((N - 1) downto 0);
     signal wb_we        : std_logic;
-    signal wb_addr      : std_logic_vector(31 downto 0);
+    signal wb_addr      : std_logic_vector(WB_ADDR_SIZE-1 downto 0);
     signal wb_data      : std_logic_vector(31 downto 0);
 
     -- Signals for the registers
@@ -99,7 +100,7 @@ begin
         data_i      => reg_data,     -- 32 bit data input
         wb_res_o    => wb_slv_res_o, -- 32 bit response to wishbone bus
 
-        addr_o      => wb_addr, -- 32 bit address
+        addr_o      => wb_addr, -- 16 bit address
         data_o      => wb_data  -- 32 bit data output from wishbone bus
     );
 

@@ -18,6 +18,7 @@ use ieee.std_logic_misc.all;
 library work;
 use work.types_pkg.all;
 use work.param_pkg.all;
+use work.wb_pkg.all;
 
 entity loopback is
 generic(
@@ -44,7 +45,7 @@ architecture Behavioral of loopback is
     -- Signals from the Wishbone Hub
     signal wb_stb       : std_logic_vector((N - 1) downto 0);
     signal wb_we        : std_logic;
-    signal wb_addr      : std_logic_vector(31 downto 0) := x"ffffffff";
+    signal wb_addr      : std_logic_vector(WB_ADDR_SIZE-1 downto 0) := x"ffff";
     signal wb_data      : std_logic_vector(31 downto 0) := x"ffffffff";
 
     -- Signals for the registers

@@ -16,6 +16,9 @@ use ieee.std_logic_1164.all;
 library work;
 use work.types_pkg.all;
 
+library work;
+use work.wb_pkg.all;
+
 entity link_request is
 port(
 
@@ -26,7 +29,7 @@ port(
     wb_mst_res_i    : in  wb_res_t;
 
     rx_en_i         : in std_logic;
-    rx_data_i       : in std_logic_vector(64 downto 0);
+    rx_data_i       : in std_logic_vector(WB_REQ_BITS-1 downto 0);
 
     tx_en_i         : in std_logic;
     tx_valid_o      : out std_logic;
@@ -38,7 +41,7 @@ end link_request;
 architecture Behavioral of link_request is
 
     signal rd_valid : std_logic;
-    signal rd_data  : std_logic_vector(64 downto 0);
+    signal rd_data  : std_logic_vector(WB_REQ_BITS-1 downto 0);
 
 begin
 
@@ -70,8 +73,8 @@ begin
                 if (rd_valid = '1') then
                     wb_mst_req_o <= (
                                     stb => '1',
-                                    we   => rd_data(64),
-                                    addr => rd_data(63 downto 32),
+                                    we   => rd_data(WB_REQ_BITS-1),
+                                    addr => rd_data(47 downto 32),
                                     data => rd_data(31 downto 0)
                     );
                 else

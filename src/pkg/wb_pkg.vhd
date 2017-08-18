@@ -8,6 +8,8 @@ package wb_pkg is
 
     constant WB_TIMEOUT         : integer := 200_000;
 
+    constant WB_REQ_BITS        : integer := 49;
+
     --== Wishbone errors ==--
 
     constant WB_NO_ERR          : std_logic_vector(3 downto 0) := x"0";
@@ -21,6 +23,8 @@ package wb_pkg is
     constant WB_ERR_I2C_ACK     : std_logic_vector(3 downto 0) := x"3";
 
     --== Wishbone masters ==--
+
+    constant WB_ADDR_SIZE       : integer  := 16;
 
 	constant WB_MASTERS         : positive := 1;
     constant WB_MST_GBT         : integer  := 0;
@@ -41,15 +45,15 @@ package wb_pkg is
 
     --== Wishbone addresses ==--
 
-    constant WB_ADDR_LOOP       : std_logic_vector(7 downto 0) := x"40";
-    constant WB_ADDR_CNT        : std_logic_vector(7 downto 0) := x"41";
-    constant WB_ADDR_SYS        : std_logic_vector(7 downto 0) := x"42";
-    constant WB_ADDR_STAT       : std_logic_vector(7 downto 0) := x"43";
-    constant WB_ADDR_ADC        : std_logic_vector(7 downto 0) := x"44";
+    constant WB_ADDR_LOOP       : std_logic_vector(4 downto 0) := '0' & x"0";
+    constant WB_ADDR_CNT        : std_logic_vector(4 downto 0) := '0' & x"1";
+    constant WB_ADDR_SYS        : std_logic_vector(4 downto 0) := '0' & x"2";
+    constant WB_ADDR_STAT       : std_logic_vector(4 downto 0) := '0' & x"3";
+    constant WB_ADDR_ADC        : std_logic_vector(4 downto 0) := '0' & x"4";
 
     --== Wishbone address selection & generation ==--
 
-	function wb_addr_sel(signal addr : in std_logic_vector(31 downto 0)) return integer;
+    function wb_addr_sel(signal addr : in std_logic_vector(WB_ADDR_SIZE-1 downto 0)) return integer;
 
 end wb_pkg;
 
@@ -57,22 +61,22 @@ package body wb_pkg is
 
     --== Address decoder ==--
 
-    function wb_addr_sel(signal addr : in std_logic_vector(31 downto 0)) return integer is
+    function wb_addr_sel(signal addr : in std_logic_vector(WB_ADDR_SIZE-1 downto 0)) return integer is
         variable sel : integer;
     begin
 
         -- lowest 8 bits are used by the wishbone splitters as individual register addresses
 
         -- Loopback
-        if    (std_match(addr, WB_ADDR_LOOP  & "000000000000000000000000")) then sel := WB_SLV_LOOP;
+        if    (std_match(addr, WB_ADDR_LOOP  & "00000000000")) then sel := WB_SLV_LOOP;
         -- Counters
-        elsif (std_match(addr, WB_ADDR_CNT   & "0000000000000000--------")) then sel := WB_SLV_CNT;
+        elsif (std_match(addr, WB_ADDR_CNT   & "000--------")) then sel := WB_SLV_CNT;
         -- System
-        elsif (std_match(addr, WB_ADDR_SYS   & "0000000000000000--------")) then sel := WB_SLV_SYS;
+        elsif (std_match(addr, WB_ADDR_SYS   & "000--------")) then sel := WB_SLV_SYS;
         -- Status
-        elsif (std_match(addr, WB_ADDR_STAT  & "0000000000000000--------")) then sel := WB_SLV_STAT;
+        elsif (std_match(addr, WB_ADDR_STAT  & "000--------")) then sel := WB_SLV_STAT;
         -- ADC
-        elsif (std_match(addr, WB_ADDR_ADC   & "0000000000000000--------")) then sel := WB_SLV_ADC;
+        elsif (std_match(addr, WB_ADDR_ADC   & "000--------")) then sel := WB_SLV_ADC;
         --
         else sel := 99;
         end if;

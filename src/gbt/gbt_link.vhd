@@ -21,6 +21,9 @@ use unisim.vcomponents.all;
 library work;
 use work.types_pkg.all;
 
+library work;
+use work.wb_pkg.all;
+
 entity gbt_link is
 port(
 
@@ -55,7 +58,7 @@ architecture Behavioral of gbt_link is
     --== GTX requests ==--
 
     signal gbt_rx_req  : std_logic; -- rx fifo write request
-    signal gbt_rx_data : std_logic_vector(64 downto 0);
+    signal gbt_rx_data : std_logic_vector(WB_REQ_BITS-1 downto 0);
 
     signal oh_tx_req   : std_logic; -- tx fifo read request
     signal oh_tx_valid : std_logic; -- tx fifo data available

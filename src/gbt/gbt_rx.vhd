@@ -20,6 +20,9 @@ use unisim.vcomponents.all;
 library work;
 use work.types_pkg.all;
 
+library work;
+use work.wb_pkg.all;
+
 entity gbt_rx is
     generic(
         g_16BIT : boolean := false
@@ -43,7 +46,7 @@ port(
 
     -- 65 bit output packet to fifo
     req_en_o        : out std_logic;
-    req_data_o      : out std_logic_vector(64 downto 0);
+    req_data_o      : out std_logic_vector(WB_REQ_BITS-1 downto 0);
 
     -- status
     error_o         : out std_logic
@@ -53,10 +56,10 @@ end gbt_rx ;
 
 architecture Behavioral of gbt_rx is
 
-    type state_t is (SYNCING, FRAME_BEGIN, ADDR_0, ADDR_1, ADDR_2, ADDR_3, ADDR_4, DATA_0, DATA_1, DATA_2, DATA_3, DATA_4, FRAME_END);
+    type state_t is (SYNCING, FRAME_BEGIN, ADDR_0, ADDR_1, ADDR_2, DATA_0, DATA_1, DATA_2, DATA_3, DATA_4, FRAME_END);
 
     signal req_valid    : std_logic;
-    signal req_data     : std_logic_vector(64 downto 0);
+    signal req_data     : std_logic_vector(WB_REQ_BITS-1 downto 0);
 
     signal state        : state_t;
 
@@ -158,9 +161,7 @@ begin
                     when FRAME_BEGIN  => state <= ADDR_0;
                     when ADDR_0       => state <= ADDR_1;
                     when ADDR_1       => state <= ADDR_2;
-                    when ADDR_2       => state <= ADDR_3;
-                    when ADDR_3       => state <= ADDR_4;
-                    when ADDR_4       => state <= DATA_0;
+                    when ADDR_2       => state <= DATA_0;
                     when DATA_0       => state <= DATA_1;
                     when DATA_1       => state <= DATA_2;
                     when DATA_2       => state <= DATA_3;
@@ -193,17 +194,13 @@ begin
                     when FRAME_BEGIN =>
                                    req_en_o               <= '0';
                                    req_valid              <= data6(5);              -- request valid
-                                   req_data(64)           <= data6(4);              -- write enable
-                                   req_data(63 downto 60) <= data6(3 downto 0);     -- address[31:28]
+                                   req_data(48)           <= data6(4);              -- write enable
+                                   -- reserved data6(3 downto 0);
                     when ADDR_0 =>
-                                   req_data(59 downto 54) <= data6              ;   -- address[27:22]
-                    when ADDR_1 =>
-                                   req_data(53 downto 48) <= data6              ;   -- address[21:16]
-                    when ADDR_2 =>
                                    req_data(47 downto 42) <= data6              ;   -- address[15:10]
-                    when ADDR_3 =>
+                    when ADDR_1 =>
                                    req_data(41 downto 36) <= data6              ;   -- address[9:4]
-                    when ADDR_4 =>
+                    when ADDR_2 =>
                                    req_data(35 downto 32) <= data6(5 downto 2)  ;   -- address[3:0]
                                    req_data(31 downto 30) <= data6(1 downto 0)  ;   -- data[31:30]
                     when DATA_0 =>
@@ -250,8 +247,7 @@ begin
                             state <= FRAME_BEGIN;
                         end if;
                     when FRAME_BEGIN  => state <= ADDR_0;
-                    when ADDR_0       => state <= ADDR_1;
-                    when ADDR_1       => state <= DATA_0;
+                    when ADDR_0       => state <= DATA_0;
                     when DATA_0       => state <= DATA_1;
                     when DATA_1       => state <= DATA_2;
                     when DATA_2       => state <= FRAME_END;
@@ -279,10 +275,10 @@ begin
                     when FRAME_BEGIN =>
                                    req_en_o               <= '0';
                                    req_valid              <= data_i(11);          -- request valid
-                                   req_data(64)           <= data_i(10);          -- write enable
-                                   req_data(63 downto 56) <= data_i(7 downto 0);  -- address[31:24]
-                    when ADDR_0 => req_data(55 downto 44) <= data_i(11 downto 0); -- address[23:12]
-                    when ADDR_1 => req_data(43 downto 32) <= data_i(11 downto 0); -- address[11:0]
+                                   req_data(48)           <= data_i(10);          -- write enable
+                                   -- reserved            <= data_i(9 downto 4)
+                                   req_data(47 downto 44) <= data_i(3 downto 0);  -- address[15:12]
+                    when ADDR_0 => req_data(43 downto 32) <= data_i(11 downto 0); -- address[11:0]
                     when DATA_0 => req_data(31 downto 24) <= data_i (7 downto 0); -- data [31:24]
                     when DATA_1 => req_data(23 downto 12) <= data_i(11 downto 0); -- data [23:12]
                     when DATA_2 => req_data(11 downto 0)  <= data_i(11 downto 0); -- data [11:0]

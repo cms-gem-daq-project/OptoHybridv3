@@ -43,7 +43,7 @@ port(
     -- Request
     stb_o       : out std_logic_vector((SIZE - 1) downto 0); -- The strobe output [STB_O] indicates a valid data transfer cycle.
     we_o        : out std_logic; -- The write enable output [WE_O] indicates whether the current local bus cycle is a READ or WRITE cycle.
-    addr_o      : out std_logic_vector(31 downto 0);
+    addr_o      : out std_logic_vector(WB_ADDR_SIZE-1 downto 0);
     data_o      : out std_logic_vector(31 downto 0);
 
     -- Response

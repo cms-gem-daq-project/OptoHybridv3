@@ -76,7 +76,7 @@ architecture Behavioral of counters is
     -- Signals from the Wishbone Hub
     signal wb_stb       : std_logic_vector((N - 1) downto 0);
     signal wb_we        : std_logic;
-    signal wb_addr      : std_logic_vector(31 downto 0);
+    signal wb_addr      : std_logic_vector(WB_ADDR_SIZE-1 downto 0);
     signal wb_data      : std_logic_vector(31 downto 0);
 
     -- Signals for the registers

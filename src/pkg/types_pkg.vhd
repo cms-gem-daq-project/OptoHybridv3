@@ -18,6 +18,8 @@ package types_pkg is
 
     type std8_array_t is array(integer range <>) of std_logic_vector(7 downto 0);
 
+    type std16_array_t is array(integer range <>) of std_logic_vector(16 downto 0);
+
     type std32_array_t is array(integer range <>) of std_logic_vector(31 downto 0);
 
     type std64_array_t is array(integer range <>) of std_logic_vector(63 downto 0);
@@ -52,7 +54,7 @@ package types_pkg is
     type wb_req_t is record
         stb     : std_logic;
         we      : std_logic;
-        addr    : std_logic_vector(31 downto 0);
+        addr    : std_logic_vector(15 downto 0);
         data    : std_logic_vector(31 downto 0);
     end record;
 
