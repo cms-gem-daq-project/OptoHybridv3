@@ -111,8 +111,6 @@ architecture Behavioral of control is
 
     --== TTC FMM ==--
 
-    signal fmm_ignore_startstop : std_logic;
-    signal fmm_force_stop       : std_logic;
     signal fmm_dont_wait        : std_logic;
 
     --== TTC Sync ==--
@@ -198,8 +196,7 @@ begin
         sys_sbit_mode_o     => sys_sbit_mode,
 
         -- fmm control
-        fmm_ignore_startstop_o => fmm_ignore_startstop,
-        fmm_force_stop_o       => fmm_force_stop,
+
         fmm_dont_wait_o        => fmm_dont_wait,
 
         -- ttc control
@@ -397,8 +394,7 @@ begin
         ttc_resync => ttc_resync,
 
         -- control
-        ignore_startstop   => fmm_ignore_startstop,
-        force_stop_trigger => fmm_force_stop,
+
         dont_wait          => fmm_dont_wait,
 
         -- output

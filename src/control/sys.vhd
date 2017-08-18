@@ -45,9 +45,7 @@ port(
 
     -- ttc / fmm
 
-    fmm_ignore_startstop_o : out std_logic                      := '1';
-    fmm_force_stop_o       : out std_logic                      := '0';
-    fmm_dont_wait_o        : out std_logic                      := '0';
+    fmm_dont_wait_o        : out std_logic := '1';
 
     ttc_bxn_offset_o       : out std_logic_vector (11 downto 0) := x"000";
 
@@ -163,27 +161,17 @@ begin
 
             -- ADR=5
             if (reg_ack(5)='1') then
-            fmm_ignore_startstop_o <= reg_data(5)(0)  ;
+            fmm_dont_wait_o        <= reg_data(5)(0)  ;
             end if;
 
             -- ADR=6
             if (reg_ack(6)='1') then
-            fmm_force_stop_o       <= reg_data(6)(0)  ;
+            ttc_bxn_offset_o       <= reg_data(6)(11 downto 0)  ;
             end if;
 
             -- ADR=7
             if (reg_ack(7)='1') then
-            fmm_dont_wait_o        <= reg_data(7)(0)  ;
-            end if;
-
-            -- ADR=8
-            if (reg_ack(8)='1') then
-            ttc_bxn_offset_o       <= reg_data(8)(11 downto 0)  ;
-            end if;
-
-            -- ADR=9
-            if (reg_ack(9)='1') then
-            vfat_trigger_deadtime_o <= reg_data(9)(3 downto 0) ;
+            vfat_trigger_deadtime_o <= reg_data(7)(3 downto 0) ;
             end if;
 
         end if;

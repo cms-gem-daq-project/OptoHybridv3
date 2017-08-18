@@ -28,8 +28,7 @@ module fmm (
   input ttc_resync,
 
   // control
-  input ignore_startstop,
-  input force_stop_trigger,
+
   input dont_wait,
 
   // output
@@ -52,11 +51,8 @@ module fmm (
 
   parameter fmm_startup  = 0; // synthesis attribute fsm_encoding of fmm_sm is auto;
   parameter fmm_resync   = 1;
-  parameter fmm_stop     = 2;
-  parameter fmm_wait_bx0 = 3;
-  parameter fmm_run      = 4;
-
-  wire ignore = ignore_startstop;
+  parameter fmm_wait_bx0 = 2;
+  parameter fmm_run      = 3;
 
   // FMM State Machine
 
@@ -81,7 +77,7 @@ module fmm (
       // Startup wait
       fmm_startup:
         if (startup_done)
-        fmm_sm <= fmm_stop;
+        fmm_sm <= fmm_wait_bx0;
 
       // Resync
       fmm_resync:
@@ -90,25 +86,17 @@ module fmm (
         else
         fmm_sm <= fmm_wait_bx0;
 
-      // Stop triggers
-      fmm_stop:
-        if (!force_stop_trigger && !ignore)
-        fmm_sm <= fmm_wait_bx0;
-
       // Wait for bx0 after start_trigger
       fmm_wait_bx0:
         if (ttc_bx0 || dont_wait)
         fmm_sm <= fmm_run;
-        else if (force_stop_trigger && !ignore)
-        fmm_sm <= fmm_stop;
 
       // Process triggers
       fmm_run:
-        if (force_stop_trigger && !ignore)
-        fmm_sm <= fmm_stop;
+        fmm_sm <= fmm_run;
 
       default:
-        fmm_sm <= fmm_stop;
+        fmm_sm <= fmm_startup;
       endcase
     end
   end
@@ -131,7 +119,6 @@ module fmm (
   case (fmm_sm)
   fmm_startup:  fmm_sm_disp <= "startup";
   fmm_resync:   fmm_sm_disp <= "resync ";
-  fmm_stop:     fmm_sm_disp <= "stop   ";
   fmm_wait_bx0: fmm_sm_disp <= "waitbx0";
   fmm_run:      fmm_sm_disp <= "run    ";
   default       fmm_sm_disp <= "default";

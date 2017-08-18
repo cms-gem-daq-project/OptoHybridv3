@@ -341,6 +341,7 @@ begin
         ---------
 
         bxn_counter_o => bxn_counter,
+
         trig_stop_o   => trig_stop,
 
         --------------------
