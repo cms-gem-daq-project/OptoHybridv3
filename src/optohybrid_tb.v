@@ -1,13 +1,13 @@
 `timescale 1ns/1ps
-module sr32 (
+module sr64 (
   input CLK,
   input CE,
-  input [4:0] SEL,
+  input [5:0] SEL,
   input SI,
   output DO
 );
 
-parameter SELWIDTH = 5;
+parameter SELWIDTH = 6;
 localparam DATAWIDTH = 2**SELWIDTH;
 reg [DATAWIDTH-1:0] data;
 assign DO = data[SEL];
@@ -60,7 +60,7 @@ parameter DDR = 0;
 
   // s-bits are transmitted MSB first
   // with SOF aligned to the most significant bit
-  reg [2:0] sot_cnt=3'd7; // cnt to 8
+  reg [2:0] sot_cnt=3'd4; // cnt to 8
   wire sotd0 = (sot_cnt==7);
   // frame counter for the 8 S-bits in a 40 MHz clock cycle
   always @(posedge clk320)
@@ -98,7 +98,7 @@ parameter DDR = 0;
         genvar itu;
         for (itu=0; itu<8; itu=itu+1'b1) begin: tuloop
           always @ (posedge clk1280) begin
-            pat_sr [itu] <= vfat_tu[sot_cnt];
+            pat_sr [itu] <= vfat_tu[itu][sot_cnt];
           end
         end
   end
@@ -110,7 +110,7 @@ parameter DDR = 0;
         // send pattern in two subsequent bunch crossings (to test odd/even endcoders)
         // then remain idle for a period to make latency measurements clearer
 
-        reg [63:0] test_pat = 128'h0000000000000001;
+        reg [63:0] test_pat = 128'h0101010101010101;
 
         reg [63:0] test_pat_odd;
         reg [63:0] test_pat_even;
@@ -121,7 +121,7 @@ parameter DDR = 0;
           else
             test_pat_odd <= 0;
 
-          test_pat_even <= test_pat_odd;
+          test_pat_even <= test_pat_odd << 1'b1;
 
         end
 
@@ -141,7 +141,7 @@ parameter DDR = 0;
         genvar itu;
         for (itu=0; itu<8; itu=itu+1'b1) begin: tuloop
           always @ (*) begin
-            pat_sr [itu] <= vfat_tu[sot_cnt];
+            pat_sr [itu] <= vfat_tu[itu][sot_cnt];
           end
         end
 
@@ -166,7 +166,7 @@ parameter DDR = 0;
   generate
   for (ipin=0; ipin<192; ipin=ipin+1) begin: pinloop
     // clock at very high frequency so that SRL can simulate an IDELAY in 78 ps taps
-    sr32 srp (clk12G8, 1'b1, 5'd31 - TU_OFFSET [ipin*5+:4],  pat_sr[ipin/24], tu_p[ipin]); // make each vfat the same
+    sr64 srp (clk12G8, 1'b1, 6'd63 - TU_OFFSET [ipin*5+:4],  pat_sr[ipin/24], tu_p[ipin]); // make each vfat the same
   end
   endgenerate
 
@@ -176,8 +176,8 @@ parameter DDR = 0;
   genvar ifat;
   generate
   for (ifat=0; ifat<24; ifat=ifat+1) begin: fatloop
-    sr32 srfp (clk12G8, 1'b1, 5'd31-SOF_OFFSET [ifat*5+:4] - 5'd20*SOF_POSNEG[ifat],  sotd0, sof[ifat]);
-    //sr32 srfp (clk12G8, 1'b1, 5'd31 - SOF_OFFSET [ifat*5+:4],  sotd0, sof[ifat]);
+    // 40 taps @ 78 ps each = 3.125 ns
+    sr64 srfp (clk12G8, 1'b1,6'd63-SOF_OFFSET [ifat*5+:4] - 6'd40*SOF_POSNEG[ifat],  sotd0, sof[ifat]);
   end
   endgenerate
 

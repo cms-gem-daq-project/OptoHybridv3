@@ -23,8 +23,11 @@ module oversampler (
   input fastclock90,
   input fastclock180,
 
-  input  [2:0] phase_sel_in,
-  output [2:0] phase_sel_out,
+  input  [1:0] phase_sel_in,
+  output [1:0] phase_sel_out,
+
+  input  polswap_in,
+  output polswap_out,
 
   output reg phase_err,
 
@@ -211,13 +214,11 @@ iserdes_odd   (
 
     reg [1:0] d01_mux;
 
-    wire [2:0] time_sel_local;
+    wire [1:0] phase_sel_local;
+    wire [1:0] sample_sel = phase_sel_local[1:0];
+    assign phase_sel_out = phase_sel_local;
 
-    wire [1:0] sample_sel = time_sel_local[1:0];
-    wire         inv_sel  = time_sel_local[2];
-
-    assign phase_sel_out = time_sel_local;
-
+    generate
     always @(posedge fastclock) begin
 
       case (sample_sel)
@@ -230,23 +231,16 @@ iserdes_odd   (
       case (sample_sel)
       2'd0: phase_err <= phase_err4[2'b00]; // eq00,  45 and 225 degree samples
       2'd1: phase_err <= phase_err4[2'b01]; // eq01,   0 and 180 degree samples
-      2'd2: phase_err <= phase_err4[2'b10]; // eq10,  90 and 270 degree samples
       2'd3: phase_err <= phase_err4[2'b11]; // eq11, 225 and 315 degree samples
+      2'd2: phase_err <= phase_err4[2'b10]; // eq10,  90 and 270 degree samples
       endcase
     end
-
-    // a delay of 1 DDR clock is equal to the effect of switching the sampling edges (0 becomes 1 and vice versa)
-    // we can use this feature to implement DDR delays without having a double data rate clock
-    generate
-    if (POSNEG) begin
-      assign d0 = d01_mux[~inv_sel];
-      assign d1 = d01_mux[ inv_sel];
-    end
-    else begin
-      assign d0 = d01_mux[ inv_sel];
-      assign d1 = d01_mux[~inv_sel];
-    end
     endgenerate
+
+    wire polswap;
+    // outputs
+    assign d0 = d01_mux[ polswap];
+    assign d1 = d01_mux[~polswap];
 
     generate
 
@@ -256,63 +250,72 @@ iserdes_odd   (
 
     if (PHASE_SEL_MANUAL) begin
 
-        // fanout & force use of the clock to squelch warning in manual mode
-        reg [2:0] phase_sel_in_r = 3'd0;
-        always @(posedge clock) begin
-            phase_sel_in_r <= phase_sel_in;
-        end
+          // fanout & force use of the clock to squelch warning in manual mode
+          reg [1:0] phase_sel_in_r = 2'd0;
+          always @(posedge clock) begin
+              phase_sel_in_r <= phase_sel_in;
+          end
 
-      assign time_sel_local = phase_sel_in_r; // external input
-    end
+        assign phase_sel_local = phase_sel_in_r; // external input
 
-    //----------------------------------------------------------------------------------------------------------------
-    // automatic control by state machine
-    //----------------------------------------------------------------------------------------------------------------
+        assign polswap = polswap_in ^ POSNEG;
+
+      end
+
 
     else begin
 
-      // check if the SOF signal is coming out on d1 instead of d0 and align the data accordingly
-      // by asserting the inv_sel signal
+          //----------------------------------------------------------------------------------------------------------------
+          // automatic control by state machine
+          //----------------------------------------------------------------------------------------------------------------
 
-      reg data_on_d1 = 0;
-      always @(negedge fastclock) begin
-        if (d01_mux[0+1'b1*POSNEG])
-          data_on_d1 <= 1'b0;
-        else if (d01_mux[1-1'b1*POSNEG])
-          data_on_d1 <= 1'b1;
-      end
-      assign time_sel_local [2] = data_on_d1;
+          // check if the SOF signal is coming out on d1 instead of d0 and align the data accordingly
+          // by asserting the inv_sel signal
 
-      reg [1:0] phase_sm=2'd0;
-      assign time_sel_local[1:0] = phase_sm; // sm controlled
-      parameter sm_00 = 2'd0;
-      parameter sm_01 = 2'd1;
-      parameter sm_10 = 2'd2;
-      parameter sm_11 = 2'd3;
-
-      always @(posedge fastclock) begin
-        case (phase_sm)
-          sm_00: begin
-            if (eq4[0]) phase_sm <= sm_10;
-            if (eq4[3]) phase_sm <= sm_01;
+          reg data_on_d1 = 0;
+          always @(negedge fastclock) begin
+            if      (d01_mux[0])
+              data_on_d1 <= 1'b0;
+            else if (d01_mux[1])
+              data_on_d1 <= 1'b1;
           end
-          sm_01: begin
-          if (eq4[1]) phase_sm <= sm_00;
-          if (eq4[0]) phase_sm <= sm_11;
+
+          assign polswap     = data_on_d1;
+          assign polswap_out = polswap ^ POSNEG;
+
+          reg [1:0] phase_sm=2'd0;
+
+          assign phase_sel_local[1:0] = phase_sm; // sm controlled
+
+          parameter sm_00 = 2'd0;
+          parameter sm_01 = 2'd1;
+          parameter sm_10 = 2'd2;
+          parameter sm_11 = 2'd3;
+
+          always @(posedge fastclock) begin
+            case (phase_sm)
+              sm_00: begin
+                if (eq4[1]) phase_sm <= sm_01;
+                if (eq4[0]) phase_sm <= sm_10;
+              end
+              sm_01: begin
+              if (eq4[3]) phase_sm <= sm_00;
+              if (eq4[0]) phase_sm <= sm_11;
+              end
+              sm_11: begin
+                if (eq4[3]) phase_sm <= sm_10;
+                if (eq4[2]) phase_sm <= sm_01;
+              end
+              sm_10: begin
+                if (eq4[2]) phase_sm <= sm_00;
+                if (eq4[1]) phase_sm <= sm_11;
+              end
+            endcase
           end
-        sm_11: begin
-          if (eq4[1]) phase_sm <= sm_10;
-          if (eq4[2]) phase_sm <= sm_01;
-        end
-        sm_10: begin
-          if (eq4[3]) phase_sm <= sm_11;
-          if (eq4[2]) phase_sm <= sm_00;
-        end
-        endcase
-      end
+
     end
     endgenerate
 
-    assign sump = |phase_sel_in; // sump the phase_sel_in to supress warnings when this is unused (for self-aligned SOF)
+    assign sump = polswap_in || |phase_sel_in; // sump the phase_sel_in to supress warnings when this is unused (for self-aligned SOF)
 
 endmodule

@@ -53,7 +53,8 @@ module trig_alignment (
 
   wire [23:0] start_of_frame_d0;
   wire [23:0] start_of_frame_d1;
-  wire [2:0]  vfat_phase_sel [23:0];
+  wire [1:0]  vfat_phase_sel [23:0];
+  wire [0:0]  vfat_polswap   [23:0];
 
   wire [23:0] alignment_err;
   wire [23:0] sot_phase_err;
@@ -63,7 +64,7 @@ module trig_alignment (
   wire [23:0] sof_sump;
   wire [191:0] sbit_sump;
 
-  wire [192*3-1:0] phase_sel_sump;
+  wire [192*2-1:0] phase_sel_sump;
 
   `include "tap_delays.v"
 
@@ -115,14 +116,21 @@ module trig_alignment (
       .rx_p (start_of_frame_p[ifat]),
       .rx_n (start_of_frame_n[ifat]),
 
-      .clock       (clock),
-      .fastclock   (fastclk_0),
-      .fastclock90 (fastclk_90),
-      .fastclock180(fastclk_180),
+      .clock       ( clock),
 
-      .phase_sel_in     (3'd0),
+      // keep all clocks inverted here, so that they are centered w/r/t the rising edge when doing frame alignment
+      .fastclock   (~fastclk_0),
+      .fastclock90 (~fastclk_90),
+      .fastclock180(~fastclk_180),
+
+      .phase_sel_in     (2'd0),
       .phase_sel_out    (vfat_phase_sel[ifat]),
+
+      .polswap_in     (1'b0),
+      .polswap_out    (vfat_polswap[ifat]),
+
       .phase_err        (sot_phase_err[ifat]),
+
       .d0(start_of_frame_d0[ifat]),
       .d1(start_of_frame_d1[ifat]),
 
@@ -145,13 +153,16 @@ module trig_alignment (
       .rx_p (sbits_p[ipin]),
       .rx_n (sbits_n[ipin]),
 
-      .clock       (clock),
-      .fastclock   (fastclk_0),
-      .fastclock90 (fastclk_90),
-      .fastclock180(fastclk_180),
+      .clock       ( clock),
+      .fastclock   (~fastclk_0),
+      .fastclock90 (~fastclk_90),
+      .fastclock180(~fastclk_180),
+
+      .polswap_in     (vfat_polswap[ipin/8]),
+      .polswap_out    (),
 
       .phase_sel_in     (vfat_phase_sel[ipin/8]),
-      .phase_sel_out    (phase_sel_sump[ipin*3+:3]),
+      .phase_sel_out    (phase_sel_sump[ipin*2+:2]),
       .phase_err        (phase_err[ipin]),
 
       .sump             (sbit_sump[ipin]),
@@ -173,9 +184,10 @@ module trig_alignment (
       .mask    (sbit_mask[ifat]),
       .reset_i (reset || ~(idelay_ready)),
 
+      // keep all clocks inverted here, so that they are centered w/r/t the rising edge when doing frame alignment
       .start_of_frame (start_of_frame_d0[ifat]),
       .clock          (clock),
-      .fastclock      (fastclk_0),
+      .fastclock      (~fastclk_0),
 
       .sof_delayed    (sof_dly[ifat]),
 
