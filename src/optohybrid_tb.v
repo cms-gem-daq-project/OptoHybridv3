@@ -69,7 +69,7 @@ parameter DDR = 0;
   reg [2:0] slow_cnt=0;
   always @(posedge clk320)
     if (sotd0)
-      slow_cnt <= slow_cnt - 1'b1;
+      slow_cnt <= slow_cnt + 1'b1;
 
   reg [7:0] pat_sr = 0;
 
@@ -110,22 +110,25 @@ parameter DDR = 0;
         // send pattern in two subsequent bunch crossings (to test odd/even endcoders)
         // then remain idle for a period to make latency measurements clearer
 
-        reg [63:0] test_pat = 128'h0101010101010101;
+        reg [63:0] test_pat = 64'h0101010101010101;
 
         reg [63:0] test_pat_odd;
         reg [63:0] test_pat_even;
 
+        initial test_pat_odd  <= test_pat;
+        initial test_pat_even <= {test_pat << 1'b1,test_pat[63]};
+
+        reg [63:0] pat;
         always @(posedge clk40) begin
-          if (slow_cnt==0)
-            test_pat_odd <= test_pat;
-          else
-            test_pat_odd <= 0;
+          // barrell shift the pattern on every slow clock
+          if (slow_cnt==0) begin
+            test_pat_odd  <= {test_pat_odd  << 1'b1, test_pat_odd [63]};
+            test_pat_even <= {test_pat_even << 1'b1, test_pat_even[63]};
+          end
 
-          test_pat_even <= test_pat_odd << 1'b1;
-
+          pat <= (slow_cnt==0) ? test_pat_odd : (slow_cnt==1) ? test_pat_even : 64'd0;
         end
 
-        wire [63:0] pat = test_pat_odd | test_pat_even;
 
         wire [7:0] vfat_tu [7:0];
 

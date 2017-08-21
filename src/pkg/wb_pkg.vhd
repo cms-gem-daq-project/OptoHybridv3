@@ -45,11 +45,11 @@ package wb_pkg is
 
     --== Wishbone addresses ==--
 
-    constant WB_ADDR_LOOP       : std_logic_vector(4 downto 0) := '0' & x"0";
-    constant WB_ADDR_CNT        : std_logic_vector(4 downto 0) := '0' & x"1";
-    constant WB_ADDR_SYS        : std_logic_vector(4 downto 0) := '0' & x"2";
-    constant WB_ADDR_STAT       : std_logic_vector(4 downto 0) := '0' & x"3";
-    constant WB_ADDR_ADC        : std_logic_vector(4 downto 0) := '0' & x"4";
+    constant WB_ADDR_LOOP       : std_logic_vector(4 downto 0) := x"0" & '0' ;
+    constant WB_ADDR_CNT        : std_logic_vector(4 downto 0) := x"1" & '0' ;
+    constant WB_ADDR_SYS        : std_logic_vector(4 downto 0) := x"2" & '0' ;
+    constant WB_ADDR_STAT       : std_logic_vector(4 downto 0) := x"3" & '0' ;
+    constant WB_ADDR_ADC        : std_logic_vector(4 downto 0) := x"4" & '0' ;
 
     --== Wishbone address selection & generation ==--
 

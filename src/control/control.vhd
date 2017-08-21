@@ -243,7 +243,6 @@ begin
         ttc_bx0_counter_lcl_i => ttc_bx0_counter_lcl,
         ttc_bx0_counter_rxd_i => ttc_bx0_counter_rxd,
         ttc_orbit_counter_i   => ttc_orbit_counter,
-        ttc_bx0_sync_err      => ttc_bx0_sync_err,
         ttc_bxn_sync_err      => ttc_bxn_sync_err,
 
         sump_o                => stat_sump
