@@ -16,4 +16,6 @@ INST "elink_i_n<1>" TNM = elink_i;
 INST "elink_i_p<0>" TNM = elink_i;
 INST "elink_i_p<1>" TNM = elink_i;
 
-TIMEGRP "elink_i" OFFSET = IN 1.5625 ns VALID 3.125 ns BEFORE "gbt_dclk_p<1>" RISING;
+TIMEGRP "elink_i" OFFSET = IN  1.5625 ns VALID 3.125 ns BEFORE "gbt_dclk_p<1>" RISING;
+
+TIMEGRP "elink_o" OFFSET = OUT 1.8925 ns VALID 3.125 ns AFTER  "gbt_dclk_p<1>" RISING; #take into account a ~0.6 ns round trip time from GBT to FPGA

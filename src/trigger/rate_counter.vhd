@@ -44,9 +44,9 @@ architecture rate_counter_arch of rate_counter is
     signal time_max     : unsigned(31 downto 0) ;
 
     -- cast to unsigned to use in ISIM (isim doesn't support Radix on integers / naturals
-    signal clk_frequency     : unsigned (31 downto 0) := to_unsigned(g_CLK_FREQUENCY,32);
-    signal speedup_factor    : unsigned (31 downto 0) := to_unsigned(g_SPEEDUP_FACTOR,32);
-    signal progress_bar_step : unsigned (31 downto 0) := to_unsigned(g_PROGRESS_BAR_STEP,32);
+    constant clk_frequency     : unsigned (31 downto 0) := to_unsigned(g_CLK_FREQUENCY,32);
+    constant speedup_factor    : unsigned (31 downto 0) := to_unsigned(g_SPEEDUP_FACTOR,32);
+    constant progress_bar_step : unsigned (31 downto 0) := to_unsigned(g_PROGRESS_BAR_STEP,32);
 
     signal rate              : unsigned (31 downto 0) := (others => '0');
 

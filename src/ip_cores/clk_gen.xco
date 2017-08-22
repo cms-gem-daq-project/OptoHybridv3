@@ -1,7 +1,7 @@
 ##############################################################
 #
 # Xilinx Core Generator version 14.7
-# Date: Fri Aug 11 23:31:23 2017
+# Date: Thu Aug 24 00:08:41 2017
 #
 ##############################################################
 #
@@ -90,7 +90,7 @@ CSET clkout4_used=true
 CSET clkout5_drives=BUFG
 CSET clkout5_requested_duty_cycle=50.000
 CSET clkout5_requested_out_freq=200
-CSET clkout5_requested_phase=90
+CSET clkout5_requested_phase=0
 CSET clkout5_used=true
 CSET clkout6_drives=BUFG
 CSET clkout6_requested_duty_cycle=50.000
@@ -172,7 +172,7 @@ CSET mmcm_clkout3_use_fine_ps=false
 CSET mmcm_clkout4_cascade=false
 CSET mmcm_clkout4_divide=4
 CSET mmcm_clkout4_duty_cycle=0.500
-CSET mmcm_clkout4_phase=90.000
+CSET mmcm_clkout4_phase=0.000
 CSET mmcm_clkout4_use_fine_ps=false
 CSET mmcm_clkout5_divide=40
 CSET mmcm_clkout5_duty_cycle=0.500
@@ -266,4 +266,4 @@ CSET use_status=false
 MISC pkg_timestamp=2012-05-10T12:44:55Z
 # END Extra information
 GENERATE
-# CRC: 4dcc3d21
+# CRC: 9c1a66e7

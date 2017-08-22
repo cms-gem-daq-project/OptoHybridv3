@@ -62,8 +62,8 @@ INST "ext_sbits_o<3>" TNM = ext_sbits_o;
 INST "ext_sbits_o<4>" TNM = ext_sbits_o;
 INST "ext_sbits_o<5>" TNM = ext_sbits_o;
 
-TIMEGRP "led_o"       OFFSET = IN 12.5 ns VALID 25 ns BEFORE "gbt_dclk_p<0>" RISING;
-TIMEGRP "ext_sbits_o" OFFSET = IN 12.5 ns VALID 25 ns BEFORE "gbt_dclk_p<0>" RISING;
+TIMEGRP "led_o"       OFFSET = OUT 12.5 ns VALID 25 ns BEFORE "gbt_dclk_p<0>" RISING;
+TIMEGRP "ext_sbits_o" OFFSET = OUT 12.5 ns VALID 25 ns BEFORE "gbt_dclk_p<0>" RISING;
 
 # XADC
 INST "control/adc_inst/xadc_inst/SYSMON_INST" LOC = SYSMON_X0Y0;

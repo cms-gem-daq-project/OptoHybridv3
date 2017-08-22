@@ -10,12 +10,12 @@
 -- 2017/07/24 -- Conversion to 16 bit (2 elinks only)
 -- 2017/07/24 -- Addition of flip-flop synchronization stages for X-domain transit
 -- 2017/08/09 -- rework of module to cleanup and document source
+-- 2017/08/26 -- Addition of actual CDC fifo
 ----------------------------------------------------------------------------------
 
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
-
 
 library unisim;
 use unisim.vcomponents.all;
@@ -31,8 +31,13 @@ port(
     reset_i          : in std_logic;
 
     -- input clocks
-    data_clk_i       : in std_logic;
-    frame_clk_i      : in std_logic;
+
+    gbt_rx_clk_div_i : in std_logic; -- 40 MHz phase shiftable frame clock from GBT
+    gbt_rx_clk_i     : in std_logic; -- 320 MHz phase shiftable frame clock from GBT
+
+    gbt_tx_clk_div_i : in std_logic; -- 40 MHz phase shiftable frame clock from GBT
+    gbt_tx_clk_i     : in std_logic; -- 320 MHz phase shiftable frame clock from GBT
+
     clock            : in std_logic;
 
     -- serial data
@@ -52,6 +57,7 @@ end gbt_serdes;
 architecture Behavioral of gbt_serdes is
 
     signal from_gbt_raw      : std_logic_vector(15 downto 0) := (others => '0');
+    signal from_gbt_remapped : std_logic_vector(15 downto 0) := (others => '0');
     signal from_gbt          : std_logic_vector(15 downto 0) := (others => '0');
 
     signal to_gbt            : std_logic_vector(15 downto 0) := (others => '0');
@@ -63,16 +69,8 @@ architecture Behavioral of gbt_serdes is
     signal iserdes_reset     : std_logic := '1';
     signal oserdes_reset     : std_logic := '1';
 
-    signal from_gbt_s1       : std_logic_vector(15 downto 0) := (others => '0');
-    signal from_gbt_s2       : std_logic_vector(15 downto 0) := (others => '0');
-
-    signal   to_gbt_s1       : std_logic_vector(15 downto 0) := (others => '0');
-    signal   to_gbt_s2       : std_logic_vector(15 downto 0) := (others => '0');
-
-    -- ignore timing on s1 for metastability chain
-    attribute ASYNC_REG     : string;
-    attribute ASYNC_REG of from_gbt_s1: signal is "TRUE";
-    attribute ASYNC_REG of   to_gbt_s1: signal is "TRUE";
+    signal iserdes_reset_srl : std_logic;
+    signal oserdes_reset_srl : std_logic;
 
     signal data_clk_inv : std_logic;
     signal oserdes_clk : std_logic;
@@ -80,17 +78,19 @@ architecture Behavioral of gbt_serdes is
     signal iserdes_clk : std_logic;
     signal iserdes_clkdiv : std_logic;
 
-    signal pulse_length     : std_logic_vector (3 downto 0) := x"f";
+    signal pulse_length : std_logic_vector (3 downto 0) := x"f";
+
+    constant reset_dly : std_logic_vector (3 downto 0) := x"f";
 
     signal reset : std_logic;
 
 begin
 
-    oserdes_clk    <= not data_clk_i;
-    oserdes_clkdiv <= frame_clk_i;
+    oserdes_clk    <= gbt_tx_clk_i;
+    oserdes_clkdiv <= gbt_tx_clk_div_i;
 
-    iserdes_clk    <= data_clk_i;
-    iserdes_clkdiv <= frame_clk_i;
+    iserdes_clk    <= gbt_rx_clk_i;
+    iserdes_clkdiv <= gbt_rx_clk_div_i;
 
     --================--
     --==    RESET   ==--
@@ -104,23 +104,47 @@ begin
     --      Put the flip-flop in the FPGA logic in front of the ISERDESE1/OSERDESE1 pair
     --      Put a timing constraint on the flip-flop to ISERDESE1/OSERDESE1 of one CLKDIV period or less.
 
-    process (frame_clk_i) begin
-    if (rising_edge(frame_clk_i)) then
+    process (clock) begin
+    if (rising_edge(clock)) then
         reset <= reset_i;
     end if;
     end process;
 
-    process(iserdes_clkdiv)
-    begin
-    if (rising_edge(iserdes_clkdiv)) then
-        iserdes_reset <= reset;
+    i_oserdes_reset : SRL16E
+    generic map ( INIT => x"FFFF")
+    port map (
+        CLK     => oserdes_clkdiv,
+        CE      => '1',
+        D       => reset,
+        A0      => reset_dly(0),
+        A1      => reset_dly(1),
+        A2      => reset_dly(2),
+        A3      => reset_dly(3),
+        Q       => oserdes_reset_srl
+    );
+
+    process (oserdes_clkdiv) begin
+    if (rising_edge(oserdes_clkdiv)) then
+        oserdes_reset        <= oserdes_reset_srl;
     end if;
     end process;
 
-    process(oserdes_clkdiv)
-    begin
-    if (rising_edge(oserdes_clkdiv)) then
-        oserdes_reset <= reset;
+    i_iserdes_reset : SRL16E
+    generic map ( INIT => x"FFFF")
+    port map (
+        CLK     => iserdes_clkdiv,
+        CE      => '1',
+        D       => reset,
+        A0      => reset_dly(0),
+        A1      => reset_dly(1),
+        A2      => reset_dly(2),
+        A3      => reset_dly(3),
+        Q       => iserdes_reset_srl
+    );
+
+    process (iserdes_clkdiv) begin
+    if (rising_edge(iserdes_clkdiv)) then
+        iserdes_reset        <= iserdes_reset_srl;
     end if;
     end process;
 
@@ -143,10 +167,14 @@ begin
 
     -- remap to account for how the Xilinx IPcore assigns the output pins
     -- flip-flop for routing and alignment
-    process (iserdes_clkdiv) begin
-        if (rising_edge(iserdes_clkdiv)) then
-            from_gbt <= from_gbt_raw(1) & from_gbt_raw(3) & from_gbt_raw(5) & from_gbt_raw(7) & from_gbt_raw(9) & from_gbt_raw(11) & from_gbt_raw(13) & from_gbt_raw(15)  &
-                        from_gbt_raw(0) & from_gbt_raw(2) & from_gbt_raw(4) & from_gbt_raw(6) & from_gbt_raw(8) & from_gbt_raw(10) & from_gbt_raw(12) & from_gbt_raw(14);
+    process (iserdes_clk) begin
+        if (rising_edge(iserdes_clk)) then
+
+            from_gbt_remapped <= from_gbt_raw(1) & from_gbt_raw(3) & from_gbt_raw(5) & from_gbt_raw(7) & from_gbt_raw(9) & from_gbt_raw(11) & from_gbt_raw(13) & from_gbt_raw(15)  &
+                                 from_gbt_raw(0) & from_gbt_raw(2) & from_gbt_raw(4) & from_gbt_raw(6) & from_gbt_raw(8) & from_gbt_raw(10) & from_gbt_raw(12) & from_gbt_raw(14);
+
+            from_gbt <= from_gbt_remapped;
+
         end if;
     end process;
 
@@ -159,7 +187,7 @@ begin
     process(oserdes_clkdiv)
     begin
     if (rising_edge(oserdes_clkdiv)) then
-        if (oserdes_reset='1') then
+        if (reset='1') then
             to_gbt_polswap <= (others => '0');
         else
 
@@ -175,7 +203,7 @@ begin
     i_gbt_tx_bitslip : entity work.gbt_tx_bitslip
     port map(
         fabric_clk  => oserdes_clkdiv,
-        reset       => oserdes_reset,
+        reset       => reset,
         bitslip_cnt => 0,
         din         => to_gbt_polswap, -- 16 bit data input, synchronized to frame-clock
         dout        => to_gbt_bitslipped
@@ -190,19 +218,9 @@ begin
     process(oserdes_clkdiv)
     begin
     if (rising_edge(oserdes_clkdiv)) then
-        if (oserdes_reset='1') then
+        if (reset='1') then
             to_gbt_remap   <= (others => '0');
         else
-
-
-            -- dout <=    data(15) & data(7) &
-            --            data(14) & data(6) &
-            --            data(13) & data(5) &
-            --            data(12) & data(4) &
-            --            data(11) & data(3) &
-            --            data(10) & data(2) &
-            --            data(9)  & data(1) &
-            --            data(8)  & data(0) ;
 
             to_gbt_remap <= to_gbt_bitslipped(8)  & to_gbt_bitslipped(0) &
                             to_gbt_bitslipped(9)  & to_gbt_bitslipped(1) &
@@ -218,9 +236,9 @@ begin
 
     -- register input to the oserdes for better timing
 
-    process(oserdes_clk)
+    process(oserdes_clkdiv)
     begin
-    if (rising_edge(oserdes_clk)) then
+    if (rising_edge(oserdes_clkdiv)) then
             to_gbt_reg <= to_gbt_remap;
     end if;
     end process;
@@ -253,26 +271,33 @@ begin
     -- and vice versa
 
     -- data from gbt to FPGA clock domain
-    process(clock)
-    begin
-        if (rising_edge(clock)) then
-            from_gbt_s1 <= from_gbt;
-            from_gbt_s2 <= from_gbt_s1;
-        end if;
-    end process;
 
-    data_o <= from_gbt_s2; -- synchronized from "from_gbt"
+    i_gbt_to_fpga_clk : entity work.gbt_cdc_fifo
+    port map(
+        rst  => reset,
+        wr_en => '1',
+        rd_en => '1',
+        din => from_gbt,
+        dout => data_o,
+        wr_clk => iserdes_clkdiv,
+        rd_clk => clock,
+        full => open,
+        empty => open
+    );
 
     -- data from FPGA clock domain to GBT frame clock
 
-    process(oserdes_clkdiv)
-    begin
-        if (rising_edge(oserdes_clkdiv)) then
-            to_gbt_s1 <= data_i;
-            to_gbt_s2 <= to_gbt_s1;
-        end if;
-    end process;
-
-    to_gbt <= to_gbt_s2;   -- synchronized from data_i
+    i_fpga_to_gbt_clk : entity work.gbt_cdc_fifo
+    port map(
+        rst  => reset,
+        wr_en => '1',
+        rd_en => '1',
+        din => data_i,
+        dout => to_gbt,
+        wr_clk => clock,
+        rd_clk  => oserdes_clkdiv,
+        full => open,
+        empty => open
+    );
 
 end Behavioral;

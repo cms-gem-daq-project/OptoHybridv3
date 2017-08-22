@@ -31,8 +31,8 @@ module oversampler (
 
   output reg phase_err,
 
-  output d0,
-  output d1,
+  output reg d0,
+  output reg d1,
 
   output sump
 
@@ -224,14 +224,14 @@ iserdes_odd   (
       case (sample_sel)
       2'd0: d01_mux[1:0] <= {id[0],id[4]}; // eq00,  45 and 225 degree samples
       2'd1: d01_mux[1:0] <= {id[1],id[5]}; // eq01,   0 and 180 degree samples
-      2'd3: d01_mux[1:0] <= {id[2],id[6]}; // eq11, 225 and 315 degree samples
+      2'd3: d01_mux[1:0] <= {id[2],id[6]}; // eq11, 135 and 315 degree samples
       2'd2: d01_mux[1:0] <= {id[3],id[7]}; // eq10,  90 and 270 degree samples
       endcase
 
       case (sample_sel)
       2'd0: phase_err <= phase_err4[2'b00]; // eq00,  45 and 225 degree samples
       2'd1: phase_err <= phase_err4[2'b01]; // eq01,   0 and 180 degree samples
-      2'd3: phase_err <= phase_err4[2'b11]; // eq11, 225 and 315 degree samples
+      2'd3: phase_err <= phase_err4[2'b11]; // eq11, 135 and 315 degree samples
       2'd2: phase_err <= phase_err4[2'b10]; // eq10,  90 and 270 degree samples
       endcase
     end
@@ -239,8 +239,11 @@ iserdes_odd   (
 
     wire polswap;
     // outputs
-    assign d0 = d01_mux[ polswap];
-    assign d1 = d01_mux[~polswap];
+
+    always @(posedge fastclock) begin
+      d0 = d01_mux[ polswap];
+      d1 = d01_mux[~polswap];
+    end
 
     generate
 
@@ -273,7 +276,7 @@ iserdes_odd   (
           // by asserting the inv_sel signal
 
           reg data_on_d1 = 0;
-          always @(negedge fastclock) begin
+          always @(posedge fastclock) begin
             if      (d01_mux[0])
               data_on_d1 <= 1'b0;
             else if (d01_mux[1])

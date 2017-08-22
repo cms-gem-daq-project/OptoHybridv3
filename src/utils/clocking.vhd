@@ -30,8 +30,11 @@ port(
     gbt_dclk_n : in std_logic_vector(1 downto 0);
 
     -- eport 40/320 serdes clocks
-    gbt_clk1x_o     : out std_logic;
-    gbt_clk8x_o     : out std_logic;
+    gbt_rx_clk_div_o : out std_logic;
+    gbt_rx_clk_o     : out std_logic;
+
+    gbt_tx_clk_div_o : out std_logic;
+    gbt_tx_clk_o     : out std_logic;
 
     -- logic clocks
     clk_1x_o        : out std_logic;
@@ -88,8 +91,12 @@ begin
         clk40_i_p   => gbt_dclk_p(1),
         clk40_i_n   => gbt_dclk_n(1),
 
-        clk40_o     => gbt_clk1x_o,
-        clk320_o    => gbt_clk8x_o,
+        gbt_rxclk_div    => gbt_rx_clk_div_o,
+        gbt_rxclk        => gbt_rx_clk_o,
+
+        gbt_txclk_div    => gbt_tx_clk_div_o,
+        gbt_txclk        => gbt_tx_clk_o,
+
         locked_o    => mmcm_locked(1)
     );
 

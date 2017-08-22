@@ -41,8 +41,8 @@ _xmsgs
 .Xil
 
 src/ip_cores/*
-!*.xcix
-!*.xci
+*.xcix
+*.xci
 !src/ip_cores/*.xco
 tags
 

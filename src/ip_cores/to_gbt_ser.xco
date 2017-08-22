@@ -1,7 +1,7 @@
 ##############################################################
 #
 # Xilinx Core Generator version 14.7
-# Date: Tue Jul 25 00:31:30 2017
+# Date: Wed Aug 23 16:48:35 2017
 #
 ##############################################################
 #
@@ -72,7 +72,7 @@ CSET v6_active_edge=SDR
 CSET v6_bus_in_delay=NONE
 CSET v6_bus_in_tap=0
 CSET v6_bus_out_delay=NONE
-CSET v6_bus_out_tap=0
+CSET v6_bus_out_tap=6
 CSET v6_clk_buf=MMCM
 CSET v6_clk_io_std=LVCMOS25
 CSET v6_clk_sig_type=SINGLE
@@ -85,4 +85,4 @@ CSET v6_oddr_alignment=SAME_EDGE
 MISC pkg_timestamp=2012-03-26T12:54:40Z
 # END Extra information
 GENERATE
-# CRC: 21bdfe1b
+# CRC: 15b30168

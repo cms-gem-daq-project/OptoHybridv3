@@ -30,8 +30,11 @@ port(
 
     clock_i : in std_logic; -- 40 MHz logic clock
 
-    frame_clk_i : in std_logic; -- 40 MHz phase shiftable frame clock from GBT
-    data_clk_i  : in std_logic; -- 320 MHz frame clock  from GBT
+    gbt_rx_clk_div_i : in std_logic; -- 40 MHz phase shiftable frame clock from GBT
+    gbt_rx_clk_i     : in std_logic; -- 320 MHz phase shiftable frame clock from GBT
+
+    gbt_tx_clk_div_i : in std_logic; -- 40 MHz phase shiftable frame clock from GBT
+    gbt_tx_clk_i     : in std_logic; -- 320 MHz phase shiftable frame clock from GBT
 
     elink_i_p : in  std_logic_vector (1 downto 0);
     elink_i_n : in  std_logic_vector (1 downto 0);
@@ -81,8 +84,13 @@ begin
        reset_i          => reset,
 
        -- input clocks
-       data_clk_i       => data_clk_i,  -- 320 MHz sampling clock
-       frame_clk_i      => frame_clk_i, -- 40 MHz frame clock
+
+       gbt_rx_clk_div_i => gbt_rx_clk_div_i , -- 40 MHz phase shiftable frame clock from GBT
+       gbt_rx_clk_i     => gbt_rx_clk_i     , -- 320 MHz phase shiftable frame clock from GBT
+
+       gbt_tx_clk_div_i => gbt_tx_clk_div_i , -- 40 MHz phase shiftable frame clock from GBT
+       gbt_tx_clk_i     => gbt_tx_clk_i     , -- 320 MHz phase shiftable frame clock from GBT
+
        clock            => clock_i,     -- 40 MHz logic clock
 
        -- serial data

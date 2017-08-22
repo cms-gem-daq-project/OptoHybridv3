@@ -112,8 +112,11 @@ architecture Behavioral of optohybrid_top is
 
     signal clock            : std_logic;
 
-    signal gbt_clk1x        : std_logic;
-    signal gbt_clk8x        : std_logic;
+    signal gbt_rx_clk_div   : std_logic;
+    signal gbt_rx_clk       : std_logic;
+
+    signal gbt_tx_clk_div   : std_logic;
+    signal gbt_tx_clk       : std_logic;
 
     signal clk_1x           : std_logic;
     signal clk_2x           : std_logic;
@@ -220,8 +223,11 @@ begin
         eprt_mmcm_locked_o => eprt_mmcm_locked,
         dskw_mmcm_locked_o => dskw_mmcm_locked,
 
-        gbt_clk1x_o        => gbt_clk1x, -- 40  MHz e-port aligned GBT clock (DO NOT SHIFT)
-        gbt_clk8x_o        => gbt_clk8x, -- 320 MHz e-port aligned GBT clock (DO NOT SHIFT)
+        gbt_rx_clk_div_o   => gbt_rx_clk_div, -- 40  MHz e-port aligned GBT clock
+        gbt_rx_clk_o       => gbt_rx_clk,     -- 320 MHz e-port aligned GBT clock
+
+        gbt_tx_clk_div_o   => gbt_tx_clk_div, -- 40  MHz e-port aligned GBT clock
+        gbt_tx_clk_o       => gbt_tx_clk,     -- 320 MHz e-port aligned GBT clock
 
         clk_1x_o           => clk_1x, -- phase shiftable logic clocks
         clk_2x_o           => clk_2x,
@@ -254,8 +260,11 @@ begin
 
         -- input clocks
 
-        frame_clk_i => gbt_clk1x, -- 40 MHz frame clock
-        data_clk_i  => gbt_clk8x, -- 320 MHz sampling clock
+        gbt_rx_clk_div_i  => gbt_rx_clk_div, -- 40 MHz frame clock
+        gbt_rx_clk_i      => gbt_rx_clk,     -- 320 MHz sampling clock
+
+        gbt_tx_clk_div_i  => gbt_tx_clk_div, -- 40 MHz frame clock
+        gbt_tx_clk_i      => gbt_tx_clk,     -- 320 MHz sampling clock
 
         clock_i => clock,         -- 320 MHz sampling clock
 
@@ -292,7 +301,7 @@ begin
         --== TTC ==--
 
         clock_i                =>   clock,
-        gbt_clock_i            =>   gbt_clk1x,
+        gbt_clock_i            =>   gbt_rx_clk_div,
         reset_i                =>   reset,
 
         ttc_l1a                =>   ttc_l1a,

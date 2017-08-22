@@ -34,32 +34,52 @@ module frame_aligner (
   parameter MXIO = 8;
   parameter WORD_SIZE = MXSBITS / MXIO;
 
+  // Register Inputs
+
   reg reset=1;
   always @(posedge clock) begin
     reset <= reset_i;
   end
 
-  reg ready=0;
+  reg [MXIO-1:0] d0_ff, d1_ff;
+  reg sof_ff;
 
+  always @(posedge fastclock) begin
+    d0_ff <= d0;
+    d1_ff <= d1;
+    sof_ff <= start_of_frame;
+  end
 
   //--------------------------------------------------------------------------------------------------------------------
   // Start of Frame Delays
   //--------------------------------------------------------------------------------------------------------------------
 
+  reg ready=0;
+
   wire sof_dly_srl;
   wire sof_dly2_srl;
 
+  reg  [3:0] srl_adr_ctrl=0;
   reg  [3:0] srl_adr=0; // frame alignment srl_adr
-  wire [3:0] srl_adr2 = 4'd4;
 
-  SRL16E  srlsof0a   (.CLK(fastclock),.CE(1'b1),.D(start_of_frame),.A0(srl_adr[0]), .A1(srl_adr[1]), .A2(srl_adr[2]), .A3(srl_adr[3]), .Q(sof_dly_srl));
-  SRL16E  srlsof0b   (.CLK(fastclock),.CE(1'b1),.D(sof_dly_srl),   .A0(srl_adr2[0]),.A1(srl_adr2[1]),.A2(srl_adr2[2]),.A3(srl_adr2[3]),.Q(sof_dly2_srl));
+  // flip-flop for fanout (failed timing on one channel w/o)
+  always @(posedge fastclock)
+    srl_adr <= srl_adr_ctrl;
+
+  wire [3:0] srl_adr2 = 4'd5;
+
+  SRL16E  srlsof0a   (.CLK(fastclock),.CE(1'b1),.D(sof_ff),      .A0(srl_adr[0]), .A1(srl_adr[1]), .A2(srl_adr[2]), .A3(srl_adr[3]), .Q(sof_dly_srl));
+  SRL16E  srlsof0b   (.CLK(fastclock),.CE(1'b1),.D(sof_dly_srl), .A0(srl_adr2[0]),.A1(srl_adr2[1]),.A2(srl_adr2[2]),.A3(srl_adr2[3]),.Q(sof_dly2_srl));
   // delay sof by 3 to compensate for the s-bit even/odd fifo output equivalent delay
 
   // reg for fanout
+  reg sof_dly2_srl_ff;
+  (* max_fanout = 1 *)
   reg sof_dly2;
-  always @(posedge fastclock)
-    sof_dly2 <= sof_dly2_srl;
+  always @(posedge fastclock) begin
+    sof_dly2_srl_ff <= sof_dly2_srl;
+    sof_dly2        <= sof_dly2_srl_ff;
+  end
 
   //--------------------------------------------------------------------------------------------------------------------
   // Data Delays
@@ -75,10 +95,10 @@ module frame_aligner (
   generate
     for (ibit=0; ibit<8; ibit=ibit+1) begin: bloop
     // odd bits
-    SRL16E srldat0 (.CLK(fastclock),.CE(1'b1),.D(d0[ibit]),.A0(srl_adr0[0]),.A1(srl_adr0[1]),.A2(srl_adr0[2]),.A3(srl_adr0[3]),.Q(d0_dly_srl[ibit]));
+    SRL16E srldat0 (.CLK(fastclock),.CE(1'b1),.D(d0_ff[ibit]),.A0(srl_adr0[0]),.A1(srl_adr0[1]),.A2(srl_adr0[2]),.A3(srl_adr0[3]),.Q(d0_dly_srl[ibit]));
 
     // even bits
-    SRL16E srldat1 (.CLK(fastclock),.CE(1'b1),.D(d1[ibit]),.A0(srl_adr1[0]),.A1(srl_adr1[1]),.A2(srl_adr1[2]),.A3(srl_adr1[3]),.Q(d1_dly_srl[ibit]));
+    SRL16E srldat1 (.CLK(fastclock),.CE(1'b1),.D(d1_ff[ibit]),.A0(srl_adr1[0]),.A1(srl_adr1[1]),.A2(srl_adr1[2]),.A3(srl_adr1[3]),.Q(d1_dly_srl[ibit]));
     end
   endgenerate
 
@@ -98,8 +118,8 @@ module frame_aligner (
   wire [7:0] sbits_interleaved_lsbs [MXIO-1:0];
   wire [7:0] sbits_interleaved_msbs [MXIO-1:0];
 
-  wire [WORD_SIZE-1:0] sbits_interleaved      [MXIO-1:0];
-
+  reg [WORD_SIZE-1:0] sbits_interleaved_s0 [MXIO-1:0];
+  reg [WORD_SIZE-1:0] sbits_interleaved_s1 [MXIO-1:0];
 
   genvar ipin;
   generate
@@ -147,10 +167,16 @@ module frame_aligner (
       sbit_fifo_odd [ipin][0]
     };
 
-    if (DDR)
-      assign sbits_interleaved[ipin]= {sbits_interleaved_msbs[ipin], sbits_interleaved_lsbs[ipin]};
-    else
-      assign sbits_interleaved[ipin] = sbits_interleaved_lsbs[ipin];
+    always @(posedge fastclock) begin
+      if (DDR)
+        sbits_interleaved_s0[ipin] <= {sbits_interleaved_msbs[ipin], sbits_interleaved_lsbs[ipin]};
+      else
+        sbits_interleaved_s0[ipin] <= sbits_interleaved_lsbs[ipin];
+    end
+
+    always @(posedge fastclock) begin
+      sbits_interleaved_s1[ipin] <= sbits_interleaved_s0[ipin];
+    end
 
   end
   endgenerate
@@ -165,14 +191,14 @@ module frame_aligner (
       sbits_reg <= {MXSBITS{1'b0}};
     else
       sbits_reg <= {
-        sbits_interleaved[7],
-        sbits_interleaved[6],
-        sbits_interleaved[5],
-        sbits_interleaved[4],
-        sbits_interleaved[3],
-        sbits_interleaved[2],
-        sbits_interleaved[1],
-        sbits_interleaved[0]
+        sbits_interleaved_s0[7],
+        sbits_interleaved_s0[6],
+        sbits_interleaved_s0[5],
+        sbits_interleaved_s0[4],
+        sbits_interleaved_s0[3],
+        sbits_interleaved_s0[2],
+        sbits_interleaved_s0[1],
+        sbits_interleaved_s0[0]
         };
   end
 
@@ -205,7 +231,7 @@ module frame_aligner (
     check_sof <= check_sof + 1'b1;
 
     if (check_sof==0 && !sof_aligned)
-      srl_adr=srl_adr+1'b1;
+      srl_adr_ctrl=srl_adr_ctrl+1'b1;
   end
 
   always @(posedge clock) begin

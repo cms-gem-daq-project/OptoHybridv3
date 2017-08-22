@@ -42,7 +42,7 @@ module ttc (
 );
 
   parameter        MXBXN     = 12;       // Number BXN bits, LHC bunchs numbered 0 to 3563
-  parameter [12:0] LHC_CYCLE = 12'd3564; // LHC period, max BXN count+1
+  parameter [11:0] LHC_CYCLE = 12'd3564; // LHC period, max BXN count+1
   parameter        MXCNT     = 32;       // Maximum counter length
   parameter        MXUPT     = 16;       // Maximum counter length
 
