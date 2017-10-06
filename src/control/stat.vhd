@@ -130,7 +130,7 @@ begin
     --=============--
 
     reg_data(0)  <=                         RELEASE_YEAR & RELEASE_MONTH & RELEASE_DAY;
-    reg_data(1)  <=                         MAJOR_VERSION & MINOR_VERSION & RELEASE_VERSION & x"0A"; -- MMmmVVXX
+    reg_data(1)  <=                         MAJOR_VERSION & MINOR_VERSION & RELEASE_VERSION & RELEASE_HARDWARE; -- MMmmVVXX
     reg_data(2)  <= (31 downto 3  => '0') &  eprt_mmcm_locked_i & dskw_mmcm_locked_i & mmcms_locked_i;
     reg_data(3)  <= (31 downto 1  => '0') &  sem_critical_i;
     reg_data(4)  <= (31 downto 3  => '0') &  gbt_rxready_i & gbt_rxvalid_i & gbt_txready_i;
