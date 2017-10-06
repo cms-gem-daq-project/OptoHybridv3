@@ -167,8 +167,8 @@ begin
 
     -- remap to account for how the Xilinx IPcore assigns the output pins
     -- flip-flop for routing and alignment
-    process (iserdes_clk) begin
-        if (rising_edge(iserdes_clk)) then
+    process (iserdes_clkdiv) begin
+        if (rising_edge(iserdes_clkdiv)) then
 
             from_gbt_remapped <= from_gbt_raw(1) & from_gbt_raw(3) & from_gbt_raw(5) & from_gbt_raw(7) & from_gbt_raw(9) & from_gbt_raw(11) & from_gbt_raw(13) & from_gbt_raw(15)  &
                                  from_gbt_raw(0) & from_gbt_raw(2) & from_gbt_raw(4) & from_gbt_raw(6) & from_gbt_raw(8) & from_gbt_raw(10) & from_gbt_raw(12) & from_gbt_raw(14);
