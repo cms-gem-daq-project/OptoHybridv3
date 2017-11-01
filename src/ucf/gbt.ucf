@@ -1,16 +1,25 @@
 ########################################################################################################################
 # E-links
 ########################################################################################################################
+
 # outputs
+
+# 80 MHZ e-link
 NET "elink_o_p<0>" LOC = AG16; # GBTx DOUT 28
 NET "elink_o_n<0>" LOC = AF16; #
+
+# 320 MHz e-link
 # POLSWAPed, make sure to account in firmware
 NET "elink_o_p<1>" LOC = L19;
 NET "elink_o_n<1>" LOC = L18;
 
 # inputs
+
+# 80MHz e-link
 NET "elink_i_p<0>" LOC = AG15 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE; # GBTx DIN 28
 NET "elink_i_n<0>" LOC = AF15 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE; #
+
+# 320 MHz e-link
 NET "elink_i_p<1>" LOC = AD24 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE; # GBTx DIN 36
 NET "elink_i_n<1>" LOC = AE24 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE; #
 

@@ -1,17 +1,14 @@
 ----------------------------------------------------------------------------------
--- Company:        IIHE - ULB
--- Engineer:       Evaldas Juska
---
--- Create Date:    13:13:21 05/13/2016
--- Design Name:    OptoHybrid v2
--- Module Name:    sbits - Behavioral
--- Project Name:   OptoHybrid v2
--- Target Devices: xc6vlx130t-1ff1156
--- Tool versions:  ISE  P.20131013
+-- CMS Muon Endcap
+-- GEM Collaboration
+-- Optohybrid v3 Firmware -- S-Bits
+-- A. Peck
+----------------------------------------------------------------------------------
 -- Description:
---
--- Sbits handling
---
+--   This module wraps up all the functionality for deserializing 320 MHz S-bits
+--   as well as the cluster packer
+----------------------------------------------------------------------------------
+-- 2017/11/01 -- Add description / comments
 ----------------------------------------------------------------------------------
 
 library ieee;
@@ -29,7 +26,7 @@ port(
     clk40_i                 : in std_logic;
     delay_refclk_i          : in std_logic;
 
-    cluster_clk : in std_logic;
+    cluster_clk             : in std_logic;
 
     reset_i                 : in std_logic;
 
@@ -82,6 +79,8 @@ begin
 
     -- don't need to do a 180 on the clock-- use local inverters for deserialization to save 1 global clock
     clk160_180 <= not clk160_i;
+
+    -- remap VFATs for input to cluster packer
 
     sbits_p <=  trigger_unit_i(23).trig_data_p
               & trigger_unit_i(22).trig_data_p
@@ -184,6 +183,12 @@ begin
                        & trigger_unit_i(0).start_of_frame_n;
 
 
+    --=======================--
+    --== Trigger Alignment ==--
+    --=======================--
+
+    -- deserializes and aligns the 192 320 MHz s-bits into 1536 40MHz s-bits
+
     trig_alignment : entity work.trig_alignment
     port map (
 
@@ -208,7 +213,7 @@ begin
         sbits => sbits
     );
 
-    -- combinatorial renaming for input to module
+    -- combinatorial renaming for input to cluster packing module
 
     vfat_sbits (0)  <= sbits (63   downto 0);
     vfat_sbits (1)  <= sbits (127  downto 64);
@@ -235,6 +240,13 @@ begin
     vfat_sbits (22) <= sbits (1471 downto 1408);
     vfat_sbits (23) <= sbits (1535 downto 1472);
 
+    --========================--
+    --==  Active VFAT Flags ==--
+    --========================--
+
+    -- want to generate 24 bits as active VFAT flags, indicating that at least one s-bit on that VFAT
+    -- was active in this 40MHz cycle
+
     -- I don't want to do 64 bit reduction in 1 clock... split it over 2 to add slack to PAR and timing
 
     active_vfat_s1 : for I in 0 to (191) generate
@@ -256,6 +268,10 @@ begin
         end if;
     end process;
     end generate;
+
+    --======================--
+    --== Cluster Packer   ==--
+    --======================--
 
     cluster_packer_inst : entity work.cluster_packer
 
