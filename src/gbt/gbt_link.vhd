@@ -96,9 +96,8 @@ begin
         resync_o      => resync_o,
         reset_vfats_o => reset_vfats_o,
 
-        -- 65 bit output packet to fifo
-        req_en_o     => gbt_rx_req,
-        req_data_o   => gbt_rx_data,
+        req_en_o     => gbt_rx_req, -- 1 bit, wishbone request recevied from GBTx
+        req_data_o   => gbt_rx_data, -- 49 bit packet (1 bit we + 16 bit addr + 32 bit data)
 
         -- status
         error_o      => error_o
@@ -140,9 +139,9 @@ begin
         reset_i         => reset,
 
         -- rx parallel data (from GBT)
-        wb_mst_req_o    => wb_mst_req_o, -- 32 bit adr + 32 bit data + we
+        wb_mst_req_o    => wb_mst_req_o, -- 16 bit adr + 32 bit data + we
         rx_en_i         => gbt_rx_req,
-        rx_data_i       => gbt_rx_data,  -- 32 bit adr + 32 bit data
+        rx_data_i       => gbt_rx_data,  -- 16 bit adr + 32 bit data
 
         -- tx parallel data (to GBT)
 

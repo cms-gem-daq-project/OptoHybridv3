@@ -45,7 +45,7 @@ module led_control (
 // LED Blinkers
 //----------------------------------------------------------------------------------------------------------------------
 
-  // count to 20 bits for 40 MHz clock to divide to 4 Hz
+  // count to 21 bits for 40 MHz clock to divide to 2 Hz
 
   wire clk = clock;
 
@@ -58,7 +58,7 @@ module led_control (
       clk_led <= ~ clk_led;
   end
 
-  // count to 20 bits for 40 MHz clock to divide to 4 Hz
+  // count to 21 bits for 40 MHz clock to divide to 2 Hz
 
   wire eclk = gbt_eclk;
 
@@ -82,9 +82,9 @@ module led_control (
     .g_CLK_FREQUENCY         (32'd40079000), // 40MHz LHC frequency
     .g_COUNTER_WIDTH         (32'd32),
     .g_INCREMENTER_WIDTH     (32'd8),
-    .g_PROGRESS_BAR_WIDTH    (32'd12),       // we'll have 12 LEDs as a rate progress bar
-    .g_PROGRESS_BAR_STEP     (32'd20000),    // each bar is 20KHz
-    .g_SPEEDUP_FACTOR        (32'd4)         // update 16 times per second
+    .g_PROGRESS_BAR_WIDTH    (32'd12),  // we'll have 12 LEDs as a rate progress bar
+    .g_PROGRESS_BAR_STEP     (32'd100), // each bar is 20KHz
+    .g_SPEEDUP_FACTOR        (32'd4)    // update 16 times per second
   )
   u_rate_cnt (
     .clk_i           (clock),

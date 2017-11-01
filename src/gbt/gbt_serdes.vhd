@@ -40,16 +40,16 @@ port(
 
     clock            : in std_logic;
 
-    -- serial data
+    -- serial data to/from GBTx
     elink_o_p        : out std_logic_vector(1 downto 0);
     elink_o_n        : out std_logic_vector(1 downto 0);
 
     elink_i_p        : in  std_logic_vector(1 downto 0);
     elink_i_n        : in  std_logic_vector(1 downto 0);
 
-    -- parallel data
-    data_i           : in std_logic_vector (15 downto 0);
-    data_o           : out std_logic_vector(15 downto 0);
+    -- parallel data to/from FPGA logic
+    data_i           : in  std_logic_vector (15 downto 0);
+    data_o           : out std_logic_vector (15 downto 0);
     valid_o          : out std_logic
 );
 end gbt_serdes;
