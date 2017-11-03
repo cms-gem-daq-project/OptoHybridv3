@@ -124,6 +124,8 @@ architecture Behavioral of control is
     signal ttc_bx0_sync_err      : std_logic;
     signal ttc_bxn_sync_err      : std_logic;
 
+    signal vfat_reset : std_logic; 
+
     --== ADC ==--
 
     signal overtemp       : std_logic;
@@ -154,6 +156,7 @@ begin
 
 
     wb_m_res_o  <= wb_m_res;
+    vfat_reset_o <= vfat_reset; 
 
     --=====================--
     --== Wishbone switch ==--
@@ -186,7 +189,7 @@ begin
         wb_slv_res_o        => wb_s_res(WB_SLV_SYS),
 
         -- sbit control
-        vfat_reset_o            => vfat_reset_o,
+        vfat_reset_o            => vfat_reset,
         vfat_sbit_mask_o        => sbit_mask_o,
         vfat_trigger_deadtime_o => trigger_deadtime_o,
 
@@ -307,6 +310,14 @@ begin
     port map (
         -- reset
         reset         => reset,
+
+	-- ttc commands
+
+	ttc_l1a => ttc_l1a, 
+        ttc_bc0 => ttc_bc0, 
+	ttc_resync => ttc_resync, 
+        vfat_reset => vfat_reset,
+
 
         -- clocks
         clock         => clock_i,
