@@ -203,23 +203,33 @@ module frame_aligner (
   end
 
   // look for rising edge of the sof signal
-  reg sof_last;
+  // incase the sof signal is inverted, we require a few low clocks before the high
+  // don't want to trigger on the rising edge of the inverted signal.. yikes..
+  // saw this during prototype testing with a (apparently) swapped pair
+
+  reg sof_last_last=1;
+  reg sof_last=1;
+
   always @(posedge fastclock) begin
-    sof_last <= sof_dly2;
+    sof_last      <= sof_dly2;
+    sof_last_last <= sof_last;
   end
 
   // 40 MHz stable sof aligned flag
   reg sof_aligned = 0;
   always @(posedge clock) begin
-    sof_aligned <= !sof_last && sof_dly2;
+    sof_aligned <= !sof_last_last && !sof_last && sof_dly2;
   end
 
   // output
   assign sof_delayed = sof_dly2;
 
-  reg [7:0] sof_r;
+  // require 8 cycles of alignment before outputting S-bits
+
+  parameter MXSTABLE = 16; 
+  reg [MXSTABLE-1:0] sof_r;
   always @(posedge clock) begin
-    sof_r <= {sof_r[6:0],sof_aligned};
+    sof_r <= {sof_r[MXSTABLE-1:0],sof_aligned};
     ready <= &sof_r;
   end
 

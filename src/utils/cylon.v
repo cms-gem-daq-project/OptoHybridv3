@@ -16,9 +16,9 @@
   module cylon1 (clock,rate,q);
 
 // Ports
-  input               clock;
-  input       [1:0]   rate;
-  output  reg [11:0]  q;
+  input              clock;
+  input       [1:0]  rate;
+  output  reg [7:0]  q;
 
 // Initialization
   wire [3:0] pdly  = 0;
@@ -50,7 +50,7 @@
 // ROM address pointer runs 0 to 13
   reg  [4:0] adr = 0;
 
-  wire last_adr = (adr==21);
+  wire last_adr = (adr==13);
 
   always @(posedge clock) begin
   if (next_adr) begin
@@ -60,33 +60,25 @@
   end
 
 // Display pattern ROM
-  reg  [11:0] rom;
+  reg  [7:0] rom;
 
   always @(adr) begin
   case (adr)
-  5'd0:  rom   <= 12'b000000000001;
-  5'd1:  rom   <= 12'b000000000010;
-  5'd2:  rom   <= 12'b000000000100;
-  5'd3:  rom   <= 12'b000000001000;
-  5'd4:  rom   <= 12'b000000010000;
-  5'd5:  rom   <= 12'b000000100000;
-  5'd6:  rom   <= 12'b000001000000;
-  5'd7:  rom   <= 12'b000010000000;
-  5'd8:  rom   <= 12'b000100000000;
-  5'd9:  rom   <= 12'b001000000000;
-  5'd10: rom   <= 12'b010000000000;
-  5'd11: rom   <= 12'b100000000000;
-  5'd12: rom   <= 12'b010000000000;
-  5'd13: rom   <= 12'b001000000000;
-  5'd14: rom   <= 12'b000100000000;
-  5'd15: rom   <= 12'b000010000000;
-  5'd16: rom   <= 12'b000001000000;
-  5'd17: rom   <= 12'b000000100000;
-  5'd18: rom   <= 12'b000000010000;
-  5'd19: rom   <= 12'b000000001000;
-  5'd20: rom   <= 12'b000000000100;
-  5'd21: rom   <= 12'b000000000010;
-  default: rom <= 12'b101010101010;
+  5'd0:  rom   <= 8'b00000001;
+  5'd1:  rom   <= 8'b00000010;
+  5'd2:  rom   <= 8'b00000100;
+  5'd3:  rom   <= 8'b00001000;
+  5'd4:  rom   <= 8'b00010000;
+  5'd5:  rom   <= 8'b00100000;
+  5'd6:  rom   <= 8'b01000000;
+  5'd7:  rom   <= 8'b10000000;
+  5'd8:  rom   <= 8'b01000000;
+  5'd9:  rom   <= 8'b00100000;
+  5'd10: rom   <= 8'b00010000;
+  5'd11: rom   <= 8'b00001000;
+  5'd12: rom   <= 8'b00000100;
+  5'd13: rom   <= 8'b00000010;
+  default: rom <= 8'b10101010;
   endcase
   end
 

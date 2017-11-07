@@ -9,6 +9,7 @@
 ----------------------------------------------------------------------------------
 -- 2017/07/24 -- Removal of VFAT2 event building
 -- 2017/08/03 -- Addition of 10 bit decoding for OHv3a w/ 1x 80Mhz + 1x 320 Mhz
+-- 2017/11/07 -- Add idle state
 ----------------------------------------------------------------------------------
 
 library ieee;
@@ -56,7 +57,7 @@ end gbt_rx ;
 
 architecture Behavioral of gbt_rx is
 
-    type state_t is (SYNCING, FRAME_BEGIN, ADDR_0, ADDR_1, ADDR_2, DATA_0, DATA_1, DATA_2, DATA_3, DATA_4, FRAME_END);
+    type state_t is (SYNCING, IDLE, FRAME_BEGIN, ADDR_0, ADDR_1, ADDR_2, DATA_0, DATA_1, DATA_2, DATA_3, DATA_4, FRAME_END);
 
     signal req_valid    : std_logic;
     signal req_data     : std_logic_vector(WB_REQ_BITS-1 downto 0);
@@ -68,6 +69,7 @@ architecture Behavioral of gbt_rx is
     signal data6 : std_logic_vector (5 downto 0);
 
     signal sync_valid : boolean;
+    signal idle_valid : boolean;
 
     signal reset : std_logic;
 
@@ -145,6 +147,7 @@ begin
     data6 <= data_i (11 downto 8) & data_i (6) & data_i(2);
 
     sync_valid <= (data6 = "101010"); -- use a 6 bit end frame symbol
+    idle_valid <= (data6 = "011100"); -- use a 6 bit end frame symbol
 
     process(clock)
     begin
@@ -154,10 +157,23 @@ begin
                 state <= SYNCING;
             else
                 case state is
+
                     when SYNCING      =>
                         if (sync_valid) then
                             state <= FRAME_BEGIN;
+                        elsif (idle_valid) then
+                            state <= IDLE;
                         end if;
+
+                    when IDLE      =>
+                        if (sync_valid) then
+                            state <= FRAME_BEGIN;
+                        elsif (idle_valid) then
+                            state <= IDLE;
+                        else
+                            state <= syncing;
+                        end if;
+
                     when FRAME_BEGIN  => state <= ADDR_0;
                     when ADDR_0       => state <= ADDR_1;
                     when ADDR_1       => state <= ADDR_2;
@@ -167,13 +183,18 @@ begin
                     when DATA_2       => state <= DATA_3;
                     when DATA_3       => state <= DATA_4;
                     when DATA_4       => state <= FRAME_END;
+
                     when FRAME_END    =>
                         if (sync_valid) then
                             state <= FRAME_BEGIN;
+                        elsif (idle_valid) then
+                            state <= IDLE;
                         else
                             state <= SYNCING;
                         end if;
+
                     when others => state <= SYNCING;
+
                 end case;
             end if;
         end if;
@@ -233,6 +254,7 @@ begin
     data6 <= (others => '0'); -- not used in 16 bit mode
 
     sync_valid <= data_i(11 downto 0) = x"ABC"; -- 12 bit DAV
+    idle_valid <= data_i(11 downto 0) = x"AFA"; -- 12 bit idle
 
     process(clock)
     begin
@@ -242,18 +264,32 @@ begin
                 state <= SYNCING;
             else
                 case state is
+
                     when SYNCING      =>
                         if (sync_valid) then
                             state <= FRAME_BEGIN;
+                        elsif (idle_valid) then
+                            state <= IDLE;
                         end if;
+
+                    when IDLE      =>
+                        if (sync_valid) then
+                            state <= FRAME_BEGIN;
+                        elsif (idle_valid) then
+                            state <= FRAME_BEGIN;
+                        end if;
+
                     when FRAME_BEGIN  => state <= ADDR_0;
                     when ADDR_0       => state <= DATA_0;
                     when DATA_0       => state <= DATA_1;
                     when DATA_1       => state <= DATA_2;
                     when DATA_2       => state <= FRAME_END;
+
                     when FRAME_END    =>
                         if (sync_valid) then
                             state <= FRAME_BEGIN;
+                        elsif (idle_valid) then
+                            state <= IDLE;
                         else
                             state <= SYNCING;
                         end if;

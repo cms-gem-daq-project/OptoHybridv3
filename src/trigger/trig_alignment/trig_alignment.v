@@ -54,7 +54,7 @@ module trig_alignment (
   wire [23:0] start_of_frame_d0;
   wire [23:0] start_of_frame_d1;
   wire [1:0]  vfat_phase_sel [23:0];
-  wire [0:0]  vfat_polswap   [23:0];
+  wire [0:0]  vfat_posneg_ctrl   [23:0];
 
   wire [23:0] alignment_err;
   wire [23:0] sot_phase_err;
@@ -67,6 +67,7 @@ module trig_alignment (
   wire [192*2-1:0] phase_sel_sump;
 
   `include "tap_delays.v"
+  `include "trig_polarity_inversions.v"
 
   wire idly_rdy;
 
@@ -108,6 +109,7 @@ module trig_alignment (
     oversampler #(
       .DDR              (DDR),
       .TAP_OFFSET       (SOF_OFFSET [ifat*5+:4]),
+      .INVERT           (SOF_INVERT [ifat]),
       .POSNEG           (SOF_POSNEG [ifat]),
       .PHASE_SEL_MANUAL (0) // automatic control
     )
@@ -126,8 +128,8 @@ module trig_alignment (
       .phase_sel_in     (2'd0),
       .phase_sel_out    (vfat_phase_sel[ifat]),
 
-      .polswap_in     (1'b0),
-      .polswap_out    (vfat_polswap[ifat]),
+      .posneg_ctrl_in     (1'b0),
+      .posneg_ctrl_out    (vfat_posneg_ctrl[ifat]),
 
       .phase_err        (sot_phase_err[ifat]),
 
@@ -147,6 +149,7 @@ module trig_alignment (
       .DDR              (DDR),
       .TAP_OFFSET       (TU_OFFSET [ipin*5+:4]),
       .POSNEG           (TU_POSNEG [ipin]),
+      .INVERT           (TU_INVERT [ipin]),
       .PHASE_SEL_MANUAL (1) // manual control
     )
     ovs1 (
@@ -158,8 +161,8 @@ module trig_alignment (
       .fastclock90 (~fastclk_90),
       .fastclock180(~fastclk_180),
 
-      .polswap_in     (vfat_polswap[ipin/8]),
-      .polswap_out    (),
+      .posneg_ctrl_in     (vfat_posneg_ctrl[ipin/8]),
+      .posneg_ctrl_out    (),
 
       .phase_sel_in     (vfat_phase_sel[ipin/8]),
       .phase_sel_out    (phase_sel_sump[ipin*2+:2]),

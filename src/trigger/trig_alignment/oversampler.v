@@ -26,8 +26,8 @@ module oversampler (
   input  [1:0] phase_sel_in,
   output [1:0] phase_sel_out,
 
-  input  polswap_in,
-  output polswap_out,
+  input  posneg_ctrl_in,
+  output posneg_ctrl_out,
 
   output reg phase_err,
 
@@ -39,6 +39,7 @@ module oversampler (
 );
 
 parameter       DDR        = 1;
+parameter       INVERT     = 0;
 parameter       POSNEG     = 0; // setting posneg to 1 adds an additional 180 degree delay
 parameter       TAP_OFFSET = 0;
 
@@ -237,12 +238,12 @@ iserdes_odd   (
     end
     endgenerate
 
-    wire polswap;
+    wire posneg_ctrl;
     // outputs
 
     always @(posedge fastclock) begin
-      d0 = d01_mux[ polswap];
-      d1 = d01_mux[~polswap];
+      d0 = INVERT ^ d01_mux[ posneg_ctrl];
+      d1 = INVERT ^ d01_mux[~posneg_ctrl];
     end
 
     generate
@@ -261,7 +262,7 @@ iserdes_odd   (
 
         assign phase_sel_local = phase_sel_in_r; // external input
 
-        assign polswap = polswap_in ^ POSNEG;
+        assign posneg_ctrl = posneg_ctrl_in ^ POSNEG;
 
       end
 
@@ -283,8 +284,8 @@ iserdes_odd   (
               data_on_d1 <= 1'b1;
           end
 
-          assign polswap     = data_on_d1;
-          assign polswap_out = polswap ^ POSNEG;
+          assign posneg_ctrl     = data_on_d1;
+          assign posneg_ctrl_out = posneg_ctrl ^ POSNEG;
 
           reg [1:0] phase_sm=2'd0;
 
@@ -319,6 +320,6 @@ iserdes_odd   (
     end
     endgenerate
 
-    assign sump = polswap_in || |phase_sel_in; // sump the phase_sel_in to supress warnings when this is unused (for self-aligned SOF)
+    assign sump = posneg_ctrl_in || |phase_sel_in; // sump the phase_sel_in to supress warnings when this is unused (for self-aligned SOF)
 
 endmodule
