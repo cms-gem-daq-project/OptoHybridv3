@@ -35,6 +35,8 @@ module trig_alignment (
 
   output [MXSBITS*24-1:0] sbits,
 
+	output [23:0] sot_phase_err,
+
   output sump
 );
 
@@ -54,10 +56,9 @@ module trig_alignment (
   wire [23:0] start_of_frame_d0;
   wire [23:0] start_of_frame_d1;
   wire [1:0]  vfat_phase_sel [23:0];
-  wire [0:0]  vfat_posneg_ctrl   [23:0];
+  wire [0:0]  vfat_sel_pos_edge   [23:0];
 
   wire [23:0] alignment_err;
-  wire [23:0] sot_phase_err;
 
   wire [23:0] sof_dly;
 
@@ -105,13 +106,15 @@ module trig_alignment (
   generate
   for (ifat=0; ifat<24; ifat=ifat+1) begin: fatloop
 
+		initial $display("Compiling SOF sampler %d with INVERT=%d, TAPS=%d",ifat,SOF_INVERT[ifat],SOF_OFFSET[ifat*5+:4]);
+
     // sample the start of frame signals
     oversampler #(
-      .DDR              (DDR),
-      .TAP_OFFSET       (SOF_OFFSET [ifat*5+:4]),
-      .INVERT           (SOF_INVERT [ifat]),
-      .POSNEG           (SOF_POSNEG [ifat]),
-      .PHASE_SEL_MANUAL (0) // automatic control
+      .DDR                (DDR),
+      .TAP_OFFSET         (SOF_OFFSET [ifat*5+:4]),
+      .INVERT             (SOF_INVERT [ifat]),
+      .POSNEG             (0),
+      .PHASE_SEL_EXTERNAL (0) // automatic control
     )
     ovs2 (
 
@@ -128,8 +131,8 @@ module trig_alignment (
       .phase_sel_in     (2'd0),
       .phase_sel_out    (vfat_phase_sel[ifat]),
 
-      .posneg_ctrl_in     (1'b0),
-      .posneg_ctrl_out    (vfat_posneg_ctrl[ifat]),
+      .sel_pos_edge_in     (1'b0),
+      .sel_pos_edge_out    (vfat_sel_pos_edge[ifat]),
 
       .phase_err        (sot_phase_err[ifat]),
 
@@ -145,12 +148,15 @@ module trig_alignment (
   genvar ipin;
   generate
   for (ipin=0; ipin<192; ipin=ipin+1) begin: sampler
+
+		initial $display("Compiling SBIT sampler %d with INVERT=%d, TAPS=%d",ipin,TU_INVERT[ipin],TU_OFFSET[ipin*5+:4]);
+
     oversampler #(
-      .DDR              (DDR),
-      .TAP_OFFSET       (TU_OFFSET [ipin*5+:4]),
-      .POSNEG           (TU_POSNEG [ipin]),
-      .INVERT           (TU_INVERT [ipin]),
-      .PHASE_SEL_MANUAL (1) // manual control
+      .DDR                (DDR),
+      .TAP_OFFSET         (TU_OFFSET [ipin*5+:4]),
+      .POSNEG             (0),
+      .INVERT             (TU_INVERT [ipin]),
+      .PHASE_SEL_EXTERNAL (1) // manual control
     )
     ovs1 (
       .rx_p (sbits_p[ipin]),
@@ -161,8 +167,8 @@ module trig_alignment (
       .fastclock90 (~fastclk_90),
       .fastclock180(~fastclk_180),
 
-      .posneg_ctrl_in     (vfat_posneg_ctrl[ipin/8]),
-      .posneg_ctrl_out    (),
+      .sel_pos_edge_in     (vfat_sel_pos_edge[ipin/8]),
+      .sel_pos_edge_out    (),
 
       .phase_sel_in     (vfat_phase_sel[ipin/8]),
       .phase_sel_out    (phase_sel_sump[ipin*2+:2]),

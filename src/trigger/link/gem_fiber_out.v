@@ -161,8 +161,8 @@ assign tx_dly_align_mon_ena = 1'b0;
   // transmit select
   //---------------------------------------------------
   always @(posedge TRG_CLK80 or posedge TRG_RST) begin
-    tx_sel     <= (TRG_RST) ? 1'b1 : ~tx_sel;
-    tx_sel_bar <= (TRG_RST) ? 1'b0 :  tx_sel;
+    tx_sel     <= (TRG_RST) ? 1'b0 : ~tx_sel;
+    tx_sel_bar <= (TRG_RST) ? 1'b1 :  tx_sel;
   end
 
 

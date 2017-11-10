@@ -81,6 +81,9 @@ architecture Behavioral of trigger is
 
     signal reset : std_logic;
 
+    signal sot_phase_err       : std_logic_vector (23 downto 0);
+    signal sbit_phase_err      : std_logic_vector (191 downto 0);
+
 begin
 
     process (clk_40) begin
@@ -126,7 +129,10 @@ begin
         vfat_sbit_clusters_o    => sbit_clusters,
         trigger_deadtime_i      => trigger_deadtime_i,
         cluster_count_o         => cluster_count_o,
-        overflow_o              => sbit_overflow
+        overflow_o              => sbit_overflow,
+
+		sot_phase_err_o			=> sot_phase_err,
+		sbit_phase_err_o 		=> sbit_phase_err
 
     );
 

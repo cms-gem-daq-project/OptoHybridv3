@@ -44,7 +44,11 @@ port(
 
     active_vfats_o          : out std_logic_vector (23 downto 0);
 
-    overflow_o              : out std_logic
+    overflow_o              : out std_logic;
+
+    sot_phase_err_o         : out std_logic_vector (23 downto 0);
+
+    sbit_phase_err_o        : out std_logic_vector (191 downto 0)
 
 );
 end sbits;
@@ -81,6 +85,9 @@ begin
     clk160_180 <= not clk160_i;
 
     -- remap VFATs for input to cluster packer
+
+    -- want to remap S-bits from the electronics convention to a "logical"
+    -- convention so that neighboring VFATs are next to eachother
 
     sbits_p <=  trigger_unit_i(23).trig_data_p
               & trigger_unit_i(22).trig_data_p
@@ -209,7 +216,8 @@ begin
         clock        => clk40_i,
         delay_refclk => delay_refclk_i,
 
-        phase_err => open,
+        phase_err     => sbit_phase_err_o,
+        sot_phase_err => sot_phase_err_o,
         sbits => sbits
     );
 

@@ -41,10 +41,11 @@ module ttc (
 
 );
 
-  parameter        MXBXN     = 12;       // Number BXN bits, LHC bunchs numbered 0 to 3563
-  parameter [11:0] LHC_CYCLE = 12'd3564; // LHC period, max BXN count+1
-  parameter        MXCNT     = 32;       // Maximum counter length
-  parameter        MXUPT     = 16;       // Maximum counter length
+  parameter        MXBXN          = 12;       // Number BXN bits, LHC bunchs numbered 0 to 3563
+  parameter [11:0] LHC_CYCLE      = 12'd3564; // LHC period, max BXN count+1
+  parameter        MXCNT          = 32;       // Maximum counter length
+  parameter        HOLD_UNTIL_BX0 = 0;
+
 
   // Bunch Crossing Counter, counts 0 to 3563, presets at resync or bxreset, stops counting, resumes at bx0
 
@@ -71,7 +72,9 @@ module ttc (
   // bxn counter should restore to its preset value if it is being held or a resync is received
   //--------------------------------------------------------------------------------------------------------------------
 
-  wire bxn_preset = (bxn_hold || ttc_resync) && !ttc_bx0;   // Load bxn offset value
+  // user should send a resync, followed by a bc0 to initiate syncrhonziation
+
+  wire bxn_preset = ((HOLD_UNTIL_BX0 && bxn_hold) || ttc_resync) && !ttc_bx0;   // Load bxn offset value
 
   //--------------------------------------------------------------------------------------------------------------------
   // Max value overflow

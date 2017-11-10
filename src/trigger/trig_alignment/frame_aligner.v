@@ -224,10 +224,10 @@ module frame_aligner (
   // output
   assign sof_delayed = sof_dly2;
 
-  // require 8 cycles of alignment before outputting S-bits
+  // require MXSTABLE cycles of alignment before outputting S-bits
 
   parameter MXSTABLE = 16; 
-  reg [MXSTABLE-1:0] sof_r;
+  reg [MXSTABLE-1:0] sof_r=0;
   always @(posedge clock) begin
     sof_r <= {sof_r[MXSTABLE-1:0],sof_aligned};
     ready <= &sof_r;
