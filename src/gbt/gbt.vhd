@@ -18,7 +18,7 @@ use unisim.vcomponents.all;
 
 library work;
 use work.types_pkg.all;
-use work.wb_pkg.all;
+use work.ipbus_pkg.all;
 
 entity gbt is
 generic(
@@ -50,8 +50,8 @@ port(
     reset_vfats_o : out std_logic;
 
     -- wishbone
-    wb_mst_req_o : out wb_req_t;
-    wb_mst_res_i : in  wb_res_t
+    ipb_mosi_o : out ipb_wbus;
+    ipb_miso_i : in  ipb_rbus
 );
 
 end gbt;
@@ -122,8 +122,8 @@ begin
         data_o          => gbt_tx_data,
 
         -- wishbone master
-        wb_mst_req_o    => wb_mst_req_o,
-        wb_mst_res_i    => wb_mst_res_i,
+        ipb_mosi_o    => ipb_mosi_o,
+        ipb_miso_i    => ipb_miso_i,
 
         -- decoded TTC
         reset_vfats_o   => reset_vfats_o,

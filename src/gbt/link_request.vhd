@@ -17,7 +17,7 @@ library work;
 use work.types_pkg.all;
 
 library work;
-use work.wb_pkg.all;
+use work.ipbus_pkg.all;
 
 entity link_request is
 port(
@@ -25,11 +25,11 @@ port(
     fabric_clock_i  : in std_logic;
     reset_i         : in std_logic;
 
-    wb_mst_req_o    : out wb_req_t;
-    wb_mst_res_i    : in  wb_res_t;
+    ipb_mosi_o    : out ipb_wbus;
+    ipb_miso_i    : in  ipb_rbus;
 
     rx_en_i         : in std_logic;
-    rx_data_i       : in std_logic_vector(WB_REQ_BITS-1 downto 0);
+    rx_data_i       : in std_logic_vector(IPB_REQ_BITS-1 downto 0);
 
     tx_en_i         : in std_logic;
     tx_valid_o      : out std_logic;
@@ -41,7 +41,7 @@ end link_request;
 architecture Behavioral of link_request is
 
     signal rd_valid : std_logic;
-    signal rd_data  : std_logic_vector(WB_REQ_BITS-1 downto 0);
+    signal rd_data  : std_logic_vector(IPB_REQ_BITS-1 downto 0);
 
 begin
 
@@ -68,17 +68,17 @@ begin
     begin
         if (rising_edge(fabric_clock_i)) then
             if (reset_i = '1') then
-                wb_mst_req_o <= (stb => '0', we => '0', addr => (others => '0'), data => (others => '0'));
+                ipb_mosi_o <= (ipb_strobe => '0', ipb_write => '0', ipb_addr => (others => '0'), ipb_wdata => (others => '0'));
             else
                 if (rd_valid = '1') then
-                    wb_mst_req_o <= (
-                                    stb => '1',
-                                    we   => rd_data(WB_REQ_BITS-1),
-                                    addr => rd_data(47 downto 32),
-                                    data => rd_data(31 downto 0)
+                    ipb_mosi_o <= (
+                                    ipb_strobe => '1',
+                                    ipb_write  => rd_data(IPB_REQ_BITS-1),
+                                    ipb_addr   => rd_data(47 downto 32),
+                                    ipb_wdata  => rd_data(31 downto 0)
                     );
                 else
-                    wb_mst_req_o.stb <= '0';
+                    ipb_mosi_o.ipb_strobe <= '0';
                 end if;
             end if;
         end if;
@@ -90,8 +90,8 @@ begin
     port map(
         rst     => reset_i,
         clk     => fabric_clock_i,
-        wr_en   => wb_mst_res_i.ack,
-        din     => wb_mst_res_i.data,
+        wr_en   => ipb_miso_i.ipb_ack,
+        din     => ipb_miso_i.ipb_rdata,
         rd_en   => tx_en_i,
         valid   => tx_valid_o,
         dout    => tx_data_o,

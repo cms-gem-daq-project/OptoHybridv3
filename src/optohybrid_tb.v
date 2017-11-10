@@ -190,7 +190,8 @@ parameter DDR = 0;
 
   // gbt data
 
-  wire         wr_en       = 1'b1;
+  reg          wr_en       = 1'b1;
+
   wire         wr_valid    = 1'b1;
   wire  [15:0] address     = {5'h0, 11'h0}; // 32'h0; // write to loopback
   reg   [31:0] data        = 32'h12345678;
@@ -214,6 +215,7 @@ parameter DDR = 0;
     reg [3:0] gbt_frame=0;
 
     always @(posedge clk40) begin
+      wr_en       <= ~wr_en;
     case (gbt_frame)
         4'h0: gbt_frame <= 4'h1; // start of transmit
         4'h1: gbt_frame <= 4'h2; // begin

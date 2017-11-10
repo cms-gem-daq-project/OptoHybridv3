@@ -24,7 +24,8 @@ module ttc (
 
   input reset,
 
-  input ttc_bx0,
+  input  ttc_bx0,
+  output bx0_local,
 
   input ttc_resync,
 
@@ -32,9 +33,6 @@ module ttc (
 
   output reg [MXCNT-1:0] orbit_counter,
   output reg [MXBXN-1:0] bxn_counter,
-
-  output reg [MXCNT-1:0] bx0_counter_lcl,
-  output reg [MXCNT-1:0] bx0_counter_rxd,
 
   output     bx0_sync_err, // sync error on bx0
   output reg bxn_sync_err  // bunch counter sync error
@@ -102,7 +100,7 @@ module ttc (
 
   wire bxn_sync = bxn_counter == bxn_offset_lim; // BXN now at offset value (i.e. local bx0)
 
-  wire bx0_local = bxn_counter == 0; // This TMBs bxn is at 0
+  assign bx0_local = bxn_counter == 0; // This TMBs bxn is at 0
 
   always @(posedge clock) begin
     if      (bxn_preset)  bxn_sync_err <= 0; // Sync err latch if count isnt at offset on ttc_bx0
@@ -111,23 +109,6 @@ module ttc (
   end
 
   assign bx0_sync_err = bxn_sync_err || bxn_preset; // single clock strobe of sync error at bx0
-
-  //--------------------------------------------------------------------------------------------------------------------
-  // BX0 Counters
-  //--------------------------------------------------------------------------------------------------------------------
-
-  initial bx0_counter_rxd = 0;
-  initial bx0_counter_lcl = 0;
-
-  always @(posedge clock) begin
-
-      if      (ttc_resync) bx0_counter_rxd = 0;
-      else if (ttc_bx0)    bx0_counter_rxd = bx0_counter_rxd + 1'b1;
-
-      if      (ttc_resync) bx0_counter_lcl = 0;
-      else if (bx0_local)  bx0_counter_lcl = bx0_counter_lcl + 1'b1;
-
-  end
 
   //--------------------------------------------------------------------------------------------------------------------
   // Orbit Counter

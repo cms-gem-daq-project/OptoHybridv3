@@ -29,6 +29,8 @@ module oversampler (
   input  sel_pos_edge_in,
   output sel_pos_edge_out,
 
+  input [4:0] tap_delay,
+
   output reg phase_err,
 
   output reg d0,
@@ -39,13 +41,11 @@ module oversampler (
 );
 
 
-parameter       DDR        = 1;
-parameter       INVERT     = 0;
-parameter       POSNEG     = 0; // setting posneg to 1 adds an additional 180 degree delay
-parameter       TAP_OFFSET = 0;
-parameter       ICHANNEL   = 0;
+parameter       DDR        = 1'b1;
+parameter       INVERT     = 1'b0;
+parameter       POSNEG     = 1'b0; // setting posneg to 1 adds an additional 180 degree delay
 
-parameter       PHASE_SEL_EXTERNAL = 0;
+parameter       PHASE_SEL_EXTERNAL = 1'b0;
 
 parameter       DATA_RATE = 320+320*DDR;
 parameter [4:0] NUM_TAPS  = DDR ? 5 : 10; // 45 degree phase shift in either 320 or 160 MHz clocks, using 78 ps taps
@@ -65,18 +65,18 @@ ibufds (
 
 (* IODELAY_GROUP = "IODLY_GROUP" *)
 IODELAYE1 #(
-    .IDELAY_TYPE           ("FIXED"),
-    .IDELAY_VALUE          (TAP_OFFSET + 0),
+    .IDELAY_TYPE           ("VAR_LOADABLE"),
+    .IDELAY_VALUE          (0),
     .HIGH_PERFORMANCE_MODE ("TRUE"),
     .REFCLK_FREQUENCY      (200))
 delay0   (
-    .C           (1'b0),
+    .C           (clock),
     .T           (1'b1),
-    .RST         (1'b0),
+    .RST         (1'b1), // does this actually work? it will be transparent?
     .CE          (1'b0),
     .INC         (1'b0),
     .CINVCTRL    (1'b0),
-    .CNTVALUEIN  (5'd0),
+    .CNTVALUEIN  (tap_delay),
     .CLKIN       (1'b0),
     .IDATAIN     (rxd),
     .DATAIN      (1'b0),
@@ -87,18 +87,18 @@ delay0   (
 
 (* IODELAY_GROUP = "IODLY_GROUP" *)
 IODELAYE1 #(
-    .IDELAY_TYPE           ("FIXED"),
-    .IDELAY_VALUE          (TAP_OFFSET + NUM_TAPS), // ~50 ps per tap, need to adjust
+    .IDELAY_TYPE           ("VAR_LOADABLE"),
+    .IDELAY_VALUE          (NUM_TAPS), // ~50 ps per tap, need to adjust
     .HIGH_PERFORMANCE_MODE ("TRUE"),
     .REFCLK_FREQUENCY      (200))
 delay1   (
-    .C           (1'b0),
+    .C           (clock),
     .T           (1'b1),
-    .RST         (1'b0),
+    .RST         (1'b1),
     .CE          (1'b0),
     .INC         (1'b0),
     .CINVCTRL    (1'b0),
-    .CNTVALUEIN  (NUM_TAPS),
+    .CNTVALUEIN  (tap_delay + NUM_TAPS),
     .CLKIN       (1'b0),
     .IDATAIN     (_rxd),
     .DATAIN      (1'b0),

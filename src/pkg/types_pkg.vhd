@@ -24,6 +24,22 @@ package types_pkg is
 
     type std64_array_t is array(integer range <>) of std_logic_vector(63 downto 0);
 
+    type t_std_array is array(integer range <>) of std_logic;
+
+    type t_std32_array is array(integer range <>) of std_logic_vector(31 downto 0);
+
+    type t_std16_array is array(integer range <>) of std_logic_vector(15 downto 0);
+
+    type t_std24_array is array(integer range <>) of std_logic_vector(23 downto 0);
+
+    type t_std5_array is array(integer range <>) of std_logic_vector(4 downto 0);
+
+    type t_std4_array is array(integer range <>) of std_logic_vector(3 downto 0);
+
+    type t_std2_array is array(integer range <>) of std_logic_vector(1 downto 0);
+
+
+
     --==================--
     --== Trigger data ==--
     --==================--
@@ -68,10 +84,5 @@ package types_pkg is
     end record;
 
     type wb_res_array_t is array(integer range <>) of wb_res_t;
-
-end types_pkg;
-
-package body types_pkg is
-
 
 end types_pkg;

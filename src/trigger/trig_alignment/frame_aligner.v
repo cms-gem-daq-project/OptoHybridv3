@@ -24,7 +24,8 @@ module frame_aligner (
   input clock,
   input fastclock,
 
-  output reg alignment_error,
+  output     sof_unstable,
+  output reg sof_is_aligned,
   output sof_delayed,
   output [MXSBITS-1:0] sbits
 );
@@ -244,8 +245,13 @@ module frame_aligner (
       srl_adr_ctrl=srl_adr_ctrl+1'b1;
   end
 
+  reg sof_unstable_reg = 0;
+  assign sof_unstable = sof_unstable_reg;
   always @(posedge clock) begin
-    alignment_error = ready && !sof_aligned;
+    if (!sof_unstable && ready && !sof_aligned)
+      sof_unstable_reg <= 1'b1;
+
+    sof_is_aligned  <= ready;
   end
 
 endmodule

@@ -16,7 +16,7 @@ use ieee.numeric_std.all;
 
 library work;
 use work.types_pkg.all;
-use work.wb_pkg.all;
+use work.ipbus_pkg.all;
 
 entity optohybrid_top is
 port(
@@ -146,17 +146,21 @@ architecture Behavioral of optohybrid_top is
 
     --== Wishbone ==--
 
-    signal wb_m_req : wb_req_array_t((WB_MASTERS - 1) downto 0);
-    signal wb_m_res : wb_res_array_t((WB_MASTERS - 1) downto 0);
+    -- Master
+    signal ipb_mosi_gbt : ipb_wbus;
+    signal ipb_miso_gbt : ipb_rbus;
+
+    -- Master
+    signal ipb_mosi_masters : ipb_wbus_array (WB_MASTERS-1 downto 0);
+    signal ipb_miso_masters : ipb_rbus_array (WB_MASTERS-1 downto 0);
+
+    -- Slaves
+    signal ipb_mosi_slaves  : ipb_wbus_array (WB_SLAVES-1 downto 0);
+    signal ipb_miso_slaves  : ipb_rbus_array (WB_SLAVES-1 downto 0);
 
     --== Configuration ==--
 
     signal vfat_reset       : std_logic;
-    signal sbit_mask        : std_logic_vector(23 downto 0);
-    signal trigger_deadtime : std_logic_vector(3 downto 0);
-
-    signal sem_correction : std_logic;
-    signal sem_critical   : std_logic;
 
     --== TTC ==--
 
@@ -167,6 +171,8 @@ architecture Behavioral of optohybrid_top is
 
     attribute IOB : string;
     attribute KEEP : string;
+
+    signal ext_sbits : std_logic_vector (5 downto 0);
 
     -- don't remove duplicates for fanout, needed to pack into iob
     signal ext_reset : std_logic_vector (11 downto 0);
@@ -200,7 +206,8 @@ begin
 
         ext_reset   <= (others => reset_vfats);
 
-        ext_reset_o   <= ext_reset;
+        ext_reset_o  <= ext_reset;
+        ext_sbits_o  <= ext_sbits;
 
     end if;
     end process;
@@ -217,6 +224,10 @@ begin
 
      -- gbt_eclk_p         => gbt_eclk_p, -- 320 MHz fixed clocks
      -- gbt_eclk_n         => gbt_eclk_n, -- do not use
+
+        ipb_mosi_i      => ipb_mosi_slaves (IPB_SLAVE.CLOCKING),
+        ipb_miso_o      => ipb_miso_slaves (IPB_SLAVE.CLOCKING),
+        ipb_reset_i     => reset,
 
         mmcms_locked_o     => mmcms_locked,
 
@@ -280,8 +291,8 @@ begin
         gbt_link_error_o => gbt_link_error,
 
         -- wishbone master
-        wb_mst_req_o    => wb_m_req(WB_MST_GBT),
-        wb_mst_res_i    => wb_m_res(WB_MST_GBT),
+        ipb_mosi_o    => ipb_mosi_gbt,
+        ipb_miso_i    => ipb_miso_gbt,
 
         -- decoded TTC
         reset_vfats_o   => ttc_reset_vfats,
@@ -290,6 +301,47 @@ begin
         bc0_o           => ttc_bc0
 
     );
+
+    --=====================--
+    --== Wishbone switch ==--
+    --=====================--
+
+    -- This module is the Wishbone switch which redirects requests from the masters to the slaves.
+
+    ipb_mosi_masters(0) <= ipb_mosi_gbt;
+    ipb_miso_gbt <= ipb_miso_masters(0);
+
+    ipb_switch_inst : entity work.ipb_switch
+    port map(
+        clock_i => clock,
+        reset_i => reset,
+
+        -- connect to master
+        mosi_masters => ipb_mosi_masters,
+        miso_masters => ipb_miso_masters,
+
+        -- connect to slaves
+        mosi_slaves => ipb_mosi_slaves,
+        miso_slaves => ipb_miso_slaves
+    );
+
+    --====================--
+    --== System Monitor ==--
+    --====================--
+
+    adc_inst : entity work.adc port map(
+        clock_i         => clock,
+        reset_i         => reset,
+
+        ipb_mosi_i      => ipb_mosi_slaves (IPB_SLAVE.ADC),
+        ipb_miso_o      => ipb_miso_slaves (IPB_SLAVE.ADC),
+        ipb_reset_i     => reset,
+        ipb_clk_i       => clock,
+
+        adc_vp          => adc_vp,
+        adc_vn          => adc_vn
+    );
+
 
     --=============--
     --== Control ==--
@@ -308,8 +360,8 @@ begin
         ttc_bc0                =>   ttc_bc0,
         ttc_resync             =>   ttc_resync,
 
-        wb_m_req_i             =>   wb_m_req,
-        wb_m_res_o             =>   wb_m_res,
+        ipb_mosi_i             =>   ipb_mosi_slaves (IPB_SLAVE.CONTROL),
+        ipb_miso_o             =>   ipb_miso_slaves (IPB_SLAVE.CONTROL),
 
         -------------------
         -- status inputs --
@@ -319,9 +371,6 @@ begin
         mmcms_locked_i     => mmcms_locked,
         dskw_mmcm_locked_i => dskw_mmcm_locked,
         eprt_mmcm_locked_i => eprt_mmcm_locked,
-
-        -- SEM
-        sem_critical_i => sem_critical,
 
         -- GBT
 
@@ -337,9 +386,6 @@ begin
 
         -- GBT
         gbt_link_error_i => gbt_link_error,
-
-        -- SEM
-        sem_correction_i => sem_correction,
 
         -- Analog input
         adc_vp          => adc_vp,
@@ -359,9 +405,7 @@ begin
 
         -- VFAT
         vfat_reset_o       => ctrl_reset_vfats,
-        sbit_mask_o        => sbit_mask,
-        trigger_deadtime_o => trigger_deadtime,
-        ext_sbits_o        => ext_sbits_o,
+        ext_sbits_o        => ext_sbits,
 
         -- LEDs
         led_o => led_o
@@ -374,6 +418,11 @@ begin
 
     trigger : entity work.trigger
     port map (
+
+        -- wishbone
+
+        ipb_mosi_i => ipb_mosi_slaves(IPB_SLAVE.TRIG),
+        ipb_miso_o => ipb_miso_slaves(IPB_SLAVE.TRIG),
 
         -- reset
         reset_i  => reset,
@@ -396,8 +445,6 @@ begin
         mgt_tx_n => mgt_tx_n_o,
 
         -- config
-        trigger_deadtime_i => trigger_deadtime,
-        sbit_mask_i        => sbit_mask,
         cluster_count_o    => cluster_count,
         overflow_o         => sbit_overflow,
         bxn_counter_i      => bxn_counter,
@@ -419,23 +466,6 @@ begin
         vfat_sof_p    => vfat_sof_p,
         vfat_sof_n    => vfat_sof_n
 
-    );
-
-    --=========--
-    --== SEM ==--
-    --=========--
-
-    sem_mon_inst : entity work.sem_mon
-    port map(
-        clk_i               => clock,
-        heartbeat_o         => open,
-        initialization_o    => open,
-        observation_o       => open,
-        correction_o        => sem_correction,
-        classification_o    => open,
-        injection_o         => open,
-        essential_o         => open,
-        uncorrectable_o     => sem_critical
     );
 
 end Behavioral;

@@ -48,6 +48,12 @@ port(
 
     sot_phase_err_o         : out std_logic_vector (23 downto 0);
 
+    sof_is_aligned_o        : out std_logic_vector (23 downto 0);
+    sof_unstable_o          : out std_logic_vector (23 downto 0);
+
+    sot_tap_delay           : in t_std5_array (23 downto 0);
+    trig_tap_delay          : in t_std5_array (191 downto 0);
+
     sbit_phase_err_o        : out std_logic_vector (191 downto 0)
 
 );
@@ -209,7 +215,6 @@ begin
         start_of_frame_p => start_of_frame_p,
         start_of_frame_n => start_of_frame_n,
 
-
         fastclk_0    => clk160_i,
         fastclk_90   => clk160_90_i,
         fastclk_180  => clk160_180,
@@ -218,6 +223,13 @@ begin
 
         phase_err     => sbit_phase_err_o,
         sot_phase_err => sot_phase_err_o,
+
+        sof_is_aligned => sof_is_aligned_o,
+        sof_unstable   => sof_unstable_o,
+
+        sot_tap_delay => sot_tap_delay,
+        trig_tap_delay => trig_tap_delay,
+
         sbits => sbits
     );
 

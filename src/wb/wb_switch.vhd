@@ -22,7 +22,7 @@ use ieee.numeric_std.all;
 
 library work;
 use work.types_pkg.all;
-use work.wb_pkg.all;
+use work.ipbus_pkg.all;
 
 entity wb_switch is
 port(

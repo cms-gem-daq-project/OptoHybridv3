@@ -22,7 +22,7 @@ library work;
 use work.types_pkg.all;
 
 library work;
-use work.wb_pkg.all;
+use work.ipbus_pkg.all;
 
 entity gbt_rx is
     generic(

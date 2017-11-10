@@ -22,7 +22,7 @@ library work;
 use work.types_pkg.all;
 
 library work;
-use work.wb_pkg.all;
+use work.ipbus_pkg.all;
 
 entity gbt_link is
 port(
@@ -38,8 +38,8 @@ port(
     data_o          : out std_logic_vector(15 downto 0);
 
     -- wishbone
-    wb_mst_req_o    : out wb_req_t;
-    wb_mst_res_i    : in  wb_res_t;
+    ipb_mosi_o    : out ipb_wbus;
+    ipb_miso_i    : in  ipb_rbus;
 
     -- decoded ttc
     l1a_o           : out std_logic;
@@ -58,7 +58,7 @@ architecture Behavioral of gbt_link is
     --== GTX requests ==--
 
     signal gbt_rx_req  : std_logic; -- rx fifo write request
-    signal gbt_rx_data : std_logic_vector(WB_REQ_BITS-1 downto 0);
+    signal gbt_rx_data : std_logic_vector(IPB_REQ_BITS-1 downto 0);
 
     signal oh_tx_req   : std_logic; -- tx fifo read request
     signal oh_tx_valid : std_logic; -- tx fifo data available
@@ -139,15 +139,15 @@ begin
         reset_i         => reset,
 
         -- rx parallel data (from GBT)
-        wb_mst_req_o    => wb_mst_req_o, -- 16 bit adr + 32 bit data + we
-        rx_en_i         => gbt_rx_req,
-        rx_data_i       => gbt_rx_data,  -- 16 bit adr + 32 bit data
+        ipb_mosi_o    => ipb_mosi_o, -- 16 bit adr + 32 bit data + we
+        rx_en_i       => gbt_rx_req,
+        rx_data_i     => gbt_rx_data,  -- 16 bit adr + 32 bit data
 
         -- tx parallel data (to GBT)
 
         -- input
-        wb_mst_res_i    => wb_mst_res_i, -- 32 bit data
-        tx_en_i         => oh_tx_req,    -- read enable
+        ipb_miso_i    => ipb_miso_i, -- 32 bit data
+        tx_en_i       => oh_tx_req,    -- read enable
 
         -- output
         tx_valid_o      => oh_tx_valid, -- data available
