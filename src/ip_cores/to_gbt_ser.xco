@@ -1,7 +1,7 @@
 ##############################################################
 #
 # Xilinx Core Generator version 14.7
-# Date: Fri Nov 10 21:47:10 2017
+# Date: Sat Nov 11 20:39:02 2017
 #
 ##############################################################
 #
@@ -63,7 +63,7 @@ CSET iddr_rst_type=ASYNC
 CSET interface_type=NETWORKING
 CSET notes=None
 CSET serialization_factor=8
-CSET system_data_width=2
+CSET system_data_width=1
 CSET train_constant=0
 CSET use_phase_detector=false
 CSET use_serialization=true
@@ -85,4 +85,4 @@ CSET v6_oddr_alignment=SAME_EDGE
 MISC pkg_timestamp=2012-03-26T12:54:40Z
 # END Extra information
 GENERATE
-# CRC: 15b30168
+# CRC: 49073920
