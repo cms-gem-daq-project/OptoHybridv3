@@ -70,8 +70,13 @@ architecture Behavioral of gbt_rx is
 
     signal sync_valid : boolean;
     signal idle_valid : boolean;
+    signal busy       : boolean;
 
     signal reset : std_logic;
+    signal l1a           : std_logic;
+    signal bc0           : std_logic;
+    signal resync        : std_logic;
+    signal reset_vfats   : std_logic;
 
 begin
 
@@ -114,18 +119,17 @@ begin
                 resync_o <= '0';
                 bc0_o    <= '0';
             else
-                case state is
-                    when SYNCING =>
+                if ( idle_valid or sync_valid or busy=True ) then
+                        l1a_o         <= l1a;
+                        reset_vfats_o <= reset_vfats;
+                        resync_o      <= resync;
+                        bc0_o         <= bc0;
+                else
                         l1a_o         <= '0';
                         reset_vfats_o <= '0';
                         resync_o      <= '0';
                         bc0_o         <= '0';
-                    when others  =>
-                        l1a_o         <= data_i(15);
-                        reset_vfats_o <= data_i(14);
-                        resync_o      <= data_i(13);
-                        bc0_o         <= data_i(12);
-                end case;
+                end if;
             end if;
         end if;
     end process;
@@ -144,7 +148,11 @@ begin
 
     g_ten : IF (not g_16BIT) GENERATE
 
-    data6 <= data_i (11 downto 8) & data_i (6) & data_i(2);
+    l1a         <= data_i (15);
+    reset_vfats <= data_i (14);
+    resync      <= data_i (13);
+    bc0         <= data_i (12);
+    data6       <= data_i (11 downto 8) & data_i (5) & data_i (1);
 
     sync_valid <= (data6 = "101010"); -- use a 6 bit end frame symbol
     idle_valid <= (data6 = "011100"); -- use a 6 bit end frame symbol
@@ -161,6 +169,7 @@ begin
                     when SYNCING      =>
                         if (sync_valid) then
                             state <= FRAME_BEGIN;
+                            busy <= True;
                         elsif (idle_valid) then
                             state <= IDLE;
                         end if;
@@ -168,6 +177,7 @@ begin
                     when IDLE      =>
                         if (sync_valid) then
                             state <= FRAME_BEGIN;
+                            busy <= True;
                         elsif (idle_valid) then
                             state <= IDLE;
                         else
@@ -187,10 +197,13 @@ begin
                     when FRAME_END    =>
                         if (sync_valid) then
                             state <= FRAME_BEGIN;
+                            busy <= True;
                         elsif (idle_valid) then
                             state <= IDLE;
+                            busy <= False;
                         else
                             state <= SYNCING;
+                            busy <= False;
                         end if;
 
                     when others => state <= SYNCING;
@@ -253,6 +266,11 @@ begin
 
     data6 <= (others => '0'); -- not used in 16 bit mode
 
+    l1a         <= data_i (15);
+    reset_vfats <= data_i (14);
+    resync      <= data_i (13);
+    bc0         <= data_i (12);
+
     sync_valid <= data_i(11 downto 0) = x"ABC"; -- 12 bit DAV
     idle_valid <= data_i(11 downto 0) = x"AFA"; -- 12 bit idle
 
@@ -268,6 +286,7 @@ begin
                     when SYNCING      =>
                         if (sync_valid) then
                             state <= FRAME_BEGIN;
+                            busy <= True;
                         elsif (idle_valid) then
                             state <= IDLE;
                         end if;
@@ -275,6 +294,7 @@ begin
                     when IDLE      =>
                         if (sync_valid) then
                             state <= FRAME_BEGIN;
+                            busy <= True;
                         elsif (idle_valid) then
                             state <= FRAME_BEGIN;
                         end if;
@@ -287,11 +307,14 @@ begin
 
                     when FRAME_END    =>
                         if (sync_valid) then
+                            busy <= True;
                             state <= FRAME_BEGIN;
                         elsif (idle_valid) then
                             state <= IDLE;
+                            busy <= False;
                         else
                             state <= SYNCING;
+                            busy <= False;
                         end if;
                     when others => state <= SYNCING;
                 end case;
