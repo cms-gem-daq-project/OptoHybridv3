@@ -70,6 +70,7 @@ architecture Behavioral of gbt_rx is
 
     signal sync_valid : boolean;
     signal idle_valid : boolean;
+    signal busy       : boolean;
 
     signal reset : std_logic;
     signal l1a           : std_logic;
@@ -118,7 +119,7 @@ begin
                 resync_o <= '0';
                 bc0_o    <= '0';
             else
-                if (sync_valid or idle_valid) then
+                if ( idle_valid or sync_valid or busy=True ) then
                         l1a_o         <= l1a;
                         reset_vfats_o <= reset_vfats;
                         resync_o      <= resync;
@@ -168,6 +169,7 @@ begin
                     when SYNCING      =>
                         if (sync_valid) then
                             state <= FRAME_BEGIN;
+                            busy <= True;
                         elsif (idle_valid) then
                             state <= IDLE;
                         end if;
@@ -175,6 +177,7 @@ begin
                     when IDLE      =>
                         if (sync_valid) then
                             state <= FRAME_BEGIN;
+                            busy <= True;
                         elsif (idle_valid) then
                             state <= IDLE;
                         else
@@ -194,10 +197,13 @@ begin
                     when FRAME_END    =>
                         if (sync_valid) then
                             state <= FRAME_BEGIN;
+                            busy <= True;
                         elsif (idle_valid) then
                             state <= IDLE;
+                            busy <= False;
                         else
                             state <= SYNCING;
+                            busy <= False;
                         end if;
 
                     when others => state <= SYNCING;
@@ -280,6 +286,7 @@ begin
                     when SYNCING      =>
                         if (sync_valid) then
                             state <= FRAME_BEGIN;
+                            busy <= True;
                         elsif (idle_valid) then
                             state <= IDLE;
                         end if;
@@ -287,6 +294,7 @@ begin
                     when IDLE      =>
                         if (sync_valid) then
                             state <= FRAME_BEGIN;
+                            busy <= True;
                         elsif (idle_valid) then
                             state <= FRAME_BEGIN;
                         end if;
@@ -299,11 +307,14 @@ begin
 
                     when FRAME_END    =>
                         if (sync_valid) then
+                            busy <= True;
                             state <= FRAME_BEGIN;
                         elsif (idle_valid) then
                             state <= IDLE;
+                            busy <= False;
                         else
                             state <= SYNCING;
+                            busy <= False;
                         end if;
                     when others => state <= SYNCING;
                 end case;
