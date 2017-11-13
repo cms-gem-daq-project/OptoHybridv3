@@ -61,7 +61,6 @@ architecture Behavioral of gbt_serdes is
     signal from_gbt          : std_logic_vector(15 downto 0) := (others => '0');
 
     signal to_gbt            : std_logic_vector(15 downto 0) := (others => '0');
-    signal to_gbt_polswap    : std_logic_vector(15 downto 0) := (others => '0');
     signal to_gbt_bitslipped : std_logic_vector(15 downto 0) := (others => '0');
     signal to_gbt_remap      : std_logic_vector(15 downto 0) := (others => '0');
     signal to_gbt_reg        : std_logic_vector(15 downto 0) := (others => '0');
@@ -153,11 +152,23 @@ begin
     --================--
 
     -- Input deserializer
-    i_from_gbt_des : entity work.from_gbt_des
+    i_from_gbt_des80 : entity work.from_gbt_des
     port map(
-        data_in_from_pins_p => elink_i_p,
-        data_in_from_pins_n => elink_i_n,
-        data_in_to_device   => from_gbt_raw,
+        data_in_from_pins_p => (elink_i_p(0 downto 0)),
+        data_in_from_pins_n => (elink_i_n(0 downto 0)),
+        data_in_to_device   => from_gbt_raw(7 downto 0),
+        bitslip             => '0',
+        clk_in              => iserdes_clk,
+        clk_div_in          => iserdes_clkdiv,
+        io_reset            => iserdes_reset
+    );
+
+    -- Input deserializer
+    i_from_gbt_des320 : entity work.from_gbt_des
+    port map(
+        data_in_from_pins_p => elink_i_p(1 downto 1),
+        data_in_from_pins_n => elink_i_n(1 downto 1),
+        data_in_to_device   => from_gbt_raw(15 downto 8),
         bitslip             => '0',
         clk_in              => iserdes_clk,
         clk_div_in          => iserdes_clkdiv,
@@ -165,13 +176,30 @@ begin
     );
 
 
+
     -- remap to account for how the Xilinx IPcore assigns the output pins
     -- flip-flop for routing and alignment
     process (iserdes_clkdiv) begin
         if (rising_edge(iserdes_clkdiv)) then
 
-            from_gbt_remapped <= from_gbt_raw(1) & from_gbt_raw(3) & from_gbt_raw(5) & from_gbt_raw(7) & from_gbt_raw(9) & from_gbt_raw(11) & from_gbt_raw(13) & from_gbt_raw(15)  &
-                                 from_gbt_raw(0) & from_gbt_raw(2) & from_gbt_raw(4) & from_gbt_raw(6) & from_gbt_raw(8) & from_gbt_raw(10) & from_gbt_raw(12) & from_gbt_raw(14);
+            -- 10 bit mapping
+            from_gbt_remapped <=
+                from_gbt_raw(12) &
+                from_gbt_raw(13) &
+                from_gbt_raw(14) &
+                from_gbt_raw(15) &
+                from_gbt_raw(8) &
+                from_gbt_raw(9) &
+                from_gbt_raw(10) &
+                from_gbt_raw(11) &
+                from_gbt_raw(0) &
+                from_gbt_raw(1) &
+                from_gbt_raw(2) &
+                from_gbt_raw(3) &
+                from_gbt_raw(4) &
+                from_gbt_raw(5) &
+                from_gbt_raw(6) &
+                from_gbt_raw(7);
 
             from_gbt <= from_gbt_remapped;
 
@@ -182,22 +210,6 @@ begin
     --== OUTPUT DATA ==--
     --=================--
 
-    -- tx polarity swaps
-
-    process(oserdes_clkdiv)
-    begin
-    if (rising_edge(oserdes_clkdiv)) then
-        if (reset='1') then
-            to_gbt_polswap <= (others => '0');
-        else
-
-            -- OH v3a has POLARITY SWAP on elink 1
-            to_gbt_polswap <= not to_gbt (15 downto 8) & to_gbt (7 downto 0);
-
-        end if;
-    end if;
-    end process;
-
     -- Bitslip the output to serializer
 
     i_gbt_tx_bitslip : entity work.gbt_tx_bitslip
@@ -205,7 +217,7 @@ begin
         fabric_clk  => oserdes_clkdiv,
         reset       => reset,
         bitslip_cnt => 0,
-        din         => to_gbt_polswap, -- 16 bit data input, synchronized to frame-clock
+        din         => to_gbt, -- 16 bit data input, synchronized to frame-clock
         dout        => to_gbt_bitslipped
     );
 
@@ -222,14 +234,8 @@ begin
             to_gbt_remap   <= (others => '0');
         else
 
-            to_gbt_remap <= to_gbt_bitslipped(8)  & to_gbt_bitslipped(0) &
-                            to_gbt_bitslipped(9)  & to_gbt_bitslipped(1) &
-                            to_gbt_bitslipped(10) & to_gbt_bitslipped(2) &
-                            to_gbt_bitslipped(11) & to_gbt_bitslipped(3) &
-                            to_gbt_bitslipped(12) & to_gbt_bitslipped(4) &
-                            to_gbt_bitslipped(13) & to_gbt_bitslipped(5) &
-                            to_gbt_bitslipped(14) & to_gbt_bitslipped(6) &
-                            to_gbt_bitslipped(15) & to_gbt_bitslipped(7);
+            to_gbt_remap <=  to_gbt_bitslipped;
+
         end if;
     end if;
     end process;
@@ -253,11 +259,22 @@ begin
     -- Output serializer
     -- we want to output the data on the falling edge of the clock so that the GBT can sample on the rising edge
 
-    i_to_gbt_ser : entity work.to_gbt_ser
+    i_to_gbt_ser80 : entity work.to_gbt_ser
     port map(
-        data_out_from_device    => to_gbt_reg,
-        data_out_to_pins_p      => elink_o_p,
-        data_out_to_pins_n      => elink_o_n,
+        data_out_from_device    => to_gbt_reg(7 downto 0),
+        data_out_to_pins_p      => elink_o_p(0 downto 0),
+        data_out_to_pins_n      => elink_o_n(0 downto 0),
+        clk_in                  => oserdes_clk,
+        clk_div_in              => oserdes_clkdiv,
+        io_reset                => oserdes_reset
+    );
+
+    i_to_gbt_ser320 : entity work.to_gbt_ser
+    port map(
+        -- POLARITY SWAP ON ELINK #1
+        data_out_from_device    => (not (to_gbt_reg (15 downto 8))),
+        data_out_to_pins_p      => elink_o_p(1 downto 1),
+        data_out_to_pins_n      => elink_o_n(1 downto 1),
         clk_in                  => oserdes_clk,
         clk_div_in              => oserdes_clkdiv,
         io_reset                => oserdes_reset
