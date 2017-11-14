@@ -36,9 +36,7 @@ module   gem_fiber_out #(parameter SIM_SPEEDUP = 0) (
 wire trg_tx_dis;
 
 //Inputs to TRG GTX transmitter
-reg  [ 3:0] trg_tx_isk_reg;
 wire [ 3:0] trg_tx_isk;
-reg  [31:0] trg_tx_data_reg;
 wire [31:0] trg_tx_data;
 wire        tx_dlyaligndisable;
 wire        tx_dlyalignreset;
@@ -142,14 +140,9 @@ assign tx_dly_align_mon_ena = 1'b0;
 
   assign out_data    = ENA_TEST_PAT ? {prbs[47:0],prbs[7:0]} : GEM_DATA;
 
-  always @(posedge TRG_CLK80) begin
-    trg_tx_data_reg <= rst_tx ? 32'h50BC50BC : (tx_sel ? out_data[55:24] : {out_data[23:0],frm_sep[7:0]});
-    trg_tx_isk_reg  <= rst_tx ? 4'b0101      : (tx_sel ? 4'b0000 : 4'b0001);
-  end
+  assign trg_tx_data = rst_tx ? 32'h50BC50BC : (tx_sel ? out_data[55:24] : {out_data[23:0],frm_sep[7:0]});
 
-  assign trg_tx_data = trg_tx_data_reg;
-
-  assign trg_tx_isk  = trg_tx_isk_reg;
+  assign trg_tx_isk  = rst_tx ?  4'b0101 : (tx_sel ? 4'b0000 : 4'b0001);
 
   // reset latches
   //---------------------------------------------------
@@ -161,8 +154,8 @@ assign tx_dly_align_mon_ena = 1'b0;
   // transmit select
   //---------------------------------------------------
   always @(posedge TRG_CLK80 or posedge TRG_RST) begin
-    tx_sel     <= (TRG_RST) ? 1'b0 : ~tx_sel;
-    tx_sel_bar <= (TRG_RST) ? 1'b1 :  tx_sel;
+    tx_sel     <= (TRG_RST) ? 1'b1 : ~tx_sel;
+    tx_sel_bar <= (TRG_RST) ? 1'b0 :  tx_sel;
   end
 
 
@@ -185,9 +178,7 @@ assign tx_dly_align_mon_ena = 1'b0;
   reg [7:0] frame_sep_lcl;
   reg [7:0] frame_sep_ttc;
 
-  parameter FRAME_CTRL_TTC = 1;
-
-  reg [2:0] frame_sep_src=FRAME_CTRL_TTC;
+  parameter FRAME_CTRL_TTC = 0;
 
   wire [7:0] frame_sep = FRAME_CTRL_TTC ? frame_sep_ttc : frame_sep_lcl;
 
@@ -221,7 +212,8 @@ assign tx_dly_align_mon_ena = 1'b0;
     endcase
   end
 
-  assign frm_sep = BC0 ? 8'h50 : (GEM_OVERFLOW) ? 8'hFC : frame_sep;
+  //assign frm_sep = BC0 ? 8'h50 : (GEM_OVERFLOW) ? 8'hFC : frame_sep;
+  assign frm_sep = (GEM_OVERFLOW) ? 8'hFC : frame_sep;
 
 //----------------------------------------------------------------------------------------------------------------------
 // Test pattern reset
