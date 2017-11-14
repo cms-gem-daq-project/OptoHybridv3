@@ -130,7 +130,8 @@ architecture Behavioral of optohybrid_top is
     signal gbt_rxvalid      : std_logic;
     signal gbt_rxready      : std_logic;
 
-    signal gbt_link_error   : std_logic;
+    signal gbt_link_error        : std_logic;
+    signal gbt_request_received  : std_logic;
 
     signal mgt_refclk       : std_logic;
     signal reset            : std_logic;
@@ -191,6 +192,7 @@ begin
     -- internal wiring
 
     clock       <= clk_1x;
+    gbt_request_received <= ipb_mosi_gbt.ipb_strobe;
 
     -- buffers to copy into IOBs
 
@@ -377,6 +379,8 @@ begin
         gbt_rxready_i => gbt_rxready,
         gbt_rxvalid_i => gbt_rxvalid,
         gbt_txready_i => gbt_txready,
+
+        gbt_request_received_i => gbt_request_received,
 
         -- Trigger
 

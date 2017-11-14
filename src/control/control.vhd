@@ -60,6 +60,7 @@ port(
 
     -- GBT
     gbt_link_error_i : in std_logic;
+    gbt_request_received_i : in std_logic;
 
     -- Analog input
     adc_vp         : in  std_logic;
@@ -214,10 +215,8 @@ begin
         gbt_rxready          => gbt_rxready_i,
         gbt_rxvalid          => gbt_rxvalid_i,
 
-        -- #FIXME -- this should blink on ANY strobe not just zero
-        -- need to add a loop
+        gbt_request_received => gbt_request_received_i,
 
-        gbt_request_received => '0', -- ipb_mosi_i(0).ipb_strobe,
         cluster_count        => cluster_count_i,
 
         cluster_rate  => cluster_rate,
