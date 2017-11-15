@@ -135,6 +135,7 @@ architecture Behavioral of optohybrid_top is
 
     signal mgt_refclk       : std_logic;
     signal reset            : std_logic;
+    signal cnt_snap         : std_logic;
 
     signal clock_source     : std_logic;
 
@@ -231,6 +232,8 @@ begin
         ipb_miso_o      => ipb_miso_slaves (IPB_SLAVE.CLOCKING),
         ipb_reset_i     => reset,
 
+        cnt_snap => cnt_snap,
+
         mmcms_locked_o     => mmcms_locked,
 
         eprt_mmcm_locked_o => eprt_mmcm_locked,
@@ -270,6 +273,12 @@ begin
 
         -- reset
         reset_i => reset,
+
+        -- GBT
+
+        gbt_rxready_i => gbt_rxready,
+        gbt_rxvalid_i => gbt_rxvalid,
+        gbt_txready_i => gbt_txready,
 
         -- input clocks
 
@@ -334,6 +343,8 @@ begin
     adc_inst : entity work.adc port map(
         clock_i         => clock,
         reset_i         => reset,
+
+        cnt_snap => cnt_snap,
 
         ipb_mosi_i      => ipb_mosi_slaves (IPB_SLAVE.ADC),
         ipb_miso_o      => ipb_miso_slaves (IPB_SLAVE.ADC),
@@ -412,7 +423,9 @@ begin
         ext_sbits_o        => ext_sbits,
 
         -- LEDs
-        led_o => led_o
+        led_o => led_o,
+
+        cnt_snap_o => cnt_snap
 
     );
 
@@ -430,6 +443,7 @@ begin
 
         -- reset
         reset_i  => reset,
+        cnt_snap => cnt_snap,
 
         -- clocks
         mgt_clk_p => mgt_clk_p_i,

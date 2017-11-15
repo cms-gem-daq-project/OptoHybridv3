@@ -59,8 +59,9 @@ port(
     ipb_mosi_i : in  ipb_wbus;
     ipb_miso_o : out ipb_rbus;
 
-    ipb_reset_i : in std_logic
+    ipb_reset_i : in std_logic;
 
+    cnt_snap : in std_logic
 
 );
 end clocking;
@@ -166,8 +167,8 @@ begin
       );
 
     -- Addresses
-    regs_addresses(0)(REG_OH_CLOCKING_ADDRESS_MSB downto REG_OH_CLOCKING_ADDRESS_LSB) <= x"0000";
-    regs_addresses(1)(REG_OH_CLOCKING_ADDRESS_MSB downto REG_OH_CLOCKING_ADDRESS_LSB) <= x"0002";
+    regs_addresses(0)(REG_OH_CLOCKING_ADDRESS_MSB downto REG_OH_CLOCKING_ADDRESS_LSB) <= "000";
+    regs_addresses(1)(REG_OH_CLOCKING_ADDRESS_MSB downto REG_OH_CLOCKING_ADDRESS_LSB) <= "010";
 
     -- Connect read signals
     regs_read_arr(0)(REG_OH_CLOCKING_CLOCKING_LOGIC_MMCM_LOCKED_BIT) <= mmcm_locked(0);
@@ -189,7 +190,7 @@ begin
     generic map (g_WIDTH => 8)
     port map (
         ref_clk_i => clock,
-        snap_i    => '1',
+        snap_i    => cnt_snap,
         reset_i   => ipb_reset_i,
         en_i      => (not mmcm_locked(1)),
         data_o    => cnt_eprt_mmcm_unlocked
@@ -200,7 +201,7 @@ begin
     generic map (g_WIDTH => 8)
     port map (
         ref_clk_i => clock,
-        snap_i    => '1',
+        snap_i    => cnt_snap,
         reset_i   => ipb_reset_i,
         en_i      => (not mmcm_locked(0)),
         data_o    => cnt_dskw_mmcm_unlocked

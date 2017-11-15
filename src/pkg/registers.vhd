@@ -111,6 +111,13 @@ package registers is
     constant REG_OH_CONTROL_HDMI_SBIT_SEL_LSB     : integer := 0;
     constant REG_OH_CONTROL_HDMI_SBIT_SEL_DEFAULT : std_logic_vector(29 downto 0) := "00" & x"0000000";
 
+    constant REG_OH_CONTROL_CNT_SNAP_PULSE_ADDR    : std_logic_vector(5 downto 0) := "10" & x"0";
+    constant REG_OH_CONTROL_CNT_SNAP_PULSE_BIT    : integer := 0;
+
+    constant REG_OH_CONTROL_CNT_SNAP_DISABLE_ADDR    : std_logic_vector(5 downto 0) := "10" & x"0";
+    constant REG_OH_CONTROL_CNT_SNAP_DISABLE_BIT    : integer := 1;
+    constant REG_OH_CONTROL_CNT_SNAP_DISABLE_DEFAULT : std_logic := '1';
+
 
     --============================================================================
     --       >>> OH_ADC Module <<<    base address: 0x00001000

@@ -64,7 +64,11 @@ port(
     vfat_sof_n     : in std_logic_vector (23 downto 0);
 
     vfat_sbits_p : in std_logic_vector (191 downto 0);
-    vfat_sbits_n : in std_logic_vector (191 downto 0)
+    vfat_sbits_n : in std_logic_vector (191 downto 0);
+
+    cnt_snap : in std_logic
+
+
 );
 end trigger;
 
@@ -806,7 +810,7 @@ begin
     generic map (g_WIDTH => 16)
     port map (
         ref_clk_i => clk_40,
-        snap_i    => '1',
+        snap_i    => cnt_snap,
         reset_i   => reset_i,
         en_i      => sbit_overflow,
         data_o    => cnt_sbit_overflow
@@ -817,7 +821,7 @@ begin
     generic map (g_WIDTH => 16)
     port map (
         ref_clk_i => clk_40,
-        snap_i    => '1',
+        snap_i    => cnt_snap,
         reset_i   => reset_i,
         en_i      => active_vfats(0),
         data_o    => cnt_vfat0
@@ -828,7 +832,7 @@ begin
     generic map (g_WIDTH => 16)
     port map (
         ref_clk_i => clk_40,
-        snap_i    => '1',
+        snap_i    => cnt_snap,
         reset_i   => reset_i,
         en_i      => active_vfats(1),
         data_o    => cnt_vfat1
@@ -839,7 +843,7 @@ begin
     generic map (g_WIDTH => 16)
     port map (
         ref_clk_i => clk_40,
-        snap_i    => '1',
+        snap_i    => cnt_snap,
         reset_i   => reset_i,
         en_i      => active_vfats(2),
         data_o    => cnt_vfat2
@@ -850,7 +854,7 @@ begin
     generic map (g_WIDTH => 16)
     port map (
         ref_clk_i => clk_40,
-        snap_i    => '1',
+        snap_i    => cnt_snap,
         reset_i   => reset_i,
         en_i      => active_vfats(3),
         data_o    => cnt_vfat3
@@ -861,7 +865,7 @@ begin
     generic map (g_WIDTH => 16)
     port map (
         ref_clk_i => clk_40,
-        snap_i    => '1',
+        snap_i    => cnt_snap,
         reset_i   => reset_i,
         en_i      => active_vfats(4),
         data_o    => cnt_vfat4
@@ -872,7 +876,7 @@ begin
     generic map (g_WIDTH => 16)
     port map (
         ref_clk_i => clk_40,
-        snap_i    => '1',
+        snap_i    => cnt_snap,
         reset_i   => reset_i,
         en_i      => active_vfats(5),
         data_o    => cnt_vfat5
@@ -883,7 +887,7 @@ begin
     generic map (g_WIDTH => 16)
     port map (
         ref_clk_i => clk_40,
-        snap_i    => '1',
+        snap_i    => cnt_snap,
         reset_i   => reset_i,
         en_i      => active_vfats(6),
         data_o    => cnt_vfat6
@@ -894,7 +898,7 @@ begin
     generic map (g_WIDTH => 16)
     port map (
         ref_clk_i => clk_40,
-        snap_i    => '1',
+        snap_i    => cnt_snap,
         reset_i   => reset_i,
         en_i      => active_vfats(7),
         data_o    => cnt_vfat7
@@ -905,7 +909,7 @@ begin
     generic map (g_WIDTH => 16)
     port map (
         ref_clk_i => clk_40,
-        snap_i    => '1',
+        snap_i    => cnt_snap,
         reset_i   => reset_i,
         en_i      => active_vfats(8),
         data_o    => cnt_vfat8
@@ -916,7 +920,7 @@ begin
     generic map (g_WIDTH => 16)
     port map (
         ref_clk_i => clk_40,
-        snap_i    => '1',
+        snap_i    => cnt_snap,
         reset_i   => reset_i,
         en_i      => active_vfats(9),
         data_o    => cnt_vfat9
@@ -927,7 +931,7 @@ begin
     generic map (g_WIDTH => 16)
     port map (
         ref_clk_i => clk_40,
-        snap_i    => '1',
+        snap_i    => cnt_snap,
         reset_i   => reset_i,
         en_i      => active_vfats(10),
         data_o    => cnt_vfat10
@@ -938,7 +942,7 @@ begin
     generic map (g_WIDTH => 16)
     port map (
         ref_clk_i => clk_40,
-        snap_i    => '1',
+        snap_i    => cnt_snap,
         reset_i   => reset_i,
         en_i      => active_vfats(11),
         data_o    => cnt_vfat11
@@ -949,7 +953,7 @@ begin
     generic map (g_WIDTH => 16)
     port map (
         ref_clk_i => clk_40,
-        snap_i    => '1',
+        snap_i    => cnt_snap,
         reset_i   => reset_i,
         en_i      => active_vfats(12),
         data_o    => cnt_vfat12
@@ -960,7 +964,7 @@ begin
     generic map (g_WIDTH => 16)
     port map (
         ref_clk_i => clk_40,
-        snap_i    => '1',
+        snap_i    => cnt_snap,
         reset_i   => reset_i,
         en_i      => active_vfats(13),
         data_o    => cnt_vfat13
@@ -971,7 +975,7 @@ begin
     generic map (g_WIDTH => 16)
     port map (
         ref_clk_i => clk_40,
-        snap_i    => '1',
+        snap_i    => cnt_snap,
         reset_i   => reset_i,
         en_i      => active_vfats(14),
         data_o    => cnt_vfat14
@@ -982,7 +986,7 @@ begin
     generic map (g_WIDTH => 16)
     port map (
         ref_clk_i => clk_40,
-        snap_i    => '1',
+        snap_i    => cnt_snap,
         reset_i   => reset_i,
         en_i      => active_vfats(15),
         data_o    => cnt_vfat15
@@ -993,7 +997,7 @@ begin
     generic map (g_WIDTH => 16)
     port map (
         ref_clk_i => clk_40,
-        snap_i    => '1',
+        snap_i    => cnt_snap,
         reset_i   => reset_i,
         en_i      => active_vfats(16),
         data_o    => cnt_vfat16
@@ -1004,7 +1008,7 @@ begin
     generic map (g_WIDTH => 16)
     port map (
         ref_clk_i => clk_40,
-        snap_i    => '1',
+        snap_i    => cnt_snap,
         reset_i   => reset_i,
         en_i      => active_vfats(17),
         data_o    => cnt_vfat17
@@ -1015,7 +1019,7 @@ begin
     generic map (g_WIDTH => 16)
     port map (
         ref_clk_i => clk_40,
-        snap_i    => '1',
+        snap_i    => cnt_snap,
         reset_i   => reset_i,
         en_i      => active_vfats(18),
         data_o    => cnt_vfat18
@@ -1026,7 +1030,7 @@ begin
     generic map (g_WIDTH => 16)
     port map (
         ref_clk_i => clk_40,
-        snap_i    => '1',
+        snap_i    => cnt_snap,
         reset_i   => reset_i,
         en_i      => active_vfats(19),
         data_o    => cnt_vfat19
@@ -1037,7 +1041,7 @@ begin
     generic map (g_WIDTH => 16)
     port map (
         ref_clk_i => clk_40,
-        snap_i    => '1',
+        snap_i    => cnt_snap,
         reset_i   => reset_i,
         en_i      => active_vfats(20),
         data_o    => cnt_vfat20
@@ -1048,7 +1052,7 @@ begin
     generic map (g_WIDTH => 16)
     port map (
         ref_clk_i => clk_40,
-        snap_i    => '1',
+        snap_i    => cnt_snap,
         reset_i   => reset_i,
         en_i      => active_vfats(21),
         data_o    => cnt_vfat21
@@ -1059,7 +1063,7 @@ begin
     generic map (g_WIDTH => 16)
     port map (
         ref_clk_i => clk_40,
-        snap_i    => '1',
+        snap_i    => cnt_snap,
         reset_i   => reset_i,
         en_i      => active_vfats(22),
         data_o    => cnt_vfat22
@@ -1070,7 +1074,7 @@ begin
     generic map (g_WIDTH => 16)
     port map (
         ref_clk_i => clk_40,
-        snap_i    => '1',
+        snap_i    => cnt_snap,
         reset_i   => reset_i,
         en_i      => active_vfats(23),
         data_o    => cnt_vfat23
