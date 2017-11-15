@@ -163,7 +163,7 @@ begin
 
         -- initial $display("Compiling SBIT sampler %d with INVERT=%d, TAPS=%d",ipin,TU_INVERT[ipin],TU_OFFSET[ipin*5+:4]);
 
-        sot_oversampler : entity work.oversampler
+        sbit_oversampler : entity work.oversampler
         generic map (
             DDR                => DDR,
             POSNEG             => 0,
