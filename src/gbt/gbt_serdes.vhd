@@ -40,6 +40,8 @@ port(
 
     clock            : in std_logic;
 
+    gbt_tx_bitslip : in std_logic_vector(2 downto 0) ;
+
     -- serial data to/from GBTx
     elink_o_p        : out std_logic_vector(1 downto 0);
     elink_o_n        : out std_logic_vector(1 downto 0);
@@ -216,7 +218,7 @@ begin
     port map(
         fabric_clk  => oserdes_clkdiv,
         reset       => reset,
-        bitslip_cnt => 0,
+        bitslip_cnt => to_integer(unsigned(gbt_tx_bitslip)),
         din         => to_gbt, -- 16 bit data input, synchronized to frame-clock
         dout        => to_gbt_bitslipped
     );

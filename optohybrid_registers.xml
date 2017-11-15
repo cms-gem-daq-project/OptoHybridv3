@@ -54,22 +54,6 @@
                     fw_signal="cnt_sem_correction"/>
             </node>
 
-            <node id="GBT" address="0x4" description = "GBT Tx/Rx Status">
-                <node id="RX_READY" address="0x4" permission="r"
-                    mask="0x00000001"
-                    description="GBT RX READY"
-                    fw_signal="gbt_rxready_i"/>
-                <node id="RX_VALID" address="0x4" permission="r"
-                    mask="0x00000002"
-                    description="GBT RX VALID"
-                    fw_signal="gbt_rxvalid_i"/>
-                <node id="TX_READY" address="0x4" permission="r"
-                    mask="0x00000004"
-                    description="GBT TX READY"
-                    fw_signal="gbt_txready_i"/>
-            </node>
-
-
             <node id="VFAT" address="0x5" description = "VFAT Control">
                 <node id="RESET" address="0x5" permission="rw"
                     mask="0x00000001"
@@ -1615,6 +1599,58 @@
 
 
     </node>
+
+    <!--Clocking module -->
+    <node id="GBT"  address="0x4000"
+          description="Connects to GBT"
+          fw_is_module="true"
+          fw_module_file="../src/gbt/gbt.vhd"
+          fw_user_clock_signal="clock_i"
+          fw_bus_clock_signal="clock_i"
+          fw_bus_reset_signal="ipb_reset_i"
+          fw_master_bus_signal="ipb_mosi_i"
+          fw_slave_bus_signal="ipb_miso_o"
+          fw_reg_addr_msb="2"
+          fw_reg_addr_lsb="0">
+
+            <node id="TX" address="0x0" description = "TX">
+                <node id="BITSLIP" address="0x0" permission="rw"
+                    mask="0x00000007"
+                    description="Value of the GBT tx bitslip adjuster to align data to the 40MHz clock"
+                    fw_default="0x0"
+                    fw_signal="gbt_tx_bitslip"/>
+                <node id="CNT_RESPONSE_SENT" address="0x0" permission="r"
+                    mask="0xffffff00"
+                    description="Number of wishbone responses sent back"
+                    cnt_en_signal="ipb_miso.ipb_ack"
+                    cnt_snap_signal="cnt_snap"
+                    fw_signal="cnt_ipb_response"/>
+                <node id="TX_READY" address="0x4" permission="r"
+                    mask="0x00000004"
+                    description="GBT TX READY from GBTx Chip"
+                    fw_signal="gbt_txready_i"/>
+            </node>
+
+            <node id="RX" address="0x1" description = "RX">
+                <node id="RX_READY" address="0x1" permission="r"
+                    mask="0x00000001"
+                    description="GBT RX READY from GBTx Chip"
+                    fw_signal="gbt_rxready_i"/>
+                <node id="RX_VALID" address="0x1" permission="r"
+                    mask="0x00000002"
+                    description="GBT RX VALID from GBTx Chip"
+                    fw_signal="gbt_rxvalid_i"/>
+                <node id="CNT_REQUEST_RECEIVED" address="0x1" permission="r"
+                    mask="0xffffff00"
+                    description="Number of wishbone requests received"
+                    cnt_en_signal="ipb_mosi.ipb_strobe"
+                    cnt_snap_signal="cnt_snap"
+                    fw_signal="cnt_ipb_request"/>
+            </node>
+
+
+    </node>
+
 
     </node> <!-- /FPGA -->
 </node> <!-- /TOP -->

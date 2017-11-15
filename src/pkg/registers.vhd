@@ -38,15 +38,6 @@ package registers is
     constant REG_OH_CONTROL_SEM_CNT_SEM_CORRECTION_MSB    : integer := 31;
     constant REG_OH_CONTROL_SEM_CNT_SEM_CORRECTION_LSB     : integer := 16;
 
-    constant REG_OH_CONTROL_GBT_RX_READY_ADDR    : std_logic_vector(5 downto 0) := "00" & x"8";
-    constant REG_OH_CONTROL_GBT_RX_READY_BIT    : integer := 0;
-
-    constant REG_OH_CONTROL_GBT_RX_VALID_ADDR    : std_logic_vector(5 downto 0) := "00" & x"8";
-    constant REG_OH_CONTROL_GBT_RX_VALID_BIT    : integer := 1;
-
-    constant REG_OH_CONTROL_GBT_TX_READY_ADDR    : std_logic_vector(5 downto 0) := "00" & x"8";
-    constant REG_OH_CONTROL_GBT_TX_READY_BIT    : integer := 2;
-
     constant REG_OH_CONTROL_VFAT_RESET_ADDR    : std_logic_vector(5 downto 0) := "00" & x"a";
     constant REG_OH_CONTROL_VFAT_RESET_BIT    : integer := 0;
     constant REG_OH_CONTROL_VFAT_RESET_DEFAULT : std_logic := '0';
@@ -1393,21 +1384,53 @@ package registers is
     --============================================================================
 
     constant REG_OH_CLOCKING_NUM_REGS : integer := 2;
-    constant REG_OH_CLOCKING_ADDRESS_MSB : integer := 15;
+    constant REG_OH_CLOCKING_ADDRESS_MSB : integer := 2;
     constant REG_OH_CLOCKING_ADDRESS_LSB : integer := 0;
-    constant REG_OH_CLOCKING_CLOCKING_LOGIC_MMCM_LOCKED_ADDR    : std_logic_vector(15 downto 0) := x"0000";
+    constant REG_OH_CLOCKING_CLOCKING_LOGIC_MMCM_LOCKED_ADDR    : std_logic_vector(2 downto 0) := "000";
     constant REG_OH_CLOCKING_CLOCKING_LOGIC_MMCM_LOCKED_BIT    : integer := 1;
 
-    constant REG_OH_CLOCKING_CLOCKING_GBT_MMCM_UNLOCKED_CNT_ADDR    : std_logic_vector(15 downto 0) := x"0000";
+    constant REG_OH_CLOCKING_CLOCKING_GBT_MMCM_UNLOCKED_CNT_ADDR    : std_logic_vector(2 downto 0) := "000";
     constant REG_OH_CLOCKING_CLOCKING_GBT_MMCM_UNLOCKED_CNT_MSB    : integer := 23;
     constant REG_OH_CLOCKING_CLOCKING_GBT_MMCM_UNLOCKED_CNT_LSB     : integer := 16;
 
-    constant REG_OH_CLOCKING_CLOCKING_LOGIC_MMCM_UNLOCKED_CNT_ADDR    : std_logic_vector(15 downto 0) := x"0000";
+    constant REG_OH_CLOCKING_CLOCKING_LOGIC_MMCM_UNLOCKED_CNT_ADDR    : std_logic_vector(2 downto 0) := "000";
     constant REG_OH_CLOCKING_CLOCKING_LOGIC_MMCM_UNLOCKED_CNT_MSB    : integer := 31;
     constant REG_OH_CLOCKING_CLOCKING_LOGIC_MMCM_UNLOCKED_CNT_LSB     : integer := 24;
 
-    constant REG_OH_CLOCKING_CLOCKING_GBT_MMCM_LOCKED_ADDR    : std_logic_vector(15 downto 0) := x"0002";
+    constant REG_OH_CLOCKING_CLOCKING_GBT_MMCM_LOCKED_ADDR    : std_logic_vector(2 downto 0) := "010";
     constant REG_OH_CLOCKING_CLOCKING_GBT_MMCM_LOCKED_BIT    : integer := 0;
+
+
+    --============================================================================
+    --       >>> OH_GBT Module <<<    base address: 0x00004000
+    --
+    -- Connects to GBT
+    --============================================================================
+
+    constant REG_OH_GBT_NUM_REGS : integer := 3;
+    constant REG_OH_GBT_ADDRESS_MSB : integer := 2;
+    constant REG_OH_GBT_ADDRESS_LSB : integer := 0;
+    constant REG_OH_GBT_TX_BITSLIP_ADDR    : std_logic_vector(2 downto 0) := "000";
+    constant REG_OH_GBT_TX_BITSLIP_MSB    : integer := 2;
+    constant REG_OH_GBT_TX_BITSLIP_LSB     : integer := 0;
+    constant REG_OH_GBT_TX_BITSLIP_DEFAULT : std_logic_vector(2 downto 0) := "000";
+
+    constant REG_OH_GBT_TX_CNT_RESPONSE_SENT_ADDR    : std_logic_vector(2 downto 0) := "000";
+    constant REG_OH_GBT_TX_CNT_RESPONSE_SENT_MSB    : integer := 31;
+    constant REG_OH_GBT_TX_CNT_RESPONSE_SENT_LSB     : integer := 8;
+
+    constant REG_OH_GBT_RX_RX_READY_ADDR    : std_logic_vector(2 downto 0) := "010";
+    constant REG_OH_GBT_RX_RX_READY_BIT    : integer := 0;
+
+    constant REG_OH_GBT_RX_RX_VALID_ADDR    : std_logic_vector(2 downto 0) := "010";
+    constant REG_OH_GBT_RX_RX_VALID_BIT    : integer := 1;
+
+    constant REG_OH_GBT_RX_CNT_REQUEST_RECEIVED_ADDR    : std_logic_vector(2 downto 0) := "010";
+    constant REG_OH_GBT_RX_CNT_REQUEST_RECEIVED_MSB    : integer := 31;
+    constant REG_OH_GBT_RX_CNT_REQUEST_RECEIVED_LSB     : integer := 8;
+
+    constant REG_OH_GBT_TX_TX_READY_ADDR    : std_logic_vector(2 downto 0) := "100";
+    constant REG_OH_GBT_TX_TX_READY_BIT    : integer := 2;
 
 
 end registers;

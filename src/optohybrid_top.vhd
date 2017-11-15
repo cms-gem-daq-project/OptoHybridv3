@@ -305,6 +305,14 @@ begin
         ipb_mosi_o    => ipb_mosi_gbt,
         ipb_miso_i    => ipb_miso_gbt,
 
+        -- wishbone slave
+
+        ipb_mosi_i      => ipb_mosi_slaves (IPB_SLAVE.GBT),
+        ipb_miso_o      => ipb_miso_slaves (IPB_SLAVE.GBT),
+        ipb_reset_i     => reset,
+
+        cnt_snap => cnt_snap,
+
         -- decoded TTC
         reset_vfats_o   => ttc_reset_vfats,
         resync_o        => ttc_resync,
