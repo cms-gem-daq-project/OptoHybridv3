@@ -1410,10 +1410,15 @@ package registers is
     constant REG_OH_GBT_NUM_REGS : integer := 3;
     constant REG_OH_GBT_ADDRESS_MSB : integer := 2;
     constant REG_OH_GBT_ADDRESS_LSB : integer := 0;
-    constant REG_OH_GBT_TX_BITSLIP_ADDR    : std_logic_vector(2 downto 0) := "000";
-    constant REG_OH_GBT_TX_BITSLIP_MSB    : integer := 2;
-    constant REG_OH_GBT_TX_BITSLIP_LSB     : integer := 0;
-    constant REG_OH_GBT_TX_BITSLIP_DEFAULT : std_logic_vector(2 downto 0) := "000";
+    constant REG_OH_GBT_TX_BITSLIP0_ADDR    : std_logic_vector(2 downto 0) := "000";
+    constant REG_OH_GBT_TX_BITSLIP0_MSB    : integer := 1;
+    constant REG_OH_GBT_TX_BITSLIP0_LSB     : integer := 0;
+    constant REG_OH_GBT_TX_BITSLIP0_DEFAULT : std_logic_vector(1 downto 0) := "00";
+
+    constant REG_OH_GBT_TX_BITSLIP1_ADDR    : std_logic_vector(2 downto 0) := "000";
+    constant REG_OH_GBT_TX_BITSLIP1_MSB    : integer := 3;
+    constant REG_OH_GBT_TX_BITSLIP1_LSB     : integer := 2;
+    constant REG_OH_GBT_TX_BITSLIP1_DEFAULT : std_logic_vector(3 downto 2) := "00";
 
     constant REG_OH_GBT_TX_CNT_RESPONSE_SENT_ADDR    : std_logic_vector(2 downto 0) := "000";
     constant REG_OH_GBT_TX_CNT_RESPONSE_SENT_MSB    : integer := 31;

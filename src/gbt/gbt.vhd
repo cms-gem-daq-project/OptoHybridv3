@@ -75,7 +75,8 @@ architecture Behavioral of gbt is
     signal gbt_tx_data  : std_logic_vector(15 downto 0) := (others => '0');
     signal gbt_rx_data   : std_logic_vector(15 downto 0) := (others => '0');
 
-    signal gbt_tx_bitslip : std_logic_vector(2 downto 0) := (others => '0');
+    signal gbt_tx_bitslip0 : std_logic_vector(1 downto 0) := (others => '0');
+    signal gbt_tx_bitslip1: std_logic_vector(1 downto 0) := (others => '0');
 
     signal reset     : std_logic;
 
@@ -141,7 +142,8 @@ begin
 
        -- gbt tx bitslip
 
-       gbt_tx_bitslip => gbt_tx_bitslip,
+       gbt_tx_bitslip0 => gbt_tx_bitslip0,
+       gbt_tx_bitslip1 => gbt_tx_bitslip1,
 
 
        -- parallel data
@@ -214,7 +216,8 @@ begin
     regs_addresses(2)(REG_OH_GBT_ADDRESS_MSB downto REG_OH_GBT_ADDRESS_LSB) <= "100";
 
     -- Connect read signals
-    regs_read_arr(0)(REG_OH_GBT_TX_BITSLIP_MSB downto REG_OH_GBT_TX_BITSLIP_LSB) <= gbt_tx_bitslip;
+    regs_read_arr(0)(REG_OH_GBT_TX_BITSLIP0_MSB downto REG_OH_GBT_TX_BITSLIP0_LSB) <= gbt_tx_bitslip0;
+    regs_read_arr(0)(REG_OH_GBT_TX_BITSLIP1_MSB downto REG_OH_GBT_TX_BITSLIP1_LSB) <= gbt_tx_bitslip1;
     regs_read_arr(0)(REG_OH_GBT_TX_CNT_RESPONSE_SENT_MSB downto REG_OH_GBT_TX_CNT_RESPONSE_SENT_LSB) <= cnt_ipb_response;
     regs_read_arr(1)(REG_OH_GBT_RX_RX_READY_BIT) <= gbt_rxready_i;
     regs_read_arr(1)(REG_OH_GBT_RX_RX_VALID_BIT) <= gbt_rxvalid_i;
@@ -222,7 +225,8 @@ begin
     regs_read_arr(2)(REG_OH_GBT_TX_TX_READY_BIT) <= gbt_txready_i;
 
     -- Connect write signals
-    gbt_tx_bitslip <= regs_write_arr(0)(REG_OH_GBT_TX_BITSLIP_MSB downto REG_OH_GBT_TX_BITSLIP_LSB);
+    gbt_tx_bitslip0 <= regs_write_arr(0)(REG_OH_GBT_TX_BITSLIP0_MSB downto REG_OH_GBT_TX_BITSLIP0_LSB);
+    gbt_tx_bitslip1 <= regs_write_arr(0)(REG_OH_GBT_TX_BITSLIP1_MSB downto REG_OH_GBT_TX_BITSLIP1_LSB);
 
     -- Connect write pulse signals
 
@@ -256,7 +260,8 @@ begin
     -- Connect read ready signals
 
     -- Defaults
-    regs_defaults(0)(REG_OH_GBT_TX_BITSLIP_MSB downto REG_OH_GBT_TX_BITSLIP_LSB) <= REG_OH_GBT_TX_BITSLIP_DEFAULT;
+    regs_defaults(0)(REG_OH_GBT_TX_BITSLIP0_MSB downto REG_OH_GBT_TX_BITSLIP0_LSB) <= REG_OH_GBT_TX_BITSLIP0_DEFAULT;
+    regs_defaults(0)(REG_OH_GBT_TX_BITSLIP1_MSB downto REG_OH_GBT_TX_BITSLIP1_LSB) <= REG_OH_GBT_TX_BITSLIP1_DEFAULT;
 
     -- Define writable regs
     regs_writable_arr(0) <= '1';

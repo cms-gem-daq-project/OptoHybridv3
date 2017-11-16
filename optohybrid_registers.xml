@@ -1614,11 +1614,16 @@
           fw_reg_addr_lsb="0">
 
             <node id="TX" address="0x0" description = "TX">
-                <node id="BITSLIP" address="0x0" permission="rw"
-                    mask="0x00000007"
-                    description="Value of the GBT tx bitslip adjuster to align data to the 40MHz clock"
+                <node id="BITSLIP0" address="0x0" permission="rw"
+                    mask="0x00000003"
+                    description="Value of the GBT tx elink0 bitslip adjuster to align data to the 40MHz clock"
                     fw_default="0x0"
-                    fw_signal="gbt_tx_bitslip"/>
+                    fw_signal="gbt_tx_bitslip0"/>
+                <node id="BITSLIP1" address="0x0" permission="rw"
+                    mask="0x0000000c"
+                    description="Value of the GBT tx elink0 bitslip adjuster to align data to the 40MHz clock"
+                    fw_default="0x0"
+                    fw_signal="gbt_tx_bitslip1"/>
                 <node id="CNT_RESPONSE_SENT" address="0x0" permission="r"
                     mask="0xffffff00"
                     description="Number of wishbone responses sent back"
