@@ -16,6 +16,7 @@ if { $folder != "tools" } {
 set bit_filename   prj/${top_name}.bit
 set mcs_filename   prj/${top_name}.mcs
 set cfi_filename   prj/${top_name}.cfi
+set cdc_filename   src/chipscope_ila.cdc
 set prm_filename   prj/${top_name}.prm
 set svf_verify     prj/${top_name}_verify.svf
 set svf_noverify   prj/${top_name}_noverify.svf
@@ -292,3 +293,4 @@ if {![file isdirectory $releasedir]} {
 #file copy -force $svf_noverify   ${releasedir}/${shortname}-${datecode}-${releasecode}_noverify.svf
  file copy -force $prm_filename   ${releasedir}/${shortname}-${datecode}-${releasecode}.prm
  file copy -force $cfi_filename   ${releasedir}/${shortname}-${datecode}-${releasecode}.cfi
+ file copy -force $cdc_filename   ${releasedir}/${shortname}-${datecode}-${releasecode}.cdc
