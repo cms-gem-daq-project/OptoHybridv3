@@ -14,6 +14,8 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.std_logic_misc.all;
+use ieee.numeric_std.all;
+
 
 library work;
 use work.types_pkg.all;
@@ -35,6 +37,10 @@ port(
     vfat_sbit_clusters_o    : out sbit_cluster_array_t(7 downto 0);
 
     sbit_mask_i             : in std_logic_vector (23 downto 0);
+
+    aff_mux                 : out std_logic;
+    sbits_mux_sel           : in  std_logic_vector (4 downto 0);
+
 
     cluster_count_o         : out std_logic_vector (7 downto 0);
 
@@ -63,6 +69,8 @@ architecture Behavioral of sbits is
 
     signal vfat_sbits               : sbits_array_t(23 downto 0);
 
+    signal active_vfats             : std_logic_vector (23 downto 0);
+
     signal sbits_p                  : std_logic_vector (191 downto 0);
     signal sbits_n                  : std_logic_vector (191 downto 0);
 
@@ -74,6 +82,10 @@ architecture Behavioral of sbits is
     signal sbits                    : std_logic_vector (1535 downto 0);
 
     signal active_vfats_s1          : std_logic_vector (191 downto 0);
+
+    signal sbits_mux_s0             : std_logic_vector (63 downto 0);
+    signal sbits_mux_s1             : std_logic_vector (63 downto 0);
+    signal sbits_mux                : std_logic_vector (63 downto 0);
 
     signal reset : std_logic;
 
@@ -89,6 +101,7 @@ begin
 
     -- don't need to do a 180 on the clock-- use local inverters for deserialization to save 1 global clock
     clk160_180 <= not clk160_i;
+    active_vfats_o <= active_vfats;
 
     -- remap VFATs for input to cluster packer
 
@@ -284,10 +297,21 @@ begin
     process (clk40_i)
     begin
         if (rising_edge(clk40_i)) then
-            active_vfats_o (I)   <= or_reduce (active_vfats_s1 (8*(I+1)-1 downto (8*I)));
+            active_vfats (I)   <= or_reduce (active_vfats_s1 (8*(I+1)-1 downto (8*I)));
         end if;
     end process;
     end generate;
+
+    process (clk40_i) begin
+        if (rising_edge(clk40_i)) then
+            sbits_mux_s0 <= vfat_sbits(to_integer(unsigned(sbits_mux_sel)));
+            sbits_mux_s1 <= sbits_mux_s0;
+            sbits_mux    <= sbits_mux_s1;
+
+            aff_mux      <= active_vfats(to_integer(unsigned(sbits_mux_sel)));
+        end if;
+    end process;
+
 
     --======================--
     --== Cluster Packer   ==--

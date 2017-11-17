@@ -184,6 +184,11 @@ package registers is
     constant REG_OH_TRIG_CTRL_SBIT_DEADTIME_LSB     : integer := 0;
     constant REG_OH_TRIG_CTRL_SBIT_DEADTIME_DEFAULT : std_logic_vector(3 downto 0) := x"7";
 
+    constant REG_OH_TRIG_CTRL_SBIT_MUX_SEL_ADDR    : std_logic_vector(7 downto 0) := x"01";
+    constant REG_OH_TRIG_CTRL_SBIT_MUX_SEL_MSB    : integer := 8;
+    constant REG_OH_TRIG_CTRL_SBIT_MUX_SEL_LSB     : integer := 4;
+    constant REG_OH_TRIG_CTRL_SBIT_MUX_SEL_DEFAULT : std_logic_vector(8 downto 4) := '1' & x"0";
+
     constant REG_OH_TRIG_CTRL_ACTIVE_VFATS_ADDR    : std_logic_vector(7 downto 0) := x"02";
     constant REG_OH_TRIG_CTRL_ACTIVE_VFATS_MSB    : integer := 23;
     constant REG_OH_TRIG_CTRL_ACTIVE_VFATS_LSB     : integer := 0;
@@ -192,9 +197,9 @@ package registers is
     constant REG_OH_TRIG_CTRL_CNT_OVERFLOW_MSB    : integer := 15;
     constant REG_OH_TRIG_CTRL_CNT_OVERFLOW_LSB     : integer := 0;
 
-    constant REG_OH_TRIG_CTRL_SBIT_SOF_ALIGNED_ADDR    : std_logic_vector(7 downto 0) := x"04";
-    constant REG_OH_TRIG_CTRL_SBIT_SOF_ALIGNED_MSB    : integer := 23;
-    constant REG_OH_TRIG_CTRL_SBIT_SOF_ALIGNED_LSB     : integer := 0;
+    constant REG_OH_TRIG_CTRL_SBIT_SOT_READY_ADDR    : std_logic_vector(7 downto 0) := x"04";
+    constant REG_OH_TRIG_CTRL_SBIT_SOT_READY_MSB    : integer := 23;
+    constant REG_OH_TRIG_CTRL_SBIT_SOT_READY_LSB     : integer := 0;
 
     constant REG_OH_TRIG_CTRL_SBIT_SOF_UNSTABLE_ADDR    : std_logic_vector(7 downto 0) := x"05";
     constant REG_OH_TRIG_CTRL_SBIT_SOF_UNSTABLE_MSB    : integer := 23;

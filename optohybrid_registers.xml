@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!--  The tags attribute is a free test attribute which meaning is defined by the uHAL user -->
 <node id="top">
-    <node id="OH">
+    <node id="FPGA">
         <!--TTC module -->
         <node id="CONTROL"  address="0x0000"
             description="Implements various control and monitoring functions of the Optohybrid"
@@ -277,6 +277,12 @@
                     mask="0xf"
                     fw_default="0x7"/>
 
+                <node id="SBIT_MUX_SEL" address="0x1" permission="rw"
+                    description="Select a VFAT which will connect to the S-bit multiplexer (for readout from chipscope)"
+                    fw_signal="sbits_mux_sel"
+                    mask="0x1f0"
+                    fw_default="0x10"/>
+
                 <node id="ACTIVE_VFATS" address="0x2" permission="r"
                     description="24 bit list of VFATs with hits in this BX"
                     mask="0xffffff"
@@ -289,13 +295,13 @@
                     cnt_snap_signal="cnt_snap"
                     fw_signal="cnt_sbit_overflow"/>
 
-                <node id="SBIT_SOF_ALIGNED" address="0x4" permission="r"
-                    description="24 bit list of VFATs with stable Start-of-frame pulses"
+                <node id="SBIT_SOT_READY" address="0x4" permission="r"
+                    description="24 bit list of VFATs with stable Start-of-frame pulses (in sync for a number of clock cycles)"
                     mask="0xffffff"
                     fw_signal="sof_is_aligned" />
 
                 <node id="SBIT_SOF_UNSTABLE" address="0x5" permission="r"
-                    description="24 bit list of VFATs with unstable Start-of-frame pulses (misaligned after achieving lock)"
+                    description="24 bit list of VFATs with unstable Start-of-frame pulses (became misaligned after already achieving lock)"
                     mask="0xffffff"
                     fw_signal="sof_unstable" />
             </node>
