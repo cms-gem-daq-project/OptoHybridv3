@@ -14,6 +14,7 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 
 library unisim;
 use unisim.vcomponents.all;
@@ -314,10 +315,15 @@ begin
     -- duplicate the 2 MSBS to transmit at 320 MHz
     -- this emulates 80MHz on one of the e-links but allows the rest of the firmware to be agnostic to the change
 
-    elink0 <= frame (1) & frame (1) & frame(1) & frame(1) &
-              frame (0) & frame (0) & frame(0) & frame(0);
+    process(clock)
+    begin
+        if (rising_edge(clock)) then
+                elink0 <= frame (1) & frame (1) & frame(1) & frame(1) &
+                            frame (0) & frame (0) & frame(0) & frame(0);
 
-    elink1 <= frame (9 downto 2);
+                elink1 <= frame (9 downto 2);
+        end if;
+    end process;
 
     data_o (15 downto 0) <= elink1 & elink0;
 

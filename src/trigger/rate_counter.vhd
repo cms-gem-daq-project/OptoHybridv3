@@ -18,6 +18,7 @@ use ieee.numeric_std.all;
 
 entity rate_counter is
     generic(
+        g_LOGARITHMIC           : natural := 1;
         g_CLK_FREQUENCY         : natural := 40079000;
         g_COUNTER_WIDTH         : natural := 26;     --
         g_INCREMENTER_WIDTH     : natural := 8;      -- allow for incrementing more than 1 step per clock
@@ -84,10 +85,18 @@ begin
 
             -- progress bar indicators
             for i in 0 to (g_PROGRESS_BAR_WIDTH - 1) loop
-                if (rate > (progress_bar_step * (i + 1)) ) then
-                    progress_bar_o(i) <= '1';
+                if (g_LOGARITHMIC > 0) then
+                    if (rate >= (10**i)) then
+                        progress_bar_o(i) <= '1';
+                    else
+                        progress_bar_o(i) <= '0';
+                    end if;
                 else
-                    progress_bar_o(i) <= '0';
+                    if (rate > (progress_bar_step * (i + 1)) ) then
+                        progress_bar_o(i) <= '1';
+                    else
+                        progress_bar_o(i) <= '0';
+                    end if;
                 end if;
             end loop;
 

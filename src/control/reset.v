@@ -23,18 +23,24 @@ module reset (
   output reg reset_o
 );
 
+
+  reg [5:0] reset_hold = -1;
+
   initial reset_o <= 1'b1;
 
   reg reset_start=1'b1;
   always @ (posedge clock_i)
-    reset_start <= mmcms_locked_i && gbt_rxready_i && gbt_rxvalid_i && gbt_txready_i;
+    reset_start <= ~(mmcms_locked_i && gbt_rxready_i && gbt_rxvalid_i && gbt_txready_i);
 
-  wire [3:0] powerup_dly = 4'd8;
-  reg powerup_ff  = 0;
-  SRL16E u_startup (.CLK(clock_i),.CE(!powerup),.D(reset_start),.A0(powerup_dly[0]),.A1(powerup_dly[1]),.A2(powerup_dly[2]),.A3(powerup_dly[3]),.Q(powerup));
-  always @(posedge clock_i) powerup_ff <= powerup;
-  wire ready = powerup_ff;
+  always @ (posedge clock_i)
+    if (reset_start)
+      reset_hold <= -1;
+    else if (reset_hold != 0)
+      reset_hold <= reset_hold - 1'b1;
 
-  always @(posedge clock_i) reset_o <= !ready;
+  wire ready = (reset_hold == 0);
+
+  always @(posedge clock_i)
+    reset_o <= !ready;
 
 endmodule

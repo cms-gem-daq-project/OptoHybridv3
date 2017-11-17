@@ -35,13 +35,16 @@ port(
     gbt_rx_clk_div_i : in std_logic; -- 40 MHz phase shiftable frame clock from GBT
     gbt_rx_clk_i     : in std_logic; -- 320 MHz phase shiftable frame clock from GBT
 
-    gbt_tx_clk_div_i : in std_logic; -- 40 MHz phase shiftable frame clock from GBT
-    gbt_tx_clk_i     : in std_logic; -- 320 MHz phase shiftable frame clock from GBT
+    gbt_tx_clk_div_i : in std_logic_vector (1 downto 0); -- 40 MHz phase shiftable frame clock from GBT
+    gbt_tx_clk_i     : in std_logic_vector (1 downto 0); -- 320 MHz phase shiftable frame clock from GBT
 
     clock            : in std_logic;
 
-    gbt_tx_bitslip0 : in std_logic_vector(1 downto 0) ;
-    gbt_tx_bitslip1 : in std_logic_vector(1 downto 0) ;
+    test_pattern     : in std_logic_vector (63 downto 0);
+    tx_sync_mode     : in std_logic;
+
+    gbt_tx_bitslip0 : in std_logic_vector(2 downto 0) ;
+    gbt_tx_bitslip1 : in std_logic_vector(2 downto 0) ;
 
     -- serial data to/from GBTx
     elink_o_p        : out std_logic_vector(1 downto 0);
@@ -64,21 +67,23 @@ architecture Behavioral of gbt_serdes is
     signal from_gbt          : std_logic_vector(15 downto 0) := (others => '0');
 
     signal to_gbt            : std_logic_vector(15 downto 0) := (others => '0');
+    signal to_gbt_synced     : std_logic_vector(15 downto 0) := (others => '0');
     signal to_gbt_bitslipped : std_logic_vector(15 downto 0) := (others => '0');
     signal to_gbt_remapped   : std_logic_vector(15 downto 0) := (others => '0');
-    signal to_gbt_reg        : std_logic_vector(15 downto 0) := (others => '0');
+    signal to_gbt_data        : std_logic_vector(15 downto 0) := (others => '0');
+
+    attribute mark_debug : string;
+    attribute mark_debug of to_gbt : signal is "TRUE";
+    attribute mark_debug of to_gbt_bitslipped : signal is "TRUE";
 
     signal iserdes_reset     : std_logic := '1';
     signal iserdes_reset_s0  : std_logic := '1';
-    signal oserdes_reset     : std_logic := '1';
-    signal oserdes_reset_s0  : std_logic := '1';
+    signal oserdes_reset     : std_logic_vector (1 downto 0) := "11";
+    signal oserdes_reset_s0  : std_logic_vector (1 downto 0) := "11";
 
     signal iserdes_reset_srl : std_logic;
     signal oserdes_reset_srl : std_logic;
 
-    signal data_clk_inv : std_logic;
-    signal oserdes_clk : std_logic;
-    signal oserdes_clkdiv : std_logic;
     signal iserdes_clk : std_logic;
     signal iserdes_clkdiv : std_logic;
 
@@ -86,12 +91,11 @@ architecture Behavioral of gbt_serdes is
 
     constant reset_dly : std_logic_vector (3 downto 0) := x"f";
 
+    signal frame_count : integer range 0 to 7 := 0;
+
     signal reset : std_logic;
 
 begin
-
-    oserdes_clk    <= gbt_tx_clk_i;
-    oserdes_clkdiv <= gbt_tx_clk_div_i;
 
     iserdes_clk    <= gbt_rx_clk_i;
     iserdes_clkdiv <= gbt_rx_clk_div_i;
@@ -114,10 +118,17 @@ begin
     end if;
     end process;
 
-    process (oserdes_clkdiv) begin
-    if (rising_edge(oserdes_clkdiv)) then
-        oserdes_reset_s0 <= reset_i;
-        oserdes_reset <= oserdes_reset_s0;
+    process (gbt_tx_clk_div_i(0)) begin
+    if (rising_edge(gbt_tx_clk_div_i(0))) then
+        oserdes_reset_s0(0) <= reset_i;
+        oserdes_reset(0) <= oserdes_reset_s0(0);
+    end if;
+    end process;
+
+    process (gbt_tx_clk_div_i(1)) begin
+    if (rising_edge(gbt_tx_clk_div_i(1))) then
+        oserdes_reset_s0(1) <= reset_i;
+        oserdes_reset(1) <= oserdes_reset_s0(1);
     end if;
     end process;
 
@@ -195,19 +206,19 @@ begin
 
     i_gbt_tx_bitslip0 : entity work.gbt_tx_bitslip
     port map(
-        fabric_clk  => oserdes_clkdiv,
+        fabric_clk  => clock,
         reset       => reset,
         bitslip_cnt => to_integer(unsigned(gbt_tx_bitslip0)),
-        din         => to_gbt(7 downto 0), -- 16 bit data input, synchronized to frame-clock
+        din         => data_i(7 downto 0), -- 16 bit data input, synchronized to frame-clock
         dout        => to_gbt_bitslipped (7 downto 0)
     );
 
     i_gbt_tx_bitslip1 : entity work.gbt_tx_bitslip
     port map(
-        fabric_clk  => oserdes_clkdiv,
+        fabric_clk  => clock,
         reset       => reset,
         bitslip_cnt => to_integer(unsigned(gbt_tx_bitslip1)),
-        din         => to_gbt (15 downto 8), -- 16 bit data input, synchronized to frame-clock
+        din         => data_i (15 downto 8), -- 16 bit data input, synchronized to frame-clock
         dout        => to_gbt_bitslipped (15 downto 8)
     );
 
@@ -217,74 +228,97 @@ begin
     --         the output will be 3210, 7654
     -------------------------------------------------------------
 
-    process(oserdes_clkdiv)
+    -- 10 bit mapping
+    to_gbt_remapped <=
+        to_gbt_bitslipped(8) &
+        to_gbt_bitslipped(9) &
+        to_gbt_bitslipped(10) &
+        to_gbt_bitslipped(11) &
+        to_gbt_bitslipped(12) &
+        to_gbt_bitslipped(13) &
+        to_gbt_bitslipped(14) &
+        to_gbt_bitslipped(15) &
+        to_gbt_bitslipped(0) &
+        to_gbt_bitslipped(1) &
+        to_gbt_bitslipped(2) &
+        to_gbt_bitslipped(3) &
+        to_gbt_bitslipped(4) &
+        to_gbt_bitslipped(5) &
+        to_gbt_bitslipped(6) &
+        to_gbt_bitslipped(7);
+
+    process(clock)
     begin
-    if (rising_edge(oserdes_clkdiv)) then
-        if (reset='1') then
-            to_gbt_remapped   <= (others => '0');
+    if (rising_edge(clock)) then
+
+        if (frame_count = 7) then
+            frame_count <= 0;
         else
-
-            -- 10 bit mapping
-            to_gbt_remapped <=
-                to_gbt_bitslipped(12) &
-                to_gbt_bitslipped(13) &
-                to_gbt_bitslipped(14) &
-                to_gbt_bitslipped(15) &
-                to_gbt_bitslipped(8) &
-                to_gbt_bitslipped(9) &
-                to_gbt_bitslipped(10) &
-                to_gbt_bitslipped(11) &
-                to_gbt_bitslipped(0) &
-                to_gbt_bitslipped(1) &
-                to_gbt_bitslipped(2) &
-                to_gbt_bitslipped(3) &
-                to_gbt_bitslipped(4) &
-                to_gbt_bitslipped(5) &
-                to_gbt_bitslipped(6) &
-                to_gbt_bitslipped(7);
-
+            frame_count <= frame_count + 1;
         end if;
+
+        if (tx_sync_mode='1') then
+
+            to_gbt_data (15 downto 8) <= test_pattern ((frame_count+1)*8 - 1 downto frame_count*8);
+            to_gbt_data ( 7 downto 0)  <= test_pattern (frame_count*8+1) &
+                                         test_pattern (frame_count*8+1) &
+                                         test_pattern (frame_count*8+1) &
+                                         test_pattern (frame_count*8+1) &
+                                         test_pattern (frame_count*8+0) &
+                                         test_pattern (frame_count*8+0) &
+                                         test_pattern (frame_count*8+0) &
+                                         test_pattern (frame_count*8+0) ;
+        else
+            to_gbt_data  <= to_gbt_remapped;
+        end if;
+
+            -- to_gbt_data <=  from_gbt;
     end if;
     end process;
-
-    -- register input to the oserdes for better timing
-
-    process(oserdes_clkdiv)
-    begin
-    if (rising_edge(oserdes_clkdiv)) then
-            to_gbt_reg <= to_gbt_remapped;
-    end if;
-    end process;
-
 
     -- To ensure that data flows out of all OSERDESE1 blocks in a multiple bit output structure:
     --  1) Place a register in front of the OSERDESE1 inputs.
     --  2) Clock the register by the CLKDIV clock of the OSERDESE1.
     --  3) Use the same reset signal for the register as for the OSERDESE1.
 
+    process(gbt_tx_clk_div_i(0))
+    begin
+    if (rising_edge(gbt_tx_clk_div_i(0))) then
+        to_gbt_synced (7 downto 0) <= to_gbt_data (7 downto 0);
+        to_gbt (7 downto 0) <= to_gbt_synced (7 downto 0);
+    end if;
+    end process;
+
+    process(gbt_tx_clk_div_i(1))
+    begin
+    if (rising_edge(gbt_tx_clk_div_i(1))) then
+        to_gbt_synced (15 downto 8) <= to_gbt_data (15 downto 8);
+        to_gbt (15 downto 8) <= to_gbt_synced (15 downto 8);
+    end if;
+    end process;
 
     -- Output serializer
     -- we want to output the data on the falling edge of the clock so that the GBT can sample on the rising edge
 
     i_to_gbt_ser80 : entity work.to_gbt_ser
     port map(
-        data_out_from_device    => to_gbt_reg(7 downto 0),
+        data_out_from_device    => to_gbt(7 downto 0),
         data_out_to_pins_p      => elink_o_p(0 downto 0),
         data_out_to_pins_n      => elink_o_n(0 downto 0),
-        clk_in                  => oserdes_clk,
-        clk_div_in              => oserdes_clkdiv,
-        io_reset                => oserdes_reset
+        clk_in                  => gbt_tx_clk_i(0),
+        clk_div_in              => gbt_tx_clk_div_i(0),
+        io_reset                => oserdes_reset(0)
     );
 
     i_to_gbt_ser320 : entity work.to_gbt_ser
     port map(
         -- POLARITY SWAP ON ELINK #1
-        data_out_from_device    => (not (to_gbt_reg (15 downto 8))),
+        data_out_from_device    => (not (to_gbt(15 downto 8))),
         data_out_to_pins_p      => elink_o_p(1 downto 1),
         data_out_to_pins_n      => elink_o_n(1 downto 1),
-        clk_in                  => oserdes_clk,
-        clk_div_in              => oserdes_clkdiv,
-        io_reset                => oserdes_reset
+        clk_in                  => gbt_tx_clk_i(1),
+        clk_div_in              => gbt_tx_clk_div_i(1),
+        io_reset                => oserdes_reset(1)
     );
 
     --=====================--
@@ -305,21 +339,6 @@ begin
         dout => data_o,
         wr_clk => iserdes_clkdiv,
         rd_clk => clock,
-        full => open,
-        empty => open
-    );
-
-    -- data from FPGA clock domain to GBT frame clock
-
-    i_fpga_to_gbt_clk : entity work.gbt_cdc_fifo
-    port map(
-        rst  => reset,
-        wr_en => '1',
-        rd_en => '1',
-        din => data_i,
-        dout => to_gbt,
-        wr_clk => clock,
-        rd_clk  => oserdes_clkdiv,
         full => open,
         empty => open
     );

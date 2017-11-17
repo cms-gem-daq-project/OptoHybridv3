@@ -84,6 +84,7 @@ module led_control (
 
 
   rate_counter #(
+    .g_LOGARITHMIC           (32'd1), // 1 for LOG scale (ignores step )
     .g_CLK_FREQUENCY         (32'd40079000), // 40MHz LHC frequency
     .g_COUNTER_WIDTH         (32'd32),
     .g_INCREMENTER_WIDTH     (32'd8),

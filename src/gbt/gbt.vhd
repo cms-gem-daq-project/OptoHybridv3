@@ -34,8 +34,8 @@ port(
     gbt_rx_clk_div_i : in std_logic; -- 40 MHz phase shiftable frame clock from GBT
     gbt_rx_clk_i     : in std_logic; -- 320 MHz phase shiftable frame clock from GBT
 
-    gbt_tx_clk_div_i : in std_logic; -- 40 MHz phase shiftable frame clock from GBT
-    gbt_tx_clk_i     : in std_logic; -- 320 MHz phase shiftable frame clock from GBT
+    gbt_tx_clk_div_i : in std_logic_vector (1 downto 0); -- 40 MHz phase shiftable frame clock from GBT
+    gbt_tx_clk_i     : in std_logic_vector (1 downto 0); -- 320 MHz phase shiftable frame clock from GBT
 
     elink_i_p : in  std_logic_vector (1 downto 0);
     elink_i_n : in  std_logic_vector (1 downto 0);
@@ -75,10 +75,16 @@ architecture Behavioral of gbt is
     signal gbt_tx_data  : std_logic_vector(15 downto 0) := (others => '0');
     signal gbt_rx_data   : std_logic_vector(15 downto 0) := (others => '0');
 
-    signal gbt_tx_bitslip0 : std_logic_vector(1 downto 0) := (others => '0');
-    signal gbt_tx_bitslip1: std_logic_vector(1 downto 0) := (others => '0');
+    signal gbt_tx_bitslip0 : std_logic_vector(2 downto 0) ;
+    signal gbt_tx_bitslip1: std_logic_vector(2 downto 0) ;
+
+    signal test_pattern : std_logic_vector (63 downto 0);
 
     signal reset     : std_logic;
+
+    signal tx_sync_mode : std_logic;
+    attribute mark_debug : string;
+    attribute mark_debug of tx_sync_mode : signal is "TRUE";
 
     -- wishbone master
     signal ipb_mosi : ipb_wbus;
@@ -145,6 +151,8 @@ begin
        gbt_tx_bitslip0 => gbt_tx_bitslip0,
        gbt_tx_bitslip1 => gbt_tx_bitslip1,
 
+       tx_sync_mode => tx_sync_mode,
+       test_pattern => test_pattern,
 
        -- parallel data
        data_o           => gbt_rx_data,           -- Parallel data out
@@ -214,6 +222,8 @@ begin
     regs_addresses(0)(REG_OH_GBT_ADDRESS_MSB downto REG_OH_GBT_ADDRESS_LSB) <= "000";
     regs_addresses(1)(REG_OH_GBT_ADDRESS_MSB downto REG_OH_GBT_ADDRESS_LSB) <= "010";
     regs_addresses(2)(REG_OH_GBT_ADDRESS_MSB downto REG_OH_GBT_ADDRESS_LSB) <= "100";
+    regs_addresses(3)(REG_OH_GBT_ADDRESS_MSB downto REG_OH_GBT_ADDRESS_LSB) <= "101";
+    regs_addresses(4)(REG_OH_GBT_ADDRESS_MSB downto REG_OH_GBT_ADDRESS_LSB) <= "110";
 
     -- Connect read signals
     regs_read_arr(0)(REG_OH_GBT_TX_BITSLIP0_MSB downto REG_OH_GBT_TX_BITSLIP0_LSB) <= gbt_tx_bitslip0;
@@ -223,10 +233,16 @@ begin
     regs_read_arr(1)(REG_OH_GBT_RX_RX_VALID_BIT) <= gbt_rxvalid_i;
     regs_read_arr(1)(REG_OH_GBT_RX_CNT_REQUEST_RECEIVED_MSB downto REG_OH_GBT_RX_CNT_REQUEST_RECEIVED_LSB) <= cnt_ipb_request;
     regs_read_arr(2)(REG_OH_GBT_TX_TX_READY_BIT) <= gbt_txready_i;
+    regs_read_arr(2)(REG_OH_GBT_TX_SYNC_MODE_BIT) <= tx_sync_mode;
+    regs_read_arr(3)(REG_OH_GBT_TX_TEST_PAT0_MSB downto REG_OH_GBT_TX_TEST_PAT0_LSB) <= test_pattern (31 downto 0);
+    regs_read_arr(4)(REG_OH_GBT_TX_TEST_PAT1_MSB downto REG_OH_GBT_TX_TEST_PAT1_LSB) <= test_pattern (63 downto 32);
 
     -- Connect write signals
     gbt_tx_bitslip0 <= regs_write_arr(0)(REG_OH_GBT_TX_BITSLIP0_MSB downto REG_OH_GBT_TX_BITSLIP0_LSB);
     gbt_tx_bitslip1 <= regs_write_arr(0)(REG_OH_GBT_TX_BITSLIP1_MSB downto REG_OH_GBT_TX_BITSLIP1_LSB);
+    tx_sync_mode <= regs_write_arr(2)(REG_OH_GBT_TX_SYNC_MODE_BIT);
+    test_pattern (31 downto 0) <= regs_write_arr(3)(REG_OH_GBT_TX_TEST_PAT0_MSB downto REG_OH_GBT_TX_TEST_PAT0_LSB);
+    test_pattern (63 downto 32) <= regs_write_arr(4)(REG_OH_GBT_TX_TEST_PAT1_MSB downto REG_OH_GBT_TX_TEST_PAT1_LSB);
 
     -- Connect write pulse signals
 
@@ -262,9 +278,15 @@ begin
     -- Defaults
     regs_defaults(0)(REG_OH_GBT_TX_BITSLIP0_MSB downto REG_OH_GBT_TX_BITSLIP0_LSB) <= REG_OH_GBT_TX_BITSLIP0_DEFAULT;
     regs_defaults(0)(REG_OH_GBT_TX_BITSLIP1_MSB downto REG_OH_GBT_TX_BITSLIP1_LSB) <= REG_OH_GBT_TX_BITSLIP1_DEFAULT;
+    regs_defaults(2)(REG_OH_GBT_TX_SYNC_MODE_BIT) <= REG_OH_GBT_TX_SYNC_MODE_DEFAULT;
+    regs_defaults(3)(REG_OH_GBT_TX_TEST_PAT0_MSB downto REG_OH_GBT_TX_TEST_PAT0_LSB) <= REG_OH_GBT_TX_TEST_PAT0_DEFAULT;
+    regs_defaults(4)(REG_OH_GBT_TX_TEST_PAT1_MSB downto REG_OH_GBT_TX_TEST_PAT1_LSB) <= REG_OH_GBT_TX_TEST_PAT1_DEFAULT;
 
     -- Define writable regs
     regs_writable_arr(0) <= '1';
+    regs_writable_arr(2) <= '1';
+    regs_writable_arr(3) <= '1';
+    regs_writable_arr(4) <= '1';
 
     --==== Registers end ============================================================================
 end Behavioral;

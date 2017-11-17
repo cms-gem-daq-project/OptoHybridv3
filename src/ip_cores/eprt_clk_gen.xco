@@ -1,7 +1,7 @@
 ##############################################################
 #
 # Xilinx Core Generator version 14.7
-# Date: Sat Nov 11 20:39:40 2017
+# Date: Fri Nov 17 13:26:00 2017
 #
 ##############################################################
 #
@@ -49,9 +49,9 @@ CSET clk_out3_port=gbt_txclk_div
 CSET clk_out3_use_fine_ps_gui=false
 CSET clk_out4_port=gbt_txclk
 CSET clk_out4_use_fine_ps_gui=false
-CSET clk_out5_port=CLK_OUT5
+CSET clk_out5_port=gbt_txclk80_div
 CSET clk_out5_use_fine_ps_gui=false
-CSET clk_out6_port=CLK_OUT6
+CSET clk_out6_port=gbt_txclk80
 CSET clk_out6_use_fine_ps_gui=false
 CSET clk_out7_port=CLK_OUT7
 CSET clk_out7_use_fine_ps_gui=false
@@ -71,32 +71,32 @@ CSET clkin2_ui_jitter=0.010
 CSET clkout1_drives=BUFG
 CSET clkout1_requested_duty_cycle=50.000
 CSET clkout1_requested_out_freq=40
-CSET clkout1_requested_phase=15
+CSET clkout1_requested_phase=-7.5
 CSET clkout2_drives=BUFG
 CSET clkout2_requested_duty_cycle=50.000
 CSET clkout2_requested_out_freq=320
-CSET clkout2_requested_phase=120
+CSET clkout2_requested_phase=-60
 CSET clkout2_used=true
 CSET clkout3_drives=BUFG
 CSET clkout3_requested_duty_cycle=50.000
 CSET clkout3_requested_out_freq=40
-CSET clkout3_requested_phase=-35
+CSET clkout3_requested_phase=0
 CSET clkout3_used=true
 CSET clkout4_drives=BUFG
 CSET clkout4_requested_duty_cycle=50.000
 CSET clkout4_requested_out_freq=320
-CSET clkout4_requested_phase=-280
+CSET clkout4_requested_phase=0
 CSET clkout4_used=true
 CSET clkout5_drives=BUFG
 CSET clkout5_requested_duty_cycle=50.000
-CSET clkout5_requested_out_freq=100.000
-CSET clkout5_requested_phase=0.000
-CSET clkout5_used=false
+CSET clkout5_requested_out_freq=40
+CSET clkout5_requested_phase=-45
+CSET clkout5_used=true
 CSET clkout6_drives=BUFG
 CSET clkout6_requested_duty_cycle=50.000
-CSET clkout6_requested_out_freq=100.000
+CSET clkout6_requested_out_freq=320
 CSET clkout6_requested_phase=0.000
-CSET clkout6_used=false
+CSET clkout6_used=true
 CSET clkout7_drives=BUFG
 CSET clkout7_requested_duty_cycle=50.000
 CSET clkout7_requested_out_freq=100.000
@@ -155,26 +155,26 @@ CSET mmcm_clkin1_period=25.000
 CSET mmcm_clkin2_period=10.0
 CSET mmcm_clkout0_divide_f=24.000
 CSET mmcm_clkout0_duty_cycle=0.500
-CSET mmcm_clkout0_phase=15.000
+CSET mmcm_clkout0_phase=-7.500
 CSET mmcm_clkout0_use_fine_ps=false
 CSET mmcm_clkout1_divide=3
 CSET mmcm_clkout1_duty_cycle=0.500
-CSET mmcm_clkout1_phase=120.000
+CSET mmcm_clkout1_phase=-60.000
 CSET mmcm_clkout1_use_fine_ps=false
 CSET mmcm_clkout2_divide=24
 CSET mmcm_clkout2_duty_cycle=0.500
-CSET mmcm_clkout2_phase=-33.750
+CSET mmcm_clkout2_phase=0.000
 CSET mmcm_clkout2_use_fine_ps=false
 CSET mmcm_clkout3_divide=3
 CSET mmcm_clkout3_duty_cycle=0.500
-CSET mmcm_clkout3_phase=-270.000
+CSET mmcm_clkout3_phase=0.000
 CSET mmcm_clkout3_use_fine_ps=false
 CSET mmcm_clkout4_cascade=false
-CSET mmcm_clkout4_divide=1
+CSET mmcm_clkout4_divide=24
 CSET mmcm_clkout4_duty_cycle=0.500
-CSET mmcm_clkout4_phase=0.000
+CSET mmcm_clkout4_phase=-45.000
 CSET mmcm_clkout4_use_fine_ps=false
-CSET mmcm_clkout5_divide=1
+CSET mmcm_clkout5_divide=3
 CSET mmcm_clkout5_duty_cycle=0.500
 CSET mmcm_clkout5_phase=0.000
 CSET mmcm_clkout5_use_fine_ps=false
@@ -189,7 +189,7 @@ CSET mmcm_notes=None
 CSET mmcm_ref_jitter1=0.010
 CSET mmcm_ref_jitter2=0.010
 CSET mmcm_startup_wait=false
-CSET num_out_clks=4
+CSET num_out_clks=6
 CSET override_dcm=false
 CSET override_dcm_clkgen=false
 CSET override_mmcm=false
@@ -266,4 +266,4 @@ CSET use_status=false
 MISC pkg_timestamp=2012-05-10T12:44:55Z
 # END Extra information
 GENERATE
-# CRC: f806a73a
+# CRC: f5be22b8

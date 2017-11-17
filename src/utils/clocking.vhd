@@ -35,8 +35,8 @@ port(
     gbt_rx_clk_div_o : out std_logic;
     gbt_rx_clk_o     : out std_logic;
 
-    gbt_tx_clk_div_o : out std_logic;
-    gbt_tx_clk_o     : out std_logic;
+    gbt_tx_clk_div_o : out std_logic_vector (1 downto 0);
+    gbt_tx_clk_o     : out std_logic_vector (1 downto 0);
 
     -- logic clocks
     clk_1x_o        : out std_logic;
@@ -121,8 +121,11 @@ begin
         gbt_rxclk_div => gbt_rx_clk_div_o,
         gbt_rxclk     => gbt_rx_clk_o,
 
-        gbt_txclk_div => gbt_tx_clk_div_o,
-        gbt_txclk     => gbt_tx_clk_o,
+        gbt_txclk_div => gbt_tx_clk_div_o(1),
+        gbt_txclk     => gbt_tx_clk_o(1),
+
+        gbt_txclk80_div => gbt_tx_clk_div_o(0),
+        gbt_txclk80     => gbt_tx_clk_o(0),
 
         locked_o      => mmcm_locked(1)
     );

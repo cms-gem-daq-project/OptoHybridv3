@@ -1615,13 +1615,13 @@
 
             <node id="TX" address="0x0" description = "TX">
                 <node id="BITSLIP0" address="0x0" permission="rw"
-                    mask="0x00000003"
+                    mask="0x00000007"
                     description="Value of the GBT tx elink0 bitslip adjuster to align data to the 40MHz clock"
                     fw_default="0x0"
                     fw_signal="gbt_tx_bitslip0"/>
                 <node id="BITSLIP1" address="0x0" permission="rw"
-                    mask="0x0000000c"
-                    description="Value of the GBT tx elink0 bitslip adjuster to align data to the 40MHz clock"
+                    mask="0x00000070"
+                    description="Value of the GBT tx elink1 bitslip adjuster to align data to the 40MHz clock"
                     fw_default="0x0"
                     fw_signal="gbt_tx_bitslip1"/>
                 <node id="CNT_RESPONSE_SENT" address="0x0" permission="r"
@@ -1631,9 +1631,22 @@
                     cnt_snap_signal="cnt_snap"
                     fw_signal="cnt_ipb_response"/>
                 <node id="TX_READY" address="0x4" permission="r"
-                    mask="0x00000004"
+                    mask="0x00000001"
                     description="GBT TX READY from GBTx Chip"
                     fw_signal="gbt_txready_i"/>
+                <node id="SYNC_MODE" address="0x4" permission="rw"
+                    mask="0x00000002"
+                    description="Sets the transmitter into a sync mode where it sends a predictable pattern"
+                    fw_default="0x0"
+                    fw_signal="tx_sync_mode"/>
+                <node id="TEST_PAT0" address="0x5" permission="rw"
+                    description="test pattern [31:0]"
+                    fw_default="0x76543210"
+                    fw_signal="test_pattern (31 downto 0)"/>
+                <node id="TEST_PAT1" address="0x6" permission="rw"
+                    description="test pattern [63:32]"
+                    fw_default="0x00fedcba"
+                    fw_signal="test_pattern (63 downto 32)"/>
             </node>
 
             <node id="RX" address="0x1" description = "RX">

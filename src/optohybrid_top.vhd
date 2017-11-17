@@ -115,8 +115,8 @@ architecture Behavioral of optohybrid_top is
     signal gbt_rx_clk_div   : std_logic;
     signal gbt_rx_clk       : std_logic;
 
-    signal gbt_tx_clk_div   : std_logic;
-    signal gbt_tx_clk       : std_logic;
+    signal gbt_tx_clk_div   : std_logic_vector (1 downto 0);
+    signal gbt_tx_clk       : std_logic_vector (1 downto 0);
 
     signal clk_1x           : std_logic;
     signal clk_2x           : std_logic;
