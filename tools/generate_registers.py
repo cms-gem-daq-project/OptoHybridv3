@@ -35,6 +35,7 @@ class Module:
     userClock = ''
     busClock = ''
     busReset = ''
+    cnt_reset_signal = None
     masterBus = ''
     slaveBus = ''
     isExternal = False # if this is true it means that firmware doesn't have to be modified, only bash scripts will be generated
@@ -254,6 +255,10 @@ def findRegisters(node, baseName, baseAddress, modules, currentModule, vars, isG
 
             if node.get('cnt_en_signal') is not None:
                 reg.cnt_en_signal = substituteVars (node.get('cnt_en_signal'),vars)
+            if node.get('cnt_reset_signal') is not None:
+                reg.cnt_reset_signal = substituteVars (node.get('cnt_reset_signal'),vars)
+            else:
+                reg.cnt_reset_signal = module.busReset
             if node.get('cnt_snap_signal') is not None:
                 reg.cnt_snap_signal = substituteVars (node.get('cnt_snap_signal'),vars)
 
@@ -497,7 +502,7 @@ def updateModuleFile(module):
                     f.write ('    port map (\n')
                     f.write ('        ref_clk_i => %s,\n' % (module.userClock))
                     f.write ('        snap_i    => %s,\n' % (reg.cnt_snap_signal))
-                    f.write ('        reset_i   => %s,\n' % (module.busReset))
+                    f.write ('        reset_i   => %s,\n' % (reg.cnt_reset_signal))
                     f.write ('        en_i      => %s,\n' % (reg.cnt_en_signal))
                     f.write ('        data_o    => %s\n'  % (reg.signal))
                     f.write ('    );\n')

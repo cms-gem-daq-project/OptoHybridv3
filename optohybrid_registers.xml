@@ -313,6 +313,7 @@
                     description="VFAT 0 Sbit Counter"
                     cnt_en_signal="active_vfats(0)"
                     cnt_snap_signal="cnt_snap"
+                    cnt_reset_signal="cnt_reset"
                     fw_signal="cnt_vfat0"/>
 
                 <node id="VFAT1_SBITS" address="0x1" permission="r"
@@ -320,6 +321,7 @@
                     description="VFAT 1 Sbit Counter"
                     cnt_en_signal="active_vfats(1)"
                     cnt_snap_signal="cnt_snap"
+                    cnt_reset_signal="cnt_reset"
                     fw_signal="cnt_vfat1"/>
 
                 <node id="VFAT2_SBITS" address="0x2" permission="r"
@@ -327,6 +329,7 @@
                     description="VFAT 2 Sbit Counter"
                     cnt_en_signal="active_vfats(2)"
                     cnt_snap_signal="cnt_snap"
+                    cnt_reset_signal="cnt_reset"
                     fw_signal="cnt_vfat2"/>
 
                 <node id="VFAT3_SBITS" address="0x3" permission="r"
@@ -334,6 +337,7 @@
                     description="VFAT 3 Sbit Counter"
                     cnt_en_signal="active_vfats(3)"
                     cnt_snap_signal="cnt_snap"
+                    cnt_reset_signal="cnt_reset"
                     fw_signal="cnt_vfat3"/>
 
                 <node id="VFAT4_SBITS" address="0x4" permission="r"
@@ -341,6 +345,7 @@
                     description="VFAT 4 Sbit Counter"
                     cnt_en_signal="active_vfats(4)"
                     cnt_snap_signal="cnt_snap"
+                    cnt_reset_signal="cnt_reset"
                     fw_signal="cnt_vfat4"/>
 
                 <node id="VFAT5_SBITS" address="0x5" permission="r"
@@ -348,6 +353,7 @@
                     description="VFAT 5 Sbit Counter"
                     cnt_en_signal="active_vfats(5)"
                     cnt_snap_signal="cnt_snap"
+                    cnt_reset_signal="cnt_reset"
                     fw_signal="cnt_vfat5"/>
 
                 <node id="VFAT6_SBITS" address="0x6" permission="r"
@@ -355,6 +361,7 @@
                     description="VFAT 6 Sbit Counter"
                     cnt_en_signal="active_vfats(6)"
                     cnt_snap_signal="cnt_snap"
+                    cnt_reset_signal="cnt_reset"
                     fw_signal="cnt_vfat6"/>
 
                 <node id="VFAT7_SBITS" address="0x7" permission="r"
@@ -362,6 +369,7 @@
                     description="VFAT 7 Sbit Counter"
                     cnt_en_signal="active_vfats(7)"
                     cnt_snap_signal="cnt_snap"
+                    cnt_reset_signal="cnt_reset"
                     fw_signal="cnt_vfat7"/>
 
                 <node id="VFAT8_SBITS" address="0x8" permission="r"
@@ -369,6 +377,7 @@
                     description="VFAT 8 Sbit Counter"
                     cnt_en_signal="active_vfats(8)"
                     cnt_snap_signal="cnt_snap"
+                    cnt_reset_signal="cnt_reset"
                     fw_signal="cnt_vfat8"/>
 
                 <node id="VFAT9_SBITS" address="0x9" permission="r"
@@ -376,6 +385,7 @@
                     description="VFAT 9 Sbit Counter"
                     cnt_en_signal="active_vfats(9)"
                     cnt_snap_signal="cnt_snap"
+                    cnt_reset_signal="cnt_reset"
                     fw_signal="cnt_vfat9"/>
 
                 <node id="VFAT10_SBITS" address="0xa" permission="r"
@@ -383,6 +393,7 @@
                     description="VFAT 10 Sbit Counter"
                     cnt_en_signal="active_vfats(10)"
                     cnt_snap_signal="cnt_snap"
+                    cnt_reset_signal="cnt_reset"
                     fw_signal="cnt_vfat10"/>
 
                 <node id="VFAT11_SBITS" address="0xb" permission="r"
@@ -390,6 +401,7 @@
                     description="VFAT 11 Sbit Counter"
                     cnt_en_signal="active_vfats(11)"
                     cnt_snap_signal="cnt_snap"
+                    cnt_reset_signal="cnt_reset"
                     fw_signal="cnt_vfat11"/>
 
                 <node id="VFAT12_SBITS" address="0xc" permission="r"
@@ -397,6 +409,7 @@
                     description="VFAT 12 Sbit Counter"
                     cnt_en_signal="active_vfats(12)"
                     cnt_snap_signal="cnt_snap"
+                    cnt_reset_signal="cnt_reset"
                     fw_signal="cnt_vfat12"/>
 
                 <node id="VFAT13_SBITS" address="0xd" permission="r"
@@ -404,6 +417,7 @@
                     description="VFAT 13 Sbit Counter"
                     cnt_en_signal="active_vfats(13)"
                     cnt_snap_signal="cnt_snap"
+                    cnt_reset_signal="cnt_reset"
                     fw_signal="cnt_vfat13"/>
 
                 <node id="VFAT14_SBITS" address="0xe" permission="r"
@@ -411,6 +425,7 @@
                     description="VFAT 14 Sbit Counter"
                     cnt_en_signal="active_vfats(14)"
                     cnt_snap_signal="cnt_snap"
+                    cnt_reset_signal="cnt_reset"
                     fw_signal="cnt_vfat14"/>
 
                 <node id="VFAT15_SBITS" address="0xf" permission="r"
@@ -418,6 +433,7 @@
                     description="VFAT 15 Sbit Counter"
                     cnt_en_signal="active_vfats(15)"
                     cnt_snap_signal="cnt_snap"
+                    cnt_reset_signal="cnt_reset"
                     fw_signal="cnt_vfat15"/>
 
                 <node id="VFAT16_SBITS" address="0x10" permission="r"
@@ -425,6 +441,7 @@
                     description="VFAT 16 Sbit Counter"
                     cnt_en_signal="active_vfats(16)"
                     cnt_snap_signal="cnt_snap"
+                    cnt_reset_signal="cnt_reset"
                     fw_signal="cnt_vfat16"/>
 
                 <node id="VFAT17_SBITS" address="0x11" permission="r"
@@ -432,6 +449,7 @@
                     description="VFAT 17 Sbit Counter"
                     cnt_en_signal="active_vfats(17)"
                     cnt_snap_signal="cnt_snap"
+                    cnt_reset_signal="cnt_reset"
                     fw_signal="cnt_vfat17"/>
 
                 <node id="VFAT18_SBITS" address="0x12" permission="r"
@@ -439,6 +457,7 @@
                     description="VFAT 18 Sbit Counter"
                     cnt_en_signal="active_vfats(18)"
                     cnt_snap_signal="cnt_snap"
+                    cnt_reset_signal="cnt_reset"
                     fw_signal="cnt_vfat18"/>
 
                 <node id="VFAT19_SBITS" address="0x13" permission="r"
@@ -446,6 +465,7 @@
                     description="VFAT 19 Sbit Counter"
                     cnt_en_signal="active_vfats(19)"
                     cnt_snap_signal="cnt_snap"
+                    cnt_reset_signal="cnt_reset"
                     fw_signal="cnt_vfat19"/>
 
                 <node id="VFAT20_SBITS" address="0x14" permission="r"
@@ -453,6 +473,7 @@
                     description="VFAT 20 Sbit Counter"
                     cnt_en_signal="active_vfats(20)"
                     cnt_snap_signal="cnt_snap"
+                    cnt_reset_signal="cnt_reset"
                     fw_signal="cnt_vfat20"/>
 
                 <node id="VFAT21_SBITS" address="0x15" permission="r"
@@ -460,6 +481,7 @@
                     description="VFAT 21 Sbit Counter"
                     cnt_en_signal="active_vfats(21)"
                     cnt_snap_signal="cnt_snap"
+                    cnt_reset_signal="cnt_reset"
                     fw_signal="cnt_vfat21"/>
 
                 <node id="VFAT22_SBITS" address="0x16" permission="r"
@@ -467,6 +489,7 @@
                     description="VFAT 22 Sbit Counter"
                     cnt_en_signal="active_vfats(22)"
                     cnt_snap_signal="cnt_snap"
+                    cnt_reset_signal="cnt_reset"
                     fw_signal="cnt_vfat22"/>
 
                 <node id="VFAT23_SBITS" address="0x17" permission="r"
@@ -474,6 +497,7 @@
                     description="VFAT 23 Sbit Counter"
                     cnt_en_signal="active_vfats(23)"
                     cnt_snap_signal="cnt_snap"
+                    cnt_reset_signal="cnt_reset"
                     fw_signal="cnt_vfat23"/>
 
             </node>
