@@ -227,11 +227,17 @@ module frame_aligner (
 
   // require MXSTABLE cycles of alignment before outputting S-bits
 
-  parameter MXSTABLE = 16; 
-  reg [MXSTABLE-1:0] sof_r=0;
+  parameter MXSTABLE = 12'hDEC;
+  reg [11:0] stable_counts=0;
   always @(posedge clock) begin
-    sof_r <= {sof_r[MXSTABLE-1:0],sof_aligned};
-    ready <= &sof_r;
+    if (sof_aligned)
+      if (stable_counts < MXSTABLE)
+        stable_counts <= stable_counts + 1'b1;
+    else
+      stable_counts <= 0;
+
+    ready <= (stable_counts == MXSTABLE);
+
   end
 
   // can't check this every clock cycle because there is latency between changing it and the result propagating to the output
