@@ -72,6 +72,7 @@ architecture Behavioral of clocking is
     signal gbt_dclk     : std_logic_vector (1 downto 0);
 
     signal mmcm_locked : std_logic_vector(1 downto 0);
+    signal mmcm_unlocked : std_logic_vector(1 downto 0);
 
     signal clock : std_logic;
 
@@ -93,6 +94,7 @@ architecture Behavioral of clocking is
 begin
 
     clk_1x_o <= clock;
+    mmcm_unlocked <= not mmcm_locked;
 
     --------- MMCMs ---------
 
@@ -195,7 +197,7 @@ begin
         ref_clk_i => clock,
         snap_i    => cnt_snap,
         reset_i   => ipb_reset_i,
-        en_i      => (not mmcm_locked(1)),
+        en_i      => mmcm_unlocked(1),
         data_o    => cnt_eprt_mmcm_unlocked
     );
 
@@ -206,7 +208,7 @@ begin
         ref_clk_i => clock,
         snap_i    => cnt_snap,
         reset_i   => ipb_reset_i,
-        en_i      => (not mmcm_locked(0)),
+        en_i      => mmcm_unlocked(0),
         data_o    => cnt_dskw_mmcm_unlocked
     );
 
