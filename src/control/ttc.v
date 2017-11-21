@@ -31,7 +31,6 @@ module ttc (
 
   input  [MXBXN-1:0] bxn_offset, // BXN offset at reset
 
-  output reg [MXCNT-1:0] orbit_counter,
   output reg [MXBXN-1:0] bxn_counter,
 
   output     bx0_sync_err, // sync error on bx0
@@ -109,22 +108,5 @@ module ttc (
   end
 
   assign bx0_sync_err = bxn_sync_err || bxn_preset; // single clock strobe of sync error at bx0
-
-  //--------------------------------------------------------------------------------------------------------------------
-  // Orbit Counter
-  //--------------------------------------------------------------------------------------------------------------------
-
-  // counts bx0s from bx counter
-
-  initial orbit_counter = 0;
-
-  wire orbit_cnt_reset = ttc_resync;
-  wire orbit_cnt_ovf   = (orbit_counter == {MXCNT{1'b1}});
-  wire orbit_cnt_en    = bxn_ovf && !orbit_cnt_ovf;
-
-  always @(posedge clock) begin
-    if      (orbit_cnt_reset) orbit_counter=0;
-    else if (orbit_cnt_en   ) orbit_counter=orbit_counter+1'b1;
-  end
 
 endmodule
