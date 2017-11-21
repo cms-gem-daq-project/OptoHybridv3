@@ -59,7 +59,13 @@ end trig_alignment;
 
 architecture Behavioral of trig_alignment is
 
+    constant DDR : integer := 0;
+
     signal reset : std_logic := '0';
+
+    signal not_fastclk_0    : std_logic;
+    signal not_fastclk_90   : std_logic;
+    signal not_fastclk_180  : std_logic;
 
     signal d0 : std_logic_vector (191 downto 0); -- rising edge sample
     signal d1 : std_logic_vector (191 downto 0); -- falling edge sample
@@ -70,9 +76,6 @@ architecture Behavioral of trig_alignment is
 
     signal sof_dly : std_logic_vector (23 downto 0);
 
-    signal sof_sump : std_logic_vector (23 downto 0);
-    signal sbit_sump : std_logic_vector (191 downto 0);
-
     signal idly_rdy   : std_logic := '0';
     signal idly_rdy_r : std_logic := '0';
 
@@ -82,9 +85,13 @@ architecture Behavioral of trig_alignment is
 
 begin
 
+    not_fastclk_0    <= fastclk_0;
+    not_fastclk_90   <= fastclk_90;
+    not_fastclk_180  <= fastclk_180;
+
     process (clock) is begin
         if (rising_edge(clock)) then
-            reset <= reset_i;
+            reset <= reset_i or (not idly_rdy_r);
         end if;
     end process;
 
@@ -108,7 +115,7 @@ begin
         -- and ODELAYE2 operation, IDELAYCTRL must be reset after
         -- configuration and the REFCLK signal is stable. A reset pulse width
         -- Tidelayctrl_rpw is required
-        RST    => reset
+        RST    => reset_i
     );
 
     process (clock) is begin
@@ -131,30 +138,28 @@ begin
         )
         port map (
 
-				tap_delay => sot_tap_delay(ifat), 
-				
+            tap_delay_i => sot_tap_delay(ifat),
+
             rx_p => start_of_frame_p(ifat),
             rx_n => start_of_frame_n(ifat),
 
             clock       =>  clock,
 
             -- keep all clocks inverted here, so that they are centered w/r/t the rising edge when doing frame alignment
-            fastclock   =>  not fastclk_0,
-            fastclock90 =>  not fastclk_90,
-            fastclock180=>  not fastclk_180,
+            fastclock        => not_fastclk_0,
+            fastclock90      => not_fastclk_90,
+            fastclock180     => not_fastclk_180,
 
             phase_sel_in     => "00",
             phase_sel_out    => vfat_phase_sel(ifat),
 
-            sel_pos_edge_in     => '0',
-            sel_pos_edge_out    => vfat_sel_pos_edge(ifat),
+            sel_pos_edge_in  => '0',
+            sel_pos_edge_out => vfat_sel_pos_edge(ifat),
 
             phase_err        => sot_phase_err(ifat),
 
-            d0=> start_of_frame_d0(ifat),
-            d1=> start_of_frame_d1(ifat),
-
-            sump => open
+            d0               => start_of_frame_d0(ifat),
+            d1               => start_of_frame_d1(ifat)
         );
 
     end generate;
@@ -171,16 +176,16 @@ begin
             PHASE_SEL_EXTERNAL => 1 -- manual control
         )
         port map (
-		  
- 				tap_delay => trig_tap_delay(ipin), 
+
+            tap_delay_i => trig_tap_delay(ipin),
 
             rx_p =>sbits_p(ipin),
             rx_n =>sbits_n(ipin),
 
             clock        => clock,
-            fastclock    => not fastclk_0,
-            fastclock90  => not fastclk_90,
-            fastclock180 => not fastclk_180,
+            fastclock    => not_fastclk_0,
+            fastclock90  => not_fastclk_90,
+            fastclock180 => not_fastclk_180,
 
             sel_pos_edge_in     => vfat_sel_pos_edge(ipin/8),
             sel_pos_edge_out    => open,
@@ -188,8 +193,6 @@ begin
             phase_sel_in     => vfat_phase_sel(ipin/8),
             phase_sel_out    => open,
             phase_err        => phase_err(ipin),
-
-            sump             => open,
 
             d0 => d0(ipin),
             d1 => d1(ipin)
@@ -208,12 +211,12 @@ begin
             d1 => d1((ifat+1)*8-1 downto ifat*8),
 
             mask    => sbit_mask(ifat),
-            reset_i => reset or  not (idly_rdy_r),
+            reset_i => reset,
 
             -- keep all clocks inverted here, so that they are centered w/r/t the rising edge when doing frame alignment
             start_of_frame => start_of_frame_d0(ifat),
             clock          => clock,
-            fastclock      =>  not fastclk_0,
+            fastclock      =>  not_fastclk_0,
 
             sof_delayed    => sof_dly(ifat),
 
