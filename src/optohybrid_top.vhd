@@ -452,6 +452,7 @@ begin
         -- reset
         reset_i  => reset,
         cnt_snap => cnt_snap,
+        ttc_resync => ttc_resync,
 
         -- clocks
         mgt_clk_p => mgt_clk_p_i,

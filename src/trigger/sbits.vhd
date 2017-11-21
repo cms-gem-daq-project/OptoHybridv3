@@ -38,7 +38,6 @@ port(
 
     sbit_mask_i             : in std_logic_vector (23 downto 0);
 
-    aff_mux                 : out std_logic;
     sbits_mux_sel           : in  std_logic_vector (4 downto 0);
 
 
@@ -86,6 +85,13 @@ architecture Behavioral of sbits is
     signal sbits_mux_s0             : std_logic_vector (63 downto 0);
     signal sbits_mux_s1             : std_logic_vector (63 downto 0);
     signal sbits_mux                : std_logic_vector (63 downto 0);
+    signal aff_mux                  : std_logic;
+    -- multiplex together the 1536 s-bits into a single chip-scope accessible register
+    -- don't want to affect timing, so do it through a couple of flip-flop stages
+
+    attribute mark_debug : string;
+    attribute mark_debug of sbits_mux : signal is "TRUE";
+    attribute mark_debug of aff_mux   : signal is "TRUE";
 
     signal reset : std_logic;
 
