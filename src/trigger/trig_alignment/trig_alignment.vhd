@@ -43,6 +43,13 @@ port(
     sot_phase_err    : out std_logic_vector (23 downto 0);
     sof_unstable     : out std_logic_vector (23 downto 0);
 
+    sof_frame_offset : in std_logic_vector (3 downto 0);
+
+    err_count_to_shift : in std_logic_vector (7 downto 0);
+    stable_count_to_reset : in std_logic_vector (7 downto 0);
+
+    aligned_count_to_ready : in std_logic_vector (11 downto 0);
+
     fastclk_0        : in std_logic;
     fastclk_90       : in std_logic;
     fastclk_180      : in std_logic;
@@ -72,7 +79,9 @@ architecture Behavioral of trig_alignment is
     signal start_of_frame_d0 : std_logic_vector (23 downto 0);
     signal start_of_frame_d1 : std_logic_vector (23 downto 0);
     signal vfat_phase_sel  : t_std2_array (23 downto 0);
-    signal vfat_sel_pos_edge    : std_logic_vector (23 downto 0);
+
+    signal vfat_sel_pos_edge           : std_logic_vector (23 downto 0);
+    signal vfat_sel_pos_edge_posneged  : std_logic_vector (23 downto 0);
 
     signal sof_dly : std_logic_vector (23 downto 0);
 
@@ -88,6 +97,8 @@ begin
     not_fastclk_0    <= fastclk_0;
     not_fastclk_90   <= fastclk_90;
     not_fastclk_180  <= fastclk_180;
+
+    vfat_sel_pos_edge_posneged <= vfat_sel_pos_edge xor "000000000000010000000000";
 
     process (clock) is begin
         if (rising_edge(clock)) then
@@ -156,6 +167,9 @@ begin
             sel_pos_edge_in  => '0',
             sel_pos_edge_out => vfat_sel_pos_edge(ifat),
 
+            err_count_to_shift => err_count_to_shift,
+            stable_count_to_reset => stable_count_to_reset,
+
             phase_err        => sot_phase_err(ifat),
 
             d0               => start_of_frame_d0(ifat),
@@ -187,8 +201,11 @@ begin
             fastclock90  => not_fastclk_90,
             fastclock180 => not_fastclk_180,
 
-            sel_pos_edge_in     => vfat_sel_pos_edge(ipin/8),
+            sel_pos_edge_in     => vfat_sel_pos_edge_posneged(ipin/8),
             sel_pos_edge_out    => open,
+
+            err_count_to_shift => err_count_to_shift,
+            stable_count_to_reset => stable_count_to_reset,
 
             phase_sel_in     => vfat_phase_sel(ipin/8),
             phase_sel_out    => open,
@@ -217,6 +234,9 @@ begin
             start_of_frame => start_of_frame_d0(ifat),
             clock          => clock,
             fastclock      =>  not_fastclk_0,
+
+            sof_frame_offset => sof_frame_offset,
+            aligned_count_to_ready => aligned_count_to_ready,
 
             sof_delayed    => sof_dly(ifat),
 

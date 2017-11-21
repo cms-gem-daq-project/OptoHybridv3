@@ -171,7 +171,7 @@ package registers is
     -- Connects to the trigger control module
     --============================================================================
 
-    constant REG_FPGA_TRIG_NUM_REGS : integer := 66;
+    constant REG_FPGA_TRIG_NUM_REGS : integer := 67;
     constant REG_FPGA_TRIG_ADDRESS_MSB : integer := 7;
     constant REG_FPGA_TRIG_ADDRESS_LSB : integer := 0;
     constant REG_FPGA_TRIG_CTRL_VFAT_MASK_ADDR    : std_logic_vector(7 downto 0) := x"00";
@@ -189,6 +189,11 @@ package registers is
     constant REG_FPGA_TRIG_CTRL_SBIT_MUX_SEL_LSB     : integer := 4;
     constant REG_FPGA_TRIG_CTRL_SBIT_MUX_SEL_DEFAULT : std_logic_vector(8 downto 4) := '1' & x"0";
 
+    constant REG_FPGA_TRIG_CTRL_SOF_FRAME_OFFSET_ADDR    : std_logic_vector(7 downto 0) := x"01";
+    constant REG_FPGA_TRIG_CTRL_SOF_FRAME_OFFSET_MSB    : integer := 15;
+    constant REG_FPGA_TRIG_CTRL_SOF_FRAME_OFFSET_LSB     : integer := 12;
+    constant REG_FPGA_TRIG_CTRL_SOF_FRAME_OFFSET_DEFAULT : std_logic_vector(15 downto 12) := x"4";
+
     constant REG_FPGA_TRIG_CTRL_ACTIVE_VFATS_ADDR    : std_logic_vector(7 downto 0) := x"02";
     constant REG_FPGA_TRIG_CTRL_ACTIVE_VFATS_MSB    : integer := 23;
     constant REG_FPGA_TRIG_CTRL_ACTIVE_VFATS_LSB     : integer := 0;
@@ -204,6 +209,21 @@ package registers is
     constant REG_FPGA_TRIG_CTRL_SBIT_SOF_UNSTABLE_ADDR    : std_logic_vector(7 downto 0) := x"05";
     constant REG_FPGA_TRIG_CTRL_SBIT_SOF_UNSTABLE_MSB    : integer := 23;
     constant REG_FPGA_TRIG_CTRL_SBIT_SOF_UNSTABLE_LSB     : integer := 0;
+
+    constant REG_FPGA_TRIG_CTRL_ERR_CNT_TO_SHIFT_ADDR    : std_logic_vector(7 downto 0) := x"06";
+    constant REG_FPGA_TRIG_CTRL_ERR_CNT_TO_SHIFT_MSB    : integer := 7;
+    constant REG_FPGA_TRIG_CTRL_ERR_CNT_TO_SHIFT_LSB     : integer := 0;
+    constant REG_FPGA_TRIG_CTRL_ERR_CNT_TO_SHIFT_DEFAULT : std_logic_vector(7 downto 0) := x"ff";
+
+    constant REG_FPGA_TRIG_CTRL_STABLE_CNT_TO_RESET_ADDR    : std_logic_vector(7 downto 0) := x"06";
+    constant REG_FPGA_TRIG_CTRL_STABLE_CNT_TO_RESET_MSB    : integer := 15;
+    constant REG_FPGA_TRIG_CTRL_STABLE_CNT_TO_RESET_LSB     : integer := 8;
+    constant REG_FPGA_TRIG_CTRL_STABLE_CNT_TO_RESET_DEFAULT : std_logic_vector(15 downto 8) := x"3f";
+
+    constant REG_FPGA_TRIG_CTRL_ALIGNED_COUNT_TO_READY_ADDR    : std_logic_vector(7 downto 0) := x"06";
+    constant REG_FPGA_TRIG_CTRL_ALIGNED_COUNT_TO_READY_MSB    : integer := 27;
+    constant REG_FPGA_TRIG_CTRL_ALIGNED_COUNT_TO_READY_LSB     : integer := 16;
+    constant REG_FPGA_TRIG_CTRL_ALIGNED_COUNT_TO_READY_DEFAULT : std_logic_vector(27 downto 16) := x"0ff";
 
     constant REG_FPGA_TRIG_CNT_VFAT0_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"10";
     constant REG_FPGA_TRIG_CNT_VFAT0_SBITS_MSB    : integer := 15;

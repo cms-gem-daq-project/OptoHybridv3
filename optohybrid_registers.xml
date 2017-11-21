@@ -2,7 +2,7 @@
 <!--  The tags attribute is a free test attribute which meaning is defined by the uHAL user -->
 <node id="top">
     <node id="FPGA">
-        <!--TTC module -->
+        <!--Control module -->
         <node id="CONTROL"  address="0x0000"
             description="Implements various control and monitoring functions of the Optohybrid"
             fw_is_module="true"
@@ -283,6 +283,12 @@
                     mask="0x1f0"
                     fw_default="0x10"/>
 
+                <node id="SOF_FRAME_OFFSET" address="0x1" permission="rw"
+                    description="Adjusts a FIFO address to align the 40MHz frame to the s-bit data"
+                    fw_signal="sof_frame_offset"
+                    mask="0xf000"
+                    fw_default="0x04"/>
+
                 <node id="ACTIVE_VFATS" address="0x2" permission="r"
                     description="24 bit list of VFATs with hits in this BX"
                     mask="0xffffff"
@@ -304,6 +310,24 @@
                     description="24 bit list of VFATs with unstable Start-of-frame pulses (became misaligned after already achieving lock)"
                     mask="0xffffff"
                     fw_signal="sof_unstable" />
+
+                <node id="ERR_CNT_TO_SHIFT" address="0x6" permission="rw"
+                    description="Number of link errors required in the ISERDES to vote for shifting to a new sample phase"
+                    fw_signal="err_count_to_shift"
+                    mask="0x00ff"
+                    fw_default="0xff"/>
+
+                <node id="STABLE_CNT_TO_RESET" address="0x6" permission="rw"
+                    description="Number of link consecutive good frames required to reset the err_cnt_to_shift counter"
+                    fw_signal="stable_count_to_reset"
+                    mask="0xff00"
+                    fw_default="0x3f"/>
+
+                <node id="ALIGNED_COUNT_TO_READY" address="0x6" permission="rw"
+                    description="Number of link consecutive good frames required to reset the err_cnt_to_shift counter"
+                    fw_signal="aligned_count_to_ready"
+                    mask="0x0fff0000"
+                    fw_default="0xff"/>
             </node>
 
             <node id="CNT" address="0x10" description = "S-BIT Counters">
@@ -1616,13 +1640,13 @@
                 <node id="GBT_MMCM_UNLOCKED_CNT" address="0x0" permission="r"
                     mask="0x00ff0000"
                     description="GBT deserialization MMCM unlocked cnt"
-                    cnt_en_signal="(not mmcm_locked(1))"
+                    cnt_en_signal="mmcm_unlocked(1)"
                     cnt_snap_signal="cnt_snap"
                     fw_signal="cnt_eprt_mmcm_unlocked"/>
                 <node id="LOGIC_MMCM_UNLOCKED_CNT" address="0x0" permission="r"
                     mask="0xff000000"
                     description="User logic MMCM unlocked cnt"
-                    cnt_en_signal="(not mmcm_locked(0))"
+                    cnt_en_signal="mmcm_unlocked(0)"
                     cnt_snap_signal="cnt_snap"
                     fw_signal="cnt_dskw_mmcm_unlocked"/>
             </node>

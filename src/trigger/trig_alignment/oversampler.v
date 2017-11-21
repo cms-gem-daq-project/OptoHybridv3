@@ -29,6 +29,9 @@ module oversampler (
   input  sel_pos_edge_in,
   output sel_pos_edge_out,
 
+  input [7:0] stable_count_to_reset,
+  input [7:0] err_count_to_shift,
+
   input [4:0] tap_delay_i,
 
   output reg phase_err,
@@ -317,29 +320,42 @@ module oversampler (
         reg [1:0] phase_sm_last;
 
         reg [7:0] err_count=0;
-        reg [5:0] stable_count=0;
+        reg [7:0] stable_count=0;
 
-        wire vote_to_shift = &err_count;
 
-        wire link_stable = (&stable_count);
+        reg link_stable;
+        reg vote_to_shift;
 
         always @(posedge fastclock) begin
 
           // count numbers of good cycles... allow large number of good cycles to reset occasional errors
           if (phase_err)
             stable_count <= 0;
-          else if (~link_stable)
-            stable_count <= stable_count + 1'b1;
+          else begin
+            if (stable_count < stable_count_to_reset)
+              stable_count <= stable_count + 1'b1;
+            else
+              stable_count <= stable_count;
+          end
+
+          link_stable <= (stable_count == stable_count_to_reset);
 
           phase_sm_last <= phase_sm;
 
           // accumulate error counter
           // reset if the link has long term stability
           // or reset if we are changing states already
+
+          vote_to_shift <= (err_count == err_count_to_shift);
+
           if (link_stable || (phase_sm_last != phase_sm))
             err_count <= 0;
-          else if (phase_err && ~(vote_to_shift))
-            err_count <= err_count + 1'b1;
+          else if (phase_err) begin
+            if (err_count < err_count_to_shift)
+              err_count <= err_count + 1'b1;
+            else
+              err_count <= err_count ;
+          end
 
         end
 

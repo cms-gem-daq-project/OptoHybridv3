@@ -41,6 +41,13 @@ port(
     sbits_mux_sel           : in  std_logic_vector (4 downto 0);
 
 
+    sof_frame_offset : in std_logic_vector (3 downto 0);
+
+    err_count_to_shift : in std_logic_vector (7 downto 0);
+    stable_count_to_reset : in std_logic_vector (7 downto 0);
+
+    aligned_count_to_ready : in std_logic_vector (11 downto 0);
+
     cluster_count_o         : out std_logic_vector (7 downto 0);
 
     trigger_deadtime_i      : in  std_logic_vector (3 downto 0);
@@ -231,6 +238,13 @@ begin
         sbits_p => sbits_p,
         sbits_n => sbits_n,
 
+        sof_frame_offset => sof_frame_offset,
+
+        err_count_to_shift     => err_count_to_shift,
+        stable_count_to_reset  => stable_count_to_reset,
+
+        aligned_count_to_ready => aligned_count_to_ready,
+
         start_of_frame_p => start_of_frame_p,
         start_of_frame_n => start_of_frame_n,
 
@@ -333,7 +347,6 @@ begin
         clock1x             => clk40_i,
         reset_i             => reset,
         cluster_count       => cluster_count_o,
-        frame_clock         => cluster_clk,
         deadtime_i          => trigger_deadtime_i,
         vfat0               => vfat_sbits(0),
         vfat1               => vfat_sbits(1),

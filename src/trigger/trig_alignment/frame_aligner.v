@@ -24,6 +24,10 @@ module frame_aligner (
   input clock,
   input fastclock,
 
+  input [3:0] sof_frame_offset,
+
+  input [11:0] aligned_count_to_ready,
+
   output     sof_unstable,
   output reg sof_is_aligned,
   output sof_delayed,
@@ -67,7 +71,7 @@ module frame_aligner (
   always @(posedge fastclock)
     srl_adr <= srl_adr_ctrl;
 
-  wire [3:0] srl_adr2 = 4'd5;
+  wire [3:0] srl_adr2 = sof_frame_offset;
 
   SRL16E  srlsof0a   (.CLK(fastclock),.CE(1'b1),.D(sof_ff),      .A0(srl_adr[0]), .A1(srl_adr[1]), .A2(srl_adr[2]), .A3(srl_adr[3]), .Q(sof_dly_srl));
   SRL16E  srlsof0b   (.CLK(fastclock),.CE(1'b1),.D(sof_dly_srl), .A0(srl_adr2[0]),.A1(srl_adr2[1]),.A2(srl_adr2[2]),.A3(srl_adr2[3]),.Q(sof_dly2_srl));
@@ -223,18 +227,19 @@ module frame_aligner (
   // output
   assign sof_delayed = sof_dly2;
 
-  // require MXSTABLE cycles of alignment before outputting S-bits
+  // require aligned_count_to_ready cycles of alignment before outputting S-bits
 
-  parameter MXSTABLE = 12'hDEC; // 1 orbit
   reg [11:0] stable_counts=0;
   always @(posedge clock) begin
     if (sof_aligned)
-      if (stable_counts < MXSTABLE)
+      if (stable_counts == aligned_count_to_ready)
+        stable_counts <= stable_counts;
+      else
         stable_counts <= stable_counts + 1'b1;
     else
       stable_counts <= 0;
 
-    ready <= (stable_counts == MXSTABLE);
+    ready <= (stable_counts == aligned_count_to_ready);
 
   end
 
