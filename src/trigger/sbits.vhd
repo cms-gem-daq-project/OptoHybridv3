@@ -339,7 +339,7 @@ begin
 
     cluster_packer_inst : entity work.cluster_packer
 
-    generic map (ONESHOT_EN => 1, TRUNCATE_CLUSTERS => 1)
+    generic map (TRUNCATE_CLUSTERS => 1)
 
     port map(
         trig_stop_i         => trig_stop_i,
