@@ -51,8 +51,8 @@ module frame_aligner (
   reg sof_ff;
 
   always @(posedge fastclock) begin
-    even_ff <= sof_on_negedge  ? d1 : d0;
-    odd_ff  <= sof_on_negedge  ? d0 : d1;
+    even_ff <= sof_on_negedge  ? d0 : d1;
+    odd_ff  <= sof_on_negedge  ? d1 : d0;
     sof_ff  <= start_of_frame;
   end
 
@@ -72,10 +72,10 @@ module frame_aligner (
   always @(posedge fastclock)
     srl_adr <= srl_adr_ctrl;
 
-  wire [3:0] srl_adr2 = sof_frame_offset-sof_on_negedge;
+  wire [3:0] srl_adr_sof = sof_frame_offset;
 
   SRL16E  srlsof0a   (.CLK(fastclock),.CE(1'b1),.D(sof_ff),      .A0(srl_adr[0]), .A1(srl_adr[1]), .A2(srl_adr[2]), .A3(srl_adr[3]), .Q(sof_dly_srl));
-  SRL16E  srlsof0b   (.CLK(fastclock),.CE(1'b1),.D(sof_dly_srl), .A0(srl_adr2[0]),.A1(srl_adr2[1]),.A2(srl_adr2[2]),.A3(srl_adr2[3]),.Q(sof_dly2_srl));
+  SRL16E  srlsof0b   (.CLK(fastclock),.CE(1'b1),.D(sof_dly_srl), .A0(srl_adr_sof[0]),.A1(srl_adr_sof[1]),.A2(srl_adr_sof[2]),.A3(srl_adr_sof[3]),.Q(sof_dly2_srl));
   // delay sof by 3 to compensate for the s-bit even/odd fifo output equivalent delay
 
   // reg for fanout
@@ -93,17 +93,17 @@ module frame_aligner (
   wire [7:0] even_dly_srl;
   wire [7:0] odd_dly_srl;
 
-  wire [4:0] srl_adr0 = srl_adr+1'b1;
-  wire [4:0] srl_adr1 = srl_adr;
+  wire [4:0] srl_adr_even = srl_adr+sof_on_negedge;
+  wire [4:0] srl_adr_odd  = srl_adr+1'b1;
 
   genvar ibit;
   generate
     for (ibit=0; ibit<8; ibit=ibit+1) begin: bloop
     // odd bits
-    SRL16E srldat0 (.CLK(fastclock),.CE(1'b1),.D(even_ff[ibit]),.A0(srl_adr0[0]),.A1(srl_adr0[1]),.A2(srl_adr0[2]),.A3(srl_adr0[3]),.Q(even_dly_srl[ibit]));
+    SRL16E srldat0 (.CLK(fastclock),.CE(1'b1),.D(even_ff[ibit]),.A0(srl_adr_even[0]),.A1(srl_adr_even[1]),.A2(srl_adr_even[2]),.A3(srl_adr_even[3]),.Q(even_dly_srl[ibit]));
 
     // even bits
-    SRL16E srldat1 (.CLK(fastclock),.CE(1'b1),.D(odd_ff[ibit]),.A0(srl_adr1[0]),.A1(srl_adr1[1]),.A2(srl_adr1[2]),.A3(srl_adr1[3]),.Q(odd_dly_srl[ibit]));
+    SRL16E srldat1 (.CLK(fastclock),.CE(1'b1),.D(odd_ff[ibit]),.A0(srl_adr_odd[0]),.A1(srl_adr_odd[1]),.A2(srl_adr_odd[2]),.A3(srl_adr_odd[3]),.Q(odd_dly_srl[ibit]));
     end
   endgenerate
 
