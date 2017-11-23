@@ -75,15 +75,15 @@ def sbit_polarity_swap (sector, pair):
 
     elif (sector==6):
         if (pair==4):
-            return True
+            return true
         if (pair==5):
             return True
 
     elif (sector==7):
         if (pair==1):
             return True
-        if (pair==2):
-            return True
+#       if (pair==2):
+#           return True
 
     elif (sector==8):
         if (pair==1):
