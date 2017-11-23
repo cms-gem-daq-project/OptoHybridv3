@@ -17,6 +17,7 @@ module frame_aligner (
   input [MXIO-1:0] d1, // data from negedge of ddr
 
   input start_of_frame,
+  input sof_on_negedge,
 
   input reset_i,
   input mask,
@@ -30,7 +31,7 @@ module frame_aligner (
 
   output     sof_unstable,
   output reg sof_is_aligned,
-  output sof_delayed,
+  output     sof_delayed,
   output [MXSBITS-1:0] sbits
 );
 
@@ -46,13 +47,13 @@ module frame_aligner (
     reset <= reset_i;
   end
 
-  reg [MXIO-1:0] d0_ff, d1_ff;
+  reg [MXIO-1:0] even_ff, odd_ff;
   reg sof_ff;
 
   always @(posedge fastclock) begin
-    d0_ff <= d0;
-    d1_ff <= d1;
-    sof_ff <= start_of_frame;
+    even_ff <= sof_on_negedge  ? d1 : d0;
+    odd_ff  <= sof_on_negedge  ? d0 : d1;
+    sof_ff  <= start_of_frame;
   end
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -64,14 +65,14 @@ module frame_aligner (
   wire sof_dly_srl;
   wire sof_dly2_srl;
 
-  reg  [3:0] srl_adr_ctrl=0;
+  reg  [1:0] srl_adr_ctrl=0;
   reg  [3:0] srl_adr=0; // frame alignment srl_adr
 
   // flip-flop for fanout (failed timing on one channel w/o)
   always @(posedge fastclock)
     srl_adr <= srl_adr_ctrl;
 
-  wire [3:0] srl_adr2 = sof_frame_offset;
+  wire [3:0] srl_adr2 = sof_frame_offset-sof_on_negedge;
 
   SRL16E  srlsof0a   (.CLK(fastclock),.CE(1'b1),.D(sof_ff),      .A0(srl_adr[0]), .A1(srl_adr[1]), .A2(srl_adr[2]), .A3(srl_adr[3]), .Q(sof_dly_srl));
   SRL16E  srlsof0b   (.CLK(fastclock),.CE(1'b1),.D(sof_dly_srl), .A0(srl_adr2[0]),.A1(srl_adr2[1]),.A2(srl_adr2[2]),.A3(srl_adr2[3]),.Q(sof_dly2_srl));
@@ -79,7 +80,6 @@ module frame_aligner (
 
   // reg for fanout
   reg sof_dly2_srl_ff;
-  (* max_fanout = 1 *)
   reg sof_dly2;
   always @(posedge fastclock) begin
     sof_dly2_srl_ff <= sof_dly2_srl;
@@ -90,8 +90,8 @@ module frame_aligner (
   // Data Delays
   //--------------------------------------------------------------------------------------------------------------------
 
-  wire [7:0] d0_dly_srl;
-  wire [7:0] d1_dly_srl;
+  wire [7:0] even_dly_srl;
+  wire [7:0] odd_dly_srl;
 
   wire [4:0] srl_adr0 = srl_adr+1'b1;
   wire [4:0] srl_adr1 = srl_adr;
@@ -100,19 +100,19 @@ module frame_aligner (
   generate
     for (ibit=0; ibit<8; ibit=ibit+1) begin: bloop
     // odd bits
-    SRL16E srldat0 (.CLK(fastclock),.CE(1'b1),.D(d0_ff[ibit]),.A0(srl_adr0[0]),.A1(srl_adr0[1]),.A2(srl_adr0[2]),.A3(srl_adr0[3]),.Q(d0_dly_srl[ibit]));
+    SRL16E srldat0 (.CLK(fastclock),.CE(1'b1),.D(even_ff[ibit]),.A0(srl_adr0[0]),.A1(srl_adr0[1]),.A2(srl_adr0[2]),.A3(srl_adr0[3]),.Q(even_dly_srl[ibit]));
 
     // even bits
-    SRL16E srldat1 (.CLK(fastclock),.CE(1'b1),.D(d1_ff[ibit]),.A0(srl_adr1[0]),.A1(srl_adr1[1]),.A2(srl_adr1[2]),.A3(srl_adr1[3]),.Q(d1_dly_srl[ibit]));
+    SRL16E srldat1 (.CLK(fastclock),.CE(1'b1),.D(odd_ff[ibit]),.A0(srl_adr1[0]),.A1(srl_adr1[1]),.A2(srl_adr1[2]),.A3(srl_adr1[3]),.Q(odd_dly_srl[ibit]));
     end
   endgenerate
 
-  reg [7:0] d0_dly;
-  reg [7:0] d1_dly;
+  reg [7:0] even_dly;
+  reg [7:0] odd_dly;
 
   always @(posedge fastclock) begin
-    d0_dly <= d0_dly_srl;
-    d1_dly <= d1_dly_srl;
+    even_dly <= even_dly_srl;
+    odd_dly <= odd_dly_srl;
   end
 
   // fifo rising (even) and falling (odd) bits separately, interleave leater
@@ -135,8 +135,8 @@ module frame_aligner (
 
     // shift data in, MSB first -- posedge
     always @(posedge fastclock) begin
-      sbit_fifo_odd  [ipin][WORD_SIZE/2-1:0] <= {sbit_fifo_odd  [ipin][WORD_SIZE/2-2:0] , d1_dly[ipin]};
-      sbit_fifo_even [ipin][WORD_SIZE/2-1:0] <= {sbit_fifo_even [ipin][WORD_SIZE/2-2:0] , d0_dly[ipin]};
+      sbit_fifo_odd  [ipin][WORD_SIZE/2-1:0] <= {sbit_fifo_odd  [ipin][WORD_SIZE/2-2:0] , odd_dly[ipin]};
+      sbit_fifo_even [ipin][WORD_SIZE/2-1:0] <= {sbit_fifo_even [ipin][WORD_SIZE/2-2:0] , even_dly[ipin]};
     end
 
     // at VFAT double-data rate, we want to deserialize 16 bits at once
@@ -146,15 +146,14 @@ module frame_aligner (
       DDR ?
 
       {
-      sbit_fifo_even[ipin][7],
       sbit_fifo_odd [ipin][7],
-      sbit_fifo_even[ipin][6],
+      sbit_fifo_even[ipin][7],
       sbit_fifo_odd [ipin][6],
-      sbit_fifo_even[ipin][5],
+      sbit_fifo_even[ipin][6],
       sbit_fifo_odd [ipin][5],
-      sbit_fifo_even[ipin][4],
-      sbit_fifo_odd [ipin][4]
-
+      sbit_fifo_even[ipin][5],
+      sbit_fifo_odd [ipin][4],
+      sbit_fifo_even[ipin][4]
       } :
       0 ;
 
@@ -162,14 +161,14 @@ module frame_aligner (
 
     // at VFAT single-data rate, we want to deserialize 8 bits at once
     assign sbits_interleaved_lsbs[ipin] = {
-      sbit_fifo_even[ipin][3],
       sbit_fifo_odd [ipin][3],
-      sbit_fifo_even[ipin][2],
+      sbit_fifo_even[ipin][3],
       sbit_fifo_odd [ipin][2],
-      sbit_fifo_even[ipin][1],
+      sbit_fifo_even[ipin][2],
       sbit_fifo_odd [ipin][1],
-      sbit_fifo_even[ipin][0],
-      sbit_fifo_odd [ipin][0]
+      sbit_fifo_even[ipin][1],
+      sbit_fifo_odd [ipin][0],
+      sbit_fifo_even[ipin][0]
     };
 
     always @(posedge fastclock) begin

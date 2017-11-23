@@ -70,20 +70,13 @@ architecture Behavioral of trig_alignment is
 
     signal reset : std_logic := '0';
 
-    signal not_fastclk_0    : std_logic;
-    signal not_fastclk_90   : std_logic;
-    signal not_fastclk_180  : std_logic;
-
     signal d0 : std_logic_vector (191 downto 0); -- rising edge sample
     signal d1 : std_logic_vector (191 downto 0); -- falling edge sample
+    signal start_of_frame : std_logic_vector (23 downto 0);
+    signal sof_on_negedge : std_logic_vector (23 downto 0);
     signal start_of_frame_d0 : std_logic_vector (23 downto 0);
     signal start_of_frame_d1 : std_logic_vector (23 downto 0);
     signal vfat_phase_sel  : t_std2_array (23 downto 0);
-
-    signal vfat_sel_pos_edge           : std_logic_vector (23 downto 0);
-    signal vfat_sel_pos_edge_posneged  : std_logic_vector (23 downto 0);
-
-    signal sof_dly : std_logic_vector (23 downto 0);
 
     signal idly_rdy   : std_logic := '0';
     signal idly_rdy_r : std_logic := '0';
@@ -93,12 +86,6 @@ architecture Behavioral of trig_alignment is
 
 
 begin
-
-    not_fastclk_0    <= fastclk_0;
-    not_fastclk_90   <= fastclk_90;
-    not_fastclk_180  <= fastclk_180;
-
-    vfat_sel_pos_edge_posneged <= vfat_sel_pos_edge xor "000000000000010000000000";
 
     process (clock) is begin
         if (rising_edge(clock)) then
@@ -144,7 +131,6 @@ begin
         generic map (
             DDR                => DDR,
             INVERT             => to_integer(unsigned(sot_invert (ifat downto ifat))),
-            POSNEG             => 0,
             PHASE_SEL_EXTERNAL => 0 -- automatic control
         )
         port map (
@@ -155,17 +141,15 @@ begin
             rx_n => start_of_frame_n(ifat),
 
             clock       =>  clock,
+            reset_i     =>  reset,
 
             -- keep all clocks inverted here, so that they are centered w/r/t the rising edge when doing frame alignment
-            fastclock        => not_fastclk_0,
-            fastclock90      => not_fastclk_90,
-            fastclock180     => not_fastclk_180,
+            fastclock        => fastclk_0,
+            fastclock90      => fastclk_90,
+            fastclock180     => fastclk_180,
 
             phase_sel_in     => "00",
             phase_sel_out    => vfat_phase_sel(ifat),
-
-            sel_pos_edge_in  => '0',
-            sel_pos_edge_out => vfat_sel_pos_edge(ifat),
 
             err_count_to_shift => err_count_to_shift,
             stable_count_to_reset => stable_count_to_reset,
@@ -176,6 +160,19 @@ begin
             d1               => start_of_frame_d1(ifat)
         );
 
+        process (fastclk_0) is begin
+        if (rising_edge(fastclk_0)) then
+            if (start_of_frame_d1(ifat)='1') then
+                sof_on_negedge(ifat) <= '1';
+            elsif (start_of_frame_d0(ifat)='1') then
+                sof_on_negedge(ifat) <= '0';
+            end if;
+        end if;
+        end process;
+
+        start_of_frame (ifat) <= start_of_frame_d1(ifat) when sof_on_negedge(ifat) = '1' else
+                                 start_of_frame_d0(ifat);
+
     end generate;
 
     trig_loop: for ipin in 0 to 191 generate begin
@@ -185,7 +182,6 @@ begin
         sbit_oversampler : entity work.oversampler
         generic map (
             DDR                => DDR,
-            POSNEG             => 0,
             INVERT             => to_integer(unsigned(TU_INVERT (ipin downto ipin))),
             PHASE_SEL_EXTERNAL => 1 -- manual control
         )
@@ -197,12 +193,11 @@ begin
             rx_n =>sbits_n(ipin),
 
             clock        => clock,
-            fastclock    => not_fastclk_0,
-            fastclock90  => not_fastclk_90,
-            fastclock180 => not_fastclk_180,
+            reset_i     =>  reset,
 
-            sel_pos_edge_in     => vfat_sel_pos_edge_posneged(ipin/8),
-            sel_pos_edge_out    => open,
+            fastclock    => fastclk_0,
+            fastclock90  => fastclk_90,
+            fastclock180 => fastclk_180,
 
             err_count_to_shift => err_count_to_shift,
             stable_count_to_reset => stable_count_to_reset,
@@ -231,14 +226,13 @@ begin
             reset_i => reset,
 
             -- keep all clocks inverted here, so that they are centered w/r/t the rising edge when doing frame alignment
-            start_of_frame => start_of_frame_d0(ifat),
+            start_of_frame => start_of_frame(ifat),
             clock          => clock,
-            fastclock      =>  not_fastclk_0,
+            fastclock      => fastclk_0,
 
+            sof_on_negedge => sof_on_negedge(ifat),
             sof_frame_offset => sof_frame_offset,
             aligned_count_to_ready => aligned_count_to_ready,
-
-            sof_delayed    => sof_dly(ifat),
 
             sof_is_aligned => sof_is_aligned(ifat),
 

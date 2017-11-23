@@ -324,10 +324,11 @@
                     fw_default="0x3f"/>
 
                 <node id="ALIGNED_COUNT_TO_READY" address="0x6" permission="rw"
-                    description="Number of link consecutive good frames required to reset the err_cnt_to_shift counter"
+                    description="Number of link consecutive good frames required before the transmission unit is marked as good and S-bits can be produced"
                     fw_signal="aligned_count_to_ready"
                     mask="0x0fff0000"
                     fw_default="0xff"/>
+
             </node>
 
             <node id="CNT" address="0x10" description = "S-BIT Counters">

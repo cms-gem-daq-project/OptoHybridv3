@@ -94,7 +94,7 @@ architecture Behavioral of trigger is
     signal vfat_mask : std_logic_vector (23 downto 0);
     signal trig_deadtime : std_logic_vector (3 downto 0);
 
-    signal sof_frame_offset : std_logic_vector (3 downto 0);
+    signal sof_frame_offset      : std_logic_vector (3 downto 0);
 
     signal err_count_to_shift : std_logic_vector (7 downto 0);
     signal stable_count_to_reset : std_logic_vector (7 downto 0);

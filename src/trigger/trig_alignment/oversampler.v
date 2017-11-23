@@ -19,15 +19,14 @@ module oversampler (
 
   input clock,
 
+  input reset_i,
+
   input fastclock, // input clocks should be 1/2 the data rate (160 MHz for standard operation, 320 for DDR)
   input fastclock90,
   input fastclock180,
 
   input  [1:0] phase_sel_in,
   output [1:0] phase_sel_out,
-
-  input  sel_pos_edge_in,
-  output sel_pos_edge_out,
 
   input [7:0] stable_count_to_reset,
   input [7:0] err_count_to_shift,
@@ -41,9 +40,13 @@ module oversampler (
 
 );
 
+
+  reg reset;
+  always @(posedge fastclock)
+    reset <= reset_i;
+
   parameter       DDR        = 1'b0;
   parameter       INVERT     = 1'b0;
-  parameter       POSNEG     = 1'b0; // setting posneg to 1 adds an additional 180 degree delay
 
   parameter       PHASE_SEL_EXTERNAL = 1'b0;
 
@@ -51,7 +54,7 @@ module oversampler (
   parameter       NUM_TAPS_45  = DDR ? 5'd5 : 5'd10; // 45 degree phase shift in either 320 or 160 MHz clocks, using 78 ps taps
   // 78*5 = 390 ps, 78*10=780 ps
 
-  initial $display ("Compiling oversampler with DDR=%d, INVERT=%d, POSNEG=%d, TAP_DELAY=%d", DDR, INVERT, POSNEG, tap_delay_i);
+  initial $display ("Compiling oversampler with DDR=%d, INVERT=%d, TAP_DELAY=%d", DDR, INVERT, tap_delay_i);
 
   IBUFDS_DIFF_OUT #(.IBUF_LOW_PWR("FALSE"), .DIFF_TERM("TRUE"), .IOSTANDARD("LVDS_25"))
   ibufds (
@@ -70,8 +73,8 @@ module oversampler (
   reg [4:0] tap_delay45;
 
   always @(posedge clock) begin
-    tap_delay0  <= tap_delay_i;
-    tap_delay45 <= tap_delay_i + NUM_TAPS_45;
+    tap_delay0  <= tap_delay_i ;
+    tap_delay45 <= tap_delay_i  + NUM_TAPS_45;
   end
 
   (* IODELAY_GROUP = "IODLY_GROUP" *)
@@ -146,7 +149,7 @@ module oversampler (
     .DYNCLKDIVSEL (1'b0),
     .DYNCLKSEL    (1'b0),
     .OFB          (1'b0),
-    .RST          (1'b0),
+    .RST          (reset),
     .SHIFTIN1     (1'b0),
     .SHIFTIN2     (1'b0),
     .O            (),
@@ -181,7 +184,7 @@ module oversampler (
       .DYNCLKDIVSEL (1'b0),
       .DYNCLKSEL    (1'b0),
       .OFB          (1'b0),
-      .RST          (1'b0),
+      .RST          (reset),
       .SHIFTIN1     (1'b0),
       .SHIFTIN2     (1'b0),
       .O            (),
@@ -227,7 +230,7 @@ module oversampler (
   assign phase_err4[2'b10] = (eq4[2] || eq4[1]);
   assign phase_err4[2'b11] = (eq4[3] || eq4[2]);
 
-  reg [1:0] posneg_mux;
+  reg rising, falling;
 
   wire [1:0] phase_sel_local;
   wire [1:0] sample_sel = phase_sel_local[1:0];
@@ -237,10 +240,10 @@ module oversampler (
   always @(posedge fastclock) begin
 
     case (sample_sel)
-    2'd0: posneg_mux[1:0] <= {id[0],id[4]}; // eq00,  45 and 225 degree samples
-    2'd1: posneg_mux[1:0] <= {id[1],id[5]}; // eq01,   0 and 180 degree samples
-    2'd3: posneg_mux[1:0] <= {id[2],id[6]}; // eq11, 135 and 315 degree samples
-    2'd2: posneg_mux[1:0] <= {id[3],id[7]}; // eq10,  90 and 270 degree samples
+    2'd0: {falling,rising} <= INVERT ? ~{id[0],id[4]} : {id[0],id[4]}; // eq00,  45 and 225 degree samples
+    2'd1: {falling,rising} <= INVERT ? ~{id[1],id[5]} : {id[1],id[5]}; // eq01,   0 and 180 degree samples
+    2'd3: {falling,rising} <= INVERT ? ~{id[2],id[6]} : {id[2],id[6]}; // eq11, 135 and 315 degree samples
+    2'd2: {falling,rising} <= INVERT ? ~{id[3],id[7]} : {id[3],id[7]}; // eq10,  90 and 270 degree samples
     endcase
 
     case (sample_sel)
@@ -252,14 +255,9 @@ module oversampler (
   end
   endgenerate
 
-  wire sel_pos_edge;
-  // outputs
-
-  wire [1:0] posneg_inverted = INVERT ? ~posneg_mux : posneg_mux;
-
   always @(posedge fastclock) begin
-    d0 = posneg_inverted[ sel_pos_edge]; // choose sample[1] if pos, sample[0] if neg
-    d1 = posneg_inverted[~sel_pos_edge];
+    d0 <= rising;
+    d1 <= falling;
   end
 
   generate
@@ -278,10 +276,7 @@ module oversampler (
             phase_sel_in_r <= phase_sel_in;
         end
 
-      assign phase_sel_local = phase_sel_in_r; // external input
-
-      assign sel_pos_edge     = sel_pos_edge_in;
-      assign sel_pos_edge_out = sel_pos_edge_in;
+        assign phase_sel_local = phase_sel_in_r; // external input
 
   end
 
@@ -291,20 +286,6 @@ module oversampler (
         //----------------------------------------------------------------------------------------------------------------
         // automatic control by state machine
         //----------------------------------------------------------------------------------------------------------------
-
-        // check if the SOF signal is coming out on d1 instead of d0 and align the data accordingly
-        // by asserting the inv_sel signal
-
-        reg data_on_neg = 0;
-        always @(posedge fastclock) begin
-          if      (posneg_inverted[1])
-            data_on_neg <= 1'b0;
-          else if (posneg_inverted[0])
-            data_on_neg <= 1'b1;
-        end
-
-        assign sel_pos_edge    = ~data_on_neg;
-        assign sel_pos_edge_out =  sel_pos_edge;
 
         reg [1:0] phase_sm=2'd0;
 
