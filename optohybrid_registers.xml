@@ -153,11 +153,17 @@
                     description="Pulse to take a counter snapshot"
                     mask="0x1"
                     fw_write_pulse_signal="cnt_snap_pulse"/>
-                <node id="DISABLE" address="0x10" permission="rw"
+                <node id="DISABLE" address="0x11" permission="rw"
                     description="Set to 1 to disable snapshots (counters will be readout asynchronously"
                     mask="0x2"
                     fw_default="1"
                     fw_signal="cnt_snap_disable"/>
+            </node>
+
+            <node id="SOFT_RESET" address="0x12" permission="w"
+                    description = "Control the soft reset of the Optohybrid FPGA"
+                    mask="0x1"
+                    fw_write_pulse_signal="soft_reset_o">
             </node>
 
       </node>

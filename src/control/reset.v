@@ -14,6 +14,8 @@ module reset (
 
   input clock_i,
 
+  input soft_reset,
+
   input mmcms_locked_i,
 
   input gbt_rxready_i,
@@ -30,7 +32,7 @@ module reset (
 
   reg reset_start=1'b1;
   always @ (posedge clock_i)
-    reset_start <= ~(mmcms_locked_i && gbt_rxready_i && gbt_rxvalid_i && gbt_txready_i);
+    reset_start <= soft_reset || ~(mmcms_locked_i && gbt_rxready_i && gbt_rxvalid_i && gbt_txready_i);
 
   always @ (posedge clock_i)
     if (reset_start)

@@ -82,6 +82,8 @@ port(
     -- freeze high to make counters transparent (asynchronous readout)
     cnt_snap_o : out std_logic;
 
+    soft_reset_o : out std_logic;
+
     -------------
     -- outputs --
     -------------
@@ -373,6 +375,7 @@ begin
     regs_addresses(11)(REG_FPGA_CONTROL_ADDRESS_MSB downto REG_FPGA_CONTROL_ADDRESS_LSB) <= "01" & x"c";
     regs_addresses(12)(REG_FPGA_CONTROL_ADDRESS_MSB downto REG_FPGA_CONTROL_ADDRESS_LSB) <= "01" & x"d";
     regs_addresses(13)(REG_FPGA_CONTROL_ADDRESS_MSB downto REG_FPGA_CONTROL_ADDRESS_LSB) <= "10" & x"0";
+    regs_addresses(14)(REG_FPGA_CONTROL_ADDRESS_MSB downto REG_FPGA_CONTROL_ADDRESS_LSB) <= "10" & x"1";
 
     -- Connect read signals
     regs_read_arr(0)(REG_FPGA_CONTROL_LOOPBACK_DATA_MSB downto REG_FPGA_CONTROL_LOOPBACK_DATA_LSB) <= loopback;
@@ -397,7 +400,7 @@ begin
     regs_read_arr(11)(REG_FPGA_CONTROL_HDMI_HDMI_OUTPUT_MSB downto REG_FPGA_CONTROL_HDMI_HDMI_OUTPUT_LSB) <= ext_sbits;
     regs_read_arr(11)(REG_FPGA_CONTROL_HDMI_SBIT_SEL_MODE_MSB downto REG_FPGA_CONTROL_HDMI_SBIT_SEL_MODE_LSB) <= sbit_mode;
     regs_read_arr(12)(REG_FPGA_CONTROL_HDMI_SBIT_SEL_MSB downto REG_FPGA_CONTROL_HDMI_SBIT_SEL_LSB) <= sbit_sel;
-    regs_read_arr(13)(REG_FPGA_CONTROL_CNT_SNAP_DISABLE_BIT) <= cnt_snap_disable;
+    regs_read_arr(14)(REG_FPGA_CONTROL_CNT_SNAP_DISABLE_BIT) <= cnt_snap_disable;
 
     -- Connect write signals
     loopback <= regs_write_arr(0)(REG_FPGA_CONTROL_LOOPBACK_DATA_MSB downto REG_FPGA_CONTROL_LOOPBACK_DATA_LSB);
@@ -406,9 +409,10 @@ begin
     ttc_bxn_offset <= regs_write_arr(7)(REG_FPGA_CONTROL_TTC_BXN_OFFSET_MSB downto REG_FPGA_CONTROL_TTC_BXN_OFFSET_LSB);
     sbit_mode <= regs_write_arr(11)(REG_FPGA_CONTROL_HDMI_SBIT_SEL_MODE_MSB downto REG_FPGA_CONTROL_HDMI_SBIT_SEL_MODE_LSB);
     sbit_sel <= regs_write_arr(12)(REG_FPGA_CONTROL_HDMI_SBIT_SEL_MSB downto REG_FPGA_CONTROL_HDMI_SBIT_SEL_LSB);
-    cnt_snap_disable <= regs_write_arr(13)(REG_FPGA_CONTROL_CNT_SNAP_DISABLE_BIT);
+    cnt_snap_disable <= regs_write_arr(14)(REG_FPGA_CONTROL_CNT_SNAP_DISABLE_BIT);
 
     -- Connect write pulse signals
+    soft_reset_o <= regs_write_pulse_arr(9);
     cnt_snap_pulse <= regs_write_pulse_arr(13);
 
     -- Connect write done signals
@@ -502,7 +506,7 @@ begin
     regs_defaults(7)(REG_FPGA_CONTROL_TTC_BXN_OFFSET_MSB downto REG_FPGA_CONTROL_TTC_BXN_OFFSET_LSB) <= REG_FPGA_CONTROL_TTC_BXN_OFFSET_DEFAULT;
     regs_defaults(11)(REG_FPGA_CONTROL_HDMI_SBIT_SEL_MODE_MSB downto REG_FPGA_CONTROL_HDMI_SBIT_SEL_MODE_LSB) <= REG_FPGA_CONTROL_HDMI_SBIT_SEL_MODE_DEFAULT;
     regs_defaults(12)(REG_FPGA_CONTROL_HDMI_SBIT_SEL_MSB downto REG_FPGA_CONTROL_HDMI_SBIT_SEL_LSB) <= REG_FPGA_CONTROL_HDMI_SBIT_SEL_DEFAULT;
-    regs_defaults(13)(REG_FPGA_CONTROL_CNT_SNAP_DISABLE_BIT) <= REG_FPGA_CONTROL_CNT_SNAP_DISABLE_DEFAULT;
+    regs_defaults(14)(REG_FPGA_CONTROL_CNT_SNAP_DISABLE_BIT) <= REG_FPGA_CONTROL_CNT_SNAP_DISABLE_DEFAULT;
 
     -- Define writable regs
     regs_writable_arr(0) <= '1';
@@ -511,7 +515,7 @@ begin
     regs_writable_arr(7) <= '1';
     regs_writable_arr(11) <= '1';
     regs_writable_arr(12) <= '1';
-    regs_writable_arr(13) <= '1';
+    regs_writable_arr(14) <= '1';
 
     --==== Registers end ============================================================================
 

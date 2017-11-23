@@ -175,6 +175,7 @@ architecture Behavioral of optohybrid_top is
     attribute KEEP : string;
 
     signal ext_sbits : std_logic_vector (5 downto 0);
+    signal soft_reset : std_logic;
 
     -- don't remove duplicates for fanout, needed to pack into iob
     signal ext_reset : std_logic_vector (11 downto 0);
@@ -257,6 +258,7 @@ begin
     reset_ctl : entity work.reset
     port map (
         clock_i        => clock,
+        soft_reset     => soft_reset,
         mmcms_locked_i => mmcms_locked,
         gbt_rxready_i  => gbt_rxready,
         gbt_rxvalid_i  => gbt_rxvalid,
@@ -432,6 +434,8 @@ begin
 
         -- LEDs
         led_o => led_o,
+
+        soft_reset_o           =>   soft_reset,
 
         cnt_snap_o => cnt_snap
 
