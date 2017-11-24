@@ -10,7 +10,7 @@ package registers is
     -- Implements various control and monitoring functions of the Optohybrid
     --============================================================================
 
-    constant REG_FPGA_CONTROL_NUM_REGS : integer := 14;
+    constant REG_FPGA_CONTROL_NUM_REGS : integer := 15;
     constant REG_FPGA_CONTROL_ADDRESS_MSB : integer := 5;
     constant REG_FPGA_CONTROL_ADDRESS_LSB : integer := 0;
     constant REG_FPGA_CONTROL_LOOPBACK_DATA_ADDR    : std_logic_vector(5 downto 0) := "00" & x"0";
@@ -76,6 +76,9 @@ package registers is
     constant REG_FPGA_CONTROL_TTC_L1A_CNT_MSB    : integer := 15;
     constant REG_FPGA_CONTROL_TTC_L1A_CNT_LSB     : integer := 0;
 
+    constant REG_FPGA_CONTROL_SOFT_RESET_ADDR    : std_logic_vector(5 downto 0) := "01" & x"2";
+    constant REG_FPGA_CONTROL_SOFT_RESET_BIT    : integer := 0;
+
     constant REG_FPGA_CONTROL_TTC_BXN_SYNC_ERR_CNT_ADDR    : std_logic_vector(5 downto 0) := "01" & x"2";
     constant REG_FPGA_CONTROL_TTC_BXN_SYNC_ERR_CNT_MSB    : integer := 15;
     constant REG_FPGA_CONTROL_TTC_BXN_SYNC_ERR_CNT_LSB     : integer := 0;
@@ -105,7 +108,7 @@ package registers is
     constant REG_FPGA_CONTROL_CNT_SNAP_PULSE_ADDR    : std_logic_vector(5 downto 0) := "10" & x"0";
     constant REG_FPGA_CONTROL_CNT_SNAP_PULSE_BIT    : integer := 0;
 
-    constant REG_FPGA_CONTROL_CNT_SNAP_DISABLE_ADDR    : std_logic_vector(5 downto 0) := "10" & x"0";
+    constant REG_FPGA_CONTROL_CNT_SNAP_DISABLE_ADDR    : std_logic_vector(5 downto 0) := "10" & x"1";
     constant REG_FPGA_CONTROL_CNT_SNAP_DISABLE_BIT    : integer := 1;
     constant REG_FPGA_CONTROL_CNT_SNAP_DISABLE_DEFAULT : std_logic := '1';
 
@@ -171,7 +174,7 @@ package registers is
     -- Connects to the trigger control module
     --============================================================================
 
-    constant REG_FPGA_TRIG_NUM_REGS : integer := 67;
+    constant REG_FPGA_TRIG_NUM_REGS : integer := 69;
     constant REG_FPGA_TRIG_ADDRESS_MSB : integer := 7;
     constant REG_FPGA_TRIG_ADDRESS_LSB : integer := 0;
     constant REG_FPGA_TRIG_CTRL_VFAT_MASK_ADDR    : std_logic_vector(7 downto 0) := x"00";
@@ -225,101 +228,107 @@ package registers is
     constant REG_FPGA_TRIG_CTRL_ALIGNED_COUNT_TO_READY_LSB     : integer := 16;
     constant REG_FPGA_TRIG_CTRL_ALIGNED_COUNT_TO_READY_DEFAULT : std_logic_vector(27 downto 16) := x"0ff";
 
-    constant REG_FPGA_TRIG_CNT_VFAT0_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"10";
+    constant REG_FPGA_TRIG_CNT_VFAT0_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"08";
     constant REG_FPGA_TRIG_CNT_VFAT0_SBITS_MSB    : integer := 15;
     constant REG_FPGA_TRIG_CNT_VFAT0_SBITS_LSB     : integer := 0;
 
-    constant REG_FPGA_TRIG_CNT_VFAT1_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"11";
+    constant REG_FPGA_TRIG_CNT_VFAT1_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"09";
     constant REG_FPGA_TRIG_CNT_VFAT1_SBITS_MSB    : integer := 15;
     constant REG_FPGA_TRIG_CNT_VFAT1_SBITS_LSB     : integer := 0;
 
-    constant REG_FPGA_TRIG_CNT_VFAT2_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"12";
+    constant REG_FPGA_TRIG_CNT_VFAT2_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"0a";
     constant REG_FPGA_TRIG_CNT_VFAT2_SBITS_MSB    : integer := 15;
     constant REG_FPGA_TRIG_CNT_VFAT2_SBITS_LSB     : integer := 0;
 
-    constant REG_FPGA_TRIG_CNT_VFAT3_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"13";
+    constant REG_FPGA_TRIG_CNT_VFAT3_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"0b";
     constant REG_FPGA_TRIG_CNT_VFAT3_SBITS_MSB    : integer := 15;
     constant REG_FPGA_TRIG_CNT_VFAT3_SBITS_LSB     : integer := 0;
 
-    constant REG_FPGA_TRIG_CNT_VFAT4_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"14";
+    constant REG_FPGA_TRIG_CNT_VFAT4_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"0c";
     constant REG_FPGA_TRIG_CNT_VFAT4_SBITS_MSB    : integer := 15;
     constant REG_FPGA_TRIG_CNT_VFAT4_SBITS_LSB     : integer := 0;
 
-    constant REG_FPGA_TRIG_CNT_VFAT5_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"15";
+    constant REG_FPGA_TRIG_CNT_VFAT5_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"0d";
     constant REG_FPGA_TRIG_CNT_VFAT5_SBITS_MSB    : integer := 15;
     constant REG_FPGA_TRIG_CNT_VFAT5_SBITS_LSB     : integer := 0;
 
-    constant REG_FPGA_TRIG_CNT_VFAT6_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"16";
+    constant REG_FPGA_TRIG_CNT_VFAT6_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"0e";
     constant REG_FPGA_TRIG_CNT_VFAT6_SBITS_MSB    : integer := 15;
     constant REG_FPGA_TRIG_CNT_VFAT6_SBITS_LSB     : integer := 0;
 
-    constant REG_FPGA_TRIG_CNT_VFAT7_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"17";
+    constant REG_FPGA_TRIG_CNT_VFAT7_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"0f";
     constant REG_FPGA_TRIG_CNT_VFAT7_SBITS_MSB    : integer := 15;
     constant REG_FPGA_TRIG_CNT_VFAT7_SBITS_LSB     : integer := 0;
 
-    constant REG_FPGA_TRIG_CNT_VFAT8_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"18";
+    constant REG_FPGA_TRIG_CNT_VFAT8_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"10";
     constant REG_FPGA_TRIG_CNT_VFAT8_SBITS_MSB    : integer := 15;
     constant REG_FPGA_TRIG_CNT_VFAT8_SBITS_LSB     : integer := 0;
 
-    constant REG_FPGA_TRIG_CNT_VFAT9_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"19";
+    constant REG_FPGA_TRIG_CNT_VFAT9_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"11";
     constant REG_FPGA_TRIG_CNT_VFAT9_SBITS_MSB    : integer := 15;
     constant REG_FPGA_TRIG_CNT_VFAT9_SBITS_LSB     : integer := 0;
 
-    constant REG_FPGA_TRIG_CNT_VFAT10_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"1a";
+    constant REG_FPGA_TRIG_CNT_VFAT10_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"12";
     constant REG_FPGA_TRIG_CNT_VFAT10_SBITS_MSB    : integer := 15;
     constant REG_FPGA_TRIG_CNT_VFAT10_SBITS_LSB     : integer := 0;
 
-    constant REG_FPGA_TRIG_CNT_VFAT11_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"1b";
+    constant REG_FPGA_TRIG_CNT_VFAT11_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"13";
     constant REG_FPGA_TRIG_CNT_VFAT11_SBITS_MSB    : integer := 15;
     constant REG_FPGA_TRIG_CNT_VFAT11_SBITS_LSB     : integer := 0;
 
-    constant REG_FPGA_TRIG_CNT_VFAT12_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"1c";
+    constant REG_FPGA_TRIG_CNT_VFAT12_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"14";
     constant REG_FPGA_TRIG_CNT_VFAT12_SBITS_MSB    : integer := 15;
     constant REG_FPGA_TRIG_CNT_VFAT12_SBITS_LSB     : integer := 0;
 
-    constant REG_FPGA_TRIG_CNT_VFAT13_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"1d";
+    constant REG_FPGA_TRIG_CNT_VFAT13_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"15";
     constant REG_FPGA_TRIG_CNT_VFAT13_SBITS_MSB    : integer := 15;
     constant REG_FPGA_TRIG_CNT_VFAT13_SBITS_LSB     : integer := 0;
 
-    constant REG_FPGA_TRIG_CNT_VFAT14_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"1e";
+    constant REG_FPGA_TRIG_CNT_VFAT14_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"16";
     constant REG_FPGA_TRIG_CNT_VFAT14_SBITS_MSB    : integer := 15;
     constant REG_FPGA_TRIG_CNT_VFAT14_SBITS_LSB     : integer := 0;
 
-    constant REG_FPGA_TRIG_CNT_VFAT15_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"1f";
+    constant REG_FPGA_TRIG_CNT_VFAT15_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"17";
     constant REG_FPGA_TRIG_CNT_VFAT15_SBITS_MSB    : integer := 15;
     constant REG_FPGA_TRIG_CNT_VFAT15_SBITS_LSB     : integer := 0;
 
-    constant REG_FPGA_TRIG_CNT_VFAT16_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"20";
+    constant REG_FPGA_TRIG_CNT_VFAT16_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"18";
     constant REG_FPGA_TRIG_CNT_VFAT16_SBITS_MSB    : integer := 15;
     constant REG_FPGA_TRIG_CNT_VFAT16_SBITS_LSB     : integer := 0;
 
-    constant REG_FPGA_TRIG_CNT_VFAT17_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"21";
+    constant REG_FPGA_TRIG_CNT_VFAT17_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"19";
     constant REG_FPGA_TRIG_CNT_VFAT17_SBITS_MSB    : integer := 15;
     constant REG_FPGA_TRIG_CNT_VFAT17_SBITS_LSB     : integer := 0;
 
-    constant REG_FPGA_TRIG_CNT_VFAT18_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"22";
+    constant REG_FPGA_TRIG_CNT_VFAT18_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"1a";
     constant REG_FPGA_TRIG_CNT_VFAT18_SBITS_MSB    : integer := 15;
     constant REG_FPGA_TRIG_CNT_VFAT18_SBITS_LSB     : integer := 0;
 
-    constant REG_FPGA_TRIG_CNT_VFAT19_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"23";
+    constant REG_FPGA_TRIG_CNT_VFAT19_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"1b";
     constant REG_FPGA_TRIG_CNT_VFAT19_SBITS_MSB    : integer := 15;
     constant REG_FPGA_TRIG_CNT_VFAT19_SBITS_LSB     : integer := 0;
 
-    constant REG_FPGA_TRIG_CNT_VFAT20_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"24";
+    constant REG_FPGA_TRIG_CNT_VFAT20_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"1c";
     constant REG_FPGA_TRIG_CNT_VFAT20_SBITS_MSB    : integer := 15;
     constant REG_FPGA_TRIG_CNT_VFAT20_SBITS_LSB     : integer := 0;
 
-    constant REG_FPGA_TRIG_CNT_VFAT21_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"25";
+    constant REG_FPGA_TRIG_CNT_VFAT21_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"1d";
     constant REG_FPGA_TRIG_CNT_VFAT21_SBITS_MSB    : integer := 15;
     constant REG_FPGA_TRIG_CNT_VFAT21_SBITS_LSB     : integer := 0;
 
-    constant REG_FPGA_TRIG_CNT_VFAT22_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"26";
+    constant REG_FPGA_TRIG_CNT_VFAT22_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"1e";
     constant REG_FPGA_TRIG_CNT_VFAT22_SBITS_MSB    : integer := 15;
     constant REG_FPGA_TRIG_CNT_VFAT22_SBITS_LSB     : integer := 0;
 
-    constant REG_FPGA_TRIG_CNT_VFAT23_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"27";
+    constant REG_FPGA_TRIG_CNT_VFAT23_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"1f";
     constant REG_FPGA_TRIG_CNT_VFAT23_SBITS_MSB    : integer := 15;
     constant REG_FPGA_TRIG_CNT_VFAT23_SBITS_LSB     : integer := 0;
+
+    constant REG_FPGA_TRIG_CNT_RESET_ADDR    : std_logic_vector(7 downto 0) := x"20";
+    constant REG_FPGA_TRIG_CNT_RESET_BIT    : integer := 0;
+
+    constant REG_FPGA_TRIG_LINKS_RESET_ADDR    : std_logic_vector(7 downto 0) := x"24";
+    constant REG_FPGA_TRIG_LINKS_RESET_BIT    : integer := 0;
 
     constant REG_FPGA_TRIG_TIMING_TAP_DELAY_VFAT0_BIT0_ADDR    : std_logic_vector(7 downto 0) := x"30";
     constant REG_FPGA_TRIG_TIMING_TAP_DELAY_VFAT0_BIT0_MSB    : integer := 4;

@@ -302,7 +302,7 @@
 
                 <node id="CNT_OVERFLOW" address="0x3" permission="r"
                     mask="0xffff"
-                    description="VFAT 23 Sbit Counter"
+                    description="Overflow Counter (more than 8 clusters in a bx)"
                     cnt_en_signal="sbit_overflow"
                     cnt_snap_signal="cnt_snap"
                     fw_signal="cnt_sbit_overflow"/>
@@ -337,7 +337,7 @@
 
             </node>
 
-            <node id="CNT" address="0x10" description = "S-BIT Counters">
+            <node id="CNT" address="0x8" description = "S-BIT Counters">
 
                 <node id="VFAT0_SBITS" address="0x0" permission="r"
                     mask="0xffff"
@@ -530,6 +530,11 @@
                     cnt_snap_signal="cnt_snap"
                     cnt_reset_signal="cnt_reset"
                     fw_signal="cnt_vfat23"/>
+
+                <node id="RESET" address="0x18" permission="w"
+                    mask="0x1"
+                    description="Reset S-bit countes"
+                    fw_write_pulse_signal="reset_counters"/>
 
             </node>
 
@@ -1618,6 +1623,14 @@
                         fw_signal="sot_tap_delay(23)"
                         fw_default="0"/>
                 <!-- END: TIMING_DELAYS DO NOT EDIT -->
+            </node>
+
+            <node id="LINKS" address="0x24" description = "Trigger links control">
+
+                <node id="RESET" address="0x0" permission="w"
+                    mask="0x1"
+                    description="Reset trigger links"
+                    fw_write_pulse_signal="reset_links"/>
 
             </node>
     </node>

@@ -7,7 +7,7 @@ module trigger_links (
   input clk_80,
   input clk_160,
 
-  input reset,
+  input reset_i,
 
   output [3:0] trg_tx_p,
   output [3:0] trg_tx_n,
@@ -26,6 +26,25 @@ module trigger_links (
 
   input overflow
 );
+
+reg [3:0] reset_cnt;
+reg reset;
+
+always @(posedge clk_40) begin
+  if (reset_i)
+    reset_cnt <= 0;
+  else if (~(&reset_cnt))
+    reset_cnt <= reset_cnt + 1'b1;
+  else
+    reset_cnt <= reset_cnt;
+end
+
+always @(posedge clk_40) begin
+  reset <= &reset_cnt;
+end
+
+
+
 
 IBUFDS_GTXE1 ibufds_mgt
 (
