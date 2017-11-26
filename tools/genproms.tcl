@@ -13,6 +13,7 @@ if { $folder != "tools" } {
     cd ../
 }
 
+set xml_filename   prj/optohybrid_registers.xml
 set bit_filename   prj/${top_name}.bit
 set mcs_filename   prj/${top_name}.mcs
 set cfi_filename   prj/${top_name}.cfi
@@ -294,3 +295,4 @@ if {![file isdirectory $releasedir]} {
  file copy -force $prm_filename   ${releasedir}/${shortname}-${datecode}-${releasecode}.prm
  file copy -force $cfi_filename   ${releasedir}/${shortname}-${datecode}-${releasecode}.cfi
  file copy -force $cdc_filename   ${releasedir}/${shortname}-${datecode}-${releasecode}.cdc
+ file copy -force $xml_filename   ${releasedir}/$xml_filename

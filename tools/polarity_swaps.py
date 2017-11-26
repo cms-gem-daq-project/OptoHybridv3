@@ -75,15 +75,16 @@ def sbit_polarity_swap (sector, pair):
 
     elif (sector==6):
         if (pair==4):
-            return true
+            return True
         if (pair==5):
             return True
 
     elif (sector==7):
         if (pair==1):
             return True
-#       if (pair==2):
-#           return True
+# this pair __IS__ inverted but there is something wrong with the board apparently and needs to be masked
+        if (pair==2):
+           return True
 
     elif (sector==8):
         if (pair==1):
