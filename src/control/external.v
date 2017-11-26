@@ -75,7 +75,7 @@ module external (
           2'b00: ext_sbits_o[j] <= ors        [sbits_sel[j]];
           2'b01: ext_sbits_o[j] <= eta_row    [sbits_sel[j]];
           2'b10: ext_sbits_o[j] <= sector_row           [j];
-          2'b00: ext_sbits_o[j] <= 6'h0;
+          2'b11: ext_sbits_o[j] <= 6'h0;
         endcase
       end
     end
