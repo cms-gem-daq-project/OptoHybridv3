@@ -1,6 +1,7 @@
 import re
 from polarity_swaps import *
 from insert_code import *
+from oh_settings import *
 
 def main():
 
@@ -39,7 +40,7 @@ def parse_netlist():
                 (net,part,pin) = line.split()
                 if (part=='U5' and net[0]!='+' and net!='GND'):
                     netlist.update({net: pin})
-                    print ("FOUND: net %s  pin %s" % (net, pin))
+                    #print ("FOUND: net %s  pin %s" % (net, pin))
 
     return netlist
 
@@ -70,8 +71,19 @@ def write_sbit_constraints (file_handle):
 
     netlist = parse_netlist()
 
-    for net in netlist:
+    keys = netlist.keys()
 
+    keys = keys.sort()
+
+    print("\n")
+    print("%s\n" % type(netlist))
+    print("\n")
+
+    print( keys)
+
+    for net in sorted(netlist, key=natural_keys):
+
+        print (net)
         # sbits
 
         patp   = re.compile("S[0-9]*_[0-9]*_P")
@@ -84,7 +96,13 @@ def write_sbit_constraints (file_handle):
 
             sector = sector [1:] # take off the S at the beginning
 
-            sbit_global = 8*(int(sector)-1) + int(pair) # enumerate 0--191 instead of (1--24)+(0--7)
+
+            sbit=-1
+
+            if (USE_INVERTED_NUMBERING):
+                sbit= 8*( 23 - int(sector)-1) + int(pair) # enumerate 0--191 instead of (1--24)+(0--7)
+            else:
+                sbit = 8*(int(sector)-1) + int(pair) # enumerate 0--191 instead of (1--24)+(0--7)
 
             comment = ""
             if (sbit_polarity_swap(int(sector),int(pair))):
@@ -94,7 +112,8 @@ def write_sbit_constraints (file_handle):
                 elif (pin=='P'):
                     pin='N'
 
-            f.write('NET vfat_sbits_%s<%s> LOC="%s"; %s\n' % (pin.lower(), sbit_global, netlist.get(net), comment))
+            netname =  ( "vfat_sbits_"+str(pin.lower())+"<"+str(sbit)+">").ljust(18, ' ')
+            f.write('NET %s LOC="%s";%s\n' % (netname, netlist.get(net), comment))
 
         # start of transmission pulses
 
@@ -114,8 +133,27 @@ def write_sbit_constraints (file_handle):
                 elif (pin=='P'):
                     pin='N'
 
+            vfat = -1
+            if (USE_INVERTED_NUMBERING):
+                vfat = 23-(int(sector)-1)
+            else:
+                vfat = int(sector) - 1
+
             # netlist counts sectors from 1,
-            f.write('NET vfat_sof_%s<%s> LOC="%s"; %s\n' % (pin.lower(), int(sector)-1, netlist.get(net), comment))
+            netname =  ( "vfat_sof_"+str(pin.lower())+"<"+str(vfat)+">").ljust(18, ' ')
+            f.write('NET %s LOC="%s";%s\n' % (netname, netlist.get(net), comment))
+
+def atoi(text):
+    return int(text) if text.isdigit() else text
+
+def natural_keys(text):
+    '''
+    alist.sort(key=natural_keys) sorts in human order
+    http://nedbatchelder.com/blog/200712/human_sorting.html
+    (See Toothy's implementation in the comments)
+    '''
+    return [ atoi(c) for c in re.split('(\d+)', text) ]
+
 
 if __name__ == '__main__':
     main()
