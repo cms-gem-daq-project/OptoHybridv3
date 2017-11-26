@@ -1,16 +1,16 @@
+import shutil
+import tempfile
+
 def insert_code (input_file_name, output_file_name, marker_start, marker_end, write_function):
 
     # build a python netlist from the Altium exported Multiwire netlist
 
-    f = open(input_file_name, 'r+')
+    f = open(input_file_name, 'r')
     lines = f.readlines()
     f.close()
 
-    # create backup..
-    f = open(input_file_name + '.bak', 'w')
-    for line in lines:
-        f.write(line)
-    f.close
+    tempname = tempfile.mktemp();
+    shutil.copy (input_file_name, tempname)
 
     start_found = False
     end_found = False
@@ -36,7 +36,7 @@ def insert_code (input_file_name, output_file_name, marker_start, marker_end, wr
 
         wrote_constraints = False
 
-        f = open(output_file_name, 'w')
+        f = open(tempname, 'w')
 
         for line in lines:
 
@@ -57,5 +57,9 @@ def insert_code (input_file_name, output_file_name, marker_start, marker_end, wr
 
                 write_function(f)
 
-        f.close
+        f.close()
+        shutil.copy (tempname, output_file_name)
+
+
+    f.close()
 

@@ -4,6 +4,8 @@ import xml.etree.ElementTree as xml
 import textwrap as tw
 import sys
 import rw_reg
+import shutil
+import tempfile
 
 ADDRESS_TABLE_TOP = '../optohybrid_registers.xml'
 CONSTANTS_FILE = '../src/pkg/registers.vhd'
@@ -35,7 +37,7 @@ class Module:
     userClock = ''
     busClock = ''
     busReset = ''
-    cnt_reset_signal = None
+    fw_cnt_reset_signal = None
     masterBus = ''
     slaveBus = ''
     isExternal = False # if this is true it means that firmware doesn't have to be modified, only bash scripts will be generated
@@ -81,8 +83,8 @@ class Register:
     read_pulse_signal = None
     read_ready_signal = None
 
-    cnt_snap_signal   = '\'1\''
-    cnt_en_signal     = None
+    fw_cnt_snap_signal   = '\'1\''
+    fw_cnt_en_signal     = None
 
     default = 0x0
     msb = -1
@@ -253,14 +255,14 @@ def findRegisters(node, baseName, baseAddress, modules, currentModule, vars, isG
             if node.get('fw_read_ready_signal') is not None:
                 reg.read_ready_signal = substituteVars(node.get('fw_read_ready_signal'), vars)
 
-            if node.get('cnt_en_signal') is not None:
-                reg.cnt_en_signal = substituteVars (node.get('cnt_en_signal'),vars)
-            if node.get('cnt_reset_signal') is not None:
-                reg.cnt_reset_signal = substituteVars (node.get('cnt_reset_signal'),vars)
+            if node.get('fw_cnt_en_signal') is not None:
+                reg.fw_cnt_en_signal = substituteVars (node.get('fw_cnt_en_signal'),vars)
+            if node.get('fw_cnt_reset_signal') is not None:
+                reg.fw_cnt_reset_signal = substituteVars (node.get('fw_cnt_reset_signal'),vars)
             else:
-                reg.cnt_reset_signal = module.busReset
-            if node.get('cnt_snap_signal') is not None:
-                reg.cnt_snap_signal = substituteVars (node.get('cnt_snap_signal'),vars)
+                reg.fw_cnt_reset_signal = module.busReset
+            if node.get('fw_cnt_snap_signal') is not None:
+                reg.fw_cnt_snap_signal = substituteVars (node.get('fw_cnt_snap_signal'),vars)
 
             if module is None:
                 error = 'Module is not set, cannot add register ' + reg.name
@@ -340,11 +342,17 @@ def updateModuleFile(module):
 
     totalRegs32 = getNumRequiredRegs32(module)
     print('Updating ' + module.name + ' module in file = ' + module.file)
+
+    # copy lines out of source file
     f = open(module.file, 'r+')
     lines = f.readlines()
     f.close()
 
-    f = open(module.file, 'w')
+    # create temp file for writing to
+    tempname = tempfile.mktemp()
+    shutil.copy (module.file, tempname)
+    f = open (tempname, "w")
+
     signalSectionFound = False
     signalSectionDone = False
     slaveSectionFound = False
@@ -382,7 +390,7 @@ def updateModuleFile(module):
            # connect counter signal declarations
             f.write('    -- Connect counter signal declarations\n')
             for reg in module.regs:
-                if reg.cnt_en_signal is not None and reg.signal is not None:
+                if reg.fw_cnt_en_signal is not None and reg.signal is not None:
                     f.write ('    signal %s : std_logic_vector (%s downto 0) := (others => \'0\');\n' % (reg.signal,  reg.msb-reg.lsb))
 
         # slave section
@@ -495,15 +503,15 @@ def updateModuleFile(module):
            # connect counter signals
             f.write('    -- Connect counter instances\n')
             for reg in module.regs:
-                if reg.cnt_en_signal is not None:
+                if reg.fw_cnt_en_signal is not None:
                     f.write ("\n")
                     f.write ('    COUNTER_%s : entity work.counter\n' % (reg.getVhdlName()))
                     f.write ('    generic map (g_WIDTH => %s)\n' % (reg.msb - reg.lsb + 1))
                     f.write ('    port map (\n')
                     f.write ('        ref_clk_i => %s,\n' % (module.userClock))
-                    f.write ('        snap_i    => %s,\n' % (reg.cnt_snap_signal))
-                    f.write ('        reset_i   => %s,\n' % (reg.cnt_reset_signal))
-                    f.write ('        en_i      => %s,\n' % (reg.cnt_en_signal))
+                    f.write ('        snap_i    => %s,\n' % (reg.fw_cnt_snap_signal))
+                    f.write ('        reset_i   => %s,\n' % (reg.fw_cnt_reset_signal))
+                    f.write ('        en_i      => %s,\n' % (reg.fw_cnt_en_signal))
                     f.write ('        data_o    => %s\n'  % (reg.signal))
                     f.write ('    );\n')
                     f.write ('\n')
@@ -542,6 +550,7 @@ def updateModuleFile(module):
             f.write('\n')
 
     f.close()
+    #shutil.copy (tempname, module.file)
 
     if not signalSectionFound or not signalSectionDone:
         print('--> ERROR <-- Could not find a signal section in the file.. Please include "' + VHDL_REG_SIGNAL_MARKER_START + '" and "' + VHDL_REG_SIGNAL_MARKER_END + '" comments denoting the area where the generated code will be inserted')
@@ -599,6 +608,7 @@ def writeStatusBashScript(modules, filename):
         f.write('fi\n\n')
 
     f.close()
+    shutil.copy (tempname, module.file)
 
 def writeUHalAddressTable(modules, filename, addrOffset, num_of_oh = None):
     print('Writing uHAL address table XML')
