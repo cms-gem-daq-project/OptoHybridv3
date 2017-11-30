@@ -17,7 +17,7 @@ module frame_aligner (
   input [MXIO-1:0] d1, // data from negedge of ddr
 
   input start_of_frame,
-  input sof_on_negedge,
+  input sot_on_negedge,
 
   input reset_i,
   input mask,
@@ -25,13 +25,13 @@ module frame_aligner (
   input clock,
   input fastclock,
 
-  input [3:0] sof_frame_offset,
+  input [3:0] sot_frame_offset,
 
   input [11:0] aligned_count_to_ready,
 
-  output     sof_unstable,
-  output reg sof_is_aligned,
-  output     sof_delayed,
+  output     sot_unstable,
+  output reg sot_is_aligned,
+  output     sot_delayed,
   output [MXSBITS-1:0] sbits
 );
 
@@ -48,12 +48,12 @@ module frame_aligner (
   end
 
   reg [MXIO-1:0] even_ff, odd_ff;
-  reg sof_ff;
+  reg sot_ff;
 
   always @(posedge fastclock) begin
-    even_ff <= sof_on_negedge  ? d0 : d1;
-    odd_ff  <= sof_on_negedge  ? d1 : d0;
-    sof_ff  <= start_of_frame;
+    even_ff <= sot_on_negedge  ? d0 : d1;
+    odd_ff  <= sot_on_negedge  ? d1 : d0;
+    sot_ff  <= start_of_frame;
   end
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -62,8 +62,8 @@ module frame_aligner (
 
   reg ready=0;
 
-  wire sof_dly_srl;
-  wire sof_dly2_srl;
+  wire sot_dly_srl;
+  wire sot_dly2_srl;
 
   reg  [1:0] srl_adr_ctrl=0;
   reg  [3:0] srl_adr=0; // frame alignment srl_adr
@@ -72,18 +72,18 @@ module frame_aligner (
   always @(posedge fastclock)
     srl_adr <= srl_adr_ctrl;
 
-  wire [3:0] srl_adr_sof = sof_frame_offset;
+  wire [3:0] srl_adr_sot = sot_frame_offset;
 
-  SRL16E  srlsof0a   (.CLK(fastclock),.CE(1'b1),.D(sof_ff),      .A0(srl_adr[0]), .A1(srl_adr[1]), .A2(srl_adr[2]), .A3(srl_adr[3]), .Q(sof_dly_srl));
-  SRL16E  srlsof0b   (.CLK(fastclock),.CE(1'b1),.D(sof_dly_srl), .A0(srl_adr_sof[0]),.A1(srl_adr_sof[1]),.A2(srl_adr_sof[2]),.A3(srl_adr_sof[3]),.Q(sof_dly2_srl));
-  // delay sof by 3 to compensate for the s-bit even/odd fifo output equivalent delay
+  SRL16E  srlsot0a   (.CLK(fastclock),.CE(1'b1),.D(sot_ff),      .A0(srl_adr[0]), .A1(srl_adr[1]), .A2(srl_adr[2]), .A3(srl_adr[3]), .Q(sot_dly_srl));
+  SRL16E  srlsot0b   (.CLK(fastclock),.CE(1'b1),.D(sot_dly_srl), .A0(srl_adr_sot[0]),.A1(srl_adr_sot[1]),.A2(srl_adr_sot[2]),.A3(srl_adr_sot[3]),.Q(sot_dly2_srl));
+  // delay sot by 3 to compensate for the s-bit even/odd fifo output equivalent delay
 
   // reg for fanout
-  reg sof_dly2_srl_ff;
-  reg sof_dly2;
+  reg sot_dly2_srl_ff;
+  reg sot_dly2;
   always @(posedge fastclock) begin
-    sof_dly2_srl_ff <= sof_dly2_srl;
-    sof_dly2        <= sof_dly2_srl_ff;
+    sot_dly2_srl_ff <= sot_dly2_srl;
+    sot_dly2        <= sot_dly2_srl_ff;
   end
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -93,7 +93,7 @@ module frame_aligner (
   wire [7:0] even_dly_srl;
   wire [7:0] odd_dly_srl;
 
-  wire [4:0] srl_adr_even = srl_adr+sof_on_negedge;
+  wire [4:0] srl_adr_even = srl_adr+sot_on_negedge;
   wire [4:0] srl_adr_odd  = srl_adr+1'b1;
 
   genvar ibit;
@@ -190,7 +190,7 @@ module frame_aligner (
   assign sbits = sbits_reg;
 
   always @(posedge clock) begin
-    // kill the outputs if we aren't aligned to SOF
+    // kill the outputs if we aren't aligned to sot
     if (reset || mask || ~ready)
       sbits_reg <= {MXSBITS{1'b0}};
     else
@@ -206,31 +206,31 @@ module frame_aligner (
         };
   end
 
-  // look for rising edge of the sof signal
-  // incase the sof signal is inverted, we require a few low clocks before the high
+  // look for rising edge of the sot signal
+  // incase the sot signal is inverted, we require a few low clocks before the high
   // don't want to trigger on the rising edge of the inverted signal.. yikes..
   // saw this during prototype testing with a (apparently) swapped pair
 
-  reg [2:0] sof_sr;
+  reg [2:0] sot_sr;
   always @(posedge fastclock) begin
-    sof_sr <= {sof_sr[1:0], sof_dly2};
+    sot_sr <= {sot_sr[1:0], sot_dly2};
   end
 
-  // 40 MHz stable sof aligned flag
+  // 40 MHz stable sot aligned flag
   // look for 3 low bits then 1 high bit
-  reg sof_aligned = 0;
+  reg sot_aligned = 0;
   always @(posedge clock) begin
-    sof_aligned <= !(|sof_sr) && sof_dly2;
+    sot_aligned <= !(|sot_sr) && sot_dly2;
   end
 
   // output
-  assign sof_delayed = sof_dly2;
+  assign sot_delayed = sot_dly2;
 
   // require aligned_count_to_ready cycles of alignment before outputting S-bits
 
   reg [11:0] stable_counts=0;
   always @(posedge clock) begin
-    if (sof_aligned)
+    if (sot_aligned)
       if (stable_counts == aligned_count_to_ready)
         stable_counts <= stable_counts;
       else
@@ -244,22 +244,22 @@ module frame_aligner (
 
   // can't check this every clock cycle because there is latency between changing it and the result propagating to the output
   // use a check strope every few bx and only do the check when strobe is high, giving time for the result to propagate
-  reg [1:0] check_sof = 0;
+  reg [1:0] check_sot = 0;
   always @(negedge clock) begin
 
-    check_sof <= check_sof + 1'b1;
+    check_sot <= check_sot + 1'b1;
 
-    if (check_sof==0 && !sof_aligned)
+    if (check_sot==0 && !sot_aligned)
       srl_adr_ctrl=srl_adr_ctrl+1'b1;
   end
 
-  reg sof_unstable_reg = 0;
-  assign sof_unstable = sof_unstable_reg;
+  reg sot_unstable_reg = 0;
+  assign sot_unstable = sot_unstable_reg;
   always @(posedge clock) begin
-    if (!sof_unstable && ready && !sof_aligned)
-      sof_unstable_reg <= 1'b1;
+    if (!sot_unstable && ready && !sot_aligned)
+      sot_unstable_reg <= 1'b1;
 
-    sof_is_aligned  <= ready;
+    sot_is_aligned  <= ready;
   end
 
 endmodule

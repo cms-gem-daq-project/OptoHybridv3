@@ -87,8 +87,8 @@ port(
 
     --== VFAT Trigger Data ==--
 
-    vfat_sof_p : in std_logic_vector (23 downto 0);
-    vfat_sof_n : in std_logic_vector (23 downto 0);
+    vfat_sot_p : in std_logic_vector (23 downto 0);
+    vfat_sot_n : in std_logic_vector (23 downto 0);
 
     vfat_sbits_p : in std_logic_vector (191 downto 0);
     vfat_sbits_n : in std_logic_vector (191 downto 0)
@@ -494,8 +494,8 @@ begin
         vfat_sbits_p    => vfat_sbits_p,
         vfat_sbits_n    => vfat_sbits_n,
 
-        vfat_sof_p    => vfat_sof_p,
-        vfat_sof_n    => vfat_sof_n
+        vfat_sot_p    => vfat_sot_p,
+        vfat_sot_n    => vfat_sot_n
 
     );
 

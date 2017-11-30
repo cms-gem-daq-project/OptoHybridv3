@@ -61,8 +61,8 @@ port(
     active_vfats_o          : out std_logic_vector (23 downto 0);
 
     -- sbits
-    vfat_sof_p     : in std_logic_vector (23 downto 0);
-    vfat_sof_n     : in std_logic_vector (23 downto 0);
+    vfat_sot_p     : in std_logic_vector (23 downto 0);
+    vfat_sot_n     : in std_logic_vector (23 downto 0);
 
     vfat_sbits_p : in std_logic_vector (191 downto 0);
     vfat_sbits_n : in std_logic_vector (191 downto 0);
@@ -94,7 +94,7 @@ architecture Behavioral of trigger is
     signal vfat_mask : std_logic_vector (23 downto 0);
     signal trig_deadtime : std_logic_vector (3 downto 0);
 
-    signal sof_frame_offset      : std_logic_vector (3 downto 0);
+    signal sot_frame_offset      : std_logic_vector (3 downto 0);
 
     signal err_count_to_shift : std_logic_vector (7 downto 0);
     signal stable_count_to_reset : std_logic_vector (7 downto 0);
@@ -104,8 +104,8 @@ architecture Behavioral of trigger is
     signal reset : std_logic;
 
     signal sot_phase_err       : std_logic_vector (23 downto 0);
-    signal sof_is_aligned      : std_logic_vector (23 downto 0);
-    signal sof_unstable        : std_logic_vector (23 downto 0);
+    signal sot_is_aligned      : std_logic_vector (23 downto 0);
+    signal sot_unstable        : std_logic_vector (23 downto 0);
     signal sbit_phase_err      : std_logic_vector (191 downto 0);
 
     signal sot_tap_delay       : t_std5_array (23 downto 0);
@@ -186,8 +186,8 @@ begin
     port map (
 
         -- sbits
-        vfat_sof_p   => vfat_sof_p,
-        vfat_sof_n   => vfat_sof_n,
+        vfat_sot_p   => vfat_sot_p,
+        vfat_sot_n   => vfat_sot_n,
 
         vfat_sbits_p => vfat_sbits_p,
         vfat_sbits_n => vfat_sbits_n,
@@ -208,7 +208,7 @@ begin
 
         sbits_mux_sel           => sbits_mux_sel,
 
-        sof_frame_offset => sof_frame_offset,
+        sot_frame_offset => sot_frame_offset,
 
         err_count_to_shift       => err_count_to_shift,
         stable_count_to_reset    => stable_count_to_reset,
@@ -232,8 +232,8 @@ begin
         trig_tap_delay          => trig_tap_delay,
 
         sot_phase_err_o         => sot_phase_err,
-        sof_is_aligned_o        => sof_is_aligned,
-        sof_unstable_o          => sof_unstable,
+        sot_is_aligned_o        => sot_is_aligned,
+        sot_unstable_o          => sot_unstable,
         sbit_phase_err_o        => sbit_phase_err
 
     );
@@ -376,11 +376,11 @@ begin
     regs_read_arr(0)(REG_FPGA_TRIG_CTRL_VFAT_MASK_MSB downto REG_FPGA_TRIG_CTRL_VFAT_MASK_LSB) <= vfat_mask;
     regs_read_arr(1)(REG_FPGA_TRIG_CTRL_SBIT_DEADTIME_MSB downto REG_FPGA_TRIG_CTRL_SBIT_DEADTIME_LSB) <= trig_deadtime;
     regs_read_arr(1)(REG_FPGA_TRIG_CTRL_SBIT_MUX_SEL_MSB downto REG_FPGA_TRIG_CTRL_SBIT_MUX_SEL_LSB) <= sbits_mux_sel;
-    regs_read_arr(1)(REG_FPGA_TRIG_CTRL_SOF_FRAME_OFFSET_MSB downto REG_FPGA_TRIG_CTRL_SOF_FRAME_OFFSET_LSB) <= sof_frame_offset;
+    regs_read_arr(1)(REG_FPGA_TRIG_CTRL_SOT_FRAME_OFFSET_MSB downto REG_FPGA_TRIG_CTRL_SOT_FRAME_OFFSET_LSB) <= sot_frame_offset;
     regs_read_arr(2)(REG_FPGA_TRIG_CTRL_ACTIVE_VFATS_MSB downto REG_FPGA_TRIG_CTRL_ACTIVE_VFATS_LSB) <= active_vfats;
     regs_read_arr(3)(REG_FPGA_TRIG_CTRL_CNT_OVERFLOW_MSB downto REG_FPGA_TRIG_CTRL_CNT_OVERFLOW_LSB) <= cnt_sbit_overflow;
-    regs_read_arr(4)(REG_FPGA_TRIG_CTRL_SBIT_SOT_READY_MSB downto REG_FPGA_TRIG_CTRL_SBIT_SOT_READY_LSB) <= sof_is_aligned;
-    regs_read_arr(5)(REG_FPGA_TRIG_CTRL_SBIT_SOF_UNSTABLE_MSB downto REG_FPGA_TRIG_CTRL_SBIT_SOF_UNSTABLE_LSB) <= sof_unstable;
+    regs_read_arr(4)(REG_FPGA_TRIG_CTRL_SBIT_SOT_READY_MSB downto REG_FPGA_TRIG_CTRL_SBIT_SOT_READY_LSB) <= sot_is_aligned;
+    regs_read_arr(5)(REG_FPGA_TRIG_CTRL_SBIT_SOT_UNSTABLE_MSB downto REG_FPGA_TRIG_CTRL_SBIT_SOT_UNSTABLE_LSB) <= sot_unstable;
     regs_read_arr(6)(REG_FPGA_TRIG_CTRL_ERR_CNT_TO_SHIFT_MSB downto REG_FPGA_TRIG_CTRL_ERR_CNT_TO_SHIFT_LSB) <= err_count_to_shift;
     regs_read_arr(6)(REG_FPGA_TRIG_CTRL_STABLE_CNT_TO_RESET_MSB downto REG_FPGA_TRIG_CTRL_STABLE_CNT_TO_RESET_LSB) <= stable_count_to_reset;
     regs_read_arr(6)(REG_FPGA_TRIG_CTRL_ALIGNED_COUNT_TO_READY_MSB downto REG_FPGA_TRIG_CTRL_ALIGNED_COUNT_TO_READY_LSB) <= aligned_count_to_ready;
@@ -629,7 +629,7 @@ begin
     vfat_mask <= regs_write_arr(0)(REG_FPGA_TRIG_CTRL_VFAT_MASK_MSB downto REG_FPGA_TRIG_CTRL_VFAT_MASK_LSB);
     trig_deadtime <= regs_write_arr(1)(REG_FPGA_TRIG_CTRL_SBIT_DEADTIME_MSB downto REG_FPGA_TRIG_CTRL_SBIT_DEADTIME_LSB);
     sbits_mux_sel <= regs_write_arr(1)(REG_FPGA_TRIG_CTRL_SBIT_MUX_SEL_MSB downto REG_FPGA_TRIG_CTRL_SBIT_MUX_SEL_LSB);
-    sof_frame_offset <= regs_write_arr(1)(REG_FPGA_TRIG_CTRL_SOF_FRAME_OFFSET_MSB downto REG_FPGA_TRIG_CTRL_SOF_FRAME_OFFSET_LSB);
+    sot_frame_offset <= regs_write_arr(1)(REG_FPGA_TRIG_CTRL_SOT_FRAME_OFFSET_MSB downto REG_FPGA_TRIG_CTRL_SOT_FRAME_OFFSET_LSB);
     err_count_to_shift <= regs_write_arr(6)(REG_FPGA_TRIG_CTRL_ERR_CNT_TO_SHIFT_MSB downto REG_FPGA_TRIG_CTRL_ERR_CNT_TO_SHIFT_LSB);
     stable_count_to_reset <= regs_write_arr(6)(REG_FPGA_TRIG_CTRL_STABLE_CNT_TO_RESET_MSB downto REG_FPGA_TRIG_CTRL_STABLE_CNT_TO_RESET_LSB);
     aligned_count_to_ready <= regs_write_arr(6)(REG_FPGA_TRIG_CTRL_ALIGNED_COUNT_TO_READY_MSB downto REG_FPGA_TRIG_CTRL_ALIGNED_COUNT_TO_READY_LSB);
@@ -1140,7 +1140,7 @@ begin
     regs_defaults(0)(REG_FPGA_TRIG_CTRL_VFAT_MASK_MSB downto REG_FPGA_TRIG_CTRL_VFAT_MASK_LSB) <= REG_FPGA_TRIG_CTRL_VFAT_MASK_DEFAULT;
     regs_defaults(1)(REG_FPGA_TRIG_CTRL_SBIT_DEADTIME_MSB downto REG_FPGA_TRIG_CTRL_SBIT_DEADTIME_LSB) <= REG_FPGA_TRIG_CTRL_SBIT_DEADTIME_DEFAULT;
     regs_defaults(1)(REG_FPGA_TRIG_CTRL_SBIT_MUX_SEL_MSB downto REG_FPGA_TRIG_CTRL_SBIT_MUX_SEL_LSB) <= REG_FPGA_TRIG_CTRL_SBIT_MUX_SEL_DEFAULT;
-    regs_defaults(1)(REG_FPGA_TRIG_CTRL_SOF_FRAME_OFFSET_MSB downto REG_FPGA_TRIG_CTRL_SOF_FRAME_OFFSET_LSB) <= REG_FPGA_TRIG_CTRL_SOF_FRAME_OFFSET_DEFAULT;
+    regs_defaults(1)(REG_FPGA_TRIG_CTRL_SOT_FRAME_OFFSET_MSB downto REG_FPGA_TRIG_CTRL_SOT_FRAME_OFFSET_LSB) <= REG_FPGA_TRIG_CTRL_SOT_FRAME_OFFSET_DEFAULT;
     regs_defaults(6)(REG_FPGA_TRIG_CTRL_ERR_CNT_TO_SHIFT_MSB downto REG_FPGA_TRIG_CTRL_ERR_CNT_TO_SHIFT_LSB) <= REG_FPGA_TRIG_CTRL_ERR_CNT_TO_SHIFT_DEFAULT;
     regs_defaults(6)(REG_FPGA_TRIG_CTRL_STABLE_CNT_TO_RESET_MSB downto REG_FPGA_TRIG_CTRL_STABLE_CNT_TO_RESET_LSB) <= REG_FPGA_TRIG_CTRL_STABLE_CNT_TO_RESET_DEFAULT;
     regs_defaults(6)(REG_FPGA_TRIG_CTRL_ALIGNED_COUNT_TO_READY_MSB downto REG_FPGA_TRIG_CTRL_ALIGNED_COUNT_TO_READY_LSB) <= REG_FPGA_TRIG_CTRL_ALIGNED_COUNT_TO_READY_DEFAULT;

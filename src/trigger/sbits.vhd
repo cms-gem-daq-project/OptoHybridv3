@@ -41,7 +41,7 @@ port(
     sbits_mux_sel           : in  std_logic_vector (4 downto 0);
 
 
-    sof_frame_offset : in std_logic_vector (3 downto 0);
+    sot_frame_offset : in std_logic_vector (3 downto 0);
 
     err_count_to_shift : in std_logic_vector (7 downto 0);
     stable_count_to_reset : in std_logic_vector (7 downto 0);
@@ -60,8 +60,8 @@ port(
 
     sot_phase_err_o         : out std_logic_vector (23 downto 0);
 
-    sof_is_aligned_o        : out std_logic_vector (23 downto 0);
-    sof_unstable_o          : out std_logic_vector (23 downto 0);
+    sot_is_aligned_o        : out std_logic_vector (23 downto 0);
+    sot_unstable_o          : out std_logic_vector (23 downto 0);
 
     sot_tap_delay           : in t_std5_array (23 downto 0);
     trig_tap_delay          : in t_std5_array (191 downto 0);
@@ -238,7 +238,7 @@ begin
         sbits_p => sbits_p,
         sbits_n => sbits_n,
 
-        sof_frame_offset => sof_frame_offset,
+        sot_frame_offset => sot_frame_offset,
 
         err_count_to_shift     => err_count_to_shift,
         stable_count_to_reset  => stable_count_to_reset,
@@ -257,8 +257,8 @@ begin
         phase_err     => sbit_phase_err_o,
         sot_phase_err => sot_phase_err_o,
 
-        sof_is_aligned => sof_is_aligned_o,
-        sof_unstable   => sof_unstable_o,
+        sot_is_aligned => sot_is_aligned_o,
+        sot_unstable   => sot_unstable_o,
 
         sot_tap_delay => sot_tap_delay,
         trig_tap_delay => trig_tap_delay,

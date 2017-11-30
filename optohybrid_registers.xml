@@ -371,9 +371,9 @@
                     mask="0x1f0"
                     fw_default="0x10"/>
 
-                <node id="SOF_FRAME_OFFSET" address="0x1" permission="rw"
+                <node id="SOT_FRAME_OFFSET" address="0x1" permission="rw"
                     description="Adjusts a FIFO address to align the 40MHz frame to the s-bit data"
-                    fw_signal="sof_frame_offset"
+                    fw_signal="sot_frame_offset"
                     mask="0xf000"
                     fw_default="0x04"/>
 
@@ -392,12 +392,12 @@
                 <node id="SBIT_SOT_READY" address="0x4" permission="r"
                     description="24 bit list of VFATs with stable Start-of-frame pulses (in sync for a number of clock cycles)"
                     mask="0xffffff"
-                    fw_signal="sof_is_aligned" />
+                    fw_signal="sot_is_aligned" />
 
-                <node id="SBIT_SOF_UNSTABLE" address="0x5" permission="r"
+                <node id="SBIT_SOT_UNSTABLE" address="0x5" permission="r"
                     description="24 bit list of VFATs with unstable Start-of-frame pulses (became misaligned after already achieving lock)"
                     mask="0xffffff"
-                    fw_signal="sof_unstable" />
+                    fw_signal="sot_unstable" />
 
                 <node id="ERR_CNT_TO_SHIFT" address="0x6" permission="rw"
                     description="Number of link errors required in the ISERDES to vote for shifting to a new sample phase"

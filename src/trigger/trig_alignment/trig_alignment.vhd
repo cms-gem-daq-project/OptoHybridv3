@@ -39,11 +39,11 @@ port(
     sot_tap_delay    : in t_std5_array (23 downto 0);
     trig_tap_delay   : in t_std5_array (191 downto 0);
 
-    sof_is_aligned   : out std_logic_vector (23 downto 0);
+    sot_is_aligned   : out std_logic_vector (23 downto 0);
     sot_phase_err    : out std_logic_vector (23 downto 0);
-    sof_unstable     : out std_logic_vector (23 downto 0);
+    sot_unstable     : out std_logic_vector (23 downto 0);
 
-    sof_frame_offset : in std_logic_vector (3 downto 0);
+    sot_frame_offset : in std_logic_vector (3 downto 0);
 
     err_count_to_shift : in std_logic_vector (7 downto 0);
     stable_count_to_reset : in std_logic_vector (7 downto 0);
@@ -73,7 +73,7 @@ architecture Behavioral of trig_alignment is
     signal d0 : std_logic_vector (191 downto 0); -- rising edge sample
     signal d1 : std_logic_vector (191 downto 0); -- falling edge sample
     signal start_of_frame : std_logic_vector (23 downto 0);
-    signal sof_on_negedge : std_logic_vector (23 downto 0);
+    signal sot_on_negedge : std_logic_vector (23 downto 0);
     signal start_of_frame_d0 : std_logic_vector (23 downto 0);
     signal start_of_frame_d1 : std_logic_vector (23 downto 0);
     signal vfat_phase_sel  : t_std2_array (23 downto 0);
@@ -124,7 +124,7 @@ begin
 
     sot_loop: for ifat in 0 to 23 generate begin
 
-        -- initial $display("Compiling SOF sampler %d with INVERT=%d, TAPS=%d",ifat,SOF_INVERT[ifat],SOF_OFFSET[ifat*5+:4]);
+        -- initial $display("Compiling SOT sampler %d with INVERT=%d, TAPS=%d",ifat,SOT_INVERT[ifat],SOT_OFFSET[ifat*5+:4]);
 
         -- sample the start of frame signals
         sot_oversampler : entity work.oversampler
@@ -163,14 +163,14 @@ begin
         process (fastclk_0) is begin
         if (rising_edge(fastclk_0)) then
             if (start_of_frame_d1(ifat)='1') then
-                sof_on_negedge(ifat) <= '1';
+                sot_on_negedge(ifat) <= '1';
             elsif (start_of_frame_d0(ifat)='1') then
-                sof_on_negedge(ifat) <= '0';
+                sot_on_negedge(ifat) <= '0';
             end if;
         end if;
         end process;
 
-        start_of_frame (ifat) <= start_of_frame_d1(ifat) when sof_on_negedge(ifat) = '1' else
+        start_of_frame (ifat) <= start_of_frame_d1(ifat) when sot_on_negedge(ifat) = '1' else
                                  start_of_frame_d0(ifat);
 
     end generate;
@@ -230,13 +230,13 @@ begin
             clock          => clock,
             fastclock      => fastclk_0,
 
-            sof_on_negedge => sof_on_negedge(ifat),
-            sof_frame_offset => sof_frame_offset,
+            sot_on_negedge => sot_on_negedge(ifat),
+            sot_frame_offset => sot_frame_offset,
             aligned_count_to_ready => aligned_count_to_ready,
 
-            sof_is_aligned => sof_is_aligned(ifat),
+            sot_is_aligned => sot_is_aligned(ifat),
 
-            sof_unstable   => sof_unstable(ifat),
+            sot_unstable   => sot_unstable(ifat),
             sbits => sbits((ifat+1)*MXSBITS - 1 downto ifat*MXSBITS)
         );
 

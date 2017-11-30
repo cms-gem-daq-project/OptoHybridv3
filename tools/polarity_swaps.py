@@ -1,4 +1,4 @@
-def sof_polarity_swap (sector):
+def sot_polarity_swap (sector):
 
     if   (sector==8):
         return True
