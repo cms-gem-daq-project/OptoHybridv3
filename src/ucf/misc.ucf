@@ -1,23 +1,24 @@
 # This file constraints miscellaneous signals
 ## HDMI
-#NET "tmds_d_p_io<0>"    LOC = M17; # M8_N # J3
-#NET "tmds_d_n_io<0>"    LOC = M18;        # J2
-#NET "tmds_d_p_io<1>"    LOC = L14; # M11_N # J11
-#NET "tmds_d_n_io<1>"    LOC = L15;         # J10
-#NET "tmds_d_p_io<2>"    LOC = J16; # M15_N # J9
-#NET "tmds_d_n_io<2>"    LOC = J17;         # J8
-#NET "tmds_clk_p_io"     LOC = H17; # M4_P # J5
-#NET "tmds_clk_n_io"     LOC = G17;        # J4
-## External signals for Test Beam
-#NET "ext_clk_i" CLOCK_DEDICATED_ROUTE = FALSE;
-#NET "ext_clk_i" LOC = M17;
-#NET "ext_trigger_i" LOC = M18; # M18 for ULB; L14 for others
-#NET "ext_sbits_o[0]" LOC = G17;
-#NET "ext_sbits_o[1]" LOC = H17;
-#NET "ext_sbits_o[2]" LOC = J17;
-#NET "ext_sbits_o[3]" LOC = J16;
-#NET "ext_sbits_o[4]" LOC = L15;
-#NET "ext_sbits_o[5]" LOC = L14; # L14 for ULB; M18 for others
+
+#NET "TMDS_CLK_p" = H17; # v_diff_m_4_p
+#NET "TMDS_CLK_n" = G17; # v_diff_m_4_n
+#NET "TMDS_D2_p"  = J16; # v_diff_m_15_n
+#NET "TMDS_D2_n"  = J17; # v_diff_m_15_p
+#NET "TMDS_D1_p"  = L14; # v_diff_m_11_n
+#NET "TMDS_D1_n"  = L15; # v_diff_m_11_p
+#NET "TMDS_D0_p"  = M17; # v_diff_m_8_n
+#NET "TMDS_D0_n"  = M18; # v_diff_m_8_p
+
+NET "ext_sbits_o[0]" LOC = H17; # tmds clk p
+NET "ext_sbits_o[1]" LOC = G17; # tmds clk n
+NET "ext_sbits_o[2]" LOC = J16; # tmds d2 p
+NET "ext_sbits_o[3]" LOC = J17; # tmds d2 n
+NET "ext_sbits_o[4]" LOC = L14; # tmds d1 p
+NET "ext_sbits_o[5]" LOC = L15; # tmds d1 n
+NET "ext_sbits_o[6]" LOC = M17; # tmds d0 p
+NET "ext_sbits_o[7]" LOC = M18; # tmds d0 n
+
 ## Header
 # INST "led_o" IOB=TRUE;
 

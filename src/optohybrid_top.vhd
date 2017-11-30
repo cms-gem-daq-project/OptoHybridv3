@@ -59,7 +59,7 @@ port(
 
     --== HDMI  ==--
 
-    ext_sbits_o : out  std_logic_vector (5 downto 0);
+    ext_sbits_o : out  std_logic_vector (7 downto 0);
 
     --== LEDs ==--
 
@@ -174,7 +174,7 @@ architecture Behavioral of optohybrid_top is
     attribute IOB : string;
     attribute KEEP : string;
 
-    signal ext_sbits : std_logic_vector (5 downto 0);
+    signal ext_sbits : std_logic_vector (7 downto 0);
     signal soft_reset : std_logic;
 
     -- don't remove duplicates for fanout, needed to pack into iob

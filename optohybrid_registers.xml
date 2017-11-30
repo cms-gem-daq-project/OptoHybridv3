@@ -132,20 +132,102 @@
             </node>
 
             <node id="HDMI" address="0xe" description = "HDMI Connector Control">
-                <node id="HDMI_OUTPUT" address="0xe" permission="r"
-                    description="Mirror of HDMI output bits"
-                    mask="0x3f"
-                    fw_signal="ext_sbits"/>
-                <node id="SBIT_SEL_MODE" address="0xe" permission="rw"
-                    description="HDMI S-bit Mode "
-                    mask="0xC0"
-                    fw_signal="sbit_mode"
-                    fw_default="0x0"/>
-                <node id="SBIT_SEL" address="0xf" permission="rw"
+                <node id="SBIT_SEL0" address="0xe" permission="rw"
                     description="HDMI Output S-bit select"
-                    mask="0x3fffffff"
-                    fw_signal="sbit_sel"
+                    mask="0x1f"
+                    fw_signal="sbit_sel0"
                     fw_default="0x0"/>
+
+                <node id="SBIT_SEL1" address="0xe" permission="rw"
+                    description="HDMI Output S-bit select"
+                    mask="0x3e0"
+                    fw_signal="sbit_sel1"
+                    fw_default="0x0"/>
+
+                <node id="SBIT_SEL2" address="0xe" permission="rw"
+                    description="HDMI Output S-bit select"
+                    mask="0x7c00"
+                    fw_signal="sbit_sel2"
+                    fw_default="0x0"/>
+
+                <node id="SBIT_SEL3" address="0xe" permission="rw"
+                    description="HDMI Output S-bit select"
+                    mask="0xf8000"
+                    fw_signal="sbit_sel3"
+                    fw_default="0x0"/>
+
+                <node id="SBIT_SEL4" address="0xe" permission="rw"
+                    description="HDMI Output S-bit select"
+                    mask="0x1f00000"
+                    fw_signal="sbit_sel4"
+                    fw_default="0x0"/>
+
+                <node id="SBIT_SEL5" address="0xe" permission="rw"
+                    description="HDMI Output S-bit select"
+                    mask="0x3e000000"
+                    fw_signal="sbit_sel5"
+                    fw_default="0x0"/>
+
+                <node id="SBIT_SEL6" address="0xf" permission="rw"
+                    description="HDMI Output S-bit select"
+                    mask="0x1f"
+                    fw_signal="sbit_sel6"
+                    fw_default="0x0"/>
+
+                <node id="SBIT_SEL7" address="0xf" permission="rw"
+                    description="HDMI Output S-bit select"
+                    mask="0x3e0"
+                    fw_signal="sbit_sel7"
+                    fw_default="0x0"/>
+
+                <node id="SBIT_MODE0" address="0xf" permission="rw"
+                    description="HDMI Output S-bit select"
+                    mask="0xc00"
+                    fw_signal="sbit_mode0"
+                    fw_default="0x0"/>
+
+                <node id="SBIT_MODE1" address="0xf" permission="rw"
+                    description="HDMI Output S-bit select"
+                    mask="0x3000"
+                    fw_signal="sbit_mode1"
+                    fw_default="0x0"/>
+
+                <node id="SBIT_MODE2" address="0xf" permission="rw"
+                    description="HDMI Output S-bit select"
+                    mask="0xc000"
+                    fw_signal="sbit_mode2"
+                    fw_default="0x0"/>
+
+                <node id="SBIT_MODE3" address="0xf" permission="rw"
+                    description="HDMI Output S-bit select"
+                    mask="0x30000"
+                    fw_signal="sbit_mode3"
+                    fw_default="0x0"/>
+
+                <node id="SBIT_MODE4" address="0xf" permission="rw"
+                    description="HDMI Output S-bit select"
+                    mask="0xc0000"
+                    fw_signal="sbit_mode4"
+                    fw_default="0x0"/>
+
+                <node id="SBIT_MODE5" address="0xf" permission="rw"
+                    description="HDMI Output S-bit select"
+                    mask="0x300000"
+                    fw_signal="sbit_mode5"
+                    fw_default="0x0"/>
+
+                <node id="SBIT_MODE6" address="0xf" permission="rw"
+                    description="HDMI Output S-bit select"
+                    mask="0xc00000"
+                    fw_signal="sbit_mode6"
+                    fw_default="0x0"/>
+
+                <node id="SBIT_MODE7" address="0xf" permission="rw"
+                    description="HDMI Output S-bit select"
+                    mask="0x3000000"
+                    fw_signal="sbit_mode7"
+                    fw_default="0x0"/>
+
             </node>
 
             <node id="CNT_SNAP" address="0x10" description = "Control the global counter snapshot">
