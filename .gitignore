@@ -47,3 +47,6 @@ src/ip_cores/*
 tags
 
 iseconfig
+*.pyc
+*.prm
+*.cfi

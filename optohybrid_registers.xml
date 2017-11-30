@@ -1797,11 +1797,11 @@
                     fw_signal="tx_sync_mode"/>
                 <node id="TEST_PAT0" address="0x5" permission="rw"
                     description="test pattern [31:0]"
-                    fw_default="0x76543210"
+                    fw_default="0x08040201"
                     fw_signal="test_pattern (31 downto 0)"/>
                 <node id="TEST_PAT1" address="0x6" permission="rw"
                     description="test pattern [63:32]"
-                    fw_default="0x00fedcba"
+                    fw_default="0x80402010"
                     fw_signal="test_pattern (63 downto 32)"/>
             </node>
 

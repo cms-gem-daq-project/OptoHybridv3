@@ -28,10 +28,10 @@ def write_invert_map_verilog  (file_handle):
 
     f = file_handle
 
-    f.write('  initial SOT_INVERT  = {\n')
+    f.write('initial SOT_INVERT  = {\n')
 
     for j in range (24,0,-1):
-        if (sof_polarity_swap(int(j))):
+        if (sot_polarity_swap(int(j))):
             swap = '1'
         else:
             swap = '0'
@@ -41,10 +41,10 @@ def write_invert_map_verilog  (file_handle):
         else:
             sep = ','
 
-        f.write('    1\'b%s %s // SOT_INVERT[%s]\n' % (swap, sep, j-1))
+        f.write('  1\'b%s %s // SOT_INVERT[%s]\n' % (swap, sep, j-1))
 
-    f.write('\n')
-    f.write('  initial TU_INVERT = {\n')
+    f.write('};\n')
+    f.write('initial TU_INVERT = {\n')
 
     for sector in range (24,0,-1):
         for pair   in range (8,0,-1):
@@ -59,7 +59,8 @@ def write_invert_map_verilog  (file_handle):
             else:
                 sep = '&'
 
-            f.write('    1\'b%s %s // TU_INVERT[%s] (VFAT=%s BIT=%s)\n' % (swap, sep, str(8*(sector-1)+pair-1), sector-1, pair-1 ))
+            f.write('  1\'b%s %s // TU_INVERT[%s] (VFAT=%s BIT=%s)\n' % (swap, sep, str(8*(sector-1)+pair-1), sector-1, pair-1 ))
+    f.write('};\n')
 
 def write_invert_map  (file_handle):
 
@@ -70,7 +71,16 @@ def write_invert_map  (file_handle):
     f.write('  constant  SOT_INVERT  : std_logic_vector (23 downto 0) :=\n')
 
     for j in range (24,0,-1):
-        if (sof_polarity_swap(int(j))):
+
+        vfat = 0
+
+        if (USE_INVERTED_NUMBERING):
+            vfat = (24-j)+1
+            print "j=" +str(j) + " vfat=" + str(vfat)
+        else:
+            vfat = j
+
+        if (sot_polarity_swap(vfat)):
             swap = '1'
         else:
             swap = '0'
@@ -88,7 +98,14 @@ def write_invert_map  (file_handle):
     for sector in range (24,0,-1): # counts 24 to 1
         for pair   in range (8,0,-1): # counts 8 to 1
 
-            if (sbit_polarity_swap(int(sector),int(pair-1))):
+            geb_slot = 0
+            if (USE_INVERTED_NUMBERING):
+                geb_slot = (24-sector)+1
+                print "j=" + str(sector) + " geb_slot=" + str(geb_slot)
+            else:
+                geb_slot = j
+
+            if (sbit_polarity_swap(geb_slot,pair-1)):
                 swap = '1'
             else:
                 swap = '0'

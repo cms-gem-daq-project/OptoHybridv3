@@ -60,3 +60,19 @@ NET "gbt_dclk_n<1>"      TNM_NET = "gbt_dclk_n";
 
 # NET "gtx_inst/mgt_refclk" TNM_NET = "mgt_refclk";
 # TIMESPEC "TS_mgt_refclk" = PERIOD "mgt_refclk" 6.25 ns HIGH 50%;
+# ELINKS
+
+INST "elink_o_p<0>" TNM = elink320_o;
+INST "elink_o_n<0>" TNM = elink320_o;
+INST "elink_o_p<1>" TNM = elink80_o;
+INST "elink_o_n<1>" TNM = elink80_o;
+
+INST "elink_i_n<0>" TNM = elink_i;
+INST "elink_i_n<1>" TNM = elink_i;
+INST "elink_i_p<0>" TNM = elink_i;
+INST "elink_i_p<1>" TNM = elink_i;
+
+TIMEGRP "elink_i" OFFSET = IN  2.46 ns VALID 3.125 ns BEFORE "gbt_dclk_p<1>" RISING; #take into account a ~0.6 ns round trip time from GBT to FPGA
+
+TIMEGRP "elink320_o" OFFSET = OUT 3.125  ns VALID 3.125 ns AFTER  "gbt_dclk_p<1>" RISING;
+TIMEGRP "elink80_o"  OFFSET = OUT 3.125  ns VALID 3.125 ns AFTER  "gbt_dclk_p<1>" RISING;

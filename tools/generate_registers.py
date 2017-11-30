@@ -550,7 +550,7 @@ def updateModuleFile(module):
             f.write('\n')
 
     f.close()
-    #shutil.copy (tempname, module.file)
+    shutil.copy (tempname, module.file)
 
     if not signalSectionFound or not signalSectionDone:
         print('--> ERROR <-- Could not find a signal section in the file.. Please include "' + VHDL_REG_SIGNAL_MARKER_START + '" and "' + VHDL_REG_SIGNAL_MARKER_END + '" comments denoting the area where the generated code will be inserted')

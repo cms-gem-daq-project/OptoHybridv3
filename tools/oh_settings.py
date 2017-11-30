@@ -1,5 +1,6 @@
 
-USE_INVERTED_NUMBERING = False
+# set true to use inverted software numbering
+USE_INVERTED_NUMBERING = True
 
 # This is numbered in GEB-1 numbering, i.e. i2c bus numbering - 1
 ROTATED_SLOTS = [

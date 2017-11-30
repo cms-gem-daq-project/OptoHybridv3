@@ -13,7 +13,7 @@ if { $folder != "tools" } {
     cd ../
 }
 
-set xml_filename   prj/optohybrid_registers.xml
+set xml_filename   optohybrid_registers.xml
 set bit_filename   prj/${top_name}.bit
 set mcs_filename   prj/${top_name}.mcs
 set cfi_filename   prj/${top_name}.cfi

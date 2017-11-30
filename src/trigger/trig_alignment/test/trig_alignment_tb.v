@@ -84,8 +84,6 @@ wire [1535+1536*DDR:0] sbits;
 
 wire [191:0] tu_p;
 
-`include "../tap_delays.v"
-
 genvar ipin;
 generate
 for (ipin=0; ipin<192; ipin=ipin+1) begin: pinloop

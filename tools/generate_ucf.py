@@ -100,7 +100,7 @@ def write_sbit_constraints (file_handle):
             sbit=-1
 
             if (USE_INVERTED_NUMBERING):
-                sbit= 8*( 23 - int(sector)-1) + int(pair) # enumerate 0--191 instead of (1--24)+(0--7)
+                sbit= 8*( 23 - (int(sector)-1)) + int(pair) # enumerate 0--191 instead of (1--24)+(0--7)
             else:
                 sbit = 8*(int(sector)-1) + int(pair) # enumerate 0--191 instead of (1--24)+(0--7)
 
@@ -126,7 +126,7 @@ def write_sbit_constraints (file_handle):
             sector = sector [:-6]
 
             comment = ""
-            if (sof_polarity_swap(int(sector))):
+            if (sot_polarity_swap(int(sector))):
                 comment = " # polarity swap"
                 if (pin=='N'):
                     pin='P'
@@ -140,7 +140,7 @@ def write_sbit_constraints (file_handle):
                 vfat = int(sector) - 1
 
             # netlist counts sectors from 1,
-            netname =  ( "vfat_sof_"+str(pin.lower())+"<"+str(vfat)+">").ljust(18, ' ')
+            netname =  ( "vfat_sot_"+str(pin.lower())+"<"+str(vfat)+">").ljust(18, ' ')
             f.write('NET %s LOC="%s";%s\n' % (netname, netlist.get(net), comment))
 
 def atoi(text):
