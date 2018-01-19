@@ -115,6 +115,15 @@ architecture Behavioral of trigger is
 
     -- control signals from gbt (verb, object)
     signal reset_counters       : std_logic;
+    signal sbit_cnt_persist     : std_logic;
+    signal sbit_cnt_time_max    : std_logic_vector (31 downto 0);
+
+    signal sbit_cnt_snap        : std_logic;
+    signal sbit_timer_snap      : std_logic;
+    signal sbit_timer_reset     : std_logic;
+
+    signal sbit_time_counter    : unsigned (31 downto 0);
+
     signal reset_links          : std_logic;
 
     -- reset signal (ORed with global reset)
@@ -133,30 +142,30 @@ architecture Behavioral of trigger is
     signal regs_writable_arr    : std_logic_vector(REG_FPGA_TRIG_NUM_REGS - 1 downto 0) := (others => '0');
     -- Connect counter signal declarations
     signal cnt_sbit_overflow : std_logic_vector (15 downto 0) := (others => '0');
-    signal cnt_vfat0 : std_logic_vector (15 downto 0) := (others => '0');
-    signal cnt_vfat1 : std_logic_vector (15 downto 0) := (others => '0');
-    signal cnt_vfat2 : std_logic_vector (15 downto 0) := (others => '0');
-    signal cnt_vfat3 : std_logic_vector (15 downto 0) := (others => '0');
-    signal cnt_vfat4 : std_logic_vector (15 downto 0) := (others => '0');
-    signal cnt_vfat5 : std_logic_vector (15 downto 0) := (others => '0');
-    signal cnt_vfat6 : std_logic_vector (15 downto 0) := (others => '0');
-    signal cnt_vfat7 : std_logic_vector (15 downto 0) := (others => '0');
-    signal cnt_vfat8 : std_logic_vector (15 downto 0) := (others => '0');
-    signal cnt_vfat9 : std_logic_vector (15 downto 0) := (others => '0');
-    signal cnt_vfat10 : std_logic_vector (15 downto 0) := (others => '0');
-    signal cnt_vfat11 : std_logic_vector (15 downto 0) := (others => '0');
-    signal cnt_vfat12 : std_logic_vector (15 downto 0) := (others => '0');
-    signal cnt_vfat13 : std_logic_vector (15 downto 0) := (others => '0');
-    signal cnt_vfat14 : std_logic_vector (15 downto 0) := (others => '0');
-    signal cnt_vfat15 : std_logic_vector (15 downto 0) := (others => '0');
-    signal cnt_vfat16 : std_logic_vector (15 downto 0) := (others => '0');
-    signal cnt_vfat17 : std_logic_vector (15 downto 0) := (others => '0');
-    signal cnt_vfat18 : std_logic_vector (15 downto 0) := (others => '0');
-    signal cnt_vfat19 : std_logic_vector (15 downto 0) := (others => '0');
-    signal cnt_vfat20 : std_logic_vector (15 downto 0) := (others => '0');
-    signal cnt_vfat21 : std_logic_vector (15 downto 0) := (others => '0');
-    signal cnt_vfat22 : std_logic_vector (15 downto 0) := (others => '0');
-    signal cnt_vfat23 : std_logic_vector (15 downto 0) := (others => '0');
+    signal cnt_vfat0 : std_logic_vector (31 downto 0) := (others => '0');
+    signal cnt_vfat1 : std_logic_vector (31 downto 0) := (others => '0');
+    signal cnt_vfat2 : std_logic_vector (31 downto 0) := (others => '0');
+    signal cnt_vfat3 : std_logic_vector (31 downto 0) := (others => '0');
+    signal cnt_vfat4 : std_logic_vector (31 downto 0) := (others => '0');
+    signal cnt_vfat5 : std_logic_vector (31 downto 0) := (others => '0');
+    signal cnt_vfat6 : std_logic_vector (31 downto 0) := (others => '0');
+    signal cnt_vfat7 : std_logic_vector (31 downto 0) := (others => '0');
+    signal cnt_vfat8 : std_logic_vector (31 downto 0) := (others => '0');
+    signal cnt_vfat9 : std_logic_vector (31 downto 0) := (others => '0');
+    signal cnt_vfat10 : std_logic_vector (31 downto 0) := (others => '0');
+    signal cnt_vfat11 : std_logic_vector (31 downto 0) := (others => '0');
+    signal cnt_vfat12 : std_logic_vector (31 downto 0) := (others => '0');
+    signal cnt_vfat13 : std_logic_vector (31 downto 0) := (others => '0');
+    signal cnt_vfat14 : std_logic_vector (31 downto 0) := (others => '0');
+    signal cnt_vfat15 : std_logic_vector (31 downto 0) := (others => '0');
+    signal cnt_vfat16 : std_logic_vector (31 downto 0) := (others => '0');
+    signal cnt_vfat17 : std_logic_vector (31 downto 0) := (others => '0');
+    signal cnt_vfat18 : std_logic_vector (31 downto 0) := (others => '0');
+    signal cnt_vfat19 : std_logic_vector (31 downto 0) := (others => '0');
+    signal cnt_vfat20 : std_logic_vector (31 downto 0) := (others => '0');
+    signal cnt_vfat21 : std_logic_vector (31 downto 0) := (others => '0');
+    signal cnt_vfat22 : std_logic_vector (31 downto 0) := (others => '0');
+    signal cnt_vfat23 : std_logic_vector (31 downto 0) := (others => '0');
     ------ Register signals end ----------------------------------------------
 
 begin
@@ -169,13 +178,19 @@ begin
 
     process (clk_40) begin
         if (rising_edge(clk_40)) then
-            cnt_reset <= reset or ttc_resync or reset_counters;
+            cnt_reset <= reset or ttc_resync or reset_counters or (sbit_timer_reset and not sbit_cnt_persist);
         end if;
     end process;
 
     process (clk_40) begin
         if (rising_edge(clk_40)) then
             link_reset <= reset or reset_links;
+        end if;
+    end process;
+
+    process (clk_40) begin
+        if (rising_edge(clk_40)) then
+            sbit_cnt_snap <= cnt_snap or (sbit_timer_snap and not sbit_cnt_persist);
         end if;
     end process;
 
@@ -194,6 +209,27 @@ begin
 
         trigger_units_o => trigger_units
     );
+
+    process (clk_40) begin
+        if (rising_edge(clk_40)) then
+
+            if (reset = '1') then
+                sbit_time_counter <= (others => '0');
+                sbit_timer_reset <= '1';
+                sbit_timer_snap  <= '1';
+            else
+                if (sbit_time_counter < unsigned(sbit_cnt_time_max)) then
+                    sbit_time_counter <= sbit_time_counter + 1;
+                    sbit_timer_reset <= '0';
+                    sbit_timer_snap  <= '0';
+                else
+                    sbit_time_counter <= (others => '0');
+                    sbit_timer_reset <= '1';
+                    sbit_timer_snap  <= '1';
+                end if;
+            end if;
+        end if;
+    end process;
 
     sbits_inst : entity work.sbits
     port map (
@@ -285,7 +321,7 @@ begin
            g_USE_INDIVIDUAL_ADDRS => true
        )
        port map(
-           ipb_reset_i            => reset_i,
+           ipb_reset_i            => reset,
            ipb_clk_i              => clk_40,
            ipb_mosi_i             => ipb_mosi_i,
            ipb_miso_o             => ipb_miso_o,
@@ -334,43 +370,44 @@ begin
     regs_addresses(29)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"1e";
     regs_addresses(30)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"1f";
     regs_addresses(31)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"20";
-    regs_addresses(32)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"24";
-    regs_addresses(33)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"30";
-    regs_addresses(34)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"31";
-    regs_addresses(35)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"32";
-    regs_addresses(36)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"33";
-    regs_addresses(37)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"34";
-    regs_addresses(38)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"35";
-    regs_addresses(39)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"36";
-    regs_addresses(40)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"37";
-    regs_addresses(41)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"38";
-    regs_addresses(42)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"39";
-    regs_addresses(43)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"3a";
-    regs_addresses(44)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"3b";
-    regs_addresses(45)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"3c";
-    regs_addresses(46)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"3d";
-    regs_addresses(47)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"3e";
-    regs_addresses(48)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"3f";
-    regs_addresses(49)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"40";
-    regs_addresses(50)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"41";
-    regs_addresses(51)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"42";
-    regs_addresses(52)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"43";
-    regs_addresses(53)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"44";
-    regs_addresses(54)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"45";
-    regs_addresses(55)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"46";
-    regs_addresses(56)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"47";
-    regs_addresses(57)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"48";
-    regs_addresses(58)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"49";
-    regs_addresses(59)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"4a";
-    regs_addresses(60)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"4b";
-    regs_addresses(61)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"4c";
-    regs_addresses(62)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"4d";
-    regs_addresses(63)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"4e";
-    regs_addresses(64)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"4f";
-    regs_addresses(65)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"50";
-    regs_addresses(66)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"51";
-    regs_addresses(67)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"52";
-    regs_addresses(68)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"53";
+    regs_addresses(32)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"21";
+    regs_addresses(33)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"39";
+    regs_addresses(34)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"3a";
+    regs_addresses(35)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"3b";
+    regs_addresses(36)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"3c";
+    regs_addresses(37)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"3d";
+    regs_addresses(38)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"3e";
+    regs_addresses(39)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"3f";
+    regs_addresses(40)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"40";
+    regs_addresses(41)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"41";
+    regs_addresses(42)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"42";
+    regs_addresses(43)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"43";
+    regs_addresses(44)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"44";
+    regs_addresses(45)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"45";
+    regs_addresses(46)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"46";
+    regs_addresses(47)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"47";
+    regs_addresses(48)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"48";
+    regs_addresses(49)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"49";
+    regs_addresses(50)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"4a";
+    regs_addresses(51)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"4b";
+    regs_addresses(52)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"4c";
+    regs_addresses(53)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"4d";
+    regs_addresses(54)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"4e";
+    regs_addresses(55)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"4f";
+    regs_addresses(56)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"50";
+    regs_addresses(57)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"51";
+    regs_addresses(58)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"52";
+    regs_addresses(59)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"53";
+    regs_addresses(60)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"54";
+    regs_addresses(61)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"55";
+    regs_addresses(62)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"56";
+    regs_addresses(63)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"57";
+    regs_addresses(64)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"58";
+    regs_addresses(65)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"59";
+    regs_addresses(66)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"5a";
+    regs_addresses(67)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"5b";
+    regs_addresses(68)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"5c";
+    regs_addresses(69)(REG_FPGA_TRIG_ADDRESS_MSB downto REG_FPGA_TRIG_ADDRESS_LSB) <= x"5d";
 
     -- Connect read signals
     regs_read_arr(0)(REG_FPGA_TRIG_CTRL_VFAT_MASK_MSB downto REG_FPGA_TRIG_CTRL_VFAT_MASK_LSB) <= vfat_mask;
@@ -408,6 +445,8 @@ begin
     regs_read_arr(28)(REG_FPGA_TRIG_CNT_VFAT21_SBITS_MSB downto REG_FPGA_TRIG_CNT_VFAT21_SBITS_LSB) <= cnt_vfat21;
     regs_read_arr(29)(REG_FPGA_TRIG_CNT_VFAT22_SBITS_MSB downto REG_FPGA_TRIG_CNT_VFAT22_SBITS_LSB) <= cnt_vfat22;
     regs_read_arr(30)(REG_FPGA_TRIG_CNT_VFAT23_SBITS_MSB downto REG_FPGA_TRIG_CNT_VFAT23_SBITS_LSB) <= cnt_vfat23;
+    regs_read_arr(31)(REG_FPGA_TRIG_CNT_SBIT_CNT_PERSIST_BIT) <= sbit_cnt_persist;
+    regs_read_arr(32)(REG_FPGA_TRIG_CNT_SBIT_CNT_TIME_MAX_MSB downto REG_FPGA_TRIG_CNT_SBIT_CNT_TIME_MAX_LSB) <= sbit_cnt_time_max;
     regs_read_arr(33)(REG_FPGA_TRIG_TIMING_TAP_DELAY_VFAT0_BIT0_MSB downto REG_FPGA_TRIG_TIMING_TAP_DELAY_VFAT0_BIT0_LSB) <= trig_tap_delay(0);
     regs_read_arr(33)(REG_FPGA_TRIG_TIMING_TAP_DELAY_VFAT0_BIT1_MSB downto REG_FPGA_TRIG_TIMING_TAP_DELAY_VFAT0_BIT1_LSB) <= trig_tap_delay(1);
     regs_read_arr(33)(REG_FPGA_TRIG_TIMING_TAP_DELAY_VFAT0_BIT2_MSB downto REG_FPGA_TRIG_TIMING_TAP_DELAY_VFAT0_BIT2_LSB) <= trig_tap_delay(2);
@@ -633,6 +672,8 @@ begin
     err_count_to_shift <= regs_write_arr(6)(REG_FPGA_TRIG_CTRL_ERR_CNT_TO_SHIFT_MSB downto REG_FPGA_TRIG_CTRL_ERR_CNT_TO_SHIFT_LSB);
     stable_count_to_reset <= regs_write_arr(6)(REG_FPGA_TRIG_CTRL_STABLE_CNT_TO_RESET_MSB downto REG_FPGA_TRIG_CTRL_STABLE_CNT_TO_RESET_LSB);
     aligned_count_to_ready <= regs_write_arr(6)(REG_FPGA_TRIG_CTRL_ALIGNED_COUNT_TO_READY_MSB downto REG_FPGA_TRIG_CTRL_ALIGNED_COUNT_TO_READY_LSB);
+    sbit_cnt_persist <= regs_write_arr(31)(REG_FPGA_TRIG_CNT_SBIT_CNT_PERSIST_BIT);
+    sbit_cnt_time_max <= regs_write_arr(32)(REG_FPGA_TRIG_CNT_SBIT_CNT_TIME_MAX_MSB downto REG_FPGA_TRIG_CNT_SBIT_CNT_TIME_MAX_LSB);
     trig_tap_delay(0) <= regs_write_arr(33)(REG_FPGA_TRIG_TIMING_TAP_DELAY_VFAT0_BIT0_MSB downto REG_FPGA_TRIG_TIMING_TAP_DELAY_VFAT0_BIT0_LSB);
     trig_tap_delay(1) <= regs_write_arr(33)(REG_FPGA_TRIG_TIMING_TAP_DELAY_VFAT0_BIT1_MSB downto REG_FPGA_TRIG_TIMING_TAP_DELAY_VFAT0_BIT1_LSB);
     trig_tap_delay(2) <= regs_write_arr(33)(REG_FPGA_TRIG_TIMING_TAP_DELAY_VFAT0_BIT2_MSB downto REG_FPGA_TRIG_TIMING_TAP_DELAY_VFAT0_BIT2_LSB);
@@ -852,7 +893,7 @@ begin
 
     -- Connect write pulse signals
     reset_counters <= regs_write_pulse_arr(31);
-    reset_links <= regs_write_pulse_arr(32);
+    reset_links <= regs_write_pulse_arr(69);
 
     -- Connect write done signals
 
@@ -865,17 +906,17 @@ begin
     port map (
         ref_clk_i => clk_40,
         snap_i    => cnt_snap,
-        reset_i   => reset_i,
+        reset_i   => cnt_reset,
         en_i      => sbit_overflow,
         data_o    => cnt_sbit_overflow
     );
 
 
     COUNTER_FPGA_TRIG_CNT_VFAT0_SBITS : entity work.counter
-    generic map (g_WIDTH => 16)
+    generic map (g_WIDTH => 32)
     port map (
         ref_clk_i => clk_40,
-        snap_i    => cnt_snap,
+        snap_i    => sbit_cnt_snap,
         reset_i   => cnt_reset,
         en_i      => active_vfats(0),
         data_o    => cnt_vfat0
@@ -883,10 +924,10 @@ begin
 
 
     COUNTER_FPGA_TRIG_CNT_VFAT1_SBITS : entity work.counter
-    generic map (g_WIDTH => 16)
+    generic map (g_WIDTH => 32)
     port map (
         ref_clk_i => clk_40,
-        snap_i    => cnt_snap,
+        snap_i    => sbit_cnt_snap,
         reset_i   => cnt_reset,
         en_i      => active_vfats(1),
         data_o    => cnt_vfat1
@@ -894,10 +935,10 @@ begin
 
 
     COUNTER_FPGA_TRIG_CNT_VFAT2_SBITS : entity work.counter
-    generic map (g_WIDTH => 16)
+    generic map (g_WIDTH => 32)
     port map (
         ref_clk_i => clk_40,
-        snap_i    => cnt_snap,
+        snap_i    => sbit_cnt_snap,
         reset_i   => cnt_reset,
         en_i      => active_vfats(2),
         data_o    => cnt_vfat2
@@ -905,10 +946,10 @@ begin
 
 
     COUNTER_FPGA_TRIG_CNT_VFAT3_SBITS : entity work.counter
-    generic map (g_WIDTH => 16)
+    generic map (g_WIDTH => 32)
     port map (
         ref_clk_i => clk_40,
-        snap_i    => cnt_snap,
+        snap_i    => sbit_cnt_snap,
         reset_i   => cnt_reset,
         en_i      => active_vfats(3),
         data_o    => cnt_vfat3
@@ -916,10 +957,10 @@ begin
 
 
     COUNTER_FPGA_TRIG_CNT_VFAT4_SBITS : entity work.counter
-    generic map (g_WIDTH => 16)
+    generic map (g_WIDTH => 32)
     port map (
         ref_clk_i => clk_40,
-        snap_i    => cnt_snap,
+        snap_i    => sbit_cnt_snap,
         reset_i   => cnt_reset,
         en_i      => active_vfats(4),
         data_o    => cnt_vfat4
@@ -927,10 +968,10 @@ begin
 
 
     COUNTER_FPGA_TRIG_CNT_VFAT5_SBITS : entity work.counter
-    generic map (g_WIDTH => 16)
+    generic map (g_WIDTH => 32)
     port map (
         ref_clk_i => clk_40,
-        snap_i    => cnt_snap,
+        snap_i    => sbit_cnt_snap,
         reset_i   => cnt_reset,
         en_i      => active_vfats(5),
         data_o    => cnt_vfat5
@@ -938,10 +979,10 @@ begin
 
 
     COUNTER_FPGA_TRIG_CNT_VFAT6_SBITS : entity work.counter
-    generic map (g_WIDTH => 16)
+    generic map (g_WIDTH => 32)
     port map (
         ref_clk_i => clk_40,
-        snap_i    => cnt_snap,
+        snap_i    => sbit_cnt_snap,
         reset_i   => cnt_reset,
         en_i      => active_vfats(6),
         data_o    => cnt_vfat6
@@ -949,10 +990,10 @@ begin
 
 
     COUNTER_FPGA_TRIG_CNT_VFAT7_SBITS : entity work.counter
-    generic map (g_WIDTH => 16)
+    generic map (g_WIDTH => 32)
     port map (
         ref_clk_i => clk_40,
-        snap_i    => cnt_snap,
+        snap_i    => sbit_cnt_snap,
         reset_i   => cnt_reset,
         en_i      => active_vfats(7),
         data_o    => cnt_vfat7
@@ -960,10 +1001,10 @@ begin
 
 
     COUNTER_FPGA_TRIG_CNT_VFAT8_SBITS : entity work.counter
-    generic map (g_WIDTH => 16)
+    generic map (g_WIDTH => 32)
     port map (
         ref_clk_i => clk_40,
-        snap_i    => cnt_snap,
+        snap_i    => sbit_cnt_snap,
         reset_i   => cnt_reset,
         en_i      => active_vfats(8),
         data_o    => cnt_vfat8
@@ -971,10 +1012,10 @@ begin
 
 
     COUNTER_FPGA_TRIG_CNT_VFAT9_SBITS : entity work.counter
-    generic map (g_WIDTH => 16)
+    generic map (g_WIDTH => 32)
     port map (
         ref_clk_i => clk_40,
-        snap_i    => cnt_snap,
+        snap_i    => sbit_cnt_snap,
         reset_i   => cnt_reset,
         en_i      => active_vfats(9),
         data_o    => cnt_vfat9
@@ -982,10 +1023,10 @@ begin
 
 
     COUNTER_FPGA_TRIG_CNT_VFAT10_SBITS : entity work.counter
-    generic map (g_WIDTH => 16)
+    generic map (g_WIDTH => 32)
     port map (
         ref_clk_i => clk_40,
-        snap_i    => cnt_snap,
+        snap_i    => sbit_cnt_snap,
         reset_i   => cnt_reset,
         en_i      => active_vfats(10),
         data_o    => cnt_vfat10
@@ -993,10 +1034,10 @@ begin
 
 
     COUNTER_FPGA_TRIG_CNT_VFAT11_SBITS : entity work.counter
-    generic map (g_WIDTH => 16)
+    generic map (g_WIDTH => 32)
     port map (
         ref_clk_i => clk_40,
-        snap_i    => cnt_snap,
+        snap_i    => sbit_cnt_snap,
         reset_i   => cnt_reset,
         en_i      => active_vfats(11),
         data_o    => cnt_vfat11
@@ -1004,10 +1045,10 @@ begin
 
 
     COUNTER_FPGA_TRIG_CNT_VFAT12_SBITS : entity work.counter
-    generic map (g_WIDTH => 16)
+    generic map (g_WIDTH => 32)
     port map (
         ref_clk_i => clk_40,
-        snap_i    => cnt_snap,
+        snap_i    => sbit_cnt_snap,
         reset_i   => cnt_reset,
         en_i      => active_vfats(12),
         data_o    => cnt_vfat12
@@ -1015,10 +1056,10 @@ begin
 
 
     COUNTER_FPGA_TRIG_CNT_VFAT13_SBITS : entity work.counter
-    generic map (g_WIDTH => 16)
+    generic map (g_WIDTH => 32)
     port map (
         ref_clk_i => clk_40,
-        snap_i    => cnt_snap,
+        snap_i    => sbit_cnt_snap,
         reset_i   => cnt_reset,
         en_i      => active_vfats(13),
         data_o    => cnt_vfat13
@@ -1026,10 +1067,10 @@ begin
 
 
     COUNTER_FPGA_TRIG_CNT_VFAT14_SBITS : entity work.counter
-    generic map (g_WIDTH => 16)
+    generic map (g_WIDTH => 32)
     port map (
         ref_clk_i => clk_40,
-        snap_i    => cnt_snap,
+        snap_i    => sbit_cnt_snap,
         reset_i   => cnt_reset,
         en_i      => active_vfats(14),
         data_o    => cnt_vfat14
@@ -1037,10 +1078,10 @@ begin
 
 
     COUNTER_FPGA_TRIG_CNT_VFAT15_SBITS : entity work.counter
-    generic map (g_WIDTH => 16)
+    generic map (g_WIDTH => 32)
     port map (
         ref_clk_i => clk_40,
-        snap_i    => cnt_snap,
+        snap_i    => sbit_cnt_snap,
         reset_i   => cnt_reset,
         en_i      => active_vfats(15),
         data_o    => cnt_vfat15
@@ -1048,10 +1089,10 @@ begin
 
 
     COUNTER_FPGA_TRIG_CNT_VFAT16_SBITS : entity work.counter
-    generic map (g_WIDTH => 16)
+    generic map (g_WIDTH => 32)
     port map (
         ref_clk_i => clk_40,
-        snap_i    => cnt_snap,
+        snap_i    => sbit_cnt_snap,
         reset_i   => cnt_reset,
         en_i      => active_vfats(16),
         data_o    => cnt_vfat16
@@ -1059,10 +1100,10 @@ begin
 
 
     COUNTER_FPGA_TRIG_CNT_VFAT17_SBITS : entity work.counter
-    generic map (g_WIDTH => 16)
+    generic map (g_WIDTH => 32)
     port map (
         ref_clk_i => clk_40,
-        snap_i    => cnt_snap,
+        snap_i    => sbit_cnt_snap,
         reset_i   => cnt_reset,
         en_i      => active_vfats(17),
         data_o    => cnt_vfat17
@@ -1070,10 +1111,10 @@ begin
 
 
     COUNTER_FPGA_TRIG_CNT_VFAT18_SBITS : entity work.counter
-    generic map (g_WIDTH => 16)
+    generic map (g_WIDTH => 32)
     port map (
         ref_clk_i => clk_40,
-        snap_i    => cnt_snap,
+        snap_i    => sbit_cnt_snap,
         reset_i   => cnt_reset,
         en_i      => active_vfats(18),
         data_o    => cnt_vfat18
@@ -1081,10 +1122,10 @@ begin
 
 
     COUNTER_FPGA_TRIG_CNT_VFAT19_SBITS : entity work.counter
-    generic map (g_WIDTH => 16)
+    generic map (g_WIDTH => 32)
     port map (
         ref_clk_i => clk_40,
-        snap_i    => cnt_snap,
+        snap_i    => sbit_cnt_snap,
         reset_i   => cnt_reset,
         en_i      => active_vfats(19),
         data_o    => cnt_vfat19
@@ -1092,10 +1133,10 @@ begin
 
 
     COUNTER_FPGA_TRIG_CNT_VFAT20_SBITS : entity work.counter
-    generic map (g_WIDTH => 16)
+    generic map (g_WIDTH => 32)
     port map (
         ref_clk_i => clk_40,
-        snap_i    => cnt_snap,
+        snap_i    => sbit_cnt_snap,
         reset_i   => cnt_reset,
         en_i      => active_vfats(20),
         data_o    => cnt_vfat20
@@ -1103,10 +1144,10 @@ begin
 
 
     COUNTER_FPGA_TRIG_CNT_VFAT21_SBITS : entity work.counter
-    generic map (g_WIDTH => 16)
+    generic map (g_WIDTH => 32)
     port map (
         ref_clk_i => clk_40,
-        snap_i    => cnt_snap,
+        snap_i    => sbit_cnt_snap,
         reset_i   => cnt_reset,
         en_i      => active_vfats(21),
         data_o    => cnt_vfat21
@@ -1114,10 +1155,10 @@ begin
 
 
     COUNTER_FPGA_TRIG_CNT_VFAT22_SBITS : entity work.counter
-    generic map (g_WIDTH => 16)
+    generic map (g_WIDTH => 32)
     port map (
         ref_clk_i => clk_40,
-        snap_i    => cnt_snap,
+        snap_i    => sbit_cnt_snap,
         reset_i   => cnt_reset,
         en_i      => active_vfats(22),
         data_o    => cnt_vfat22
@@ -1125,14 +1166,17 @@ begin
 
 
     COUNTER_FPGA_TRIG_CNT_VFAT23_SBITS : entity work.counter
-    generic map (g_WIDTH => 16)
+    generic map (g_WIDTH => 32)
     port map (
         ref_clk_i => clk_40,
-        snap_i    => cnt_snap,
+        snap_i    => sbit_cnt_snap,
         reset_i   => cnt_reset,
         en_i      => active_vfats(23),
         data_o    => cnt_vfat23
     );
+
+
+    -- Connect rate instances
 
     -- Connect read ready signals
 
@@ -1144,6 +1188,8 @@ begin
     regs_defaults(6)(REG_FPGA_TRIG_CTRL_ERR_CNT_TO_SHIFT_MSB downto REG_FPGA_TRIG_CTRL_ERR_CNT_TO_SHIFT_LSB) <= REG_FPGA_TRIG_CTRL_ERR_CNT_TO_SHIFT_DEFAULT;
     regs_defaults(6)(REG_FPGA_TRIG_CTRL_STABLE_CNT_TO_RESET_MSB downto REG_FPGA_TRIG_CTRL_STABLE_CNT_TO_RESET_LSB) <= REG_FPGA_TRIG_CTRL_STABLE_CNT_TO_RESET_DEFAULT;
     regs_defaults(6)(REG_FPGA_TRIG_CTRL_ALIGNED_COUNT_TO_READY_MSB downto REG_FPGA_TRIG_CTRL_ALIGNED_COUNT_TO_READY_LSB) <= REG_FPGA_TRIG_CTRL_ALIGNED_COUNT_TO_READY_DEFAULT;
+    regs_defaults(31)(REG_FPGA_TRIG_CNT_SBIT_CNT_PERSIST_BIT) <= REG_FPGA_TRIG_CNT_SBIT_CNT_PERSIST_DEFAULT;
+    regs_defaults(32)(REG_FPGA_TRIG_CNT_SBIT_CNT_TIME_MAX_MSB downto REG_FPGA_TRIG_CNT_SBIT_CNT_TIME_MAX_LSB) <= REG_FPGA_TRIG_CNT_SBIT_CNT_TIME_MAX_DEFAULT;
     regs_defaults(33)(REG_FPGA_TRIG_TIMING_TAP_DELAY_VFAT0_BIT0_MSB downto REG_FPGA_TRIG_TIMING_TAP_DELAY_VFAT0_BIT0_LSB) <= REG_FPGA_TRIG_TIMING_TAP_DELAY_VFAT0_BIT0_DEFAULT;
     regs_defaults(33)(REG_FPGA_TRIG_TIMING_TAP_DELAY_VFAT0_BIT1_MSB downto REG_FPGA_TRIG_TIMING_TAP_DELAY_VFAT0_BIT1_LSB) <= REG_FPGA_TRIG_TIMING_TAP_DELAY_VFAT0_BIT1_DEFAULT;
     regs_defaults(33)(REG_FPGA_TRIG_TIMING_TAP_DELAY_VFAT0_BIT2_MSB downto REG_FPGA_TRIG_TIMING_TAP_DELAY_VFAT0_BIT2_LSB) <= REG_FPGA_TRIG_TIMING_TAP_DELAY_VFAT0_BIT2_DEFAULT;
@@ -1365,6 +1411,8 @@ begin
     regs_writable_arr(0) <= '1';
     regs_writable_arr(1) <= '1';
     regs_writable_arr(6) <= '1';
+    regs_writable_arr(31) <= '1';
+    regs_writable_arr(32) <= '1';
     regs_writable_arr(33) <= '1';
     regs_writable_arr(34) <= '1';
     regs_writable_arr(35) <= '1';

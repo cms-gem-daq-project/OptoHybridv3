@@ -212,6 +212,9 @@ begin
         data_o    => cnt_dskw_mmcm_unlocked
     );
 
+
+    -- Connect rate instances
+
     -- Connect read ready signals
 
     -- Defaults

@@ -83,8 +83,22 @@ class Register:
     read_pulse_signal = None
     read_ready_signal = None
 
-    fw_cnt_snap_signal   = '\'1\''
-    fw_cnt_en_signal     = None
+    # count signals
+    fw_cnt_snap_signal  = '\'1\''
+    fw_cnt_reset_signal = None
+    fw_cnt_en_signal    = None
+
+    fw_rate_log = 0                  # 1=logarithmic progress bar steps
+    fw_rate_clk_frequency = 40079000 # clock frequency in Hz
+    fw_rate_inc_width = 1            # number of steps to increment at once (i.e. multiple cnts per bx)
+    fw_rate_progress_bar_width = 1   # number of LED indicators in the progress bar
+    fw_rate_progress_bar_step = 1    # Hertz per LED
+    fw_rate_speedup = 0              # changes the "refresh" rate of the indicator by sampling at a higher rate
+                                     # each step is a power-of-two speedup 0=1hz, 1=2hz, 2=4hz, 3=8hz, etc
+
+    fw_rate_reset_signal        = None   # Reset input
+    fw_rate_increment           = None   # Increment input
+    fw_rate_progress_bar_signal = 'open' # Progress bar output
 
     default = 0x0
     msb = -1
@@ -255,6 +269,11 @@ def findRegisters(node, baseName, baseAddress, modules, currentModule, vars, isG
             if node.get('fw_read_ready_signal') is not None:
                 reg.read_ready_signal = substituteVars(node.get('fw_read_ready_signal'), vars)
 
+
+            ################################################################################
+            # Counters
+            ################################################################################
+
             if node.get('fw_cnt_en_signal') is not None:
                 reg.fw_cnt_en_signal = substituteVars (node.get('fw_cnt_en_signal'),vars)
             if node.get('fw_cnt_reset_signal') is not None:
@@ -263,6 +282,36 @@ def findRegisters(node, baseName, baseAddress, modules, currentModule, vars, isG
                 reg.fw_cnt_reset_signal = module.busReset
             if node.get('fw_cnt_snap_signal') is not None:
                 reg.fw_cnt_snap_signal = substituteVars (node.get('fw_cnt_snap_signal'),vars)
+
+            ################################################################################
+            # Rate Counter
+            ################################################################################
+
+            if node.get('fw_rate_reset_signal') is not None:
+                reg.fw_rate_reset_signal = substituteVars (node.get('fw_rate_reset_signal'),vars)
+            else:
+                reg.fw_rate_reset_signal = module.busReset
+
+            if node.get('fw_rate_log') is not None:
+                reg.fw_rate_log = substituteVars (node.get('fw_rate_log'),vars)
+            if node.get('fw_rate_increment') is not None:
+                reg.fw_rate_increment = substituteVars (node.get('fw_rate_increment'),vars)
+            if node.get('fw_rate_clk_frequency') is not None:
+                reg.fw_rate_clk_frequency = substituteVars (node.get('fw_rate_clk_frequency'),vars)
+            if node.get('fw_rate_inc_width') is not None:
+                reg.fw_rate_inc_width = substituteVars (node.get('fw_rate_inc_width'),vars)
+            if node.get('fw_rate_progress_bar_width') is not None:
+                reg.fw_rate_progress_bar_width = substituteVars (node.get('fw_rate_progress_bar_width'),vars)
+            if node.get('fw_rate_progress_bar_step') is not None:
+                reg.fw_rate_progress_bar_step = substituteVars (node.get('fw_rate_progress_bar_step'),vars)
+            if node.get('fw_rate_speedup') is not None:
+                reg.fw_rate_speedup = substituteVars (node.get('fw_rate_speedup'),vars)
+            if node.get('fw_rate_progress_bar_signal') is not None:
+                reg.fw_rate_progress_bar_signal = substituteVars (node.get('fw_rate_progress_bar_signal'),vars)
+
+            ################################################################################
+            # Error
+            ################################################################################
 
             if module is None:
                 error = 'Module is not set, cannot add register ' + reg.name
@@ -387,10 +436,21 @@ def updateModuleFile(module):
             signalDeclaration = signalDeclaration.replace('<num_regs>', VHDL_REG_CONSTANT_PREFIX + module.getVhdlName() + '_NUM_REGS')
             f.write(signalDeclaration)
 
-           # connect counter signal declarations
-            f.write('    -- Connect counter signal declarations\n')
+            # connect counter en signal declarations
+            header_written = False;
             for reg in module.regs:
                 if reg.fw_cnt_en_signal is not None and reg.signal is not None:
+                    if (not header_written):
+                        f.write('    -- Connect counter signal declarations\n')
+                        header_written = True;
+                    f.write ('    signal %s : std_logic_vector (%s downto 0) := (others => \'0\');\n' % (reg.signal,  reg.msb-reg.lsb))
+
+            header_written = False;
+            for reg in module.regs:
+                if reg.fw_rate_increment is not None and reg.signal is not None:
+                    if (not header_written):
+                        f.write('    -- Connect rate signal declarations\n')
+                        header_written = True;
                     f.write ('    signal %s : std_logic_vector (%s downto 0) := (others => \'0\');\n' % (reg.signal,  reg.msb-reg.lsb))
 
         # slave section
@@ -453,6 +513,7 @@ def updateModuleFile(module):
                 isSingleBit = reg.msb == reg.lsb
                 if 'w' in reg.permission and reg.signal is not None:
                     f.write('    %s <= regs_write_arr(%d)(%s);\n' % (reg.signal, uniqueAddresses.index(reg.address), VHDL_REG_CONSTANT_PREFIX + reg.getVhdlName() + '_BIT' if isSingleBit else VHDL_REG_CONSTANT_PREFIX + reg.getVhdlName() + '_MSB' + ' downto ' + VHDL_REG_CONSTANT_PREFIX + reg.getVhdlName() + '_LSB'))
+
             f.write('\n')
 
             # connect write pulse signals
@@ -468,6 +529,7 @@ def updateModuleFile(module):
                         f.write(" !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! \n")
                     writePulseAddresses.append(uniqueAddresses.index(reg.address))
                     f.write('    %s <= regs_write_pulse_arr(%d);\n' % (reg.write_pulse_signal, uniqueAddresses.index(reg.address)))
+
             f.write('\n')
 
             # connect write done signals
@@ -483,6 +545,7 @@ def updateModuleFile(module):
                         f.write(" !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! \n")
                     writeDoneAddresses.append(uniqueAddresses.index(reg.address))
                     f.write('    regs_write_done_arr(%d) <= %s;\n' % (uniqueAddresses.index(reg.address), reg.write_done_signal))
+
             f.write('\n')
 
             # connect read pulse signals
@@ -498,6 +561,7 @@ def updateModuleFile(module):
                         f.write(" !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! \n")
                     readPulseAddresses.append(uniqueAddresses.index(reg.address))
                     f.write('    %s <= regs_read_pulse_arr(%d);\n' % (reg.read_pulse_signal, uniqueAddresses.index(reg.address)))
+
             f.write('\n')
 
            # connect counter signals
@@ -516,6 +580,34 @@ def updateModuleFile(module):
                     f.write ('    );\n')
                     f.write ('\n')
 
+            f.write('\n')
+
+           # connect rate signals
+            f.write('    -- Connect rate instances\n')
+            for reg in module.regs:
+                if reg.fw_rate_increment is not None:
+                    f.write ("\n")
+                    f.write ('    RATE_CNT_%s : entity work.rate_counter\n' % (reg.getVhdlName()))
+                    f.write ('    generic map (\n')
+                    f.write ('        g_COUNTER_WIDTH      => %s,\n' % (reg.msb - reg.lsb + 1))
+                    f.write ('        g_LOGARITHMIC        => %s,\n' % (reg.fw_rate_log))
+                    f.write ('        g_CLK_FREQUENCY      => %s,\n' % (reg.fw_rate_clk_frequency))
+                    f.write ('        g_INCREMENTER_WIDTH  => %s,\n' % (reg.fw_rate_inc_width))
+                    f.write ('        g_PROGRESS_BAR_WIDTH => %s,\n' % (reg.fw_rate_progress_bar_width))
+                    f.write ('        g_PROGRESS_BAR_STEP  => %s,\n' % (reg.fw_rate_progress_bar_step))
+                    f.write ('        g_SPEEDUP_FACTOR     => %s\n'  % (reg.fw_rate_speedup))
+                    f.write ('    )\n')
+                    f.write ('    port map (\n')
+                    f.write ('        clk_i                => %s,\n' % (module.userClock))
+                    f.write ('        reset_i              => %s,\n' % (reg.fw_rate_reset_signal))
+                    f.write ('        increment_i          => %s,\n' % (reg.fw_rate_increment))
+                    f.write ('        rate_o               => %s,\n' % (reg.signal))
+                    f.write ('        progress_bar_o       => %s\n'  % (reg.fw_rate_progress_bar_signal))
+                    f.write ('    );\n')
+                    f.write ('\n')
+
+            f.write('\n')
+
             # connect read ready signals
             readReadyAddresses = []
             duplicateReadReadyError = False
@@ -529,6 +621,7 @@ def updateModuleFile(module):
                         f.write(" !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! \n")
                     readReadyAddresses.append(uniqueAddresses.index(reg.address))
                     f.write('    regs_read_ready_arr(%d) <= %s;\n' % (uniqueAddresses.index(reg.address), reg.read_ready_signal))
+
             f.write('\n')
 
             # Defaults
@@ -540,6 +633,7 @@ def updateModuleFile(module):
                     if not uniqueAddresses.index(reg.address) in writableRegAddresses:
                         writableRegAddresses.append(uniqueAddresses.index(reg.address))
                     f.write('    regs_defaults(%d)(%s) <= %s;\n' % (uniqueAddresses.index(reg.address), VHDL_REG_CONSTANT_PREFIX + reg.getVhdlName() + '_BIT' if isSingleBit else VHDL_REG_CONSTANT_PREFIX + reg.getVhdlName() + '_MSB' + ' downto ' + VHDL_REG_CONSTANT_PREFIX + reg.getVhdlName() + '_LSB', VHDL_REG_CONSTANT_PREFIX + reg.getVhdlName() + '_DEFAULT'))
+
             f.write('\n')
 
             # Writable regs
@@ -547,6 +641,7 @@ def updateModuleFile(module):
             f.write('    -- Define writable regs\n')
             for regAddr in writableRegAddresses:
                     f.write("    regs_writable_arr(%d) <= '1';\n" % (regAddr))
+
             f.write('\n')
 
     f.close()

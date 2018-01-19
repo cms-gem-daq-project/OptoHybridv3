@@ -273,6 +273,9 @@ begin
         data_o    => cnt_ipb_request
     );
 
+
+    -- Connect rate instances
+
     -- Connect read ready signals
 
     -- Defaults

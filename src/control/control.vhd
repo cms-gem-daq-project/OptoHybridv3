@@ -553,6 +553,9 @@ begin
         data_o    => cnt_bx0_sync_err
     );
 
+
+    -- Connect rate instances
+
     -- Connect read ready signals
 
     -- Defaults

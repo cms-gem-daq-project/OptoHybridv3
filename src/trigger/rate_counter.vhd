@@ -39,7 +39,7 @@ end rate_counter;
 architecture rate_counter_arch of rate_counter is
 
     constant max_count  : unsigned(g_COUNTER_WIDTH - 1 downto 0) := (others => '1');
-    signal count        : unsigned(g_COUNTER_WIDTH - 1 downto 0) := (others => '1');
+    signal count        : unsigned(31 downto 0) := (others => '0');
     signal increment    : unsigned(g_INCREMENTER_WIDTH - 1 downto 0) := (others => '0');
     signal timer        : unsigned(31 downto 0) := x"ffffffff";
     signal time_max     : unsigned(31 downto 0) ;
@@ -49,7 +49,7 @@ architecture rate_counter_arch of rate_counter is
     constant speedup_factor    : unsigned (31 downto 0) := to_unsigned(g_SPEEDUP_FACTOR,32);
     constant progress_bar_step : unsigned (31 downto 0) := to_unsigned(g_PROGRESS_BAR_STEP,32);
 
-    signal rate              : unsigned (31 downto 0) := (others => '0');
+    signal rate                : unsigned (g_COUNTER_WIDTH-1 downto 0) := (others => '0');
 
 begin
 
@@ -78,7 +78,7 @@ begin
                     count <= (others => '0');
 
                     -- rate output
-                    rate <= shift_left(count, g_SPEEDUP_FACTOR);
+                    rate <= shift_left( count, g_SPEEDUP_FACTOR) (g_COUNTER_WIDTH-1 downto 0);
 
                 end if;
             end if;
