@@ -105,7 +105,7 @@
                     fw_signal="ttc_bxn_offset"
                     fw_default="0x0"/>
                 <node id="L1A_CNT" address="0xa" permission="r"
-                    mask="0xffff"
+                    mask="0xffffff"
                     description="L1A Counter"
                     fw_cnt_en_signal="ttc_l1a"
                     fw_cnt_snap_signal="cnt_snap"

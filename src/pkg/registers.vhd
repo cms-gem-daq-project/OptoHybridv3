@@ -73,7 +73,7 @@ package registers is
     constant REG_FPGA_CONTROL_TTC_BXN_OFFSET_DEFAULT : std_logic_vector(27 downto 16) := x"000";
 
     constant REG_FPGA_CONTROL_TTC_L1A_CNT_ADDR    : std_logic_vector(5 downto 0) := "01" & x"1";
-    constant REG_FPGA_CONTROL_TTC_L1A_CNT_MSB    : integer := 15;
+    constant REG_FPGA_CONTROL_TTC_L1A_CNT_MSB    : integer := 23;
     constant REG_FPGA_CONTROL_TTC_L1A_CNT_LSB     : integer := 0;
 
     constant REG_FPGA_CONTROL_SOFT_RESET_ADDR    : std_logic_vector(5 downto 0) := "01" & x"2";

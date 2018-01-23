@@ -166,12 +166,12 @@ architecture Behavioral of control is
     signal cnt_sem_correction : std_logic_vector (15 downto 0) := (others => '0');
     signal cnt_bx0_lcl : std_logic_vector (23 downto 0) := (others => '0');
     signal cnt_bx0_rxd : std_logic_vector (23 downto 0) := (others => '0');
-    signal cnt_l1a : std_logic_vector (15 downto 0) := (others => '0');
+    signal cnt_l1a : std_logic_vector (23 downto 0) := (others => '0');
     signal cnt_bxn_sync_err : std_logic_vector (15 downto 0) := (others => '0');
     signal cnt_bx0_sync_err : std_logic_vector (15 downto 0) := (others => '0');
     ------ Register signals end ----------------------------------------------
 
-begin
+    begin
 
     process (clock_i) begin
         if (rising_edge(clock_i)) then
@@ -522,7 +522,7 @@ begin
 
 
     COUNTER_FPGA_CONTROL_TTC_L1A_CNT : entity work.counter
-    generic map (g_WIDTH => 16)
+    generic map (g_WIDTH => 24)
     port map (
         ref_clk_i => clock_i,
         snap_i    => cnt_snap,
