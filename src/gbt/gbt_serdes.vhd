@@ -24,7 +24,8 @@ library work;
 
 entity gbt_serdes is
 generic(
-    DEBUG : boolean := FALSE
+    DEBUG                  : boolean := FALSE;
+    error_cnt_strobe_max : natural := 255
 );
 port(
 
@@ -42,6 +43,7 @@ port(
 
     test_pattern     : in std_logic_vector (63 downto 0);
     tx_sync_mode     : in std_logic;
+    tx_delay_i       : in std_logic_vector (4 downto 0);
 
     gbt_tx_bitslip0 : in std_logic_vector(2 downto 0) ;
     gbt_tx_bitslip1 : in std_logic_vector(2 downto 0) ;
@@ -52,6 +54,11 @@ port(
 
     elink_i_p        : in  std_logic_vector(1 downto 0);
     elink_i_n        : in  std_logic_vector(1 downto 0);
+
+    gbt_link_error_i : in std_logic; -- error on gbt rx
+
+    delay_refclk       : in std_logic;
+    delay_refclk_reset : in std_logic;
 
     -- parallel data to/from FPGA logic
     data_i           : in  std_logic_vector (15 downto 0);
@@ -81,11 +88,17 @@ architecture Behavioral of gbt_serdes is
     signal oserdes_reset     : std_logic_vector (1 downto 0) := "11";
     signal oserdes_reset_s0  : std_logic_vector (1 downto 0) := "11";
 
+    signal error_cnt_strobe  : unsigned (7 downto 0);
+    signal gbt_link_error_last  : std_logic;
+    signal increment_rx_delay  : std_logic;
+
     signal iserdes_reset_srl : std_logic;
     signal oserdes_reset_srl : std_logic;
 
     signal iserdes_clk : std_logic;
     signal iserdes_clkdiv : std_logic;
+
+    signal idly_rdy : std_logic;
 
     signal pulse_length : std_logic_vector (3 downto 0) := x"f";
 
@@ -118,6 +131,44 @@ begin
     end if;
     end process;
 
+
+    -- every N bunch crossings, check if the GBT link is in an error state (i.e. receiving invalid headers)
+    -- if there are two bad checks in a row, increment the phase of the RX clock
+    -- keep incrementing until the data is valid
+
+    process (iserdes_clkdiv) begin
+        if (rising_edge(iserdes_clkdiv)) then
+
+            if (reset='1') then
+                error_cnt_strobe <= (others => '0');
+            elsif (error_cnt_strobe < error_cnt_strobe_max) then
+                error_cnt_strobe <= error_cnt_strobe + 1;
+            else
+                error_cnt_strobe <= (others => '0');
+            end if;
+
+            if (reset='1') then
+                    gbt_link_error_last <= '0';
+            else
+
+                if (error_cnt_strobe = error_cnt_strobe_max) then
+                    gbt_link_error_last <= gbt_link_error_i;
+                end if;
+
+                if (error_cnt_strobe = error_cnt_strobe_max and gbt_link_error_i='1' and gbt_link_error_last='1') then
+                    increment_rx_delay <= '1';
+                else
+                    increment_rx_delay <= '0';
+                end if;
+
+            end if;
+
+
+        end if;
+    end process;
+
+
+
     process (gbt_tx_clk_div_i(0)) begin
     if (rising_edge(gbt_tx_clk_div_i(0))) then
         oserdes_reset_s0(0) <= reset_i;
@@ -146,13 +197,25 @@ begin
     -- Input deserializer
     i_from_gbt_des80 : entity work.from_gbt_des
     port map(
+
         data_in_from_pins_p => (elink_i_p(0 downto 0)),
         data_in_from_pins_n => (elink_i_n(0 downto 0)),
+
         data_in_to_device   => from_gbt_raw(7 downto 0),
+
         bitslip             => '0',
         clk_in              => iserdes_clk,
         clk_div_in          => iserdes_clkdiv,
-        io_reset            => iserdes_reset
+        io_reset            => iserdes_reset,
+
+                                                               -- Input, Output delay control signals
+        DELAY_RESET         => iserdes_reset,                  -- Active high synchronous reset for input delay
+        DELAY_DATA_CE       => (others => increment_rx_delay), -- Enable signal for IODELAYE1 of bit 0
+        DELAY_DATA_INC      => (others => '1'),                -- Delay increment, decrement signal of bit 0
+        DELAY_LOCKED        => open,                           -- Locked signal from IDELAYCTRL
+        REFCLK_RESET        => delay_refclk_reset,             -- Reference clock calibration POR reset
+        REF_CLOCK           => delay_refclk                    -- Reference clock for IDELAYCTRL. Has to come from BUFG.
+
     );
 
     -- Input deserializer
@@ -164,10 +227,15 @@ begin
         bitslip             => '0',
         clk_in              => iserdes_clk,
         clk_div_in          => iserdes_clkdiv,
-        io_reset            => iserdes_reset
+        io_reset            => iserdes_reset,
+                                                               -- Input, Output delay control signals
+        DELAY_RESET         => iserdes_reset,                  -- Active high synchronous reset for input delay
+        DELAY_DATA_CE       => (others => increment_rx_delay), -- Enable signal for IODELAYE1 of bit 0
+        DELAY_DATA_INC      => (others => '1'),                -- Delay increment, decrement signal of bit 0
+        DELAY_LOCKED        => idly_rdy,                       -- Locked signal from IDELAYCTRL
+        REFCLK_RESET        => delay_refclk_reset,             -- Reference clock calibration POR reset
+        REF_CLOCK           => delay_refclk                    -- Reference clock for IDELAYCTRL. Has to come from BUFG.
     );
-
-
 
     -- remap to account for how the Xilinx IPcore assigns the output pins
     -- flip-flop for routing and alignment
@@ -307,7 +375,16 @@ begin
         data_out_to_pins_n      => elink_o_n(0 downto 0),
         clk_in                  => gbt_tx_clk_i(0),
         clk_div_in              => gbt_tx_clk_div_i(0),
-        io_reset                => oserdes_reset(0)
+        io_reset                => oserdes_reset(0),
+
+        DELAY_RESET             => '1',
+        DELAY_DATA_CE           => (others => '1'),
+        DELAY_DATA_INC          => (others => '0'),
+        DELAY_TAP_IN            => tx_delay_i,
+        DELAY_TAP_OUT           => open,
+        DELAY_LOCKED            => open,
+        REFCLK_RESET            => delay_refclk_reset,             -- Reference clock calibration POR reset
+        REF_CLOCK               => delay_refclk
     );
 
     i_to_gbt_ser320 : entity work.to_gbt_ser
@@ -318,7 +395,16 @@ begin
         data_out_to_pins_n      => elink_o_n(1 downto 1),
         clk_in                  => gbt_tx_clk_i(1),
         clk_div_in              => gbt_tx_clk_div_i(1),
-        io_reset                => oserdes_reset(1)
+        io_reset                => oserdes_reset(1),
+
+        DELAY_RESET             => '1',
+        DELAY_DATA_CE           => (others => '1'),
+        DELAY_DATA_INC          => (others => '0'),
+        DELAY_TAP_IN            => tx_delay_i,
+        DELAY_TAP_OUT           => open,
+        DELAY_LOCKED            => open,
+        REFCLK_RESET            => delay_refclk_reset,             -- Reference clock calibration POR reset
+        REF_CLOCK               => delay_refclk
     );
 
     --=====================--

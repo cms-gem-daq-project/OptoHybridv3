@@ -147,6 +147,9 @@ architecture Behavioral of control is
     signal ttc_bx0_sync_err : std_logic;
     signal ttc_bxn_sync_err : std_logic;
 
+    signal vfat_startup_reset : std_logic;
+    signal vfat_startup_reset_timer : unsigned (31 downto 0);
+    signal vfat_startup_reset_timer_max : natural := 32;
     signal vfat_reset : std_logic;
 
     signal reset : std_logic;
@@ -175,12 +178,35 @@ architecture Behavioral of control is
 
     process (clock_i) begin
         if (rising_edge(clock_i)) then
+
+            -- startup timer; count to max then deassert the startup reset
+            if (reset_i = '1') then
+                vfat_startup_reset_timer <= (others => '0');
+            elsif (vfat_startup_reset_timer < vfat_startup_reset_timer_max) then
+                vfat_startup_reset_timer <= vfat_startup_reset_timer + 1;
+            else
+                vfat_startup_reset_timer <= (others => '0');
+            end if;
+
+            if (reset_i = '1') then
+                vfat_startup_reset <= '0';
+            elsif (vfat_startup_reset_timer = vfat_startup_reset_timer_max) then
+                vfat_startup_reset <= '1';
+            else
+                vfat_startup_reset <= '0';
+            end if;
+
+        end if;
+    end process;
+
+    process (clock_i) begin
+        if (rising_edge(clock_i)) then
             reset <= reset_i;
         end if;
     end process;
 
     trig_stop_o   <= fmm_trig_stop;
-    vfat_reset_o  <= vfat_reset;
+    vfat_reset_o  <= vfat_reset or vfat_startup_reset;
     bxn_counter_o <= ttc_bxn_counter;
     cnt_snap_o    <= cnt_snap;
 

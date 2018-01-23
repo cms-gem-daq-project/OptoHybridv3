@@ -1769,7 +1769,7 @@
 
     </node>
 
-    <!--Clocking module -->
+    <!--GBT module -->
     <node id="GBT"  address="0x4000"
           description="Connects to GBT"
           fw_is_module="true"
@@ -1799,40 +1799,51 @@
                     fw_cnt_en_signal="ipb_miso.ipb_ack"
                     fw_cnt_snap_signal="cnt_snap"
                     fw_signal="cnt_ipb_response"/>
-                <node id="TX_READY" address="0x4" permission="r"
+                <node id="TX_READY" address="0x1" permission="r"
                     mask="0x00000001"
                     description="GBT TX READY from GBTx Chip"
                     fw_signal="gbt_txready_i"/>
-                <node id="SYNC_MODE" address="0x4" permission="rw"
+                <node id="SYNC_MODE" address="0x1" permission="rw"
                     mask="0x00000002"
                     description="Sets the transmitter into a sync mode where it sends a predictable pattern"
                     fw_default="0x0"
                     fw_signal="tx_sync_mode"/>
-                <node id="TEST_PAT0" address="0x5" permission="rw"
+                <node id="TX_DELAY" address="0x1" permission="rw"
+                    mask="0x1f0"
+                    description="GBT TX IODELAY in 78 ps steps, 0-31"
+                    fw_default="0x0"
+                    fw_signal="tx_delay"/>
+                <node id="TEST_PAT0" address="0x2" permission="rw"
                     description="test pattern [31:0]"
                     fw_default="0x08040201"
                     fw_signal="test_pattern (31 downto 0)"/>
-                <node id="TEST_PAT1" address="0x6" permission="rw"
+                <node id="TEST_PAT1" address="0x3" permission="rw"
                     description="test pattern [63:32]"
                     fw_default="0x80402010"
                     fw_signal="test_pattern (63 downto 32)"/>
             </node>
 
-            <node id="RX" address="0x1" description = "RX">
-                <node id="RX_READY" address="0x1" permission="r"
+            <node id="RX" address="0x4" description = "RX">
+                <node id="RX_READY" address="0x0" permission="r"
                     mask="0x00000001"
                     description="GBT RX READY from GBTx Chip"
                     fw_signal="gbt_rxready_i"/>
-                <node id="RX_VALID" address="0x1" permission="r"
+                <node id="RX_VALID" address="0x0" permission="r"
                     mask="0x00000002"
                     description="GBT RX VALID from GBTx Chip"
                     fw_signal="gbt_rxvalid_i"/>
-                <node id="CNT_REQUEST_RECEIVED" address="0x1" permission="r"
+                <node id="CNT_REQUEST_RECEIVED" address="0x0" permission="r"
                     mask="0xffffff00"
                     description="Number of wishbone requests received"
                     fw_cnt_en_signal="ipb_mosi.ipb_strobe"
                     fw_cnt_snap_signal="cnt_snap"
                     fw_signal="cnt_ipb_request"/>
+                <node id="CNT_LINK_ERR" address="0x1" permission="r"
+                    mask="0x00ffffff"
+                    description="Number of GBT link errrors detected"
+                    fw_cnt_en_signal="(gbt_link_error and gbt_link_ready)"
+                    fw_cnt_snap_signal="cnt_snap"
+                    fw_signal="cnt_link_err"/>
             </node>
 
 

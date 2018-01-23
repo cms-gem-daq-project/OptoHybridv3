@@ -31,6 +31,9 @@ port(
 
     clock_i : in std_logic; -- 40 MHz logic clock
 
+    delay_refclk : in std_logic;
+    delay_refclk_reset : in std_logic;
+
     gbt_rx_clk_div_i : in std_logic; -- 40 MHz phase shiftable frame clock from GBT
     gbt_rx_clk_i     : in std_logic; -- 320 MHz phase shiftable frame clock from GBT
 
@@ -80,9 +83,16 @@ architecture Behavioral of gbt is
 
     signal test_pattern : std_logic_vector (63 downto 0);
 
+    signal gbt_link_error : std_logic;
+    signal gbt_link_unstable : std_logic;
+    signal gbt_link_ready : std_logic;
+
     signal reset     : std_logic;
 
+
+    signal tx_delay : std_logic_vector (4 downto 0);
     signal tx_sync_mode : std_logic;
+
     attribute mark_debug : string;
     attribute mark_debug of tx_sync_mode : signal is "TRUE";
 
@@ -103,6 +113,7 @@ architecture Behavioral of gbt is
     -- Connect counter signal declarations
     signal cnt_ipb_response : std_logic_vector (23 downto 0) := (others => '0');
     signal cnt_ipb_request : std_logic_vector (23 downto 0) := (others => '0');
+    signal cnt_link_err : std_logic_vector (23 downto 0) := (others => '0');
     ------ Register signals end ----------------------------------------------
 
 begin
@@ -146,6 +157,12 @@ begin
        elink_i_p       => elink_i_p,   -- input e-links
        elink_i_n       => elink_i_n,   -- input e-links
 
+       gbt_link_error_i => gbt_link_error,
+
+       delay_refclk => delay_refclk,
+       delay_refclk_reset => delay_refclk_reset,
+       tx_delay_i => tx_delay,
+
        -- gbt tx bitslip
 
        gbt_tx_bitslip0 => gbt_tx_bitslip0,
@@ -185,7 +202,9 @@ begin
         bc0_o           => bc0_o,
 
         -- outputs
-        error_o         => gbt_link_error_o
+        unstable_o      => gbt_link_unstable,
+        ready_o         => gbt_link_ready,
+        error_o         => gbt_link_error
 
     );
 
@@ -220,29 +239,33 @@ begin
 
     -- Addresses
     regs_addresses(0)(REG_FPGA_GBT_ADDRESS_MSB downto REG_FPGA_GBT_ADDRESS_LSB) <= "000";
-    regs_addresses(1)(REG_FPGA_GBT_ADDRESS_MSB downto REG_FPGA_GBT_ADDRESS_LSB) <= "010";
-    regs_addresses(2)(REG_FPGA_GBT_ADDRESS_MSB downto REG_FPGA_GBT_ADDRESS_LSB) <= "100";
-    regs_addresses(3)(REG_FPGA_GBT_ADDRESS_MSB downto REG_FPGA_GBT_ADDRESS_LSB) <= "101";
-    regs_addresses(4)(REG_FPGA_GBT_ADDRESS_MSB downto REG_FPGA_GBT_ADDRESS_LSB) <= "110";
+    regs_addresses(1)(REG_FPGA_GBT_ADDRESS_MSB downto REG_FPGA_GBT_ADDRESS_LSB) <= "001";
+    regs_addresses(2)(REG_FPGA_GBT_ADDRESS_MSB downto REG_FPGA_GBT_ADDRESS_LSB) <= "010";
+    regs_addresses(3)(REG_FPGA_GBT_ADDRESS_MSB downto REG_FPGA_GBT_ADDRESS_LSB) <= "011";
+    regs_addresses(4)(REG_FPGA_GBT_ADDRESS_MSB downto REG_FPGA_GBT_ADDRESS_LSB) <= "100";
+    regs_addresses(5)(REG_FPGA_GBT_ADDRESS_MSB downto REG_FPGA_GBT_ADDRESS_LSB) <= "101";
 
     -- Connect read signals
     regs_read_arr(0)(REG_FPGA_GBT_TX_BITSLIP0_MSB downto REG_FPGA_GBT_TX_BITSLIP0_LSB) <= gbt_tx_bitslip0;
     regs_read_arr(0)(REG_FPGA_GBT_TX_BITSLIP1_MSB downto REG_FPGA_GBT_TX_BITSLIP1_LSB) <= gbt_tx_bitslip1;
     regs_read_arr(0)(REG_FPGA_GBT_TX_CNT_RESPONSE_SENT_MSB downto REG_FPGA_GBT_TX_CNT_RESPONSE_SENT_LSB) <= cnt_ipb_response;
-    regs_read_arr(1)(REG_FPGA_GBT_RX_RX_READY_BIT) <= gbt_rxready_i;
-    regs_read_arr(1)(REG_FPGA_GBT_RX_RX_VALID_BIT) <= gbt_rxvalid_i;
-    regs_read_arr(1)(REG_FPGA_GBT_RX_CNT_REQUEST_RECEIVED_MSB downto REG_FPGA_GBT_RX_CNT_REQUEST_RECEIVED_LSB) <= cnt_ipb_request;
-    regs_read_arr(2)(REG_FPGA_GBT_TX_TX_READY_BIT) <= gbt_txready_i;
-    regs_read_arr(2)(REG_FPGA_GBT_TX_SYNC_MODE_BIT) <= tx_sync_mode;
-    regs_read_arr(3)(REG_FPGA_GBT_TX_TEST_PAT0_MSB downto REG_FPGA_GBT_TX_TEST_PAT0_LSB) <= test_pattern (31 downto 0);
-    regs_read_arr(4)(REG_FPGA_GBT_TX_TEST_PAT1_MSB downto REG_FPGA_GBT_TX_TEST_PAT1_LSB) <= test_pattern (63 downto 32);
+    regs_read_arr(1)(REG_FPGA_GBT_TX_TX_READY_BIT) <= gbt_txready_i;
+    regs_read_arr(1)(REG_FPGA_GBT_TX_SYNC_MODE_BIT) <= tx_sync_mode;
+    regs_read_arr(1)(REG_FPGA_GBT_TX_TX_DELAY_MSB downto REG_FPGA_GBT_TX_TX_DELAY_LSB) <= tx_delay;
+    regs_read_arr(2)(REG_FPGA_GBT_TX_TEST_PAT0_MSB downto REG_FPGA_GBT_TX_TEST_PAT0_LSB) <= test_pattern (31 downto 0);
+    regs_read_arr(3)(REG_FPGA_GBT_TX_TEST_PAT1_MSB downto REG_FPGA_GBT_TX_TEST_PAT1_LSB) <= test_pattern (63 downto 32);
+    regs_read_arr(4)(REG_FPGA_GBT_RX_RX_READY_BIT) <= gbt_rxready_i;
+    regs_read_arr(4)(REG_FPGA_GBT_RX_RX_VALID_BIT) <= gbt_rxvalid_i;
+    regs_read_arr(4)(REG_FPGA_GBT_RX_CNT_REQUEST_RECEIVED_MSB downto REG_FPGA_GBT_RX_CNT_REQUEST_RECEIVED_LSB) <= cnt_ipb_request;
+    regs_read_arr(5)(REG_FPGA_GBT_RX_CNT_LINK_ERR_MSB downto REG_FPGA_GBT_RX_CNT_LINK_ERR_LSB) <= cnt_link_err;
 
     -- Connect write signals
     gbt_tx_bitslip0 <= regs_write_arr(0)(REG_FPGA_GBT_TX_BITSLIP0_MSB downto REG_FPGA_GBT_TX_BITSLIP0_LSB);
     gbt_tx_bitslip1 <= regs_write_arr(0)(REG_FPGA_GBT_TX_BITSLIP1_MSB downto REG_FPGA_GBT_TX_BITSLIP1_LSB);
-    tx_sync_mode <= regs_write_arr(2)(REG_FPGA_GBT_TX_SYNC_MODE_BIT);
-    test_pattern (31 downto 0) <= regs_write_arr(3)(REG_FPGA_GBT_TX_TEST_PAT0_MSB downto REG_FPGA_GBT_TX_TEST_PAT0_LSB);
-    test_pattern (63 downto 32) <= regs_write_arr(4)(REG_FPGA_GBT_TX_TEST_PAT1_MSB downto REG_FPGA_GBT_TX_TEST_PAT1_LSB);
+    tx_sync_mode <= regs_write_arr(1)(REG_FPGA_GBT_TX_SYNC_MODE_BIT);
+    tx_delay <= regs_write_arr(1)(REG_FPGA_GBT_TX_TX_DELAY_MSB downto REG_FPGA_GBT_TX_TX_DELAY_LSB);
+    test_pattern (31 downto 0) <= regs_write_arr(2)(REG_FPGA_GBT_TX_TEST_PAT0_MSB downto REG_FPGA_GBT_TX_TEST_PAT0_LSB);
+    test_pattern (63 downto 32) <= regs_write_arr(3)(REG_FPGA_GBT_TX_TEST_PAT1_MSB downto REG_FPGA_GBT_TX_TEST_PAT1_LSB);
 
     -- Connect write pulse signals
 
@@ -274,6 +297,17 @@ begin
     );
 
 
+    COUNTER_FPGA_GBT_RX_CNT_LINK_ERR : entity work.counter
+    generic map (g_WIDTH => 24)
+    port map (
+        ref_clk_i => clock_i,
+        snap_i    => cnt_snap,
+        reset_i   => ipb_reset_i,
+        en_i      => (gbt_link_error and gbt_link_ready),
+        data_o    => cnt_link_err
+    );
+
+
     -- Connect rate instances
 
     -- Connect read ready signals
@@ -281,15 +315,16 @@ begin
     -- Defaults
     regs_defaults(0)(REG_FPGA_GBT_TX_BITSLIP0_MSB downto REG_FPGA_GBT_TX_BITSLIP0_LSB) <= REG_FPGA_GBT_TX_BITSLIP0_DEFAULT;
     regs_defaults(0)(REG_FPGA_GBT_TX_BITSLIP1_MSB downto REG_FPGA_GBT_TX_BITSLIP1_LSB) <= REG_FPGA_GBT_TX_BITSLIP1_DEFAULT;
-    regs_defaults(2)(REG_FPGA_GBT_TX_SYNC_MODE_BIT) <= REG_FPGA_GBT_TX_SYNC_MODE_DEFAULT;
-    regs_defaults(3)(REG_FPGA_GBT_TX_TEST_PAT0_MSB downto REG_FPGA_GBT_TX_TEST_PAT0_LSB) <= REG_FPGA_GBT_TX_TEST_PAT0_DEFAULT;
-    regs_defaults(4)(REG_FPGA_GBT_TX_TEST_PAT1_MSB downto REG_FPGA_GBT_TX_TEST_PAT1_LSB) <= REG_FPGA_GBT_TX_TEST_PAT1_DEFAULT;
+    regs_defaults(1)(REG_FPGA_GBT_TX_SYNC_MODE_BIT) <= REG_FPGA_GBT_TX_SYNC_MODE_DEFAULT;
+    regs_defaults(1)(REG_FPGA_GBT_TX_TX_DELAY_MSB downto REG_FPGA_GBT_TX_TX_DELAY_LSB) <= REG_FPGA_GBT_TX_TX_DELAY_DEFAULT;
+    regs_defaults(2)(REG_FPGA_GBT_TX_TEST_PAT0_MSB downto REG_FPGA_GBT_TX_TEST_PAT0_LSB) <= REG_FPGA_GBT_TX_TEST_PAT0_DEFAULT;
+    regs_defaults(3)(REG_FPGA_GBT_TX_TEST_PAT1_MSB downto REG_FPGA_GBT_TX_TEST_PAT1_LSB) <= REG_FPGA_GBT_TX_TEST_PAT1_DEFAULT;
 
     -- Define writable regs
     regs_writable_arr(0) <= '1';
+    regs_writable_arr(1) <= '1';
     regs_writable_arr(2) <= '1';
     regs_writable_arr(3) <= '1';
-    regs_writable_arr(4) <= '1';
 
     --==== Registers end ============================================================================
 end Behavioral;

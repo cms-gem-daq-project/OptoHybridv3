@@ -95,16 +95,10 @@ begin
         if (rising_edge(clock)) then
             if (reset = '1') then
                 error_o <= '0';
+            elsif  (idle_valid or sync_valid or busy) then
+                error_o <= '0';
             else
-                case state is
-                    when FRAME_END =>
-                        if (data_i(11 downto 0) = x"ABC") then
-                            error_o <= '0';
-                        else
-                            error_o <= '1';
-                        end if;
-                    when others => error_o <= '0';
-                end case;
+                error_o <= '1';
             end if;
         end if;
     end process;

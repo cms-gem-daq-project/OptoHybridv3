@@ -124,6 +124,7 @@ architecture Behavioral of optohybrid_top is
     signal clk_4x_90        : std_logic;
 
     signal delay_refclk     : std_logic;
+    signal delay_refclk_reset : std_logic;
     signal cluster_clk      : std_logic;
 
     signal gbt_txready      : std_logic;
@@ -252,6 +253,7 @@ begin
         clk_4x_90_o        => clk_4x_90,
 
         cluster_clk_o      => cluster_clk,
+        delay_refclk_reset_o => delay_refclk_reset,
         delay_refclk_o     => delay_refclk
     );
 
@@ -291,6 +293,9 @@ begin
         gbt_tx_clk_i      => gbt_tx_clk,     -- 320 MHz sampling clock
 
         clock_i => clock,         -- 320 MHz sampling clock
+
+        delay_refclk => delay_refclk,
+        delay_refclk_reset => delay_refclk_reset,
 
         -- elinks
         elink_i_p  =>  elink_i_p,
@@ -468,6 +473,7 @@ begin
         clk_160_90 => clk_4x_90,
 
         delay_refclk_i => delay_refclk,
+        delay_refclk_reset_i => delay_refclk_reset,
 
         cluster_clk => cluster_clk,
 

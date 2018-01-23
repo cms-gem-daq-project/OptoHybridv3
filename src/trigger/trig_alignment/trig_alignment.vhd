@@ -55,6 +55,7 @@ port(
     fastclk_180      : in std_logic;
 
     delay_refclk     : in std_logic;
+    delay_refclk_reset : in std_logic;
 
     clock            : in std_logic;
 
@@ -113,7 +114,7 @@ begin
         -- and ODELAYE2 operation, IDELAYCTRL must be reset after
         -- configuration and the REFCLK signal is stable. A reset pulse width
         -- Tidelayctrl_rpw is required
-        RST    => reset_i
+        RST    => delay_refclk_reset
     );
 
     process (clock) is begin

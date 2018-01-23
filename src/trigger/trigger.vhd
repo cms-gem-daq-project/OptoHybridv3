@@ -38,6 +38,7 @@ port(
     clk_160_90 : in std_logic;
 
     delay_refclk_i : in std_logic;
+    delay_refclk_reset_i : in std_logic;
 
     cluster_clk    : in std_logic;
 
@@ -241,6 +242,7 @@ begin
         clk160_i                => clk_160,
         clk160_90_i             => clk_160_90,
         delay_refclk_i          => delay_refclk_i,
+        delay_refclk_reset_i          => delay_refclk_reset_i,
 
         sbits_mux_sel           => sbits_mux_sel,
 

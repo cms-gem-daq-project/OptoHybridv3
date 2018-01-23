@@ -45,6 +45,7 @@ port(
     clk_4x_90_o     : out std_logic;
 
     delay_refclk_o  : out std_logic;
+    delay_refclk_reset_o  : out std_logic;
 
     cluster_clk_o   : out std_logic;
 
@@ -139,6 +140,8 @@ begin
     if (rising_edge(clock)) then
         dskw_mmcm_locked_o <= mmcm_locked(0);
         eprt_mmcm_locked_o <= mmcm_locked(1);
+
+        delay_refclk_reset_o <= mmcm_locked(0) and mmcm_locked(1);
     end if;
     end process;
 

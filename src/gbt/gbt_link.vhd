@@ -10,10 +10,12 @@
 --   from the OH and builds packets to send out to the GBTx
 ----------------------------------------------------------------------------------
 -- 2017/07/24 -- Removal of VFAT2 event building and Calpulse
+-- 2018/01/23 -- Add link ready and link unstable monitors
 ----------------------------------------------------------------------------------
 
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 
 library unisim;
 use unisim.vcomponents.all;
@@ -48,7 +50,9 @@ port(
     reset_vfats_o   : out std_logic;
 
     -- status
-    error_o         : out std_logic
+    ready_o         : out std_logic;
+    error_o         : out std_logic;
+    unstable_o      : out std_logic
 
 );
 end gbt_link;
@@ -56,6 +60,13 @@ end gbt_link;
 architecture Behavioral of gbt_link is
 
     --== GTX requests ==--
+
+    signal ready       : std_logic; -- gbt rx link went good
+    signal rx_unstable : std_logic; -- gbt rx link was good then went bad
+    signal rx_error    : std_logic; -- error on gbt rx link
+
+    signal ready_cnt : unsigned (7 downto 0);
+    signal ready_cnt_max : natural := 255;
 
     signal gbt_rx_req  : std_logic; -- rx fifo write request
     signal gbt_rx_data : std_logic_vector(IPB_REQ_BITS-1 downto 0);
@@ -68,10 +79,55 @@ architecture Behavioral of gbt_link is
 
 begin
 
+    -- outputs
+
     -- reset fanout
     process (clock) begin
         if (rising_edge(clock)) then
             reset <= reset_i;
+        end if;
+    end process;
+
+
+    -- check for N consequtive good bx of link before marking as "ready"
+    process (clock) begin
+        if (rising_edge(clock)) then
+
+            if (reset='1') then
+                ready_cnt <= (others => '0');
+            elsif (ready_cnt < ready_cnt_max) then
+                if (rx_error='0') then
+                    ready_cnt <= ready_cnt + 1;
+                end if;
+            end if;
+
+            if (reset='1') then
+                ready <= '0';
+            elsif (ready_cnt = ready_cnt_max) then
+                ready <= '1';
+            else
+                ready <= '0';
+            end if;
+
+            -- outputs
+
+            ready_o <= ready;
+            error_o <= rx_error;
+
+        end if;
+
+    end process;
+
+    process (clock) begin
+        if (rising_edge(clock)) then
+
+            if (reset='1') then
+                rx_unstable <= '0';
+            elsif (ready='1' and rx_error='1') then
+                rx_unstable <= '1';
+            end if;
+
+            unstable_o <= rx_unstable;
         end if;
     end process;
 
@@ -100,7 +156,7 @@ begin
         req_data_o   => gbt_rx_data, -- 49 bit packet (1 bit we + 16 bit addr + 32 bit data)
 
         -- status
-        error_o      => error_o
+        error_o      => rx_error
     );
 
     --============--

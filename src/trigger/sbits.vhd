@@ -27,6 +27,7 @@ port(
     clk160_90_i             : in std_logic;
     clk40_i                 : in std_logic;
     delay_refclk_i          : in std_logic;
+    delay_refclk_reset_i    : in std_logic;
 
     cluster_clk             : in std_logic;
 
@@ -253,6 +254,7 @@ begin
         fastclk_180  => clk160_180,
         clock        => clk40_i,
         delay_refclk => delay_refclk_i,
+        delay_refclk_reset => delay_refclk_reset_i,
 
         phase_err     => sbit_phase_err_o,
         sot_phase_err => sot_phase_err_o,
