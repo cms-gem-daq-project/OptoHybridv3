@@ -10,7 +10,7 @@ package registers is
     -- Implements various control and monitoring functions of the Optohybrid
     --============================================================================
 
-    constant REG_FPGA_CONTROL_NUM_REGS : integer := 15;
+    constant REG_FPGA_CONTROL_NUM_REGS : integer := 16;
     constant REG_FPGA_CONTROL_ADDRESS_MSB : integer := 5;
     constant REG_FPGA_CONTROL_ADDRESS_LSB : integer := 0;
     constant REG_FPGA_CONTROL_LOOPBACK_DATA_ADDR    : std_logic_vector(5 downto 0) := "00" & x"0";
@@ -18,17 +18,13 @@ package registers is
     constant REG_FPGA_CONTROL_LOOPBACK_DATA_LSB     : integer := 0;
     constant REG_FPGA_CONTROL_LOOPBACK_DATA_DEFAULT : std_logic_vector(31 downto 0) := x"01234567";
 
-    constant REG_FPGA_CONTROL_RELEASE_DAY_ADDR    : std_logic_vector(5 downto 0) := "00" & x"2";
-    constant REG_FPGA_CONTROL_RELEASE_DAY_MSB    : integer := 7;
-    constant REG_FPGA_CONTROL_RELEASE_DAY_LSB     : integer := 0;
+    constant REG_FPGA_CONTROL_RELEASE_DATE_ADDR    : std_logic_vector(5 downto 0) := "00" & x"2";
+    constant REG_FPGA_CONTROL_RELEASE_DATE_MSB    : integer := 31;
+    constant REG_FPGA_CONTROL_RELEASE_DATE_LSB     : integer := 0;
 
-    constant REG_FPGA_CONTROL_RELEASE_MONTH_ADDR    : std_logic_vector(5 downto 0) := "00" & x"2";
-    constant REG_FPGA_CONTROL_RELEASE_MONTH_MSB    : integer := 15;
-    constant REG_FPGA_CONTROL_RELEASE_MONTH_LSB     : integer := 8;
-
-    constant REG_FPGA_CONTROL_RELEASE_YEAR_ADDR    : std_logic_vector(5 downto 0) := "00" & x"2";
-    constant REG_FPGA_CONTROL_RELEASE_YEAR_MSB    : integer := 31;
-    constant REG_FPGA_CONTROL_RELEASE_YEAR_LSB     : integer := 16;
+    constant REG_FPGA_CONTROL_RELEASE_VERSION_ADDR    : std_logic_vector(5 downto 0) := "00" & x"3";
+    constant REG_FPGA_CONTROL_RELEASE_VERSION_MSB    : integer := 31;
+    constant REG_FPGA_CONTROL_RELEASE_VERSION_LSB     : integer := 0;
 
     constant REG_FPGA_CONTROL_SEM_CNT_SEM_CRITICAL_ADDR    : std_logic_vector(5 downto 0) := "00" & x"6";
     constant REG_FPGA_CONTROL_SEM_CNT_SEM_CRITICAL_MSB    : integer := 15;

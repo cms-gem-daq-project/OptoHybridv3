@@ -25,18 +25,14 @@
 
             <node id="RELEASE" address="0x1"
                 description="Optohybrid Status">
-                <node id="YEAR" address="0x1" permission="r"
-                    mask="0xffff0000"
-                    description="Release year"
-                    fw_signal="RELEASE_YEAR"/>
-                <node id="MONTH" address="0x1" permission="r"
-                    mask="0x0000ff00"
-                    description="Release month"
-                    fw_signal="RELEASE_MONTH"/>
-                <node id="DAY" address="0x1" permission="r"
-                    mask="0x000000ff"
-                    description="Release day"
-                    fw_signal="RELEASE_DAY"/>
+                <node id="DATE" address="0x1" permission="r"
+                    mask="0xffffffff"
+                    description="Release YYYY/MM/DD"
+                    fw_signal="(RELEASE_YEAR &amp; RELEASE_MONTH &amp; RELEASE_DAY)"/>
+                <node id="VERSION" address="0x2" permission="r"
+                    mask="0xffffffff"
+                    description="Release semantic version major.minor.patch.hardware"
+                    fw_signal="(MAJOR_VERSION &amp; MINOR_VERSION &amp; RELEASE_VERSION &amp; RELEASE_HARDWARE)"/>
             </node>
 
             <node id="SEM" address="0x3" description = "Single Event Upset Monitoring">
