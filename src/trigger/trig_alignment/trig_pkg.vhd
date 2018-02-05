@@ -102,7 +102,7 @@ package trig_pkg is
     '0' & -- TU_INVERT[53] (VFAT=17 BIT=5)
     '0' & -- TU_INVERT[52] (VFAT=17 BIT=4)
     '0' & -- TU_INVERT[51] (VFAT=17 BIT=3)
-    '1' & -- TU_INVERT[50] (VFAT=17 BIT=2)
+    '0' & -- TU_INVERT[50] (VFAT=17 BIT=2)
     '1' & -- TU_INVERT[49] (VFAT=17 BIT=1)
     '0' & -- TU_INVERT[48] (VFAT=17 BIT=0)
     '1' & -- TU_INVERT[63] (VFAT=16 BIT=7)

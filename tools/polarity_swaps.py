@@ -31,6 +31,11 @@ def sot_polarity_swap (sector):
 
 def sbit_polarity_swap (sector, pair):
 
+    # this is a map of which S-bit pairs are polarity swapped
+    # this is using electronics numbering i.e.
+    #    -  "sectors" or slots are numbered from 1-24
+    #    -  pairs are numbered from 0-7
+
     if      (sector==1):
         if (pair==2):
             return True
@@ -82,9 +87,10 @@ def sbit_polarity_swap (sector, pair):
     elif (sector==7):
         if (pair==1):
             return True
-# this pair __IS__ inverted but there is something wrong with the board apparently and needs to be masked
+        #if (pair==2):
+        #   return True # this pair __IS__ inverted but there is something wrong with the board apparently and needs to be masked
         if (pair==2):
-           return True
+           return False # this pair __IS__ inverted but there is something wrong with the board apparently and needs to be masked
 
     elif (sector==8):
         if (pair==1):
