@@ -170,7 +170,7 @@ initial TU_INVERT = {
   1'b0 & // TU_INVERT[53] (VFAT=6 BIT=5)
   1'b0 & // TU_INVERT[52] (VFAT=6 BIT=4)
   1'b0 & // TU_INVERT[51] (VFAT=6 BIT=3)
-  1'b1 & // TU_INVERT[50] (VFAT=6 BIT=2)
+  1'b0 & // TU_INVERT[50] (VFAT=6 BIT=2)
   1'b1 & // TU_INVERT[49] (VFAT=6 BIT=1)
   1'b0 & // TU_INVERT[48] (VFAT=6 BIT=0)
   1'b0 & // TU_INVERT[47] (VFAT=5 BIT=7)

@@ -13,7 +13,7 @@ CONSTANTS_FILE = '../src/pkg/registers.vhd'
 BASH_STATUS_SCRIPT_FILE ='./ctp7_bash_scripts/generated/ctp7_status.sh'
 BASH_REG_READ_SCRIPT_FILE='./ctp7_bash_scripts/generated/reg_read.sh'
 
-TOP_NODE_NAME = 'OPTOHYBRID'
+TOP_NODE_NAME = 'FPGA'
 VHDL_REG_CONSTANT_PREFIX = 'REG_'
 
 VHDL_REG_SIGNAL_MARKER_START = '------ Register signals begin'
@@ -143,7 +143,7 @@ def main():
     board_type = "oh"
     num_of_oh = 4
 
-    if len(sys.argv) < 2:
+    if (len(sys.argv) < 2 and sys.argv[1] != 'oh'):
         print('Usage: generate_registers.py <board_type> [num_of_oh]')
         print('board_type can be: ctp7 or glib')
         print('num_of_oh is optional. if supplied, the script will substitute generate_size with this value when generating registers in the firmware. Note that this is not affecting the uHAL xml file generation.')
@@ -166,7 +166,7 @@ def main():
             num_of_oh = 0
 
     tree = xml.parse(ADDRESS_TABLE_TOP)
-    root = tree.getroot()[0]
+    root = tree.getroot()
 
     modules = []
     vars = {}

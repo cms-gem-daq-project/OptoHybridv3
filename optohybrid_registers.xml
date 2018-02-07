@@ -1816,7 +1816,7 @@
                 description="test pattern [63:32]"
                 fw_default="0x80402010"
                 fw_signal="test_pattern (63 downto 32)"/>
-        </node>
+        </node> <!--TX-->
 
         <node id="RX" address="0x4" description = "RX">
             <node id="RX_READY" address="0x0" permission="r"
@@ -1839,10 +1839,9 @@
                 fw_cnt_en_signal="(gbt_link_error and gbt_link_ready)"
                 fw_cnt_snap_signal="cnt_snap"
                 fw_signal="cnt_link_err"/>
-        </node>
+        </node> <!--RX-->
 
 
-</node>
+    </node> <!--GBT-->
 
-
-</node> <!-- /FPGA -->
+</node> <!--FPGA-->
