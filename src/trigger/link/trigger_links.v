@@ -37,14 +37,9 @@ always @(posedge clk_40) begin
     reset_cnt <= reset_cnt + 1'b1;
   else
     reset_cnt <= reset_cnt;
+
+  reset <= !(&reset_cnt);
 end
-
-always @(posedge clk_40) begin
-  reset <= &reset_cnt;
-end
-
-
-
 
 IBUFDS_GTXE1 ibufds_mgt
 (
@@ -71,9 +66,17 @@ assign link[3] = link_l;  // GL (GEM left link)
 wire [3:0] tx_out_clk;
 wire [3:0] tx_pll_locked;
 
-SRL16E #(.INIT(16'h7FFF)) SRL16TXPLL(
-  .Q(txpll_rst), .A0(1'b1), .A1(1'b1), .A2(1'b1), .A3(1'b1), .CE (1'b1), .CLK(clk_40), .D(1'b0)
-);
+reg [3:0] txpll_rst_cnt = 0;
+reg txpll_rst=0;
+
+always @(posedge clk_80) begin
+  if (reset)
+    txpll_rst_cnt <= 0;
+  else if (!(&txpll_rst_cnt))
+    txpll_rst_cnt <= txpll_rst_cnt + 1'b1;
+
+  txpll_rst <= !(&txpll_rst_cnt);
+end
 
 wire usrclk  = clk_160;
 wire usrclk2 = clk_80;

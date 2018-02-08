@@ -40,7 +40,7 @@ module led_control (
   end
 
   always @(*) begin
-    if (mmcm_locked)
+    if (mmcm_locked && !reset)
       led <= (cylon_mode) ? led_cylon : led_logic;
     else
       led <= led_err;
