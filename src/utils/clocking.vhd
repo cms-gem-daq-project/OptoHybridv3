@@ -176,13 +176,12 @@ begin
 
     -- Addresses
     regs_addresses(0)(REG_CLOCKING_ADDRESS_MSB downto REG_CLOCKING_ADDRESS_LSB) <= "000";
-    regs_addresses(1)(REG_CLOCKING_ADDRESS_MSB downto REG_CLOCKING_ADDRESS_LSB) <= "010";
 
     -- Connect read signals
+    regs_read_arr(0)(REG_CLOCKING_CLOCKING_GBT_MMCM_LOCKED_BIT) <= mmcm_locked(1);
     regs_read_arr(0)(REG_CLOCKING_CLOCKING_LOGIC_MMCM_LOCKED_BIT) <= mmcm_locked(0);
     regs_read_arr(0)(REG_CLOCKING_CLOCKING_GBT_MMCM_UNLOCKED_CNT_MSB downto REG_CLOCKING_CLOCKING_GBT_MMCM_UNLOCKED_CNT_LSB) <= cnt_eprt_mmcm_unlocked;
     regs_read_arr(0)(REG_CLOCKING_CLOCKING_LOGIC_MMCM_UNLOCKED_CNT_MSB downto REG_CLOCKING_CLOCKING_LOGIC_MMCM_UNLOCKED_CNT_LSB) <= cnt_dskw_mmcm_unlocked;
-    regs_read_arr(1)(REG_CLOCKING_CLOCKING_GBT_MMCM_LOCKED_BIT) <= mmcm_locked(1);
 
     -- Connect write signals
 

@@ -1739,7 +1739,7 @@
         fw_reg_addr_lsb="0">
 
         <node id="CLOCKING" address="0x0" description = "Clocking">
-            <node id="GBT_MMCM_LOCKED" address="0x2" permission="r"
+            <node id="GBT_MMCM_LOCKED" address="0x0" permission="r"
                 mask="0x00000001"
                 description="GBT deserialization MMCM locked"
                 fw_signal="mmcm_locked(1)"/>

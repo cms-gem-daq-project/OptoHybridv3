@@ -1488,9 +1488,12 @@ package registers is
     -- Connects to MMCMs
     --============================================================================
 
-    constant REG_CLOCKING_NUM_REGS : integer := 2;
+    constant REG_CLOCKING_NUM_REGS : integer := 1;
     constant REG_CLOCKING_ADDRESS_MSB : integer := 2;
     constant REG_CLOCKING_ADDRESS_LSB : integer := 0;
+    constant REG_CLOCKING_CLOCKING_GBT_MMCM_LOCKED_ADDR    : std_logic_vector(2 downto 0) := "000";
+    constant REG_CLOCKING_CLOCKING_GBT_MMCM_LOCKED_BIT    : integer := 0;
+
     constant REG_CLOCKING_CLOCKING_LOGIC_MMCM_LOCKED_ADDR    : std_logic_vector(2 downto 0) := "000";
     constant REG_CLOCKING_CLOCKING_LOGIC_MMCM_LOCKED_BIT    : integer := 1;
 
@@ -1501,9 +1504,6 @@ package registers is
     constant REG_CLOCKING_CLOCKING_LOGIC_MMCM_UNLOCKED_CNT_ADDR    : std_logic_vector(2 downto 0) := "000";
     constant REG_CLOCKING_CLOCKING_LOGIC_MMCM_UNLOCKED_CNT_MSB    : integer := 31;
     constant REG_CLOCKING_CLOCKING_LOGIC_MMCM_UNLOCKED_CNT_LSB     : integer := 24;
-
-    constant REG_CLOCKING_CLOCKING_GBT_MMCM_LOCKED_ADDR    : std_logic_vector(2 downto 0) := "010";
-    constant REG_CLOCKING_CLOCKING_GBT_MMCM_LOCKED_BIT    : integer := 0;
 
 
     --============================================================================
