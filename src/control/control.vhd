@@ -184,13 +184,9 @@ architecture Behavioral of control is
                 vfat_startup_reset_timer <= (others => '0');
             elsif (vfat_startup_reset_timer < vfat_startup_reset_timer_max) then
                 vfat_startup_reset_timer <= vfat_startup_reset_timer + 1;
-            else
-                vfat_startup_reset_timer <= (others => '0');
             end if;
 
-            if (reset_i = '1') then
-                vfat_startup_reset <= '0';
-            elsif (vfat_startup_reset_timer = vfat_startup_reset_timer_max) then
+            if (vfat_startup_reset_timer < vfat_startup_reset_timer_max) then
                 vfat_startup_reset <= '1';
             else
                 vfat_startup_reset <= '0';
@@ -418,7 +414,7 @@ architecture Behavioral of control is
     -- Addresses
     regs_addresses(0)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "00" & x"0";
     regs_addresses(1)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "00" & x"2";
-    regs_addresses(2)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "00" & x"3";
+    regs_addresses(2)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "00" & x"5";
     regs_addresses(3)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "00" & x"6";
     regs_addresses(4)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "00" & x"a";
     regs_addresses(5)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "00" & x"c";
@@ -436,7 +432,10 @@ architecture Behavioral of control is
     -- Connect read signals
     regs_read_arr(0)(REG_CONTROL_LOOPBACK_DATA_MSB downto REG_CONTROL_LOOPBACK_DATA_LSB) <= loopback;
     regs_read_arr(1)(REG_CONTROL_RELEASE_DATE_MSB downto REG_CONTROL_RELEASE_DATE_LSB) <= (RELEASE_YEAR & RELEASE_MONTH & RELEASE_DAY);
-    regs_read_arr(2)(REG_CONTROL_RELEASE_VERSION_MSB downto REG_CONTROL_RELEASE_VERSION_LSB) <= (MAJOR_VERSION & MINOR_VERSION & RELEASE_VERSION & RELEASE_HARDWARE);
+    regs_read_arr(2)(REG_CONTROL_RELEASE_VERSION_MAJOR_MSB downto REG_CONTROL_RELEASE_VERSION_MAJOR_LSB) <= (MAJOR_VERSION);
+    regs_read_arr(2)(REG_CONTROL_RELEASE_VERSION_MINOR_MSB downto REG_CONTROL_RELEASE_VERSION_MINOR_LSB) <= (MINOR_VERSION);
+    regs_read_arr(2)(REG_CONTROL_RELEASE_VERSION_BUILD_MSB downto REG_CONTROL_RELEASE_VERSION_BUILD_LSB) <= (RELEASE_VERSION);
+    regs_read_arr(2)(REG_CONTROL_RELEASE_VERSION_GENERATION_MSB downto REG_CONTROL_RELEASE_VERSION_GENERATION_LSB) <= (RELEASE_HARDWARE);
     regs_read_arr(3)(REG_CONTROL_SEM_CNT_SEM_CRITICAL_MSB downto REG_CONTROL_SEM_CNT_SEM_CRITICAL_LSB) <= cnt_sem_critical;
     regs_read_arr(3)(REG_CONTROL_SEM_CNT_SEM_CORRECTION_MSB downto REG_CONTROL_SEM_CNT_SEM_CORRECTION_LSB) <= cnt_sem_correction;
     regs_read_arr(4)(REG_CONTROL_VFAT_RESET_BIT) <= vfat_reset;

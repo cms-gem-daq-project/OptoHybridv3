@@ -22,9 +22,21 @@ package registers is
     constant REG_CONTROL_RELEASE_DATE_MSB    : integer := 31;
     constant REG_CONTROL_RELEASE_DATE_LSB     : integer := 0;
 
-    constant REG_CONTROL_RELEASE_VERSION_ADDR    : std_logic_vector(5 downto 0) := "00" & x"3";
-    constant REG_CONTROL_RELEASE_VERSION_MSB    : integer := 31;
-    constant REG_CONTROL_RELEASE_VERSION_LSB     : integer := 0;
+    constant REG_CONTROL_RELEASE_VERSION_MAJOR_ADDR    : std_logic_vector(5 downto 0) := "00" & x"5";
+    constant REG_CONTROL_RELEASE_VERSION_MAJOR_MSB    : integer := 7;
+    constant REG_CONTROL_RELEASE_VERSION_MAJOR_LSB     : integer := 0;
+
+    constant REG_CONTROL_RELEASE_VERSION_MINOR_ADDR    : std_logic_vector(5 downto 0) := "00" & x"5";
+    constant REG_CONTROL_RELEASE_VERSION_MINOR_MSB    : integer := 15;
+    constant REG_CONTROL_RELEASE_VERSION_MINOR_LSB     : integer := 8;
+
+    constant REG_CONTROL_RELEASE_VERSION_BUILD_ADDR    : std_logic_vector(5 downto 0) := "00" & x"5";
+    constant REG_CONTROL_RELEASE_VERSION_BUILD_MSB    : integer := 23;
+    constant REG_CONTROL_RELEASE_VERSION_BUILD_LSB     : integer := 16;
+
+    constant REG_CONTROL_RELEASE_VERSION_GENERATION_ADDR    : std_logic_vector(5 downto 0) := "00" & x"5";
+    constant REG_CONTROL_RELEASE_VERSION_GENERATION_MSB    : integer := 31;
+    constant REG_CONTROL_RELEASE_VERSION_GENERATION_LSB     : integer := 24;
 
     constant REG_CONTROL_SEM_CNT_SEM_CRITICAL_ADDR    : std_logic_vector(5 downto 0) := "00" & x"6";
     constant REG_CONTROL_SEM_CNT_SEM_CRITICAL_MSB    : integer := 15;

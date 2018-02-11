@@ -28,10 +28,24 @@
                 mask="0xffffffff"
                 description="Release YYYY/MM/DD"
                 fw_signal="(RELEASE_YEAR &amp; RELEASE_MONTH &amp; RELEASE_DAY)"/>
-            <node id="VERSION" address="0x2" permission="r"
-                mask="0xffffffff"
-                description="Release semantic version major.minor.patch.hardware"
-                fw_signal="(MAJOR_VERSION &amp; MINOR_VERSION &amp; RELEASE_VERSION &amp; RELEASE_HARDWARE)"/>
+            <node id="VERSION" address="0x2">
+                <node id="MAJOR" address="0x2" permission="r"
+                    mask="0xff"
+                    description="Release semantic version major"
+                    fw_signal="(MAJOR_VERSION)"/>
+                <node id="MINOR" address="0x2" permission="r"
+                    mask="0xff00"
+                    description="Release semantic version minor"
+                    fw_signal="(MINOR_VERSION)"/>
+                <node id="BUILD" address="0x2" permission="r"
+                    mask="0xff0000"
+                    description="Release semantic version build"
+                    fw_signal="(RELEASE_VERSION)"/>
+                <node id="GENERATION" address="0x2" permission="r"
+                    mask="0xff000000"
+                    description="Release semantic version build"
+                    fw_signal="(RELEASE_HARDWARE)"/>
+            </node>
         </node>
 
         <node id="SEM" address="0x3" description = "Single Event Upset Monitoring">
@@ -1596,7 +1610,7 @@
                     mask="0x0000001F"
                     description="uncalibrated 78 ps tap delay"
                     fw_signal="sot_tap_delay(0)"
-                    fw_default="5"/>
+                    fw_default="7"/>
                 <node id="SOT_TAP_DELAY_VFAT1" address="0x20" permission="rw"
                     mask="0x000003E0"
                     description="uncalibrated 78 ps tap delay"
