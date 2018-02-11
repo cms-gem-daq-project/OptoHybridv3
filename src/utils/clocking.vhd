@@ -141,7 +141,7 @@ begin
         dskw_mmcm_locked_o <= mmcm_locked(0);
         eprt_mmcm_locked_o <= mmcm_locked(1);
 
-        delay_refclk_reset_o <= mmcm_locked(0) and mmcm_locked(1);
+        delay_refclk_reset_o <= not (mmcm_locked(0) and mmcm_locked(1));
     end if;
     end process;
 
