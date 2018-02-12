@@ -427,6 +427,11 @@
                 mask="0x0fff0000"
                 fw_default="0xff"/>
 
+            <node id="SOT_INVERT" address="0x7" permission="rw"
+                description="Set to 1 to invert the S-bit SoT Frame"
+                fw_signal="sot_invert"
+                mask="0x00ffffff"
+                fw_default="0x7992a6"/>
         </node>
 
         <node id="CNT" address="0x8" description = "S-BIT Counters">

@@ -18,6 +18,8 @@ module oversampler (
   input rx_n,
 
   input clock,
+  
+  input invert, 
 
   input reset_i,
 
@@ -46,7 +48,6 @@ module oversampler (
     reset <= reset_i;
 
   parameter       DDR        = 1'b0;
-  parameter       INVERT     = 1'b0;
 
   parameter       PHASE_SEL_EXTERNAL = 1'b0;
 
@@ -54,7 +55,7 @@ module oversampler (
   parameter       NUM_TAPS_45  = DDR ? 5'd5 : 5'd10; // 45 degree phase shift in either 320 or 160 MHz clocks, using 78 ps taps
   // 78*5 = 390 ps, 78*10=780 ps
 
-  initial $display ("Compiling oversampler with DDR=%d, INVERT=%d, TAP_DELAY=%d", DDR, INVERT, tap_delay_i);
+  initial $display ("Compiling oversampler with DDR=%d, INVERT=%d, TAP_DELAY=%d", DDR, invert, tap_delay_i);
 
   IBUFDS_DIFF_OUT #(.IBUF_LOW_PWR("FALSE"), .DIFF_TERM("TRUE"), .IOSTANDARD("LVDS_25"))
   ibufds (
@@ -240,10 +241,10 @@ module oversampler (
   always @(posedge fastclock) begin
 
     case (sample_sel)
-    2'd0: {falling,rising} <= INVERT ? ~{id[0],id[4]} : {id[0],id[4]}; // eq00,  45 and 225 degree samples
-    2'd1: {falling,rising} <= INVERT ? ~{id[1],id[5]} : {id[1],id[5]}; // eq01,   0 and 180 degree samples
-    2'd3: {falling,rising} <= INVERT ? ~{id[2],id[6]} : {id[2],id[6]}; // eq11, 135 and 315 degree samples
-    2'd2: {falling,rising} <= INVERT ? ~{id[3],id[7]} : {id[3],id[7]}; // eq10,  90 and 270 degree samples
+    2'd0: {falling,rising} <= invert ? ~{id[0],id[4]} : {id[0],id[4]}; // eq00,  45 and 225 degree samples
+    2'd1: {falling,rising} <= invert ? ~{id[1],id[5]} : {id[1],id[5]}; // eq01,   0 and 180 degree samples
+    2'd3: {falling,rising} <= invert ? ~{id[2],id[6]} : {id[2],id[6]}; // eq11, 135 and 315 degree samples
+    2'd2: {falling,rising} <= invert ? ~{id[3],id[7]} : {id[3],id[7]}; // eq10,  90 and 270 degree samples
     endcase
 
     case (sample_sel)

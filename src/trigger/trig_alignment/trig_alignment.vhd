@@ -33,6 +33,8 @@ port(
 
     reset_i          : in std_logic;
 
+    sot_invert       : in std_logic_vector (23 downto 0);
+
     start_of_frame_p : in std_logic_vector (23 downto 0);
     start_of_frame_n : in std_logic_vector (23 downto 0);
 
@@ -131,12 +133,14 @@ begin
         sot_oversampler : entity work.oversampler
         generic map (
             DDR                => DDR,
-            INVERT             => to_integer(unsigned(sot_invert (ifat downto ifat))),
             PHASE_SEL_EXTERNAL => 0 -- automatic control
         )
         port map (
 
             tap_delay_i => sot_tap_delay(ifat),
+				
+				invert => sot_invert (ifat),
+
 
             rx_p => start_of_frame_p(ifat),
             rx_n => start_of_frame_n(ifat),
@@ -183,12 +187,13 @@ begin
         sbit_oversampler : entity work.oversampler
         generic map (
             DDR                => DDR,
-            INVERT             => to_integer(unsigned(TU_INVERT (ipin downto ipin))),
             PHASE_SEL_EXTERNAL => 1 -- manual control
         )
         port map (
 
             tap_delay_i => trig_tap_delay(ipin),
+
+            invert => TU_INVERT (ipin),
 
             rx_p =>sbits_p(ipin),
             rx_n =>sbits_n(ipin),

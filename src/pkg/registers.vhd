@@ -248,7 +248,7 @@ package registers is
     -- Connects to the trigger control module
     --============================================================================
 
-    constant REG_TRIG_NUM_REGS : integer := 70;
+    constant REG_TRIG_NUM_REGS : integer := 71;
     constant REG_TRIG_ADDRESS_MSB : integer := 7;
     constant REG_TRIG_ADDRESS_LSB : integer := 0;
     constant REG_TRIG_CTRL_VFAT_MASK_ADDR    : std_logic_vector(7 downto 0) := x"00";
@@ -301,6 +301,11 @@ package registers is
     constant REG_TRIG_CTRL_ALIGNED_COUNT_TO_READY_MSB    : integer := 27;
     constant REG_TRIG_CTRL_ALIGNED_COUNT_TO_READY_LSB     : integer := 16;
     constant REG_TRIG_CTRL_ALIGNED_COUNT_TO_READY_DEFAULT : std_logic_vector(27 downto 16) := x"0ff";
+
+    constant REG_TRIG_CTRL_SOT_INVERT_ADDR    : std_logic_vector(7 downto 0) := x"07";
+    constant REG_TRIG_CTRL_SOT_INVERT_MSB    : integer := 23;
+    constant REG_TRIG_CTRL_SOT_INVERT_LSB     : integer := 0;
+    constant REG_TRIG_CTRL_SOT_INVERT_DEFAULT : std_logic_vector(23 downto 0) := x"7992a6";
 
     constant REG_TRIG_CNT_VFAT0_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"08";
     constant REG_TRIG_CNT_VFAT0_SBITS_MSB    : integer := 31;
@@ -1373,7 +1378,7 @@ package registers is
     constant REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT0_ADDR    : std_logic_vector(7 downto 0) := x"59";
     constant REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT0_MSB    : integer := 4;
     constant REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT0_LSB     : integer := 0;
-    constant REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT0_DEFAULT : std_logic_vector(4 downto 0) := '0' & x"5";
+    constant REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT0_DEFAULT : std_logic_vector(4 downto 0) := '0' & x"7";
 
     constant REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT1_ADDR    : std_logic_vector(7 downto 0) := x"59";
     constant REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT1_MSB    : integer := 9;

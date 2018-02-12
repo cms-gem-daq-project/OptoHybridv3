@@ -22,31 +22,6 @@ package trig_pkg is
   constant MXSBITS_CHAMBER : integer := 24*MXSBITS;
 
 ---- START: AUTO GENERATED POLARITY SWAPS -- DO NOT EDIT ----
-  constant  SOT_INVERT  : std_logic_vector (23 downto 0) :=
-    '1' & -- SOT_INVERT[23]
-    '1' & -- SOT_INVERT[22]
-    '1' & -- SOT_INVERT[21]
-    '1' & -- SOT_INVERT[20]
-    '1' & -- SOT_INVERT[19]
-    '0' & -- SOT_INVERT[18]
-    '0' & -- SOT_INVERT[17]
-    '1' & -- SOT_INVERT[16]
-    '1' & -- SOT_INVERT[15]
-    '0' & -- SOT_INVERT[14]
-    '0' & -- SOT_INVERT[13]
-    '1' & -- SOT_INVERT[12]
-    '0' & -- SOT_INVERT[11]
-    '0' & -- SOT_INVERT[10]
-    '1' & -- SOT_INVERT[9]
-    '0' & -- SOT_INVERT[8]
-    '1' & -- SOT_INVERT[7]
-    '0' & -- SOT_INVERT[6]
-    '1' & -- SOT_INVERT[5]
-    '0' & -- SOT_INVERT[4]
-    '0' & -- SOT_INVERT[3]
-    '1' & -- SOT_INVERT[2]
-    '1' & -- SOT_INVERT[1]
-    '0' ; -- SOT_INVERT[0]
 
   constant TU_INVERT  : std_logic_vector (191 downto 0) :=
     '0' & -- TU_INVERT[7] (VFAT=23 BIT=7)
