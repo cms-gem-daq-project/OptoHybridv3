@@ -1,3 +1,5 @@
+from oh_settings import *
+
 ADDRESS_TABLE_TOP = '../optohybrid_registers.xml'
 MARKER_START='<!-- START: TIMING_DELAYS DO NOT EDIT -->'
 MARKER_END="<!-- END: TIMING_DELAYS DO NOT EDIT -->"
@@ -280,10 +282,18 @@ def main():
                 wrote_registers = True
                 print ("starting")
                 for vfat in range (24):
+
+                    vfat_inv = 0
+
+                    if (USE_INVERTED_NUMBERING):
+                        vfat_inv = 23-vfat
+                    else:
+                        vfat_inv = vfat
+
                     for bit in range (8):
 
                         print ( "VFAT #%s, Trigger Bit %s, Tap Delay=%s" % (vfat, bit, trig_tap_delays[vfat*8+bit]))
-                        global_bit = vfat*8+bit
+                        global_bit = vfat_inv*8+bit
                         address=global_bit / 6 # 5 bits per tap means 6 taps per 32 bit register
                         mask=0x1f << 5*(global_bit % 6)
 
@@ -295,6 +305,13 @@ def main():
 
                 for vfat in range (24):
 
+                    vfat_inv = 0
+
+                    if (USE_INVERTED_NUMBERING):
+                        vfat_inv = 23-vfat
+                    else:
+                        vfat_inv = vfat
+
                     sot_base_address = 191 / 6 + 1
                     address = sot_base_address + vfat/6
                     mask=0x1f << 5*(vfat % 6) # 6 vfats per register
@@ -303,7 +320,7 @@ def main():
                     f.write('%s    mask="0x%08X"\n' % (padding, mask))
                     f.write('%s    description="uncalibrated 78 ps tap delay"\n' % padding)
                     f.write('%s    fw_signal="sot_tap_delay(%s)"\n' % (padding, vfat))
-                    f.write('%s    fw_default="%s"/>\n' % (padding, sot_tap_delays[vfat]))
+                    f.write('%s    fw_default="%s"/>\n' % (padding, sot_tap_delays[vfat_inv]))
 
         f.close
 
