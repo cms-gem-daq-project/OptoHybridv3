@@ -57,6 +57,8 @@ port(
 
     gbt_link_error_i : in std_logic; -- error on gbt rx
 
+    gbt_direct_loopback_mode : in std_logic; -- tx directly mirrors rx, for fast data integrity testing
+
     delay_refclk       : in std_logic;
     delay_refclk_reset : in std_logic;
 
@@ -155,7 +157,7 @@ begin
                     gbt_link_error_last <= gbt_link_error_i;
                 end if;
 
-                if (error_cnt_strobe = error_cnt_strobe_max and gbt_link_error_i='1' and gbt_link_error_last='1') then
+                if (error_cnt_strobe = error_cnt_strobe_max and gbt_link_error_i='1' and gbt_link_error_last='1' and gbt_direct_loopback_mode='0') then
                     increment_rx_delay <= '1';
                 else
                     increment_rx_delay <= '0';
@@ -336,11 +338,12 @@ begin
                                          test_pattern (frame_count*8+0) &
                                          test_pattern (frame_count*8+0) &
                                          test_pattern (frame_count*8+0) ;
+        elsif (gbt_direct_loopback_mode='1') then
+            to_gbt_data <=  from_gbt;
         else
             to_gbt_data  <= to_gbt_remapped;
         end if;
 
-            -- to_gbt_data <=  from_gbt;
     end if;
     end process;
 

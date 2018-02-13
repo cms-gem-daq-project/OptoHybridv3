@@ -10,7 +10,7 @@ package param_pkg is
 
     constant RELEASE_YEAR           : std_logic_vector(15 downto 0) := x"2018";
     constant RELEASE_MONTH          : std_logic_vector(7 downto  0) := x"02";
-    constant RELEASE_DAY            : std_logic_vector(7 downto  0) := x"12";
+    constant RELEASE_DAY            : std_logic_vector(7 downto  0) := x"13";
 
     constant RELEASE_HARDWARE       : std_logic_vector(7 downto  0) := x"0A";
 

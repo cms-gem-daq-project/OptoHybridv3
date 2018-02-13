@@ -12,6 +12,7 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 
 library unisim;
 use unisim.vcomponents.all;
@@ -92,6 +93,10 @@ architecture Behavioral of gbt is
 
     signal tx_delay : std_logic_vector (4 downto 0);
     signal tx_sync_mode : std_logic;
+    signal gbt_direct_loopback_mode      : std_logic;
+    signal gbt_direct_loopback_mode_init : std_logic;
+    signal gbt_direct_loopback_mode_timer : unsigned (31 downto 0);
+    signal gbt_direct_loopback_mode_timer_max : natural := 32;
 
     attribute mark_debug : string;
     attribute mark_debug of tx_sync_mode : signal is "TRUE";
@@ -127,6 +132,27 @@ begin
     process (clock_i) begin
         if (rising_edge(clock_i)) then
             reset <= reset_i;
+        end if;
+    end process;
+
+    -- delay loopback mode to give time for wishbone response before starting loopback
+
+    process (clock_i) begin
+        if (rising_edge(clock_i)) then
+
+            -- startup timer; count to max then deassert the startup reset
+            if (reset = '1' or gbt_direct_loopback_mode_init='0') then
+                gbt_direct_loopback_mode_timer <= (others => '0');
+            elsif (gbt_direct_loopback_mode_timer < gbt_direct_loopback_mode_timer_max) then
+                gbt_direct_loopback_mode_timer <= gbt_direct_loopback_mode_timer + 1;
+            end if;
+
+            if (gbt_direct_loopback_mode_timer < gbt_direct_loopback_mode_timer_max) then
+                gbt_direct_loopback_mode <= '0';
+            else
+                gbt_direct_loopback_mode <= '1';
+            end if;
+
         end if;
     end process;
 
@@ -168,6 +194,7 @@ begin
        gbt_tx_bitslip0 => gbt_tx_bitslip0,
        gbt_tx_bitslip1 => gbt_tx_bitslip1,
 
+       gbt_direct_loopback_mode => gbt_direct_loopback_mode,
        tx_sync_mode => tx_sync_mode,
        test_pattern => test_pattern,
 
@@ -252,6 +279,7 @@ begin
     regs_read_arr(1)(REG_GBT_TX_TX_READY_BIT) <= gbt_txready_i;
     regs_read_arr(1)(REG_GBT_TX_SYNC_MODE_BIT) <= tx_sync_mode;
     regs_read_arr(1)(REG_GBT_TX_TX_DELAY_MSB downto REG_GBT_TX_TX_DELAY_LSB) <= tx_delay;
+    regs_read_arr(1)(REG_GBT_TX_DIRECT_LOOPBACK_MODE_BIT) <= gbt_direct_loopback_mode_init;
     regs_read_arr(2)(REG_GBT_TX_TEST_PAT0_MSB downto REG_GBT_TX_TEST_PAT0_LSB) <= test_pattern (31 downto 0);
     regs_read_arr(3)(REG_GBT_TX_TEST_PAT1_MSB downto REG_GBT_TX_TEST_PAT1_LSB) <= test_pattern (63 downto 32);
     regs_read_arr(4)(REG_GBT_RX_RX_READY_BIT) <= gbt_rxready_i;
@@ -264,6 +292,7 @@ begin
     gbt_tx_bitslip1 <= regs_write_arr(0)(REG_GBT_TX_BITSLIP1_MSB downto REG_GBT_TX_BITSLIP1_LSB);
     tx_sync_mode <= regs_write_arr(1)(REG_GBT_TX_SYNC_MODE_BIT);
     tx_delay <= regs_write_arr(1)(REG_GBT_TX_TX_DELAY_MSB downto REG_GBT_TX_TX_DELAY_LSB);
+    gbt_direct_loopback_mode_init <= regs_write_arr(1)(REG_GBT_TX_DIRECT_LOOPBACK_MODE_BIT);
     test_pattern (31 downto 0) <= regs_write_arr(2)(REG_GBT_TX_TEST_PAT0_MSB downto REG_GBT_TX_TEST_PAT0_LSB);
     test_pattern (63 downto 32) <= regs_write_arr(3)(REG_GBT_TX_TEST_PAT1_MSB downto REG_GBT_TX_TEST_PAT1_LSB);
 
@@ -317,6 +346,7 @@ begin
     regs_defaults(0)(REG_GBT_TX_BITSLIP1_MSB downto REG_GBT_TX_BITSLIP1_LSB) <= REG_GBT_TX_BITSLIP1_DEFAULT;
     regs_defaults(1)(REG_GBT_TX_SYNC_MODE_BIT) <= REG_GBT_TX_SYNC_MODE_DEFAULT;
     regs_defaults(1)(REG_GBT_TX_TX_DELAY_MSB downto REG_GBT_TX_TX_DELAY_LSB) <= REG_GBT_TX_TX_DELAY_DEFAULT;
+    regs_defaults(1)(REG_GBT_TX_DIRECT_LOOPBACK_MODE_BIT) <= REG_GBT_TX_DIRECT_LOOPBACK_MODE_DEFAULT;
     regs_defaults(2)(REG_GBT_TX_TEST_PAT0_MSB downto REG_GBT_TX_TEST_PAT0_LSB) <= REG_GBT_TX_TEST_PAT0_DEFAULT;
     regs_defaults(3)(REG_GBT_TX_TEST_PAT1_MSB downto REG_GBT_TX_TEST_PAT1_LSB) <= REG_GBT_TX_TEST_PAT1_DEFAULT;
 
