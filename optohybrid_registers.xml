@@ -1754,10 +1754,9 @@
         fw_bus_reset_signal="ipb_reset_i"
         fw_master_bus_signal="ipb_mosi_i"
         fw_slave_bus_signal="ipb_miso_o"
-        fw_reg_addr_msb="2"
+        fw_reg_addr_msb="0"
         fw_reg_addr_lsb="0">
 
-        <node id="CLOCKING" address="0x0" description = "Clocking">
             <node id="GBT_MMCM_LOCKED" address="0x0" permission="r"
                 mask="0x00000001"
                 description="GBT deserialization MMCM locked"
@@ -1778,8 +1777,6 @@
                 fw_cnt_en_signal="mmcm_unlocked(0)"
                 fw_cnt_snap_signal="cnt_snap"
                 fw_signal="cnt_dskw_mmcm_unlocked"/>
-        </node>
-
 
 </node>
 

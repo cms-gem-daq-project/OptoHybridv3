@@ -175,13 +175,13 @@ begin
       );
 
     -- Addresses
-    regs_addresses(0)(REG_CLOCKING_ADDRESS_MSB downto REG_CLOCKING_ADDRESS_LSB) <= "000";
+    regs_addresses(0)(REG_CLOCKING_ADDRESS_MSB downto REG_CLOCKING_ADDRESS_LSB) <= '0';
 
     -- Connect read signals
-    regs_read_arr(0)(REG_CLOCKING_CLOCKING_GBT_MMCM_LOCKED_BIT) <= mmcm_locked(1);
-    regs_read_arr(0)(REG_CLOCKING_CLOCKING_LOGIC_MMCM_LOCKED_BIT) <= mmcm_locked(0);
-    regs_read_arr(0)(REG_CLOCKING_CLOCKING_GBT_MMCM_UNLOCKED_CNT_MSB downto REG_CLOCKING_CLOCKING_GBT_MMCM_UNLOCKED_CNT_LSB) <= cnt_eprt_mmcm_unlocked;
-    regs_read_arr(0)(REG_CLOCKING_CLOCKING_LOGIC_MMCM_UNLOCKED_CNT_MSB downto REG_CLOCKING_CLOCKING_LOGIC_MMCM_UNLOCKED_CNT_LSB) <= cnt_dskw_mmcm_unlocked;
+    regs_read_arr(0)(REG_CLOCKING_GBT_MMCM_LOCKED_BIT) <= mmcm_locked(1);
+    regs_read_arr(0)(REG_CLOCKING_LOGIC_MMCM_LOCKED_BIT) <= mmcm_locked(0);
+    regs_read_arr(0)(REG_CLOCKING_GBT_MMCM_UNLOCKED_CNT_MSB downto REG_CLOCKING_GBT_MMCM_UNLOCKED_CNT_LSB) <= cnt_eprt_mmcm_unlocked;
+    regs_read_arr(0)(REG_CLOCKING_LOGIC_MMCM_UNLOCKED_CNT_MSB downto REG_CLOCKING_LOGIC_MMCM_UNLOCKED_CNT_LSB) <= cnt_dskw_mmcm_unlocked;
 
     -- Connect write signals
 
@@ -193,7 +193,7 @@ begin
 
     -- Connect counter instances
 
-    COUNTER_CLOCKING_CLOCKING_GBT_MMCM_UNLOCKED_CNT : entity work.counter
+    COUNTER_CLOCKING_GBT_MMCM_UNLOCKED_CNT : entity work.counter
     generic map (g_WIDTH => 8)
     port map (
         ref_clk_i => clock,
@@ -204,7 +204,7 @@ begin
     );
 
 
-    COUNTER_CLOCKING_CLOCKING_LOGIC_MMCM_UNLOCKED_CNT : entity work.counter
+    COUNTER_CLOCKING_LOGIC_MMCM_UNLOCKED_CNT : entity work.counter
     generic map (g_WIDTH => 8)
     port map (
         ref_clk_i => clock,
