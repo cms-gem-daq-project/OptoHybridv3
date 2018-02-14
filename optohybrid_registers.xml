@@ -88,12 +88,14 @@
                 mask="0x00ffffff"
                 description="TTC BX0 Local Counter"
                 fw_cnt_en_signal="bx0_local"
+                fw_cnt_reset_signal="cnt_reset"
                 fw_cnt_snap_signal="cnt_snap"
                 fw_signal="cnt_bx0_lcl"/>
             <node id="BX0_CNT_TTC" address="0x8" permission="r"
                 mask="0x00ffffff"
                 description="TTC BX0 Received Counter"
                 fw_cnt_en_signal="ttc_bc0"
+                fw_cnt_reset_signal="cnt_reset"
                 fw_cnt_snap_signal="cnt_snap"
                 fw_signal="cnt_bx0_rxd"/>
             <node id="BXN_CNT_LOCAL" address="0x9" permission="r"
@@ -117,18 +119,21 @@
                 mask="0xffffff"
                 description="L1A Counter"
                 fw_cnt_en_signal="ttc_l1a"
+                fw_cnt_reset_signal="cnt_reset"
                 fw_cnt_snap_signal="cnt_snap"
                 fw_signal="cnt_l1a"/>
             <node id="BXN_SYNC_ERR_CNT" address="0xB" permission="r"
                 mask="0x0000ffff"
                 description="BXN Sync Error Counter"
                 fw_cnt_en_signal="ttc_bxn_sync_err"
+                fw_cnt_reset_signal="cnt_reset"
                 fw_cnt_snap_signal="cnt_snap"
                 fw_signal="cnt_bxn_sync_err"/>
             <node id="BX0_SYNC_ERR_CNT" address="0xB" permission="r"
                 mask="0xffff0000"
                 description="BX0 Sync Error Counter"
                 fw_cnt_en_signal="ttc_bx0_sync_err"
+                fw_cnt_reset_signal="cnt_reset"
                 fw_cnt_snap_signal="cnt_snap"
                 fw_signal="cnt_bx0_sync_err"/>
         </node>
@@ -1754,29 +1759,27 @@
         fw_bus_reset_signal="ipb_reset_i"
         fw_master_bus_signal="ipb_mosi_i"
         fw_slave_bus_signal="ipb_miso_o"
-        fw_reg_addr_msb="0"
+        fw_reg_addr_msb="1"
         fw_reg_addr_lsb="0">
 
-            <node id="GBT_MMCM_LOCKED" address="0x0" permission="r"
-                mask="0x00000001"
-                description="GBT deserialization MMCM locked"
-                fw_signal="mmcm_locked(1)"/>
-            <node id="LOGIC_MMCM_LOCKED" address="0x0" permission="r"
-                mask="0x00000002"
-                description="User logic MMCM locked"
-                fw_signal="mmcm_locked(0)"/>
-            <node id="GBT_MMCM_UNLOCKED_CNT" address="0x0" permission="r"
-                mask="0x00ff0000"
-                description="GBT deserialization MMCM unlocked cnt"
-                fw_cnt_en_signal="mmcm_unlocked(1)"
-                fw_cnt_snap_signal="cnt_snap"
-                fw_signal="cnt_eprt_mmcm_unlocked"/>
-            <node id="LOGIC_MMCM_UNLOCKED_CNT" address="0x0" permission="r"
-                mask="0xff000000"
-                description="User logic MMCM unlocked cnt"
-                fw_cnt_en_signal="mmcm_unlocked(0)"
-                fw_cnt_snap_signal="cnt_snap"
-                fw_signal="cnt_dskw_mmcm_unlocked"/>
+        <node id="GBT_MMCM_LOCKED" address="0x0" permission="r"
+            mask="0x00000001"
+            description="GBT deserialization MMCM locked"
+            fw_signal="mmcm_locked(1)"/>
+        <node id="LOGIC_MMCM_LOCKED" address="0x0" permission="r"
+            mask="0x00000002"
+            description="User logic MMCM locked"
+            fw_signal="mmcm_locked(0)"/>
+        <node id="GBT_MMCM_UNLOCKED_CNT" address="0x0" permission="r"
+            mask="0x00ff0000"
+            description="GBT deserialization MMCM unlocked cnt"
+            fw_cnt_en_signal="mmcm_unlocked(1)"
+            fw_signal="cnt_eprt_mmcm_unlocked"/>
+        <node id="LOGIC_MMCM_UNLOCKED_CNT" address="0x0" permission="r"
+            mask="0xff000000"
+            description="User logic MMCM unlocked cnt"
+            fw_cnt_en_signal="mmcm_unlocked(0)"
+            fw_signal="cnt_dskw_mmcm_unlocked"/>
 
 </node>
 
@@ -1790,7 +1793,7 @@
         fw_bus_reset_signal="ipb_reset_i"
         fw_master_bus_signal="ipb_mosi_i"
         fw_slave_bus_signal="ipb_miso_o"
-        fw_reg_addr_msb="2"
+        fw_reg_addr_msb="3"
         fw_reg_addr_lsb="0">
 
         <node id="TX" address="0x0" description = "TX">
@@ -1808,6 +1811,7 @@
                 mask="0xffffff00"
                 description="Number of wishbone responses sent back"
                 fw_cnt_en_signal="ipb_miso.ipb_ack"
+                fw_cnt_reset_signal="cnt_reset"
                 fw_cnt_snap_signal="cnt_snap"
                 fw_signal="cnt_ipb_response"/>
             <node id="TX_READY" address="0x1" permission="r"
@@ -1852,15 +1856,30 @@
                 mask="0xffffff00"
                 description="Number of wishbone requests received"
                 fw_cnt_en_signal="ipb_mosi.ipb_strobe"
+                fw_cnt_reset_signal="cnt_reset"
                 fw_cnt_snap_signal="cnt_snap"
                 fw_signal="cnt_ipb_request"/>
             <node id="CNT_LINK_ERR" address="0x1" permission="r"
                 mask="0x00ffffff"
                 description="Number of GBT link errrors detected"
                 fw_cnt_en_signal="(gbt_link_error and gbt_link_ready)"
+                fw_cnt_reset_signal="cnt_reset"
                 fw_cnt_snap_signal="cnt_snap"
                 fw_signal="cnt_link_err"/>
         </node> <!--RX-->
+
+        <node id="FORCE_L1A" address="0x5" permission="w"
+            description="GBT Force L1A"
+            fw_write_pulse_signal="l1a_force"/>
+        <node id="FORCE_BC0" address="0x6" permission="w"
+            description="GBT Force BC0"
+            fw_write_pulse_signal="bc0_force"/>
+        <node id="FORCE_RESYNC" address="0x7" permission="w"
+            description="GBT Force Resync"
+            fw_write_pulse_signal="resync_force"/>
+        <node id="FORCE_RESET_VFATS" address="0x8" permission="w"
+            description="GBT Force vfat reset"
+            fw_write_pulse_signal="reset_vfats_force"/>
 
 
     </node> <!--GBT-->

@@ -1506,19 +1506,19 @@ package registers is
     --============================================================================
 
     constant REG_CLOCKING_NUM_REGS : integer := 1;
-    constant REG_CLOCKING_ADDRESS_MSB : integer := 0;
+    constant REG_CLOCKING_ADDRESS_MSB : integer := 1;
     constant REG_CLOCKING_ADDRESS_LSB : integer := 0;
-    constant REG_CLOCKING_GBT_MMCM_LOCKED_ADDR    : std_logic_vector(0 downto 0) := '0';
+    constant REG_CLOCKING_GBT_MMCM_LOCKED_ADDR    : std_logic_vector(1 downto 0) := "00";
     constant REG_CLOCKING_GBT_MMCM_LOCKED_BIT    : integer := 0;
 
-    constant REG_CLOCKING_LOGIC_MMCM_LOCKED_ADDR    : std_logic_vector(0 downto 0) := '0';
+    constant REG_CLOCKING_LOGIC_MMCM_LOCKED_ADDR    : std_logic_vector(1 downto 0) := "00";
     constant REG_CLOCKING_LOGIC_MMCM_LOCKED_BIT    : integer := 1;
 
-    constant REG_CLOCKING_GBT_MMCM_UNLOCKED_CNT_ADDR    : std_logic_vector(0 downto 0) := '0';
+    constant REG_CLOCKING_GBT_MMCM_UNLOCKED_CNT_ADDR    : std_logic_vector(1 downto 0) := "00";
     constant REG_CLOCKING_GBT_MMCM_UNLOCKED_CNT_MSB    : integer := 23;
     constant REG_CLOCKING_GBT_MMCM_UNLOCKED_CNT_LSB     : integer := 16;
 
-    constant REG_CLOCKING_LOGIC_MMCM_UNLOCKED_CNT_ADDR    : std_logic_vector(0 downto 0) := '0';
+    constant REG_CLOCKING_LOGIC_MMCM_UNLOCKED_CNT_ADDR    : std_logic_vector(1 downto 0) := "00";
     constant REG_CLOCKING_LOGIC_MMCM_UNLOCKED_CNT_MSB    : integer := 31;
     constant REG_CLOCKING_LOGIC_MMCM_UNLOCKED_CNT_LSB     : integer := 24;
 
@@ -1529,62 +1529,78 @@ package registers is
     -- Connects to GBT
     --============================================================================
 
-    constant REG_GBT_NUM_REGS : integer := 6;
-    constant REG_GBT_ADDRESS_MSB : integer := 2;
+    constant REG_GBT_NUM_REGS : integer := 9;
+    constant REG_GBT_ADDRESS_MSB : integer := 3;
     constant REG_GBT_ADDRESS_LSB : integer := 0;
-    constant REG_GBT_TX_BITSLIP0_ADDR    : std_logic_vector(2 downto 0) := "000";
+    constant REG_GBT_TX_BITSLIP0_ADDR    : std_logic_vector(3 downto 0) := x"0";
     constant REG_GBT_TX_BITSLIP0_MSB    : integer := 2;
     constant REG_GBT_TX_BITSLIP0_LSB     : integer := 0;
     constant REG_GBT_TX_BITSLIP0_DEFAULT : std_logic_vector(2 downto 0) := "000";
 
-    constant REG_GBT_TX_BITSLIP1_ADDR    : std_logic_vector(2 downto 0) := "000";
+    constant REG_GBT_TX_BITSLIP1_ADDR    : std_logic_vector(3 downto 0) := x"0";
     constant REG_GBT_TX_BITSLIP1_MSB    : integer := 6;
     constant REG_GBT_TX_BITSLIP1_LSB     : integer := 4;
     constant REG_GBT_TX_BITSLIP1_DEFAULT : std_logic_vector(6 downto 4) := "000";
 
-    constant REG_GBT_TX_CNT_RESPONSE_SENT_ADDR    : std_logic_vector(2 downto 0) := "000";
+    constant REG_GBT_TX_CNT_RESPONSE_SENT_ADDR    : std_logic_vector(3 downto 0) := x"0";
     constant REG_GBT_TX_CNT_RESPONSE_SENT_MSB    : integer := 31;
     constant REG_GBT_TX_CNT_RESPONSE_SENT_LSB     : integer := 8;
 
-    constant REG_GBT_TX_TX_READY_ADDR    : std_logic_vector(2 downto 0) := "001";
+    constant REG_GBT_TX_TX_READY_ADDR    : std_logic_vector(3 downto 0) := x"1";
     constant REG_GBT_TX_TX_READY_BIT    : integer := 0;
 
-    constant REG_GBT_TX_SYNC_MODE_ADDR    : std_logic_vector(2 downto 0) := "001";
+    constant REG_GBT_TX_SYNC_MODE_ADDR    : std_logic_vector(3 downto 0) := x"1";
     constant REG_GBT_TX_SYNC_MODE_BIT    : integer := 1;
     constant REG_GBT_TX_SYNC_MODE_DEFAULT : std_logic := '0';
 
-    constant REG_GBT_TX_TX_DELAY_ADDR    : std_logic_vector(2 downto 0) := "001";
+    constant REG_GBT_TX_TX_DELAY_ADDR    : std_logic_vector(3 downto 0) := x"1";
     constant REG_GBT_TX_TX_DELAY_MSB    : integer := 8;
     constant REG_GBT_TX_TX_DELAY_LSB     : integer := 4;
     constant REG_GBT_TX_TX_DELAY_DEFAULT : std_logic_vector(8 downto 4) := '0' & x"0";
 
-    constant REG_GBT_TX_DIRECT_LOOPBACK_MODE_ADDR    : std_logic_vector(2 downto 0) := "001";
+    constant REG_GBT_TX_DIRECT_LOOPBACK_MODE_ADDR    : std_logic_vector(3 downto 0) := x"1";
     constant REG_GBT_TX_DIRECT_LOOPBACK_MODE_BIT    : integer := 9;
     constant REG_GBT_TX_DIRECT_LOOPBACK_MODE_DEFAULT : std_logic := '0';
 
-    constant REG_GBT_TX_TEST_PAT0_ADDR    : std_logic_vector(2 downto 0) := "010";
+    constant REG_GBT_TX_TEST_PAT0_ADDR    : std_logic_vector(3 downto 0) := x"2";
     constant REG_GBT_TX_TEST_PAT0_MSB    : integer := 31;
     constant REG_GBT_TX_TEST_PAT0_LSB     : integer := 0;
     constant REG_GBT_TX_TEST_PAT0_DEFAULT : std_logic_vector(31 downto 0) := x"08040201";
 
-    constant REG_GBT_TX_TEST_PAT1_ADDR    : std_logic_vector(2 downto 0) := "011";
+    constant REG_GBT_TX_TEST_PAT1_ADDR    : std_logic_vector(3 downto 0) := x"3";
     constant REG_GBT_TX_TEST_PAT1_MSB    : integer := 31;
     constant REG_GBT_TX_TEST_PAT1_LSB     : integer := 0;
     constant REG_GBT_TX_TEST_PAT1_DEFAULT : std_logic_vector(31 downto 0) := x"80402010";
 
-    constant REG_GBT_RX_RX_READY_ADDR    : std_logic_vector(2 downto 0) := "100";
+    constant REG_GBT_RX_RX_READY_ADDR    : std_logic_vector(3 downto 0) := x"4";
     constant REG_GBT_RX_RX_READY_BIT    : integer := 0;
 
-    constant REG_GBT_RX_RX_VALID_ADDR    : std_logic_vector(2 downto 0) := "100";
+    constant REG_GBT_RX_RX_VALID_ADDR    : std_logic_vector(3 downto 0) := x"4";
     constant REG_GBT_RX_RX_VALID_BIT    : integer := 1;
 
-    constant REG_GBT_RX_CNT_REQUEST_RECEIVED_ADDR    : std_logic_vector(2 downto 0) := "100";
+    constant REG_GBT_RX_CNT_REQUEST_RECEIVED_ADDR    : std_logic_vector(3 downto 0) := x"4";
     constant REG_GBT_RX_CNT_REQUEST_RECEIVED_MSB    : integer := 31;
     constant REG_GBT_RX_CNT_REQUEST_RECEIVED_LSB     : integer := 8;
 
-    constant REG_GBT_RX_CNT_LINK_ERR_ADDR    : std_logic_vector(2 downto 0) := "101";
+    constant REG_GBT_RX_CNT_LINK_ERR_ADDR    : std_logic_vector(3 downto 0) := x"5";
     constant REG_GBT_RX_CNT_LINK_ERR_MSB    : integer := 23;
     constant REG_GBT_RX_CNT_LINK_ERR_LSB     : integer := 0;
+
+    constant REG_GBT_FORCE_L1A_ADDR    : std_logic_vector(3 downto 0) := x"5";
+    constant REG_GBT_FORCE_L1A_MSB    : integer := 31;
+    constant REG_GBT_FORCE_L1A_LSB     : integer := 0;
+
+    constant REG_GBT_FORCE_BC0_ADDR    : std_logic_vector(3 downto 0) := x"6";
+    constant REG_GBT_FORCE_BC0_MSB    : integer := 31;
+    constant REG_GBT_FORCE_BC0_LSB     : integer := 0;
+
+    constant REG_GBT_FORCE_RESYNC_ADDR    : std_logic_vector(3 downto 0) := x"7";
+    constant REG_GBT_FORCE_RESYNC_MSB    : integer := 31;
+    constant REG_GBT_FORCE_RESYNC_LSB     : integer := 0;
+
+    constant REG_GBT_FORCE_RESET_VFATS_ADDR    : std_logic_vector(3 downto 0) := x"8";
+    constant REG_GBT_FORCE_RESET_VFATS_MSB    : integer := 31;
+    constant REG_GBT_FORCE_RESET_VFATS_LSB     : integer := 0;
 
 
 end registers;

@@ -88,7 +88,18 @@ architecture Behavioral of gbt is
     signal gbt_link_unstable : std_logic;
     signal gbt_link_ready : std_logic;
 
+    signal l1a_force         :  std_logic;
+    signal bc0_force         :  std_logic;
+    signal resync_force      :  std_logic;
+    signal reset_vfats_force :  std_logic;
+
+    signal l1a_gbt         :  std_logic;
+    signal bc0_gbt         :  std_logic;
+    signal resync_gbt      :  std_logic;
+    signal reset_vfats_gbt :  std_logic;
+
     signal reset     : std_logic;
+    signal cnt_reset     : std_logic;
 
 
     signal tx_delay : std_logic_vector (4 downto 0);
@@ -132,6 +143,16 @@ begin
     process (clock_i) begin
         if (rising_edge(clock_i)) then
             reset <= reset_i;
+            cnt_reset <= (reset_i or resync_gbt or resync_force);
+        end if;
+    end process;
+
+    process (clock_i) begin
+        if (rising_edge(clock_i)) then
+            l1a_o        <= l1a_force or l1a_gbt;
+            bc0_o        <= bc0_force or bc0_gbt;
+            resync_o     <= resync_force or resync_gbt;
+            reset_vfats_o <= reset_vfats_force or reset_vfats_gbt;
         end if;
     end process;
 
@@ -223,10 +244,10 @@ begin
         ipb_miso_i    => ipb_miso,
 
         -- decoded TTC
-        reset_vfats_o   => reset_vfats_o,
-        resync_o        => resync_o,
-        l1a_o           => l1a_o,
-        bc0_o           => bc0_o,
+        reset_vfats_o   => reset_vfats_gbt,
+        resync_o        => resync_gbt,
+        l1a_o           => l1a_gbt,
+        bc0_o           => bc0_gbt,
 
         -- outputs
         unstable_o      => gbt_link_unstable,
@@ -265,12 +286,15 @@ begin
       );
 
     -- Addresses
-    regs_addresses(0)(REG_GBT_ADDRESS_MSB downto REG_GBT_ADDRESS_LSB) <= "000";
-    regs_addresses(1)(REG_GBT_ADDRESS_MSB downto REG_GBT_ADDRESS_LSB) <= "001";
-    regs_addresses(2)(REG_GBT_ADDRESS_MSB downto REG_GBT_ADDRESS_LSB) <= "010";
-    regs_addresses(3)(REG_GBT_ADDRESS_MSB downto REG_GBT_ADDRESS_LSB) <= "011";
-    regs_addresses(4)(REG_GBT_ADDRESS_MSB downto REG_GBT_ADDRESS_LSB) <= "100";
-    regs_addresses(5)(REG_GBT_ADDRESS_MSB downto REG_GBT_ADDRESS_LSB) <= "101";
+    regs_addresses(0)(REG_GBT_ADDRESS_MSB downto REG_GBT_ADDRESS_LSB) <= x"0";
+    regs_addresses(1)(REG_GBT_ADDRESS_MSB downto REG_GBT_ADDRESS_LSB) <= x"1";
+    regs_addresses(2)(REG_GBT_ADDRESS_MSB downto REG_GBT_ADDRESS_LSB) <= x"2";
+    regs_addresses(3)(REG_GBT_ADDRESS_MSB downto REG_GBT_ADDRESS_LSB) <= x"3";
+    regs_addresses(4)(REG_GBT_ADDRESS_MSB downto REG_GBT_ADDRESS_LSB) <= x"4";
+    regs_addresses(5)(REG_GBT_ADDRESS_MSB downto REG_GBT_ADDRESS_LSB) <= x"5";
+    regs_addresses(6)(REG_GBT_ADDRESS_MSB downto REG_GBT_ADDRESS_LSB) <= x"6";
+    regs_addresses(7)(REG_GBT_ADDRESS_MSB downto REG_GBT_ADDRESS_LSB) <= x"7";
+    regs_addresses(8)(REG_GBT_ADDRESS_MSB downto REG_GBT_ADDRESS_LSB) <= x"8";
 
     -- Connect read signals
     regs_read_arr(0)(REG_GBT_TX_BITSLIP0_MSB downto REG_GBT_TX_BITSLIP0_LSB) <= gbt_tx_bitslip0;
@@ -297,6 +321,10 @@ begin
     test_pattern (63 downto 32) <= regs_write_arr(3)(REG_GBT_TX_TEST_PAT1_MSB downto REG_GBT_TX_TEST_PAT1_LSB);
 
     -- Connect write pulse signals
+    l1a_force <= regs_write_pulse_arr(5);
+    bc0_force <= regs_write_pulse_arr(6);
+    resync_force <= regs_write_pulse_arr(7);
+    reset_vfats_force <= regs_write_pulse_arr(8);
 
     -- Connect write done signals
 
@@ -309,7 +337,7 @@ begin
     port map (
         ref_clk_i => clock_i,
         snap_i    => cnt_snap,
-        reset_i   => ipb_reset_i,
+        reset_i   => cnt_reset,
         en_i      => ipb_miso.ipb_ack,
         data_o    => cnt_ipb_response
     );
@@ -320,7 +348,7 @@ begin
     port map (
         ref_clk_i => clock_i,
         snap_i    => cnt_snap,
-        reset_i   => ipb_reset_i,
+        reset_i   => cnt_reset,
         en_i      => ipb_mosi.ipb_strobe,
         data_o    => cnt_ipb_request
     );
@@ -331,7 +359,7 @@ begin
     port map (
         ref_clk_i => clock_i,
         snap_i    => cnt_snap,
-        reset_i   => ipb_reset_i,
+        reset_i   => cnt_reset,
         en_i      => (gbt_link_error and gbt_link_ready),
         data_o    => cnt_link_err
     );

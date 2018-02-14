@@ -175,7 +175,7 @@ begin
       );
 
     -- Addresses
-    regs_addresses(0)(REG_CLOCKING_ADDRESS_MSB downto REG_CLOCKING_ADDRESS_LSB) <= '0';
+    regs_addresses(0)(REG_CLOCKING_ADDRESS_MSB downto REG_CLOCKING_ADDRESS_LSB) <= "00";
 
     -- Connect read signals
     regs_read_arr(0)(REG_CLOCKING_GBT_MMCM_LOCKED_BIT) <= mmcm_locked(1);
@@ -197,7 +197,7 @@ begin
     generic map (g_WIDTH => 8)
     port map (
         ref_clk_i => clock,
-        snap_i    => cnt_snap,
+        snap_i    => '1',
         reset_i   => ipb_reset_i,
         en_i      => mmcm_unlocked(1),
         data_o    => cnt_eprt_mmcm_unlocked
@@ -208,7 +208,7 @@ begin
     generic map (g_WIDTH => 8)
     port map (
         ref_clk_i => clock,
-        snap_i    => cnt_snap,
+        snap_i    => '1',
         reset_i   => ipb_reset_i,
         en_i      => mmcm_unlocked(0),
         data_o    => cnt_dskw_mmcm_unlocked

@@ -256,7 +256,9 @@ module frame_aligner (
   reg sot_unstable_reg = 0;
   assign sot_unstable = sot_unstable_reg;
   always @(posedge clock) begin
-    if (!sot_unstable && ready && !sot_aligned)
+    if (reset)
+      sot_unstable_reg <= 1'b0;
+    else if (ready && !sot_aligned)
       sot_unstable_reg <= 1'b1;
 
     sot_is_aligned  <= ready;
