@@ -90,7 +90,7 @@ package body ipbus_pkg is
         if    (std_match(addr, std_logic_vector(to_unsigned(IPB_SLAVE.CONTROL,  4))  & "------------")) then sel := IPB_SLAVE.CONTROL;
         elsif (std_match(addr, std_logic_vector(to_unsigned(IPB_SLAVE.ADC,      4))  & "------------")) then sel := IPB_SLAVE.ADC;
         elsif (std_match(addr, std_logic_vector(to_unsigned(IPB_SLAVE.TRIG,     4))  & "------------")) then sel := IPB_SLAVE.TRIG;
-        elsif (std_match(addr, std_logic_vector(to_unsigned(IPB_SLAVE.CLOCKING, 4))  & "------------")) then sel := IPB_SLAVE.TRIG;
+        elsif (std_match(addr, std_logic_vector(to_unsigned(IPB_SLAVE.CLOCKING, 4))  & "------------")) then sel := IPB_SLAVE.CLOCKING;
         elsif (std_match(addr, std_logic_vector(to_unsigned(IPB_SLAVE.GBT     , 4))  & "------------")) then sel := IPB_SLAVE.GBT;
         --
         else sel := 99;
