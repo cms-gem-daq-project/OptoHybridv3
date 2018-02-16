@@ -111,7 +111,7 @@ module led_control (
   // go into cylon mode if we've seen a cluster this run
   reg first_sbit_seen = 0;
   always @(posedge clock) begin
-    if (ttc_resync) 
+    if (ttc_resync || reset)
       first_sbit_seen <= 1'b0; 
     else if (cluster_count > 0)
       first_sbit_seen <= 1'b1;

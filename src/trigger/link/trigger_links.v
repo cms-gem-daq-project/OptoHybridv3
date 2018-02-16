@@ -24,6 +24,10 @@ module trigger_links (
   input [11:0] bxn_counter,
   input        ttc_bx0,
 
+  output [7:0] valid_clusters,
+
+  output       valid_clusters_or,
+
   input overflow
 );
 
@@ -52,6 +56,17 @@ IBUFDS_GTXE1 ibufds_mgt
 
 wire [55:0] link_r = {cluster3, cluster2, cluster1, cluster0};
 wire [55:0] link_l = {cluster7, cluster6, cluster5, cluster4};
+
+assign valid_clusters[0] = ~(cluster0[10:9]==2'b11);
+assign valid_clusters[1] = ~(cluster1[10:9]==2'b11);
+assign valid_clusters[2] = ~(cluster2[10:9]==2'b11);
+assign valid_clusters[3] = ~(cluster3[10:9]==2'b11);
+assign valid_clusters[4] = ~(cluster4[10:9]==2'b11);
+assign valid_clusters[5] = ~(cluster5[10:9]==2'b11);
+assign valid_clusters[6] = ~(cluster6[10:9]==2'b11);
+assign valid_clusters[7] = ~(cluster7[10:9]==2'b11);
+
+assign valid_clusters_or = |valid_clusters;
 
 wire [55:0] link [3:0];
 
