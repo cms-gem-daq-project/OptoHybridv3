@@ -83,7 +83,7 @@ module led_control (
   wire [7:0] progress_bar;
 
 
-  rate_counter #(
+  progress_bar #(
     .g_LOGARITHMIC           (32'd1), // 1 for LOG scale (ignores step )
     .g_CLK_FREQUENCY         (32'd40079000), // 40MHz LHC frequency
     .g_COUNTER_WIDTH         (32'd32),

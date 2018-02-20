@@ -920,7 +920,7 @@ begin
 
     -- Connect counter instances
 
-    COUNTER_TRIG_CTRL_CNT_OVERFLOW : entity work.counter
+    COUNTER_TRIG_CTRL_CNT_OVERFLOW : entity work.counter_snap
     generic map (g_WIDTH => 16)
     port map (
         ref_clk_i => clk_40,
@@ -931,7 +931,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT0_SBITS : entity work.counter
+    COUNTER_TRIG_CNT_VFAT0_SBITS : entity work.counter_snap
     generic map (g_WIDTH => 32)
     port map (
         ref_clk_i => clk_40,
@@ -942,7 +942,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT1_SBITS : entity work.counter
+    COUNTER_TRIG_CNT_VFAT1_SBITS : entity work.counter_snap
     generic map (g_WIDTH => 32)
     port map (
         ref_clk_i => clk_40,
@@ -953,7 +953,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT2_SBITS : entity work.counter
+    COUNTER_TRIG_CNT_VFAT2_SBITS : entity work.counter_snap
     generic map (g_WIDTH => 32)
     port map (
         ref_clk_i => clk_40,
@@ -964,7 +964,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT3_SBITS : entity work.counter
+    COUNTER_TRIG_CNT_VFAT3_SBITS : entity work.counter_snap
     generic map (g_WIDTH => 32)
     port map (
         ref_clk_i => clk_40,
@@ -975,7 +975,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT4_SBITS : entity work.counter
+    COUNTER_TRIG_CNT_VFAT4_SBITS : entity work.counter_snap
     generic map (g_WIDTH => 32)
     port map (
         ref_clk_i => clk_40,
@@ -986,7 +986,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT5_SBITS : entity work.counter
+    COUNTER_TRIG_CNT_VFAT5_SBITS : entity work.counter_snap
     generic map (g_WIDTH => 32)
     port map (
         ref_clk_i => clk_40,
@@ -997,7 +997,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT6_SBITS : entity work.counter
+    COUNTER_TRIG_CNT_VFAT6_SBITS : entity work.counter_snap
     generic map (g_WIDTH => 32)
     port map (
         ref_clk_i => clk_40,
@@ -1008,7 +1008,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT7_SBITS : entity work.counter
+    COUNTER_TRIG_CNT_VFAT7_SBITS : entity work.counter_snap
     generic map (g_WIDTH => 32)
     port map (
         ref_clk_i => clk_40,
@@ -1019,7 +1019,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT8_SBITS : entity work.counter
+    COUNTER_TRIG_CNT_VFAT8_SBITS : entity work.counter_snap
     generic map (g_WIDTH => 32)
     port map (
         ref_clk_i => clk_40,
@@ -1030,7 +1030,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT9_SBITS : entity work.counter
+    COUNTER_TRIG_CNT_VFAT9_SBITS : entity work.counter_snap
     generic map (g_WIDTH => 32)
     port map (
         ref_clk_i => clk_40,
@@ -1041,7 +1041,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT10_SBITS : entity work.counter
+    COUNTER_TRIG_CNT_VFAT10_SBITS : entity work.counter_snap
     generic map (g_WIDTH => 32)
     port map (
         ref_clk_i => clk_40,
@@ -1052,7 +1052,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT11_SBITS : entity work.counter
+    COUNTER_TRIG_CNT_VFAT11_SBITS : entity work.counter_snap
     generic map (g_WIDTH => 32)
     port map (
         ref_clk_i => clk_40,
@@ -1063,7 +1063,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT12_SBITS : entity work.counter
+    COUNTER_TRIG_CNT_VFAT12_SBITS : entity work.counter_snap
     generic map (g_WIDTH => 32)
     port map (
         ref_clk_i => clk_40,
@@ -1074,7 +1074,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT13_SBITS : entity work.counter
+    COUNTER_TRIG_CNT_VFAT13_SBITS : entity work.counter_snap
     generic map (g_WIDTH => 32)
     port map (
         ref_clk_i => clk_40,
@@ -1085,7 +1085,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT14_SBITS : entity work.counter
+    COUNTER_TRIG_CNT_VFAT14_SBITS : entity work.counter_snap
     generic map (g_WIDTH => 32)
     port map (
         ref_clk_i => clk_40,
@@ -1096,7 +1096,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT15_SBITS : entity work.counter
+    COUNTER_TRIG_CNT_VFAT15_SBITS : entity work.counter_snap
     generic map (g_WIDTH => 32)
     port map (
         ref_clk_i => clk_40,
@@ -1107,7 +1107,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT16_SBITS : entity work.counter
+    COUNTER_TRIG_CNT_VFAT16_SBITS : entity work.counter_snap
     generic map (g_WIDTH => 32)
     port map (
         ref_clk_i => clk_40,
@@ -1118,7 +1118,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT17_SBITS : entity work.counter
+    COUNTER_TRIG_CNT_VFAT17_SBITS : entity work.counter_snap
     generic map (g_WIDTH => 32)
     port map (
         ref_clk_i => clk_40,
@@ -1129,7 +1129,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT18_SBITS : entity work.counter
+    COUNTER_TRIG_CNT_VFAT18_SBITS : entity work.counter_snap
     generic map (g_WIDTH => 32)
     port map (
         ref_clk_i => clk_40,
@@ -1140,7 +1140,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT19_SBITS : entity work.counter
+    COUNTER_TRIG_CNT_VFAT19_SBITS : entity work.counter_snap
     generic map (g_WIDTH => 32)
     port map (
         ref_clk_i => clk_40,
@@ -1151,7 +1151,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT20_SBITS : entity work.counter
+    COUNTER_TRIG_CNT_VFAT20_SBITS : entity work.counter_snap
     generic map (g_WIDTH => 32)
     port map (
         ref_clk_i => clk_40,
@@ -1162,7 +1162,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT21_SBITS : entity work.counter
+    COUNTER_TRIG_CNT_VFAT21_SBITS : entity work.counter_snap
     generic map (g_WIDTH => 32)
     port map (
         ref_clk_i => clk_40,
@@ -1173,7 +1173,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT22_SBITS : entity work.counter
+    COUNTER_TRIG_CNT_VFAT22_SBITS : entity work.counter_snap
     generic map (g_WIDTH => 32)
     port map (
         ref_clk_i => clk_40,
@@ -1184,7 +1184,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT23_SBITS : entity work.counter
+    COUNTER_TRIG_CNT_VFAT23_SBITS : entity work.counter_snap
     generic map (g_WIDTH => 32)
     port map (
         ref_clk_i => clk_40,
@@ -1195,7 +1195,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_CLUSTER_COUNT : entity work.counter
+    COUNTER_TRIG_CNT_CLUSTER_COUNT : entity work.counter_snap
     generic map (g_WIDTH => 32)
     port map (
         ref_clk_i => clk_40,

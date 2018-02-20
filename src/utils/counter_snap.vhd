@@ -18,7 +18,7 @@ use ieee.numeric_std.all;
 library work;
 use work.types_pkg.all;
 
-entity counter is
+entity counter_snap is
 generic (
     g_WIDTH : integer := 32
 );
@@ -34,9 +34,9 @@ port(
     data_o      : out std_logic_vector(g_WIDTH-1 downto 0)
 
 );
-end counter;
+end counter_snap;
 
-architecture Behavioral of counter is
+architecture Behavioral of counter_snap is
 
     signal data : unsigned(g_WIDTH - 1 downto 0);
     signal reset : std_logic;

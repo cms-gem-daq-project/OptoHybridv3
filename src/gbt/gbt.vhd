@@ -332,7 +332,7 @@ begin
 
     -- Connect counter instances
 
-    COUNTER_GBT_TX_CNT_RESPONSE_SENT : entity work.counter
+    COUNTER_GBT_TX_CNT_RESPONSE_SENT : entity work.counter_snap
     generic map (g_WIDTH => 24)
     port map (
         ref_clk_i => clock_i,
@@ -343,7 +343,7 @@ begin
     );
 
 
-    COUNTER_GBT_RX_CNT_REQUEST_RECEIVED : entity work.counter
+    COUNTER_GBT_RX_CNT_REQUEST_RECEIVED : entity work.counter_snap
     generic map (g_WIDTH => 24)
     port map (
         ref_clk_i => clock_i,
@@ -354,7 +354,7 @@ begin
     );
 
 
-    COUNTER_GBT_RX_CNT_LINK_ERR : entity work.counter
+    COUNTER_GBT_RX_CNT_LINK_ERR : entity work.counter_snap
     generic map (g_WIDTH => 24)
     port map (
         ref_clk_i => clock_i,

@@ -193,7 +193,7 @@ begin
 
     -- Connect counter instances
 
-    COUNTER_CLOCKING_GBT_MMCM_UNLOCKED_CNT : entity work.counter
+    COUNTER_CLOCKING_GBT_MMCM_UNLOCKED_CNT : entity work.counter_snap
     generic map (g_WIDTH => 8)
     port map (
         ref_clk_i => clock,
@@ -204,7 +204,7 @@ begin
     );
 
 
-    COUNTER_CLOCKING_LOGIC_MMCM_UNLOCKED_CNT : entity work.counter
+    COUNTER_CLOCKING_LOGIC_MMCM_UNLOCKED_CNT : entity work.counter_snap
     generic map (g_WIDTH => 8)
     port map (
         ref_clk_i => clock,

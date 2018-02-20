@@ -16,7 +16,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity rate_counter is
+entity progress_bar is
     generic(
         g_LOGARITHMIC           : natural := 1;
         g_CLK_FREQUENCY         : natural := 40079000;
@@ -34,9 +34,9 @@ entity rate_counter is
         rate_o          : out std_logic_vector(g_COUNTER_WIDTH      - 1 downto 0) := (others => '0'); -- rate in Hz
         progress_bar_o  : out std_logic_vector(g_PROGRESS_BAR_WIDTH - 1 downto 0) := (others => '0')  -- thermometer of rate
     );
-end rate_counter;
+end progress_bar;
 
-architecture rate_counter_arch of rate_counter is
+architecture progress_bar_arch of progress_bar is
 
     constant max_count  : unsigned(g_COUNTER_WIDTH - 1 downto 0) := (others => '1');
     signal count        : unsigned(31 downto 0) := (others => '0');
@@ -105,4 +105,4 @@ begin
 
     rate_o <= std_logic_vector(rate);
 
-end rate_counter_arch;
+end progress_bar_arch;

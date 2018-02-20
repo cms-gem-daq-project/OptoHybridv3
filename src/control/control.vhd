@@ -504,7 +504,7 @@ architecture Behavioral of control is
 
     -- Connect counter instances
 
-    COUNTER_CONTROL_SEM_CNT_SEM_CRITICAL : entity work.counter
+    COUNTER_CONTROL_SEM_CNT_SEM_CRITICAL : entity work.counter_snap
     generic map (g_WIDTH => 16)
     port map (
         ref_clk_i => clock_i,
@@ -515,7 +515,7 @@ architecture Behavioral of control is
     );
 
 
-    COUNTER_CONTROL_SEM_CNT_SEM_CORRECTION : entity work.counter
+    COUNTER_CONTROL_SEM_CNT_SEM_CORRECTION : entity work.counter_snap
     generic map (g_WIDTH => 16)
     port map (
         ref_clk_i => clock_i,
@@ -526,7 +526,7 @@ architecture Behavioral of control is
     );
 
 
-    COUNTER_CONTROL_TTC_BX0_CNT_LOCAL : entity work.counter
+    COUNTER_CONTROL_TTC_BX0_CNT_LOCAL : entity work.counter_snap
     generic map (g_WIDTH => 24)
     port map (
         ref_clk_i => clock_i,
@@ -537,7 +537,7 @@ architecture Behavioral of control is
     );
 
 
-    COUNTER_CONTROL_TTC_BX0_CNT_TTC : entity work.counter
+    COUNTER_CONTROL_TTC_BX0_CNT_TTC : entity work.counter_snap
     generic map (g_WIDTH => 24)
     port map (
         ref_clk_i => clock_i,
@@ -548,7 +548,7 @@ architecture Behavioral of control is
     );
 
 
-    COUNTER_CONTROL_TTC_L1A_CNT : entity work.counter
+    COUNTER_CONTROL_TTC_L1A_CNT : entity work.counter_snap
     generic map (g_WIDTH => 24)
     port map (
         ref_clk_i => clock_i,
@@ -559,7 +559,7 @@ architecture Behavioral of control is
     );
 
 
-    COUNTER_CONTROL_TTC_BXN_SYNC_ERR_CNT : entity work.counter
+    COUNTER_CONTROL_TTC_BXN_SYNC_ERR_CNT : entity work.counter_snap
     generic map (g_WIDTH => 16)
     port map (
         ref_clk_i => clock_i,
@@ -570,7 +570,7 @@ architecture Behavioral of control is
     );
 
 
-    COUNTER_CONTROL_TTC_BX0_SYNC_ERR_CNT : entity work.counter
+    COUNTER_CONTROL_TTC_BX0_SYNC_ERR_CNT : entity work.counter_snap
     generic map (g_WIDTH => 16)
     port map (
         ref_clk_i => clock_i,
