@@ -214,35 +214,6 @@ architecture Behavioral of control is
             cnt_snap <= cnt_snap_pulse or cnt_snap_disable;
         end if;
     end process;
-    --==============--
-    --== Counters ==--
-    --==============--
-
-    -- This module implements a multitude of counters.
-
-    -- counters_inst : entity work.counters
-    -- port map(
-    --     clock               => clock_i,
-    --     reset_i             => reset,
-
-    --     -- wishbone
-    --     ttc_l1a             => ttc_l1a,
-    --     ttc_bc0             => ttc_bc0,
-    --     ttc_resync          => ttc_resync,
-    --     ttc_bx0_sync_err    => ttc_bx0_sync_err,
-
-    --     sbit_overflow_i     => sbit_overflow_i,
-
-    --     active_vfats_i      => active_vfats_i,
-
-    --     gbt_link_error_i    => gbt_link_error_i,
-
-    --     mmcms_locked_i      => mmcms_locked_i,
-    --     eprt_mmcm_locked_i  => eprt_mmcm_locked_i,
-    --     dskw_mmcm_locked_i  => dskw_mmcm_locked_i,
-
-    --     sem_correction_i    => sem_correction_i
-    -- );
 
     --==========--
     --== LEDS ==--
