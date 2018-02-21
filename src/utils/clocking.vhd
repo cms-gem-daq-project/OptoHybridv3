@@ -194,24 +194,28 @@ begin
     -- Connect counter instances
 
     COUNTER_CLOCKING_GBT_MMCM_UNLOCKED_CNT : entity work.counter_snap
-    generic map (g_WIDTH => 8)
+    generic map (
+        g_COUNTER_WIDTH  => 8
+    )
     port map (
         ref_clk_i => clock,
-        snap_i    => '1',
         reset_i   => ipb_reset_i,
         en_i      => mmcm_unlocked(1),
-        data_o    => cnt_eprt_mmcm_unlocked
+        snap_i    => '1',
+        count_o   => cnt_eprt_mmcm_unlocked
     );
 
 
     COUNTER_CLOCKING_LOGIC_MMCM_UNLOCKED_CNT : entity work.counter_snap
-    generic map (g_WIDTH => 8)
+    generic map (
+        g_COUNTER_WIDTH  => 8
+    )
     port map (
         ref_clk_i => clock,
-        snap_i    => '1',
         reset_i   => ipb_reset_i,
         en_i      => mmcm_unlocked(0),
-        data_o    => cnt_dskw_mmcm_unlocked
+        snap_i    => '1',
+        count_o   => cnt_dskw_mmcm_unlocked
     );
 
 

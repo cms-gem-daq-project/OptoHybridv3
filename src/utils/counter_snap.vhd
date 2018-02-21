@@ -20,7 +20,9 @@ use work.types_pkg.all;
 
 entity counter_snap is
 generic (
-    g_WIDTH : integer := 32
+    g_COUNTER_WIDTH  : integer := 32;
+    g_ALLOW_ROLLOVER : boolean := false;
+    g_INCREMENT_STEP : integer := 1
 );
 port(
 
@@ -31,15 +33,16 @@ port(
 
     snap_i      : in std_logic;
 
-    data_o      : out std_logic_vector(g_WIDTH-1 downto 0)
+    count_o     : out std_logic_vector(g_COUNTER_WIDTH-1 downto 0)
 
 );
 end counter_snap;
 
 architecture Behavioral of counter_snap is
 
-    signal data : unsigned(g_WIDTH - 1 downto 0);
-    signal reset : std_logic;
+    constant max_count : unsigned (g_COUNTER_WIDTH - 1 downto 0) := (others => '1');
+    signal       count : unsigned (g_COUNTER_WIDTH - 1 downto 0);
+    signal       reset : std_logic;
 
 begin
 
@@ -53,15 +56,15 @@ begin
     begin
         if (rising_edge(ref_clk_i)) then
             if (reset = '1') then
-                data_o <= (others => '0');
-                data <= (others => '0');
+                count_o <= (others => '0');
+                count <= (others => '0');
             else
-                if (en_i = '1') then
-                    data <= data + 1;
+                if en_i = '1' and (count < max_count or g_ALLOW_ROLLOVER) then
+                    count <= count + g_INCREMENT_STEP;
                 end if;
 
             if (snap_i='1') then
-                data_o <= std_logic_vector(data);
+                count_o <= std_logic_vector(count);
             end if;
 
             end if;

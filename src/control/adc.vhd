@@ -159,35 +159,41 @@ begin
     -- Connect counter instances
 
     COUNTER_ADC_CTRL_CNT_OVERTEMP : entity work.counter_snap
-    generic map (g_WIDTH => 8)
+    generic map (
+        g_COUNTER_WIDTH  => 8
+    )
     port map (
         ref_clk_i => clock_i,
-        snap_i    => cnt_snap,
         reset_i   => ipb_reset_i,
         en_i      => overtemp,
-        data_o    => cnt_overtemp
+        snap_i    => cnt_snap,
+        count_o   => cnt_overtemp
     );
 
 
     COUNTER_ADC_CTRL_CNT_VCCAUX_ALARM : entity work.counter_snap
-    generic map (g_WIDTH => 8)
+    generic map (
+        g_COUNTER_WIDTH  => 8
+    )
     port map (
         ref_clk_i => clock_i,
-        snap_i    => cnt_snap,
         reset_i   => ipb_reset_i,
         en_i      => vccaux_alarm,
-        data_o    => cnt_vccaux_alarm
+        snap_i    => cnt_snap,
+        count_o   => cnt_vccaux_alarm
     );
 
 
     COUNTER_ADC_CTRL_CNT_VCCINT_ALARM : entity work.counter_snap
-    generic map (g_WIDTH => 8)
+    generic map (
+        g_COUNTER_WIDTH  => 8
+    )
     port map (
         ref_clk_i => clock_i,
-        snap_i    => cnt_snap,
         reset_i   => ipb_reset_i,
         en_i      => vccint_alarm,
-        data_o    => cnt_vccint_alarm
+        snap_i    => cnt_snap,
+        count_o   => cnt_vccint_alarm
     );
 
 

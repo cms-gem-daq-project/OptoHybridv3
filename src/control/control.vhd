@@ -476,79 +476,93 @@ architecture Behavioral of control is
     -- Connect counter instances
 
     COUNTER_CONTROL_SEM_CNT_SEM_CRITICAL : entity work.counter_snap
-    generic map (g_WIDTH => 16)
+    generic map (
+        g_COUNTER_WIDTH  => 16
+    )
     port map (
         ref_clk_i => clock_i,
-        snap_i    => cnt_snap,
         reset_i   => reset,
         en_i      => sem_critical,
-        data_o    => cnt_sem_critical
+        snap_i    => cnt_snap,
+        count_o   => cnt_sem_critical
     );
 
 
     COUNTER_CONTROL_SEM_CNT_SEM_CORRECTION : entity work.counter_snap
-    generic map (g_WIDTH => 16)
+    generic map (
+        g_COUNTER_WIDTH  => 16
+    )
     port map (
         ref_clk_i => clock_i,
-        snap_i    => cnt_snap,
         reset_i   => reset,
         en_i      => sem_correction,
-        data_o    => cnt_sem_correction
+        snap_i    => cnt_snap,
+        count_o   => cnt_sem_correction
     );
 
 
     COUNTER_CONTROL_TTC_BX0_CNT_LOCAL : entity work.counter_snap
-    generic map (g_WIDTH => 24)
+    generic map (
+        g_COUNTER_WIDTH  => 24
+    )
     port map (
         ref_clk_i => clock_i,
-        snap_i    => cnt_snap,
         reset_i   => cnt_reset,
         en_i      => bx0_local,
-        data_o    => cnt_bx0_lcl
+        snap_i    => cnt_snap,
+        count_o   => cnt_bx0_lcl
     );
 
 
     COUNTER_CONTROL_TTC_BX0_CNT_TTC : entity work.counter_snap
-    generic map (g_WIDTH => 24)
+    generic map (
+        g_COUNTER_WIDTH  => 24
+    )
     port map (
         ref_clk_i => clock_i,
-        snap_i    => cnt_snap,
         reset_i   => cnt_reset,
         en_i      => ttc_bc0,
-        data_o    => cnt_bx0_rxd
+        snap_i    => cnt_snap,
+        count_o   => cnt_bx0_rxd
     );
 
 
     COUNTER_CONTROL_TTC_L1A_CNT : entity work.counter_snap
-    generic map (g_WIDTH => 24)
+    generic map (
+        g_COUNTER_WIDTH  => 24
+    )
     port map (
         ref_clk_i => clock_i,
-        snap_i    => cnt_snap,
         reset_i   => cnt_reset,
         en_i      => ttc_l1a,
-        data_o    => cnt_l1a
+        snap_i    => cnt_snap,
+        count_o   => cnt_l1a
     );
 
 
     COUNTER_CONTROL_TTC_BXN_SYNC_ERR_CNT : entity work.counter_snap
-    generic map (g_WIDTH => 16)
+    generic map (
+        g_COUNTER_WIDTH  => 16
+    )
     port map (
         ref_clk_i => clock_i,
-        snap_i    => cnt_snap,
         reset_i   => cnt_reset,
         en_i      => ttc_bxn_sync_err,
-        data_o    => cnt_bxn_sync_err
+        snap_i    => cnt_snap,
+        count_o   => cnt_bxn_sync_err
     );
 
 
     COUNTER_CONTROL_TTC_BX0_SYNC_ERR_CNT : entity work.counter_snap
-    generic map (g_WIDTH => 16)
+    generic map (
+        g_COUNTER_WIDTH  => 16
+    )
     port map (
         ref_clk_i => clock_i,
-        snap_i    => cnt_snap,
         reset_i   => cnt_reset,
         en_i      => ttc_bx0_sync_err,
-        data_o    => cnt_bx0_sync_err
+        snap_i    => cnt_snap,
+        count_o   => cnt_bx0_sync_err
     );
 
 

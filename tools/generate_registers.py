@@ -600,13 +600,19 @@ def updateModuleFile(module):
                 if reg.fw_cnt_en_signal is not None and reg.fw_cnt_snap_signal is not '\'1\'':
                     f.write ("\n")
                     f.write ('    COUNTER_%s : entity work.counter_snap\n' % (reg.getVhdlName()))
-                    f.write ('    generic map (g_WIDTH => %s)\n' % (reg.msb - reg.lsb + 1))
+                    f.write ('    generic map (\n')
+                    if (reg.fw_cnt_increment_step!='1'):
+                        f.write ('        g_INCREMENT_STEP => %s,\n' % (reg.fw_cnt_increment_step))
+                    if (reg.fw_cnt_allow_rollover!='false'):
+                        f.write ('        g_ALLOW_ROLLOVER => %s,\n' % (reg.fw_cnt_allow_rollover))
+                    f.write ('        g_COUNTER_WIDTH  => %s\n' % (reg.msb - reg.lsb + 1))
+                    f.write ('    )\n')
                     f.write ('    port map (\n')
                     f.write ('        ref_clk_i => %s,\n' % (module.userClock))
-                    f.write ('        snap_i    => %s,\n' % (reg.fw_cnt_snap_signal))
                     f.write ('        reset_i   => %s,\n' % (reg.fw_cnt_reset_signal))
                     f.write ('        en_i      => %s,\n' % (reg.fw_cnt_en_signal))
-                    f.write ('        data_o    => %s\n'  % (reg.signal))
+                    f.write ('        snap_i    => %s,\n' % (reg.fw_cnt_snap_signal))
+                    f.write ('        count_o   => %s\n'  % (reg.signal))
                     f.write ('    );\n')
                     f.write ('\n')
 
@@ -615,9 +621,12 @@ def updateModuleFile(module):
                     f.write ("\n")
                     f.write ('    COUNTER_%s : entity work.counter\n' % (reg.getVhdlName()))
                     f.write ('    generic map (\n')
-                    f.write ('        g_INCREMENT_STEP => %s)\n' % (reg.fw_cnt_increment_step))
-                    f.write ('        g_ALLOW_ROLLOVER => %s)\n' % (reg.fw_cnt_allow_rollover))
-                    f.write ('        g_COUNTER_WIDTH  => %s)\n' % (reg.msb - reg.lsb + 1))
+                    if (reg.fw_cnt_increment_step!='1'):
+                        f.write ('        g_INCREMENT_STEP => %s,\n' % (reg.fw_cnt_increment_step))
+                    if (reg.fw_cnt_allow_rollover!='false'):
+                        f.write ('        g_ALLOW_ROLLOVER => %s,\n' % (reg.fw_cnt_allow_rollover))
+                    f.write ('        g_COUNTER_WIDTH  => %s\n' % (reg.msb - reg.lsb + 1))
+                    f.write ('    )\n')
                     f.write ('    port map (\n')
                     f.write ('        ref_clk_i => %s,\n' % (module.userClock))
                     f.write ('        reset_i   => %s,\n' % (reg.fw_cnt_reset_signal))

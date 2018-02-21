@@ -333,35 +333,41 @@ begin
     -- Connect counter instances
 
     COUNTER_GBT_TX_CNT_RESPONSE_SENT : entity work.counter_snap
-    generic map (g_WIDTH => 24)
+    generic map (
+        g_COUNTER_WIDTH  => 24
+    )
     port map (
         ref_clk_i => clock_i,
-        snap_i    => cnt_snap,
         reset_i   => cnt_reset,
         en_i      => ipb_miso.ipb_ack,
-        data_o    => cnt_ipb_response
+        snap_i    => cnt_snap,
+        count_o   => cnt_ipb_response
     );
 
 
     COUNTER_GBT_RX_CNT_REQUEST_RECEIVED : entity work.counter_snap
-    generic map (g_WIDTH => 24)
+    generic map (
+        g_COUNTER_WIDTH  => 24
+    )
     port map (
         ref_clk_i => clock_i,
-        snap_i    => cnt_snap,
         reset_i   => cnt_reset,
         en_i      => ipb_mosi.ipb_strobe,
-        data_o    => cnt_ipb_request
+        snap_i    => cnt_snap,
+        count_o   => cnt_ipb_request
     );
 
 
     COUNTER_GBT_RX_CNT_LINK_ERR : entity work.counter_snap
-    generic map (g_WIDTH => 24)
+    generic map (
+        g_COUNTER_WIDTH  => 24
+    )
     port map (
         ref_clk_i => clock_i,
-        snap_i    => cnt_snap,
         reset_i   => cnt_reset,
         en_i      => (gbt_link_error and gbt_link_ready),
-        data_o    => cnt_link_err
+        snap_i    => cnt_snap,
+        count_o   => cnt_link_err
     );
 
 

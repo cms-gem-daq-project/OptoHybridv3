@@ -921,288 +921,340 @@ begin
     -- Connect counter instances
 
     COUNTER_TRIG_CTRL_CNT_OVERFLOW : entity work.counter_snap
-    generic map (g_WIDTH => 16)
+    generic map (
+        g_COUNTER_WIDTH  => 16
+    )
     port map (
         ref_clk_i => clk_40,
-        snap_i    => cnt_snap,
         reset_i   => cnt_reset,
         en_i      => sbit_overflow,
-        data_o    => cnt_sbit_overflow
+        snap_i    => cnt_snap,
+        count_o   => cnt_sbit_overflow
     );
 
 
     COUNTER_TRIG_CNT_VFAT0_SBITS : entity work.counter_snap
-    generic map (g_WIDTH => 32)
+    generic map (
+        g_COUNTER_WIDTH  => 32
+    )
     port map (
         ref_clk_i => clk_40,
-        snap_i    => sbit_cnt_snap,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(0),
-        data_o    => cnt_vfat0
+        snap_i    => sbit_cnt_snap,
+        count_o   => cnt_vfat0
     );
 
 
     COUNTER_TRIG_CNT_VFAT1_SBITS : entity work.counter_snap
-    generic map (g_WIDTH => 32)
+    generic map (
+        g_COUNTER_WIDTH  => 32
+    )
     port map (
         ref_clk_i => clk_40,
-        snap_i    => sbit_cnt_snap,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(1),
-        data_o    => cnt_vfat1
+        snap_i    => sbit_cnt_snap,
+        count_o   => cnt_vfat1
     );
 
 
     COUNTER_TRIG_CNT_VFAT2_SBITS : entity work.counter_snap
-    generic map (g_WIDTH => 32)
+    generic map (
+        g_COUNTER_WIDTH  => 32
+    )
     port map (
         ref_clk_i => clk_40,
-        snap_i    => sbit_cnt_snap,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(2),
-        data_o    => cnt_vfat2
+        snap_i    => sbit_cnt_snap,
+        count_o   => cnt_vfat2
     );
 
 
     COUNTER_TRIG_CNT_VFAT3_SBITS : entity work.counter_snap
-    generic map (g_WIDTH => 32)
+    generic map (
+        g_COUNTER_WIDTH  => 32
+    )
     port map (
         ref_clk_i => clk_40,
-        snap_i    => sbit_cnt_snap,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(3),
-        data_o    => cnt_vfat3
+        snap_i    => sbit_cnt_snap,
+        count_o   => cnt_vfat3
     );
 
 
     COUNTER_TRIG_CNT_VFAT4_SBITS : entity work.counter_snap
-    generic map (g_WIDTH => 32)
+    generic map (
+        g_COUNTER_WIDTH  => 32
+    )
     port map (
         ref_clk_i => clk_40,
-        snap_i    => sbit_cnt_snap,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(4),
-        data_o    => cnt_vfat4
+        snap_i    => sbit_cnt_snap,
+        count_o   => cnt_vfat4
     );
 
 
     COUNTER_TRIG_CNT_VFAT5_SBITS : entity work.counter_snap
-    generic map (g_WIDTH => 32)
+    generic map (
+        g_COUNTER_WIDTH  => 32
+    )
     port map (
         ref_clk_i => clk_40,
-        snap_i    => sbit_cnt_snap,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(5),
-        data_o    => cnt_vfat5
+        snap_i    => sbit_cnt_snap,
+        count_o   => cnt_vfat5
     );
 
 
     COUNTER_TRIG_CNT_VFAT6_SBITS : entity work.counter_snap
-    generic map (g_WIDTH => 32)
+    generic map (
+        g_COUNTER_WIDTH  => 32
+    )
     port map (
         ref_clk_i => clk_40,
-        snap_i    => sbit_cnt_snap,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(6),
-        data_o    => cnt_vfat6
+        snap_i    => sbit_cnt_snap,
+        count_o   => cnt_vfat6
     );
 
 
     COUNTER_TRIG_CNT_VFAT7_SBITS : entity work.counter_snap
-    generic map (g_WIDTH => 32)
+    generic map (
+        g_COUNTER_WIDTH  => 32
+    )
     port map (
         ref_clk_i => clk_40,
-        snap_i    => sbit_cnt_snap,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(7),
-        data_o    => cnt_vfat7
+        snap_i    => sbit_cnt_snap,
+        count_o   => cnt_vfat7
     );
 
 
     COUNTER_TRIG_CNT_VFAT8_SBITS : entity work.counter_snap
-    generic map (g_WIDTH => 32)
+    generic map (
+        g_COUNTER_WIDTH  => 32
+    )
     port map (
         ref_clk_i => clk_40,
-        snap_i    => sbit_cnt_snap,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(8),
-        data_o    => cnt_vfat8
+        snap_i    => sbit_cnt_snap,
+        count_o   => cnt_vfat8
     );
 
 
     COUNTER_TRIG_CNT_VFAT9_SBITS : entity work.counter_snap
-    generic map (g_WIDTH => 32)
+    generic map (
+        g_COUNTER_WIDTH  => 32
+    )
     port map (
         ref_clk_i => clk_40,
-        snap_i    => sbit_cnt_snap,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(9),
-        data_o    => cnt_vfat9
+        snap_i    => sbit_cnt_snap,
+        count_o   => cnt_vfat9
     );
 
 
     COUNTER_TRIG_CNT_VFAT10_SBITS : entity work.counter_snap
-    generic map (g_WIDTH => 32)
+    generic map (
+        g_COUNTER_WIDTH  => 32
+    )
     port map (
         ref_clk_i => clk_40,
-        snap_i    => sbit_cnt_snap,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(10),
-        data_o    => cnt_vfat10
+        snap_i    => sbit_cnt_snap,
+        count_o   => cnt_vfat10
     );
 
 
     COUNTER_TRIG_CNT_VFAT11_SBITS : entity work.counter_snap
-    generic map (g_WIDTH => 32)
+    generic map (
+        g_COUNTER_WIDTH  => 32
+    )
     port map (
         ref_clk_i => clk_40,
-        snap_i    => sbit_cnt_snap,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(11),
-        data_o    => cnt_vfat11
+        snap_i    => sbit_cnt_snap,
+        count_o   => cnt_vfat11
     );
 
 
     COUNTER_TRIG_CNT_VFAT12_SBITS : entity work.counter_snap
-    generic map (g_WIDTH => 32)
+    generic map (
+        g_COUNTER_WIDTH  => 32
+    )
     port map (
         ref_clk_i => clk_40,
-        snap_i    => sbit_cnt_snap,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(12),
-        data_o    => cnt_vfat12
+        snap_i    => sbit_cnt_snap,
+        count_o   => cnt_vfat12
     );
 
 
     COUNTER_TRIG_CNT_VFAT13_SBITS : entity work.counter_snap
-    generic map (g_WIDTH => 32)
+    generic map (
+        g_COUNTER_WIDTH  => 32
+    )
     port map (
         ref_clk_i => clk_40,
-        snap_i    => sbit_cnt_snap,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(13),
-        data_o    => cnt_vfat13
+        snap_i    => sbit_cnt_snap,
+        count_o   => cnt_vfat13
     );
 
 
     COUNTER_TRIG_CNT_VFAT14_SBITS : entity work.counter_snap
-    generic map (g_WIDTH => 32)
+    generic map (
+        g_COUNTER_WIDTH  => 32
+    )
     port map (
         ref_clk_i => clk_40,
-        snap_i    => sbit_cnt_snap,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(14),
-        data_o    => cnt_vfat14
+        snap_i    => sbit_cnt_snap,
+        count_o   => cnt_vfat14
     );
 
 
     COUNTER_TRIG_CNT_VFAT15_SBITS : entity work.counter_snap
-    generic map (g_WIDTH => 32)
+    generic map (
+        g_COUNTER_WIDTH  => 32
+    )
     port map (
         ref_clk_i => clk_40,
-        snap_i    => sbit_cnt_snap,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(15),
-        data_o    => cnt_vfat15
+        snap_i    => sbit_cnt_snap,
+        count_o   => cnt_vfat15
     );
 
 
     COUNTER_TRIG_CNT_VFAT16_SBITS : entity work.counter_snap
-    generic map (g_WIDTH => 32)
+    generic map (
+        g_COUNTER_WIDTH  => 32
+    )
     port map (
         ref_clk_i => clk_40,
-        snap_i    => sbit_cnt_snap,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(16),
-        data_o    => cnt_vfat16
+        snap_i    => sbit_cnt_snap,
+        count_o   => cnt_vfat16
     );
 
 
     COUNTER_TRIG_CNT_VFAT17_SBITS : entity work.counter_snap
-    generic map (g_WIDTH => 32)
+    generic map (
+        g_COUNTER_WIDTH  => 32
+    )
     port map (
         ref_clk_i => clk_40,
-        snap_i    => sbit_cnt_snap,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(17),
-        data_o    => cnt_vfat17
+        snap_i    => sbit_cnt_snap,
+        count_o   => cnt_vfat17
     );
 
 
     COUNTER_TRIG_CNT_VFAT18_SBITS : entity work.counter_snap
-    generic map (g_WIDTH => 32)
+    generic map (
+        g_COUNTER_WIDTH  => 32
+    )
     port map (
         ref_clk_i => clk_40,
-        snap_i    => sbit_cnt_snap,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(18),
-        data_o    => cnt_vfat18
+        snap_i    => sbit_cnt_snap,
+        count_o   => cnt_vfat18
     );
 
 
     COUNTER_TRIG_CNT_VFAT19_SBITS : entity work.counter_snap
-    generic map (g_WIDTH => 32)
+    generic map (
+        g_COUNTER_WIDTH  => 32
+    )
     port map (
         ref_clk_i => clk_40,
-        snap_i    => sbit_cnt_snap,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(19),
-        data_o    => cnt_vfat19
+        snap_i    => sbit_cnt_snap,
+        count_o   => cnt_vfat19
     );
 
 
     COUNTER_TRIG_CNT_VFAT20_SBITS : entity work.counter_snap
-    generic map (g_WIDTH => 32)
+    generic map (
+        g_COUNTER_WIDTH  => 32
+    )
     port map (
         ref_clk_i => clk_40,
-        snap_i    => sbit_cnt_snap,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(20),
-        data_o    => cnt_vfat20
+        snap_i    => sbit_cnt_snap,
+        count_o   => cnt_vfat20
     );
 
 
     COUNTER_TRIG_CNT_VFAT21_SBITS : entity work.counter_snap
-    generic map (g_WIDTH => 32)
+    generic map (
+        g_COUNTER_WIDTH  => 32
+    )
     port map (
         ref_clk_i => clk_40,
-        snap_i    => sbit_cnt_snap,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(21),
-        data_o    => cnt_vfat21
+        snap_i    => sbit_cnt_snap,
+        count_o   => cnt_vfat21
     );
 
 
     COUNTER_TRIG_CNT_VFAT22_SBITS : entity work.counter_snap
-    generic map (g_WIDTH => 32)
+    generic map (
+        g_COUNTER_WIDTH  => 32
+    )
     port map (
         ref_clk_i => clk_40,
-        snap_i    => sbit_cnt_snap,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(22),
-        data_o    => cnt_vfat22
+        snap_i    => sbit_cnt_snap,
+        count_o   => cnt_vfat22
     );
 
 
     COUNTER_TRIG_CNT_VFAT23_SBITS : entity work.counter_snap
-    generic map (g_WIDTH => 32)
+    generic map (
+        g_COUNTER_WIDTH  => 32
+    )
     port map (
         ref_clk_i => clk_40,
-        snap_i    => sbit_cnt_snap,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(23),
-        data_o    => cnt_vfat23
+        snap_i    => sbit_cnt_snap,
+        count_o   => cnt_vfat23
     );
 
 
     COUNTER_TRIG_CNT_CLUSTER_COUNT : entity work.counter_snap
-    generic map (g_WIDTH => 32)
+    generic map (
+        g_COUNTER_WIDTH  => 32
+    )
     port map (
         ref_clk_i => clk_40,
-        snap_i    => sbit_cnt_snap,
         reset_i   => cnt_reset_strobed,
         en_i      => valid_clusters_or,
-        data_o    => cnt_clusters
+        snap_i    => sbit_cnt_snap,
+        count_o   => cnt_clusters
     );
 
 
