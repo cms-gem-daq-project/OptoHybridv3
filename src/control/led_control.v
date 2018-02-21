@@ -3,9 +3,9 @@ module led_control (
   input mmcm_locked,
   input gbt_eclk,
 
-  input ttc_l1a, 
-  input ttc_bc0, 
-  input ttc_resync, 
+  input ttc_l1a,
+  input ttc_bc0,
+  input ttc_resync,
   input vfat_reset,
 
   input gbt_rxready,
@@ -14,7 +14,10 @@ module led_control (
 
   input reset,
 
-  input [7:0] cluster_count,
+  input [15:0] gbt_rx_data_i,
+  input led_sync_mode_i,
+
+  input [7:0] cluster_count_i,
 
   output [31:0] cluster_rate,
 
@@ -34,6 +37,13 @@ module led_control (
 
   reg [15:0] led;
 
+  reg [15:0] gbt_rx_data;
+  reg  led_sync_mode;
+  always @(posedge clock) begin
+      gbt_rx_data <= gbt_rx_data_i;
+      led_sync_mode <= led_sync_mode_i;
+  end
+
   //synthesis attribute IOB of led_out is "FORCE"
   always @(posedge clock) begin
       led_out <= led;
@@ -41,7 +51,12 @@ module led_control (
 
   always @(*) begin
     if (mmcm_locked && !reset)
-      led <= (cylon_mode) ? led_cylon : led_logic;
+      if (led_sync_mode)
+        led <= gbt_rx_data;
+      else if (cylon_mode)
+        led <= led_cylon;
+      else
+        led <= led_logic;
     else
       led <= led_err;
   end
@@ -81,7 +96,11 @@ module led_control (
 //----------------------------------------------------------------------------------------------------------------------
 
   wire [7:0] progress_bar;
+  reg [7:0] cluster_count;
 
+  always @(posedge clock) begin
+    cluster_count <= cluster_count_i;
+  end
 
   progress_bar #(
     .g_LOGARITHMIC           (32'd1), // 1 for LOG scale (ignores step )
@@ -112,7 +131,7 @@ module led_control (
   reg first_sbit_seen = 0;
   always @(posedge clock) begin
     if (ttc_resync || reset)
-      first_sbit_seen <= 1'b0; 
+      first_sbit_seen <= 1'b0;
     else if (cluster_count > 0)
       first_sbit_seen <= 1'b1;
   end

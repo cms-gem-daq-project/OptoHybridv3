@@ -47,6 +47,8 @@ port(
     elink_o_p : out std_logic_vector (1 downto 0);
     elink_o_n : out std_logic_vector (1 downto 0);
 
+    gbt_rx_data_o : out std_logic_vector (15 downto 0);
+
     gbt_link_error_o : out std_logic;
 
     l1a_o         : out std_logic;
@@ -55,6 +57,11 @@ port(
     reset_vfats_o : out std_logic;
 
     cnt_snap : in std_logic;
+
+    -- SCA Control
+
+    tx_sync_mode_sca      : in std_logic;
+    gbt_loopback_mode_sca : in std_logic;
 
     -- GBTx
 
@@ -88,6 +95,8 @@ architecture Behavioral of gbt is
     signal gbt_link_unstable : std_logic;
     signal gbt_link_ready : std_logic;
 
+    signal gbt_link_err_ready : std_logic;
+
     signal l1a_force         :  std_logic;
     signal bc0_force         :  std_logic;
     signal resync_force      :  std_logic;
@@ -103,11 +112,11 @@ architecture Behavioral of gbt is
 
 
     signal tx_delay : std_logic_vector (4 downto 0);
+
     signal tx_sync_mode : std_logic;
+    signal tx_sync_mode_ipb : std_logic;
+
     signal gbt_direct_loopback_mode      : std_logic;
-    signal gbt_direct_loopback_mode_init : std_logic;
-    signal gbt_direct_loopback_mode_timer : unsigned (31 downto 0);
-    signal gbt_direct_loopback_mode_timer_max : natural := 32;
 
     attribute mark_debug : string;
     attribute mark_debug of tx_sync_mode : signal is "TRUE";
@@ -134,7 +143,16 @@ architecture Behavioral of gbt is
 
 begin
 
+    -- gbt data output
+
+    process (clock_i) begin
+        if (rising_edge(clock_i)) then
+            gbt_rx_data_o <= gbt_rx_data;
+        end if;
+    end process;
+
     -- wishbone master
+
     ipb_mosi_o <= ipb_mosi;
     ipb_miso   <= ipb_miso_i;
 
@@ -156,30 +174,16 @@ begin
         end if;
     end process;
 
-    -- delay loopback mode to give time for wishbone response before starting loopback
-
-    process (clock_i) begin
-        if (rising_edge(clock_i)) then
-
-            -- startup timer; count to max then deassert the startup reset
-            if (reset = '1' or gbt_direct_loopback_mode_init='0') then
-                gbt_direct_loopback_mode_timer <= (others => '0');
-            elsif (gbt_direct_loopback_mode_timer < gbt_direct_loopback_mode_timer_max) then
-                gbt_direct_loopback_mode_timer <= gbt_direct_loopback_mode_timer + 1;
-            end if;
-
-            if (gbt_direct_loopback_mode_timer < gbt_direct_loopback_mode_timer_max) then
-                gbt_direct_loopback_mode <= '0';
-            else
-                gbt_direct_loopback_mode <= '1';
-            end if;
-
-        end if;
-    end process;
-
     --=========--
     --== GBT ==--
     --=========--
+
+    process (clock_i) begin
+        if (rising_edge(clock_i)) then
+            gbt_direct_loopback_mode <= (gbt_loopback_mode_sca);
+            tx_sync_mode             <= (tx_sync_mode_ipb or tx_sync_mode_sca);
+        end if;
+    end process;
 
     -- at 320 MHz performs ser-des on incoming
     gbt_serdes_inst : entity work.gbt_serdes
@@ -206,9 +210,9 @@ begin
 
        gbt_link_error_i => gbt_link_error,
 
-       delay_refclk => delay_refclk,
+       delay_refclk       => delay_refclk,
        delay_refclk_reset => delay_refclk_reset,
-       tx_delay_i => tx_delay,
+       tx_delay_i         => tx_delay,
 
        -- gbt tx bitslip
 
@@ -216,12 +220,13 @@ begin
        gbt_tx_bitslip1 => gbt_tx_bitslip1,
 
        gbt_direct_loopback_mode => gbt_direct_loopback_mode,
-       tx_sync_mode => tx_sync_mode,
-       test_pattern => test_pattern,
+       tx_sync_mode             => tx_sync_mode,
+
+       test_pattern             => test_pattern,
 
        -- parallel data
-       data_o           => gbt_rx_data,           -- Parallel data out
-       data_i           => gbt_tx_data           -- Parallel data in
+       data_o           => gbt_rx_data,    -- Parallel data out
+       data_i           => gbt_tx_data     -- Parallel data in
     );
 
     -- decodes GBT frames to build packets
@@ -303,9 +308,8 @@ begin
     regs_read_arr(0)(REG_GBT_TX_BITSLIP1_MSB downto REG_GBT_TX_BITSLIP1_LSB) <= gbt_tx_bitslip1;
     regs_read_arr(0)(REG_GBT_TX_CNT_RESPONSE_SENT_MSB downto REG_GBT_TX_CNT_RESPONSE_SENT_LSB) <= cnt_ipb_response;
     regs_read_arr(1)(REG_GBT_TX_TX_READY_BIT) <= gbt_txready_i;
-    regs_read_arr(1)(REG_GBT_TX_SYNC_MODE_BIT) <= tx_sync_mode;
+    regs_read_arr(1)(REG_GBT_TX_SYNC_MODE_BIT) <= tx_sync_mode_ipb;
     regs_read_arr(1)(REG_GBT_TX_TX_DELAY_MSB downto REG_GBT_TX_TX_DELAY_LSB) <= tx_delay;
-    regs_read_arr(1)(REG_GBT_TX_DIRECT_LOOPBACK_MODE_BIT) <= gbt_direct_loopback_mode_init;
     regs_read_arr(2)(REG_GBT_TX_TEST_PAT0_MSB downto REG_GBT_TX_TEST_PAT0_LSB) <= test_pattern (31 downto 0);
     regs_read_arr(3)(REG_GBT_TX_TEST_PAT1_MSB downto REG_GBT_TX_TEST_PAT1_LSB) <= test_pattern (63 downto 32);
     regs_read_arr(4)(REG_GBT_RX_RX_READY_BIT) <= gbt_rxready_i;
@@ -316,9 +320,8 @@ begin
     -- Connect write signals
     gbt_tx_bitslip0 <= regs_write_arr(0)(REG_GBT_TX_BITSLIP0_MSB downto REG_GBT_TX_BITSLIP0_LSB);
     gbt_tx_bitslip1 <= regs_write_arr(0)(REG_GBT_TX_BITSLIP1_MSB downto REG_GBT_TX_BITSLIP1_LSB);
-    tx_sync_mode <= regs_write_arr(1)(REG_GBT_TX_SYNC_MODE_BIT);
+    tx_sync_mode_ipb <= regs_write_arr(1)(REG_GBT_TX_SYNC_MODE_BIT);
     tx_delay <= regs_write_arr(1)(REG_GBT_TX_TX_DELAY_MSB downto REG_GBT_TX_TX_DELAY_LSB);
-    gbt_direct_loopback_mode_init <= regs_write_arr(1)(REG_GBT_TX_DIRECT_LOOPBACK_MODE_BIT);
     test_pattern (31 downto 0) <= regs_write_arr(2)(REG_GBT_TX_TEST_PAT0_MSB downto REG_GBT_TX_TEST_PAT0_LSB);
     test_pattern (63 downto 32) <= regs_write_arr(3)(REG_GBT_TX_TEST_PAT1_MSB downto REG_GBT_TX_TEST_PAT1_LSB);
 
@@ -382,7 +385,6 @@ begin
     regs_defaults(0)(REG_GBT_TX_BITSLIP1_MSB downto REG_GBT_TX_BITSLIP1_LSB) <= REG_GBT_TX_BITSLIP1_DEFAULT;
     regs_defaults(1)(REG_GBT_TX_SYNC_MODE_BIT) <= REG_GBT_TX_SYNC_MODE_DEFAULT;
     regs_defaults(1)(REG_GBT_TX_TX_DELAY_MSB downto REG_GBT_TX_TX_DELAY_LSB) <= REG_GBT_TX_TX_DELAY_DEFAULT;
-    regs_defaults(1)(REG_GBT_TX_DIRECT_LOOPBACK_MODE_BIT) <= REG_GBT_TX_DIRECT_LOOPBACK_MODE_DEFAULT;
     regs_defaults(2)(REG_GBT_TX_TEST_PAT0_MSB downto REG_GBT_TX_TEST_PAT0_LSB) <= REG_GBT_TX_TEST_PAT0_DEFAULT;
     regs_defaults(3)(REG_GBT_TX_TEST_PAT1_MSB downto REG_GBT_TX_TEST_PAT1_LSB) <= REG_GBT_TX_TEST_PAT1_DEFAULT;
 

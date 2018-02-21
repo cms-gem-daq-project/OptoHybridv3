@@ -76,6 +76,9 @@ port(
 
     --== VFAT Mezzanine ==--
 
+    --== SCA Control ==--
+
+    sca_ctl : in std_logic_vector (2 downto 0);
 
     --== GTX ==--
 
@@ -131,8 +134,12 @@ architecture Behavioral of optohybrid_top is
     signal gbt_rxvalid      : std_logic;
     signal gbt_rxready      : std_logic;
 
-    signal gbt_link_error        : std_logic;
-    signal gbt_request_received  : std_logic;
+    signal gbt_link_error       : std_logic;
+    signal gbt_rx_data          : std_logic_vector (15 downto 0);
+    signal gbt_request_received : std_logic;
+
+    signal tx_sync_mode_sca      : std_logic;
+    signal gbt_loopback_mode_sca : std_logic;
 
     signal mgt_refclk       : std_logic;
     signal reset            : std_logic;
@@ -306,7 +313,13 @@ begin
 
         -- status
 
+        gbt_rx_data_o => gbt_rx_data,
+
         gbt_link_error_o => gbt_link_error,
+
+        -- sca control
+        tx_sync_mode_sca       => tx_sync_mode_sca,
+        gbt_loopback_mode_sca  => gbt_loopback_mode_sca,
 
         -- wishbone master
         ipb_mosi_o    => ipb_mosi_gbt,
@@ -400,11 +413,20 @@ begin
         dskw_mmcm_locked_i => dskw_mmcm_locked,
         eprt_mmcm_locked_i => eprt_mmcm_locked,
 
+        -- SCA Control
+
+        sca_ctl => sca_ctl,
+
+        tx_sync_mode_sca_o       => tx_sync_mode_sca,
+        gbt_loopback_mode_sca_o  => gbt_loopback_mode_sca,
+
         -- GBT
 
         gbt_rxready_i => gbt_rxready,
         gbt_rxvalid_i => gbt_rxvalid,
         gbt_txready_i => gbt_txready,
+
+        gbt_rx_data_i => gbt_rx_data,
 
         gbt_request_received_i => gbt_request_received,
 

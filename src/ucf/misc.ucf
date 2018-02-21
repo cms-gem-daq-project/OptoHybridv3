@@ -75,7 +75,13 @@ NET "gbt_txready_i" LOC = AF13 ; # v_diff_k_13_p
 NET "gbt_rxvalid_i" LOC = AJ9  ; # R_side_2_n
 NET "gbt_rxready_i" LOC = AH9  ; # R_side_2_p
 
+NET "sca_ctl<0>" LOC="L9"  ;
+NET "sca_ctl<1>" LOC="K9"  ;
+NET "sca_ctl<2>" LOC="M10" ;
 
+NET "sca_ctl<0>"  PULLDOWN;
+NET "sca_ctl<1>"  PULLDOWN;
+NET "sca_ctl<2>"  PULLDOWN;
 
 ################################################################################
 # VFAT resets

@@ -47,11 +47,20 @@ port(
     dskw_mmcm_locked_i : in std_logic;
     eprt_mmcm_locked_i : in std_logic;
 
+    -- SCA Control
+
+    sca_ctl                 : in  std_logic_vector (2 downto 0);
+
+    tx_sync_mode_sca_o      : out std_logic;
+    gbt_loopback_mode_sca_o : out std_logic;
+
     -- GBT
 
     gbt_rxready_i : in std_logic;
     gbt_rxvalid_i : in std_logic;
     gbt_txready_i : in std_logic;
+
+    gbt_rx_data_i  : in std_logic_vector (15 downto 0);
 
     -- Trigger
 
@@ -123,6 +132,12 @@ architecture Behavioral of control is
     signal sbit_mode7   : std_logic_vector(1  downto 0);
 
     signal cluster_rate : std_logic_vector(31  downto 0);
+
+    --== SCA Control ==--
+
+    signal tx_sync_mode_sca      : std_logic;
+    signal gbt_loopback_mode_sca : std_logic;
+    signal led_sync_mode_sca     : std_logic;
 
     --== Loopback ==--
 
@@ -235,6 +250,11 @@ architecture Behavioral of control is
         clock         => clock_i,
         gbt_eclk      => gbt_clock_i,
 
+        -- gbt sync mode
+
+        gbt_rx_data_i        => gbt_rx_data_i,
+        led_sync_mode_i      => led_sync_mode_sca,
+
         -- signals
         mmcm_locked          => mmcms_locked_i,
         gbt_rxready          => gbt_rxready_i,
@@ -242,7 +262,7 @@ architecture Behavioral of control is
 
         gbt_request_received => gbt_request_received_i,
 
-        cluster_count        => cluster_count_i,
+        cluster_count_i      => cluster_count_i,
 
         cluster_rate  => cluster_rate,
 
@@ -286,6 +306,27 @@ architecture Behavioral of control is
         ext_sbits_o         => ext_sbits_o
     );
 
+    --=================--
+    --== SCA Control ==--
+    --=================--
+
+    sca_control_inst : entity work.sca_control
+    port map (
+
+    clock             => clock_i,
+
+    reset_i           => reset,
+
+    sca_ctl           => sca_ctl,
+
+    tx_sync_mode      => tx_sync_mode_sca,
+    gbt_loopback_mode => gbt_loopback_mode_sca,
+    led_sync_mode     => led_sync_mode_sca
+
+    );
+
+    tx_sync_mode_sca_o      <= tx_sync_mode_sca;
+    gbt_loopback_mode_sca_o <= gbt_loopback_mode_sca;
 
     --=================--
     --== TTC Sync    ==--

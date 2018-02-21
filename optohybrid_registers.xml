@@ -1830,17 +1830,12 @@
                 mask="0x00000002"
                 description="Sets the transmitter into a sync mode where it sends a predictable pattern"
                 fw_default="0x0"
-                fw_signal="tx_sync_mode"/>
+                fw_signal="tx_sync_mode_ipb"/>
             <node id="TX_DELAY" address="0x1" permission="rw"
                 mask="0x1f0"
                 description="GBT TX IODELAY in 78 ps steps, 0-31"
                 fw_default="0x0"
                 fw_signal="tx_delay"/>
-            <node id="DIRECT_LOOPBACK_MODE" address="0x1" permission="rw"
-                mask="0x200"
-                description="1=FPGA transmit will identically mirror receive received bits. Hard reset is needed to revert from this mode"
-                fw_default="0x0"
-                fw_signal="gbt_direct_loopback_mode_init"/>
             <node id="TEST_PAT0" address="0x2" permission="rw"
                 description="test pattern [31:0]"
                 fw_default="0x08040201"

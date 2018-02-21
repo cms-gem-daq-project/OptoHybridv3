@@ -1562,10 +1562,6 @@ package registers is
     constant REG_GBT_TX_TX_DELAY_LSB     : integer := 4;
     constant REG_GBT_TX_TX_DELAY_DEFAULT : std_logic_vector(8 downto 4) := '0' & x"0";
 
-    constant REG_GBT_TX_DIRECT_LOOPBACK_MODE_ADDR    : std_logic_vector(3 downto 0) := x"1";
-    constant REG_GBT_TX_DIRECT_LOOPBACK_MODE_BIT    : integer := 9;
-    constant REG_GBT_TX_DIRECT_LOOPBACK_MODE_DEFAULT : std_logic := '0';
-
     constant REG_GBT_TX_TEST_PAT0_ADDR    : std_logic_vector(3 downto 0) := x"2";
     constant REG_GBT_TX_TEST_PAT0_MSB    : integer := 31;
     constant REG_GBT_TX_TEST_PAT0_LSB     : integer := 0;
