@@ -151,6 +151,8 @@ architecture Behavioral of control is
     --== TTC Sync ==--
 
     signal bx0_local : std_logic;
+    attribute mark_debug : string;
+    attribute mark_debug of bx0_local : signal is "TRUE";
 
     signal cnt_snap         : std_logic;
     signal cnt_snap_pulse   : std_logic;

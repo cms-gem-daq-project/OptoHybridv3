@@ -25,7 +25,7 @@ module ttc (
   input reset,
 
   input  ttc_bx0,
-  output bx0_local,
+  output reg bx0_local,
 
   input ttc_resync,
 
@@ -99,7 +99,9 @@ module ttc (
 
   wire bxn_sync = bxn_counter == bxn_offset_lim; // BXN now at offset value (i.e. local bx0)
 
-  assign bx0_local = bxn_counter == 0; // This TMBs bxn is at 0
+  always @(posedge clock) begin
+    bx0_local <= bxn_counter == 0; // This TMBs bxn is at 0
+  end
 
   always @(posedge clock) begin
     if      (bxn_preset)  bxn_sync_err <= 0; // Sync err latch if count isnt at offset on ttc_bx0
