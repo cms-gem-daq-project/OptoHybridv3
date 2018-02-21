@@ -92,7 +92,7 @@ architecture Behavioral of gbt_serdes is
 
     signal error_cnt_strobe  : unsigned (7 downto 0);
     signal gbt_link_error_last  : std_logic;
-    signal increment_rx_delay  : std_logic;
+    signal increment_rx_delay  : std_logic_vector (0 downto 0);
 
     signal iserdes_reset_srl : std_logic;
     signal oserdes_reset_srl : std_logic;
@@ -158,9 +158,9 @@ begin
                 end if;
 
                 if (error_cnt_strobe = error_cnt_strobe_max and gbt_link_error_i='1' and gbt_link_error_last='1' and gbt_direct_loopback_mode='0') then
-                    increment_rx_delay <= '1';
+                    increment_rx_delay(0) <= '1';
                 else
-                    increment_rx_delay <= '0';
+                    increment_rx_delay(0) <= '0';
                 end if;
 
             end if;
@@ -212,7 +212,7 @@ begin
 
                                                                -- Input, Output delay control signals
         DELAY_RESET         => iserdes_reset,                  -- Active high synchronous reset for input delay
-        DELAY_DATA_CE       => (others => increment_rx_delay), -- Enable signal for IODELAYE1 of bit 0
+        DELAY_DATA_CE       => increment_rx_delay,             -- Enable signal for IODELAYE1 of bit 0
         DELAY_DATA_INC      => (others => '1'),                -- Delay increment, decrement signal of bit 0
         DELAY_LOCKED        => open,                           -- Locked signal from IDELAYCTRL
         REFCLK_RESET        => delay_refclk_reset,             -- Reference clock calibration POR reset
@@ -232,7 +232,7 @@ begin
         io_reset            => iserdes_reset,
                                                                -- Input, Output delay control signals
         DELAY_RESET         => iserdes_reset,                  -- Active high synchronous reset for input delay
-        DELAY_DATA_CE       => (others => increment_rx_delay), -- Enable signal for IODELAYE1 of bit 0
+        DELAY_DATA_CE       => increment_rx_delay,             -- Enable signal for IODELAYE1 of bit 0
         DELAY_DATA_INC      => (others => '1'),                -- Delay increment, decrement signal of bit 0
         DELAY_LOCKED        => idly_rdy,                       -- Locked signal from IDELAYCTRL
         REFCLK_RESET        => delay_refclk_reset,             -- Reference clock calibration POR reset
@@ -329,15 +329,15 @@ begin
 
         if (tx_sync_mode='1') then
 
-            to_gbt_data (15 downto 8) <= test_pattern ((frame_count+1)*8 - 1 downto frame_count*8);
+            to_gbt_data (15 downto 8)  <= test_pattern ((frame_count+1)*8 - 1 downto frame_count*8);
             to_gbt_data ( 7 downto 0)  <= test_pattern (frame_count*8+1) &
-                                         test_pattern (frame_count*8+1) &
-                                         test_pattern (frame_count*8+1) &
-                                         test_pattern (frame_count*8+1) &
-                                         test_pattern (frame_count*8+0) &
-                                         test_pattern (frame_count*8+0) &
-                                         test_pattern (frame_count*8+0) &
-                                         test_pattern (frame_count*8+0) ;
+                                          test_pattern (frame_count*8+1) &
+                                          test_pattern (frame_count*8+1) &
+                                          test_pattern (frame_count*8+1) &
+                                          test_pattern (frame_count*8+0) &
+                                          test_pattern (frame_count*8+0) &
+                                          test_pattern (frame_count*8+0) &
+                                          test_pattern (frame_count*8+0) ;
         elsif (gbt_direct_loopback_mode='1') then
             to_gbt_data <=  from_gbt;
         else
@@ -393,7 +393,7 @@ begin
     i_to_gbt_ser320 : entity work.to_gbt_ser
     port map(
         -- POLARITY SWAP ON ELINK #1
-        data_out_from_device    => (not (to_gbt(15 downto 8))),
+        data_out_from_device    => ("not"(to_gbt(15 downto 8))),
         data_out_to_pins_p      => elink_o_p(1 downto 1),
         data_out_to_pins_n      => elink_o_n(1 downto 1),
         clk_in                  => gbt_tx_clk_i(1),

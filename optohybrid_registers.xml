@@ -1870,7 +1870,7 @@
             <node id="CNT_LINK_ERR" address="0x1" permission="r"
                 mask="0x00ffffff"
                 description="Number of GBT link errrors detected"
-                fw_cnt_en_signal="(gbt_link_error and gbt_link_ready)"
+                fw_cnt_en_signal="gbt_link_err_ready"
                 fw_cnt_reset_signal="cnt_reset"
                 fw_cnt_snap_signal="cnt_snap"
                 fw_signal="cnt_link_err"/>
