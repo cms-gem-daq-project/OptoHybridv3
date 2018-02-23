@@ -39,6 +39,8 @@ always @(posedge clock) begin
     tx_sync_mode <= 1'b0;
   else if (sca_control==set_tx_sync_mode)
     tx_sync_mode <= 1'b1;
+  else
+    tx_sync_mode <= 1'b0;
 end
 
 always @(posedge clock) begin
@@ -46,13 +48,17 @@ always @(posedge clock) begin
     gbt_loopback_mode <= 1'b0;
   else if (sca_control==set_gbt_loopback_mode)
     gbt_loopback_mode <= 1'b1;
+  else
+    gbt_loopback_mode <= 1'b0;
 end
 
 always @(posedge clock) begin
   if (reset)
     led_sync_mode <= 1'b0;
-  else if (sca_control==set_led_sync_mode)
+  else if (sca_control==set_led_sync_mode || sca_control==set_gbt_loopback_mode)
     led_sync_mode <= 1'b1;
+  else
+    led_sync_mode <= 1'b0;
 end
 
 //----------------------------------------------------------------------------------------------------------------------
