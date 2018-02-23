@@ -19,6 +19,7 @@ use ieee.numeric_std.all;
 
 library work;
 use work.types_pkg.all;
+use work.trig_pkg.all;
 
 entity sbits is
 port(
@@ -103,6 +104,17 @@ architecture Behavioral of sbits is
     attribute mark_debug of aff_mux   : signal is "TRUE";
 
     signal reset : std_logic;
+
+    function reverse_vector (a: in std_logic_vector)
+    return std_logic_vector is
+    variable result: std_logic_vector(a'RANGE);
+    alias aa: std_logic_vector(a'REVERSE_RANGE) is a;
+    begin
+    for i in aa'RANGE loop
+        result(i) := aa(i);
+    end loop;
+    return result;
+    end; -- function reverse_vector
 
 begin
 
@@ -273,30 +285,30 @@ begin
 
     -- combinatorial renaming for input to cluster packing module
 
-    vfat_sbits (0)  <= sbits (63   downto 0);
-    vfat_sbits (1)  <= sbits (127  downto 64);
-    vfat_sbits (2)  <= sbits (191  downto 128);
-    vfat_sbits (3)  <= sbits (255  downto 192);
-    vfat_sbits (4)  <= sbits (319  downto 256);
-    vfat_sbits (5)  <= sbits (383  downto 320);
-    vfat_sbits (6)  <= sbits (447  downto 384);
-    vfat_sbits (7)  <= sbits (511  downto 448);
-    vfat_sbits (8)  <= sbits (575  downto 512);
-    vfat_sbits (9)  <= sbits (639  downto 576);
-    vfat_sbits (10) <= sbits (703  downto 640);
-    vfat_sbits (11) <= sbits (767  downto 704);
-    vfat_sbits (12) <= sbits (831  downto 768);
-    vfat_sbits (13) <= sbits (895  downto 832);
-    vfat_sbits (14) <= sbits (959  downto 896);
-    vfat_sbits (15) <= sbits (1023 downto 960);
-    vfat_sbits (16) <= sbits (1087 downto 1024);
-    vfat_sbits (17) <= sbits (1151 downto 1088);
-    vfat_sbits (18) <= sbits (1215 downto 1152);
-    vfat_sbits (19) <= sbits (1279 downto 1216);
-    vfat_sbits (20) <= sbits (1343 downto 1280);
-    vfat_sbits (21) <= sbits (1407 downto 1344);
-    vfat_sbits (22) <= sbits (1471 downto 1408);
-    vfat_sbits (23) <= sbits (1535 downto 1472);
+    vfat_sbits (0)  <= sbits (63   downto 0)    when REVERSE_VFAT_SBITS(0)='0' else reverse_vector(sbits (63   downto 0)   );
+    vfat_sbits (1)  <= sbits (127  downto 64)   when REVERSE_VFAT_SBITS(0)='0' else reverse_vector(sbits (127  downto 64)  );
+    vfat_sbits (2)  <= sbits (191  downto 128)  when REVERSE_VFAT_SBITS(0)='0' else reverse_vector(sbits (191  downto 128) );
+    vfat_sbits (3)  <= sbits (255  downto 192)  when REVERSE_VFAT_SBITS(0)='0' else reverse_vector(sbits (255  downto 192) );
+    vfat_sbits (4)  <= sbits (319  downto 256)  when REVERSE_VFAT_SBITS(0)='0' else reverse_vector(sbits (319  downto 256) );
+    vfat_sbits (5)  <= sbits (383  downto 320)  when REVERSE_VFAT_SBITS(0)='0' else reverse_vector(sbits (383  downto 320) );
+    vfat_sbits (6)  <= sbits (447  downto 384)  when REVERSE_VFAT_SBITS(0)='0' else reverse_vector(sbits (447  downto 384) );
+    vfat_sbits (7)  <= sbits (511  downto 448)  when REVERSE_VFAT_SBITS(0)='0' else reverse_vector(sbits (511  downto 448) );
+    vfat_sbits (8)  <= sbits (575  downto 512)  when REVERSE_VFAT_SBITS(0)='0' else reverse_vector(sbits (575  downto 512) );
+    vfat_sbits (9)  <= sbits (639  downto 576)  when REVERSE_VFAT_SBITS(0)='0' else reverse_vector(sbits (639  downto 576) );
+    vfat_sbits (10) <= sbits (703  downto 640)  when REVERSE_VFAT_SBITS(0)='0' else reverse_vector(sbits (703  downto 640) );
+    vfat_sbits (11) <= sbits (767  downto 704)  when REVERSE_VFAT_SBITS(0)='0' else reverse_vector(sbits (767  downto 704) );
+    vfat_sbits (12) <= sbits (831  downto 768)  when REVERSE_VFAT_SBITS(0)='0' else reverse_vector(sbits (831  downto 768) );
+    vfat_sbits (13) <= sbits (895  downto 832)  when REVERSE_VFAT_SBITS(0)='0' else reverse_vector(sbits (895  downto 832) );
+    vfat_sbits (14) <= sbits (959  downto 896)  when REVERSE_VFAT_SBITS(0)='0' else reverse_vector(sbits (959  downto 896) );
+    vfat_sbits (15) <= sbits (1023 downto 960)  when REVERSE_VFAT_SBITS(0)='0' else reverse_vector(sbits (1023 downto 960) );
+    vfat_sbits (16) <= sbits (1087 downto 1024) when REVERSE_VFAT_SBITS(0)='0' else reverse_vector(sbits (1087 downto 1024));
+    vfat_sbits (17) <= sbits (1151 downto 1088) when REVERSE_VFAT_SBITS(0)='0' else reverse_vector(sbits (1151 downto 1088));
+    vfat_sbits (18) <= sbits (1215 downto 1152) when REVERSE_VFAT_SBITS(0)='0' else reverse_vector(sbits (1215 downto 1152));
+    vfat_sbits (19) <= sbits (1279 downto 1216) when REVERSE_VFAT_SBITS(0)='0' else reverse_vector(sbits (1279 downto 1216));
+    vfat_sbits (20) <= sbits (1343 downto 1280) when REVERSE_VFAT_SBITS(0)='0' else reverse_vector(sbits (1343 downto 1280));
+    vfat_sbits (21) <= sbits (1407 downto 1344) when REVERSE_VFAT_SBITS(0)='0' else reverse_vector(sbits (1407 downto 1344));
+    vfat_sbits (22) <= sbits (1471 downto 1408) when REVERSE_VFAT_SBITS(0)='0' else reverse_vector(sbits (1471 downto 1408));
+    vfat_sbits (23) <= sbits (1535 downto 1472) when REVERSE_VFAT_SBITS(0)='0' else reverse_vector(sbits (1535 downto 1472));
 
     --========================--
     --==  Active VFAT Flags ==--

@@ -20,6 +20,7 @@ package trig_pkg is
   constant DDR : integer := 0;
   constant MXSBITS : integer := 64 * (DDR+1);
   constant MXSBITS_CHAMBER : integer := 24*MXSBITS;
+  constant REVERSE_VFAT_SBITS : std_logic_vector (23 downto 0) := x"000000";
 
 ---- START: AUTO GENERATED POLARITY SWAPS -- DO NOT EDIT ----
 
