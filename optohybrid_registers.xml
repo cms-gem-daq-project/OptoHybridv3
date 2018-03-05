@@ -436,7 +436,7 @@
                 description="Set to 1 to invert the S-bit SoT Frame"
                 fw_signal="sot_invert"
                 mask="0x00ffffff"
-                fw_default="0x7992a6"/>
+                fw_default="0x799286"/>
 
             <node id="VFAT0_TU_INVERT" address="0x8" permission="rw"
                 description="Set to 1 to invert the S-bit"
@@ -789,97 +789,97 @@
                         mask="0x01F00000"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(184)"
-                        fw_default="12"/>
+                        fw_default="3"/>
                     <node id="TAP_DELAY_VFAT0_BIT1" address="0x1E" permission="rw"
                         mask="0x3E000000"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(185)"
-                        fw_default="11"/>
+                        fw_default="0"/>
                     <node id="TAP_DELAY_VFAT0_BIT2" address="0x1F" permission="rw"
                         mask="0x0000001F"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(186)"
-                        fw_default="11"/>
+                        fw_default="5"/>
                     <node id="TAP_DELAY_VFAT0_BIT3" address="0x1F" permission="rw"
                         mask="0x000003E0"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(187)"
-                        fw_default="10"/>
+                        fw_default="4"/>
                     <node id="TAP_DELAY_VFAT0_BIT4" address="0x1F" permission="rw"
                         mask="0x00007C00"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(188)"
-                        fw_default="10"/>
+                        fw_default="6"/>
                     <node id="TAP_DELAY_VFAT0_BIT5" address="0x1F" permission="rw"
                         mask="0x000F8000"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(189)"
-                        fw_default="10"/>
+                        fw_default="4"/>
                     <node id="TAP_DELAY_VFAT0_BIT6" address="0x1F" permission="rw"
                         mask="0x01F00000"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(190)"
-                        fw_default="10"/>
+                        fw_default="4"/>
                     <node id="TAP_DELAY_VFAT0_BIT7" address="0x1F" permission="rw"
                         mask="0x3E000000"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(191)"
-                        fw_default="10"/>
+                        fw_default="1"/>
                     <node id="TAP_DELAY_VFAT1_BIT0" address="0x1D" permission="rw"
                         mask="0x00007C00"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(176)"
-                        fw_default="9"/>
+                        fw_default="7"/>
                     <node id="TAP_DELAY_VFAT1_BIT1" address="0x1D" permission="rw"
                         mask="0x000F8000"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(177)"
-                        fw_default="9"/>
+                        fw_default="7"/>
                     <node id="TAP_DELAY_VFAT1_BIT2" address="0x1D" permission="rw"
                         mask="0x01F00000"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(178)"
-                        fw_default="8"/>
+                        fw_default="7"/>
                     <node id="TAP_DELAY_VFAT1_BIT3" address="0x1D" permission="rw"
                         mask="0x3E000000"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(179)"
-                        fw_default="8"/>
+                        fw_default="6"/>
                     <node id="TAP_DELAY_VFAT1_BIT4" address="0x1E" permission="rw"
                         mask="0x0000001F"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(180)"
-                        fw_default="8"/>
+                        fw_default="6"/>
                     <node id="TAP_DELAY_VFAT1_BIT5" address="0x1E" permission="rw"
                         mask="0x000003E0"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(181)"
-                        fw_default="8"/>
+                        fw_default="6"/>
                     <node id="TAP_DELAY_VFAT1_BIT6" address="0x1E" permission="rw"
                         mask="0x00007C00"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(182)"
-                        fw_default="7"/>
+                        fw_default="6"/>
                     <node id="TAP_DELAY_VFAT1_BIT7" address="0x1E" permission="rw"
                         mask="0x000F8000"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(183)"
-                        fw_default="7"/>
+                        fw_default="5"/>
                     <node id="TAP_DELAY_VFAT2_BIT0" address="0x1C" permission="rw"
                         mask="0x0000001F"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(168)"
-                        fw_default="0"/>
+                        fw_default="1"/>
                     <node id="TAP_DELAY_VFAT2_BIT1" address="0x1C" permission="rw"
                         mask="0x000003E0"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(169)"
-                        fw_default="0"/>
+                        fw_default="1"/>
                     <node id="TAP_DELAY_VFAT2_BIT2" address="0x1C" permission="rw"
                         mask="0x00007C00"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(170)"
-                        fw_default="0"/>
+                        fw_default="1"/>
                     <node id="TAP_DELAY_VFAT2_BIT3" address="0x1C" permission="rw"
                         mask="0x000F8000"
                         description="uncalibrated 78 ps tap delay"
@@ -889,12 +889,12 @@
                         mask="0x01F00000"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(172)"
-                        fw_default="0"/>
+                        fw_default="1"/>
                     <node id="TAP_DELAY_VFAT2_BIT5" address="0x1C" permission="rw"
                         mask="0x3E000000"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(173)"
-                        fw_default="0"/>
+                        fw_default="1"/>
                     <node id="TAP_DELAY_VFAT2_BIT6" address="0x1D" permission="rw"
                         mask="0x0000001F"
                         description="uncalibrated 78 ps tap delay"
@@ -904,7 +904,7 @@
                         mask="0x000003E0"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(175)"
-                        fw_default="15"/>
+                        fw_default="1"/>
                     <node id="TAP_DELAY_VFAT3_BIT0" address="0x1A" permission="rw"
                         mask="0x01F00000"
                         description="uncalibrated 78 ps tap delay"
@@ -1079,7 +1079,7 @@
                         mask="0x01F00000"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(130)"
-                        fw_default="0"/>
+                        fw_default="1"/>
                     <node id="TAP_DELAY_VFAT7_BIT3" address="0x15" permission="rw"
                         mask="0x3E000000"
                         description="uncalibrated 78 ps tap delay"
@@ -1094,12 +1094,12 @@
                         mask="0x000003E0"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(133)"
-                        fw_default="2"/>
+                        fw_default="1"/>
                     <node id="TAP_DELAY_VFAT7_BIT6" address="0x16" permission="rw"
                         mask="0x00007C00"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(134)"
-                        fw_default="2"/>
+                        fw_default="1"/>
                     <node id="TAP_DELAY_VFAT7_BIT7" address="0x16" permission="rw"
                         mask="0x000F8000"
                         description="uncalibrated 78 ps tap delay"
@@ -1124,7 +1124,7 @@
                         mask="0x000F8000"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(123)"
-                        fw_default="2"/>
+                        fw_default="3"/>
                     <node id="TAP_DELAY_VFAT8_BIT4" address="0x14" permission="rw"
                         mask="0x01F00000"
                         description="uncalibrated 78 ps tap delay"
@@ -1149,42 +1149,42 @@
                         mask="0x01F00000"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(112)"
-                        fw_default="3"/>
+                        fw_default="5"/>
                     <node id="TAP_DELAY_VFAT9_BIT1" address="0x12" permission="rw"
                         mask="0x3E000000"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(113)"
-                        fw_default="3"/>
+                        fw_default="4"/>
                     <node id="TAP_DELAY_VFAT9_BIT2" address="0x13" permission="rw"
                         mask="0x0000001F"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(114)"
-                        fw_default="3"/>
+                        fw_default="4"/>
                     <node id="TAP_DELAY_VFAT9_BIT3" address="0x13" permission="rw"
                         mask="0x000003E0"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(115)"
-                        fw_default="2"/>
+                        fw_default="4"/>
                     <node id="TAP_DELAY_VFAT9_BIT4" address="0x13" permission="rw"
                         mask="0x00007C00"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(116)"
-                        fw_default="2"/>
+                        fw_default="3"/>
                     <node id="TAP_DELAY_VFAT9_BIT5" address="0x13" permission="rw"
                         mask="0x000F8000"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(117)"
-                        fw_default="2"/>
+                        fw_default="3"/>
                     <node id="TAP_DELAY_VFAT9_BIT6" address="0x13" permission="rw"
                         mask="0x01F00000"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(118)"
-                        fw_default="2"/>
+                        fw_default="3"/>
                     <node id="TAP_DELAY_VFAT9_BIT7" address="0x13" permission="rw"
                         mask="0x3E000000"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(119)"
-                        fw_default="4"/>
+                        fw_default="5"/>
                     <node id="TAP_DELAY_VFAT10_BIT0" address="0x11" permission="rw"
                         mask="0x00007C00"
                         description="uncalibrated 78 ps tap delay"
@@ -1269,42 +1269,42 @@
                         mask="0x01F00000"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(88)"
-                        fw_default="7"/>
+                        fw_default="0"/>
                     <node id="TAP_DELAY_VFAT12_BIT1" address="0xE" permission="rw"
                         mask="0x3E000000"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(89)"
-                        fw_default="7"/>
+                        fw_default="0"/>
                     <node id="TAP_DELAY_VFAT12_BIT2" address="0xF" permission="rw"
                         mask="0x0000001F"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(90)"
-                        fw_default="8"/>
+                        fw_default="1"/>
                     <node id="TAP_DELAY_VFAT12_BIT3" address="0xF" permission="rw"
                         mask="0x000003E0"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(91)"
-                        fw_default="9"/>
+                        fw_default="2"/>
                     <node id="TAP_DELAY_VFAT12_BIT4" address="0xF" permission="rw"
                         mask="0x00007C00"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(92)"
-                        fw_default="9"/>
+                        fw_default="2"/>
                     <node id="TAP_DELAY_VFAT12_BIT5" address="0xF" permission="rw"
                         mask="0x000F8000"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(93)"
-                        fw_default="10"/>
+                        fw_default="3"/>
                     <node id="TAP_DELAY_VFAT12_BIT6" address="0xF" permission="rw"
                         mask="0x01F00000"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(94)"
-                        fw_default="13"/>
+                        fw_default="5"/>
                     <node id="TAP_DELAY_VFAT12_BIT7" address="0xF" permission="rw"
                         mask="0x3E000000"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(95)"
-                        fw_default="13"/>
+                        fw_default="5"/>
                     <node id="TAP_DELAY_VFAT13_BIT0" address="0xD" permission="rw"
                         mask="0x00007C00"
                         description="uncalibrated 78 ps tap delay"
@@ -1399,42 +1399,42 @@
                         mask="0x0000001F"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(66)"
-                        fw_default="9"/>
+                        fw_default="1"/>
                     <node id="TAP_DELAY_VFAT15_BIT3" address="0xB" permission="rw"
                         mask="0x000003E0"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(67)"
-                        fw_default="8"/>
+                        fw_default="1"/>
                     <node id="TAP_DELAY_VFAT15_BIT4" address="0xB" permission="rw"
                         mask="0x00007C00"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(68)"
-                        fw_default="9"/>
+                        fw_default="1"/>
                     <node id="TAP_DELAY_VFAT15_BIT5" address="0xB" permission="rw"
                         mask="0x000F8000"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(69)"
-                        fw_default="9"/>
+                        fw_default="1"/>
                     <node id="TAP_DELAY_VFAT15_BIT6" address="0xB" permission="rw"
                         mask="0x01F00000"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(70)"
-                        fw_default="9"/>
+                        fw_default="2"/>
                     <node id="TAP_DELAY_VFAT15_BIT7" address="0xB" permission="rw"
                         mask="0x3E000000"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(71)"
-                        fw_default="8"/>
+                        fw_default="1"/>
                     <node id="TAP_DELAY_VFAT16_BIT0" address="0x9" permission="rw"
                         mask="0x00007C00"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(56)"
-                        fw_default="1"/>
+                        fw_default="2"/>
                     <node id="TAP_DELAY_VFAT16_BIT1" address="0x9" permission="rw"
                         mask="0x000F8000"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(57)"
-                        fw_default="1"/>
+                        fw_default="2"/>
                     <node id="TAP_DELAY_VFAT16_BIT2" address="0x9" permission="rw"
                         mask="0x01F00000"
                         description="uncalibrated 78 ps tap delay"
@@ -1444,17 +1444,17 @@
                         mask="0x3E000000"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(59)"
-                        fw_default="2"/>
+                        fw_default="3"/>
                     <node id="TAP_DELAY_VFAT16_BIT4" address="0xA" permission="rw"
                         mask="0x0000001F"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(60)"
-                        fw_default="2"/>
+                        fw_default="0"/>
                     <node id="TAP_DELAY_VFAT16_BIT5" address="0xA" permission="rw"
                         mask="0x000003E0"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(61)"
-                        fw_default="3"/>
+                        fw_default="2"/>
                     <node id="TAP_DELAY_VFAT16_BIT6" address="0xA" permission="rw"
                         mask="0x00007C00"
                         description="uncalibrated 78 ps tap delay"
@@ -1464,7 +1464,7 @@
                         mask="0x000F8000"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(63)"
-                        fw_default="3"/>
+                        fw_default="2"/>
                     <node id="TAP_DELAY_VFAT17_BIT0" address="0x8" permission="rw"
                         mask="0x0000001F"
                         description="uncalibrated 78 ps tap delay"
@@ -1509,42 +1509,42 @@
                         mask="0x01F00000"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(40)"
-                        fw_default="9"/>
+                        fw_default="5"/>
                     <node id="TAP_DELAY_VFAT18_BIT1" address="0x6" permission="rw"
                         mask="0x3E000000"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(41)"
-                        fw_default="9"/>
+                        fw_default="6"/>
                     <node id="TAP_DELAY_VFAT18_BIT2" address="0x7" permission="rw"
                         mask="0x0000001F"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(42)"
-                        fw_default="9"/>
+                        fw_default="5"/>
                     <node id="TAP_DELAY_VFAT18_BIT3" address="0x7" permission="rw"
                         mask="0x000003E0"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(43)"
-                        fw_default="9"/>
+                        fw_default="6"/>
                     <node id="TAP_DELAY_VFAT18_BIT4" address="0x7" permission="rw"
                         mask="0x00007C00"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(44)"
-                        fw_default="9"/>
+                        fw_default="6"/>
                     <node id="TAP_DELAY_VFAT18_BIT5" address="0x7" permission="rw"
                         mask="0x000F8000"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(45)"
-                        fw_default="12"/>
+                        fw_default="9"/>
                     <node id="TAP_DELAY_VFAT18_BIT6" address="0x7" permission="rw"
                         mask="0x01F00000"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(46)"
-                        fw_default="13"/>
+                        fw_default="9"/>
                     <node id="TAP_DELAY_VFAT18_BIT7" address="0x7" permission="rw"
                         mask="0x3E000000"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(47)"
-                        fw_default="13"/>
+                        fw_default="9"/>
                     <node id="TAP_DELAY_VFAT19_BIT0" address="0x5" permission="rw"
                         mask="0x00007C00"
                         description="uncalibrated 78 ps tap delay"
@@ -1674,12 +1674,12 @@
                         mask="0x000F8000"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(9)"
-                        fw_default="2"/>
+                        fw_default="3"/>
                     <node id="TAP_DELAY_VFAT22_BIT2" address="0x1" permission="rw"
                         mask="0x01F00000"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="trig_tap_delay(10)"
-                        fw_default="2"/>
+                        fw_default="3"/>
                     <node id="TAP_DELAY_VFAT22_BIT3" address="0x1" permission="rw"
                         mask="0x3E000000"
                         description="uncalibrated 78 ps tap delay"
@@ -1749,7 +1749,7 @@
                         mask="0x0000001F"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="sot_tap_delay(0)"
-                        fw_default="0"/>
+                        fw_default="2"/>
                     <node id="SOT_TAP_DELAY_VFAT1" address="0x20" permission="rw"
                         mask="0x000003E0"
                         description="uncalibrated 78 ps tap delay"
@@ -1759,7 +1759,7 @@
                         mask="0x00007C00"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="sot_tap_delay(2)"
-                        fw_default="12"/>
+                        fw_default="3"/>
                     <node id="SOT_TAP_DELAY_VFAT3" address="0x20" permission="rw"
                         mask="0x000F8000"
                         description="uncalibrated 78 ps tap delay"
@@ -1774,7 +1774,7 @@
                         mask="0x3E000000"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="sot_tap_delay(5)"
-                        fw_default="11"/>
+                        fw_default="6"/>
                     <node id="SOT_TAP_DELAY_VFAT6" address="0x21" permission="rw"
                         mask="0x0000001F"
                         description="uncalibrated 78 ps tap delay"
@@ -1789,7 +1789,7 @@
                         mask="0x00007C00"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="sot_tap_delay(8)"
-                        fw_default="11"/>
+                        fw_default="1"/>
                     <node id="SOT_TAP_DELAY_VFAT9" address="0x21" permission="rw"
                         mask="0x000F8000"
                         description="uncalibrated 78 ps tap delay"
@@ -1809,27 +1809,27 @@
                         mask="0x0000001F"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="sot_tap_delay(12)"
-                        fw_default="0"/>
+                        fw_default="2"/>
                     <node id="SOT_TAP_DELAY_VFAT13" address="0x22" permission="rw"
                         mask="0x000003E0"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="sot_tap_delay(13)"
-                        fw_default="6"/>
+                        fw_default="7"/>
                     <node id="SOT_TAP_DELAY_VFAT14" address="0x22" permission="rw"
                         mask="0x00007C00"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="sot_tap_delay(14)"
-                        fw_default="1"/>
+                        fw_default="0"/>
                     <node id="SOT_TAP_DELAY_VFAT15" address="0x22" permission="rw"
                         mask="0x000F8000"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="sot_tap_delay(15)"
-                        fw_default="11"/>
+                        fw_default="3"/>
                     <node id="SOT_TAP_DELAY_VFAT16" address="0x22" permission="rw"
                         mask="0x01F00000"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="sot_tap_delay(16)"
-                        fw_default="0"/>
+                        fw_default="1"/>
                     <node id="SOT_TAP_DELAY_VFAT17" address="0x22" permission="rw"
                         mask="0x3E000000"
                         description="uncalibrated 78 ps tap delay"
@@ -1844,7 +1844,7 @@
                         mask="0x000003E0"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="sot_tap_delay(19)"
-                        fw_default="9"/>
+                        fw_default="5"/>
                     <node id="SOT_TAP_DELAY_VFAT20" address="0x23" permission="rw"
                         mask="0x00007C00"
                         description="uncalibrated 78 ps tap delay"
@@ -1859,7 +1859,7 @@
                         mask="0x01F00000"
                         description="uncalibrated 78 ps tap delay"
                         fw_signal="sot_tap_delay(22)"
-                        fw_default="5"/>
+                        fw_default="0"/>
                     <node id="SOT_TAP_DELAY_VFAT23" address="0x23" permission="rw"
                         mask="0x3E000000"
                         description="uncalibrated 78 ps tap delay"
