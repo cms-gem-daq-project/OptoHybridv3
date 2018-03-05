@@ -248,7 +248,7 @@ package registers is
     -- Connects to the trigger control module
     --============================================================================
 
-    constant REG_TRIG_NUM_REGS : integer := 72;
+    constant REG_TRIG_NUM_REGS : integer := 78;
     constant REG_TRIG_ADDRESS_MSB : integer := 7;
     constant REG_TRIG_ADDRESS_LSB : integer := 0;
     constant REG_TRIG_CTRL_VFAT_MASK_ADDR    : std_logic_vector(7 downto 0) := x"00";
@@ -307,115 +307,235 @@ package registers is
     constant REG_TRIG_CTRL_SOT_INVERT_LSB     : integer := 0;
     constant REG_TRIG_CTRL_SOT_INVERT_DEFAULT : std_logic_vector(23 downto 0) := x"7992a6";
 
-    constant REG_TRIG_CNT_VFAT0_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"08";
+    constant REG_TRIG_CTRL_VFAT0_TU_INVERT_ADDR    : std_logic_vector(7 downto 0) := x"08";
+    constant REG_TRIG_CTRL_VFAT0_TU_INVERT_MSB    : integer := 7;
+    constant REG_TRIG_CTRL_VFAT0_TU_INVERT_LSB     : integer := 0;
+    constant REG_TRIG_CTRL_VFAT0_TU_INVERT_DEFAULT : std_logic_vector(7 downto 0) := x"45";
+
+    constant REG_TRIG_CTRL_VFAT1_TU_INVERT_ADDR    : std_logic_vector(7 downto 0) := x"08";
+    constant REG_TRIG_CTRL_VFAT1_TU_INVERT_MSB    : integer := 15;
+    constant REG_TRIG_CTRL_VFAT1_TU_INVERT_LSB     : integer := 8;
+    constant REG_TRIG_CTRL_VFAT1_TU_INVERT_DEFAULT : std_logic_vector(15 downto 8) := x"67";
+
+    constant REG_TRIG_CTRL_VFAT2_TU_INVERT_ADDR    : std_logic_vector(7 downto 0) := x"08";
+    constant REG_TRIG_CTRL_VFAT2_TU_INVERT_MSB    : integer := 23;
+    constant REG_TRIG_CTRL_VFAT2_TU_INVERT_LSB     : integer := 16;
+    constant REG_TRIG_CTRL_VFAT2_TU_INVERT_DEFAULT : std_logic_vector(23 downto 16) := x"46";
+
+    constant REG_TRIG_CTRL_VFAT3_TU_INVERT_ADDR    : std_logic_vector(7 downto 0) := x"08";
+    constant REG_TRIG_CTRL_VFAT3_TU_INVERT_MSB    : integer := 31;
+    constant REG_TRIG_CTRL_VFAT3_TU_INVERT_LSB     : integer := 24;
+    constant REG_TRIG_CTRL_VFAT3_TU_INVERT_DEFAULT : std_logic_vector(31 downto 24) := x"e7";
+
+    constant REG_TRIG_CTRL_VFAT4_TU_INVERT_ADDR    : std_logic_vector(7 downto 0) := x"09";
+    constant REG_TRIG_CTRL_VFAT4_TU_INVERT_MSB    : integer := 7;
+    constant REG_TRIG_CTRL_VFAT4_TU_INVERT_LSB     : integer := 0;
+    constant REG_TRIG_CTRL_VFAT4_TU_INVERT_DEFAULT : std_logic_vector(7 downto 0) := x"2d";
+
+    constant REG_TRIG_CTRL_VFAT5_TU_INVERT_ADDR    : std_logic_vector(7 downto 0) := x"09";
+    constant REG_TRIG_CTRL_VFAT5_TU_INVERT_MSB    : integer := 15;
+    constant REG_TRIG_CTRL_VFAT5_TU_INVERT_LSB     : integer := 8;
+    constant REG_TRIG_CTRL_VFAT5_TU_INVERT_DEFAULT : std_logic_vector(15 downto 8) := x"bd";
+
+    constant REG_TRIG_CTRL_VFAT6_TU_INVERT_ADDR    : std_logic_vector(7 downto 0) := x"09";
+    constant REG_TRIG_CTRL_VFAT6_TU_INVERT_MSB    : integer := 23;
+    constant REG_TRIG_CTRL_VFAT6_TU_INVERT_LSB     : integer := 16;
+    constant REG_TRIG_CTRL_VFAT6_TU_INVERT_DEFAULT : std_logic_vector(23 downto 16) := x"08";
+
+    constant REG_TRIG_CTRL_VFAT7_TU_INVERT_ADDR    : std_logic_vector(7 downto 0) := x"09";
+    constant REG_TRIG_CTRL_VFAT7_TU_INVERT_MSB    : integer := 31;
+    constant REG_TRIG_CTRL_VFAT7_TU_INVERT_LSB     : integer := 24;
+    constant REG_TRIG_CTRL_VFAT7_TU_INVERT_DEFAULT : std_logic_vector(31 downto 24) := x"32";
+
+    constant REG_TRIG_CTRL_VFAT8_TU_INVERT_ADDR    : std_logic_vector(7 downto 0) := x"0a";
+    constant REG_TRIG_CTRL_VFAT8_TU_INVERT_MSB    : integer := 7;
+    constant REG_TRIG_CTRL_VFAT8_TU_INVERT_LSB     : integer := 0;
+    constant REG_TRIG_CTRL_VFAT8_TU_INVERT_DEFAULT : std_logic_vector(7 downto 0) := x"71";
+
+    constant REG_TRIG_CTRL_VFAT9_TU_INVERT_ADDR    : std_logic_vector(7 downto 0) := x"0a";
+    constant REG_TRIG_CTRL_VFAT9_TU_INVERT_MSB    : integer := 15;
+    constant REG_TRIG_CTRL_VFAT9_TU_INVERT_LSB     : integer := 8;
+    constant REG_TRIG_CTRL_VFAT9_TU_INVERT_DEFAULT : std_logic_vector(15 downto 8) := x"07";
+
+    constant REG_TRIG_CTRL_VFAT10_TU_INVERT_ADDR    : std_logic_vector(7 downto 0) := x"0a";
+    constant REG_TRIG_CTRL_VFAT10_TU_INVERT_MSB    : integer := 23;
+    constant REG_TRIG_CTRL_VFAT10_TU_INVERT_LSB     : integer := 16;
+    constant REG_TRIG_CTRL_VFAT10_TU_INVERT_DEFAULT : std_logic_vector(23 downto 16) := x"dc";
+
+    constant REG_TRIG_CTRL_VFAT11_TU_INVERT_ADDR    : std_logic_vector(7 downto 0) := x"0a";
+    constant REG_TRIG_CTRL_VFAT11_TU_INVERT_MSB    : integer := 31;
+    constant REG_TRIG_CTRL_VFAT11_TU_INVERT_LSB     : integer := 24;
+    constant REG_TRIG_CTRL_VFAT11_TU_INVERT_DEFAULT : std_logic_vector(31 downto 24) := x"ee";
+
+    constant REG_TRIG_CTRL_VFAT12_TU_INVERT_ADDR    : std_logic_vector(7 downto 0) := x"0b";
+    constant REG_TRIG_CTRL_VFAT12_TU_INVERT_MSB    : integer := 7;
+    constant REG_TRIG_CTRL_VFAT12_TU_INVERT_LSB     : integer := 0;
+    constant REG_TRIG_CTRL_VFAT12_TU_INVERT_DEFAULT : std_logic_vector(7 downto 0) := x"ad";
+
+    constant REG_TRIG_CTRL_VFAT13_TU_INVERT_ADDR    : std_logic_vector(7 downto 0) := x"0b";
+    constant REG_TRIG_CTRL_VFAT13_TU_INVERT_MSB    : integer := 15;
+    constant REG_TRIG_CTRL_VFAT13_TU_INVERT_LSB     : integer := 8;
+    constant REG_TRIG_CTRL_VFAT13_TU_INVERT_DEFAULT : std_logic_vector(15 downto 8) := x"17";
+
+    constant REG_TRIG_CTRL_VFAT14_TU_INVERT_ADDR    : std_logic_vector(7 downto 0) := x"0b";
+    constant REG_TRIG_CTRL_VFAT14_TU_INVERT_MSB    : integer := 23;
+    constant REG_TRIG_CTRL_VFAT14_TU_INVERT_LSB     : integer := 16;
+    constant REG_TRIG_CTRL_VFAT14_TU_INVERT_DEFAULT : std_logic_vector(23 downto 16) := x"e5";
+
+    constant REG_TRIG_CTRL_VFAT15_TU_INVERT_ADDR    : std_logic_vector(7 downto 0) := x"0b";
+    constant REG_TRIG_CTRL_VFAT15_TU_INVERT_MSB    : integer := 31;
+    constant REG_TRIG_CTRL_VFAT15_TU_INVERT_LSB     : integer := 24;
+    constant REG_TRIG_CTRL_VFAT15_TU_INVERT_DEFAULT : std_logic_vector(31 downto 24) := x"8f";
+
+    constant REG_TRIG_CTRL_VFAT16_TU_INVERT_ADDR    : std_logic_vector(7 downto 0) := x"0c";
+    constant REG_TRIG_CTRL_VFAT16_TU_INVERT_MSB    : integer := 7;
+    constant REG_TRIG_CTRL_VFAT16_TU_INVERT_LSB     : integer := 0;
+    constant REG_TRIG_CTRL_VFAT16_TU_INVERT_DEFAULT : std_logic_vector(7 downto 0) := x"e2";
+
+    constant REG_TRIG_CTRL_VFAT17_TU_INVERT_ADDR    : std_logic_vector(7 downto 0) := x"0c";
+    constant REG_TRIG_CTRL_VFAT17_TU_INVERT_MSB    : integer := 15;
+    constant REG_TRIG_CTRL_VFAT17_TU_INVERT_LSB     : integer := 8;
+    constant REG_TRIG_CTRL_VFAT17_TU_INVERT_DEFAULT : std_logic_vector(15 downto 8) := x"06";
+
+    constant REG_TRIG_CTRL_VFAT18_TU_INVERT_ADDR    : std_logic_vector(7 downto 0) := x"0c";
+    constant REG_TRIG_CTRL_VFAT18_TU_INVERT_MSB    : integer := 23;
+    constant REG_TRIG_CTRL_VFAT18_TU_INVERT_LSB     : integer := 16;
+    constant REG_TRIG_CTRL_VFAT18_TU_INVERT_DEFAULT : std_logic_vector(23 downto 16) := x"30";
+
+    constant REG_TRIG_CTRL_VFAT19_TU_INVERT_ADDR    : std_logic_vector(7 downto 0) := x"0c";
+    constant REG_TRIG_CTRL_VFAT19_TU_INVERT_MSB    : integer := 31;
+    constant REG_TRIG_CTRL_VFAT19_TU_INVERT_LSB     : integer := 24;
+    constant REG_TRIG_CTRL_VFAT19_TU_INVERT_DEFAULT : std_logic_vector(31 downto 24) := x"5d";
+
+    constant REG_TRIG_CTRL_VFAT20_TU_INVERT_ADDR    : std_logic_vector(7 downto 0) := x"0d";
+    constant REG_TRIG_CTRL_VFAT20_TU_INVERT_MSB    : integer := 7;
+    constant REG_TRIG_CTRL_VFAT20_TU_INVERT_LSB     : integer := 0;
+    constant REG_TRIG_CTRL_VFAT20_TU_INVERT_DEFAULT : std_logic_vector(7 downto 0) := x"60";
+
+    constant REG_TRIG_CTRL_VFAT21_TU_INVERT_ADDR    : std_logic_vector(7 downto 0) := x"0d";
+    constant REG_TRIG_CTRL_VFAT21_TU_INVERT_MSB    : integer := 15;
+    constant REG_TRIG_CTRL_VFAT21_TU_INVERT_LSB     : integer := 8;
+    constant REG_TRIG_CTRL_VFAT21_TU_INVERT_DEFAULT : std_logic_vector(15 downto 8) := x"73";
+
+    constant REG_TRIG_CTRL_VFAT22_TU_INVERT_ADDR    : std_logic_vector(7 downto 0) := x"0d";
+    constant REG_TRIG_CTRL_VFAT22_TU_INVERT_MSB    : integer := 23;
+    constant REG_TRIG_CTRL_VFAT22_TU_INVERT_LSB     : integer := 16;
+    constant REG_TRIG_CTRL_VFAT22_TU_INVERT_DEFAULT : std_logic_vector(23 downto 16) := x"0a";
+
+    constant REG_TRIG_CTRL_VFAT23_TU_INVERT_ADDR    : std_logic_vector(7 downto 0) := x"0d";
+    constant REG_TRIG_CTRL_VFAT23_TU_INVERT_MSB    : integer := 31;
+    constant REG_TRIG_CTRL_VFAT23_TU_INVERT_LSB     : integer := 24;
+    constant REG_TRIG_CTRL_VFAT23_TU_INVERT_DEFAULT : std_logic_vector(31 downto 24) := x"14";
+
+    constant REG_TRIG_CNT_VFAT0_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"0e";
     constant REG_TRIG_CNT_VFAT0_SBITS_MSB    : integer := 31;
     constant REG_TRIG_CNT_VFAT0_SBITS_LSB     : integer := 0;
 
-    constant REG_TRIG_CNT_VFAT1_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"09";
+    constant REG_TRIG_CNT_VFAT1_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"0f";
     constant REG_TRIG_CNT_VFAT1_SBITS_MSB    : integer := 31;
     constant REG_TRIG_CNT_VFAT1_SBITS_LSB     : integer := 0;
 
-    constant REG_TRIG_CNT_VFAT2_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"0a";
+    constant REG_TRIG_CNT_VFAT2_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"10";
     constant REG_TRIG_CNT_VFAT2_SBITS_MSB    : integer := 31;
     constant REG_TRIG_CNT_VFAT2_SBITS_LSB     : integer := 0;
 
-    constant REG_TRIG_CNT_VFAT3_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"0b";
+    constant REG_TRIG_CNT_VFAT3_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"11";
     constant REG_TRIG_CNT_VFAT3_SBITS_MSB    : integer := 31;
     constant REG_TRIG_CNT_VFAT3_SBITS_LSB     : integer := 0;
 
-    constant REG_TRIG_CNT_VFAT4_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"0c";
+    constant REG_TRIG_CNT_VFAT4_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"12";
     constant REG_TRIG_CNT_VFAT4_SBITS_MSB    : integer := 31;
     constant REG_TRIG_CNT_VFAT4_SBITS_LSB     : integer := 0;
 
-    constant REG_TRIG_CNT_VFAT5_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"0d";
+    constant REG_TRIG_CNT_VFAT5_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"13";
     constant REG_TRIG_CNT_VFAT5_SBITS_MSB    : integer := 31;
     constant REG_TRIG_CNT_VFAT5_SBITS_LSB     : integer := 0;
 
-    constant REG_TRIG_CNT_VFAT6_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"0e";
+    constant REG_TRIG_CNT_VFAT6_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"14";
     constant REG_TRIG_CNT_VFAT6_SBITS_MSB    : integer := 31;
     constant REG_TRIG_CNT_VFAT6_SBITS_LSB     : integer := 0;
 
-    constant REG_TRIG_CNT_VFAT7_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"0f";
+    constant REG_TRIG_CNT_VFAT7_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"15";
     constant REG_TRIG_CNT_VFAT7_SBITS_MSB    : integer := 31;
     constant REG_TRIG_CNT_VFAT7_SBITS_LSB     : integer := 0;
 
-    constant REG_TRIG_CNT_VFAT8_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"10";
+    constant REG_TRIG_CNT_VFAT8_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"16";
     constant REG_TRIG_CNT_VFAT8_SBITS_MSB    : integer := 31;
     constant REG_TRIG_CNT_VFAT8_SBITS_LSB     : integer := 0;
 
-    constant REG_TRIG_CNT_VFAT9_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"11";
+    constant REG_TRIG_CNT_VFAT9_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"17";
     constant REG_TRIG_CNT_VFAT9_SBITS_MSB    : integer := 31;
     constant REG_TRIG_CNT_VFAT9_SBITS_LSB     : integer := 0;
 
-    constant REG_TRIG_CNT_VFAT10_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"12";
+    constant REG_TRIG_CNT_VFAT10_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"18";
     constant REG_TRIG_CNT_VFAT10_SBITS_MSB    : integer := 31;
     constant REG_TRIG_CNT_VFAT10_SBITS_LSB     : integer := 0;
 
-    constant REG_TRIG_CNT_VFAT11_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"13";
+    constant REG_TRIG_CNT_VFAT11_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"19";
     constant REG_TRIG_CNT_VFAT11_SBITS_MSB    : integer := 31;
     constant REG_TRIG_CNT_VFAT11_SBITS_LSB     : integer := 0;
 
-    constant REG_TRIG_CNT_VFAT12_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"14";
+    constant REG_TRIG_CNT_VFAT12_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"1a";
     constant REG_TRIG_CNT_VFAT12_SBITS_MSB    : integer := 31;
     constant REG_TRIG_CNT_VFAT12_SBITS_LSB     : integer := 0;
 
-    constant REG_TRIG_CNT_VFAT13_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"15";
+    constant REG_TRIG_CNT_VFAT13_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"1b";
     constant REG_TRIG_CNT_VFAT13_SBITS_MSB    : integer := 31;
     constant REG_TRIG_CNT_VFAT13_SBITS_LSB     : integer := 0;
 
-    constant REG_TRIG_CNT_VFAT14_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"16";
+    constant REG_TRIG_CNT_VFAT14_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"1c";
     constant REG_TRIG_CNT_VFAT14_SBITS_MSB    : integer := 31;
     constant REG_TRIG_CNT_VFAT14_SBITS_LSB     : integer := 0;
 
-    constant REG_TRIG_CNT_VFAT15_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"17";
+    constant REG_TRIG_CNT_VFAT15_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"1d";
     constant REG_TRIG_CNT_VFAT15_SBITS_MSB    : integer := 31;
     constant REG_TRIG_CNT_VFAT15_SBITS_LSB     : integer := 0;
 
-    constant REG_TRIG_CNT_VFAT16_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"18";
+    constant REG_TRIG_CNT_VFAT16_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"1e";
     constant REG_TRIG_CNT_VFAT16_SBITS_MSB    : integer := 31;
     constant REG_TRIG_CNT_VFAT16_SBITS_LSB     : integer := 0;
 
-    constant REG_TRIG_CNT_VFAT17_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"19";
+    constant REG_TRIG_CNT_VFAT17_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"1f";
     constant REG_TRIG_CNT_VFAT17_SBITS_MSB    : integer := 31;
     constant REG_TRIG_CNT_VFAT17_SBITS_LSB     : integer := 0;
 
-    constant REG_TRIG_CNT_VFAT18_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"1a";
+    constant REG_TRIG_CNT_VFAT18_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"20";
     constant REG_TRIG_CNT_VFAT18_SBITS_MSB    : integer := 31;
     constant REG_TRIG_CNT_VFAT18_SBITS_LSB     : integer := 0;
 
-    constant REG_TRIG_CNT_VFAT19_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"1b";
+    constant REG_TRIG_CNT_VFAT19_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"21";
     constant REG_TRIG_CNT_VFAT19_SBITS_MSB    : integer := 31;
     constant REG_TRIG_CNT_VFAT19_SBITS_LSB     : integer := 0;
 
-    constant REG_TRIG_CNT_VFAT20_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"1c";
+    constant REG_TRIG_CNT_VFAT20_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"22";
     constant REG_TRIG_CNT_VFAT20_SBITS_MSB    : integer := 31;
     constant REG_TRIG_CNT_VFAT20_SBITS_LSB     : integer := 0;
 
-    constant REG_TRIG_CNT_VFAT21_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"1d";
+    constant REG_TRIG_CNT_VFAT21_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"23";
     constant REG_TRIG_CNT_VFAT21_SBITS_MSB    : integer := 31;
     constant REG_TRIG_CNT_VFAT21_SBITS_LSB     : integer := 0;
 
-    constant REG_TRIG_CNT_VFAT22_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"1e";
+    constant REG_TRIG_CNT_VFAT22_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"24";
     constant REG_TRIG_CNT_VFAT22_SBITS_MSB    : integer := 31;
     constant REG_TRIG_CNT_VFAT22_SBITS_LSB     : integer := 0;
 
-    constant REG_TRIG_CNT_VFAT23_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"1f";
+    constant REG_TRIG_CNT_VFAT23_SBITS_ADDR    : std_logic_vector(7 downto 0) := x"25";
     constant REG_TRIG_CNT_VFAT23_SBITS_MSB    : integer := 31;
     constant REG_TRIG_CNT_VFAT23_SBITS_LSB     : integer := 0;
 
-    constant REG_TRIG_CNT_RESET_ADDR    : std_logic_vector(7 downto 0) := x"20";
+    constant REG_TRIG_CNT_RESET_ADDR    : std_logic_vector(7 downto 0) := x"26";
     constant REG_TRIG_CNT_RESET_BIT    : integer := 0;
 
-    constant REG_TRIG_CNT_SBIT_CNT_PERSIST_ADDR    : std_logic_vector(7 downto 0) := x"20";
+    constant REG_TRIG_CNT_SBIT_CNT_PERSIST_ADDR    : std_logic_vector(7 downto 0) := x"26";
     constant REG_TRIG_CNT_SBIT_CNT_PERSIST_BIT    : integer := 1;
     constant REG_TRIG_CNT_SBIT_CNT_PERSIST_DEFAULT : std_logic := '0';
 
-    constant REG_TRIG_CNT_SBIT_CNT_TIME_MAX_ADDR    : std_logic_vector(7 downto 0) := x"21";
+    constant REG_TRIG_CNT_SBIT_CNT_TIME_MAX_ADDR    : std_logic_vector(7 downto 0) := x"27";
     constant REG_TRIG_CNT_SBIT_CNT_TIME_MAX_MSB    : integer := 31;
     constant REG_TRIG_CNT_SBIT_CNT_TIME_MAX_LSB     : integer := 0;
     constant REG_TRIG_CNT_SBIT_CNT_TIME_MAX_DEFAULT : std_logic_vector(31 downto 0) := x"02638e98";
 
-    constant REG_TRIG_CNT_CLUSTER_COUNT_ADDR    : std_logic_vector(7 downto 0) := x"28";
+    constant REG_TRIG_CNT_CLUSTER_COUNT_ADDR    : std_logic_vector(7 downto 0) := x"2e";
     constant REG_TRIG_CNT_CLUSTER_COUNT_MSB    : integer := 31;
     constant REG_TRIG_CNT_CLUSTER_COUNT_LSB     : integer := 0;
 

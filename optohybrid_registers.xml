@@ -437,9 +437,130 @@
                 fw_signal="sot_invert"
                 mask="0x00ffffff"
                 fw_default="0x7992a6"/>
+
+            <node id="VFAT0_TU_INVERT" address="0x8" permission="rw"
+                description="Set to 1 to invert the S-bit"
+                fw_signal="TU_INVERT (7 downto 0)"
+                mask="0x000000ff"
+                fw_default="0x45"/>
+            <node id="VFAT1_TU_INVERT" address="0x8" permission="rw"
+                description="Set to 1 to invert the S-bit"
+                fw_signal="TU_INVERT (15 downto 8)"
+                mask="0x0000ff00"
+                fw_default="0x67"/>
+            <node id="VFAT2_TU_INVERT" address="0x8" permission="rw"
+                description="Set to 1 to invert the S-bit"
+                fw_signal="TU_INVERT (23 downto 16)"
+                mask="0x00ff0000"
+                fw_default="0x46"/>
+            <node id="VFAT3_TU_INVERT" address="0x8" permission="rw"
+                description="Set to 1 to invert the S-bit"
+                fw_signal="TU_INVERT (31 downto 24)"
+                mask="0xff000000"
+                fw_default="0xe7"/>
+            <node id="VFAT4_TU_INVERT" address="0x9" permission="rw"
+                description="Set to 1 to invert the S-bit"
+                fw_signal="TU_INVERT (39 downto 32)"
+                mask="0x000000ff"
+                fw_default="0x2d"/>
+            <node id="VFAT5_TU_INVERT" address="0x9" permission="rw"
+                description="Set to 1 to invert the S-bit"
+                fw_signal="TU_INVERT (47 downto 40)"
+                mask="0x0000ff00"
+                fw_default="0xbd"/>
+            <node id="VFAT6_TU_INVERT" address="0x9" permission="rw"
+                description="Set to 1 to invert the S-bit"
+                fw_signal="TU_INVERT (55 downto 48)"
+                mask="0x00ff0000"
+                fw_default="0x8"/>
+            <node id="VFAT7_TU_INVERT" address="0x9" permission="rw"
+                description="Set to 1 to invert the S-bit"
+                fw_signal="TU_INVERT (63 downto 56)"
+                mask="0xff000000"
+                fw_default="0x32"/>
+            <node id="VFAT8_TU_INVERT" address="0xa" permission="rw"
+                description="Set to 1 to invert the S-bit"
+                fw_signal="TU_INVERT (71 downto 64)"
+                mask="0x000000ff"
+                fw_default="0x71"/>
+            <node id="VFAT9_TU_INVERT" address="0xa" permission="rw"
+                description="Set to 1 to invert the S-bit"
+                fw_signal="TU_INVERT (79 downto 72)"
+                mask="0x0000ff00"
+                fw_default="0x7"/>
+            <node id="VFAT10_TU_INVERT" address="0xa" permission="rw"
+                description="Set to 1 to invert the S-bit"
+                fw_signal="TU_INVERT (87 downto 80)"
+                mask="0x00ff0000"
+                fw_default="0xdc"/>
+            <node id="VFAT11_TU_INVERT" address="0xa" permission="rw"
+                description="Set to 1 to invert the S-bit"
+                fw_signal="TU_INVERT (95 downto 88)"
+                mask="0xff000000"
+                fw_default="0xee"/>
+            <node id="VFAT12_TU_INVERT" address="0xb" permission="rw"
+                description="Set to 1 to invert the S-bit"
+                fw_signal="TU_INVERT (103 downto 96)"
+                mask="0x000000ff"
+                fw_default="0xad"/>
+            <node id="VFAT13_TU_INVERT" address="0xb" permission="rw"
+                description="Set to 1 to invert the S-bit"
+                fw_signal="TU_INVERT (111 downto 104)"
+                mask="0x0000ff00"
+                fw_default="0x17"/>
+            <node id="VFAT14_TU_INVERT" address="0xb" permission="rw"
+                description="Set to 1 to invert the S-bit"
+                fw_signal="TU_INVERT (119 downto 112)"
+                mask="0x00ff0000"
+                fw_default="0xe5"/>
+            <node id="VFAT15_TU_INVERT" address="0xb" permission="rw"
+                description="Set to 1 to invert the S-bit"
+                fw_signal="TU_INVERT (127 downto 120)"
+                mask="0xff000000"
+                fw_default="0x8f"/>
+            <node id="VFAT16_TU_INVERT" address="0xc" permission="rw"
+                description="Set to 1 to invert the S-bit"
+                fw_signal="TU_INVERT (135 downto 128)"
+                mask="0x000000ff"
+                fw_default="0xe2"/>
+            <node id="VFAT17_TU_INVERT" address="0xc" permission="rw"
+                description="Set to 1 to invert the S-bit"
+                fw_signal="TU_INVERT (143 downto 136)"
+                mask="0x0000ff00"
+                fw_default="0x6"/>
+            <node id="VFAT18_TU_INVERT" address="0xc" permission="rw"
+                description="Set to 1 to invert the S-bit"
+                fw_signal="TU_INVERT (151 downto 144)"
+                mask="0x00ff0000"
+                fw_default="0x30"/>
+            <node id="VFAT19_TU_INVERT" address="0xc" permission="rw"
+                description="Set to 1 to invert the S-bit"
+                fw_signal="TU_INVERT (159 downto 152)"
+                mask="0xff000000"
+                fw_default="0x5d"/>
+            <node id="VFAT20_TU_INVERT" address="0xd" permission="rw"
+                description="Set to 1 to invert the S-bit"
+                fw_signal="TU_INVERT (167 downto 160)"
+                mask="0x000000ff"
+                fw_default="0x60"/>
+            <node id="VFAT21_TU_INVERT" address="0xd" permission="rw"
+                description="Set to 1 to invert the S-bit"
+                fw_signal="TU_INVERT (175 downto 168)"
+                mask="0x0000ff00"
+                fw_default="0x73"/>
+            <node id="VFAT22_TU_INVERT" address="0xd" permission="rw"
+                description="Set to 1 to invert the S-bit"
+                fw_signal="TU_INVERT (183 downto 176)"
+                mask="0x00ff0000"
+                fw_default="0xa"/>
+            <node id="VFAT23_TU_INVERT" address="0xd" permission="rw"
+                description="Set to 1 to invert the S-bit"
+                fw_signal="TU_INVERT (191 downto 184)"
+                mask="0xff000000"
+                fw_default="0x14"/>
         </node>
 
-        <node id="CNT" address="0x8" description = "S-BIT Counters">
+        <node id="CNT" address="0x0e" description = "S-BIT Counters">
 
             <node id="VFAT0_SBITS" address="0x0" permission="r"
                 mask="0xffffffff"

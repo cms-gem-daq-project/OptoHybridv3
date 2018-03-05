@@ -34,6 +34,7 @@ port(
     reset_i          : in std_logic;
 
     sot_invert       : in std_logic_vector (23 downto 0);
+    tu_invert        : in std_logic_vector (191 downto 0);
 
     start_of_frame_p : in std_logic_vector (23 downto 0);
     start_of_frame_n : in std_logic_vector (23 downto 0);
@@ -138,8 +139,8 @@ begin
         port map (
 
             tap_delay_i => sot_tap_delay(ifat),
-				
-				invert => sot_invert (ifat),
+
+            invert => sot_invert (ifat),
 
 
             rx_p => start_of_frame_p(ifat),
@@ -193,7 +194,7 @@ begin
 
             tap_delay_i => trig_tap_delay(ipin),
 
-            invert => TU_INVERT (ipin),
+            invert => tu_invert (ipin),
 
             rx_p =>sbits_p(ipin),
             rx_n =>sbits_n(ipin),
