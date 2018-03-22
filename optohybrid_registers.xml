@@ -436,7 +436,7 @@
                 description="Set to 1 to invert the S-bit SoT Frame"
                 fw_signal="sot_invert"
                 mask="0x00ffffff"
-                fw_default="0x799286"/>
+                fw_default="0xf99286"/>
 
             <node id="VFAT0_TU_INVERT" address="0x8" permission="rw"
                 description="Set to 1 to invert the S-bit"
