@@ -756,22 +756,22 @@
 
             <node id="RESET" address="0x18" permission="w"
                 mask="0x1"
-                description="Reset S-bit countes"
+                description="Reset S-bit counters"
                 fw_write_pulse_signal="reset_counters"/>
 
-            <node id="SBIT_CNT_PERSIST" address="0x18" permission="rw"
-                mask="0x2"
+            <node id="SBIT_CNT_PERSIST" address="0x19" permission="rw"
+                mask="0x1"
                 description="1=counters will persist until manually reset; 0=counters will automatically reset at CNT_TIME"
                 fw_signal="sbit_cnt_persist"
                 fw_default="0"/>
 
-            <node id="SBIT_CNT_TIME_MAX" address="0x19" permission="rw"
+            <node id="SBIT_CNT_TIME_MAX" address="0x1a" permission="rw"
                 mask="0xffffffff"
                 description="Number of BX that the VFAT S-bit counters will count to before automatically resetting to zero"
                 fw_signal="sbit_cnt_time_max"
                 fw_default="0x2638e98"/>
 
-            <node id="CLUSTER_COUNT" address="0x20" permission="r"
+            <node id="CLUSTER_COUNT" address="0x1b" permission="r"
                 mask="0xffffffff"
                 description="VFAT Cluster Counter (chamber)"
                 fw_cnt_en_signal="valid_clusters_or"

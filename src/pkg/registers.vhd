@@ -248,7 +248,7 @@ package registers is
     -- Connects to the trigger control module
     --============================================================================
 
-    constant REG_TRIG_NUM_REGS : integer := 78;
+    constant REG_TRIG_NUM_REGS : integer := 79;
     constant REG_TRIG_ADDRESS_MSB : integer := 7;
     constant REG_TRIG_ADDRESS_LSB : integer := 0;
     constant REG_TRIG_CTRL_VFAT_MASK_ADDR    : std_logic_vector(7 downto 0) := x"00";
@@ -526,16 +526,16 @@ package registers is
     constant REG_TRIG_CNT_RESET_ADDR    : std_logic_vector(7 downto 0) := x"26";
     constant REG_TRIG_CNT_RESET_BIT    : integer := 0;
 
-    constant REG_TRIG_CNT_SBIT_CNT_PERSIST_ADDR    : std_logic_vector(7 downto 0) := x"26";
-    constant REG_TRIG_CNT_SBIT_CNT_PERSIST_BIT    : integer := 1;
+    constant REG_TRIG_CNT_SBIT_CNT_PERSIST_ADDR    : std_logic_vector(7 downto 0) := x"27";
+    constant REG_TRIG_CNT_SBIT_CNT_PERSIST_BIT    : integer := 0;
     constant REG_TRIG_CNT_SBIT_CNT_PERSIST_DEFAULT : std_logic := '0';
 
-    constant REG_TRIG_CNT_SBIT_CNT_TIME_MAX_ADDR    : std_logic_vector(7 downto 0) := x"27";
+    constant REG_TRIG_CNT_SBIT_CNT_TIME_MAX_ADDR    : std_logic_vector(7 downto 0) := x"28";
     constant REG_TRIG_CNT_SBIT_CNT_TIME_MAX_MSB    : integer := 31;
     constant REG_TRIG_CNT_SBIT_CNT_TIME_MAX_LSB     : integer := 0;
     constant REG_TRIG_CNT_SBIT_CNT_TIME_MAX_DEFAULT : std_logic_vector(31 downto 0) := x"02638e98";
 
-    constant REG_TRIG_CNT_CLUSTER_COUNT_ADDR    : std_logic_vector(7 downto 0) := x"2e";
+    constant REG_TRIG_CNT_CLUSTER_COUNT_ADDR    : std_logic_vector(7 downto 0) := x"29";
     constant REG_TRIG_CNT_CLUSTER_COUNT_MSB    : integer := 31;
     constant REG_TRIG_CNT_CLUSTER_COUNT_LSB     : integer := 0;
 
