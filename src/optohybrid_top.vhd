@@ -147,12 +147,12 @@ architecture Behavioral of optohybrid_top is
 
     signal clock_source     : std_logic;
 
-    signal ctrl_reset_vfats : std_logic;
-    signal ttc_reset_vfats  : std_logic;
-    signal reset_vfats      : std_logic;
-    signal ttc_resync       : std_logic;
-    signal ttc_l1a          : std_logic;
-    signal ttc_bc0          : std_logic;
+    signal ctrl_reset_vfats       : std_logic_vector (11 downto 0);
+    signal ttc_reset_vfats        : std_logic;
+    signal ttc_reset_vfats_vector : std_logic_vector (11 downto 0);
+    signal ttc_resync             : std_logic;
+    signal ttc_l1a                : std_logic;
+    signal ttc_bc0                : std_logic;
 
     --== Wishbone ==--
 
@@ -167,10 +167,6 @@ architecture Behavioral of optohybrid_top is
     -- Slaves
     signal ipb_mosi_slaves  : ipb_wbus_array (WB_SLAVES-1 downto 0);
     signal ipb_miso_slaves  : ipb_rbus_array (WB_SLAVES-1 downto 0);
-
-    --== Configuration ==--
-
-    signal vfat_reset       : std_logic;
 
     --== TTC ==--
 
@@ -201,10 +197,12 @@ begin
 
     -- internal wiring
 
-    clock       <= clk_1x;
+    clock  <= clk_1x;
     gbt_request_received <= ipb_mosi_gbt.ipb_strobe;
 
     -- buffers to copy into IOBs
+
+    ttc_reset_vfats_vector <= (others => ttc_reset_vfats);
 
     process(clock)
     begin
@@ -214,9 +212,7 @@ begin
         gbt_rxvalid   <= gbt_rxvalid_i;
         gbt_txready   <= gbt_txready_i;
 
-        reset_vfats <= (ttc_reset_vfats or ctrl_reset_vfats);
-
-        ext_reset   <= (others => reset_vfats);
+        ext_reset   <= (ttc_reset_vfats_vector or ctrl_reset_vfats);
 
         ext_reset_o  <= ext_reset;
         ext_sbits_o  <= ext_sbits;

@@ -81,7 +81,7 @@ port(
     --------------------
 
     -- VFAT
-    vfat_reset_o : out std_logic;
+    vfat_reset_o : out std_logic_vector (11 downto 0);
     ext_sbits_o  : out std_logic_vector(7 downto 0);
 
     -- LEDs
@@ -164,10 +164,10 @@ architecture Behavioral of control is
     signal ttc_bx0_sync_err : std_logic;
     signal ttc_bxn_sync_err : std_logic;
 
-    signal vfat_startup_reset : std_logic;
+    signal vfat_startup_reset : std_logic_vector (11 downto 0);
     signal vfat_startup_reset_timer : unsigned (31 downto 0);
     signal vfat_startup_reset_timer_max : natural := 32;
-    signal vfat_reset : std_logic;
+    signal vfat_reset : std_logic_vector (11 downto 0);
 
     signal reset : std_logic;
     signal cnt_reset : std_logic;
@@ -205,9 +205,9 @@ architecture Behavioral of control is
             end if;
 
             if (vfat_startup_reset_timer < vfat_startup_reset_timer_max) then
-                vfat_startup_reset <= '1';
+                vfat_startup_reset <= (others => '1');
             else
-                vfat_startup_reset <= '0';
+                vfat_startup_reset <= (others => '0');
             end if;
 
         end if;
@@ -246,7 +246,7 @@ architecture Behavioral of control is
         ttc_l1a => ttc_l1a,
         ttc_bc0 => ttc_bc0,
         ttc_resync => ttc_resync,
-        vfat_reset => vfat_reset,
+        vfat_reset => or_reduce(vfat_reset),
 
         -- clocks
         clock         => clock_i,
@@ -454,7 +454,7 @@ architecture Behavioral of control is
     regs_read_arr(2)(REG_CONTROL_RELEASE_VERSION_GENERATION_MSB downto REG_CONTROL_RELEASE_VERSION_GENERATION_LSB) <= (RELEASE_HARDWARE);
     regs_read_arr(3)(REG_CONTROL_SEM_CNT_SEM_CRITICAL_MSB downto REG_CONTROL_SEM_CNT_SEM_CRITICAL_LSB) <= cnt_sem_critical;
     regs_read_arr(3)(REG_CONTROL_SEM_CNT_SEM_CORRECTION_MSB downto REG_CONTROL_SEM_CNT_SEM_CORRECTION_LSB) <= cnt_sem_correction;
-    regs_read_arr(4)(REG_CONTROL_VFAT_RESET_BIT) <= vfat_reset;
+    regs_read_arr(4)(REG_CONTROL_VFAT_RESET_MSB downto REG_CONTROL_VFAT_RESET_LSB) <= vfat_reset(11 downto 0);
     regs_read_arr(5)(REG_CONTROL_FMM_DONT_WAIT_BIT) <= fmm_dont_wait;
     regs_read_arr(5)(REG_CONTROL_FMM_STOP_TRIGGER_BIT) <= fmm_trig_stop;
     regs_read_arr(6)(REG_CONTROL_TTC_BX0_CNT_LOCAL_MSB downto REG_CONTROL_TTC_BX0_CNT_LOCAL_LSB) <= cnt_bx0_lcl;
@@ -487,7 +487,7 @@ architecture Behavioral of control is
 
     -- Connect write signals
     loopback <= regs_write_arr(0)(REG_CONTROL_LOOPBACK_DATA_MSB downto REG_CONTROL_LOOPBACK_DATA_LSB);
-    vfat_reset <= regs_write_arr(4)(REG_CONTROL_VFAT_RESET_BIT);
+    vfat_reset(11 downto 0) <= regs_write_arr(4)(REG_CONTROL_VFAT_RESET_MSB downto REG_CONTROL_VFAT_RESET_LSB);
     fmm_dont_wait <= regs_write_arr(5)(REG_CONTROL_FMM_DONT_WAIT_BIT);
     ttc_bxn_offset <= regs_write_arr(8)(REG_CONTROL_TTC_BXN_OFFSET_MSB downto REG_CONTROL_TTC_BXN_OFFSET_LSB);
     sbit_sel0 <= regs_write_arr(12)(REG_CONTROL_HDMI_SBIT_SEL0_MSB downto REG_CONTROL_HDMI_SBIT_SEL0_LSB);
@@ -615,7 +615,7 @@ architecture Behavioral of control is
 
     -- Defaults
     regs_defaults(0)(REG_CONTROL_LOOPBACK_DATA_MSB downto REG_CONTROL_LOOPBACK_DATA_LSB) <= REG_CONTROL_LOOPBACK_DATA_DEFAULT;
-    regs_defaults(4)(REG_CONTROL_VFAT_RESET_BIT) <= REG_CONTROL_VFAT_RESET_DEFAULT;
+    regs_defaults(4)(REG_CONTROL_VFAT_RESET_MSB downto REG_CONTROL_VFAT_RESET_LSB) <= REG_CONTROL_VFAT_RESET_DEFAULT;
     regs_defaults(5)(REG_CONTROL_FMM_DONT_WAIT_BIT) <= REG_CONTROL_FMM_DONT_WAIT_DEFAULT;
     regs_defaults(8)(REG_CONTROL_TTC_BXN_OFFSET_MSB downto REG_CONTROL_TTC_BXN_OFFSET_LSB) <= REG_CONTROL_TTC_BXN_OFFSET_DEFAULT;
     regs_defaults(12)(REG_CONTROL_HDMI_SBIT_SEL0_MSB downto REG_CONTROL_HDMI_SBIT_SEL0_LSB) <= REG_CONTROL_HDMI_SBIT_SEL0_DEFAULT;

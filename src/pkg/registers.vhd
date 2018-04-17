@@ -47,8 +47,9 @@ package registers is
     constant REG_CONTROL_SEM_CNT_SEM_CORRECTION_LSB     : integer := 16;
 
     constant REG_CONTROL_VFAT_RESET_ADDR    : std_logic_vector(5 downto 0) := "00" & x"a";
-    constant REG_CONTROL_VFAT_RESET_BIT    : integer := 0;
-    constant REG_CONTROL_VFAT_RESET_DEFAULT : std_logic := '0';
+    constant REG_CONTROL_VFAT_RESET_MSB    : integer := 11;
+    constant REG_CONTROL_VFAT_RESET_LSB     : integer := 0;
+    constant REG_CONTROL_VFAT_RESET_DEFAULT : std_logic_vector(11 downto 0) := x"000";
 
     constant REG_CONTROL_FMM_DONT_WAIT_ADDR    : std_logic_vector(5 downto 0) := "00" & x"c";
     constant REG_CONTROL_FMM_DONT_WAIT_BIT    : integer := 0;

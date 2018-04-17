@@ -65,9 +65,9 @@
 
         <node id="VFAT" address="0x5" description = "VFAT Control">
             <node id="RESET" address="0x5" permission="rw"
-                mask="0x00000001"
+                mask="0x00000fff"
                 description="VFAT Reset Output"
-                fw_signal="vfat_reset"
+                fw_signal="vfat_reset(11 downto 0)"
                 fw_default="0x0"/>
         </node>
 
