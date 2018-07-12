@@ -59,7 +59,8 @@ port(
 
     --== HDMI  ==--
 
-    ext_sbits_o : out  std_logic_vector (7 downto 0);
+    ext_sbits_o   : out  std_logic_vector (6 downto 0);
+    ext_trigger_i : in   std_logic;
 
     --== LEDs ==--
 
@@ -124,6 +125,7 @@ architecture Behavioral of optohybrid_top is
     signal clk_1x           : std_logic;
     signal clk_2x           : std_logic;
     signal clk_4x           : std_logic;
+    signal clk_8x           : std_logic;
     signal clk_4x_90        : std_logic;
 
     signal delay_refclk     : std_logic;
@@ -215,7 +217,7 @@ begin
         ext_reset   <= (ttc_reset_vfats_vector or ctrl_reset_vfats);
 
         ext_reset_o  <= ext_reset;
-        ext_sbits_o  <= ext_sbits;
+        ext_sbits_o  <= ext_sbits (6 downto 0);
 
     end if;
     end process;
@@ -254,6 +256,7 @@ begin
         clk_2x_o           => clk_2x,
         clk_4x_o           => clk_4x,
         clk_4x_90_o        => clk_4x_90,
+        clk_8x_o           => clk_8x,
 
         cluster_clk_o      => cluster_clk,
         delay_refclk_reset_o => delay_refclk_reset,
@@ -379,6 +382,28 @@ begin
         adc_vn          => adc_vn
     );
 
+    --=========--
+    --== TDC ==--
+    --=========--
+
+    oh_tdc_inst : entity work.oh_tdc
+    port map (
+
+        -- Clocks
+        clk_1x_i => clk_1x,
+        clk_8x_i => clk_8x,
+        reset_i  => reset,
+
+        -- Inputs
+        trigger_i  => ext_trigger_i,
+        sbits_i    => active_vfats,
+
+        -- Wishbone
+        ipb_mosi_i      => ipb_mosi_slaves (IPB_SLAVE.TDC),
+        ipb_miso_o      => ipb_miso_slaves (IPB_SLAVE.TDC),
+        ipb_reset_i     => reset,
+        ipb_clk_i       => clock
+    );
 
     --=============--
     --== Control ==--

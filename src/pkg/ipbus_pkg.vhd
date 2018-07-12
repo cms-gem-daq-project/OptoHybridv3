@@ -5,7 +5,7 @@ use ieee.numeric_std.all;
 package ipbus_pkg is
 
     constant WB_MASTERS : integer := 1;
-    constant WB_SLAVES : integer := 5;
+    constant WB_SLAVES : integer := 6;
 
     constant WB_ADDR_SIZE : integer := 16;
 
@@ -34,6 +34,7 @@ package ipbus_pkg is
         TRIG      : integer;
         CLOCKING  : integer;
         GBT       : integer;
+        TDC       : integer;
     end record;
 
     -- IPbus slave index definition
@@ -42,7 +43,8 @@ package ipbus_pkg is
         ADC => 1,
         TRIG => 2,
         CLOCKING => 3,
-        GBT => 4
+        GBT => 4,
+        TDC => 5
     );
 
     constant IPB_REQ_BITS        : integer := 49;
@@ -92,6 +94,7 @@ package body ipbus_pkg is
         elsif (std_match(addr, std_logic_vector(to_unsigned(IPB_SLAVE.TRIG,     4))  & "------------")) then sel := IPB_SLAVE.TRIG;
         elsif (std_match(addr, std_logic_vector(to_unsigned(IPB_SLAVE.CLOCKING, 4))  & "------------")) then sel := IPB_SLAVE.CLOCKING;
         elsif (std_match(addr, std_logic_vector(to_unsigned(IPB_SLAVE.GBT     , 4))  & "------------")) then sel := IPB_SLAVE.GBT;
+        elsif (std_match(addr, std_logic_vector(to_unsigned(IPB_SLAVE.TDC     , 4))  & "------------")) then sel := IPB_SLAVE.TDC;
         --
         else sel := 99;
         end if;

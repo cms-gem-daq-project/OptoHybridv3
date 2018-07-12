@@ -1,7 +1,7 @@
 ##############################################################
 #
 # Xilinx Core Generator version 14.7
-# Date: Sun Nov 26 16:43:27 2017
+# Date: Thu Jul 12 22:57:58 2018
 #
 ##############################################################
 #
@@ -21,7 +21,7 @@ SET addpads = false
 SET asysymbol = true
 SET busformat = BusFormatAngleBracketNotRipped
 SET createndf = false
-SET designentry = VHDL
+SET designentry = Verilog
 SET device = xc6vlx130t
 SET devicefamily = virtex6
 SET flowvendor = Other
@@ -32,8 +32,8 @@ SET package = ff1156
 SET removerpms = false
 SET simulationfiles = Behavioral
 SET speedgrade = -1
-SET verilogsim = false
-SET vhdlsim = true
+SET verilogsim = true
+SET vhdlsim = false
 # END Project Options
 # BEGIN Select
 SELECT System_Monitor_Wizard family Xilinx,_Inc. 2.1
@@ -163,4 +163,4 @@ CSET vccint_alarm_upper=1.05
 MISC pkg_timestamp=2013-10-13T18:46:09Z
 # END Extra information
 GENERATE
-# CRC: 6aa975c5
+# CRC: edde1bac

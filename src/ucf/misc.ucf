@@ -17,7 +17,9 @@ NET "ext_sbits_o[3]" LOC = J17; # tmds d2 n
 NET "ext_sbits_o[4]" LOC = L14; # tmds d1 p
 NET "ext_sbits_o[5]" LOC = L15; # tmds d1 n
 NET "ext_sbits_o[6]" LOC = M17; # tmds d0 p
-NET "ext_sbits_o[7]" LOC = M18; # tmds d0 n
+#NET "ext_sbits_o[7]" LOC = M18; # tmds d0 n
+
+NET "ext_trigger_i" LOC = M18;
 
 ## Header
 # INST "led_o" IOB=TRUE;

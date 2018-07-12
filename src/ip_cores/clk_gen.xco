@@ -1,7 +1,7 @@
 ##############################################################
 #
 # Xilinx Core Generator version 14.7
-# Date: Sat Nov 11 20:38:35 2017
+# Date: Thu Jul 12 19:04:10 2018
 #
 ##############################################################
 #
@@ -21,7 +21,7 @@ SET addpads = false
 SET asysymbol = true
 SET busformat = BusFormatAngleBracketNotRipped
 SET createndf = false
-SET designentry = VHDL
+SET designentry = Verilog
 SET device = xc6vlx130t
 SET devicefamily = virtex6
 SET flowvendor = Other
@@ -32,8 +32,8 @@ SET package = ff1156
 SET removerpms = false
 SET simulationfiles = Behavioral
 SET speedgrade = -1
-SET verilogsim = false
-SET vhdlsim = true
+SET verilogsim = true
+SET vhdlsim = false
 # END Project Options
 # BEGIN Select
 SELECT Clocking_Wizard xilinx.com:ip:clk_wiz:3.6
@@ -53,7 +53,7 @@ CSET clk_out5_port=clk200_o
 CSET clk_out5_use_fine_ps_gui=false
 CSET clk_out6_port=clk20_135_o
 CSET clk_out6_use_fine_ps_gui=false
-CSET clk_out7_port=CLK_OUT7
+CSET clk_out7_port=clk320_o
 CSET clk_out7_use_fine_ps_gui=false
 CSET clk_valid_port=CLK_VALID
 CSET clkfb_in_n_port=CLKFB_IN_N
@@ -99,9 +99,9 @@ CSET clkout6_requested_phase=135
 CSET clkout6_used=true
 CSET clkout7_drives=BUFG
 CSET clkout7_requested_duty_cycle=50.000
-CSET clkout7_requested_out_freq=100.000
+CSET clkout7_requested_out_freq=320
 CSET clkout7_requested_phase=0.000
-CSET clkout7_used=false
+CSET clkout7_used=true
 CSET clock_mgr_type=MANUAL
 CSET component_name=clk_gen
 CSET daddr_port=DADDR
@@ -178,7 +178,7 @@ CSET mmcm_clkout5_divide=40
 CSET mmcm_clkout5_duty_cycle=0.500
 CSET mmcm_clkout5_phase=135.000
 CSET mmcm_clkout5_use_fine_ps=false
-CSET mmcm_clkout6_divide=1
+CSET mmcm_clkout6_divide=3
 CSET mmcm_clkout6_duty_cycle=0.500
 CSET mmcm_clkout6_phase=0.000
 CSET mmcm_clkout6_use_fine_ps=false
@@ -189,7 +189,7 @@ CSET mmcm_notes=None
 CSET mmcm_ref_jitter1=0.010
 CSET mmcm_ref_jitter2=0.010
 CSET mmcm_startup_wait=false
-CSET num_out_clks=6
+CSET num_out_clks=7
 CSET override_dcm=false
 CSET override_dcm_clkgen=false
 CSET override_mmcm=false
@@ -266,4 +266,4 @@ CSET use_status=false
 MISC pkg_timestamp=2012-05-10T12:44:55Z
 # END Extra information
 GENERATE
-# CRC: 9c1a66e7
+# CRC: 64b28544

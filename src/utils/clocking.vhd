@@ -42,6 +42,7 @@ port(
     clk_1x_o        : out std_logic;
     clk_2x_o        : out std_logic;
     clk_4x_o        : out std_logic;
+    clk_8x_o        : out std_logic;
     clk_4x_90_o     : out std_logic;
 
     delay_refclk_o  : out std_logic;
@@ -111,6 +112,7 @@ begin
         clk160_90_o => clk_4x_90_o,
         clk200_o    => delay_refclk_o,
         clk20_135_o => cluster_clk_o,
+        clk320_o    => clk_8x_o,
 
         locked_o    => mmcm_locked(0)
     );

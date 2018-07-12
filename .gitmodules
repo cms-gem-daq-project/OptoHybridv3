@@ -1,3 +1,6 @@
 [submodule "src/sbit_cluster_packer"]
 	path = src/sbit_cluster_packer
 	url = https://github.com/andrewpeck/gem_cluster_packer.git
+[submodule "src/optohybrid_tdc"]
+	path = src/optohybrid_tdc
+	url = https://github.com/lpetre-ulb/optohybrid_tdc
