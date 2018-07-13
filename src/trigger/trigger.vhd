@@ -199,7 +199,7 @@ begin
 
     process (clk_40) begin
         if (rising_edge(clk_40)) then
-            sbit_cnt_snap <= cnt_snap or (sbit_timer_snap and not sbit_cnt_persist);
+            sbit_cnt_snap <= (sbit_timer_snap and not sbit_cnt_persist);
         end if;
     end process;
 
