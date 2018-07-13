@@ -277,7 +277,7 @@ puts "Finished Creating PROM Files"
 #set_property generic "DATE_CODE=32'h$datecode HASH_CODE=32'h$git_hash" [current_fileset]
 
 
-set releasedir     release/${shortname}_${datecode}_${releasecode}
+set releasedir     release/${shortname}_${releasecode}
 
 if {![file isdirectory release]} {
     file mkdir release
@@ -288,11 +288,11 @@ if {![file isdirectory $releasedir]} {
 }
 
 
- file copy -force $mcs_filename   ${releasedir}/${shortname}-${datecode}-${releasecode}.mcs
- file copy -force $bit_filename   ${releasedir}/${shortname}-${datecode}-${releasecode}.bit
-#file copy -force $svf_verify     ${releasedir}/${shortname}-${datecode}-${releasecode}_verify.svf
-#file copy -force $svf_noverify   ${releasedir}/${shortname}-${datecode}-${releasecode}_noverify.svf
- file copy -force $prm_filename   ${releasedir}/${shortname}-${datecode}-${releasecode}.prm
- file copy -force $cfi_filename   ${releasedir}/${shortname}-${datecode}-${releasecode}.cfi
- file copy -force $cdc_filename   ${releasedir}/${shortname}-${datecode}-${releasecode}.cdc
- file copy -force $xml_filename   ${releasedir}/$xml_filename
+ file copy -force $mcs_filename   ${releasedir}/${shortname}-${releasecode}.mcs
+ file copy -force $bit_filename   ${releasedir}/${shortname}-${releasecode}.bit
+#file copy -force $svf_verify     ${releasedir}/${shortname}-${releasecode}_verify.svf
+#file copy -force $svf_noverify   ${releasedir}/${shortname}-${releasecode}_noverify.svf
+ file copy -force $prm_filename   ${releasedir}/${shortname}-${releasecode}.prm
+ file copy -force $cfi_filename   ${releasedir}/${shortname}-${releasecode}.cfi
+ file copy -force $cdc_filename   ${releasedir}/${shortname}-${releasecode}.cdc
+ file copy -force $xml_filename   ${releasedir}/oh_registers-${releasecode}.xml
