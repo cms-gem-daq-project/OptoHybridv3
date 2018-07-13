@@ -288,11 +288,11 @@ if {![file isdirectory $releasedir]} {
 }
 
 
- file copy -force $mcs_filename   ${releasedir}/${shortname}-${releasecode}.mcs
- file copy -force $bit_filename   ${releasedir}/${shortname}-${releasecode}.bit
-#file copy -force $svf_verify     ${releasedir}/${shortname}-${releasecode}_verify.svf
-#file copy -force $svf_noverify   ${releasedir}/${shortname}-${releasecode}_noverify.svf
- file copy -force $prm_filename   ${releasedir}/${shortname}-${releasecode}.prm
- file copy -force $cfi_filename   ${releasedir}/${shortname}-${releasecode}.cfi
- file copy -force $cdc_filename   ${releasedir}/${shortname}-${releasecode}.cdc
- file copy -force $xml_filename   ${releasedir}/oh_registers-${releasecode}.xml
+ file copy -force $mcs_filename   ${releasedir}/${shortname}_${releasecode}.mcs
+ file copy -force $bit_filename   ${releasedir}/${shortname}_${releasecode}.bit
+#file copy -force $svf_verify     ${releasedir}/${shortname}_${releasecode}_verify.svf
+#file copy -force $svf_noverify   ${releasedir}/${shortname}_${releasecode}_noverify.svf
+ file copy -force $prm_filename   ${releasedir}/${shortname}_${releasecode}.prm
+ file copy -force $cfi_filename   ${releasedir}/${shortname}_${releasecode}.cfi
+ file copy -force $cdc_filename   ${releasedir}/${shortname}_${releasecode}.cdc
+ file copy -force $xml_filename   ${releasedir}/oh_registers_${releasecode}.xml
