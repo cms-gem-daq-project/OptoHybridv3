@@ -6,7 +6,7 @@ package param_pkg is
 
     constant MAJOR_VERSION          : std_logic_vector(7 downto 0) := x"03";
     constant MINOR_VERSION          : std_logic_vector(7 downto 0) := x"01";
-    constant RELEASE_VERSION        : std_logic_vector(7 downto 0) := x"03";
+    constant RELEASE_VERSION        : std_logic_vector(7 downto 0) := x"02";
 
     constant RELEASE_YEAR           : std_logic_vector(15 downto 0) := x"2018";
     constant RELEASE_MONTH          : std_logic_vector(7 downto  0) := x"07";
