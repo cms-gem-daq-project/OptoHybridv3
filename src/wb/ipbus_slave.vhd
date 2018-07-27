@@ -11,9 +11,9 @@
 ----------------------------------------------------------------------------------
 
 
-library ieee;
-use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.NUMERIC_STD.all;
 
 use work.ipbus_pkg.all;
 use work.types_pkg.all;
@@ -51,6 +51,7 @@ architecture Behavioral of ipbus_slave is
     signal ipb_reg_sel      : integer range 0 to g_NUM_REGS - 1 := 0;
     signal ipb_addr_valid   : std_logic := '0';
     signal ipb_miso         : ipb_rbus;
+    signal ipb_mosi         : ipb_wbus;
 
     -- data on ipbus clock domain
     signal reg_read_data            : std_logic_vector(31 downto 0) := (others => '0');
@@ -72,24 +73,9 @@ architecture Behavioral of ipbus_slave is
     constant ipb_timeout      : unsigned(15 downto 0) := x"1388"; -- 5000 clock cycles
     signal ipb_timer          : unsigned(15 downto 0) := (others => '0');
 
-    -- DEBUG
-    signal ipb_mosi_debug   : ipb_wbus;
-
-    attribute mark_debug : string;
-    attribute mark_debug of ipb_state : signal is "true";
-    attribute mark_debug of ipb_reg_sel : signal is "true";
-    attribute mark_debug of ipb_addr_valid : signal is "true";
-    attribute mark_debug of ipb_mosi_debug : signal is "true";
-    attribute mark_debug of ipb_miso : signal is "true";
-    attribute mark_debug of regs_read_strb : signal is "true";
-    attribute mark_debug of regs_read_ack : signal is "true";
-    attribute mark_debug of regs_write_strb : signal is "true";
-    attribute mark_debug of regs_write_ack : signal is "true";
-
 begin
 
     ipb_miso_o <= ipb_miso;
-    ipb_mosi_debug <= ipb_mosi_i;
 
     p_ipb_fsm:
     process(ipb_clk_i)
@@ -103,7 +89,10 @@ begin
                 regs_write_strb <= '0';
                 regs_read_strb  <= '0';
                 ipb_timer <= (others => '0');
+                ipb_mosi <= (ipb_addr => (others => '0'), ipb_wdata => (others => '0'), ipb_strobe => '0', ipb_write => '0');
             else
+                ipb_mosi <= ipb_mosi_i;
+
                 case ipb_state is
                     when IDLE =>
                         regs_write_strb <= '0';
@@ -112,26 +101,26 @@ begin
                         if (g_USE_INDIVIDUAL_ADDRS) then
                             -- individual address matching (NOTE: maybe could be doen more efficiently..)
                             for i in 0 to g_NUM_REGS - 1 loop
-                                if (ipb_mosi_i.ipb_addr(g_ADDR_HIGH_BIT downto g_ADDR_LOW_BIT) = individual_addrs_arr_i(i)(g_ADDR_HIGH_BIT downto g_ADDR_LOW_BIT)) then
+                                if (ipb_mosi.ipb_addr(g_ADDR_HIGH_BIT downto g_ADDR_LOW_BIT) = individual_addrs_arr_i(i)(g_ADDR_HIGH_BIT downto g_ADDR_LOW_BIT)) then
                                     ipb_reg_sel <= i;
                                     ipb_addr_valid <= '1';
                                 end if;
                             end loop;
                         else
                             -- sequential address matching
-                            ipb_reg_sel <= to_integer(unsigned(ipb_mosi_i.ipb_addr(g_ADDR_HIGH_BIT downto g_ADDR_LOW_BIT)));
-                            if (to_integer(unsigned(ipb_mosi_i.ipb_addr(g_ADDR_HIGH_BIT downto g_ADDR_LOW_BIT))) < g_NUM_REGS) then
+                            ipb_reg_sel <= to_integer(unsigned(ipb_mosi.ipb_addr(g_ADDR_HIGH_BIT downto g_ADDR_LOW_BIT)));
+                            if (to_integer(unsigned(ipb_mosi.ipb_addr(g_ADDR_HIGH_BIT downto g_ADDR_LOW_BIT))) < g_NUM_REGS) then
                                 ipb_addr_valid <= '1';
                             end if;
                         end if;
 
-                        if (ipb_mosi_i.ipb_strobe = '1') then
+                        if (ipb_mosi.ipb_strobe = '1') then
                             ipb_state <= RSPD;
                         end if;
                     when RSPD =>
-                        if (ipb_addr_valid = '1' and ipb_mosi_i.ipb_write = '1') then
+                        if (ipb_addr_valid = '1' and ipb_mosi.ipb_write = '1') then
                             --write
-                            reg_write_data <= ipb_mosi_i.ipb_wdata;
+                            reg_write_data <= ipb_mosi.ipb_wdata;
                             regs_write_strb <= '1';
                             ipb_state <= SYNC_WRITE;
                         elsif (ipb_addr_valid = '1') then
