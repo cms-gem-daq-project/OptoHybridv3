@@ -9,6 +9,9 @@ module trigger_links (
 
   input reset_i,
 
+  output reg [3:0] pll_locked,
+  output reg [3:0] reset_done,
+
   output [3:0] trg_tx_p,
   output [3:0] trg_tx_n,
 
@@ -80,6 +83,7 @@ assign link[3] = link_l;  // GL (GEM left link)
 
 wire [3:0] tx_out_clk;
 wire [3:0] tx_pll_locked;
+wire [3:0] tx_resetdone;
 
 reg [3:0] txpll_rst_cnt = 0;
 reg txpll_rst=0;
@@ -96,11 +100,16 @@ end
 wire usrclk  = clk_160;
 wire usrclk2 = clk_80;
 
+always @(posedge clk_80) begin
+  reset_done <= tx_resetdone;
+  pll_locked <= tx_pll_locked;
+end
+
 genvar igem;
 generate
 for (igem=0; igem<4; igem=igem+1'b1) begin: gemgen
 gem_fiber_out  gem_fibers_out   (
-  .RST                 (1'b0),           // Manual only
+  .PRBS_RST            (1'b0),           // Manual only
   .TRG_SIGDET          (),               // from IPAD to IBUF.  N/A?
   .TRG_TDIS            (),               // OBUF output, for what?  N/A?
   .TRG_TX_P            (trg_tx_p[igem]), // pick a fiber
@@ -112,7 +121,7 @@ gem_fiber_out  gem_fibers_out   (
   .BXN_COUNTER         (bxn_counter),
   .BC0                 (ttc_bx0),
 
-  .TRG_TX_REFCLK       (mgt_refclk),             // QPLL 160 from MGT clk
+  .TRG_TX_REFCLK       (mgt_refclk),          // QPLL 160 from MGT clk
   .TRG_TXUSRCLK        (usrclk),              // get 160 from TXOUTCLK (times 2)
   .TRG_CLK80           (usrclk2),             // get 80 from TXOUTCLK
   .TRG_GTXTXRST        (txpll_rst),           // maybe Manual "reset" only
@@ -122,7 +131,7 @@ gem_fiber_out  gem_fibers_out   (
   .INJ_ERR             (1'b0),                // use my switch/PB combo logic for this, high-true? Pulse high once.
   .TRG_TXOUTCLK        (tx_out_clk[igem]),    // 80 MHz; This has to go to MCM to generate 160/80
   .TRG_TX_PLL_LOCK     (tx_pll_locked[igem]), // inverse holds the MCM in Reset; Tx GTX PLL Ref lock
-  .TRG_TXRESETDONE     (),                    // N/A
+  .TRG_TXRESETDONE     (tx_resetdone[igem]),  // N/A
   .TX_SYNC_DONE        (),                    // not used in DCFEB tests
   .STRT_LTNCY          (),                    // after every Reset, to TP for debug only  -- !sw7 ?
   .LTNCY_TRIG          (),                    // bring out to TP.  Signals when TX sends "FC" (once every 128 BX).  Send raw to TP  --sw8,7
