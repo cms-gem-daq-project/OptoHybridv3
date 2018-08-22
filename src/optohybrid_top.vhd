@@ -134,6 +134,7 @@ architecture Behavioral of optohybrid_top is
     signal gbt_rxvalid      : std_logic;
     signal gbt_rxready      : std_logic;
 
+    signal gbt_link_ready        : std_logic;
     signal gbt_link_error       : std_logic;
     signal gbt_rx_data          : std_logic_vector (15 downto 0);
     signal gbt_request_received : std_logic;
@@ -287,6 +288,7 @@ begin
         gbt_rxvalid_i => gbt_rxvalid,
         gbt_txready_i => gbt_txready,
 
+
         -- input clocks
 
         gbt_rx_clk_div_i  => gbt_rx_clk_div, -- 40 MHz frame clock
@@ -312,6 +314,7 @@ begin
         gbt_rx_data_o => gbt_rx_data,
 
         gbt_link_error_o => gbt_link_error,
+        gbt_link_ready_o => gbt_link_ready,
 
         -- sca control
         tx_sync_mode_sca       => tx_sync_mode_sca,
@@ -417,6 +420,8 @@ begin
         gbt_loopback_mode_sca_o  => gbt_loopback_mode_sca,
 
         -- GBT
+
+        gbt_link_ready_i => gbt_link_ready,
 
         gbt_rxready_i => gbt_rxready,
         gbt_rxvalid_i => gbt_rxvalid,

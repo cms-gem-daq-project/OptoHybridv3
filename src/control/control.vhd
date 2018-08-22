@@ -56,9 +56,10 @@ port(
 
     -- GBT
 
-    gbt_rxready_i : in std_logic;
-    gbt_rxvalid_i : in std_logic;
-    gbt_txready_i : in std_logic;
+    gbt_rxready_i    : in std_logic;
+    gbt_link_ready_i : in std_logic;
+    gbt_rxvalid_i    : in std_logic;
+    gbt_txready_i    : in std_logic;
 
     gbt_rx_data_i  : in std_logic_vector (15 downto 0);
 
@@ -260,6 +261,7 @@ architecture Behavioral of control is
         -- signals
         mmcm_locked          => mmcms_locked_i,
         gbt_rxready          => gbt_rxready_i,
+        gbt_link_ready       => gbt_link_ready_i,
         gbt_rxvalid          => gbt_rxvalid_i,
 
         gbt_request_received => gbt_request_received_i,

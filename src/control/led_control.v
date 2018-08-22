@@ -10,6 +10,7 @@ module led_control (
 
   input gbt_rxready,
   input gbt_rxvalid,
+  input gbt_link_ready,
   input gbt_request_received,
 
   input reset,
@@ -91,6 +92,25 @@ module led_control (
       eclk_led <= ~ eclk_led;
   end
 
+
+  // count to 27 bits
+
+  reg [26:0] fader_cnt=0;
+  reg fader_rising=0;
+
+  always @(posedge eclk) begin
+    fader_cnt <= fader_cnt + 1'b1;
+  end
+
+  wire [3:0] pwm_brightness = fader_cnt[26] ? fader_cnt[25:22] : ~fader_cnt[25:22];
+
+  reg [4:0] pwm_cnt;
+
+  always @(posedge eclk)
+    pwm_cnt <= pwm_cnt[3:0]+pwm_brightness;
+
+  wire fader_led = pwm_cnt[4];
+
 //----------------------------------------------------------------------------------------------------------------------
 // Rate Display
 //----------------------------------------------------------------------------------------------------------------------
@@ -169,14 +189,14 @@ module led_control (
 
   assign led_logic [7:0]  = progress_bar;
 
-  assign led_logic [8]    = vfat_reset_flash;
-  assign led_logic [9]    = bc0_flash;
-  assign led_logic [10]   = resync_flash;
-  assign led_logic [11]   = l1a_flash;
-
+  assign led_logic [15]   = eclk_led;
+  assign led_logic [14]   = clk_led;
+  assign led_logic [13]   = gbt_rxready & gbt_rxvalid & gbt_link_ready ? fader_led : 1'b0; // gbt_rxready && gbt_rxvalid;
   assign led_logic [12]   = gbt_flash;
-  assign led_logic [13]   = clk_led;
-  assign led_logic [14]   = eclk_led;
-  assign led_logic [15]   = gbt_rxready && gbt_rxvalid;
+
+  assign led_logic [11]   = l1a_flash;
+  assign led_logic [10]   = resync_flash;
+  assign led_logic [9]    = bc0_flash;
+  assign led_logic [8]    = vfat_reset_flash;
 
 endmodule
