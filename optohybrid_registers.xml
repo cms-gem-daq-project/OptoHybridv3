@@ -430,7 +430,7 @@
                 description="Number of link consecutive good frames required before the transmission unit is marked as good and S-bits can be produced"
                 fw_signal="aligned_count_to_ready"
                 mask="0x0fff0000"
-                fw_default="0xff"/>
+                fw_default="0xfff"/>
 
             <node id="SOT_INVERT" address="0x7" permission="rw"
                 description="Set to 1 to invert the S-bit SoT Frame"
