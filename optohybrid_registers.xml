@@ -558,14 +558,25 @@
                 fw_signal="TU_INVERT (191 downto 184)"
                 mask="0xff000000"
                 fw_default="0x14"/>
+
+            <node id="SBITS_MUX_LSB" address="0xe" permission="r"
+                description="Multiplexed copy of Sbits from a selected VFAT"
+                fw_signal="sbits_mux(31 downto 0)"
+                mask="0xffffffff"/>
+
+            <node id="SBITS_MUX_MSB" address="0xf" permission="r"
+                description="Multiplexed copy of Sbits from a selected VFAT"
+                fw_signal="sbits_mux(63 downto 32)"
+                mask="0xffffffff"/>
+
         </node>
 
-        <node id="CNT" address="0x0e" description = "S-BIT Counters">
+        <node id="CNT" address="0x10" description = "S-BIT Counters">
 
             <node id="VFAT0_SBITS" address="0x0" permission="r"
                 mask="0xffffffff"
                 description="VFAT 0 Sbit Counter"
-                fw_cnt_en_signal="active_vfats(0)"
+                fw_cnt_en_signal="active_vfats(0) or cnt_pulse"
                 fw_cnt_snap_signal="sbit_cnt_snap"
                 fw_cnt_reset_signal="cnt_reset_strobed"
                 fw_signal="cnt_vfat0"/>
@@ -573,7 +584,7 @@
             <node id="VFAT1_SBITS" address="0x1" permission="r"
                 mask="0xffffffff"
                 description="VFAT 1 Sbit Counter"
-                fw_cnt_en_signal="active_vfats(1)"
+                fw_cnt_en_signal="active_vfats(1) or cnt_pulse"
                 fw_cnt_snap_signal="sbit_cnt_snap"
                 fw_cnt_reset_signal="cnt_reset_strobed"
                 fw_signal="cnt_vfat1"/>
@@ -581,7 +592,7 @@
             <node id="VFAT2_SBITS" address="0x2" permission="r"
                 mask="0xffffffff"
                 description="VFAT 2 Sbit Counter"
-                fw_cnt_en_signal="active_vfats(2)"
+                fw_cnt_en_signal="active_vfats(2) or cnt_pulse"
                 fw_cnt_snap_signal="sbit_cnt_snap"
                 fw_cnt_reset_signal="cnt_reset_strobed"
                 fw_signal="cnt_vfat2"/>
@@ -589,7 +600,7 @@
             <node id="VFAT3_SBITS" address="0x3" permission="r"
                 mask="0xffffffff"
                 description="VFAT 3 Sbit Counter"
-                fw_cnt_en_signal="active_vfats(3)"
+                fw_cnt_en_signal="active_vfats(3) or cnt_pulse"
                 fw_cnt_snap_signal="sbit_cnt_snap"
                 fw_cnt_reset_signal="cnt_reset_strobed"
                 fw_signal="cnt_vfat3"/>
@@ -597,7 +608,7 @@
             <node id="VFAT4_SBITS" address="0x4" permission="r"
                 mask="0xffffffff"
                 description="VFAT 4 Sbit Counter"
-                fw_cnt_en_signal="active_vfats(4)"
+                fw_cnt_en_signal="active_vfats(4) or cnt_pulse"
                 fw_cnt_snap_signal="sbit_cnt_snap"
                 fw_cnt_reset_signal="cnt_reset_strobed"
                 fw_signal="cnt_vfat4"/>
@@ -605,7 +616,7 @@
             <node id="VFAT5_SBITS" address="0x5" permission="r"
                 mask="0xffffffff"
                 description="VFAT 5 Sbit Counter"
-                fw_cnt_en_signal="active_vfats(5)"
+                fw_cnt_en_signal="active_vfats(5) or cnt_pulse"
                 fw_cnt_snap_signal="sbit_cnt_snap"
                 fw_cnt_reset_signal="cnt_reset_strobed"
                 fw_signal="cnt_vfat5"/>
@@ -613,7 +624,7 @@
             <node id="VFAT6_SBITS" address="0x6" permission="r"
                 mask="0xffffffff"
                 description="VFAT 6 Sbit Counter"
-                fw_cnt_en_signal="active_vfats(6)"
+                fw_cnt_en_signal="active_vfats(6) or cnt_pulse"
                 fw_cnt_snap_signal="sbit_cnt_snap"
                 fw_cnt_reset_signal="cnt_reset_strobed"
                 fw_signal="cnt_vfat6"/>
@@ -621,7 +632,7 @@
             <node id="VFAT7_SBITS" address="0x7" permission="r"
                 mask="0xffffffff"
                 description="VFAT 7 Sbit Counter"
-                fw_cnt_en_signal="active_vfats(7)"
+                fw_cnt_en_signal="active_vfats(7) or cnt_pulse"
                 fw_cnt_snap_signal="sbit_cnt_snap"
                 fw_cnt_reset_signal="cnt_reset_strobed"
                 fw_signal="cnt_vfat7"/>
@@ -629,7 +640,7 @@
             <node id="VFAT8_SBITS" address="0x8" permission="r"
                 mask="0xffffffff"
                 description="VFAT 8 Sbit Counter"
-                fw_cnt_en_signal="active_vfats(8)"
+                fw_cnt_en_signal="active_vfats(8) or cnt_pulse"
                 fw_cnt_snap_signal="sbit_cnt_snap"
                 fw_cnt_reset_signal="cnt_reset_strobed"
                 fw_signal="cnt_vfat8"/>
@@ -637,7 +648,7 @@
             <node id="VFAT9_SBITS" address="0x9" permission="r"
                 mask="0xffffffff"
                 description="VFAT 9 Sbit Counter"
-                fw_cnt_en_signal="active_vfats(9)"
+                fw_cnt_en_signal="active_vfats(9) or cnt_pulse"
                 fw_cnt_snap_signal="sbit_cnt_snap"
                 fw_cnt_reset_signal="cnt_reset_strobed"
                 fw_signal="cnt_vfat9"/>
@@ -645,7 +656,7 @@
             <node id="VFAT10_SBITS" address="0xa" permission="r"
                 mask="0xffffffff"
                 description="VFAT 10 Sbit Counter"
-                fw_cnt_en_signal="active_vfats(10)"
+                fw_cnt_en_signal="active_vfats(10) or cnt_pulse"
                 fw_cnt_snap_signal="sbit_cnt_snap"
                 fw_cnt_reset_signal="cnt_reset_strobed"
                 fw_signal="cnt_vfat10"/>
@@ -653,7 +664,7 @@
             <node id="VFAT11_SBITS" address="0xb" permission="r"
                 mask="0xffffffff"
                 description="VFAT 11 Sbit Counter"
-                fw_cnt_en_signal="active_vfats(11)"
+                fw_cnt_en_signal="active_vfats(11) or cnt_pulse"
                 fw_cnt_snap_signal="sbit_cnt_snap"
                 fw_cnt_reset_signal="cnt_reset_strobed"
                 fw_signal="cnt_vfat11"/>
@@ -661,7 +672,7 @@
             <node id="VFAT12_SBITS" address="0xc" permission="r"
                 mask="0xffffffff"
                 description="VFAT 12 Sbit Counter"
-                fw_cnt_en_signal="active_vfats(12)"
+                fw_cnt_en_signal="active_vfats(12) or cnt_pulse"
                 fw_cnt_snap_signal="sbit_cnt_snap"
                 fw_cnt_reset_signal="cnt_reset_strobed"
                 fw_signal="cnt_vfat12"/>
@@ -669,7 +680,7 @@
             <node id="VFAT13_SBITS" address="0xd" permission="r"
                 mask="0xffffffff"
                 description="VFAT 13 Sbit Counter"
-                fw_cnt_en_signal="active_vfats(13)"
+                fw_cnt_en_signal="active_vfats(13) or cnt_pulse"
                 fw_cnt_snap_signal="sbit_cnt_snap"
                 fw_cnt_reset_signal="cnt_reset_strobed"
                 fw_signal="cnt_vfat13"/>
@@ -677,7 +688,7 @@
             <node id="VFAT14_SBITS" address="0xe" permission="r"
                 mask="0xffffffff"
                 description="VFAT 14 Sbit Counter"
-                fw_cnt_en_signal="active_vfats(14)"
+                fw_cnt_en_signal="active_vfats(14) or cnt_pulse"
                 fw_cnt_snap_signal="sbit_cnt_snap"
                 fw_cnt_reset_signal="cnt_reset_strobed"
                 fw_signal="cnt_vfat14"/>
@@ -685,7 +696,7 @@
             <node id="VFAT15_SBITS" address="0xf" permission="r"
                 mask="0xffffffff"
                 description="VFAT 15 Sbit Counter"
-                fw_cnt_en_signal="active_vfats(15)"
+                fw_cnt_en_signal="active_vfats(15) or cnt_pulse"
                 fw_cnt_snap_signal="sbit_cnt_snap"
                 fw_cnt_reset_signal="cnt_reset_strobed"
                 fw_signal="cnt_vfat15"/>
@@ -693,7 +704,7 @@
             <node id="VFAT16_SBITS" address="0x10" permission="r"
                 mask="0xffffffff"
                 description="VFAT 16 Sbit Counter"
-                fw_cnt_en_signal="active_vfats(16)"
+                fw_cnt_en_signal="active_vfats(16) or cnt_pulse"
                 fw_cnt_snap_signal="sbit_cnt_snap"
                 fw_cnt_reset_signal="cnt_reset_strobed"
                 fw_signal="cnt_vfat16"/>
@@ -701,7 +712,7 @@
             <node id="VFAT17_SBITS" address="0x11" permission="r"
                 mask="0xffffffff"
                 description="VFAT 17 Sbit Counter"
-                fw_cnt_en_signal="active_vfats(17)"
+                fw_cnt_en_signal="active_vfats(17) or cnt_pulse"
                 fw_cnt_snap_signal="sbit_cnt_snap"
                 fw_cnt_reset_signal="cnt_reset_strobed"
                 fw_signal="cnt_vfat17"/>
@@ -709,7 +720,7 @@
             <node id="VFAT18_SBITS" address="0x12" permission="r"
                 mask="0xffffffff"
                 description="VFAT 18 Sbit Counter"
-                fw_cnt_en_signal="active_vfats(18)"
+                fw_cnt_en_signal="active_vfats(18) or cnt_pulse"
                 fw_cnt_snap_signal="sbit_cnt_snap"
                 fw_cnt_reset_signal="cnt_reset_strobed"
                 fw_signal="cnt_vfat18"/>
@@ -717,7 +728,7 @@
             <node id="VFAT19_SBITS" address="0x13" permission="r"
                 mask="0xffffffff"
                 description="VFAT 19 Sbit Counter"
-                fw_cnt_en_signal="active_vfats(19)"
+                fw_cnt_en_signal="active_vfats(19) or cnt_pulse"
                 fw_cnt_snap_signal="sbit_cnt_snap"
                 fw_cnt_reset_signal="cnt_reset_strobed"
                 fw_signal="cnt_vfat19"/>
@@ -725,7 +736,7 @@
             <node id="VFAT20_SBITS" address="0x14" permission="r"
                 mask="0xffffffff"
                 description="VFAT 20 Sbit Counter"
-                fw_cnt_en_signal="active_vfats(20)"
+                fw_cnt_en_signal="active_vfats(20) or cnt_pulse"
                 fw_cnt_snap_signal="sbit_cnt_snap"
                 fw_cnt_reset_signal="cnt_reset_strobed"
                 fw_signal="cnt_vfat20"/>
@@ -733,7 +744,7 @@
             <node id="VFAT21_SBITS" address="0x15" permission="r"
                 mask="0xffffffff"
                 description="VFAT 21 Sbit Counter"
-                fw_cnt_en_signal="active_vfats(21)"
+                fw_cnt_en_signal="active_vfats(21) or cnt_pulse"
                 fw_cnt_snap_signal="sbit_cnt_snap"
                 fw_cnt_reset_signal="cnt_reset_strobed"
                 fw_signal="cnt_vfat21"/>
@@ -741,7 +752,7 @@
             <node id="VFAT22_SBITS" address="0x16" permission="r"
                 mask="0xffffffff"
                 description="VFAT 22 Sbit Counter"
-                fw_cnt_en_signal="active_vfats(22)"
+                fw_cnt_en_signal="active_vfats(22) or cnt_pulse"
                 fw_cnt_snap_signal="sbit_cnt_snap"
                 fw_cnt_reset_signal="cnt_reset_strobed"
                 fw_signal="cnt_vfat22"/>
@@ -749,7 +760,7 @@
             <node id="VFAT23_SBITS" address="0x17" permission="r"
                 mask="0xffffffff"
                 description="VFAT 23 Sbit Counter"
-                fw_cnt_en_signal="active_vfats(23)"
+                fw_cnt_en_signal="active_vfats(23) or cnt_pulse"
                 fw_cnt_snap_signal="sbit_cnt_snap"
                 fw_cnt_reset_signal="cnt_reset_strobed"
                 fw_signal="cnt_vfat23"/>
@@ -774,14 +785,19 @@
             <node id="CLUSTER_COUNT" address="0x1b" permission="r"
                 mask="0xffffffff"
                 description="VFAT Cluster Counter (chamber)"
-                fw_cnt_en_signal="valid_clusters_or"
+                fw_cnt_en_signal="valid_clusters_or or cnt_pulse"
                 fw_cnt_snap_signal="sbit_cnt_snap"
                 fw_cnt_reset_signal="cnt_reset_strobed"
                 fw_signal="cnt_clusters"/>
 
+            <node id="CNT_PULSE" address="0x1c" permission="w"
+                mask="0x1"
+                description="Pulses S-bit counters for testing"
+                fw_write_pulse_signal="cnt_pulse"/>
+
         </node>
 
-        <node id="TIMING" address="0x39" description = "Trig Control">
+        <node id="TIMING" address="0x3a" description = "Trig Control">
 
 
             <!-- START: TIMING_DELAYS DO NOT EDIT -->
@@ -1874,6 +1890,14 @@
                 mask="0x1"
                 description="Reset trigger links"
                 fw_write_pulse_signal="reset_links"/>
+            <node id="TX_PLL_LOCKED" address="0x1" permission="r"
+                mask="0x0000000f"
+                description="Transmit PLLs are Locked"
+                fw_signal="tx_pll_locked"/>
+            <node id="TX_RESET_DONE" address="0x1" permission="r"
+                mask="0x000000f0"
+                description="Transmit Resets are Done"
+                fw_signal="tx_reset_done"/>
 
         </node>
 </node>

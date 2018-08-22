@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 
 module   gem_fiber_out #(parameter SIM_SPEEDUP = 0) (
-  input         RST,           // PRBS Reset
+  input         PRBS_RST,      // PRBS Reset
   input         TRG_SIGDET,    // ??
   output        TRG_TDIS,      // N/A
   output        TRG_TX_N,
@@ -59,7 +59,7 @@ wire [MXBITS-1:0] out_data;
 
 reg         tx_sel;
 reg         tx_sel_bar;
-wire        prbs_rst;
+wire        reset_prbs;
 reg         p_rst1,p_rst2,p_rst3,p_rst4;
 reg         p_rst5,p_rst6,p_rst7,p_rst8;
 
@@ -107,7 +107,7 @@ assign tx_dly_align_mon_ena = 1'b0;
     //--------------------- Transmit Ports - TX PLL Ports ----------------------
     .GTX0_GTXTXRESET_IN             (TRG_GTXTXRST),
     .GTX0_MGTREFCLKTX_IN            (TRG_TX_REFCLK),
-    .GTX0_PLLTXRESET_IN             (TRG_TX_PLLRST),
+    .GTX0_PLLTXRESET_IN             (), // pll is reset automatically by gtxtxreset
     .GTX0_TXPLLLKDET_OUT            (TRG_TX_PLL_LOCK),
     .GTX0_TXRESETDONE_OUT           (TRG_TXRESETDONE)
   );
@@ -219,10 +219,10 @@ assign tx_dly_align_mon_ena = 1'b0;
 // Test pattern reset
 //----------------------------------------------------------------------------------------------------------------------
 
-  assign prbs_rst    = RST | TRG_RST | p_rst1 | p_rst2 | p_rst3 | p_rst4 | p_rst5 | p_rst6 | p_rst7 | p_rst8;
+  assign reset_prbs    = PRBS_RST | TRG_RST | p_rst1 | p_rst2 | p_rst3 | p_rst4 | p_rst5 | p_rst6 | p_rst7 | p_rst8;
   always @(posedge TRG_CLK80) begin
     if (tx_sel_bar) begin
-      p_rst1 <= RST | TRG_RST;
+      p_rst1 <= PRBS_RST | TRG_RST;
       p_rst2 <= p_rst1;
       p_rst3 <= p_rst2;
       p_rst4 <= p_rst3;
@@ -241,7 +241,7 @@ assign tx_dly_align_mon_ena = 1'b0;
 //   tx1 (
 //     .OUT_CLK_ENA (tx_sel),
 //     .GEN_CLK     (TRG_CLK80),
-//     .RST         (prbs_rst),
+//     .RST         (reset_prbs),
 //     .INJ_ERR     (INJ_ERR),
 //     .PRBS        (prbs[47:0]),
 //     .STRT_LTNCY  (STRT_LTNCY)

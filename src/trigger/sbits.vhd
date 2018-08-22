@@ -41,7 +41,7 @@ port(
     sbit_mask_i             : in std_logic_vector (23 downto 0);
 
     sbits_mux_sel           : in  std_logic_vector (4 downto 0);
-
+    sbits_mux_o             : out  std_logic_vector (63 downto 0);
 
     sot_frame_offset : in std_logic_vector (3 downto 0);
     sot_invert       : in std_logic_vector (23 downto 0);
@@ -348,9 +348,11 @@ begin
             sbits_mux    <= sbits_mux_s1;
 
             aff_mux      <= active_vfats(to_integer(unsigned(sbits_mux_sel)));
+
         end if;
     end process;
 
+    sbits_mux_o <= sbits_mux;
 
     --======================--
     --== Cluster Packer   ==--
