@@ -148,7 +148,7 @@ begin
     bc0         <= data_i (12);
     data6       <= data_i (11 downto 8) & data_i (5) & data_i (1);
 
-    sync_valid <= (data6 = "101010"); -- use a 6 bit end frame symbol
+    sync_valid <= (data6 = ("10" & x"C")) or (data6 = ("10" & x"A")); -- use a 6 bit end frame symbol
     idle_valid <= (data6 = "011100"); -- use a 6 bit end frame symbol
 
     process(clock)
