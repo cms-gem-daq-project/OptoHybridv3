@@ -22,6 +22,8 @@ def main():
 
     insert_code (ADDRESS_FILE, ADDRESS_FILE, MARKER_START, MARKER_END, write_invert_map_verilog)
 
+    tu_invert_mask()
+
 def write_invert_map_verilog  (file_handle):
 
     # sbits
@@ -31,7 +33,7 @@ def write_invert_map_verilog  (file_handle):
     f.write('initial SOT_INVERT  = {\n')
 
     for j in range (24,0,-1):
-        if (sot_polarity_swap(int(j))):
+        if (sot_polarity_swap(int(j), oh_version)):
             swap = '1'
         else:
             swap = '0'
@@ -49,7 +51,7 @@ def write_invert_map_verilog  (file_handle):
     for sector in range (24,0,-1):
         for pair   in range (8,0,-1):
 
-            if (sbit_polarity_swap(int(sector),int(pair-1))):
+            if (sbit_polarity_swap(int(sector),int(pair-1), oh_version)):
                 swap = '1'
             else:
                 swap = '0'
@@ -80,7 +82,7 @@ def write_invert_map  (file_handle):
         else:
             vfat = j
 
-        if (sot_polarity_swap(vfat)):
+        if (sot_polarity_swap(vfat, oh_version)):
             swap = '1'
         else:
             swap = '0'
@@ -105,7 +107,7 @@ def write_invert_map  (file_handle):
             else:
                 geb_slot = j
 
-            if (sbit_polarity_swap(geb_slot,pair-1)):
+            if (sbit_polarity_swap(geb_slot,pair-1, oh_version)):
                 swap = '1'
             else:
                 swap = '0'
@@ -127,6 +129,47 @@ def write_invert_map  (file_handle):
 
 
             f.write('    \'%s\' %s -- TU_INVERT[%s] (VFAT=%s BIT=%s)\n' % (swap, sep, sbit, sector-1, pair-1 ))
+
+def tu_invert_mask  ():
+
+    # sbits
+
+    # f = file_handle
+
+    # f.write('initial SOT_INVERT  = {\n')
+
+    # for j in range (24,0,-1):
+    #     if (sot_polarity_swap(int(j), oh_version)):
+    #         swap = '1'
+    #     else:
+    #         swap = '0'
+
+    #     if (j==1):
+    #         sep = ' '
+    #     else:
+    #         sep = ','
+
+    #     f.write('  1\'b%s %s // SOT_INVERT[%s]\n' % (swap, sep, j-1))
+
+    # f.write('};\n')
+    # f.write('initial TU_INVERT = {\n')
+
+    for sector in range (23, -1, -1):
+        vfat = 0;
+
+        if (USE_INVERTED_NUMBERING):
+            vfat = 23-sector
+        else:
+            vfat = sector
+
+        mask = 0;
+        for pair in range (0,8):
+            bit = 1 if (sbit_polarity_swap(int(sector+1),int(pair), oh_version)) else 0
+            mask |= bit  << (pair)
+
+        print (sector)
+        print (vfat)
+        print hex(mask)
 
 if __name__ == '__main__':
     main()

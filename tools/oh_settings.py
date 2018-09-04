@@ -1,4 +1,8 @@
 
+oh_version = "v3c"
+geb_version = "v3c"
+geb_length = "long"
+
 # set true to use inverted software numbering
 USE_INVERTED_NUMBERING = True
 

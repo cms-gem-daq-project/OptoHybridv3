@@ -1,4 +1,4 @@
-def sot_polarity_swap (sector):
+def sot_polarity_swap (sector, hw_version):
 
     if   (sector==8):
         return True
@@ -23,13 +23,16 @@ def sot_polarity_swap (sector):
     elif (sector==12):
         return True
     elif (sector==19):
-        return True
+        if (hw_version=="v3a"):
+            return True
+        else:
+            return False
     elif (sector==17):
         return True
     else:
         return False
 
-def sbit_polarity_swap (sector, pair):
+def sbit_polarity_swap (sector, pair, hw_version):
 
     # this is a map of which S-bit pairs are polarity swapped
     # this is using electronics numbering i.e.
@@ -90,7 +93,10 @@ def sbit_polarity_swap (sector, pair):
         #if (pair==2):
         #   return True # this pair __IS__ inverted but there is something wrong with the board apparently and needs to be masked
         if (pair==2):
-           return False # this pair __IS__ inverted but there is something wrong with the board apparently and needs to be masked
+            if (hw_version=="v3a"):
+                return False # this pair __IS__ inverted on v3a but there is something wrong with the board apparently and needs to be masked
+            else:
+                return True
 
     elif (sector==8):
         if (pair==1):

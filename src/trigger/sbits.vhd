@@ -46,6 +46,7 @@ port(
     sot_frame_offset : in std_logic_vector (3 downto 0);
     sot_invert       : in std_logic_vector (23 downto 0);
     tu_invert        : in std_logic_vector (191 downto 0);
+    tu_mask          : in std_logic_vector (191 downto 0);
 
     err_count_to_shift : in std_logic_vector (7 downto 0);
     stable_count_to_reset : in std_logic_vector (7 downto 0);
@@ -257,6 +258,7 @@ begin
 
         sot_invert => sot_invert,
         tu_invert  => tu_invert,
+        tu_mask    => tu_mask,
 
         err_count_to_shift     => err_count_to_shift,
         stable_count_to_reset  => stable_count_to_reset,

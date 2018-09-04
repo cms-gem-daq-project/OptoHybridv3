@@ -257,8 +257,8 @@ module oversampler (
   endgenerate
 
   always @(posedge fastclock) begin
-    d0 <= rising;
-    d1 <= falling;
+    d0 <= (~reset) & rising;
+    d1 <= (~reset) & falling;
   end
 
   generate

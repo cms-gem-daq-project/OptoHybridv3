@@ -11,6 +11,8 @@
 ----------------------------------------------------------------------------------
 -- 2017/07/24 -- Removal of VFAT2 event building and Calpulse
 -- 2018/01/23 -- Add link ready and link unstable monitors
+-- 2018/08/24 -- Correct ready circuit to not latch
+-- 2018/08/24 -- Increase ready time
 ----------------------------------------------------------------------------------
 
 library ieee;
@@ -65,8 +67,8 @@ architecture Behavioral of gbt_link is
     signal rx_unstable : std_logic; -- gbt rx link was good then went bad
     signal rx_error    : std_logic; -- error on gbt rx link
 
-    signal ready_cnt : unsigned (7 downto 0);
-    signal ready_cnt_max : natural := 255;
+    signal ready_cnt : unsigned (15 downto 0);
+    signal ready_cnt_max : natural := 65535;
 
     signal gbt_rx_req  : std_logic; -- rx fifo write request
     signal gbt_rx_data : std_logic_vector(IPB_REQ_BITS-1 downto 0);
@@ -93,12 +95,10 @@ begin
     process (clock) begin
         if (rising_edge(clock)) then
 
-            if (reset='1') then
+            if (reset='1' or rx_error='1') then
                 ready_cnt <= (others => '0');
             elsif (ready_cnt < ready_cnt_max) then
-                if (rx_error='0') then
-                    ready_cnt <= ready_cnt + 1;
-                end if;
+                ready_cnt <= ready_cnt + 1;
             end if;
 
             if (reset='1') then

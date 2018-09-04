@@ -99,15 +99,15 @@ class Register:
     read_ready_signal = None
 
     # count signals
-    fw_cnt_snap_signal  = '\'1\''
+    fw_cnt_snap_signal    = '\'1\''
     fw_cnt_allow_rollover = 'false'
     fw_cnt_increment_step = '1'
-    fw_cnt_reset_signal = None
-    fw_cnt_en_signal    = None
+    fw_cnt_reset_signal   = None
+    fw_cnt_en_signal      = None
 
     fw_rate_clk_frequency = 40079000 # clock frequency in Hz
     fw_rate_reset_signal  = None     # Reset input
-    fw_rate_en            = None     # Enable
+    fw_rate_en_signal     = None     # Enable
 
     default = 0x0
     msb = -1
@@ -322,8 +322,8 @@ def findRegisters(node, baseName, baseAddress, modules, currentModule, vars, isG
 
             if node.get('fw_rate_log') is not None:
                 reg.fw_rate_log = substituteVars (node.get('fw_rate_log'),vars)
-            if node.get('fw_rate_en') is not None:
-                reg.fw_rate_en = substituteVars (node.get('fw_rate_en'),vars)
+            if node.get('fw_rate_en_signal') is not None:
+                reg.fw_rate_en_signal = substituteVars (node.get('fw_rate_en_signal'),vars)
             if node.get('fw_rate_clk_frequency') is not None:
                 reg.fw_rate_clk_frequency = substituteVars (node.get('fw_rate_clk_frequency'),vars)
             if node.get('fw_rate_inc_width') is not None:
@@ -475,7 +475,7 @@ def updateModuleFile(module):
 
             header_written = False;
             for reg in module.regs:
-                if reg.fw_rate_en is not None and reg.signal is not None:
+                if reg.fw_rate_en_signal is not None and reg.signal is not None:
                     if (not header_written):
                         f.write('    -- Connect rate signal declarations\n')
                         header_written = True;
@@ -641,7 +641,7 @@ def updateModuleFile(module):
             f.write('    -- Connect rate instances\n')
             for reg in module.regs:
 
-                if reg.fw_rate_en is not None:
+                if reg.fw_rate_en_signal is not None:
                     f.write ("\n")
                     f.write ('    RATE_CNT_%s : entity work.rate_counter\n' % (reg.getVhdlName()))
                     f.write ('    generic map (\n')
@@ -651,7 +651,7 @@ def updateModuleFile(module):
                     f.write ('    port map (\n')
                     f.write ('        clk_i                => %s,\n' % (module.userClock))
                     f.write ('        reset_i              => %s,\n' % (reg.fw_rate_reset_signal))
-                    f.write ('        en_i                 => %s,\n' % (reg.fw_rate_en))
+                    f.write ('        en_i                 => %s,\n' % (reg.fw_rate_en_signal))
                     f.write ('        rate_o               => %s\n'  % (reg.signal))
                     f.write ('    );\n')
                     f.write ('\n')

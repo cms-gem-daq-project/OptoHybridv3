@@ -3,9 +3,12 @@ from polarity_swaps import *
 from insert_code import *
 from oh_settings import *
 
+hw_version="v3b"
+
+
 def main():
 
-    ADDRESS_FILE = '../src/ucf/misc.ucf'
+    ADDRESS_FILE = '../src/ucf/misc_v3b.ucf'
 
     MARKER_START='#### START: AUTO GENERATED SBITS UCF -- DO NOT EDIT ####'
     MARKER_END='#### END: AUTO GENERATED SBITS UCF -- DO NOT EDIT ####'
@@ -20,21 +23,28 @@ def main():
 # produce a python object containing the netlist
 # from altium should export netlist as  MultiWire
 def parse_netlist():
-    filename = 'OHv3a-SimpleNetList.NET'
+
+    filename = ""
+
+    if (hw_version=="v3a"):
+        filename = 'OHv3a-SimpleNetList.NET'
+    if (hw_version=="v3b"):
+        filename = 'OHv3b-SimpleNetList.NET'
+
     f = open(filename, 'r')
 
     netlist = {}
 
     for line in f:
-        if (line[0]!='-'):
+        if (line[0]!='-' and line[0:6]!="tp_gbt"):
 
             if (len(line.split())>3):
-                print "PARSING LINE FAILED: # of elements > 3"
                 print line
+                print "PARSING LINE FAILED: # of elements > 3"
                 continue
             elif (len(line.split())<3):
-                print "PARSING LINE FAILED: # of elements < 3"
                 print line
+                print "PARSING LINE FAILED: # of elements < 3"
                 continue
             else:
                 (net,part,pin) = line.split()
@@ -50,11 +60,14 @@ def write_reset_constraints (file_handle):
 
     netlist = parse_netlist()
 
+    print "Netlist Parsed"
+
     for net in netlist:
 
         # sbits
 
-        regexp = re.compile("EXT_RESET_[0-9]*")
+        net = net.lower()
+        regexp = re.compile("ext_reset_[0-9]*")
 
         if (regexp.match(net)):
             #print net + "     " + netlist.get(net)
@@ -71,30 +84,36 @@ def write_sbit_constraints (file_handle):
 
     netlist = parse_netlist()
 
+    print "Netlist Parsed"
+
     keys = netlist.keys()
 
     keys = keys.sort()
 
-    print("\n")
-    print("%s\n" % type(netlist))
-    print("\n")
+    #print("\n")
+    #print("%s\n" % type(netlist))
+    #print("\n")
 
-    print( keys)
+    #print(keys)
 
     for net in sorted(netlist, key=natural_keys):
 
-        print (net)
         # sbits
 
-        patp   = re.compile("S[0-9]*_[0-9]*_P")
-        patn   = re.compile("S[0-9]*_[0-9]*_N")
+        patp   = re.compile("s[0-9]*_[0-9]*_p")
+        patn   = re.compile("s[0-9]*_[0-9]*_n")
 
-        if (patp.match(net) or patn.match(net)):
+        net = net.lower();
+
+        if (    patp.match(net) or patn.match(net)):
             #print net + "     " + netlist.get(net)
 
             (sector, pair, pin) = net.split("_");
 
+
             sector = sector [1:] # take off the S at the beginning
+
+            print "Parsing SBIT %s, sector=%s, pair=%s, net=%s" % (net, sector, pair, pin)
 
 
             sbit=-1
@@ -107,31 +126,34 @@ def write_sbit_constraints (file_handle):
             comment = ""
             if (sbit_polarity_swap(int(sector),int(pair))):
                 comment = " # polarity swap"
-                if (pin=='N'):
-                    pin='P'
-                elif (pin=='P'):
-                    pin='N'
+                if (pin=='n'):
+                    pin='p'
+                elif (pin=='p'):
+                    pin='n'
 
             netname =  ( "vfat_sbits_"+str(pin.lower())+"<"+str(sbit)+">").ljust(18, ' ')
             f.write('NET %s LOC="%s";%s\n' % (netname, netlist.get(net), comment))
 
         # start of transmission pulses
 
-        patp   = re.compile("S[0-9]*CLKOUT_P")
-        patn   = re.compile("S[0-9]*CLKOUT_N")
-        if (patp.match(net) or patn.match(net)):
+        patp_uc = re.compile("S[0-9]*CLKOUT_P")
+        patn_uc = re.compile("S[0-9]*CLKOUT_N")
+        patp_lc = re.compile("s[0-9]*clkout_p")
+        patn_lc = re.compile("s[0-9]*clkout_n")
+
+        if (    patp_uc.match(net) or patp_lc.match(net) or patn_uc.match(net) or patn_lc.match(net)):
 
             (sector, pin) = net.split("_");
             sector = sector [1:] # take off the s at the beginning
             sector = sector [:-6]
 
             comment = ""
-            if (sot_polarity_swap(int(sector))):
+            if (sot_polarity_swap(int(sector), hw_version)):
                 comment = " # polarity swap"
-                if (pin=='N'):
-                    pin='P'
-                elif (pin=='P'):
-                    pin='N'
+                if (pin=='n'):
+                    pin='p'
+                elif (pin=='p'):
+                    pin='n'
 
             vfat = -1
             if (USE_INVERTED_NUMBERING):

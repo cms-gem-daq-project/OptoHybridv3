@@ -35,6 +35,7 @@ port(
 
     sot_invert       : in std_logic_vector (23 downto 0);
     tu_invert        : in std_logic_vector (191 downto 0);
+    tu_mask          : in std_logic_vector (191 downto 0);
 
     start_of_frame_p : in std_logic_vector (23 downto 0);
     start_of_frame_n : in std_logic_vector (23 downto 0);
@@ -200,7 +201,7 @@ begin
             rx_n =>sbits_n(ipin),
 
             clock        => clock,
-            reset_i     =>  reset,
+            reset_i     =>  reset or (tu_mask(ipin)),
 
             fastclock    => fastclk_0,
             fastclock90  => fastclk_90,
