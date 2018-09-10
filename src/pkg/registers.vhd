@@ -253,9 +253,9 @@ package registers is
     constant REG_TRIG_ADDRESS_MSB : integer := 7;
     constant REG_TRIG_ADDRESS_LSB : integer := 0;
     constant REG_TRIG_CTRL_VFAT_MASK_ADDR    : std_logic_vector(7 downto 0) := x"00";
-    constant REG_TRIG_CTRL_VFAT_MASK_MSB    : integer := 23;
+    constant REG_TRIG_CTRL_VFAT_MASK_MSB    : integer := 11;
     constant REG_TRIG_CTRL_VFAT_MASK_LSB     : integer := 0;
-    constant REG_TRIG_CTRL_VFAT_MASK_DEFAULT : std_logic_vector(23 downto 0) := x"000000";
+    constant REG_TRIG_CTRL_VFAT_MASK_DEFAULT : std_logic_vector(11 downto 0) := x"000";
 
     constant REG_TRIG_CTRL_SBIT_DEADTIME_ADDR    : std_logic_vector(7 downto 0) := x"01";
     constant REG_TRIG_CTRL_SBIT_DEADTIME_MSB    : integer := 3;
@@ -273,7 +273,7 @@ package registers is
     constant REG_TRIG_CTRL_SOT_FRAME_OFFSET_DEFAULT : std_logic_vector(15 downto 12) := x"4";
 
     constant REG_TRIG_CTRL_ACTIVE_VFATS_ADDR    : std_logic_vector(7 downto 0) := x"02";
-    constant REG_TRIG_CTRL_ACTIVE_VFATS_MSB    : integer := 23;
+    constant REG_TRIG_CTRL_ACTIVE_VFATS_MSB    : integer := 11;
     constant REG_TRIG_CTRL_ACTIVE_VFATS_LSB     : integer := 0;
 
     constant REG_TRIG_CTRL_CNT_OVERFLOW_ADDR    : std_logic_vector(7 downto 0) := x"03";
@@ -281,11 +281,11 @@ package registers is
     constant REG_TRIG_CTRL_CNT_OVERFLOW_LSB     : integer := 0;
 
     constant REG_TRIG_CTRL_SBIT_SOT_READY_ADDR    : std_logic_vector(7 downto 0) := x"04";
-    constant REG_TRIG_CTRL_SBIT_SOT_READY_MSB    : integer := 23;
+    constant REG_TRIG_CTRL_SBIT_SOT_READY_MSB    : integer := 11;
     constant REG_TRIG_CTRL_SBIT_SOT_READY_LSB     : integer := 0;
 
     constant REG_TRIG_CTRL_SBIT_SOT_UNSTABLE_ADDR    : std_logic_vector(7 downto 0) := x"05";
-    constant REG_TRIG_CTRL_SBIT_SOT_UNSTABLE_MSB    : integer := 23;
+    constant REG_TRIG_CTRL_SBIT_SOT_UNSTABLE_MSB    : integer := 11;
     constant REG_TRIG_CTRL_SBIT_SOT_UNSTABLE_LSB     : integer := 0;
 
     constant REG_TRIG_CTRL_ERR_CNT_TO_SHIFT_ADDR    : std_logic_vector(7 downto 0) := x"06";
@@ -304,9 +304,9 @@ package registers is
     constant REG_TRIG_CTRL_ALIGNED_COUNT_TO_READY_DEFAULT : std_logic_vector(27 downto 16) := x"fff";
 
     constant REG_TRIG_CTRL_SOT_INVERT_ADDR    : std_logic_vector(7 downto 0) := x"07";
-    constant REG_TRIG_CTRL_SOT_INVERT_MSB    : integer := 23;
+    constant REG_TRIG_CTRL_SOT_INVERT_MSB    : integer := 11;
     constant REG_TRIG_CTRL_SOT_INVERT_LSB     : integer := 0;
-    constant REG_TRIG_CTRL_SOT_INVERT_DEFAULT : std_logic_vector(23 downto 0) := x"f99286";
+    constant REG_TRIG_CTRL_SOT_INVERT_DEFAULT : std_logic_vector(11 downto 0) := x"286";
 
     constant REG_TRIG_CTRL_VFAT0_TU_INVERT_ADDR    : std_logic_vector(7 downto 0) := x"08";
     constant REG_TRIG_CTRL_VFAT0_TU_INVERT_MSB    : integer := 7;

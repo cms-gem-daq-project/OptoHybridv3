@@ -369,7 +369,7 @@
 
             <node id="VFAT_MASK" address="0x0" permission="rw"
                 description="24 bit mask of VFATs (1=off)"
-                mask="0xffffff"
+                mask="0xfff"
                 fw_signal="vfat_mask"
                 fw_default="0x0"/>
 
@@ -393,7 +393,7 @@
 
             <node id="ACTIVE_VFATS" address="0x2" permission="r"
                 description="24 bit list of VFATs with hits in this BX"
-                mask="0xffffff"
+                mask="0xfff"
                 fw_signal="active_vfats"/>
 
             <node id="CNT_OVERFLOW" address="0x3" permission="r"
@@ -406,12 +406,12 @@
 
             <node id="SBIT_SOT_READY" address="0x4" permission="r"
                 description="24 bit list of VFATs with stable Start-of-frame pulses (in sync for a number of clock cycles)"
-                mask="0xffffff"
+                mask="0xfff"
                 fw_signal="sot_is_aligned" />
 
             <node id="SBIT_SOT_UNSTABLE" address="0x5" permission="r"
                 description="24 bit list of VFATs with unstable Start-of-frame pulses (became misaligned after already achieving lock)"
-                mask="0xffffff"
+                mask="0xfff"
                 fw_signal="sot_unstable" />
 
             <node id="ERR_CNT_TO_SHIFT" address="0x6" permission="rw"
@@ -435,7 +435,7 @@
             <node id="SOT_INVERT" address="0x7" permission="rw"
                 description="Set to 1 to invert the S-bit SoT Frame"
                 fw_signal="sot_invert"
-                mask="0x00ffffff"
+                mask="0x00fff"
                 fw_default="0xf99286"/>
 
             <node id="VFAT0_TU_INVERT" address="0x8" permission="rw"

@@ -12,6 +12,7 @@
 // 2017/07/25 -- Port to Verilog
 // 2017/07/25 -- Clear synthesis warnings from module
 // 2017/08/10 -- Add reset and fanout
+// 2018/04/17 -- Add lite mode
 //--------------------------------------------------------------------------------
 
 module external (
@@ -22,7 +23,7 @@ module external (
 
   //Sbits
 
-  input [23:0] active_vfats_i,
+  input [MXVFATS-1:0] active_vfats_i,
 
   input [1:0]  sbit_mode0,
   input [1:0]  sbit_mode1,
@@ -45,6 +46,11 @@ module external (
   output reg [7:0]  ext_sbits_o
 
 );
+
+  parameter oh_lite=0;
+  parameter MXVFATS = 24;
+
+  initial $display ("Instantiating external.v with MXVFATS=%d OH_LITE=%d", MXVFATS, oh_lite);
 
   wire [4:0] sbit_sel [7:0];
   wire [1:0] sbit_mode [7:0];
@@ -71,21 +77,38 @@ module external (
   always @(posedge clock)
     reset <= reset_i;
 
-  wire [23:0] ors = active_vfats_i;
+  wire [MXVFATS-1:0] ors = active_vfats_i;
 
   reg  [ 7:0] eta_row;
   reg  [ 5:0] sector_row;
 
   // SBits output
 
+  // split the chamber into eta partitions
+
   genvar j;
   generate
-  for (j=0; j<8; j=j+1) begin: zerotoseven
-    always @(posedge clock)
-      eta_row[j] <= ors[j] || ors[8+j] || ors[16+j];
-  end
+    if (oh_lite) begin: partitionsplit
+
+      for (j=0; j<2; j=j+1) begin: zerotoone
+        always @(posedge clock)
+          eta_row[j] <= ors[j] || ors[j+2] || ors[j+4] || ors[j+6] || ors[j+6] || ors[j+8] || ors[j+10];
+      end
+
+    end
+    else begin
+
+      for (j=0; j<8; j=j+1) begin: zerotoseven
+        always @(posedge clock)
+          eta_row[j] <= ors[j] || ors[8+j] || ors[16+j];
+      end
+
+    end // if oh_lite
   endgenerate
 
+
+  // split the chamber into 6 sectors
+  // (top left, top center, top right, bottom left, bottom center, bottom right)
 
   generate
   for (j=0; j<6; j=j+1) begin: zerotofive
@@ -95,9 +118,9 @@ module external (
         sector_row[j] <= 0;
       end
       else begin
-        sector_row[j] <= ors[j*4] || ors[j*4+1] || ors[j*4+2] || ors[j*4+3];
+        if (oh_lite) sector_row[j] <= ors[j*2] || ors[j*2+1];
+        else         sector_row[j] <= ors[j*4] || ors[j*4+1] || ors[j*4+2] || ors[j*4+3];
       end
-
     end
   end
   endgenerate

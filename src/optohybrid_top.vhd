@@ -7,6 +7,7 @@
 -- 2017/07/21 -- Initial port to version 3 electronics
 -- 2017/07/22 -- Additional MMCM added to monitor and dejitter the eport clock
 -- 2017/07/25 -- Restructure top level module to improve organization
+-- 2018/04/18 -- Mods for for OH lite compatibility
 ----------------------------------------------------------------------------------
 
 library ieee;
@@ -17,6 +18,8 @@ use ieee.numeric_std.all;
 library work;
 use work.types_pkg.all;
 use work.ipbus_pkg.all;
+use work.trig_pkg.all;
+use work.param_pkg.all;
 
 entity optohybrid_top is
 port(
@@ -63,11 +66,11 @@ port(
 
     --== LEDs ==--
 
-    led_o   : out std_logic_vector (15 downto 0);
+    led_o   : out std_logic_vector (MXLED-1 downto 0);
 
     --== VFAT Reset ==--
 
-    ext_reset_o : out std_logic_vector (11 downto 0);
+    ext_reset_o : out std_logic_vector (MXRESET-1 downto 0);
 
     --== Analog input ==--
 
@@ -82,19 +85,19 @@ port(
 
     --== GTX ==--
 
-    mgt_clk_p_i : in std_logic;
-    mgt_clk_n_i : in std_logic;
+    mgt_clk_p_i : in std_logic_vector(1 downto 0);
+    mgt_clk_n_i : in std_logic_vector(1 downto 0);
 
     mgt_tx_p_o : out std_logic_vector(3 downto 0);
     mgt_tx_n_o : out std_logic_vector(3 downto 0);
 
     --== VFAT Trigger Data ==--
 
-    vfat_sot_p : in std_logic_vector (23 downto 0);
-    vfat_sot_n : in std_logic_vector (23 downto 0);
+    vfat_sot_p : in std_logic_vector (MXVFATS-1 downto 0);
+    vfat_sot_n : in std_logic_vector (MXVFATS-1 downto 0);
 
-    vfat_sbits_p : in std_logic_vector (191 downto 0);
-    vfat_sbits_n : in std_logic_vector (191 downto 0)
+    vfat_sbits_p : in std_logic_vector ((MXVFATS*8)-1 downto 0);
+    vfat_sbits_n : in std_logic_vector ((MXVFATS*8)-1 downto 0)
 
 );
 end optohybrid_top;
@@ -105,7 +108,7 @@ architecture Behavioral of optohybrid_top is
 
     signal sbit_overflow : std_logic;
     signal cluster_count : std_logic_vector     (7  downto 0);
-    signal active_vfats  : std_logic_vector     (23 downto 0);
+    signal active_vfats  : std_logic_vector     (MXVFATS-1 downto 0);
 
     --== Global signals ==--
 
@@ -142,7 +145,6 @@ architecture Behavioral of optohybrid_top is
     signal tx_sync_mode_sca      : std_logic;
     signal gbt_loopback_mode_sca : std_logic;
 
-    signal mgt_refclk       : std_logic;
     signal reset            : std_logic;
     signal cnt_snap         : std_logic;
 
@@ -182,6 +184,9 @@ architecture Behavioral of optohybrid_top is
     signal ext_sbits : std_logic_vector (7 downto 0);
     signal soft_reset : std_logic;
 
+    signal led : std_logic_vector (15 downto 0);
+    attribute KEEP of led   : signal is "TRUE";
+
     -- don't remove duplicates for fanout, needed to pack into iob
     signal ext_reset : std_logic_vector (11 downto 0);
     attribute KEEP of ext_reset   : signal is "TRUE";
@@ -215,7 +220,9 @@ begin
 
         ext_reset   <= (ttc_reset_vfats_vector or ctrl_reset_vfats);
 
-        ext_reset_o  <= ext_reset;
+        led_o (MXLED-1 downto 0) <= led (MXLED-1 downto 0);
+
+        ext_reset_o (MXRESET-1 downto 0) <= ext_reset (MXRESET-1 downto 0);
         ext_sbits_o  <= ext_sbits;
 
     end if;
@@ -367,6 +374,8 @@ begin
     --== System Monitor ==--
     --====================--
 
+    xadc_gen : IF (FPGA_TYPE="VIRTEX6") GENERATE
+
     adc_inst : entity work.adc port map(
         clock_i         => clock,
         reset_i         => reset,
@@ -382,6 +391,7 @@ begin
         adc_vn          => adc_vn
     );
 
+    END GENERATE xadc_gen;
 
     --=============--
     --== Control ==--
@@ -461,7 +471,7 @@ begin
         ext_sbits_o        => ext_sbits,
 
         -- LEDs
-        led_o => led_o,
+        led_o => led,
 
         soft_reset_o           =>   soft_reset,
 

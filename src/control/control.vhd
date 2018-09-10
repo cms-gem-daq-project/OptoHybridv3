@@ -17,6 +17,7 @@ use IEEE.Numeric_STD.all;
 
 library work;
 use work.types_pkg.all;
+use work.trig_pkg.all;
 use work.ipbus_pkg.all;
 use work.param_pkg.all;
 use work.registers.all;
@@ -65,7 +66,7 @@ port(
 
     -- Trigger
 
-    active_vfats_i  : in std_logic_vector (23 downto 0);
+    active_vfats_i  : in std_logic_vector (MXVFATS-1 downto 0);
     sbit_overflow_i : in std_logic;
     cluster_count_i : in std_logic_vector (7 downto 0);
 
@@ -282,6 +283,7 @@ architecture Behavioral of control is
     -- This module handles the external signals: the input trigger and the output SBits.
 
     external_inst : entity work.external
+    generic map (oh_lite => OH_LITE, MXVFATS => MXVFATS)
     port map(
         clock               => clock_i,
 

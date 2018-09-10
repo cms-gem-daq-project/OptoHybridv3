@@ -10,6 +10,7 @@
 ----------------------------------------------------------------------------------
 -- 2017/07/24 -- Initial
 -- 2017/11/13 -- Port to VHDL
+-- 2018/04/18 -- Mods for OH Lite
 ----------------------------------------------------------------------------------
 
 library ieee;
@@ -22,30 +23,31 @@ use UNISIM.vcomponents.all;
 library work;
 use work.types_pkg.all;
 use work.trig_pkg.all;
+use work.param_pkg.all;
 
 entity trig_alignment is
 port(
 
-    sbit_mask        : in std_logic_vector (23 downto 0);
+    sbit_mask        : in std_logic_vector (MXVFATS-1 downto 0);
 
-    sbits_p          : in std_logic_vector (191 downto 0);
-    sbits_n          : in std_logic_vector (191 downto 0);
+    sbits_p          : in std_logic_vector (MXVFATS*8-1 downto 0);
+    sbits_n          : in std_logic_vector (MXVFATS*8-1 downto 0);
 
     reset_i          : in std_logic;
 
-    sot_invert       : in std_logic_vector (23 downto 0);
-    tu_invert        : in std_logic_vector (191 downto 0);
-    tu_mask          : in std_logic_vector (191 downto 0);
+    sot_invert       : in std_logic_vector (MXVFATS-1 downto 0);
+    tu_invert        : in std_logic_vector (MXVFATS*8-1 downto 0);
+    tu_mask          : in std_logic_vector (MXVFATS*8-1 downto 0);
 
-    start_of_frame_p : in std_logic_vector (23 downto 0);
-    start_of_frame_n : in std_logic_vector (23 downto 0);
+    start_of_frame_p : in std_logic_vector (MXVFATS-1 downto 0);
+    start_of_frame_n : in std_logic_vector (MXVFATS-1 downto 0);
 
-    sot_tap_delay    : in t_std5_array (23 downto 0);
-    trig_tap_delay   : in t_std5_array (191 downto 0);
+    sot_tap_delay    : in t_std5_array (MXVFATS-1 downto 0);
+    trig_tap_delay   : in t_std5_array (MXVFATS*8-1 downto 0);
 
-    sot_is_aligned   : out std_logic_vector (23 downto 0);
-    sot_phase_err    : out std_logic_vector (23 downto 0);
-    sot_unstable     : out std_logic_vector (23 downto 0);
+    sot_is_aligned   : out std_logic_vector (MXVFATS-1 downto 0);
+    sot_phase_err    : out std_logic_vector (MXVFATS-1 downto 0);
+    sot_unstable     : out std_logic_vector (MXVFATS-1 downto 0);
 
     sot_frame_offset : in std_logic_vector (3 downto 0);
 
@@ -63,7 +65,7 @@ port(
 
     clock            : in std_logic;
 
-    phase_err        : out std_logic_vector (191 downto 0);
+    phase_err        : out std_logic_vector (MXVFATS*8-1 downto 0);
 
     sbits            : out std_logic_vector (( MXSBITS_CHAMBER - 1) downto 0)
 );
@@ -75,22 +77,59 @@ architecture Behavioral of trig_alignment is
 
     signal reset : std_logic := '0';
 
-    signal d0 : std_logic_vector (191 downto 0); -- rising edge sample
-    signal d1 : std_logic_vector (191 downto 0); -- falling edge sample
-    signal start_of_frame : std_logic_vector (23 downto 0);
-    signal sot_on_negedge : std_logic_vector (23 downto 0);
-    signal start_of_frame_d0 : std_logic_vector (23 downto 0);
-    signal start_of_frame_d1 : std_logic_vector (23 downto 0);
-    signal vfat_phase_sel  : t_std2_array (23 downto 0);
+    signal d0 : std_logic_vector (MXVFATS*8-1 downto 0); -- rising edge sample
+    signal d1 : std_logic_vector (MXVFATS*8-1 downto 0); -- falling edge sample
+    signal start_of_frame : std_logic_vector (MXVFATS-1 downto 0);
+    signal sot_on_negedge : std_logic_vector (MXVFATS-1 downto 0);
+    signal start_of_frame_d0 : std_logic_vector (MXVFATS-1 downto 0);
+    signal start_of_frame_d1 : std_logic_vector (MXVFATS-1 downto 0);
+    signal vfat_phase_sel  : t_std2_array (MXVFATS-1 downto 0);
+
+    signal serdesstrobe : std_logic;
 
     signal idly_rdy   : std_logic := '0';
     signal idly_rdy_r : std_logic := '0';
 
-    attribute IODELAY_GROUP: string;
-    attribute IODELAY_GROUP of IDELAYCTRL_inst : label is "IODLY_GROUP";
+    COMPONENT oversampler
+    GENERIC (
+        FPGA_TYPE_IS_VIRTEX6  : INTEGER;
+        FPGA_TYPE_IS_ARTIX7   : INTEGER;
+        DDR                   : INTEGER;
+        PHASE_SEL_EXTERNAL    : INTEGER
+    );
+    PORT(
+        rx_p                  : IN std_logic;
+        rx_n                  : IN std_logic;
+        clock                 : IN std_logic;
+        invert                : IN std_logic;
+        reset_i               : IN std_logic;
+        strobe                : IN std_logic;
+        fastclock             : IN std_logic;
+        fastclock90           : IN std_logic;
+        fastclock180          : IN std_logic;
+        phase_sel_in          : IN std_logic_vector(1 downto 0);
+        stable_count_to_reset : IN std_logic_vector(7 downto 0);
+        err_count_to_shift    : IN std_logic_vector(7 downto 0);
+        tap_delay_i           : IN std_logic_vector(4 downto 0);
+        phase_sel_out         : OUT std_logic_vector(1 downto 0);
+        phase_err             : OUT std_logic;
+        d0                    : OUT std_logic;
+        d1                    : OUT std_logic
+        );
+    END COMPONENT;
 
+    attribute IODELAY_GROUP: string;
 
 begin
+
+    assert_fpga_type :
+    IF ( FPGA_TYPE/="VIRTEX6" and FPGA_TYPE/="ARTIX7") GENERATE
+        assert false report "Unknown FPGA TYPE" severity error;
+    end GENERATE assert_fpga_type;
+
+    --===================--
+    --==  Reset Fanout ==--
+    --===================--
 
     process (clock) is begin
         if (rising_edge(clock)) then
@@ -98,51 +137,67 @@ begin
         end if;
     end process;
 
-    IDELAYCTRL_inst : IDELAYCTRL
-    port map (
+    --==========================--
+    --== Virtex-6 IDELAYCTRL  ==--
+    --==========================--
 
-        -- The ready (RDY) signal indicates when the IDELAYE2 and
-        -- ODELAYE2 modules in the specific region are calibrated. The RDY
-        -- signal is deasserted if REFCLK is held High or Low for one clock
-        -- period or more. If RDY is deasserted Low, the IDELAYCTRL module
-        -- must be reset. If not needed, RDY to be unconnected/ignored.
-        RDY    => idly_rdy,
+    alignment_idelayctrl_gen_v6a7 :
+    IF (FPGA_TYPE="VIRTEX6" or FPGA_TYPE="ARTIX7") GENERATE
+        attribute IODELAY_GROUP of IDELAYCTRL_inst : label is "IODLY_GROUP";
+    begin
 
-        -- Time reference to IDELAYCTRL to calibrate all IDELAYE2 and
-        -- ODELAYE2 modules in the same region. REFCLK can be supplied
-        -- directly from a user-supplied source or the MMCME2/PLLE2 and
-        -- must be routed on a global clock buffer
-        REFCLK => delay_refclk,
+        IDELAYCTRL_inst : IDELAYCTRL
+        port map (
 
-        -- Active-High asynchronous reset. To ensure proper IDELAYE2
-        -- and ODELAYE2 operation, IDELAYCTRL must be reset after
-        -- configuration and the REFCLK signal is stable. A reset pulse width
-        -- Tidelayctrl_rpw is required
-        RST    => delay_refclk_reset
-    );
+            -- The ready (RDY) signal indicates when the IDELAYE2 and
+            -- ODELAYE2 modules in the specific region are calibrated. The RDY
+            -- signal is deasserted if REFCLK is held High or Low for one clock
+            -- period or more. If RDY is deasserted Low, the IDELAYCTRL module
+            -- must be reset. If not needed, RDY to be unconnected/ignored.
+            RDY    => idly_rdy,
 
-    process (clock) is begin
-        if (rising_edge(clock)) then
-            idly_rdy_r <= idly_rdy;
-        end if;
-    end process;
+            -- Time reference to IDELAYCTRL to calibrate all IDELAYE2 and
+            -- ODELAYE2 modules in the same region. REFCLK can be supplied
+            -- directly from a user-supplied source or the MMCME2/PLLE2 and
+            -- must be routed on a global clock buffer
+            REFCLK => delay_refclk,
 
-    sot_loop: for ifat in 0 to 23 generate begin
+            -- Active-High asynchronous reset. To ensure proper IDELAYE2
+            -- and ODELAYE2 operation, IDELAYCTRL must be reset after
+            -- configuration and the REFCLK signal is stable. A reset pulse width
+            -- Tidelayctrl_rpw is required
+            RST    => delay_refclk_reset
+        );
+
+        process (clock) is begin
+            if (rising_edge(clock)) then
+                idly_rdy_r <= idly_rdy;
+            end if;
+        end process;
+
+    END GENERATE alignment_idelayctrl_gen_v6a7;
+
+    --======================--
+    --== SOT Oversampler  ==--
+    --======================--
+
+    sot_loop: for ifat in 0 to MXVFATS-1 generate begin
 
         -- initial $display("Compiling SOT sampler %d with INVERT=%d, TAPS=%d",ifat,SOT_INVERT[ifat],SOT_OFFSET[ifat*5+:4]);
 
         -- sample the start of frame signals
-        sot_oversampler : entity work.oversampler
+        sot_oversampler : oversampler
         generic map (
-            DDR                => DDR,
-            PHASE_SEL_EXTERNAL => 0 -- automatic control
+            FPGA_TYPE_IS_VIRTEX6  => (FPGA_TYPE_IS_VIRTEX6),
+            FPGA_TYPE_IS_ARTIX7   => (FPGA_TYPE_IS_ARTIX7),
+            DDR                   => DDR,
+            PHASE_SEL_EXTERNAL    => 0 -- automatic control
         )
         port map (
 
             tap_delay_i => sot_tap_delay(ifat),
 
             invert => sot_invert (ifat),
-
 
             rx_p => start_of_frame_p(ifat),
             rx_n => start_of_frame_n(ifat),
@@ -155,7 +210,9 @@ begin
             fastclock90      => fastclk_90,
             fastclock180     => fastclk_180,
 
-            phase_sel_in     => "00",
+            strobe           => serdesstrobe,
+
+            phase_sel_in     => (others=> std_logic ' ('0')),
             phase_sel_out    => vfat_phase_sel(ifat),
 
             err_count_to_shift => err_count_to_shift,
@@ -182,12 +239,14 @@ begin
 
     end generate;
 
-    trig_loop: for ipin in 0 to 191 generate begin
+    trig_loop: for ipin in 0 to (MXVFATS*8-1) generate begin
 
         -- initial $display("Compiling SBIT sampler %d with INVERT=%d, TAPS=%d",ipin,TU_INVERT[ipin],TU_OFFSET[ipin*5+:4]);
 
-        sbit_oversampler : entity work.oversampler
+        sbit_oversampler : oversampler
         generic map (
+            FPGA_TYPE_IS_VIRTEX6  => (FPGA_TYPE_IS_VIRTEX6),
+            FPGA_TYPE_IS_ARTIX7   => (FPGA_TYPE_IS_ARTIX7),
             DDR                => DDR,
             PHASE_SEL_EXTERNAL => 1 -- manual control
         )
@@ -207,6 +266,8 @@ begin
             fastclock90  => fastclk_90,
             fastclock180 => fastclk_180,
 
+            strobe           => serdesstrobe,
+
             err_count_to_shift => err_count_to_shift,
             stable_count_to_reset => stable_count_to_reset,
 
@@ -220,7 +281,7 @@ begin
 
     end generate;
 
-    aligner_loop: for ifat in 0 to 23 generate begin
+    aligner_loop: for ifat in 0 to MXVFATS-1 generate begin
 
         frame_aligner_inst : entity frame_aligner
         generic map (

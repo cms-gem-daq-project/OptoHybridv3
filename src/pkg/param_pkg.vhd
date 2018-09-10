@@ -14,6 +14,15 @@ package param_pkg is
 
     constant RELEASE_HARDWARE       : std_logic_vector(7 downto  0) := x"1C";
 
+  --constant FPGA_TYPE     : string (7 downto  1) := "VIRTEX6";
+    constant FPGA_TYPE     : string  := "ARTIX7";
+    constant FPGA_TYPE_IS_VIRTEX6  : integer := 0;
+    constant FPGA_TYPE_IS_ARTIX7   : integer := 1;
+
+    constant MXELINKS : integer := 1;
+    constant MXLED    : integer := 1;
+    constant MXRESET  : integer := 1;
+
 end param_pkg;
 
 package body param_pkg is
