@@ -40,10 +40,12 @@ _xmsgs
 *.o
 .Xil
 
-src/ip_cores/*
 *.xcix
-*.xci
+src/ip_cores_a7/*
+src/ip_cores/*
+!src/ip_cores_a7/*/*/*.xci
 !src/ip_cores/*.xco
+!src/ip_cores/*/*.xco
 tags
 
 iseconfig

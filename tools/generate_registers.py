@@ -158,7 +158,7 @@ def main():
         print('Usage: generate_registers.py <board_type> [num_of_oh]')
         print('board_type can be: ctp7 or glib')
         print('num_of_oh is optional. if supplied, the script will substitute generate_size with this value when generating registers in the firmware. Note that this is not affecting the uHAL xml file generation.')
-        return
+        return sys.exit(1)
 
     else:
         if sys.argv[1] != 'ctp7' and sys.argv[1] != 'glib' and sys.argv[1] != 'oh':

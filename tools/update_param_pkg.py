@@ -2,10 +2,6 @@ from oh_settings import *
 from polarity_swaps import *
 from insert_code import *
 
-from timing_constants_geb_v3b_short import *
-from timing_constants_geb_v3a_short import *
-from timing_constants_geb_v3c_long  import *
-
 ADDRESS_TABLE_TOP = '../src/pkg/param_pkg.vhd'
 MARKER_START='-- START: PARAM_PKG DO NOT EDIT --'
 MARKER_END="-- END: PARAM_PKG DO NOT EDIT --"

@@ -1,36 +1,19 @@
+import sys
+
 from oh_settings import *
 from polarity_swaps import *
 from insert_code import *
 
-from timing_constants_geb_v3b_short import *
-from timing_constants_geb_v3a_short import *
-from timing_constants_geb_v3c_long  import *
-
 ADDRESS_TABLE_TOP = '../optohybrid_registers.xml'
 MARKER_START='<!-- START: INVERT_REGS DO NOT EDIT -->'
 MARKER_END="<!-- END: INVERT_REGS DO NOT EDIT -->"
-
 
 def main():
 
     trig_tap_delays = 0
     sot_tap_delays = 0
 
-    if (geb_version=="v3a" and geb_length=="short" and gem_version=="ge11"):
-        trig_tap_delays = v3a_short_trig_tap_delays
-        sot_tap_delays = v3a_short_sot_tap_delays
-    elif (geb_version=="v3b" and geb_length=="short" and gem_version=="ge11"):
-        trig_tap_delays = v3b_short_trig_tap_delays
-        sot_tap_delays = v3b_short_sot_tap_delays
-    elif (geb_version=="v3c" and geb_length=="long" and gem_version=="ge11"):
-        trig_tap_delays = v3c_long_trig_tap_delays
-        sot_tap_delays = v3c_long_sot_tap_delays
-    else:
-        trig_tap_delays = 0
-        sot_tap_delays = 0
-
     insert_code (ADDRESS_TABLE_TOP, ADDRESS_TABLE_TOP, MARKER_START, MARKER_END, write_xml_invert_map)
-
 
 def write_xml_invert_map (file_handle):
 

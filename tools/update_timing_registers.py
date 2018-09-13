@@ -6,6 +6,8 @@ from timing_constants_geb_v3a_short import *
 from timing_constants_geb_v3c_long  import *
 from timing_constants_geb_ge21_null  import *
 
+import sys
+
 ADDRESS_TABLE_TOP = '../optohybrid_registers.xml'
 MARKER_START='<!-- START: TIMING_DELAYS DO NOT EDIT -->'
 MARKER_END="<!-- END: TIMING_DELAYS DO NOT EDIT -->"
@@ -37,6 +39,8 @@ def main():
         else:
             trig_tap_delays = []
             sot_tap_delays = []
+            print ("Unknown settings in update_timing_registers");
+            return sys.exit(1)
 
 
         padding = "                    " # indent

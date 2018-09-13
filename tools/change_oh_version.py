@@ -1,16 +1,16 @@
 from insert_code import *
 import sys
 
-ADDRESS_TABLE_TOP = './oh_settings.py'
-MARKER_START      = '# START: OH_VERSION'
-MARKER_END        = '# END: OH_VERSION'
+OH_SETTINGS_FILE = './oh_settings.py'
+MARKER_START     = '# START: OH_VERSION'
+MARKER_END       = '# END: OH_VERSION'
 
 
 def main():
 
     if (len(sys.argv) < 6):
-        print('Usage: change_oh_version.py <gem_station> <oh_version> <geb_version> <geb_length> <firmware_version>')
-        return
+        print('Arguments: <gem_station> <oh_version> <geb_version> <geb_length> <firmware_version>')
+        sys.exit(1)
 
     def write_oh_version (file_handle):
 
@@ -29,11 +29,15 @@ def main():
     geb_version              = sys.argv[3]
     geb_length               = sys.argv[4]
 
-    firmware_version_major   = sys.argv[5][0:2]
-    firmware_version_minor   = sys.argv[5][2:4]
-    firmware_release_version = sys.argv[5][4:6]
+    version = sys.argv[5].split('.')
+    if (len(version) != 3):
+        sys.exit(1)
 
-    insert_code (ADDRESS_TABLE_TOP, ADDRESS_TABLE_TOP, MARKER_START, MARKER_END, write_oh_version)
+    firmware_version_major   = version[0]
+    firmware_version_minor   = version[1]
+    firmware_release_version = version[2]
+
+    insert_code (OH_SETTINGS_FILE, OH_SETTINGS_FILE, MARKER_START, MARKER_END, write_oh_version)
 
 
 if __name__ == '__main__':

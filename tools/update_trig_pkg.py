@@ -26,15 +26,17 @@ def write_trig_pkg (file_handle):
 
     if (gem_version=="ge21"):
         oh_lite=1
+        reverse_sbits = "000"
     else:
         oh_lite=0
+        reverse_sbits = "000000"
 
     f.write ('\n')
     f.write('% sconstant OH_LITE : integer := %d; -- lite oh only has 12 VFATs\n'              % (padding, oh_lite))
     f.write ('\n')
     f.write('% sconstant MXVFATS : integer := %d;\n'                             % (padding, num_vfats))
     f.write ('\n')
-    f.write('% sconstant REVERSE_VFAT_SBITS : std_logic_vector (%d downto 0) := x"000000";\n' % (padding, num_vfats-1))
+    f.write('% sconstant REVERSE_VFAT_SBITS : std_logic_vector (%d downto 0) := x"%s";\n' % (padding, num_vfats-1, reverse_sbits))
     f.write ('\n')
 
 
