@@ -81,49 +81,53 @@ def main():
             if (start_found and not end_found and not wrote_registers):
                 wrote_registers = True
                 print ("starting")
+
                 for vfat in range (24):
 
-                    vfat_inv = 0
+                    geb_slot = 0
+
 
                     if (USE_INVERTED_NUMBERING):
-                        vfat_inv = 23-vfat
+                        geb_slot = 23-vfat
                     else:
-                        vfat_inv = vfat
+                        geb_slot = vfat
 
                     for bit in range (8):
 
-                        global_bit = vfat_inv*8+bit
-                        address=global_bit / 6 # 5 bits per tap means 6 taps per 32 bit register
+                        global_bit_in_geb_numbering = geb_slot*8+bit
+                        global_bit = vfat*8+bit
+
+                        address=global_bit // 6 # 5 bits per tap means 6 taps per 32 bit register
                         mask=0x1f << 5*(global_bit % 6)
 
-                        print ( "VFAT #%s, Trigger Bit %s, Tap Delay=%s" % (vfat, bit, trig_tap_delays[global_bit]))
+                        print ( "VFAT #%s, Trigger Bit %s, tu number=%d, Tap Delay=%s" % (vfat, bit, global_bit, trig_tap_delays[global_bit_in_geb_numbering]))
 
                         f.write('%s<node id="TAP_DELAY_VFAT%s_BIT%s" address="0x%X" permission="rw"\n' % (padding, vfat, bit, address))
                         f.write('%s    mask="0x%08X"\n' % (padding, mask))
                         f.write('%s    description="78 ps tap delay. Set from 0-21 to equalize trace lengths within a VFAT"\n' % padding)
                         f.write('%s    fw_signal="trig_tap_delay(%s)"\n' % (padding, global_bit))
-                        f.write('%s    fw_default="%s"/>\n' % (padding, trig_tap_delays[global_bit]))
+                        f.write('%s    fw_default="%s"/>\n' % (padding, trig_tap_delays[global_bit_in_geb_numbering]))
 
                 for vfat in range (24):
 
-                    vfat_inv = 0
+                    geb_slot = 0
 
                     if (USE_INVERTED_NUMBERING):
-                        vfat_inv = 23-vfat
+                        geb_slot = 23-vfat
                     else:
-                        vfat_inv = vfat
+                        geb_slot = vfat
 
                     sot_base_address = 191 / 6 + 1
                     address = sot_base_address + vfat/6
                     mask=0x1f << 5*(vfat % 6) # 6 vfats per register
 
-                    print ( "VFAT #%s SOT, Tap Delay=%s" % (vfat, sot_tap_delays[vfat_inv]))
+                    print ( "VFAT #%s SOT, Tap Delay=%s" % (vfat, sot_tap_delays[geb_slot]))
 
                     f.write('%s<node id="SOT_TAP_DELAY_VFAT%s" address="0x%X" permission="rw"\n' % (padding, vfat, address))
                     f.write('%s    mask="0x%08X"\n' % (padding, mask))
                     f.write('%s    description="78 ps tap delay. Set from 0-21 to equalize trace lengths within a VFAT"\n' % padding)
                     f.write('%s    fw_signal="sot_tap_delay(%s)"\n' % (padding, vfat))
-                    f.write('%s    fw_default="%s"/>\n' % (padding, sot_tap_delays[vfat_inv]))
+                    f.write('%s    fw_default="%s"/>\n' % (padding, sot_tap_delays[geb_slot]))
 
         f.close
 
