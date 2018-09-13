@@ -132,7 +132,7 @@ module led_control (
 
   always @(posedge async_clock) begin
     fader_cnt <= fader_cnt + 1'b1;
-    pwm_cnt <= pwm_cnt[3:0] + pwm_brightness + 2'd12;
+    pwm_cnt <= pwm_cnt[3:0] + pwm_brightness + 4'd8;
   end
 
   assign fader_led = pwm_cnt[4];
