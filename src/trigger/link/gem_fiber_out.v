@@ -9,7 +9,6 @@ module   gem_fiber_out #(
   output [NLINKS-1:0]  TRG_TX_P,
 
   input [55:0]  GEM_DATA,      // 56 bit GEM data
-  input [55:0]  GEM_DATA1,      // 56 bit GEM data
   input         GEM_OVERFLOW,  //  1 bit GEM has more than 8 clusters
   input [11:0]  BXN_COUNTER ,  //  12 bit bxn counter
   input         BC0         ,  //  1  bit bx0 flag
@@ -157,27 +156,29 @@ assign tx_dly_align_mon_ena = 1'b0;
             .GT0_TX_FSM_RESET_DONE_OUT       (),
             .GT0_RX_FSM_RESET_DONE_OUT       (),
             .GT0_DATA_VALID_IN               (1'b1),
+            .GT0_TX_MMCM_LOCK_IN             (1'b1), // SHOULD CONNECT THIS TO SOMETHING
+            .GT0_TX_MMCM_RESET_OUT (),
             //_________________________________________________________________________
             //GT0  (X0Y0)
             //____________________________CHANNEL PORTS________________________________
             //-------------------------- Channel - DRP Ports  --------------------------
-            .gt0_drpaddr_in                  (),
-            .gt0_drpclk_in                   (),
-            .gt0_drpdi_in                    (),
+            .gt0_drpaddr_in                  (9'd0),
+            .gt0_drpclk_in                   (1'd0),
+            .gt0_drpdi_in                    (16'd0),
             .gt0_drpdo_out                   (),
-            .gt0_drpen_in                    (),
+            .gt0_drpen_in                    (1'd0),
             .gt0_drprdy_out                  (),
-            .gt0_drpwe_in                    (),
+            .gt0_drpwe_in                    (1'd0),
             //------------------- RX Initialization and Reset Ports --------------------
-            .gt0_eyescanreset_in             (),
+            .gt0_eyescanreset_in             (1'd0),
             //------------------------ RX Margin Analysis Ports ------------------------
             .gt0_eyescandataerror_out        (),
-            .gt0_eyescantrigger_in           (),
+            .gt0_eyescantrigger_in           (1'd0),
             //---------- Receive Ports - RX Decision Feedback Equalizer(DFE) -----------
             .gt0_dmonitorout_out             (),
             //----------- Receive Ports - RX Initialization and Reset Ports ------------
-            .gt0_gtrxreset_in                (0),
-            .gt0_rxlpmreset_in               (),
+            .gt0_gtrxreset_in                (1'd0),
+            .gt0_rxlpmreset_in               (1'd0),
             //------------------- TX Initialization and Reset Ports --------------------
             .gt0_gttxreset_in                (gt0_gttxreset_in),
             .gt0_txuserrdy_in                (gt0_txuserrdy_in),
