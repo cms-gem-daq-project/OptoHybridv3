@@ -4,16 +4,16 @@
 
 ## BANK 14
 
-set_property   IOSTANDARD    LVDS_25     [get_ports {gbt_dclk_p[0]}]
-set_property   PACKAGE_PIN     "W19"     [get_ports {gbt_dclk_p[0]}]
-set_property   IOSTANDARD    LVDS_25     [get_ports {gbt_dclk_n[0]}]
-set_property   PACKAGE_PIN     "W20"     [get_ports {gbt_dclk_n[0]}]
+set_property   IOSTANDARD    LVDS_25     [get_ports {logic_clock_p}]
+set_property   PACKAGE_PIN     "W19"     [get_ports {logic_clock_p}]
+set_property   IOSTANDARD    LVDS_25     [get_ports {logic_clock_n}]
+set_property   PACKAGE_PIN     "W20"     [get_ports {logic_clock_n}]
 ##BANK 15
 
-set_property   IOSTANDARD    LVDS_25     [get_ports {gbt_dclk_p[1]}]
-set_property   PACKAGE_PIN     "J19"     [get_ports {gbt_dclk_p[1]}]
-set_property   IOSTANDARD    LVDS_25     [get_ports {gbt_dclk_n[1]}]
-set_property   PACKAGE_PIN     "H19"     [get_ports {gbt_dclk_n[1]}]
+set_property   IOSTANDARD    LVDS_25     [get_ports {elink_clock_p}]
+set_property   PACKAGE_PIN     "J19"     [get_ports {elink_clock_p}]
+set_property   IOSTANDARD    LVDS_25     [get_ports {elink_clock_n}]
+set_property   PACKAGE_PIN     "H19"     [get_ports {elink_clock_n}]
 ## CLOCKS FROM GBTX2 CLOCKDESX LINES
 
 ##BANK 16

@@ -63,8 +63,8 @@ INST "ext_sbits_o<3>" TNM = ext_sbits_o;
 INST "ext_sbits_o<4>" TNM = ext_sbits_o;
 INST "ext_sbits_o<5>" TNM = ext_sbits_o;
 
-TIMEGRP "led_o"       OFFSET = OUT 12.5 ns VALID 25 ns BEFORE "gbt_dclk_p<0>" RISING;
-TIMEGRP "ext_sbits_o" OFFSET = OUT 12.5 ns VALID 25 ns BEFORE "gbt_dclk_p<0>" RISING;
+TIMEGRP "led_o"       OFFSET = OUT 12.5 ns VALID 25 ns BEFORE "logic_clock_p" RISING;
+TIMEGRP "ext_sbits_o" OFFSET = OUT 12.5 ns VALID 25 ns BEFORE "logic_clock_p" RISING;
 
 # XADC
 #INST "xadc_gen.adc_inst/xadc_gen.xadc_inst/SYSMON_INST" LOC = SYSMON_X0Y0;
@@ -552,5 +552,5 @@ NET vfat_sbits_n<7>    LOC = "AA31" | TNM = vfat_sbits;
 NET vfat_sbits_p<7>    LOC = "AA30" | TNM = vfat_sbits;
 #### END: AUTO GENERATED SBITS UCF -- DO NOT EDIT ####
 
-TIMEGRP "vfat_sbits" OFFSET = IN  1.5625 ns VALID 3.125 ns BEFORE "gbt_dclk_p<0>" RISING;
-TIMEGRP "vfat_sot"   OFFSET = IN  1.5625 ns VALID 3.125 ns BEFORE "gbt_dclk_p<0>" RISING;
+TIMEGRP "vfat_sbits" OFFSET = IN  1.5625 ns VALID 3.125 ns BEFORE "logic_clock_p" RISING;
+TIMEGRP "vfat_sot"   OFFSET = IN  1.5625 ns VALID 3.125 ns BEFORE "logic_clock_p" RISING;

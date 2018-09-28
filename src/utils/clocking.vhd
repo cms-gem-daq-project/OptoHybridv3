@@ -71,8 +71,6 @@ end clocking;
 
 architecture Behavioral of clocking is
 
-    signal gbt_dclk     : std_logic_vector (1 downto 0);
-
     signal gbt_clk40 : std_logic;
     signal gbt_clk320 : std_logic;
 

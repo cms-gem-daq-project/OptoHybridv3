@@ -1,6 +1,6 @@
-NET "gbt_dclk_p<0>" TNM_NET = "TN_gbt_dclk0";
-TIMESPEC TS_gbt_dclk0 = PERIOD "TN_gbt_dclk0" 25 ns HIGH 50%;
+NET "logic_clock_p" TNM_NET = "TN_logic_clock";
+TIMESPEC TS_logic_clock = PERIOD "TN_logic_clock" 25 ns HIGH 50%;
 
-NET "gbt_dclk_p<1>" TNM_NET = "TN_gbt_dclk1";
-TIMESPEC TS_gbt_dclk1 = PERIOD "TN_gbt_dclk1" 25 ns HIGH 50%;
+NET "elink_clock_p" TNM_NET = "TN_elink_clock";
+TIMESPEC TS_elink_clock = PERIOD "TN_elink_clock" 25 ns HIGH 50%;
 
