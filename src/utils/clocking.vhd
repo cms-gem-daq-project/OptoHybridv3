@@ -28,8 +28,10 @@ port(
     -- gbt_eclk_n  : in std_logic_vector (1 downto 0);
 
     -- programmable frequency/phase deskew clocks
-    gbt_dclk_p : in std_logic_vector(1 downto 0);
-    gbt_dclk_n : in std_logic_vector(1 downto 0);
+    logic_clock_p : in std_logic;
+    logic_clock_n : in std_logic;
+    elink_clock_p : in std_logic;
+    elink_clock_n : in std_logic;
 
     -- eport 40/320 serdes clocks
     gbt_rx_clk_div_o : out std_logic;
@@ -179,8 +181,8 @@ begin
       clk_gen0 : clk_gen
       port map(
 
-          clk40_i_p   => gbt_dclk_p(0),
-          clk40_i_n   => gbt_dclk_n(0),
+          clk40_i_p   => logic_clock_p,
+          clk40_i_n   => logic_clock_n,
 
           clk40_o     => clock,
           clk80_o     => clk_2x_o,
@@ -194,8 +196,8 @@ begin
       clk_gen1 : eprt_clk_gen
       port map(
 
-          clk40_i_p     => gbt_dclk_p(1),
-          clk40_i_n     => gbt_dclk_n(1),
+          clk40_i_p     => elink_clock_p,
+          clk40_i_n     => elink_clock_n,
 
           gbt_rxclk_div => gbt_rx_clk_div_o,
           gbt_rxclk     => gbt_rx_clk_o,
@@ -216,8 +218,8 @@ begin
       u_logic_clocking : logic_clocking
       port map (
         -- Clock in ports
-        clk_in1_p  => gbt_dclk_p(0),
-        clk_in1_n  => gbt_dclk_n(0),
+        clk_in1_p  => logic_clock_p,
+        clk_in1_n  => logic_clock_n,
         -- Clock out ports
         clk40_o      => clock,
         clk80_o      => clk_2x_o,
@@ -233,8 +235,8 @@ begin
       u_gbt_clocking : gbt_clocking
         port map (
         -- Clock in ports
-        clk_in1_p  => gbt_dclk_p(1),
-        clk_in1_n  => gbt_dclk_n(1),
+        clk_in1_p  => elink_clock_p,
+        clk_in1_n  => elink_clock_n,
         -- Clock out ports
         gbt_clk40  => gbt_clk40,
         gbt_clk320 => gbt_clk320,

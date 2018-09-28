@@ -42,31 +42,31 @@ NET "elink_i_n" LOC = AE24 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE; #
 #  should be set to 40MHz with 180deg phase offset from the GBTX data clock. why :((
 #  what does this even mean :(( they are at different frequencies
 #clockdes6 = clk0_to_fpga =  v_diff_b_10 = AP20, AP21
-NET "gbt_dclk_p<0>"  LOC = AP20 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE;
-NET "gbt_dclk_n<0>"  LOC = AP21 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE;
+NET "logic_clock_p"  LOC = AP20 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE;
+NET "logic_clock_n"  LOC = AP21 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE;
 
 #clockdes1 = clk1_to_fpga =  GC_A = A10, B10
-NET "gbt_dclk_p<1>"  LOC = A10 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE;
-NET "gbt_dclk_n<1>"  LOC = B10 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE;
+NET "elink_clock_p"  LOC = A10 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE;
+NET "elink_clock_n"  LOC = B10 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE;
 
 
-NET "gbt_dclk_p<0>"      TNM_NET = "gbt_dclk_p";
-NET "gbt_dclk_n<0>"      TNM_NET = "gbt_dclk_n";
+NET "logic_clock_p"      TNM_NET = "logic_clock_p";
+NET "logic_clock_n"      TNM_NET = "logic_clock_n";
 
-NET "gbt_dclk_p<1>"      TNM_NET = "gbt_dclk_p";
-NET "gbt_dclk_n<1>"      TNM_NET = "gbt_dclk_n";
+NET "elink_clock_p"      TNM_NET = "elink_clock_p";
+NET "elink_clock_n"      TNM_NET = "elink_clock_n";
 
 # NET "gtx_inst/mgt_refclk" TNM_NET = "mgt_refclk";
 # TIMESPEC "TS_mgt_refclk" = PERIOD "mgt_refclk" 6.25 ns HIGH 50%;
 # ELINKS
 
-INST "elink_o_p>" TNM = elink320_o;
-INST "elink_o_n>" TNM = elink320_o;
+INST "elink_o_p" TNM = elink320_o;
+INST "elink_o_n" TNM = elink320_o;
 
-INST "elink_i_n>" TNM = elink_i;
+INST "elink_i_n" TNM = elink_i;
 INST "elink_i_n"  TNM = elink_i;
 
-TIMEGRP "elink_i" OFFSET = IN  1.5625 ns VALID 3.125 ns BEFORE "gbt_dclk_p<1>" RISING;
+TIMEGRP "elink_i" OFFSET = IN  1.5625 ns VALID 3.125 ns BEFORE "elink_clock_p" RISING;
 
-TIMEGRP "elink320_o" OFFSET = OUT 1.5625  ns VALID 3.125 ns AFTER  "gbt_dclk_p<1>" RISING;
+TIMEGRP "elink320_o" OFFSET = OUT 1.5625  ns VALID 3.125 ns AFTER  "elink_clock_p" RISING;
 

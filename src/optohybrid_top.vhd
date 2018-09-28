@@ -26,8 +26,11 @@ port(
 
     --== Clocking ==--
 
-    gbt_dclk_p : in std_logic_vector (1 downto 0) ;
-    gbt_dclk_n : in std_logic_vector (1 downto 0) ;
+    logic_clock_p : in std_logic;
+    logic_clock_n : in std_logic;
+
+    elink_clock_p : in std_logic;
+    elink_clock_n : in std_logic;
 
     --== Elinks ==--
 
@@ -208,8 +211,11 @@ begin
     clocking : entity work.clocking
     port map(
 
-        gbt_dclk_p         => gbt_dclk_p, -- phase shiftable 40MHz ttc clocks
-        gbt_dclk_n         => gbt_dclk_n, --
+        logic_clock_p         => logic_clock_p, -- phase shiftable 40MHz ttc clocks
+        logic_clock_n         => logic_clock_n, --
+
+        elink_clock_p         => elink_clock_p, -- phase shiftable 40MHz ttc clocks
+        elink_clock_n         => elink_clock_n, --
 
         ipb_mosi_i      => ipb_mosi_slaves (IPB_SLAVE.CLOCKING),
         ipb_miso_o      => ipb_miso_slaves (IPB_SLAVE.CLOCKING),

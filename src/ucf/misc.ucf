@@ -67,13 +67,13 @@ TIMEGRP "led_o"       OFFSET = OUT 12.5 ns VALID 25 ns BEFORE "gbt_dclk_p<0>" RI
 TIMEGRP "ext_sbits_o" OFFSET = OUT 12.5 ns VALID 25 ns BEFORE "gbt_dclk_p<0>" RISING;
 
 # XADC
-INST "xadc_gen.adc_inst/xadc_gen.xadc_inst/SYSMON_INST" LOC = SYSMON_X0Y0;
+#INST "xadc_gen.adc_inst/xadc_gen.xadc_inst/SYSMON_INST" LOC = SYSMON_X0Y0;
 
 # GBT
 # NET "gbt_txvalid_o" LOC =      ; # hardwired, apparently
-NET "gbt_txready_i" LOC = AF13 ; # v_diff_k_13_p
-NET "gbt_rxvalid_i" LOC = AJ9  ; # R_side_2_n
-NET "gbt_rxready_i" LOC = AH9  ; # R_side_2_p
+NET "gbt_txready_i<0>" LOC = AF13 ; # v_diff_k_13_p
+NET "gbt_rxvalid_i<0>" LOC = AJ9  ; # R_side_2_n
+NET "gbt_rxready_i<0>" LOC = AH9  ; # R_side_2_p
 
 NET "sca_ctl<0>" LOC="L9"  ;
 NET "sca_ctl<1>" LOC="K9"  ;

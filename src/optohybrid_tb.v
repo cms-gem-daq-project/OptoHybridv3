@@ -448,8 +448,8 @@ parameter DDR = 0;
       .gbt_rxvalid_i (gbt_rxvalid_i),
       .gbt_rxready_i (gbt_rxready_i),
 
-      .mgt_clk_p_i   (mgt_clk_p_i),
-      .mgt_clk_n_i   (mgt_clk_n_i),
+      .mgt_clk_p_i   ({2{mgt_clk_p_i}}),
+      .mgt_clk_n_i   ({2{mgt_clk_n_i}}),
 
       .vfat_sot_p    (vfat_sot_p),
       .vfat_sot_n    (vfat_sot_n),
