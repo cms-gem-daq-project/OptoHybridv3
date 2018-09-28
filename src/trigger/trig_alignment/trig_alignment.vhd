@@ -130,49 +130,9 @@ begin
 
     process (clock) is begin
         if (rising_edge(clock)) then
-            reset <= reset_i or (not idly_rdy_r);
+            reset <= reset_i;
         end if;
     end process;
-
-    --==========================--
-    --== Virtex-6 IDELAYCTRL  ==--
-    --==========================--
-
-    alignment_idelayctrl_gen_v6a7 :
-    IF (FPGA_TYPE="VIRTEX6" or FPGA_TYPE="ARTIX7") GENERATE
-        attribute IODELAY_GROUP of IDELAYCTRL_inst : label is "IODLY_GROUP";
-    begin
-
-        IDELAYCTRL_inst : IDELAYCTRL
-        port map (
-
-            -- The ready (RDY) signal indicates when the IDELAYE2 and
-            -- ODELAYE2 modules in the specific region are calibrated. The RDY
-            -- signal is deasserted if REFCLK is held High or Low for one clock
-            -- period or more. If RDY is deasserted Low, the IDELAYCTRL module
-            -- must be reset. If not needed, RDY to be unconnected/ignored.
-            RDY    => idly_rdy,
-
-            -- Time reference to IDELAYCTRL to calibrate all IDELAYE2 and
-            -- ODELAYE2 modules in the same region. REFCLK can be supplied
-            -- directly from a user-supplied source or the MMCME2/PLLE2 and
-            -- must be routed on a global clock buffer
-            REFCLK => delay_refclk,
-
-            -- Active-High asynchronous reset. To ensure proper IDELAYE2
-            -- and ODELAYE2 operation, IDELAYCTRL must be reset after
-            -- configuration and the REFCLK signal is stable. A reset pulse width
-            -- Tidelayctrl_rpw is required
-            RST    => delay_refclk_reset
-        );
-
-        process (clock) is begin
-            if (rising_edge(clock)) then
-                idly_rdy_r <= idly_rdy;
-            end if;
-        end process;
-
-    END GENERATE alignment_idelayctrl_gen_v6a7;
 
     --======================--
     --== SOT Oversampler  ==--

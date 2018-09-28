@@ -1,11 +1,11 @@
 -- file: to_gbt_ser.vhd
 -- (c) Copyright 2009 - 2011 Xilinx, Inc. All rights reserved.
--- 
+--
 -- This file contains confidential and proprietary information
 -- of Xilinx, Inc. and is protected under U.S. and
 -- international copyright and other intellectual property
 -- laws.
--- 
+--
 -- DISCLAIMER
 -- This disclaimer is not a license and does not grant any
 -- rights to the materials distributed herewith. Except as
@@ -27,7 +27,7 @@
 -- by a third party) even if such damage or loss was
 -- reasonably foreseeable or Xilinx had been advised of the
 -- possibility of the same.
--- 
+--
 -- CRITICAL APPLICATIONS
 -- Xilinx products are not designed or intended to be fail-
 -- safe, or for use in any application requiring fail-safe
@@ -41,7 +41,7 @@
 -- liability of any use of Xilinx products in Critical
 -- Applications, subject only to applicable laws and
 -- regulations governing limitations on product liability.
--- 
+--
 -- THIS COPYRIGHT NOTICE AND DISCLAIMER MUST BE RETAINED AS
 -- PART OF THIS FILE AT ALL TIMES.
 ------------------------------------------------------------------------------
@@ -73,18 +73,17 @@ port
   DATA_OUT_TO_PINS_P      : out   std_logic_vector(sys_w-1 downto 0);
   DATA_OUT_TO_PINS_N      : out   std_logic_vector(sys_w-1 downto 0);
 
--- Input, Output delay control signals
-  DELAY_RESET          : in    std_logic;                    -- Active high synchronous reset for input delay
-  DELAY_DATA_CE        : in    std_logic_vector(sys_w -1 downto 0);            -- Enable signal for delay for bit 
-  DELAY_DATA_INC       : in    std_logic_vector(sys_w -1 downto 0);            -- Delay increment, decrement signal for bit 
-  DELAY_TAP_IN         : in    std_logic_vector(5*sys_w -1 downto 0); -- Dynamically loadable delay tap value for bit 
-  DELAY_TAP_OUT        : out   std_logic_vector(5*sys_w -1 downto 0); -- Bit  Delay tap value for monitoring
-  DELAY_LOCKED            : out   std_logic;                    -- Locked signal from IDELAYCTRL
-  REF_CLOCK               : in    std_logic;                    -- Reference Clock for IDELAYCTRL. Has to come from BUFG.
-  REFCLK_RESET            : in    std_logic;                    --
- 
+  -- Input, Output delay control signals
+  DELAY_RESET    : in    std_logic;                             -- Active high synchronous reset for input delay
+  DELAY_DATA_CE  : in    std_logic_vector(sys_w -1 downto 0);   -- Enable signal for delay for bit
+  DELAY_DATA_INC : in    std_logic_vector(sys_w -1 downto 0);   -- Delay increment, decrement signal for bit
+  DELAY_TAP_IN   : in    std_logic_vector(5*sys_w -1 downto 0); -- Dynamically loadable delay tap value for bit
+  DELAY_TAP_OUT  : out   std_logic_vector(5*sys_w -1 downto 0); -- Bit  Delay tap value for monitoring
+  REF_CLOCK      : in    std_logic;                             -- Reference Clock for IDELAYCTRL. Has to come from BUFG.
+  REFCLK_RESET   : in    std_logic;                             --
+
 -- Clock and reset signals
-  CLK_IN                  : in    std_logic;                    -- Fast clock from PLL/MMCM 
+  CLK_IN                  : in    std_logic;                    -- Fast clock from PLL/MMCM
   CLK_DIV_IN              : in    std_logic;                    -- Slow clock from PLL/MMCM
   IO_RESET                : in    std_logic);                   -- Reset signal for IO circuit
 end to_gbt_ser;
@@ -102,7 +101,7 @@ architecture xilinx of to_gbt_ser is
   signal data_out_to_pins_int      : std_logic_vector(sys_w-1 downto 0);
   -- Between the delay and serdes
   signal data_out_to_pins_predelay : std_logic_vector(sys_w-1 downto 0);
-  signal data_delay                : std_logic_vector(sys_w-1 downto 0); 
+  signal data_delay                : std_logic_vector(sys_w-1 downto 0);
   signal delay_ce              : std_logic_vector(sys_w-1 downto 0);
   signal delay_inc_dec         : std_logic_vector(sys_w-1 downto 0);
   type loadarr is array (0 to 15) of std_logic_vector(4 downto 0);
@@ -122,22 +121,19 @@ architecture xilinx of to_gbt_ser is
 
 
   attribute IODELAY_GROUP : string;
-  attribute IODELAY_GROUP of delayctrl : label is "IODLY_GROUP";
 
 begin
 
   delay_ce(0) <= DELAY_DATA_CE(0);
   delay_inc_dec(0) <= DELAY_DATA_INC(0);
-   intap(0) <= DELAY_TAP_IN(5*(0 + 1) -1 downto 5*(0)); 
-   DELAY_TAP_OUT(5*(0 + 1) -1 downto 5*(0)) <= outtap(0); 
-
+   intap(0) <= DELAY_TAP_IN(5*(0 + 1) -1 downto 5*(0));
+   DELAY_TAP_OUT(5*(0 + 1) -1 downto 5*(0)) <= outtap(0);
 
 
   -- Create the clock logic
 
-  
   -- We have multiple bits- step over every bit, instantiating the required elements
-  pins: for pin_count in 0 to sys_w-1 generate 
+  pins: for pin_count in 0 to sys_w-1 generate
      attribute IODELAY_GROUP of iodelaye1_bus: label is "IODLY_GROUP";
   begin
     -- Instantiate the buffers
@@ -169,11 +165,12 @@ begin
        port map (
          DATAOUT                => data_delay (pin_count),
          DATAIN                 => '0', -- Data from FPGA logic
+         IDATAIN                => '0',
+         ODATAIN                => data_out_to_pins_predelay(pin_count), -- Driven by OLOGIC/OSERDES
+
          C                      => CLK_DIV_IN,
          CE                     => delay_ce(pin_count), --DELAY_DATA_CE,
          INC                    => delay_inc_dec(pin_count), --DELAY_DATA_INC,
-         IDATAIN                => '0',
-         ODATAIN                => data_out_to_pins_predelay(pin_count), -- Driven by OLOGIC/OSERDES
          RST                    => DELAY_RESET,
          T                      => '0',
          CNTVALUEIN             => intap(pin_count), --DELAY_TAP_IN,
@@ -182,10 +179,7 @@ begin
          CINVCTRL               => '0'
          );
 
- 
-           data_out_to_pins_int(pin_count) <= data_delay(pin_count);
-
-
+       data_out_to_pins_int(pin_count) <= data_delay(pin_count);
 
 
      -- Instantiate the serdes primitive
@@ -197,8 +191,8 @@ begin
          DATA_RATE_OQ   => "SDR",
          DATA_RATE_TQ   => "SDR",
          DATA_WIDTH     => 8,
-         INTERFACE_TYPE => "DEFAULT", 
- 
+         INTERFACE_TYPE => "DEFAULT",
+
          TRISTATE_WIDTH => 1,
          SERDES_MODE    => "MASTER")
        port map (
@@ -237,11 +231,11 @@ begin
          DATA_RATE_TQ   => "SDR",
          DATA_WIDTH     => 8,
          TRISTATE_WIDTH => 1,
-         INTERFACE_TYPE => "DEFAULT", 
+         INTERFACE_TYPE => "DEFAULT",
          SERDES_MODE    => "SLAVE")
        port map (
-         D1             => '0', 
-         D2             => '0', 
+         D1             => '0',
+         D2             => '0',
          D3             => oserdes_d(3)(pin_count),
          D4             => oserdes_d(2)(pin_count),
          D5             => oserdes_d(1)(pin_count),
@@ -288,15 +282,6 @@ begin
      end generate out_slices;
 
   end generate pins;
-
--- IDELAYCTRL is needed for calibration
-delayctrl : IDELAYCTRL
-    port map (
-     RDY    => DELAY_LOCKED,
-     REFCLK => REF_CLOCK,
-     RST    => REFCLK_RESET
-     );
-
 
 
 

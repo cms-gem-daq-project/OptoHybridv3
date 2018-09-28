@@ -77,7 +77,6 @@ port
   DELAY_RESET          : in    std_logic;                    -- Active high synchronous reset for input delay
   DELAY_DATA_CE        : in    std_logic_vector(sys_w -1 downto 0);            -- Enable signal for delay for bit 
   DELAY_DATA_INC       : in    std_logic_vector(sys_w -1 downto 0);            -- Delay increment, decrement signal for bit 
-  DELAY_LOCKED            : out   std_logic;                    -- Locked signal from IDELAYCTRL
   REF_CLOCK               : in    std_logic;                    -- Reference Clock for IDELAYCTRL. Has to come from BUFG.
   BITSLIP                 : in    std_logic;                    -- Bitslip module is enabled in NETWORKING mode
                                                                 -- User should tie it to '0' if not needed
@@ -120,7 +119,6 @@ architecture xilinx of from_gbt_des is
 
 
   attribute IODELAY_GROUP : string;
-  attribute IODELAY_GROUP of delayctrl : label is "IODLY_GROUP";
 
 begin
 
@@ -289,13 +287,5 @@ begin
 
 
   end generate pins;
-
--- IDELAYCTRL is needed for calibration
-delayctrl : IDELAYCTRL
-    port map (
-     RDY    => DELAY_LOCKED,
-     REFCLK => REF_CLOCK,
-     RST    => REFCLK_RESET
-     );
 
 end xilinx;

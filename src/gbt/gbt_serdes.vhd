@@ -118,9 +118,8 @@ architecture Behavioral of gbt_serdes is
         io_reset             : in std_logic;
         data_out_to_pins_p   : out std_logic_vector(0 to 0);
         data_out_to_pins_n   : out std_logic_vector(0 to 0);
-        delay_tap_out        : out std_logic_vector(4 downto 0);
-        delay_locked         : out std_logic
-    );
+        delay_tap_out        : out std_logic_vector(4 downto 0)
+	 );
     end component;
 
     component from_gbt_des
@@ -136,9 +135,8 @@ architecture Behavioral of gbt_serdes is
         clk_div_in          : in std_logic;
         refclk_reset        : in std_logic;
         io_reset            : in std_logic;
-        data_in_to_device   : out std_logic_vector(7 downto 0);
-        delay_locked        : out std_logic
-        );
+        data_in_to_device   : out std_logic_vector(7 downto 0)
+	 );
     end component;
 
     --===============--
@@ -277,20 +275,19 @@ architecture Behavioral of gbt_serdes is
         -- Input deserializer
         i_from_gbt_des320 : from_gbt_des
         port map(
-            data_in_from_pins_p => (others => elink_i_p),
-            data_in_from_pins_n => (others => elink_i_n),
-            data_in_to_device   => from_gbt_raw,
-            bitslip             => '0',
-            clk_in              => iserdes_clk,
-            clk_div_in          => iserdes_clkdiv,
-            io_reset            => iserdes_reset,
+            data_in_from_pins_p (0) => elink_i_p,
+            data_in_from_pins_n (0) => elink_i_n,
+            data_in_to_device       => from_gbt_raw,
+            bitslip                 => '0',
+            clk_in                  => iserdes_clk,
+            clk_div_in              => iserdes_clkdiv,
+            io_reset                => iserdes_reset,
                                                                  -- Input, Output delay control signals
-            DELAY_RESET         => iserdes_reset,                -- Active high synchronous reset for input delay
-            DELAY_DATA_CE       => (others => increment_rx_delay),           -- Enable signal for IODELAYE1 of bit 0
-            DELAY_DATA_INC      => (others => '1'),              -- Delay increment, decrement signal of bit 0
-            DELAY_LOCKED        => idly_rdy,                     -- Locked signal from IDELAYCTRL
-            REFCLK_RESET        => delay_refclk_reset,           -- Reference clock calibration POR reset
-            REF_CLOCK           => delay_refclk                  -- Reference clock for IDELAYCTRL. Has to come from BUFG.
+            DELAY_RESET             => iserdes_reset,                -- Active high synchronous reset for input delay
+            DELAY_DATA_CE           => (others => increment_rx_delay),           -- Enable signal for IODELAYE1 of bit 0
+            DELAY_DATA_INC          => (others => '1'),              -- Delay increment, decrement signal of bit 0
+            REFCLK_RESET            => delay_refclk_reset,           -- Reference clock calibration POR reset
+            REF_CLOCK               => delay_refclk                  -- Reference clock for IDELAYCTRL. Has to come from BUFG.
         );
 
         -- remap to account for how the Xilinx IPcore assigns the output pins
@@ -427,7 +424,6 @@ architecture Behavioral of gbt_serdes is
         DELAY_DATA_INC          => (others => '0'),
         DELAY_TAP_IN            => tx_delay_i,
         DELAY_TAP_OUT           => open,
-        DELAY_LOCKED            => open,
         REFCLK_RESET            => delay_refclk_reset,             -- Reference clock calibration POR reset
         REF_CLOCK               => delay_refclk
     );

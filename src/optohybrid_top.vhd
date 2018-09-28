@@ -20,6 +20,9 @@ use work.types_pkg.all;
 use work.ipbus_pkg.all;
 use work.trig_pkg.all;
 use work.param_pkg.all;
+library unisim;
+use unisim.vcomponents.all;
+
 
 entity optohybrid_top is
 port(
@@ -489,6 +492,15 @@ begin
         vfat_sot_p    => vfat_sot_p,
         vfat_sot_n    => vfat_sot_n
 
+    );
+
+
+-- IDELAYCTRL is needed for calibration
+    delayctrl : IDELAYCTRL
+    port map (
+        RDY    => open,
+        REFCLK => delay_refclk,
+        RST    => delay_refclk_reset
     );
 
 end Behavioral;
