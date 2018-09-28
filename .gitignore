@@ -52,3 +52,5 @@ iseconfig
 *.pyc
 *.prm
 *.cfi
+
+vivado/*

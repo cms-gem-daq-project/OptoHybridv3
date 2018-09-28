@@ -15,9 +15,6 @@ module led_control (
 
   input reset,
 
-  input [15:0] gbt_rx_data_i,
-  input led_sync_mode_i,
-
   input [7:0] cluster_count_i,
 
   output [31:0] cluster_rate,
@@ -41,7 +38,7 @@ module led_control (
       .EOS       (EOS),     // 1-bit output: Active high output signal indicating the End Of Configuration.
       .PREQ      (PREQ),    // 1-bit output: PROGRAM request to fabric output
       .TCKSPI    (TCKSPI),  // 1-bit output: TCK configuration pin access output
-      .CLK       (CLK),     // 1-bit input: User start-up clock input
+      .CLK       (),        // 1-bit input: User start-up clock input
       .GSR       (),        // 1-bit input: Global Set/Reset input (GSR cannot be used for the port name)
       .GTS       (),        // 1-bit input: Global 3-state input   (GTS cannot be used for the port name)
       .KEYCLEARB (),        // 1-bit input: Clear AES Decrypter Key input from Battery-Backed RAM (BBRAM)
@@ -68,21 +65,12 @@ module led_control (
 
   reg [15:0] led;
 
-  reg [15:0] gbt_rx_data;
-  reg  led_sync_mode;
-  always @(posedge async_clock) begin
-      gbt_rx_data <= gbt_rx_data_i;
-      led_sync_mode <= led_sync_mode_i;
-  end
-
   always @(*) begin
 
     led_out <= led;
 
     if (gbt_rxready && gbt_rxvalid && mmcm_locked)
-      if (led_sync_mode)
-        led <= gbt_rx_data;
-      else if (cylon_mode)
+       if (cylon_mode)
         led <= led_cylon;
       else
         led <= led_logic;

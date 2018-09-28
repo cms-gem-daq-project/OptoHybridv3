@@ -66,41 +66,41 @@ architecture behavioral of sem_mon is
     );
     end component;
 
-    component sem_a7
-          port (
-              status_heartbeat      : out std_logic;
-              status_initialization : out std_logic;
-              status_observation    : out std_logic;
-              status_correction     : out std_logic;
-              status_classification : out std_logic;
-              status_injection      : out std_logic;
-              status_essential      : out std_logic;
-              status_uncorrectable  : out std_logic;
-              monitor_txdata        : out std_logic_vector(7 downto 0);
-              monitor_txwrite       : out std_logic;
-              monitor_txfull        : in std_logic;
-              monitor_rxdata        : in std_logic_vector(7 downto 0);
-              monitor_rxread        : out std_logic;
-              monitor_rxempty       : in std_logic;
-              inject_strobe         : in std_logic;
-              inject_address        : in std_logic_vector(39 downto 0);
-              icap_o                : in std_logic_vector(31 downto 0);
-              icap_csib             : out std_logic;
-              icap_rdwrb            : out std_logic;
-              icap_i                : out std_logic_vector(31 downto 0);
-              icap_clk              : in std_logic;
-              icap_request          : out std_logic;
-              icap_grant            : in std_logic;
-              fecc_crcerr           : in std_logic;
-              fecc_eccerr           : in std_logic;
-              fecc_eccerrsingle     : in std_logic;
-              fecc_syndromevalid    : in std_logic;
-              fecc_syndrome         : in std_logic_vector(12 downto 0);
-              fecc_far              : in std_logic_vector(25 downto 0);
-              fecc_synbit           : in std_logic_vector(4 downto 0);
-              fecc_synword          : in std_logic_vector(6 downto 0)
-          );
-    end component;
+   component sem_a7
+   port (
+      status_heartbeat      : out std_logic;
+      status_initialization : out std_logic;
+      status_observation    : out std_logic;
+      status_correction     : out std_logic;
+      status_classification : out std_logic;
+      status_injection      : out std_logic;
+      status_essential      : out std_logic;
+      status_uncorrectable  : out std_logic;
+      monitor_txdata        : out std_logic_vector(7 downto 0);
+      monitor_txwrite       : out std_logic;
+      monitor_txfull        : in std_logic;
+      monitor_rxdata        : in std_logic_vector(7 downto 0);
+      monitor_rxread        : out std_logic;
+      monitor_rxempty       : in std_logic;
+      inject_strobe         : in std_logic;
+      inject_address        : in std_logic_vector(39 downto 0);
+      icap_o                : in std_logic_vector(31 downto 0);
+      icap_csib             : out std_logic;
+      icap_rdwrb            : out std_logic;
+      icap_i                : out std_logic_vector(31 downto 0);
+      icap_clk              : in std_logic;
+      icap_request          : out std_logic;
+      icap_grant            : in std_logic;
+      fecc_crcerr           : in std_logic;
+      fecc_eccerr           : in std_logic;
+      fecc_eccerrsingle     : in std_logic;
+      fecc_syndromevalid    : in std_logic;
+      fecc_syndrome         : in std_logic_vector(12 downto 0);
+      fecc_far              : in std_logic_vector(25 downto 0);
+      fecc_synbit           : in std_logic_vector(4 downto 0);
+      fecc_synword          : in std_logic_vector(6 downto 0)
+   );
+   end component;
 
     signal fecc_crcerr              : std_logic;
     signal fecc_eccerr              : std_logic;

@@ -35,19 +35,18 @@ port(
     gbt_rx_clk_div_o : out std_logic;
     gbt_rx_clk_o     : out std_logic;
 
-    gbt_tx_clk_div_o : out std_logic_vector (1 downto 0);
-    gbt_tx_clk_o     : out std_logic_vector (1 downto 0);
+    gbt_tx_clk_div_o : out std_logic;
+    gbt_tx_clk_o     : out std_logic;
 
     -- logic clocks
     clk_1x_o        : out std_logic;
     clk_2x_o        : out std_logic;
     clk_4x_o        : out std_logic;
+    clk_5x_o        : out std_logic;
     clk_4x_90_o     : out std_logic;
 
-    delay_refclk_o  : out std_logic;
-    delay_refclk_reset_o  : out std_logic;
-
-    cluster_clk_o   : out std_logic;
+    delay_refclk_o       : out std_logic;
+    delay_refclk_reset_o : out std_logic;
 
     -- mmcm locked status monitors
     dskw_mmcm_locked_o   : out std_logic;
@@ -74,6 +73,8 @@ architecture Behavioral of clocking is
 
     signal gbt_clk40 : std_logic;
     signal gbt_clk320 : std_logic;
+
+    signal clk_5x     : std_logic;
 
     signal mmcm_locked : std_logic_vector(1 downto 0);
     signal mmcm_unlocked : std_logic_vector(1 downto 0);
@@ -104,9 +105,9 @@ architecture Behavioral of clocking is
     end component;
 
     component clk_gen port (
-        clk40_i_P, clk40_i_N                                           : in  std_logic;
-        clk40_o, clk80_o, clk160_o, clk160_90_o, clk200_o, clk20_135_o : out std_logic;
-        locked_o                                                       : out std_logic
+        clk40_i_P, clk40_i_N                              : in  std_logic;
+        clk40_o, clk80_o, clk160_o, clk160_90_o, clk200_o : out std_logic;
+        locked_o                                          : out std_logic
     );
     end component;
 
@@ -161,7 +162,11 @@ end component;
 begin
 
     clk_1x_o <= clock;
+
     mmcm_unlocked <= not mmcm_locked;
+
+    clk_5x_o <= clk_5x;
+    delay_refclk_o <= clk_5x;
 
     --------- MMCMs ---------
 
@@ -181,8 +186,7 @@ begin
           clk80_o     => clk_2x_o,
           clk160_o    => clk_4x_o,
           clk160_90_o => clk_4x_90_o,
-          clk200_o    => delay_refclk_o,
-          clk20_135_o => cluster_clk_o,
+          clk200_o    => clk_5x,
 
           locked_o    => mmcm_locked(0)
       );
@@ -196,11 +200,11 @@ begin
           gbt_rxclk_div => gbt_rx_clk_div_o,
           gbt_rxclk     => gbt_rx_clk_o,
 
-          gbt_txclk_div => gbt_tx_clk_div_o(1),
-          gbt_txclk     => gbt_tx_clk_o(1),
+          gbt_txclk_div => gbt_tx_clk_div_o,
+          gbt_txclk     => gbt_tx_clk_o,
 
-          gbt_txclk80_div => gbt_tx_clk_div_o(0),
-          gbt_txclk80     => gbt_tx_clk_o(0),
+          gbt_txclk80_div => open,
+          gbt_txclk80     => open, -- should remove these
 
           locked_o      => mmcm_locked(1)
       );
@@ -219,7 +223,7 @@ begin
         clk80_o      => clk_2x_o,
         clk160_o     => clk_4x_o,
         clk160_90_o  => clk_4x_90_o,
-        clk200_o     => delay_refclk_o,
+        clk200_o     => clk_5x,
         clk40_ps_o   => clk40_ps,
         -- Status and control signals
         reset        => '0',
@@ -241,11 +245,8 @@ begin
       gbt_rx_clk_div_o <= gbt_clk40;
       gbt_rx_clk_o     <= gbt_clk320;
 
-      gbt_tx_clk_div_o (1) <= gbt_clk40;
-      gbt_tx_clk_o     (1) <= gbt_clk320;
-
-      gbt_tx_clk_div_o (0) <= '0';
-      gbt_tx_clk_o     (0) <= '0';
+      gbt_tx_clk_div_o <= gbt_clk40;
+      gbt_tx_clk_o     <= gbt_clk320;
 
   end GENERATE clk_gen_artix7;
 

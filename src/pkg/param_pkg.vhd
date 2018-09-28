@@ -6,12 +6,12 @@ package param_pkg is
 
     -- START: PARAM_PKG DO NOT EDIT --
     constant MAJOR_VERSION          : std_logic_vector(7 downto 0) := x"03";
-    constant MINOR_VERSION          : std_logic_vector(7 downto 0) := x"01";
-    constant RELEASE_VERSION        : std_logic_vector(7 downto 0) := x"06";
+    constant MINOR_VERSION          : std_logic_vector(7 downto 0) := x"02";
+    constant RELEASE_VERSION        : std_logic_vector(7 downto 0) := x"00";
 
     constant RELEASE_YEAR           : std_logic_vector(15 downto 0) := x"2018";
     constant RELEASE_MONTH          : std_logic_vector(7 downto  0) := x"09";
-    constant RELEASE_DAY            : std_logic_vector(7 downto  0) := x"12";
+    constant RELEASE_DAY            : std_logic_vector(7 downto  0) := x"27";
 
     constant RELEASE_HARDWARE       : std_logic_vector(7 downto  0) := x"1C";
 
@@ -22,6 +22,7 @@ package param_pkg is
     constant MXELINKS : integer := 2;
     constant MXLED    : integer := 16;
     constant MXRESET  : integer := 12;
+    constant MXREADY  : integer := 1;
   -- END: PARAM_PKG DO NOT EDIT --
 
 end param_pkg;

@@ -5,6 +5,7 @@
 -- T. Lenzi, A. Peck
 ----------------------------------------------------------------------------------
 -- 2017/08/08 -- Remove auxillary inputs, add alarms
+-- 2018/09/18 -- Add ipbus originating resets to counters & module
 ----------------------------------------------------------------------------------
 
 library ieee;
@@ -56,23 +57,50 @@ architecture Behavioral of adc is
 
     component xadc
         port (
-            DADDR_IN            : in  STD_LOGIC_VECTOR (6 downto 0);     -- Address bus for the dynamic reconfiguration port
-            DCLK_IN             : in  STD_LOGIC;                         -- Clock input for the dynamic reconfiguration port
-            DEN_IN              : in  STD_LOGIC;                         -- Enable Signal for the dynamic reconfiguration port
-            DI_IN               : in  STD_LOGIC_VECTOR (15 downto 0);    -- Input data bus for the dynamic reconfiguration port
-            DWE_IN              : in  STD_LOGIC;                         -- Write Enable for the dynamic reconfiguration port
-            RESET_IN            : in  STD_LOGIC;                         -- Reset signal for the System Monitor control logic
-            BUSY_OUT            : out  STD_LOGIC;                        -- ADC Busy signal
-            CHANNEL_OUT         : out  STD_LOGIC_VECTOR (4 downto 0);    -- Channel Selection Outputs
-            DO_OUT              : out  STD_LOGIC_VECTOR (15 downto 0);   -- Output data bus for dynamic reconfiguration port
-            DRDY_OUT            : out  STD_LOGIC;                        -- Data ready signal for the dynamic reconfiguration port
-            EOC_OUT             : out  STD_LOGIC;                        -- End of Conversion Signal
-            EOS_OUT             : out  STD_LOGIC;                        -- End of Sequence Signal
-            OT_OUT              : out  STD_LOGIC;                        -- Over-Temperature alarm output
-            VCCAUX_ALARM_OUT    : out  STD_LOGIC;                        -- VCCAUX-sensor alarm output
-            VCCINT_ALARM_OUT    : out  STD_LOGIC;                        -- VCCINT-sensor alarm output
-            VP_IN               : in  STD_LOGIC;                         -- Dedicated Analog Input Pair
-            VN_IN               : in  STD_LOGIC
+            daddr_in            : in   std_logic_vector (6 downto 0);  -- address bus for the dynamic reconfiguration port
+            dclk_in             : in   std_logic;                      -- clock input for the dynamic reconfiguration port
+            den_in              : in   std_logic;                      -- enable signal for the dynamic reconfiguration port
+            di_in               : in   std_logic_vector (15 downto 0); -- input data bus for the dynamic reconfiguration port
+            dwe_in              : in   std_logic;                      -- write enable for the dynamic reconfiguration port
+            reset_in            : in   std_logic;                      -- reset signal for the system monitor control logic
+            busy_out            : out  std_logic;                      -- adc busy signal
+            channel_out         : out  std_logic_vector (4 downto 0);  -- channel selection outputs
+            do_out              : out  std_logic_vector (15 downto 0); -- output data bus for dynamic reconfiguration port
+            drdy_out            : out  std_logic;                      -- data ready signal for the dynamic reconfiguration port
+            eoc_out             : out  std_logic;                      -- end of conversion signal
+            eos_out             : out  std_logic;                      -- end of sequence signal
+            vp_in               : in   std_logic;                      -- dedicated analog input pair
+            vn_in               : in   std_logic;                      --
+            ot_out              : out  std_logic;                      -- over-temperature alarm output
+            vccaux_alarm_out    : out  std_logic;                      -- vccaux-sensor alarm output
+            vccint_alarm_out    : out  std_logic                       -- vccint-sensor alarm output
+    );
+    end component;
+
+
+    component xadc_a7
+    port (
+        daddr_in    : in  std_logic_vector(6 downto 0);
+        dclk_in     : in  std_logic;
+        den_in      : in  std_logic;
+        di_in       : in  std_logic_vector(15 downto 0);
+        dwe_in      : in  std_logic;
+        reset_in    : in  std_logic;
+        busy_out    : out std_logic;
+        channel_out : out std_logic_vector(4 downto 0);
+        do_out      : out std_logic_vector(15 downto 0);
+        drdy_out    : out std_logic;
+        eoc_out     : out std_logic;
+        eos_out     : out std_logic;
+        vp_in       : in  std_logic;
+        vn_in       : in  std_logic;
+        ot_out      : out std_logic;
+
+        user_temp_alarm_out : out std_logic;
+        alarm_out : out std_logic;
+
+        vccaux_alarm_out : out std_logic;
+        vccint_alarm_out : out std_logic
     );
     end component;
 
@@ -87,9 +115,9 @@ architecture Behavioral of adc is
     signal regs_write_done_arr  : std_logic_vector(REG_ADC_NUM_REGS - 1 downto 0) := (others => '1');
     signal regs_writable_arr    : std_logic_vector(REG_ADC_NUM_REGS - 1 downto 0) := (others => '0');
     -- Connect counter signal declarations
-    signal cnt_overtemp : std_logic_vector (7 downto 0) := (others => '0');
-    signal cnt_vccaux_alarm : std_logic_vector (7 downto 0) := (others => '0');
-    signal cnt_vccint_alarm : std_logic_vector (7 downto 0) := (others => '0');
+    signal cnt_overtemp : std_logic_vector (6 downto 0) := (others => '0');
+    signal cnt_vccaux_alarm : std_logic_vector (6 downto 0) := (others => '0');
+    signal cnt_vccint_alarm : std_logic_vector (6 downto 0) := (others => '0');
     ------ Register signals end ----------------------------------------------
 
 begin
@@ -98,26 +126,52 @@ begin
 
     xadc_inst : xadc
     port map(
-        daddr_in         => daddr,
-        dclk_in          => clock_i,
-        den_in           => den,
-        di_in            => data_in,
-        dwe_in           => write_en,
-        reset_in         => reset_i,
-        busy_out         => open,
-        channel_out      => open,
-        do_out           => data_out,
-        drdy_out         => data_ready,
-        eoc_out          => open,
-        eos_out          => open,
-        vp_in            => adc_vp,
-        vn_in            => adc_vn,
-        ot_out           => overtemp,
-        vccaux_alarm_out => vccaux_alarm,
-        vccint_alarm_out => vccint_alarm
+        daddr_in         => daddr,            -- Address bus for the dynamic reconfiguration port
+        dclk_in          => clock_i,          -- Clock input for the dynamic reconfiguration port
+        den_in           => den,              -- Enable Signal for the dynamic reconfiguration port
+        di_in            => data_in,          -- Input data bus for the dynamic reconfiguration port
+        dwe_in           => write_en,         -- Write Enable for the dynamic reconfiguration port
+        reset_in         => reset_i or reset, -- Reset signal for the System Monitor control logic
+        busy_out         => open,             -- ADC Busy signal
+        channel_out      => open,             -- Channel Selection Outputs
+        do_out           => data_out,         -- Output data bus for dynamic reconfiguration port
+        drdy_out         => data_ready,       -- Data ready signal for the dynamic reconfiguration port
+        eoc_out          => open,             -- End of Conversion Signal
+        eos_out          => open,             -- End of Sequence Signal
+        vp_in            => adc_vp,           -- Dedicated Analog Input Pair
+        vn_in            => adc_vn,           --
+        ot_out           => overtemp,         -- Over-Temperature alarm output
+        vccaux_alarm_out => vccaux_alarm,     -- VCCAUX-sensor alarm output
+        vccint_alarm_out => vccint_alarm      -- VCCINT-sensor alarm output
     );
 
     END GENERATE xadc_gen;
+
+    xadc_gen_a7 : IF (FPGA_TYPE="ARTIX7") GENERATE
+
+    xadc_inst : xadc_a7
+    port map(
+        daddr_in            => daddr,            -- Address bus for the dynamic reconfiguration port
+        dclk_in             => clock_i,          -- Clock input for the dynamic reconfiguration port
+        den_in              => den,              -- Enable Signal for the dynamic reconfiguration port
+        di_in               => data_in,          -- Input data bus for the dynamic reconfiguration port
+        dwe_in              => write_en,         -- Write Enable for the dynamic reconfiguration port
+        reset_in            => reset_i or reset, -- Reset signal for the System Monitor control logic
+        busy_out            => open,             -- ADC Busy signal
+        channel_out         => open,             -- Channel Selection Outputs
+        do_out              => data_out,         -- Output data bus for dynamic reconfiguration port
+        drdy_out            => data_ready,       -- Data ready signal for the dynamic reconfiguration port
+        eoc_out             => open,             -- End of Conversion Signal
+        eos_out             => open,             -- End of Sequence Signal
+        vp_in               => adc_vp,           -- Dedicated Analog Input Pair
+        vn_in               => adc_vn,           --
+        alarm_out           => overtemp,         -- Over-Temperature alarm output
+        user_temp_alarm_out => open,
+        vccaux_alarm_out    => vccaux_alarm,     -- VCCAUX-sensor alarm output
+        vccint_alarm_out    => vccint_alarm      -- VCCINT-sensor alarm output
+    );
+
+    END GENERATE xadc_gen_a7;
 
     --===============================================================================================
     -- (this section is generated by <optohybrid_top>/tools/generate_registers.py -- do not edit)
@@ -153,31 +207,27 @@ begin
     regs_addresses(1)(REG_ADC_ADDRESS_MSB downto REG_ADC_ADDRESS_LSB) <= x"1";
     regs_addresses(2)(REG_ADC_ADDRESS_MSB downto REG_ADC_ADDRESS_LSB) <= x"2";
     regs_addresses(3)(REG_ADC_ADDRESS_MSB downto REG_ADC_ADDRESS_LSB) <= x"3";
-    regs_addresses(4)(REG_ADC_ADDRESS_MSB downto REG_ADC_ADDRESS_LSB) <= x"4";
-    regs_addresses(5)(REG_ADC_ADDRESS_MSB downto REG_ADC_ADDRESS_LSB) <= x"5";
-    regs_addresses(6)(REG_ADC_ADDRESS_MSB downto REG_ADC_ADDRESS_LSB) <= x"6";
-    regs_addresses(7)(REG_ADC_ADDRESS_MSB downto REG_ADC_ADDRESS_LSB) <= x"7";
 
     -- Connect read signals
     regs_read_arr(0)(REG_ADC_CTRL_OVERTEMP_BIT) <= overtemp;
     regs_read_arr(0)(REG_ADC_CTRL_VCCAUX_ALARM_BIT) <= vccaux_alarm;
     regs_read_arr(0)(REG_ADC_CTRL_VCCINT_ALARM_BIT) <= vccint_alarm;
-    regs_read_arr(1)(REG_ADC_CTRL_ADR_IN_MSB downto REG_ADC_CTRL_ADR_IN_LSB) <= daddr;
-    regs_read_arr(2)(REG_ADC_CTRL_DATA_IN_MSB downto REG_ADC_CTRL_DATA_IN_LSB) <= data_in;
-    regs_read_arr(3)(REG_ADC_CTRL_DATA_OUT_MSB downto REG_ADC_CTRL_DATA_OUT_LSB) <= data_out;
-    regs_read_arr(6)(REG_ADC_CTRL_ENABLE_BIT) <= den;
-    regs_read_arr(7)(REG_ADC_CTRL_CNT_OVERTEMP_MSB downto REG_ADC_CTRL_CNT_OVERTEMP_LSB) <= cnt_overtemp;
-    regs_read_arr(7)(REG_ADC_CTRL_CNT_VCCAUX_ALARM_MSB downto REG_ADC_CTRL_CNT_VCCAUX_ALARM_LSB) <= cnt_vccaux_alarm;
-    regs_read_arr(7)(REG_ADC_CTRL_CNT_VCCINT_ALARM_MSB downto REG_ADC_CTRL_CNT_VCCINT_ALARM_LSB) <= cnt_vccint_alarm;
+    regs_read_arr(0)(REG_ADC_CTRL_ADR_IN_MSB downto REG_ADC_CTRL_ADR_IN_LSB) <= daddr;
+    regs_read_arr(0)(REG_ADC_CTRL_ENABLE_BIT) <= den;
+    regs_read_arr(0)(REG_ADC_CTRL_CNT_OVERTEMP_MSB downto REG_ADC_CTRL_CNT_OVERTEMP_LSB) <= cnt_overtemp;
+    regs_read_arr(0)(REG_ADC_CTRL_CNT_VCCAUX_ALARM_MSB downto REG_ADC_CTRL_CNT_VCCAUX_ALARM_LSB) <= cnt_vccaux_alarm;
+    regs_read_arr(0)(REG_ADC_CTRL_CNT_VCCINT_ALARM_MSB downto REG_ADC_CTRL_CNT_VCCINT_ALARM_LSB) <= cnt_vccint_alarm;
+    regs_read_arr(1)(REG_ADC_CTRL_DATA_IN_MSB downto REG_ADC_CTRL_DATA_IN_LSB) <= data_in;
+    regs_read_arr(1)(REG_ADC_CTRL_DATA_OUT_MSB downto REG_ADC_CTRL_DATA_OUT_LSB) <= data_out;
 
     -- Connect write signals
-    daddr <= regs_write_arr(1)(REG_ADC_CTRL_ADR_IN_MSB downto REG_ADC_CTRL_ADR_IN_LSB);
-    data_in <= regs_write_arr(2)(REG_ADC_CTRL_DATA_IN_MSB downto REG_ADC_CTRL_DATA_IN_LSB);
-    den <= regs_write_arr(6)(REG_ADC_CTRL_ENABLE_BIT);
+    daddr <= regs_write_arr(0)(REG_ADC_CTRL_ADR_IN_MSB downto REG_ADC_CTRL_ADR_IN_LSB);
+    den <= regs_write_arr(0)(REG_ADC_CTRL_ENABLE_BIT);
+    data_in <= regs_write_arr(1)(REG_ADC_CTRL_DATA_IN_MSB downto REG_ADC_CTRL_DATA_IN_LSB);
 
     -- Connect write pulse signals
-    reset <= regs_write_pulse_arr(4);
-    write_en <= regs_write_pulse_arr(5);
+    reset <= regs_write_pulse_arr(2);
+    write_en <= regs_write_pulse_arr(3);
 
     -- Connect write done signals
 
@@ -187,11 +237,11 @@ begin
 
     COUNTER_ADC_CTRL_CNT_OVERTEMP : entity work.counter_snap
     generic map (
-        g_COUNTER_WIDTH  => 8
+        g_COUNTER_WIDTH  => 7
     )
     port map (
         ref_clk_i => clock_i,
-        reset_i   => ipb_reset_i,
+        reset_i   => reset_i or reset,
         en_i      => overtemp,
         snap_i    => cnt_snap,
         count_o   => cnt_overtemp
@@ -200,11 +250,11 @@ begin
 
     COUNTER_ADC_CTRL_CNT_VCCAUX_ALARM : entity work.counter_snap
     generic map (
-        g_COUNTER_WIDTH  => 8
+        g_COUNTER_WIDTH  => 7
     )
     port map (
         ref_clk_i => clock_i,
-        reset_i   => ipb_reset_i,
+        reset_i   => reset_i or reset,
         en_i      => vccaux_alarm,
         snap_i    => cnt_snap,
         count_o   => cnt_vccaux_alarm
@@ -213,11 +263,11 @@ begin
 
     COUNTER_ADC_CTRL_CNT_VCCINT_ALARM : entity work.counter_snap
     generic map (
-        g_COUNTER_WIDTH  => 8
+        g_COUNTER_WIDTH  => 7
     )
     port map (
         ref_clk_i => clock_i,
-        reset_i   => ipb_reset_i,
+        reset_i   => reset_i or reset,
         en_i      => vccint_alarm,
         snap_i    => cnt_snap,
         count_o   => cnt_vccint_alarm
@@ -227,17 +277,16 @@ begin
     -- Connect rate instances
 
     -- Connect read ready signals
-    regs_read_ready_arr(3) <= data_ready;
+    regs_read_ready_arr(1) <= data_ready;
 
     -- Defaults
-    regs_defaults(1)(REG_ADC_CTRL_ADR_IN_MSB downto REG_ADC_CTRL_ADR_IN_LSB) <= REG_ADC_CTRL_ADR_IN_DEFAULT;
-    regs_defaults(2)(REG_ADC_CTRL_DATA_IN_MSB downto REG_ADC_CTRL_DATA_IN_LSB) <= REG_ADC_CTRL_DATA_IN_DEFAULT;
-    regs_defaults(6)(REG_ADC_CTRL_ENABLE_BIT) <= REG_ADC_CTRL_ENABLE_DEFAULT;
+    regs_defaults(0)(REG_ADC_CTRL_ADR_IN_MSB downto REG_ADC_CTRL_ADR_IN_LSB) <= REG_ADC_CTRL_ADR_IN_DEFAULT;
+    regs_defaults(0)(REG_ADC_CTRL_ENABLE_BIT) <= REG_ADC_CTRL_ENABLE_DEFAULT;
+    regs_defaults(1)(REG_ADC_CTRL_DATA_IN_MSB downto REG_ADC_CTRL_DATA_IN_LSB) <= REG_ADC_CTRL_DATA_IN_DEFAULT;
 
     -- Define writable regs
+    regs_writable_arr(0) <= '1';
     regs_writable_arr(1) <= '1';
-    regs_writable_arr(2) <= '1';
-    regs_writable_arr(6) <= '1';
 
     --==== Registers end ============================================================================
 

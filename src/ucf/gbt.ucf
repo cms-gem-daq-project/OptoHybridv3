@@ -5,23 +5,21 @@
 # outputs
 
 # 80 MHZ e-link
-NET "elink_o_p<0>" LOC = AG16; # GBTx DOUT 28
-NET "elink_o_n<0>" LOC = AF16; #
+#NET "elink_o_p<0>" LOC = AG16; # GBTx DOUT 28
+#NET "elink_o_n<0>" LOC = AF16; #
 
 # 320 MHz e-link
 # POLSWAPed, make sure to account in firmware
-NET "elink_o_p<1>" LOC = L19;
-NET "elink_o_n<1>" LOC = L18;
+#NET "elink_o_p<0>" LOC = L19;
+#NET "elink_o_n<0>" LOC = L18;
+NET "elink_o_p" LOC = L19;
+NET "elink_o_n" LOC = L18;
 
 # inputs
 
-# 80MHz e-link
-NET "elink_i_p<0>" LOC = AG15 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE; # GBTx DIN 28
-NET "elink_i_n<0>" LOC = AF15 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE; #
-
 # 320 MHz e-link
-NET "elink_i_p<1>" LOC = AD24 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE; # GBTx DIN 36
-NET "elink_i_n<1>" LOC = AE24 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE; #
+NET "elink_i_p" LOC = AD24 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE; # GBTx DIN 36
+NET "elink_i_n" LOC = AE24 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE; #
 
 ########################################################################################################################
 # GBT E-Port Clocks
@@ -62,17 +60,13 @@ NET "gbt_dclk_n<1>"      TNM_NET = "gbt_dclk_n";
 # TIMESPEC "TS_mgt_refclk" = PERIOD "mgt_refclk" 6.25 ns HIGH 50%;
 # ELINKS
 
-INST "elink_o_p<0>" TNM = elink320_o;
-INST "elink_o_n<0>" TNM = elink320_o;
-INST "elink_o_p<1>" TNM = elink80_o;
-INST "elink_o_n<1>" TNM = elink80_o;
+INST "elink_o_p>" TNM = elink320_o;
+INST "elink_o_n>" TNM = elink320_o;
 
-INST "elink_i_n<0>" TNM = elink_i;
-INST "elink_i_n<1>" TNM = elink_i;
-INST "elink_i_p<0>" TNM = elink_i;
-INST "elink_i_p<1>" TNM = elink_i;
+INST "elink_i_n>" TNM = elink_i;
+INST "elink_i_n"  TNM = elink_i;
 
-TIMEGRP "elink_i" OFFSET = IN  2.46 ns VALID 3.125 ns BEFORE "gbt_dclk_p<1>" RISING; #take into account a ~0.6 ns round trip time from GBT to FPGA
+TIMEGRP "elink_i" OFFSET = IN  1.5625 ns VALID 3.125 ns BEFORE "gbt_dclk_p<1>" RISING;
 
-TIMEGRP "elink320_o" OFFSET = OUT 3.125  ns VALID 3.125 ns AFTER  "gbt_dclk_p<1>" RISING;
-TIMEGRP "elink80_o"  OFFSET = OUT 3.125  ns VALID 3.125 ns AFTER  "gbt_dclk_p<1>" RISING;
+TIMEGRP "elink320_o" OFFSET = OUT 1.5625  ns VALID 3.125 ns AFTER  "gbt_dclk_p<1>" RISING;
+

@@ -12,7 +12,7 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
-
+use ieee.std_logic_misc.all;
 use ieee.numeric_std.all;
 
 library work;
@@ -24,37 +24,20 @@ use work.param_pkg.all;
 entity optohybrid_top is
 port(
 
-    --== Memory ==--
-
---  multiboot_rs_o          : out std_logic_vector(1 downto 0);
-
---  flash_address_o         : out std_logic_vector(22 downto 0);
---  flash_data_io           : inout std_logic_vector(15 downto 0);
---  flash_chip_enable_b_o   : out std_logic;
---  flash_out_enable_b_o    : out std_logic;
---  flash_write_enable_b_o  : out std_logic;
---  flash_latch_enable_b_o  : out std_logic;
-
     --== Clocking ==--
-
-  --gbt_eclk_p  : in std_logic_vector (1 downto 0) ;
-  --gbt_eclk_n  : in std_logic_vector (1 downto 0) ;
 
     gbt_dclk_p : in std_logic_vector (1 downto 0) ;
     gbt_dclk_n : in std_logic_vector (1 downto 0) ;
 
-    --== Miscellaneous ==--
+    --== Elinks ==--
 
-    elink_i_p : in  std_logic_vector (1 downto 0) ;
-    elink_i_n : in  std_logic_vector (1 downto 0) ;
+    elink_i_p : in  std_logic;
+    elink_i_n : in  std_logic;
 
-    elink_o_p : out std_logic_vector (1 downto 0) ;
-    elink_o_n : out std_logic_vector (1 downto 0) ;
+    elink_o_p : out std_logic;
+    elink_o_n : out std_logic;
 
-    gbt_txready_i : in std_logic;
-
-    gbt_rxvalid_i : in std_logic;
-    gbt_rxready_i : in std_logic;
+    --== GBT ==--
 
     -- only 1 connected in GE11, 2 in GE21
     gbt_txready_i : in std_logic_vector (MXREADY-1 downto 0);
@@ -63,22 +46,20 @@ port(
 
     --== GE21 only ==--
     -- START: Station Specific Ports DO NOT EDIT --
-    sca_io  : in  std_logic_vector (3 downto 0); -- set as input for now
+    sca_io      : in   std_logic_vector (3 downto 0); -- set as input for now
     sca_ctl     : in   std_logic_vector (2 downto 0);
 
     ext_sbits_o : out  std_logic_vector (7 downto 0);
 
-    ext_reset_o : out std_logic_vector (MXRESET-1 downto 0);
+    ext_reset_o : out  std_logic_vector (MXRESET-1 downto 0);
 
-    adc_vp         : in  std_logic;
-    adc_vn         : in  std_logic;
+    adc_vp      : in   std_logic;
+    adc_vn      : in   std_logic;
     -- END: Station Specific Ports DO NOT EDIT --
 
-    --== VFAT Mezzanine ==--
+    --== LEDs ==--
 
-    --== SCA Control ==--
-
-    sca_ctl : in std_logic_vector (2 downto 0);
+    led_o   : out std_logic_vector (MXLED-1 downto 0);
 
     --== GTX ==--
 
@@ -118,38 +99,33 @@ architecture Behavioral of optohybrid_top is
     signal gbt_rx_clk_div   : std_logic;
     signal gbt_rx_clk       : std_logic;
 
-    signal gbt_tx_clk_div   : std_logic_vector (1 downto 0);
-    signal gbt_tx_clk       : std_logic_vector (1 downto 0);
+    signal gbt_tx_clk_div   : std_logic;
+    signal gbt_tx_clk       : std_logic;
 
     signal clk_1x           : std_logic;
     signal clk_2x           : std_logic;
     signal clk_4x           : std_logic;
+    signal clk_5x           : std_logic;
     signal clk_4x_90        : std_logic;
 
     signal delay_refclk     : std_logic;
     signal delay_refclk_reset : std_logic;
-    signal cluster_clk      : std_logic;
 
-    signal gbt_txready      : std_logic;
-    signal gbt_rxvalid      : std_logic;
-    signal gbt_rxready      : std_logic;
+    signal vtrx_mabs        : std_logic_vector (1 downto 0);
+
+    signal gbt_txvalid      : std_logic_vector (MXREADY-1 downto 0);
+    signal gbt_txready      : std_logic_vector (MXREADY-1 downto 0);
+    signal gbt_rxvalid      : std_logic_vector (MXREADY-1 downto 0);
+    signal gbt_rxready      : std_logic_vector (MXREADY-1 downto 0);
 
     signal gbt_link_ready        : std_logic;
     signal gbt_link_error       : std_logic;
-    signal gbt_rx_data          : std_logic_vector (15 downto 0);
     signal gbt_request_received : std_logic;
-
-    signal tx_sync_mode_sca      : std_logic;
-    signal gbt_loopback_mode_sca : std_logic;
 
     signal reset            : std_logic;
     signal cnt_snap         : std_logic;
 
-    signal clock_source     : std_logic;
-
     signal ctrl_reset_vfats       : std_logic_vector (11 downto 0);
-    signal ttc_reset_vfats        : std_logic;
-    signal ttc_reset_vfats_vector : std_logic_vector (11 downto 0);
     signal ttc_resync             : std_logic;
     signal ttc_l1a                : std_logic;
     signal ttc_bc0                : std_logic;
@@ -197,27 +173,33 @@ begin
     clock  <= clk_1x;
     gbt_request_received <= ipb_mosi_gbt.ipb_strobe;
 
-    -- buffers to copy into IOBs
 
-    ttc_reset_vfats_vector <= (others => ttc_reset_vfats);
+    --=============--
+    --== Common  ==--
+    --=============--
 
     process(clock)
     begin
     if (rising_edge(clock)) then
-
-        gbt_rxready   <= gbt_rxready_i;
-        gbt_rxvalid   <= gbt_rxvalid_i;
-        gbt_txready   <= gbt_txready_i;
-
-        ext_reset   <= (ttc_reset_vfats_vector or ctrl_reset_vfats);
-
-        led_o (MXLED-1 downto 0) <= led (MXLED-1 downto 0);
-
-        ext_reset_o (MXRESET-1 downto 0) <= ext_reset (MXRESET-1 downto 0);
-        ext_sbits_o  <= ext_sbits;
-
+            led_o (MXLED-1 downto 0) <= led (MXLED-1 downto 0);
+            gbt_rxready   <= gbt_rxready_i;
+            gbt_rxvalid   <= gbt_rxvalid_i;
+            gbt_txready   <= gbt_txready_i;
     end if;
     end process;
+
+    -- START: Station Specific IO DO NOT EDIT --
+    --===========--
+    --== GE11  ==--
+    --===========--
+    process(clock)
+    begin
+    if (rising_edge(clock)) then
+        ext_reset_o  <= ctrl_reset_vfats;
+        ext_sbits_o  <= ext_sbits;
+    end if;
+    end process;
+    -- END: Station Specific IO DO NOT EDIT --
 
     --==============--
     --== Clocking ==--
@@ -228,9 +210,6 @@ begin
 
         gbt_dclk_p         => gbt_dclk_p, -- phase shiftable 40MHz ttc clocks
         gbt_dclk_n         => gbt_dclk_n, --
-
-     -- gbt_eclk_p         => gbt_eclk_p, -- 320 MHz fixed clocks
-     -- gbt_eclk_n         => gbt_eclk_n, -- do not use
 
         ipb_mosi_i      => ipb_mosi_slaves (IPB_SLAVE.CLOCKING),
         ipb_miso_o      => ipb_miso_slaves (IPB_SLAVE.CLOCKING),
@@ -252,9 +231,9 @@ begin
         clk_1x_o           => clk_1x, -- phase shiftable logic clocks
         clk_2x_o           => clk_2x,
         clk_4x_o           => clk_4x,
+        clk_5x_o           => clk_5x,
         clk_4x_90_o        => clk_4x_90,
 
-        cluster_clk_o      => cluster_clk,
         delay_refclk_reset_o => delay_refclk_reset,
         delay_refclk_o     => delay_refclk
     );
@@ -264,9 +243,9 @@ begin
         clock_i        => clock,
         soft_reset     => soft_reset,
         mmcms_locked_i => mmcms_locked,
-        gbt_rxready_i  => gbt_rxready,
-        gbt_rxvalid_i  => gbt_rxvalid,
-        gbt_txready_i  => gbt_txready,
+        gbt_rxready_i  => gbt_rxready(0),
+        gbt_rxvalid_i  => gbt_rxvalid(0),
+        gbt_txready_i  => gbt_txready(0),
         reset_o        => reset
     );
 
@@ -282,18 +261,18 @@ begin
 
         -- GBT
 
-        gbt_rxready_i => gbt_rxready,
-        gbt_rxvalid_i => gbt_rxvalid,
-        gbt_txready_i => gbt_txready,
+        gbt_rxready_i => gbt_rxready(0),
+        gbt_rxvalid_i => gbt_rxvalid(0),
+        gbt_txready_i => gbt_txready(0),
 
 
         -- input clocks
 
-        gbt_rx_clk_div_i  => gbt_rx_clk_div, -- 40 MHz frame clock
-        gbt_rx_clk_i      => gbt_rx_clk,     -- 320 MHz sampling clock
+        gbt_rx_clk_div    => gbt_rx_clk_div, -- 40 MHz frame clock
+        gbt_rx_clk        => gbt_rx_clk,     -- 320 MHz sampling clock
 
-        gbt_tx_clk_div_i  => gbt_tx_clk_div, -- 40 MHz frame clock
-        gbt_tx_clk_i      => gbt_tx_clk,     -- 320 MHz sampling clock
+        gbt_tx_clk_div    => gbt_tx_clk_div, -- 40 MHz frame clock
+        gbt_tx_clk        => gbt_tx_clk,     -- 320 MHz sampling clock
 
         clock_i => clock,         -- 320 MHz sampling clock
 
@@ -307,16 +286,8 @@ begin
         elink_o_p  =>  elink_o_p,
         elink_o_n  =>  elink_o_n,
 
-        -- status
-
-        gbt_rx_data_o => gbt_rx_data,
-
         gbt_link_error_o => gbt_link_error,
         gbt_link_ready_o => gbt_link_ready,
-
-        -- sca control
-        tx_sync_mode_sca       => tx_sync_mode_sca,
-        gbt_loopback_mode_sca  => gbt_loopback_mode_sca,
 
         -- wishbone master
         ipb_mosi_o    => ipb_mosi_gbt,
@@ -331,7 +302,6 @@ begin
         cnt_snap => cnt_snap,
 
         -- decoded TTC
-        reset_vfats_o   => ttc_reset_vfats,
         resync_o        => ttc_resync,
         l1a_o           => ttc_l1a,
         bc0_o           => ttc_bc0
@@ -365,8 +335,6 @@ begin
     --== System Monitor ==--
     --====================--
 
-    xadc_gen : IF (FPGA_TYPE="VIRTEX6") GENERATE
-
     adc_inst : entity work.adc port map(
         clock_i         => clock,
         reset_i         => reset,
@@ -381,8 +349,6 @@ begin
         adc_vp          => adc_vp,
         adc_vn          => adc_vn
     );
-
-    END GENERATE xadc_gen;
 
     --=============--
     --== Control ==--
@@ -413,22 +379,13 @@ begin
         dskw_mmcm_locked_i => dskw_mmcm_locked,
         eprt_mmcm_locked_i => eprt_mmcm_locked,
 
-        -- SCA Control
-
-        sca_ctl => sca_ctl,
-
-        tx_sync_mode_sca_o       => tx_sync_mode_sca,
-        gbt_loopback_mode_sca_o  => gbt_loopback_mode_sca,
-
         -- GBT
 
         gbt_link_ready_i => gbt_link_ready,
 
-        gbt_rxready_i => gbt_rxready,
-        gbt_rxvalid_i => gbt_rxvalid,
-        gbt_txready_i => gbt_txready,
-
-        gbt_rx_data_i => gbt_rx_data,
+        gbt_rxready_i => gbt_rxready(0),
+        gbt_rxvalid_i => gbt_rxvalid(0),
+        gbt_txready_i => gbt_txready(0),
 
         gbt_request_received_i => gbt_request_received,
 
@@ -494,12 +451,11 @@ begin
         clk_40     => clk_1x,
         clk_80     => clk_2x,
         clk_160    => clk_4x,
+        clk_200    => clk_5x,
         clk_160_90 => clk_4x_90,
 
         delay_refclk_i => delay_refclk,
         delay_refclk_reset_i => delay_refclk_reset,
-
-        cluster_clk => cluster_clk,
 
         -- mgt pairs
         mgt_tx_p => mgt_tx_p_o,

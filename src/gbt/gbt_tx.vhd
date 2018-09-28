@@ -6,10 +6,11 @@
 ----------------------------------------------------------------------------------
 -- Description:
 --   This module generates data packets for transmission to the CTP-7
---   takes 32 bit register data and formats it into 16-bit frames with a header
+--   takes 32 bit register data and formats it into frames for transmission on elinks
 ----------------------------------------------------------------------------------
 -- 2017/07/24 -- Initial working version adapted from v2
 -- 2017/08/09 -- Add "10 bit" transmit mode for OHv3a
+-- 2018/09/27 -- Convert to sixbit_eightbit, single elink encoding
 ----------------------------------------------------------------------------------
 
 library ieee;
@@ -21,33 +22,30 @@ use unisim.vcomponents.all;
 
 library work;
 
-entity gbt_tx is
-    generic(
-        g_16BIT : boolean := false
-    );
-port(
+entity gbt_tx is port(
 
-    clock   : in std_logic;
+    clock       : in std_logic;
+
     reset_i     : in std_logic;
 
-    data_o      : out std_logic_vector(15 downto 0);
+    data_o      : out std_logic_vector(7 downto 0);
 
     req_en_o    : out std_logic;
-    req_valid_i : in std_logic;
+    req_valid_i : in std_logic; --valid request from fifo
     req_data_i  : in std_logic_vector(31 downto 0)
 );
 end gbt_tx;
 
 architecture Behavioral of gbt_tx is
 
-    type state_t is (SYNCING, HEADER, REG_DATA0, REG_DATA1, REG_DATA2, REG_DATA3);
+    type state_t is (IDLE, START, REG_DATA0, REG_DATA1, REG_DATA2, REG_DATA3, REG_DATA4, REG_DATA5);
 
     signal state : state_t;
 
     signal req_valid : std_logic;
-    signal frame     : std_logic_vector (15 downto 0);
-    signal elink0    : std_logic_vector (7 downto 0);
-    signal elink1    : std_logic_vector (7 downto 0);
+    signal frame     : std_logic_vector (5 downto 0);
+
+    signal send_idle : std_logic;
 
     signal reset : std_logic;
 
@@ -61,158 +59,33 @@ begin
         end if;
     end process;
 
-    --=========================--
-    --== 16 bit decoding     ==--
-    --=========================--
-
-    g_sixteen : IF (g_16BIT) GENERATE
-
-    --== STATE ==--
 
     process(clock)
     begin
         if (rising_edge(clock)) then
             if (reset = '1') then
-                state <= SYNCING;
+                state <= IDLE;
             else
                 case state is
 
-                    when SYNCING   =>
+                    when IDLE =>
                         if (req_valid_i='1') then
-                            state <= HEADER;
+                            state <= REG_DATA0;
                         end if;
-
-                    when HEADER    => state <= REG_DATA0;
-
-                    when REG_DATA0 => state <= REG_DATA1;
-
-                    when REG_DATA1 =>
-                        if (req_valid_i='1') then
-                            state <= HEADER;
-                        else
-                            state <= SYNCING;
-                        end if;
-
-                    when others => state <= SYNCING;
-                end case;
-            end if;
-        end if;
-    end process;
-
-    --== REQUEST and TRACKING DATA==--
-
-    process(clock)
-    begin
-        if (rising_edge(clock)) then
-            if (reset = '1') then
-                req_en_o <= '0';
-                req_valid <= '0';
-            else
-                case state is
-
-                    when SYNCING =>
-                        req_en_o <= '1';
-                        req_valid <= req_valid_i;
-
-                    when HEADER =>
-                        req_en_o <= '0';
-
-                    when REG_DATA0 =>
-                        req_en_o <= '1'; -- prefect to account for fifo latency
-
-                    when REG_DATA1 =>
-                        req_en_o <= '0';
-                        req_valid <= req_valid_i;
-
-                    when others =>
-                        req_en_o  <= '0';
-                        req_valid <= '0';
-
-                end case;
-            end if;
-        end if;
-    end process;
-
-    --== SEND ==--
-
-    process(clock)
-    begin
-        if (rising_edge(clock)) then
-            if (reset = '1') then
-                frame <= (others => '0');
-            else
-                case state is
-                    when SYNCING =>
-                        frame <= x"FCFC";
-
-                    when HEADER =>
-                        if (req_valid='1') then
-                            frame <= x"BCBC";
-                        else
-                            frame <= x"FCFC";
-                        end if;
-
-                    when REG_DATA0 =>
-                        if (req_valid='0') then
-                            frame <= x"0000";
-                        else
-                            frame <= req_data_i(31 downto 16);
-                        end if;
-
-                    when REG_DATA1 =>
-                        if (req_valid='0') then
-                            frame <= x"0000";
-                        else
-                            frame <= req_data_i(15 downto 0);
-                        end if;
-
-                    when others =>
-                        frame <= (others => '0');
-
-                end case;
-            end if;
-        end if;
-    end process;
-
-    -- duplicate the 2 MSBS to transmit at 320 MHz
-    data_o (15 downto 0) <= frame (15 downto 0);
-
-    END GENERATE g_sixteen;
-
-    --=====================--
-    --== 10 bit encoding ==--
-    --=====================--
-
-    --== STATE ==--
-
-    g_ten : IF (not g_16BIT) GENERATE
-
-    process(clock)
-    begin
-        if (rising_edge(clock)) then
-            if (reset = '1') then
-                state <= SYNCING;
-            else
-                case state is
-
-                    when SYNCING   =>
-                        if (req_valid_i='1') then
-                            state <= HEADER;
-                        end if;
-
-                    when HEADER    => state <= REG_DATA0;
                     when REG_DATA0 => state <= REG_DATA1;
                     when REG_DATA1 => state <= REG_DATA2;
                     when REG_DATA2 => state <= REG_DATA3;
+                    when REG_DATA3 => state <= REG_DATA4;
+                    when REG_DATA4 => state <= REG_DATA5;
 
-                    when REG_DATA3 =>
+                    when REG_DATA5 =>
                         if (req_valid_i='1') then
-                            state <= HEADER;
+                            state <= REG_DATA0;
                         else
-                            state <= SYNCING;
+                            state <= IDLE;
                         end if;
 
-                    when others => state <= SYNCING;
+                    when others => state <= IDLE;
                 end case;
             end if;
         end if;
@@ -224,34 +97,17 @@ begin
     begin
         if (rising_edge(clock)) then
             if (reset = '1') then
-                req_en_o <= '0';
-                req_valid <= '0';
+                                      req_en_o <= '0'; req_valid <= '0';
             else
                 case state is
-
-                    when SYNCING =>
-                        req_en_o <= '1';
-                        req_valid <= req_valid_i;
-
-                    when HEADER =>
-                        req_en_o <= '0';
-
-                    when REG_DATA0 =>
-                        req_en_o  <= '0';
-
-                    when REG_DATA1 =>
-                        req_en_o  <= '0';
-
-                    when REG_DATA2 =>
-                        req_en_o  <= '1'; -- prefect to account for fifo latency
-
-                    when REG_DATA3 =>
-                        req_en_o  <= '0';
-                        req_valid <= req_valid_i;
-
-                    when others =>
-                        req_en_o  <= '0';
-                        req_valid <= '0';
+                    when IDLE =>      send_idle <= '1'; req_en_o  <= '1'; req_valid <= req_valid_i;
+                    when REG_DATA0 => send_idle <= '0'; req_en_o  <= '0';
+                    when REG_DATA1 => send_idle <= '0'; req_en_o  <= '0';
+                    when REG_DATA2 => send_idle <= '0'; req_en_o  <= '0';
+                    when REG_DATA3 => send_idle <= '0'; req_en_o  <= '0';
+                    when REG_DATA4 => send_idle <= '0'; req_en_o  <= '1'; -- prefetch by 1 bx from end to account for fifo latency
+                    when REG_DATA5 => send_idle <= '0'; req_en_o  <= '0'; req_valid <= req_valid_i;
+                    when others =>    send_idle <= '1'; req_en_o  <= '0'; req_valid <= '0';
 
                 end case;
             end if;
@@ -267,66 +123,29 @@ begin
                 frame <= (others => '0');
             else
                 case state is
-                    when SYNCING =>
-                        frame <= x"00FC";
-
-                    when HEADER =>
-                        if (req_valid='1') then
-                            frame <= x"00BC";
-                        else
-                            frame <= x"00FC";
-                        end if;
-
-                    when REG_DATA0 =>
-                        if (req_valid='0') then
-                            frame <= x"0000";
-                        else
-                            frame <= "000000" & "00" & req_data_i(31 downto 24);
-                        end if;
-
-                    when REG_DATA1 =>
-                        if (req_valid='0') then
-                            frame <= x"0000";
-                        else
-                            frame <= "000000" & "01" & req_data_i(23 downto 16);
-                        end if;
-
-                    when REG_DATA2 =>
-                        if (req_valid='0') then
-                            frame <= x"0000";
-                        else
-                            frame <= "000000" & "10" & req_data_i(15 downto 8);
-                        end if;
-
-                    when REG_DATA3 =>
-                        if (req_valid='0') then
-                            frame <= x"0000";
-                        else
-                            frame <= "000000" & "11" & req_data_i(7 downto 0);
-                        end if;
-
-                    when others =>
-                        frame <= (others => '0');
+                    when IDLE      => frame <= "00" & x"0";
+                    when REG_DATA0 => frame <= x"0" & req_data_i(31 downto 30);
+                    when REG_DATA1 => frame <= req_data_i(29 downto 24);
+                    when REG_DATA2 => frame <= req_data_i(23 downto 18);
+                    when REG_DATA3 => frame <= req_data_i(17 downto 12);
+                    when REG_DATA4 => frame <= req_data_i(11 downto 6);
+                    when REG_DATA5 => frame <= req_data_i(5 downto 0);
+                    when others    => frame <= (others => '0');
                 end case;
             end if;
         end if;
     end process;
-
-    -- duplicate the 2 MSBS to transmit at 320 MHz
-    -- this emulates 80MHz on one of the e-links but allows the rest of the firmware to be agnostic to the change
-
-    process(clock)
-    begin
-        if (rising_edge(clock)) then
-                elink0 <= frame (1) & frame (1) & frame(1) & frame(1) &
-                            frame (0) & frame (0) & frame(0) & frame(0);
-
-                elink1 <= frame (9 downto 2);
-        end if;
-    end process;
-
-    data_o (15 downto 0) <= elink1 & elink0;
-
-    END GENERATE g_ten;
+	 
+	 
+    -- 8b to 6b conversion
+    sixbit_eightbit_inst : entity work.sixbit_eightbit
+    port map (
+        eightbit     => data_o,
+        sixbit       => frame,
+        l1a          => '0',
+        bc0          => '0',
+        resync       => '0',
+        idle         => send_idle
+    );
 
 end Behavioral;

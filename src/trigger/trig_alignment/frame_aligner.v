@@ -10,6 +10,7 @@
 //   and deserialize to 40MHz
 //--------------------------------------------------------------------------------
 // 2017/07/24 -- Initial
+// 2018/09/18 -- Modifications for light optohybrid
 //--------------------------------------------------------------------------------
 
 module frame_aligner (
@@ -34,6 +35,8 @@ module frame_aligner (
   output     sot_delayed,
   output [MXSBITS-1:0] sbits
 );
+
+  parameter OH_LITE=0;
 
   parameter DDR=0;
   parameter MXSBITS=64+64*DDR;
@@ -65,8 +68,8 @@ module frame_aligner (
   wire sot_dly_srl;
   wire sot_dly2_srl;
 
-  reg  [1:0] srl_adr_ctrl=0;
-  reg  [3:0] srl_adr=0; // frame alignment srl_adr
+  reg  [1:0] srl_adr_ctrl = 0;
+  reg  [3:0] srl_adr      = 0; // frame alignment srl_adr
 
   // flip-flop for fanout (failed timing on one channel w/o)
   always @(posedge fastclock)
@@ -112,7 +115,7 @@ module frame_aligner (
 
   always @(posedge fastclock) begin
     even_dly <= even_dly_srl;
-    odd_dly <= odd_dly_srl;
+    odd_dly  <= odd_dly_srl;
   end
 
   // fifo rising (even) and falling (odd) bits separately, interleave leater
@@ -135,8 +138,8 @@ module frame_aligner (
 
     // shift data in, MSB first -- posedge
     always @(posedge fastclock) begin
-      sbit_fifo_odd  [ipin][WORD_SIZE/2-1:0] <= {sbit_fifo_odd  [ipin][WORD_SIZE/2-2:0] , odd_dly[ipin]};
-      sbit_fifo_even [ipin][WORD_SIZE/2-1:0] <= {sbit_fifo_even [ipin][WORD_SIZE/2-2:0] , even_dly[ipin]};
+        sbit_fifo_odd  [ipin][WORD_SIZE/2-1:0] <= {sbit_fifo_odd  [ipin][WORD_SIZE/2-2:0] , odd_dly[ipin]};
+        sbit_fifo_even [ipin][WORD_SIZE/2-1:0] <= {sbit_fifo_even [ipin][WORD_SIZE/2-2:0] , even_dly[ipin]};
     end
 
     // at VFAT double-data rate, we want to deserialize 16 bits at once
@@ -194,16 +197,16 @@ module frame_aligner (
     if (reset || mask || ~ready)
       sbits_reg <= {MXSBITS{1'b0}};
     else
-      sbits_reg <= {
-        sbits_interleaved_s0[7],
-        sbits_interleaved_s0[6],
-        sbits_interleaved_s0[5],
-        sbits_interleaved_s0[4],
-        sbits_interleaved_s0[3],
-        sbits_interleaved_s0[2],
-        sbits_interleaved_s0[1],
-        sbits_interleaved_s0[0]
-        };
+        sbits_reg <= {
+          sbits_interleaved_s0[7],
+          sbits_interleaved_s0[6],
+          sbits_interleaved_s0[5],
+          sbits_interleaved_s0[4],
+          sbits_interleaved_s0[3],
+          sbits_interleaved_s0[2],
+          sbits_interleaved_s0[1],
+          sbits_interleaved_s0[0]
+          };
   end
 
   // look for rising edge of the sot signal

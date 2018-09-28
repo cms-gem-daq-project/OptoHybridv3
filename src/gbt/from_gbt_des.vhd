@@ -298,10 +298,4 @@ delayctrl : IDELAYCTRL
      RST    => REFCLK_RESET
      );
 
-
-
-
 end xilinx;
-
-
-

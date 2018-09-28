@@ -12,6 +12,7 @@
 -- 2017/08/09 -- rework of module to cleanup and document source
 -- 2017/08/26 -- Addition of actual CDC fifo
 -- 2018/04/19 -- Addition of Artix-7 Support
+-- 2018/09/27 -- Conversion to single elink communication
 ----------------------------------------------------------------------------------
 
 library ieee;
@@ -35,88 +36,66 @@ port(
 
     -- input clocks
 
-    gbt_rx_clk_div_i : in std_logic; -- 40 MHz phase shiftable frame clock from GBT
-    gbt_rx_clk_i     : in std_logic; -- 320 MHz phase shiftable frame clock from GBT
+    gbt_rx_clk_div   : in std_logic; -- 40 MHz phase shiftable frame clock from GBT
+    gbt_rx_clk       : in std_logic; -- 320 MHz phase shiftable frame clock from GBT
 
-    gbt_tx_clk_div_i : in std_logic_vector (1 downto 0); -- 40 MHz phase shiftable frame clock from GBT
-    gbt_tx_clk_i     : in std_logic_vector (1 downto 0); -- 320 MHz phase shiftable frame clock from GBT
+    gbt_tx_clk_div   : in std_logic; -- 40 MHz phase shiftable frame clock from GBT
+    gbt_tx_clk       : in std_logic; -- 320 MHz phase shiftable frame clock from GBT
 
     clock            : in std_logic;
 
-    test_pattern     : in std_logic_vector (63 downto 0);
-    tx_sync_mode     : in std_logic;
     tx_delay_i       : in std_logic_vector (4 downto 0);
 
     gbt_tx_bitslip0 : in std_logic_vector(2 downto 0) ;
     gbt_tx_bitslip1 : in std_logic_vector(2 downto 0) ;
 
     -- serial data to/from GBTx
-    elink_o_p        : out std_logic_vector(1 downto 0);
-    elink_o_n        : out std_logic_vector(1 downto 0);
+    elink_o_p        : out std_logic;
+    elink_o_n        : out std_logic;
 
-    elink_i_p        : in  std_logic_vector(1 downto 0);
-    elink_i_n        : in  std_logic_vector(1 downto 0);
+    elink_i_p        : in  std_logic;
+    elink_i_n        : in  std_logic;
 
     gbt_link_error_i : in std_logic; -- error on gbt rx
-
-    gbt_direct_loopback_mode : in std_logic; -- tx directly mirrors rx, for fast data integrity testing
 
     delay_refclk       : in std_logic;
     delay_refclk_reset : in std_logic;
 
     -- parallel data to/from FPGA logic
-    data_i           : in  std_logic_vector (15 downto 0);
-    data_o           : out std_logic_vector (15 downto 0);
+    data_i           : in  std_logic_vector (7 downto 0);
+    data_o           : out std_logic_vector (7 downto 0);
     valid_o          : out std_logic
 );
 end gbt_serdes;
 
 architecture Behavioral of gbt_serdes is
 
-    signal from_gbt_raw      : std_logic_vector(15 downto 0) := (others => '0');
-    signal from_gbt_remapped : std_logic_vector(15 downto 0) := (others => '0');
-    signal from_gbt          : std_logic_vector(15 downto 0) := (others => '0');
+    signal from_gbt_raw      : std_logic_vector(7 downto 0) := (others => '0');
+    signal from_gbt_remapped : std_logic_vector(7 downto 0) := (others => '0');
+    signal from_gbt          : std_logic_vector(7 downto 0) := (others => '0');
 
-    signal from_gbt_cdc0     : std_logic_vector(15 downto 0) := (others => '0');
-    signal from_gbt_cdc1     : std_logic_vector(15 downto 0) := (others => '0');
+    signal from_gbt_cdc0     : std_logic_vector(7 downto 0) := (others => '0');
+    signal from_gbt_cdc1     : std_logic_vector(7 downto 0) := (others => '0');
 
-    signal to_gbt            : std_logic_vector(15 downto 0) := (others => '0');
-    signal to_gbt_synced     : std_logic_vector(15 downto 0) := (others => '0');
-    signal to_gbt_bitslipped : std_logic_vector(15 downto 0) := (others => '0');
-    signal to_gbt_remapped   : std_logic_vector(15 downto 0) := (others => '0');
-    signal to_gbt_data        : std_logic_vector(15 downto 0) := (others => '0');
-
-    signal ioclk : std_logic;
-    signal ioclk40 : std_logic;
-    signal clock_lock : std_logic;
-    signal serdesstrobe : std_logic;
-
-    attribute mark_debug : string;
-    attribute mark_debug of to_gbt : signal is "TRUE";
-    attribute mark_debug of to_gbt_bitslipped : signal is "TRUE";
+    signal to_gbt            : std_logic_vector(7 downto 0) := (others => '0');
+    signal to_gbt_synced     : std_logic_vector(7 downto 0) := (others => '0');
+    signal to_gbt_bitslipped : std_logic_vector(7 downto 0) := (others => '0');
+    signal to_gbt_remapped   : std_logic_vector(7 downto 0) := (others => '0');
+    signal to_gbt_data       : std_logic_vector(7 downto 0) := (others => '0');
 
     signal iserdes_reset     : std_logic := '1';
     signal iserdes_reset_s0  : std_logic := '1';
-    signal oserdes_reset     : std_logic_vector (1 downto 0) := "11";
-    signal oserdes_reset_s0  : std_logic_vector (1 downto 0) := "11";
+    signal oserdes_reset     : std_logic := '1';
+    signal oserdes_reset_s0  : std_logic := '1';
 
     signal error_cnt_strobe  : unsigned (7 downto 0);
-    signal gbt_link_error_last  : std_logic;
-    signal increment_rx_delay  : std_logic_vector (0 downto 0);
-
-    signal iserdes_reset_srl : std_logic;
-    signal oserdes_reset_srl : std_logic;
+    signal gbt_link_error_last  : std_logic := '0';
+    signal increment_rx_delay  : std_logic := '0';
 
     signal iserdes_clk : std_logic;
     signal iserdes_clkdiv : std_logic;
 
     signal idly_rdy : std_logic;
-
-    signal pulse_length : std_logic_vector (3 downto 0) := x"f";
-
-    constant reset_dly : std_logic_vector (3 downto 0) := x"f";
-
-    signal frame_count : integer range 0 to 7 := 0;
 
     signal reset : std_logic;
 
@@ -210,8 +189,8 @@ architecture Behavioral of gbt_serdes is
     begin
     --------------------------------------------------------------------------------------------------------------------
 
-    iserdes_clk    <= gbt_rx_clk_i;
-    iserdes_clkdiv <= gbt_rx_clk_div_i;
+    iserdes_clk    <= gbt_rx_clk  ;
+    iserdes_clkdiv <= gbt_rx_clk_div  ;
 
     --================--
     --==    RESET   ==--
@@ -255,10 +234,10 @@ architecture Behavioral of gbt_serdes is
                     gbt_link_error_last <= gbt_link_error_i;
                 end if;
 
-                if (error_cnt_strobe = error_cnt_strobe_max and gbt_link_error_i='1' and gbt_link_error_last='1' and gbt_direct_loopback_mode='0') then
-                    increment_rx_delay(0) <= '1';
+                if (error_cnt_strobe = error_cnt_strobe_max and gbt_link_error_i='1' and gbt_link_error_last='1') then
+                    increment_rx_delay <= '1';
                 else
-                    increment_rx_delay(0) <= '0';
+                    increment_rx_delay <= '0';
                 end if;
 
             end if;
@@ -271,17 +250,10 @@ architecture Behavioral of gbt_serdes is
     -- synchronize resets from logic clock to gbt clock domains
     --------------------------------------------------------------------------------------------------------------------
 
-    process (gbt_tx_clk_div_i(0)) begin
-    if (rising_edge(gbt_tx_clk_div_i(0))) then
-        oserdes_reset_s0(0) <= reset_i;
-        oserdes_reset(0) <= oserdes_reset_s0(0);
-    end if;
-    end process;
-
-    process (gbt_tx_clk_div_i(1)) begin
-    if (rising_edge(gbt_tx_clk_div_i(1))) then
-        oserdes_reset_s0(1) <= reset_i;
-        oserdes_reset(1) <= oserdes_reset_s0(1);
+    process (gbt_tx_clk_div  ) begin
+    if (rising_edge(gbt_tx_clk_div  )) then
+        oserdes_reset_s0 <= reset_i;
+        oserdes_reset <= oserdes_reset_s0;
     end if;
     end process;
 
@@ -303,46 +275,22 @@ architecture Behavioral of gbt_serdes is
     --------------------------------------------------------------------------------------------------------------------
 
         -- Input deserializer
-        i_from_gbt_des80 : from_gbt_des
-        port map(
-
-            data_in_from_pins_p => (elink_i_p(0 downto 0)),
-            data_in_from_pins_n => (elink_i_n(0 downto 0)),
-
-            data_in_to_device   => from_gbt_raw(7 downto 0),
-
-            bitslip             => '0',
-            clk_in              => iserdes_clk,
-            clk_div_in          => iserdes_clkdiv,
-            io_reset            => iserdes_reset,
-
-                                                                -- Input, Output delay control signals
-            DELAY_RESET         => iserdes_reset,                  -- Active high synchronous reset for input delay
-            DELAY_DATA_CE       => increment_rx_delay,             -- Enable signal for IODELAYE1 of bit 0
-            DELAY_DATA_INC      => (others => '1'),                -- Delay increment, decrement signal of bit 0
-            DELAY_LOCKED        => open,                           -- Locked signal from IDELAYCTRL
-            REFCLK_RESET        => delay_refclk_reset,             -- Reference clock calibration POR reset
-            REF_CLOCK           => delay_refclk                    -- Reference clock for IDELAYCTRL. Has to come from BUFG.
-
-        );
-
-        -- Input deserializer
         i_from_gbt_des320 : from_gbt_des
         port map(
-            data_in_from_pins_p => elink_i_p(1 downto 1),
-            data_in_from_pins_n => elink_i_n(1 downto 1),
-            data_in_to_device   => from_gbt_raw(15 downto 8),
+            data_in_from_pins_p => (others => elink_i_p),
+            data_in_from_pins_n => (others => elink_i_n),
+            data_in_to_device   => from_gbt_raw,
             bitslip             => '0',
             clk_in              => iserdes_clk,
             clk_div_in          => iserdes_clkdiv,
             io_reset            => iserdes_reset,
-                                                                -- Input, Output delay control signals
-            DELAY_RESET         => iserdes_reset,                  -- Active high synchronous reset for input delay
-            DELAY_DATA_CE       => increment_rx_delay,             -- Enable signal for IODELAYE1 of bit 0
-            DELAY_DATA_INC      => (others => '1'),                -- Delay increment, decrement signal of bit 0
-            DELAY_LOCKED        => idly_rdy,                       -- Locked signal from IDELAYCTRL
-            REFCLK_RESET        => delay_refclk_reset,             -- Reference clock calibration POR reset
-            REF_CLOCK           => delay_refclk                    -- Reference clock for IDELAYCTRL. Has to come from BUFG.
+                                                                 -- Input, Output delay control signals
+            DELAY_RESET         => iserdes_reset,                -- Active high synchronous reset for input delay
+            DELAY_DATA_CE       => (others => increment_rx_delay),           -- Enable signal for IODELAYE1 of bit 0
+            DELAY_DATA_INC      => (others => '1'),              -- Delay increment, decrement signal of bit 0
+            DELAY_LOCKED        => idly_rdy,                     -- Locked signal from IDELAYCTRL
+            REFCLK_RESET        => delay_refclk_reset,           -- Reference clock calibration POR reset
+            REF_CLOCK           => delay_refclk                  -- Reference clock for IDELAYCTRL. Has to come from BUFG.
         );
 
         -- remap to account for how the Xilinx IPcore assigns the output pins
@@ -350,24 +298,15 @@ architecture Behavioral of gbt_serdes is
         process (iserdes_clkdiv) begin
             if (rising_edge(iserdes_clkdiv)) then
 
-                -- 10 bit mapping
                 from_gbt_remapped <=
-                    from_gbt_raw(12) &
-                    from_gbt_raw(13) &
-                    from_gbt_raw(14) &
-                    from_gbt_raw(15) &
-                    from_gbt_raw(8)  &
-                    from_gbt_raw(9)  &
-                    from_gbt_raw(10) &
-                    from_gbt_raw(11) &
-                    from_gbt_raw(0)  &
-                    from_gbt_raw(1)  &
-                    from_gbt_raw(2)  &
-                    from_gbt_raw(3)  &
-                    from_gbt_raw(4)  &
-                    from_gbt_raw(5)  &
-                    from_gbt_raw(6)  &
-                    from_gbt_raw(7);
+                    from_gbt_raw(4) &
+                    from_gbt_raw(5) &
+                    from_gbt_raw(6) &
+                    from_gbt_raw(7) &
+                    from_gbt_raw(0) &
+                    from_gbt_raw(1) &
+                    from_gbt_raw(2) &
+                    from_gbt_raw(3);
 
                 from_gbt <= from_gbt_remapped;
 
@@ -387,27 +326,14 @@ architecture Behavioral of gbt_serdes is
         i_from_gbt_des0 : from_gbt_des_a7
         port map
         (
-            data_in_from_pins_p => elink_i_p(0 downto 0),
-            data_in_from_pins_n => elink_i_n(0 downto 0),
-            data_in_to_device => from_gbt_raw(7 downto 0),
-            bitslip => (others => '0'),
-            clk_in              => iserdes_clk,
-            clk_div_in          => iserdes_clkdiv,
-            io_reset => iserdes_reset
+            data_in_from_pins_p(0) => elink_i_p,
+            data_in_from_pins_n(0) => elink_i_n,
+            data_in_to_device      => from_gbt_raw,
+            bitslip                => (others => '0'),
+            clk_in                 => iserdes_clk,
+            clk_div_in             => iserdes_clkdiv,
+            io_reset               => iserdes_reset
         );
-
-        i_from_gbt_de1s : from_gbt_des_a7
-        port map
-        (
-            data_in_from_pins_p => elink_i_p(1 downto 1),
-            data_in_from_pins_n => elink_i_n(1 downto 1),
-            data_in_to_device => from_gbt_raw(15 downto 8),
-            bitslip => (others => '0'),
-            clk_in              => iserdes_clk,
-            clk_div_in          => iserdes_clkdiv,
-            io_reset => iserdes_reset
-        );
-
 
         -- remap to account for how the Xilinx IPcore assigns the output pins
         -- flip-flop for routing and alignment
@@ -416,22 +342,14 @@ architecture Behavioral of gbt_serdes is
 
                 -- 10 bit mapping
                 from_gbt_remapped <=
-                    from_gbt_raw(12) &
-                    from_gbt_raw(13) &
-                    from_gbt_raw(14) &
-                    from_gbt_raw(15) &
-                    from_gbt_raw(8)  &
-                    from_gbt_raw(9)  &
-                    from_gbt_raw(10) &
-                    from_gbt_raw(11) &
-                    from_gbt_raw(0)  &
-                    from_gbt_raw(1)  &
-                    from_gbt_raw(2)  &
-                    from_gbt_raw(3)  &
-                    from_gbt_raw(4)  &
-                    from_gbt_raw(5)  &
-                    from_gbt_raw(6)  &
-                    from_gbt_raw(7);
+                    from_gbt_raw(4) &
+                    from_gbt_raw(5) &
+                    from_gbt_raw(6) &
+                    from_gbt_raw(7) &
+                    from_gbt_raw(0) &
+                    from_gbt_raw(1) &
+                    from_gbt_raw(2) &
+                    from_gbt_raw(3);
 
                 from_gbt <= from_gbt_remapped;
 
@@ -451,39 +369,16 @@ architecture Behavioral of gbt_serdes is
         fabric_clk  => clock,
         reset       => reset,
         bitslip_cnt => to_integer(unsigned(gbt_tx_bitslip0)),
-        din         => data_i(7 downto 0), -- 16 bit data input, synchronized to frame-clock
-        dout        => to_gbt_bitslipped (7 downto 0)
+        din         => data_i,
+        dout        => to_gbt_bitslipped
     );
-
-    tx_bitslip_v6 : IF (FPGA_TYPE="VIRTEX6") GENERATE
-
-    i_gbt_tx_bitslip1 : entity work.gbt_tx_bitslip
-    port map(
-        fabric_clk  => clock,
-        reset       => reset,
-        bitslip_cnt => to_integer(unsigned(gbt_tx_bitslip1)),
-        din         => data_i (15 downto 8), -- 16 bit data input, synchronized to frame-clock
-        dout        => to_gbt_bitslipped (15 downto 8)
-    );
-
-    END GENERATE tx_bitslip_v6;
-
 
     -- Rearrange data to account for how the serdes handles the bits
     --     ie, if data comes in 0, 1, 2, 3, 4, 5, 6, 7,
     --         the output will be 3210, 7654
     -------------------------------------------------------------
 
-    -- 10 bit mapping
     to_gbt_remapped <=
-        to_gbt_bitslipped(8) &
-        to_gbt_bitslipped(9) &
-        to_gbt_bitslipped(10) &
-        to_gbt_bitslipped(11) &
-        to_gbt_bitslipped(12) &
-        to_gbt_bitslipped(13) &
-        to_gbt_bitslipped(14) &
-        to_gbt_bitslipped(15) &
         to_gbt_bitslipped(0) &
         to_gbt_bitslipped(1) &
         to_gbt_bitslipped(2) &
@@ -496,30 +391,7 @@ architecture Behavioral of gbt_serdes is
     process(clock)
     begin
     if (rising_edge(clock)) then
-
-        if (frame_count = 7) then
-            frame_count <= 0;
-        else
-            frame_count <= frame_count + 1;
-        end if;
-
-        if (tx_sync_mode='1') then
-
-            to_gbt_data (15 downto 8)  <= test_pattern ((frame_count+1)*8 - 1 downto frame_count*8);
-            to_gbt_data ( 7 downto 0)  <= test_pattern (frame_count*8+1) &
-                                          test_pattern (frame_count*8+1) &
-                                          test_pattern (frame_count*8+1) &
-                                          test_pattern (frame_count*8+1) &
-                                          test_pattern (frame_count*8+0) &
-                                          test_pattern (frame_count*8+0) &
-                                          test_pattern (frame_count*8+0) &
-                                          test_pattern (frame_count*8+0) ;
-        elsif (gbt_direct_loopback_mode='1') then
-            to_gbt_data <=  from_gbt;
-        else
             to_gbt_data  <= to_gbt_remapped;
-        end if;
-
     end if;
     end process;
 
@@ -528,19 +400,11 @@ architecture Behavioral of gbt_serdes is
     --  2) Clock the register by the CLKDIV clock of the OSERDESE1.
     --  3) Use the same reset signal for the register as for the OSERDESE1.
 
-    process(gbt_tx_clk_div_i(0))
+    process(gbt_tx_clk_div  )
     begin
-    if (rising_edge(gbt_tx_clk_div_i(0))) then
-        to_gbt_synced (7 downto 0) <= to_gbt_data (7 downto 0);
-        to_gbt (7 downto 0) <= to_gbt_synced (7 downto 0);
-    end if;
-    end process;
-
-    process(gbt_tx_clk_div_i(1))
-    begin
-    if (rising_edge(gbt_tx_clk_div_i(1))) then
-        to_gbt_synced (15 downto 8) <= to_gbt_data (15 downto 8);
-        to_gbt (15 downto 8) <= to_gbt_synced (15 downto 8);
+    if (rising_edge(gbt_tx_clk_div)) then
+        to_gbt_synced <= to_gbt_data  ;
+        to_gbt        <= to_gbt_synced;
     end if;
     end process;
 
@@ -548,35 +412,15 @@ architecture Behavioral of gbt_serdes is
     -- we want to output the data on the falling edge of the clock so that the GBT can sample on the rising edge
 
     to_gbt_ser_gen_v6 : IF (FPGA_TYPE="VIRTEX6") GENERATE
-
-    i_to_gbt_ser80 : to_gbt_ser
-    port map(
-        data_out_from_device    => to_gbt(7 downto 0),
-        data_out_to_pins_p      => elink_o_p(0 downto 0),
-        data_out_to_pins_n      => elink_o_n(0 downto 0),
-        clk_in                  => gbt_tx_clk_i(0),
-        clk_div_in              => gbt_tx_clk_div_i(0),
-        io_reset                => oserdes_reset(0),
-
-        DELAY_RESET             => '1',
-        DELAY_DATA_CE           => (others => '1'),
-        DELAY_DATA_INC          => (others => '0'),
-        DELAY_TAP_IN            => tx_delay_i,
-        DELAY_TAP_OUT           => open,
-        DELAY_LOCKED            => open,
-        REFCLK_RESET            => delay_refclk_reset,             -- Reference clock calibration POR reset
-        REF_CLOCK               => delay_refclk
-    );
-
     i_to_gbt_ser320 : to_gbt_ser
     port map(
         -- POLARITY SWAP ON ELINK #1
-        data_out_from_device    => ("not"(to_gbt(15 downto 8))),
-        data_out_to_pins_p      => elink_o_p(1 downto 1),
-        data_out_to_pins_n      => elink_o_n(1 downto 1),
-        clk_in                  => gbt_tx_clk_i(1),
-        clk_div_in              => gbt_tx_clk_div_i(1),
-        io_reset                => oserdes_reset(1),
+        data_out_from_device    => ("not"(to_gbt)),
+        data_out_to_pins_p(0)   => elink_o_p,
+        data_out_to_pins_n(0)   => elink_o_n,
+        clk_in                  => gbt_tx_clk  ,
+        clk_div_in              => gbt_tx_clk_div  ,
+        io_reset                => oserdes_reset,
 
         DELAY_RESET             => '1',
         DELAY_DATA_CE           => (others => '1'),
@@ -594,22 +438,12 @@ architecture Behavioral of gbt_serdes is
 
     i_to_gbt_ser0 : to_gbt_ser_a7
     port map(
-        data_out_from_device    => to_gbt(7 downto 0),
-        data_out_to_pins_p      => elink_o_p(0 downto 0),
-        data_out_to_pins_n      => elink_o_n(0 downto 0),
-        clk_in                  => gbt_tx_clk_i(0),
-        clk_div_in              => gbt_tx_clk_div_i(0),
-        io_reset                => oserdes_reset(0)
-    );
-
-    i_to_gbt_ser1 : to_gbt_ser_a7
-    port map(
-        data_out_from_device    => to_gbt(15 downto 8),
-        data_out_to_pins_p      => elink_o_p(1 downto 1),
-        data_out_to_pins_n      => elink_o_n(1 downto 1),
-        clk_in                  => gbt_tx_clk_i(0),
-        clk_div_in              => gbt_tx_clk_div_i(0),
-        io_reset                => oserdes_reset(1)
+        data_out_from_device    => to_gbt,
+        data_out_to_pins_p(0)   => elink_o_p,
+        data_out_to_pins_n(0)   => elink_o_n,
+        clk_in                  => gbt_tx_clk  ,
+        clk_div_in              => gbt_tx_clk_div  ,
+        io_reset                => oserdes_reset
     );
 
     END GENERATE to_gbt_ser_gen_a7;

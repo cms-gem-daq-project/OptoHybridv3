@@ -324,13 +324,13 @@ def findRegisters(node, baseName, baseAddress, modules, currentModule, vars, isG
             address = baseAddress + parseInt(node.get('address'))
 
         # need some way to discriminate parent nodes from endpoints
-        if (  (node.get('permission')             is not None
+        if ( node.get('fw_signal')              is not None or
+            ((node.get('permission')             is not None
             or node.get('mask')                   is not None
-            or node.get('fw_signal')              is not None
             or node.get ('fw_write_pulse_signal') is not None)
             and node.get('generate_size')         is     None
             and node.get('generate')              is     None
-            and node.get('address')               is not None
+            and node.get('address')               is not None)
         ):
             reg = Register()
             reg.name = substituteVars(name, vars)
@@ -465,7 +465,12 @@ def writeDocFile (modules, filename):
     def latexify(string):
         if string is None:
             string=""
-        return string.replace('\\','\\\\').replace('&','\&').replace('%','\%').replace('$','\$').replace('#','\#').replace('_','\_').replace('{','\{').replace('}','\}').replace('~','\~').replace('^','\^')
+        return string.replace('\\\\','\\\\\\\\').replace('&','\&').replace('%','\%').replace('$','\$').replace('#','\#').replace('_','\_').replace('{','\{').replace('}','\}').replace('~','\~').replace('^','\^')
+
+    def convert_newlines(string):
+        if string is None:
+            string=""
+        return string.replace('\\n','\\\\ & & & & &')
 
     def write_preamble_latex (f):
 
@@ -541,7 +546,7 @@ def writeDocFile (modules, filename):
         if (default!="Pulsed"):
             default = "\\texttt{%s}" % default
 
-        f.write('%s%s & \\texttt{0x%x} & \\texttt{[%d:%d]} & %s & %s & %s \\\\\hline\n' % (padding,latexify(endpoint_name), address, bithi, bitlo, permission, default, latexify(description)))
+        f.write('%s%s & \\texttt{0x%x} & \\texttt{[%d:%d]} & %s & %s & %s \\\\\hline\n' % (padding,latexify(endpoint_name), address, bithi, bitlo, permission, default, convert_newlines(latexify(description))))
 
     def write_end_document_latex (f):
         f.write('\end{document}\n')

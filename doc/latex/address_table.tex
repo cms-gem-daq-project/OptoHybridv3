@@ -464,8 +464,9 @@
     \hline
     \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
     \nopagebreak
+    VFAT0 & \texttt{0x2017} & \texttt{[31:0]} & r & \texttt{} & VFAT \{Y\} Counter \\\hline
     RESET & \texttt{0x202f} & \texttt{[0:0]} & w & Pulsed & Reset S-bit counters \\\hline
-    SBIT\_CNT\_PERSIST & \texttt{0x2030} & \texttt{[0:0]} & rw & \texttt{0x0} & 1=counters will persist until manually reset; \\newline 0=counters will automatically reset at CNT\_TIME \\\hline
+    SBIT\_CNT\_PERSIST & \texttt{0x2030} & \texttt{[0:0]} & rw & \texttt{0x0} & 1=counters will persist until manually reset; \\ & & & & &                              0=counters will automatically reset at CNT\_TIME \\\hline
     SBIT\_CNT\_TIME\_MAX & \texttt{0x2031} & \texttt{[31:0]} & rw & \texttt{0x2638E98} & Number of BX that the VFAT S-bit counters will count to before automatically resetting to zero \\\hline
     CLUSTER\_COUNT & \texttt{0x2032} & \texttt{[31:0]} & r & \texttt{} & VFAT Cluster Counter (chamber) \\\hline
     CNT\_PULSE & \texttt{0x2033} & \texttt{[0:0]} & w & Pulsed & Pulses S-bit counters for testing \\\hline

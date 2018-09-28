@@ -38,8 +38,8 @@ port(
     clock         : in std_logic;
 
     -- parallel data to/from serdes
-    data_i          : in std_logic_vector (15 downto 0);
-    data_o          : out std_logic_vector(15 downto 0);
+    data_i          : in std_logic_vector (7 downto 0);
+    data_o          : out std_logic_vector(7 downto 0);
 
     -- wishbone
     ipb_mosi_o    : out ipb_wbus;
@@ -49,7 +49,6 @@ port(
     l1a_o           : out std_logic;
     bc0_o           : out std_logic;
     resync_o        : out std_logic;
-    reset_vfats_o   : out std_logic;
 
     -- status
     ready_o         : out std_logic;
@@ -150,7 +149,6 @@ begin
         l1a_o         => l1a_o,
         bc0_o         => bc0_o,
         resync_o      => resync_o,
-        reset_vfats_o => reset_vfats_o,
 
         req_en_o     => gbt_rx_req, -- 1 bit, wishbone request recevied from GBTx
         req_data_o   => gbt_rx_data, -- 49 bit packet (1 bit we + 16 bit addr + 32 bit data)
@@ -177,7 +175,7 @@ begin
         req_en_o    => oh_tx_req,   -- fifo read enable
 
         -- parallel data output to serializer
-        data_o      => data_o       -- 16 bit output frames
+        data_o      => data_o       -- 8 bit output frames
     );
 
     --========================--

@@ -9,7 +9,8 @@
 --   as well as the cluster packer
 ----------------------------------------------------------------------------------
 -- 2017/11/01 -- Add description / comments
--- 2017/04/17 -- Add options for "light" oh firmware
+-- 2018/04/17 -- Add options for "light" oh firmware
+-- 2018/09/18 -- Add module for S-bit remapping in firmware
 ----------------------------------------------------------------------------------
 
 library ieee;
@@ -27,12 +28,11 @@ generic (oh_lite : integer := OH_LITE);
 port(
 
     clk160_i                : in std_logic;
+    clk200_i                : in std_logic;
     clk160_90_i             : in std_logic;
     clk40_i                 : in std_logic;
     delay_refclk_i          : in std_logic;
     delay_refclk_reset_i    : in std_logic;
-
-    cluster_clk             : in std_logic;
 
     reset_i                 : in std_logic;
 
@@ -86,6 +86,7 @@ end sbits;
 
 architecture Behavioral of sbits is
 
+    signal vfat_sbits_strip_mapped  : sbits_array_t(MXVFATS-1 downto 0);
     signal vfat_sbits               : sbits_array_t(MXVFATS-1 downto 0);
 
     constant empty_vfat             : std_logic_vector (63 downto 0) := x"0000000000000000";
@@ -185,12 +186,20 @@ begin
         sbits => sbits
     );
 
-    -- combinatorial renaming for input to cluster packing module
+    --==============================--
+    --== Channel to Strip Mapping ==--
+    --==============================--
 
     sbit_reverse : for I in 0 to (MXVFATS-1) generate
     begin
-    vfat_sbits (I)  <= sbits ((I+1)*MXSBITS-1 downto (I)*MXSBITS) when REVERSE_VFAT_SBITS(0)='0' else reverse_vector(sbits ((I+1)*MXSBITS-1 downto (I)*MXSBITS));
+        vfat_sbits (I)  <= sbits ((I+1)*MXSBITS-1 downto (I)*MXSBITS) when REVERSE_VFAT_SBITS(0)='0' else reverse_vector(sbits ((I+1)*MXSBITS-1 downto (I)*MXSBITS));
     end generate;
+
+    channel_to_strip_inst : entity work.channel_to_strip
+    port map (
+        channels_in => vfat_sbits,
+        strips_out  => vfat_sbits_strip_mapped
+    );
 
     --========================--
     --==  Active VFAT Flags ==--
@@ -223,7 +232,7 @@ begin
 
     process (clk40_i) begin
         if (rising_edge(clk40_i)) then
-            sbits_mux_s0 <= vfat_sbits(to_integer(unsigned(sbits_mux_sel)));
+            sbits_mux_s0 <= vfat_sbits_strip_mapped(to_integer(unsigned(sbits_mux_sel)));
             sbits_mux_s1 <= sbits_mux_s0;
             sbits_mux    <= sbits_mux_s1;
 
@@ -238,102 +247,113 @@ begin
     --== Cluster Packer   ==--
     --======================--
 
+    --====================================--
+    --== Light (12 VFAT) Cluster Packer ==--
+    --====================================--
+
     OH_LITE_GEN : if (oh_lite=1) GENERATE
 
     cluster_packer_inst : entity work.cluster_packer
 
-    generic map (TRUNCATE_CLUSTERS => 1)
+        generic map (TRUNCATE_CLUSTERS => 1)
 
-    port map(
-        trig_stop_i         => trig_stop_i,
-        clock4x             => clk160_i,
-        clock1x             => clk40_i,
-        reset_i             => reset,
-        cluster_count       => cluster_count_o,
-        deadtime_i          => trigger_deadtime_i,
+        port map(
+            trig_stop_i         => trig_stop_i,
+            clock5x             => clk200_i,
+            clock4x             => clk160_i,
+            clock1x             => clk40_i,
+            reset_i             => reset,
+            cluster_count       => cluster_count_o,
+            deadtime_i          => trigger_deadtime_i,
 
-        vfat0               => vfat_sbits(0),
-        vfat1               => vfat_sbits(1),
-        vfat2               => vfat_sbits(2),
-        vfat3               => vfat_sbits(3),
-        vfat4               => vfat_sbits(4),
-        vfat5               => vfat_sbits(5),
-        vfat6               => vfat_sbits(6),
-        vfat7               => vfat_sbits(7),
-        vfat8               => vfat_sbits(8),
-        vfat9               => vfat_sbits(9),
-        vfat10              => vfat_sbits(10),
-        vfat11              => vfat_sbits(11),
-        vfat12              => empty_vfat,
-        vfat13              => empty_vfat,
-        vfat14              => empty_vfat,
-        vfat15              => empty_vfat,
-        vfat16              => empty_vfat,
-        vfat17              => empty_vfat,
-        vfat18              => empty_vfat,
-        vfat19              => empty_vfat,
-        vfat20              => empty_vfat,
-        vfat21              => empty_vfat,
-        vfat22              => empty_vfat,
-        vfat23              => empty_vfat,
+            vfat0               => vfat_sbits_strip_mapped(0),
+            vfat1               => vfat_sbits_strip_mapped(1),
+            vfat2               => vfat_sbits_strip_mapped(2),
+            vfat3               => vfat_sbits_strip_mapped(3),
+            vfat4               => vfat_sbits_strip_mapped(4),
+            vfat5               => vfat_sbits_strip_mapped(5),
+            vfat6               => vfat_sbits_strip_mapped(6),
+            vfat7               => vfat_sbits_strip_mapped(7),
+            vfat8               => vfat_sbits_strip_mapped(8),
+            vfat9               => vfat_sbits_strip_mapped(9),
+            vfat10              => vfat_sbits_strip_mapped(10),
+            vfat11              => vfat_sbits_strip_mapped(11),
+            vfat12              => empty_vfat,
+            vfat13              => empty_vfat,
+            vfat14              => empty_vfat,
+            vfat15              => empty_vfat,
+            vfat16              => empty_vfat,
+            vfat17              => empty_vfat,
+            vfat18              => empty_vfat,
+            vfat19              => empty_vfat,
+            vfat20              => empty_vfat,
+            vfat21              => empty_vfat,
+            vfat22              => empty_vfat,
+            vfat23              => empty_vfat,
 
-        cluster0            => vfat_sbit_clusters_o(0),
-        cluster1            => vfat_sbit_clusters_o(1),
-        cluster2            => vfat_sbit_clusters_o(2),
-        cluster3            => vfat_sbit_clusters_o(3),
+            cluster0            => vfat_sbit_clusters_o(0),
+            cluster1            => vfat_sbit_clusters_o(1),
+            cluster2            => vfat_sbit_clusters_o(2),
+            cluster3            => vfat_sbit_clusters_o(3),
+            cluster4            => vfat_sbit_clusters_o(4),
 
-        overflow            => overflow_o
-    );
+            overflow            => overflow_o
+        );
 
     end generate;
+
+    --====================================--
+    --== Heavy (24 VFAT) Cluster Packer ==--
+    --====================================--
 
     OH_FULL_GEN : if (oh_lite=0) GENERATE
 
     cluster_packer_inst : entity work.cluster_packer
 
-    generic map (TRUNCATE_CLUSTERS => 1)
+        generic map (TRUNCATE_CLUSTERS => 1)
 
-    port map(
-        trig_stop_i         => trig_stop_i,
-        clock4x             => clk160_i,
-        clock1x             => clk40_i,
-        reset_i             => reset,
-        cluster_count       => cluster_count_o,
-        deadtime_i          => trigger_deadtime_i,
-        vfat0               => vfat_sbits(0),
-        vfat1               => vfat_sbits(1),
-        vfat2               => vfat_sbits(2),
-        vfat3               => vfat_sbits(3),
-        vfat4               => vfat_sbits(4),
-        vfat5               => vfat_sbits(5),
-        vfat6               => vfat_sbits(6),
-        vfat7               => vfat_sbits(7),
-        vfat8               => vfat_sbits(8),
-        vfat9               => vfat_sbits(9),
-        vfat10              => vfat_sbits(10),
-        vfat11              => vfat_sbits(11),
-        vfat12              => vfat_sbits(12),
-        vfat13              => vfat_sbits(13),
-        vfat14              => vfat_sbits(14),
-        vfat15              => vfat_sbits(15),
-        vfat16              => vfat_sbits(16),
-        vfat17              => vfat_sbits(17),
-        vfat18              => vfat_sbits(18),
-        vfat19              => vfat_sbits(19),
-        vfat20              => vfat_sbits(20),
-        vfat21              => vfat_sbits(21),
-        vfat22              => vfat_sbits(22),
-        vfat23              => vfat_sbits(23),
-        cluster0            => vfat_sbit_clusters_o(0),
-        cluster1            => vfat_sbit_clusters_o(1),
-        cluster2            => vfat_sbit_clusters_o(2),
-        cluster3            => vfat_sbit_clusters_o(3),
-        cluster4            => vfat_sbit_clusters_o(4),
-        cluster5            => vfat_sbit_clusters_o(5),
-        cluster6            => vfat_sbit_clusters_o(6),
-        cluster7            => vfat_sbit_clusters_o(7),
-        overflow            => overflow_o
-    );
+        port map(
+            trig_stop_i         => trig_stop_i,
+            clock5x             => clk200_i,
+            clock4x             => clk160_i,
+            clock1x             => clk40_i,
+            reset_i             => reset,
+            cluster_count       => cluster_count_o,
+            deadtime_i          => trigger_deadtime_i,
+            vfat0               => vfat_sbits_strip_mapped(0),
+            vfat1               => vfat_sbits_strip_mapped(1),
+            vfat2               => vfat_sbits_strip_mapped(2),
+            vfat3               => vfat_sbits_strip_mapped(3),
+            vfat4               => vfat_sbits_strip_mapped(4),
+            vfat5               => vfat_sbits_strip_mapped(5),
+            vfat6               => vfat_sbits_strip_mapped(6),
+            vfat7               => vfat_sbits_strip_mapped(7),
+            vfat8               => vfat_sbits_strip_mapped(8),
+            vfat9               => vfat_sbits_strip_mapped(9),
+            vfat10              => vfat_sbits_strip_mapped(10),
+            vfat11              => vfat_sbits_strip_mapped(11),
+            vfat12              => vfat_sbits_strip_mapped(12),
+            vfat13              => vfat_sbits_strip_mapped(13),
+            vfat14              => vfat_sbits_strip_mapped(14),
+            vfat15              => vfat_sbits_strip_mapped(15),
+            vfat16              => vfat_sbits_strip_mapped(16),
+            vfat17              => vfat_sbits_strip_mapped(17),
+            vfat18              => vfat_sbits_strip_mapped(18),
+            vfat19              => vfat_sbits_strip_mapped(19),
+            vfat20              => vfat_sbits_strip_mapped(20),
+            vfat21              => vfat_sbits_strip_mapped(21),
+            vfat22              => vfat_sbits_strip_mapped(22),
+            vfat23              => vfat_sbits_strip_mapped(23),
+            cluster0            => vfat_sbit_clusters_o(0),
+            cluster1            => vfat_sbit_clusters_o(1),
+            cluster2            => vfat_sbit_clusters_o(2),
+            cluster3            => vfat_sbit_clusters_o(3),
+            cluster4            => vfat_sbit_clusters_o(4),
+            cluster5            => vfat_sbit_clusters_o(5),
+            cluster6            => vfat_sbit_clusters_o(6),
+            cluster7            => vfat_sbit_clusters_o(7),
+            overflow            => overflow_o
+        );
 
     end generate;
 

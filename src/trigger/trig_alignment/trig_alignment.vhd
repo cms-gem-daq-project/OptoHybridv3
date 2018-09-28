@@ -278,7 +278,8 @@ begin
 
         frame_aligner_inst : entity frame_aligner
         generic map (
-            DDR => DDR
+            DDR     => DDR,
+            OH_LITE => OH_LITE
         )
         port map (
             d0 => d0((ifat+1)*8-1 downto ifat*8),
