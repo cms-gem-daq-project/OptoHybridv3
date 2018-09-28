@@ -42,6 +42,7 @@ def write_param_pkg (file_handle):
     f.write ('%sconstant MXELINKS : integer := %d;\n'                                           %  (padding, mxelinks))
     f.write ('%sconstant MXLED    : integer := %d;\n'                                           %  (padding, mxleds))
     f.write ('%sconstant MXRESET  : integer := %d;\n'                                           %  (padding, mxresets))
+    f.write ('%sconstant MXREADY  : integer := %d;\n'                                           %  (padding, mxready))
 
 if __name__ == '__main__':
     main()

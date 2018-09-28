@@ -24,7 +24,7 @@ def write_xml_invert_map (file_handle):
     ################################################################################
 
     sot_default = 0
-    base_address = 0x7
+    base_address = 0x0
 
     for j in range (num_vfats,0,-1):
 
@@ -47,9 +47,9 @@ def write_xml_invert_map (file_handle):
     if (num_vfats==24):
         sot_mask="0x00ffffff"
 
-    padding = "            " #spaces for indentation
+    padding = "                " #spaces for indentation
     f.write('%s<node id="SOT_INVERT" address="0x%x" permission="rw"\n'  % (padding, base_address))
-    f.write('%s    description="Set to 1 to invert the S-bit SoT Frame"\n' % (padding))
+    f.write('%s    description="1=invert pair"\n' % (padding))
     f.write('%s    fw_signal="sot_invert"\n' % (padding))
     f.write('%s    mask="%s"\n' % (padding, sot_mask))
     f.write('%s    fw_default="0x%06X"/>\n' % (padding, sot_default))
@@ -94,7 +94,7 @@ def write_xml_invert_map (file_handle):
         bitlo = bitlo + 32*(vfat//4)
 
         f.write('%s<node id="VFAT%d_TU_INVERT" address="0x%x" permission="rw"\n' % (padding, vfat, address) )
-        f.write('%s    description="8 bit mask; set a bit to 1 to invert the differential pair"\n' % (padding))
+        f.write('%s    description="1=invert pair"\n' % (padding))
         f.write('%s    fw_signal="TU_INVERT (%d downto %d)"\n' % (padding, bithi, bitlo))
         f.write('%s    mask="0x%08X"\n' %(padding, mask))
         f.write('%s    fw_default="0x%02X"/>\n' % (padding, fw_default))

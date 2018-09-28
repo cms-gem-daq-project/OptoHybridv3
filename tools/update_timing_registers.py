@@ -44,7 +44,7 @@ def main():
 
 
         padding = "                    " # indent
-        base_address = 0x3a
+        base_address = 0x0
 
         for vfat in range (num_vfats):
 
@@ -67,7 +67,7 @@ def main():
 
                 f.write('%s<node id="TAP_DELAY_VFAT%s_BIT%s" address="0x%X" permission="rw"\n'                          %  (padding, vfat, bit, address))
                 f.write('%s    mask="0x%08X"\n'                                                                         %  (padding, mask))
-                f.write('%s    description="78 ps tap delay. Set from 0-21 to equalize trace lengths within a VFAT"\n'  %  padding)
+                f.write('%s    description="VFAT %d S-bit %d tap delay"\n'  %  (padding, vfat, bit))
                 f.write('%s    fw_signal="trig_tap_delay(%d)"\n'                                                        %  (padding, global_bit))
                 f.write('%s    fw_default="%d"/>\n'                                                                     %  (padding, trig_tap_delays[global_bit_in_geb_numbering]))
 
@@ -88,7 +88,7 @@ def main():
 
             f.write('%s<node id="SOT_TAP_DELAY_VFAT%s" address="0x%X" permission="rw"\n'                            %  (padding, vfat, address))
             f.write('%s    mask="0x%08X"\n'                                                                         %  (padding, mask))
-            f.write('%s    description="78 ps tap delay. Set from 0-21 to equalize trace lengths within a VFAT"\n'  %  padding)
+            f.write('%s    description="VFAT %d SOT tap delay"\n'                                                   %  (padding, vfat))
             f.write('%s    fw_signal="sot_tap_delay(%d)"\n'                                                         %  (padding, vfat))
             f.write('%s    fw_default="%d"/>\n'                                                                     %  (padding, sot_tap_delays[geb_slot]))
 

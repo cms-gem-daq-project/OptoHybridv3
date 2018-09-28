@@ -27,8 +27,8 @@ def write_tu_mask (file_handle):
     # Trigger Units
     ################################################################################
 
-    padding = "            " #spaces for indentation
-    base_address = 0x10
+    padding = "                " #spaces for indentation
+    base_address = 0x0
 
     for vfat in range (0,num_vfats):
 
@@ -38,7 +38,7 @@ def write_tu_mask (file_handle):
         mask    = 0xff << 8*(vfat%4)
 
         f.write('%s<node id="VFAT%d_TU_MASK" address="0x%X" permission="rw"\n' % (padding, vfat, address))
-        f.write('%s    description="8 bit mask; set a bit to 1 to mask the differential pair"\n' % (padding))
+        f.write('%s    description="1 = mask the differential pair"\n' % (padding))
         f.write('%s    fw_signal="TU_MASK (%d downto %d)"\n' % (padding, bithi, bitlow))
         f.write('%s    mask="0x%08X"\n' % (padding, mask))
         f.write('%s    fw_default="0x0"/>\n' % (padding))

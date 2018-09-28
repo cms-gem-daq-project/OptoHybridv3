@@ -79,7 +79,7 @@ def write_active_vfats (file_handle):
 
     f = file_handle
     padding = "            " #spaces for indentation
-    f.write('%s<node id="ACTIVE_VFATS" address="0x2" permission="r"\n' % (padding))
+    f.write('%s<node id="ACTIVE_VFATS" address="0x1" permission="r"\n' % (padding))
     f.write('%s    description="%d bit list of VFATs with hits in this BX"\n' % (padding, num_vfats))
     f.write('%s    mask="%s"\n' % (padding, mask))
     f.write('%s    fw_signal="active_vfats"/>\n' % (padding))
@@ -94,12 +94,12 @@ def write_ready_unstable (file_handle):
     else:
         mask = "0xffffff"
 
-    f.write('%s<node id="SBIT_SOT_READY" address="0x4" permission="r"\n'                                                           %  (padding))
+    f.write('%s<node id="SBIT_SOT_READY" address="0x3" permission="r"\n'                                                           %  (padding))
     f.write('%s    description="%d bit list of VFATs with stable Start-of-frame pulses (in sync for a number of clock cycles)"\n'  %  (padding, num_vfats))
     f.write('%s    mask="%s"\n'                                                                                                    %  (padding, mask))
     f.write('%s    fw_signal="sot_is_aligned"/>\n'                                                                                 %  (padding))
 
-    f.write('%s<node id="SBIT_SOT_UNSTABLE" address="0x5" permission="r"\n'                                                                    %  (padding))
+    f.write('%s<node id="SBIT_SOT_UNSTABLE" address="0x4" permission="r"\n'                                                                    %  (padding))
     f.write('%s    description="%d bit list of VFATs with unstable Start-of-frame pulses (became misaligned after already achieving lock)"\n'  %  (padding, num_vfats))
     f.write('%s    mask="%s"\n'                                                                                                                %  (padding, mask))
     f.write('%s    fw_signal="sot_unstable" />\n'                                                                                              %  (padding))

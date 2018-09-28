@@ -56,26 +56,23 @@ port(
     gbt_rxvalid_i : in std_logic;
     gbt_rxready_i : in std_logic;
 
-    --== SCA ==--
+    -- only 1 connected in GE11, 2 in GE21
+    gbt_txready_i : in std_logic_vector (MXREADY-1 downto 0);
+    gbt_rxvalid_i : in std_logic_vector (MXREADY-1 downto 0);
+    gbt_rxready_i : in std_logic_vector (MXREADY-1 downto 0);
 
+    --== GE21 only ==--
+    -- START: Station Specific Ports DO NOT EDIT --
     sca_io  : in  std_logic_vector (3 downto 0); -- set as input for now
-
-    --== HDMI  ==--
+    sca_ctl     : in   std_logic_vector (2 downto 0);
 
     ext_sbits_o : out  std_logic_vector (7 downto 0);
 
-    --== LEDs ==--
-
-    led_o   : out std_logic_vector (MXLED-1 downto 0);
-
-    --== VFAT Reset ==--
-
     ext_reset_o : out std_logic_vector (MXRESET-1 downto 0);
-
-    --== Analog input ==--
 
     adc_vp         : in  std_logic;
     adc_vn         : in  std_logic;
+    -- END: Station Specific Ports DO NOT EDIT --
 
     --== VFAT Mezzanine ==--
 
@@ -185,19 +182,13 @@ architecture Behavioral of optohybrid_top is
     signal soft_reset : std_logic;
 
     signal led : std_logic_vector (15 downto 0);
-    attribute KEEP of led   : signal is "TRUE";
 
     -- don't remove duplicates for fanout, needed to pack into iob
     signal ext_reset : std_logic_vector (11 downto 0);
-    attribute KEEP of ext_reset   : signal is "TRUE";
 
-    attribute IOB  of led_o       : signal is "FORCE";
-    attribute IOB  of ext_reset_o : signal is "FORCE";
-    attribute IOB  of gbt_rxready : signal is "FORCE";
-    attribute IOB  of gbt_rxvalid : signal is "FORCE";
-    attribute IOB  of gbt_txready : signal is "FORCE";
-    attribute IOB  of sca_io      : signal is "FORCE";
-    attribute IOB  of ext_sbits_o : signal is "FORCE";
+    -- START: Station Specific Signals DO NOT EDIT --
+
+    -- END: Station Specific Signals DO NOT EDIT --
 
 begin
 

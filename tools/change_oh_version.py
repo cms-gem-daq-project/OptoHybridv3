@@ -31,6 +31,7 @@ def main():
 
     version = sys.argv[5].split('.')
     if (len(version) != 3):
+        print ("Problem with OH version in change_oh_version.py")
         sys.exit(1)
 
     firmware_version_major   = version[0]
