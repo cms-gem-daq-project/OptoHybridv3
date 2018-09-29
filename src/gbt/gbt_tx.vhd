@@ -11,6 +11,7 @@
 -- 2017/07/24 -- Initial working version adapted from v2
 -- 2017/08/09 -- Add "10 bit" transmit mode for OHv3a
 -- 2018/09/27 -- Convert to sixbit_eightbit, single elink encoding
+-- 2018/09/28 -- Some cleanup and simplification of the source code
 ----------------------------------------------------------------------------------
 
 library ieee;
@@ -22,8 +23,12 @@ use unisim.vcomponents.all;
 
 library work;
 
-entity gbt_tx is port(
-
+entity gbt_tx is
+    generic(
+        g_FRAME_COUNT_MAX : integer := 6;
+        g_FRAME_WIDTH     : integer := 6
+    );
+    port(
     clock       : in std_logic;
 
     reset_i     : in std_logic;
@@ -38,18 +43,23 @@ end gbt_tx;
 
 architecture Behavioral of gbt_tx is
 
-    type state_t is (IDLE, START, REG_DATA0, REG_DATA1, REG_DATA2, REG_DATA3, REG_DATA4, REG_DATA5);
+    type state_t is (IDLE, DATA);
 
-    signal state : state_t;
+    signal state : state_t := IDLE;
+
+    signal data_frame_cnt   : integer range 0 to (g_FRAME_COUNT_MAX-1) := 0;
 
     signal req_valid : std_logic;
-    signal frame     : std_logic_vector (5 downto 0);
+    signal frame     : std_logic_vector (g_FRAME_COUNT_MAX-1 downto 0);
+    signal reg_data  : std_logic_vector (g_FRAME_COUNT_MAX*g_FRAME_WIDTH-1 downto 0); -- multiples of 6
 
     signal send_idle : std_logic;
 
     signal reset : std_logic;
 
 begin
+
+    reg_data <= x"0" & req_data_i;
 
     -- fanout reset tree
 
@@ -69,23 +79,27 @@ begin
                 case state is
 
                     when IDLE =>
-                        if (req_valid_i='1') then
-                            state <= REG_DATA0;
-                        end if;
-                    when REG_DATA0 => state <= REG_DATA1;
-                    when REG_DATA1 => state <= REG_DATA2;
-                    when REG_DATA2 => state <= REG_DATA3;
-                    when REG_DATA3 => state <= REG_DATA4;
-                    when REG_DATA4 => state <= REG_DATA5;
 
-                    when REG_DATA5 =>
+                        data_frame_cnt <= 0;
+
                         if (req_valid_i='1') then
-                            state <= REG_DATA0;
+                            state <= DATA;
+                        end if;
+
+                    when DATA =>
+
+                        if (data_frame_cnt = (g_FRAME_COUNT_MAX-1)) then
+                            if (req_valid_i='1') then
+                                state <= DATA;
+                            else
+                                state <= IDLE;
+                            end if;
                         else
-                            state <= IDLE;
+                            data_frame_cnt <= data_frame_cnt + 1;
                         end if;
 
-                    when others => state <= IDLE;
+                    when others =>
+                        state <= IDLE;
                 end case;
             end if;
         end if;
@@ -97,16 +111,20 @@ begin
     begin
         if (rising_edge(clock)) then
             if (reset = '1') then
-                                      req_en_o <= '0'; req_valid <= '0';
+                req_en_o <= '0'; req_valid <= '0';
             else
                 case state is
-                    when IDLE =>      send_idle <= '1'; req_en_o  <= '1'; req_valid <= req_valid_i;
-                    when REG_DATA0 => send_idle <= '0'; req_en_o  <= '0';
-                    when REG_DATA1 => send_idle <= '0'; req_en_o  <= '0';
-                    when REG_DATA2 => send_idle <= '0'; req_en_o  <= '0';
-                    when REG_DATA3 => send_idle <= '0'; req_en_o  <= '0';
-                    when REG_DATA4 => send_idle <= '0'; req_en_o  <= '1'; -- prefetch by 1 bx from end to account for fifo latency
-                    when REG_DATA5 => send_idle <= '0'; req_en_o  <= '0'; req_valid <= req_valid_i;
+                    when IDLE =>
+                        send_idle <= '1';
+                        req_en_o  <= '1';
+                        req_valid <= req_valid_i;
+                    when DATA      =>
+                        send_idle <= '0';
+                        req_en_o  <= '0';
+                        if (data_frame_cnt=(g_FRAME_COUNT_MAX-1)) then
+                            req_valid <= req_valid_i;
+                        end if;
+
                     when others =>    send_idle <= '1'; req_en_o  <= '0'; req_valid <= '0';
 
                 end case;
@@ -124,19 +142,13 @@ begin
             else
                 case state is
                     when IDLE      => frame <= "00" & x"0";
-                    when REG_DATA0 => frame <= x"0" & req_data_i(31 downto 30);
-                    when REG_DATA1 => frame <= req_data_i(29 downto 24);
-                    when REG_DATA2 => frame <= req_data_i(23 downto 18);
-                    when REG_DATA3 => frame <= req_data_i(17 downto 12);
-                    when REG_DATA4 => frame <= req_data_i(11 downto 6);
-                    when REG_DATA5 => frame <= req_data_i(5 downto 0);
+                    when DATA      => frame <= reg_data((g_FRAME_COUNT_MAX - data_frame_cnt) * g_FRAME_WIDTH - 1 downto (g_FRAME_COUNT_MAX-1-data_frame_cnt) * g_FRAME_WIDTH);
                     when others    => frame <= (others => '0');
                 end case;
             end if;
         end if;
     end process;
-	 
-	 
+
     -- 8b to 6b conversion
     sixbit_eightbit_inst : entity work.sixbit_eightbit
     port map (
