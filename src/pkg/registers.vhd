@@ -1806,16 +1806,6 @@ package registers is
     constant REG_GBT_NUM_REGS : integer := 6;
     constant REG_GBT_ADDRESS_MSB : integer := 3;
     constant REG_GBT_ADDRESS_LSB : integer := 0;
-    constant REG_GBT_TX_BITSLIP0_ADDR    : std_logic_vector(3 downto 0) := x"0";
-    constant REG_GBT_TX_BITSLIP0_MSB    : integer := 2;
-    constant REG_GBT_TX_BITSLIP0_LSB     : integer := 0;
-    constant REG_GBT_TX_BITSLIP0_DEFAULT : std_logic_vector(2 downto 0) := "000";
-
-    constant REG_GBT_TX_BITSLIP1_ADDR    : std_logic_vector(3 downto 0) := x"0";
-    constant REG_GBT_TX_BITSLIP1_MSB    : integer := 6;
-    constant REG_GBT_TX_BITSLIP1_LSB     : integer := 4;
-    constant REG_GBT_TX_BITSLIP1_DEFAULT : std_logic_vector(6 downto 4) := "000";
-
     constant REG_GBT_TX_CNT_RESPONSE_SENT_ADDR    : std_logic_vector(3 downto 0) := x"0";
     constant REG_GBT_TX_CNT_RESPONSE_SENT_MSB    : integer := 31;
     constant REG_GBT_TX_CNT_RESPONSE_SENT_LSB     : integer := 8;

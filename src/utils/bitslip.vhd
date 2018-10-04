@@ -13,35 +13,31 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
-entity gbt_tx_bitslip is
-port(
-    fabric_clk  : in std_logic;
-    reset       : in std_logic;
-    bitslip_cnt : in integer range 0 to 7;
-    din         : in std_logic_vector(7 downto 0);
-    dout        : out std_logic_vector(7 downto 0)
+entity bitslip is
+generic (
+    g_WORD_SIZE : integer := 8
 );
-end gbt_tx_bitslip;
+port(
+    fabric_clk  : in  std_logic;
+    reset       : in  std_logic;
+    bitslip_cnt : in  integer range 0 to g_WORD_SIZE-1;
+    din         : in  std_logic_vector(g_WORD_SIZE-1 downto 0);
+    dout        : out std_logic_vector(g_WORD_SIZE-1 downto 0)
+);
+end bitslip;
 
-architecture behavioral of gbt_tx_bitslip is
+architecture behavioral of bitslip is
 
-    signal buf1     : std_logic_vector(15 downto 0);
-    signal data     : std_logic_vector(7 downto 0);
+    signal buf : std_logic_vector(g_WORD_SIZE*2-1 downto 0) := (others => '0');
+    signal data : std_logic_vector(g_WORD_SIZE-1 downto 0)   := (others => '0');
 
 begin
 
     process(fabric_clk)
     begin
         if (rising_edge(fabric_clk)) then
-            if (reset = '1') then
-                buf1 <= (others => '0');
-                data <= (others => '0');
-            else
-                buf1 <= buf1(7 downto 0) & din(7 downto 0);
-
-                data <= buf1((7 + bitslip_cnt) downto bitslip_cnt);
-
-            end if;
+            buf  <= buf(g_WORD_SIZE-1 downto 0) & din(g_WORD_SIZE-1 downto 0);
+            data <= buf((g_WORD_SIZE-1 + bitslip_cnt) downto bitslip_cnt);
         end if;
     end process;
 

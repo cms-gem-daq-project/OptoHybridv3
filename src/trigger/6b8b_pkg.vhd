@@ -197,9 +197,10 @@ constant unused_key_189 : std_logic_vector (7 downto 0) := x"FD"; -- 0b11111101 
 constant unused_key_190 : std_logic_vector (7 downto 0) := x"FE"; -- 0b11111110 (disparity = 6)
 constant unused_key_191 : std_logic_vector (7 downto 0) := x"FF"; -- 0b11111111 (disparity = 8)
 
-constant IDLE_CHAR      : std_logic_vector (7 downto 0) := unused_key_69;
+constant IDLE_CHAR      : std_logic_vector (7 downto 0) := unused_key_121;
 constant L1A_CHAR       : std_logic_vector (7 downto 0) := unused_key_80;
 constant BC0_CHAR       : std_logic_vector (7 downto 0) := unused_key_159;
 constant RESYNC_CHAR    : std_logic_vector (7 downto 0) := unused_key_136;
+constant HEADER_CHAR    : std_logic_vector (7 downto 0) := unused_key_67;
 
 end sixbit_eightbit_pkg;

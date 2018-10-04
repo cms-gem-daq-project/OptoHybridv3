@@ -1,11 +1,11 @@
 -- file: from_gbt_des.vhd
 -- (c) Copyright 2009 - 2011 Xilinx, Inc. All rights reserved.
--- 
+--
 -- This file contains confidential and proprietary information
 -- of Xilinx, Inc. and is protected under U.S. and
 -- international copyright and other intellectual property
 -- laws.
--- 
+--
 -- DISCLAIMER
 -- This disclaimer is not a license and does not grant any
 -- rights to the materials distributed herewith. Except as
@@ -27,7 +27,7 @@
 -- by a third party) even if such damage or loss was
 -- reasonably foreseeable or Xilinx had been advised of the
 -- possibility of the same.
--- 
+--
 -- CRITICAL APPLICATIONS
 -- Xilinx products are not designed or intended to be fail-
 -- safe, or for use in any application requiring fail-safe
@@ -41,7 +41,7 @@
 -- liability of any use of Xilinx products in Critical
 -- Applications, subject only to applicable laws and
 -- regulations governing limitations on product liability.
--- 
+--
 -- THIS COPYRIGHT NOTICE AND DISCLAIMER MUST BE RETAINED AS
 -- PART OF THIS FILE AT ALL TIMES.
 ------------------------------------------------------------------------------
@@ -69,23 +69,23 @@ generic
 port
  (
   -- From the system into the device
-  DATA_IN_FROM_PINS_P     : in    std_logic_vector(sys_w-1 downto 0);
-  DATA_IN_FROM_PINS_N     : in    std_logic_vector(sys_w-1 downto 0);
-  DATA_IN_TO_DEVICE       : out   std_logic_vector(dev_w-1 downto 0);
+  DATA_IN_FROM_PINS_P : in    std_logic_vector(sys_w-1 downto 0);
+  DATA_IN_FROM_PINS_N : in    std_logic_vector(sys_w-1 downto 0);
+  DATA_IN_TO_DEVICE   : out   std_logic_vector(dev_w-1 downto 0);
 
--- Input, Output delay control signals
-  DELAY_RESET          : in    std_logic;                    -- Active high synchronous reset for input delay
-  DELAY_DATA_CE        : in    std_logic_vector(sys_w -1 downto 0);            -- Enable signal for delay for bit 
-  DELAY_DATA_INC       : in    std_logic_vector(sys_w -1 downto 0);            -- Delay increment, decrement signal for bit 
-  REF_CLOCK               : in    std_logic;                    -- Reference Clock for IDELAYCTRL. Has to come from BUFG.
-  BITSLIP                 : in    std_logic;                    -- Bitslip module is enabled in NETWORKING mode
-                                                                -- User should tie it to '0' if not needed
- 
+  -- Input, Output delay control signals
+  DELAY_RESET    : in    std_logic;                           -- Active high synchronous reset for input delay
+  CNTVALUEOUT    : out   std_logic_vector (4 downto 0);       --
+  DELAY_DATA_CE  : in    std_logic_vector(sys_w -1 downto 0); -- Enable signal for delay for bit
+  DELAY_DATA_INC : in    std_logic_vector(sys_w -1 downto 0); -- Delay increment, decrement signal for bit
+  REF_CLOCK      : in    std_logic;                           -- Reference Clock for IDELAYCTRL. Has to come from BUFG.
+  BITSLIP        : in    std_logic;                           -- Bitslip module is enabled in NETWORKING mode; user should tie it to '0' if not needed
+
 -- Clock and reset signals
-  CLK_IN                  : in    std_logic;                    -- Fast clock from PLL/MMCM 
-  CLK_DIV_IN              : in    std_logic;                    -- Slow clock from PLL/MMCM
-  REFCLK_RESET            : in    std_logic;                    -- POR reset signal for IDELAYCTRL calibration
-  IO_RESET                : in    std_logic);                   -- Reset signal for IO circuit
+  CLK_IN       : in    std_logic;  -- Fast clock from PLL/MMCM
+  CLK_DIV_IN   : in    std_logic;  -- Slow clock from PLL/MMCM
+  REFCLK_RESET : in    std_logic;  -- POR reset signal for IDELAYCTRL calibration
+  IO_RESET     : in    std_logic); -- Reset signal for IO circuit
 end from_gbt_des;
 
 architecture xilinx of from_gbt_des is
@@ -101,21 +101,22 @@ architecture xilinx of from_gbt_des is
   -- After the buffer
   signal data_in_from_pins_int     : std_logic_vector(sys_w-1 downto 0);
   -- Between the delay and serdes
-  signal data_in_from_pins_delay   : std_logic_vector(sys_w-1 downto 0);
-  signal data_delay                : std_logic_vector(sys_w-1 downto 0); 
-  signal delay_data_busy           : std_logic_vector(sys_w-1 downto 0);
-  signal delay_ce              : std_logic_vector(sys_w-1 downto 0);
-  signal delay_inc_dec         : std_logic_vector(sys_w-1 downto 0);
-  constant num_serial_bits         : integer := dev_w/sys_w;
+  signal data_in_from_pins_delay : std_logic_vector(sys_w-1 downto 0);
+  signal data_delay              : std_logic_vector(sys_w-1 downto 0);
+  signal delay_data_busy         : std_logic_vector(sys_w-1 downto 0);
+  signal delay_ce                : std_logic_vector(sys_w-1 downto 0);
+  signal delay_inc_dec           : std_logic_vector(sys_w-1 downto 0);
+  constant num_serial_bits       : integer := dev_w/sys_w;
+
   type serdarr is array (0 to 9) of std_logic_vector(sys_w-1 downto 0);
   -- Array to use intermediately from the serdes to the internal
   --  devices. bus "0" is the leftmost bus
   -- * fills in starting with 0
-  signal iserdes_q                 : serdarr := (( others => (others => '0')));
-  signal serdesstrobe             : std_logic;
-  signal icascade1                : std_logic_vector(sys_w-1 downto 0);
-  signal icascade2                : std_logic_vector(sys_w-1 downto 0);
-  signal clk_in_int_inv           : std_logic;
+  signal iserdes_q      : serdarr := (( others => (others => '0')));
+  signal serdesstrobe   : std_logic;
+  signal icascade1      : std_logic_vector(sys_w-1 downto 0);
+  signal icascade2      : std_logic_vector(sys_w-1 downto 0);
+  signal clk_in_int_inv : std_logic;
 
 
   attribute IODELAY_GROUP : string;
@@ -125,13 +126,8 @@ begin
   delay_ce(0) <= DELAY_DATA_CE(0);
   delay_inc_dec(0) <= DELAY_DATA_INC(0);
 
-
-
-  -- Create the clock logic
-
-  
   -- We have multiple bits- step over every bit, instantiating the required elements
-  pins: for pin_count in 0 to sys_w-1 generate 
+  pins: for pin_count in 0 to sys_w-1 generate
      attribute IODELAY_GROUP of iodelaye1_bus: label is "IODLY_GROUP";
   begin
     -- Instantiate the buffers
@@ -156,7 +152,7 @@ begin
          HIGH_PERFORMANCE_MODE  => TRUE,             -- TRUE, FALSE
          IDELAY_TYPE            => "VARIABLE",          -- FIXED, DEFAULT, VARIABLE, or VAR_LOADABLE
          IDELAY_VALUE           => 0,                -- 0 to 31
-         ODELAY_TYPE            => "FIXED",          -- Has to be set to FIXED when IODELAYE1 is configured for Input 
+         ODELAY_TYPE            => "FIXED",          -- Has to be set to FIXED when IODELAYE1 is configured for Input
          ODELAY_VALUE           => 0,                -- Set to 0 as IODELAYE1 is configured for Input
          REFCLK_FREQUENCY       => 200.0,
          SIGNAL_PATTERN         => "DATA"           -- CLOCK, DATA
@@ -172,12 +168,12 @@ begin
          RST                    => DELAY_RESET,
          T                      => '1',
          CNTVALUEIN             => "00000",
-         CNTVALUEOUT            => open,
+         CNTVALUEOUT            => CNTVALUEOUT,
          CLKIN                  => '0',
          CINVCTRL               => '0'
          );
 
-           data_in_from_pins_delay(pin_count) <= data_delay(pin_count); 
+           data_in_from_pins_delay(pin_count) <= data_delay(pin_count);
 
 
 
@@ -193,11 +189,11 @@ begin
        generic map (
          DATA_RATE         => "SDR",
          DATA_WIDTH        => 8,
-         INTERFACE_TYPE    => "NETWORKING", 
+         INTERFACE_TYPE    => "NETWORKING",
          DYN_CLKDIV_INV_EN => FALSE,
          DYN_CLK_INV_EN    => FALSE,
          NUM_CE            => 2,
- 
+
          OFB_USED          => FALSE,
          IOBDELAY          => "IFD",                              -- Use input at DDLY to output the data on Q1-Q6
          SERDES_MODE       => "MASTER")
@@ -210,14 +206,14 @@ begin
          Q6                => iserdes_q(5)(pin_count),
          SHIFTOUT1         => icascade1(pin_count),               -- Cascade connection to Slave ISERDES
          SHIFTOUT2         => icascade2(pin_count),               -- Cascade connection to Slave ISERDES
-         BITSLIP           => BITSLIP,                            -- 1-bit Invoke Bitslip. This can be used with any 
+         BITSLIP           => BITSLIP,                            -- 1-bit Invoke Bitslip. This can be used with any
                                                                   -- DATA_WIDTH, cascaded or not.
          CE1               => clock_enable,                       -- 1-bit Clock enable input
          CE2               => clock_enable,                       -- 1-bit Clock enable input
          CLK               => CLK_IN,                             -- Fast clock driven by MMCM
          CLKB              => clk_in_int_inv,                     -- Locally inverted clock
          CLKDIV            => CLK_DIV_IN,                         -- Slow clock driven by MMCM
-         D                 => '0',                                
+         D                 => '0',
          DDLY              => data_in_from_pins_delay(pin_count), -- 1-bit Input signal from IODELAYE1.
          RST               => IO_RESET,                           -- 1-bit Asynchronous reset only.
          SHIFTIN1          => '0',
@@ -237,7 +233,7 @@ begin
          DYN_CLKDIV_INV_EN => FALSE,
          DYN_CLK_INV_EN    => FALSE,
          NUM_CE            => 2,
- 
+
          OFB_USED          => FALSE,
          IOBDELAY          => "IFD",                              -- Use input at DDLY to output the data on Q1-Q6
          SERDES_MODE       => "SLAVE")
@@ -252,7 +248,7 @@ begin
          SHIFTOUT2         => open,
          SHIFTIN1          => icascade1(pin_count),               -- Cascade connections from Master ISERDES
          SHIFTIN2          => icascade2(pin_count),               -- Cascade connections from Master ISERDES
-         BITSLIP           => BITSLIP,                            -- 1-bit Invoke Bitslip. This can be used with any 
+         BITSLIP           => BITSLIP,                            -- 1-bit Invoke Bitslip. This can be used with any
                                                                   -- DATA_WIDTH, cascaded or not.
          CE1               => clock_enable,                       -- 1-bit Clock enable input
          CE2               => clock_enable,                       -- 1-bit Clock enable input

@@ -1,22 +1,9 @@
--------------------------------------------------------------------------------
---                                                                            
---       Unit Name: synchronizer                                            
---                                                                            
---     Description: 
---
---                                                                            
--------------------------------------------------------------------------------
---                                                                            
---           Notes:                                                           
---                                                                            
--------------------------------------------------------------------------------
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 
-library IEEE;
-use IEEE.STD_LOGIC_1164.all;
-use IEEE.NUMERIC_STD.all;
-
-library UNISIM;
-use UNISIM.VComponents.all;
+library unisim;
+use unisim.vcomponents.all;
 
 library work;
 
@@ -41,7 +28,7 @@ architecture synchronizer_arch of synchronizer is
 
 --============================================================================
 --                                                         Signal declarations
---============================================================================  
+--============================================================================
 
   signal s_resync : std_logic_vector(N_STAGES downto 0) := (others => '0');
 
@@ -80,4 +67,3 @@ end synchronizer_arch;
 --============================================================================
 --                                                            Architecture end
 --============================================================================
-

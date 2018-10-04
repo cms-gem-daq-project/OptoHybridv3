@@ -28,8 +28,9 @@ use work.ipbus_pkg.all;
 
 entity gbt_rx is
 generic(
-    g_FRAME_COUNT_MAX : integer := 8;
-    g_FRAME_WIDTH     : integer := 6
+    g_FRAME_COUNT_MAX : integer := 8;  -- number of frames in a request packet
+    g_FRAME_WIDTH     : integer := 6;  -- number of data bits per frame
+    g_READY_COUNT_MAX : integer := 64 -- number of good consecutive frames to mark the output as ready
 );
 port(
 
@@ -52,6 +53,7 @@ port(
     req_data_o      : out std_logic_vector(WB_REQ_BITS-1 downto 0);
 
     -- status
+    ready_o         : out std_logic;
     error_o         : out std_logic
 
 );
@@ -66,16 +68,18 @@ architecture Behavioral of gbt_rx is
 
     signal state        : state_t := IDLE;
 
-    signal reg_data         : std_logic_vector (32+16 downto 0);
-
     signal data_frame_cnt   : integer range 0 to g_FRAME_COUNT_MAX-1 := 0;
+
+    signal ready_cnt   : integer range 0 to g_READY_COUNT_MAX-1 := 0;
+    signal ready    : std_logic;
 
     signal frame_data       : std_logic_vector (5 downto 0);
     signal frame_data_delay : std_logic_vector (5 downto 0);
 
-    signal char_is_data    : std_logic;
-    signal char_is_ttc     : std_logic;
-    signal not_in_table    : std_logic;
+    signal char_is_data   : std_logic;
+    signal char_is_ttc    : std_logic;
+    signal char_is_header : std_logic;
+    signal not_in_table   : std_logic;
 
     signal reset         : std_logic;
 
@@ -101,10 +105,11 @@ begin
     process(clock)
     begin
         if (rising_edge(clock)) then
-            if     (reset = '1')  then error_o <= '0';
-            elsif  (STATE=ERR)    then error_o <= '1';
-            else                       error_o <= '0';
+
+            if  (STATE=ERR)   then error_o <= '1';
+            else                   error_o <= '0';
             end if;
+
         end if;
     end process;
 
@@ -125,19 +130,35 @@ begin
         end if;
     end process;
 
+    process (clock) begin
+        if (rising_edge(clock)) then
+
+            if (reset = '1' or state=ERR) then
+                ready_cnt <= 0;
+            elsif (idle_rx = '1' and (ready_cnt < g_READY_COUNT_MAX-1)) then
+                ready_cnt <= ready_cnt + 1;
+            end if;
+
+        end if;
+    end process;
+
+    ready <= '1' when (ready_cnt = g_READY_COUNT_MAX-1) else '0';
+
+    ready_o <= ready;
 
     -- 8b to 6b conversion
     eightbit_sixbit_inst : entity work.eightbit_sixbit
     port map (
-        eightbit     => data_i,
-        sixbit       => frame_data,
-        not_in_table => not_in_table,
-        char_is_data => char_is_data,
-        char_is_ttc  => char_is_ttc,
-        l1a          => l1a,
-        bc0          => bc0,
-        resync       => resync,
-        idle         => idle_rx
+        eightbit       => data_i,
+        sixbit         => frame_data,
+        not_in_table   => not_in_table,
+        char_is_data   => char_is_data,
+        char_is_ttc    => char_is_ttc,
+        char_is_header => char_is_header,
+        l1a            => l1a,
+        bc0            => bc0,
+        resync         => resync,
+        idle           => idle_rx
     );
 
     process (clock) begin
@@ -179,7 +200,7 @@ begin
 
                     when START =>
 
-                        if    (idle_rx='1')      then state <= ERR;
+                        if    (idle_rx='1')      then state <= IDLE;
                         elsif (char_is_ttc='1')  then state <= START;
                         elsif (char_is_data='1') then state <= DATA;
                         end if;
@@ -202,7 +223,7 @@ begin
 
                         else
                             if (idle_rx='1') then
-                                state <= ERR;
+                                state <= IDLE;
                             else
                                 data_frame_cnt <= data_frame_cnt + 1;
                             end if;
@@ -223,7 +244,7 @@ begin
         if (rising_edge(clock)) then
 
             -- latch request after data frame 4
-            if ((g_FRAME_COUNT_MAX-1) = data_frame_cnt) then
+            if (state=DATA and ((g_FRAME_COUNT_MAX-1) = data_frame_cnt)) then
                 last_data_frame <= '1';
             else
                 last_data_frame <= '0';
@@ -232,21 +253,20 @@ begin
             if (last_data_frame='1') then
                     req_en_o   <= req_valid; -- fifo_wr
                     req_data_o <= req_data;  -- 49 bit stable output (1 bit WE, 16 bit adr, 32 bit data)
+            else
+                    req_en_o   <= '0';
+                    req_data_o <= (others => '0');  -- 49 bit stable output (1 bit WE, 16 bit adr, 32 bit data)
             end if;
 
-            if (reset = '1') then
-                req_en_o   <= '0';
-                req_data_o <= (others => '0');
+            if (reset = '1' or ready='0') then
                 req_valid  <= '0';
                 req_data   <= (others => '0');
             else
                 case state is
                     when IDLE  =>
-                                   req_en_o               <= '0';
                                    req_valid              <= '0';
                                    req_data               <= (others => '0');
                     when START =>
-                                   req_en_o               <= '0';
                                    req_valid              <= frame_data_delay(5);              -- request valid
                                    req_data(48)           <= frame_data_delay(4);              -- write enable
                                 -- reserved               <= frame_data_delay(3 downto 0);
@@ -254,8 +274,8 @@ begin
                         req_data ((g_FRAME_COUNT_MAX - data_frame_cnt) * g_FRAME_WIDTH - 1 downto (g_FRAME_COUNT_MAX-1-data_frame_cnt) * g_FRAME_WIDTH) <= frame_data_delay;
 
                     when others =>
-                        req_en_o  <= '0';
                         req_valid <= '0';
+                        req_data <= (others => '0');
 
                 end case;
             end if;

@@ -4,12 +4,12 @@ module device_dna (
   output reg [56:0] dna
 );
 
-   wire DOUT, CLK, DIN; 
+   wire DOUT, CLK, DIN;
 	reg  READ, SHIFT;
 
    reg [56:0] dna_sr;
    reg  [5:0] read_cnt;
-	
+
    always @(posedge clock) begin
 
      if      (reset)         begin read_cnt <= 0;               SHIFT <= 1'b0; READ <= 1'b1; end

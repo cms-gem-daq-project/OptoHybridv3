@@ -26,7 +26,7 @@ endmodule
 
 module optohybrid_top_tb;
 
-reg[23:0] SOT_INVERT; 
+reg[23:0] SOT_INVERT;
 
 initial SOT_INVERT  = 24'hf99286;
 
@@ -55,7 +55,7 @@ reg [7:0] VFAT21_TU_INVERT = 8'h73;
 reg [7:0] VFAT22_TU_INVERT = 8'ha;
 reg [7:0] VFAT23_TU_INVERT = 8'h14;
 
-reg [191:0] TU_INVERT; 
+reg [191:0] TU_INVERT;
 
 initial TU_INVERT = { VFAT23_TU_INVERT, VFAT22_TU_INVERT, VFAT21_TU_INVERT, VFAT20_TU_INVERT, VFAT19_TU_INVERT, VFAT18_TU_INVERT, VFAT17_TU_INVERT, VFAT16_TU_INVERT, VFAT15_TU_INVERT, VFAT14_TU_INVERT, VFAT13_TU_INVERT, VFAT12_TU_INVERT, VFAT11_TU_INVERT, VFAT10_TU_INVERT, VFAT9_TU_INVERT, VFAT8_TU_INVERT, VFAT7_TU_INVERT, VFAT6_TU_INVERT, VFAT5_TU_INVERT, VFAT4_TU_INVERT, VFAT3_TU_INVERT, VFAT2_TU_INVERT, VFAT1_TU_INVERT, VFAT0_TU_INVERT};
 
@@ -232,154 +232,87 @@ parameter DDR = 0;
   // GBT Serialization
   //--------------------------------------------------------------------------------------------------------------------
 
-  // gbt data
+  //
+  reg [11:0] startup_clock=0;
+  parameter startup_count = 600;
+  always @(posedge clk40) begin
+    if (startup_clock < startup_count)
+      startup_clock <= startup_clock + 1'b1;
+  end
+
+  wire startup_done = (startup_clock == startup_count);
+
 
   reg          wr_en       = 1'b1;
+  wire         wr_valid    = startup_done;
 
-  wire         wr_valid    = 1'b1;
   wire  [15:0] address     = {5'h0, 11'h0}; // 32'h0; // write to loopback
   reg   [31:0] data        = 32'h12345678;
-  wire  [5:0]  frame_start = 6'h2A;
 
   wire l1a      = 1'b0;
   wire bc0      = 1'b0;
   wire resync   = 1'b0;
-  wire calpulse = 1'b0;
-
-  wire [3:0] gbt_ttc = {l1a, calpulse, resync, bc0};
 
   wire [48:0] gbt_packet = {wr_en, wr_valid, address[15:0], data[31:0]};
 
-  `define tenbit_tx
+  wire [7:0] elink_data;
 
-  `ifdef tenbit_tx
+  reg [3:0] gbt_frame=0;
 
-    reg [9:0] gbt_dout;
+  link_oh_fpga_tx link_oh_fpga_tx (
 
-    reg [3:0] gbt_frame=0;
+    .reset_i              (1'b0),
+    .ttc_clk_40_i         (clk40),
+    .l1a_i                (l1a),
+    .bc0_i                (bc0),
+    .resync_i             (resync),
 
-    always @(posedge clk40) begin
-      wr_en       <= ~wr_en;
-    case (gbt_frame)
-        4'h0: gbt_frame <= 4'h1; // start of transmit
-        4'h1: gbt_frame <= 4'h2; // begin
-        4'h2: gbt_frame <= 4'h3; // addr0
-        4'h3: gbt_frame <= 4'h4; // addr1
-        4'h4: gbt_frame <= 4'h5; // addr2
-        4'h5: gbt_frame <= 4'h6; // data0
-        4'h6: gbt_frame <= 4'h7; // data1
-        4'h7: gbt_frame <= 4'h8; // data2
-        4'h8: gbt_frame <= 4'h9; // data3
-        4'h9: gbt_frame <= 4'h0; // data4
-    endcase
-    end
+    .elink_data_o         (elink_data),
 
+    .request_valid_i      (wr_valid),
+    .request_write_i      (wr_en),
+    .request_addr_i       (address),
+    .request_data_i       (data),
 
-    always @(posedge clk40) begin
-    case (gbt_frame) // prefetch
-        4'h0: gbt_dout <= {gbt_ttc,               frame_start                             }; // 0x2A
-        4'h1: gbt_dout <= {gbt_ttc,wr_valid,wr_en,                              4'd0      }; // begin
-        4'h2: gbt_dout <= {gbt_ttc,                           address[15:10]              }; // addr0
-        4'h3: gbt_dout <= {gbt_ttc,                           address[ 9: 4]              }; // addr1
-        4'h4: gbt_dout <= {gbt_ttc,                           address[ 3: 0], data[31:30] }; // addr2
-        4'h5: gbt_dout <= {gbt_ttc,                                           data[29:24] }; // data0
-        4'h6: gbt_dout <= {gbt_ttc,                                           data[23:18] }; // data1
-        4'h7: gbt_dout <= {gbt_ttc,                                           data[17:12] }; // data2
-        4'h8: gbt_dout <= {gbt_ttc,                                           data[11: 6] }; // data3
-        4'h9: gbt_dout <= {gbt_ttc,                                           data[ 5: 0] }; // data4
-    endcase
-    end
+    .busy_o               ()
 
-    reg [1:0] clk40_sync;
+  );
 
-    reg [2:0] bitsel=0;
+  always @(posedge clk40) begin
+    wr_en       <= ~wr_en;
+  end
 
-    always @(negedge clk320) begin
+  reg [1:0] clk40_sync;
+
+  reg [2:0] bitsel=0;
+
+  always @(negedge clk320) begin
 
     clk40_sync[0] <= clk40;
     clk40_sync[1] <= clk40_sync[0];
 
-    if (clk40_sync[1:0] == 2'b01) // catch the rising edge of clk40
-        bitsel <= 3'd7;
-    else
-        bitsel <= bitsel-1'b1;
-    end
+  if (clk40_sync[1:0] == 2'b01) // catch the rising edge of clk40
+      bitsel <= 3'd7;
+  else
+      bitsel <= bitsel-1'b1;
+  end
 
 
-    // Elinks
-    reg [9:0] to_gbt_1;
-    reg [9:0] to_gbt;
-    always @(negedge clk320) begin
-    to_gbt_1 <= gbt_dout;
-    to_gbt   <= to_gbt_1;
-    end
+  // Elinks
+  reg [7:0] elink_data_sync_1;
+  reg [7:0] elink_data_sync;
+  always @(negedge clk320) begin
+  elink_data_sync_1 <= elink_data;
+  elink_data_sync   <= elink_data_sync_1;
+  end
 
-    wire [1:0] elink_i_p;
-    assign elink_i_p [1]= to_gbt [bitsel+2];                  // 320 MHz
-    assign elink_i_p [0]= bitsel[2] ? to_gbt [1] : to_gbt[0]; // 80  MHz
+  reg elink_i_p, elink_i_n;
+  always @(*) begin
 
+       elink_i_p =  elink_data_sync [bitsel];
+       elink_i_n = ~elink_data_sync [bitsel];
 
-  `else
-
-    reg[15:0] gbt_dout;
-
-    reg [2:0] gbt_frame=0;
-
-    always @(posedge clk40) begin
-    case (gbt_frame)
-        3'd0: gbt_frame <= 3'd1; // begin
-        3'd1: gbt_frame <= 3'd2; // addr
-        3'd2: gbt_frame <= 3'd3; // data
-        3'd3: gbt_frame <= 3'd4; // data
-        3'd4: gbt_frame <= 3'd5; // data
-        3'd5: gbt_frame <= 3'd0; // end
-    endcase
-    end
-
-    always @(posedge clk40) begin
-    case (gbt_frame)
-        3'd5: gbt_dout <= {gbt_ttc,wr_valid,wr_en,2'b00,address[15:12]}; // begin
-        3'd0: gbt_dout <= {gbt_ttc,                     address[11:0 ]}; // addr
-        3'd1: gbt_dout <= {gbt_ttc, 4'd0,               data   [31:24]}; // data
-        3'd2: gbt_dout <= {gbt_ttc,                     data   [23:12]}; // data
-        3'd3: gbt_dout <= {gbt_ttc,                     data   [11:0] }; // data
-        3'd4: gbt_dout <= {gbt_ttc,                     frame_end     }; // end
-    endcase
-    end
-
-    reg [1:0] clk40_sync;
-
-    reg [2:0] bit=0;
-
-    always @(negedge clk320) begin
-
-    clk40_sync[0] <= clk40;
-    clk40_sync[1] <= clk40_sync[0];
-
-    if (clk40_sync[1:0] == 2'b01) // catch the rising edge of clk40
-        bit <= 3'd7;
-    else
-        bit <= bit-1'b1;
-    end
-
-
-
-    // Elinks
-
-    reg [15:0] to_gbt_1;
-    reg [15:0] to_gbt;
-    always @(negedge clk320) begin
-    to_gbt_1 <= gbt_dout;
-    to_gbt   <= to_gbt_1;
-    end
-
-    wire [1:0] elink_i_p;
-    assign elink_i_p [1]= to_gbt [bit+8]; // msb first
-    assign elink_i_p [0]= to_gbt [bit  ]; // msb first
-
-  `endif
-
-  wire [1:0] elink_i_n = ~elink_i_p;
+  end
 
 //----------------------------------------------------------------------------------------------------------------------
 // Optohybrid IO
@@ -392,16 +325,19 @@ parameter DDR = 0;
 
   reg [1:0] gbtclk;
   always @(*) begin
-    gbtclk[0] <= #6.8  clk40; // logic clock
-    gbtclk[1] <= #0.00 clk40; // frame clock
+    gbtclk[0] <= #6.8 clk40; // logic clock
+    gbtclk[1] <= #18  clk40; // gbt   clock
   end
 
-  wire [1:0] gbt_dclk_p =  gbtclk; // fixed and phase shiftable
-  wire [1:0] gbt_dclk_n = ~gbtclk;
+  wire logic_clock_p =  gbtclk[0]; // fixed and phase shiftable
+  wire logic_clock_n = ~gbtclk[0];
+
+  wire elink_clock_p =  gbtclk[1]; // fixed and phase shiftable
+  wire elink_clock_n = ~gbtclk[1];
 
 
-  wire [1:0] elink_o_p;
-  wire [1:0] elink_o_n;
+  wire elink_o_p;
+  wire elink_o_n;
 
   // SCA IO
   wire [3:0] sca_io = {4'b0000};
@@ -430,11 +366,11 @@ parameter DDR = 0;
 
   optohybrid_top optohybrid_top (
 
-      //.gbt_eclk_p    (gbt_eclk_p),
-      //.gbt_eclk_n    (gbt_eclk_n),
+      .logic_clock_p    (logic_clock_p),
+      .logic_clock_n    (logic_clock_n),
 
-      .gbt_dclk_p    (gbt_dclk_p),
-      .gbt_dclk_n    (gbt_dclk_n),
+      .elink_clock_p    (elink_clock_p),
+      .elink_clock_n    (elink_clock_n),
 
       .elink_i_p     (elink_i_p),
       .elink_i_n     (elink_i_n),
@@ -474,60 +410,86 @@ parameter DDR = 0;
   // :(
 
 
-  reg  [15:0] fifo_tmp;
+  reg  [7:0] fifo_tmp;
+  reg  [7:0] elink_o_parallel;
+  reg  [7:0] elink_o_parallel0;
+  reg  [7:0] elink_o_parallel1;
+  reg  [7:0] elink_o_parallel2;
+  reg  [7:0] elink_o_parallel3;
+  reg  [7:0] elink_o_parallel4;
+  reg  [7:0] elink_o_parallel5;
+  reg  [7:0] elink_o_parallel6;
+  reg  [7:0] elink_o_parallel7;
 
-  reg  [15:0] elink_o_parallel;
-
-  wire [15:0] fifo_dly;
+  wire [7:0] fifo_dly;
+  wire [7:0] fifo_dly0;
+  wire [7:0] fifo_dly1;
+  wire [7:0] fifo_dly2;
+  wire [7:0] fifo_dly3;
+  wire [7:0] fifo_dly4;
+  wire [7:0] fifo_dly5;
+  wire [7:0] fifo_dly6;
+  wire [7:0] fifo_dly7;
 
   always @(posedge gbt_eclk_p[0]) begin
   // this may need to be bitslipped... depending on the phase alignment of the clocks
-  fifo_tmp[7:0]  <= {fifo_tmp[ 6:0], elink_o_p[0]};
-  fifo_tmp[15:8] <= {fifo_tmp[14:8],~elink_o_p[1]}; // account for polarity swap
+  fifo_tmp[7:0]  <= {fifo_tmp[ 6:0], ~elink_o_p}; // polarity swap on e-link 1
   end
 
-  `define tenbit_rx
+  wire  [7:0] elink_o_fifo = fifo_tmp;
 
-  `ifdef tenbit_rx
-      wire  [15:0] elink_o_fifo = {6'b0, fifo_tmp[15:8], fifo_tmp[6], fifo_tmp[2]};
-  `else
-      wire  [15:0] elink_o_fifo = fifo_tmp;
-  `endif
+  wire [3:0] dly_adr = 4'd0;
+  wire [3:0] dly_adr0= 4'd0;
+  wire [3:0] dly_adr1= 4'd1;
+  wire [3:0] dly_adr2= 4'd2;
+  wire [3:0] dly_adr3= 4'd3;
+  wire [3:0] dly_adr4= 4'd4;
+  wire [3:0] dly_adr5= 4'd5;
+  wire [3:0] dly_adr6= 4'd6;
+  wire [3:0] dly_adr7= 4'd7;
 
-  wire [3:0] dly_adr = 4'd2;
   genvar ibit;
   generate
-  for (ibit=0; ibit<16; ibit=ibit+1) begin: gen_bitloop
+  for (ibit=0; ibit<8; ibit=ibit+1) begin: gen_bitloop
     SRL16E dly (.CLK(~gbt_eclk_p[0]),.CE(1'b1),.D(elink_o_fifo[ibit]),.A0(dly_adr[0]),.A1(dly_adr[1]),.A2(dly_adr[2]),.A3(dly_adr[3]),.Q(fifo_dly[ibit]));
+    SRL16E dly0 (.CLK(~gbt_eclk_p[0]),.CE(1'b1),.D(elink_o_fifo[ibit]),.A0(dly_adr0[0]),.A1(dly_adr0[1]),.A2(dly_adr0[2]),.A3(dly_adr0[3]),.Q(fifo_dly0[ibit]));
+    SRL16E dly1 (.CLK(~gbt_eclk_p[0]),.CE(1'b1),.D(elink_o_fifo[ibit]),.A0(dly_adr1[0]),.A1(dly_adr1[1]),.A2(dly_adr1[2]),.A3(dly_adr1[3]),.Q(fifo_dly1[ibit]));
+    SRL16E dly2 (.CLK(~gbt_eclk_p[0]),.CE(1'b1),.D(elink_o_fifo[ibit]),.A0(dly_adr2[0]),.A1(dly_adr2[1]),.A2(dly_adr2[2]),.A3(dly_adr2[3]),.Q(fifo_dly2[ibit]));
+    SRL16E dly3 (.CLK(~gbt_eclk_p[0]),.CE(1'b1),.D(elink_o_fifo[ibit]),.A0(dly_adr3[0]),.A1(dly_adr3[1]),.A2(dly_adr3[2]),.A3(dly_adr3[3]),.Q(fifo_dly3[ibit]));
+    SRL16E dly4 (.CLK(~gbt_eclk_p[0]),.CE(1'b1),.D(elink_o_fifo[ibit]),.A0(dly_adr4[0]),.A1(dly_adr4[1]),.A2(dly_adr4[2]),.A3(dly_adr4[3]),.Q(fifo_dly4[ibit]));
+    SRL16E dly5 (.CLK(~gbt_eclk_p[0]),.CE(1'b1),.D(elink_o_fifo[ibit]),.A0(dly_adr5[0]),.A1(dly_adr5[1]),.A2(dly_adr5[2]),.A3(dly_adr5[3]),.Q(fifo_dly5[ibit]));
+    SRL16E dly6 (.CLK(~gbt_eclk_p[0]),.CE(1'b1),.D(elink_o_fifo[ibit]),.A0(dly_adr6[0]),.A1(dly_adr6[1]),.A2(dly_adr6[2]),.A3(dly_adr6[3]),.Q(fifo_dly6[ibit]));
+    SRL16E dly7 (.CLK(~gbt_eclk_p[0]),.CE(1'b1),.D(elink_o_fifo[ibit]),.A0(dly_adr7[0]),.A1(dly_adr7[1]),.A2(dly_adr7[2]),.A3(dly_adr7[3]),.Q(fifo_dly7[ibit]));
   end
   endgenerate
 
-
   always @(posedge clk40) begin
-    elink_o_parallel <= fifo_dly;
+    elink_o_parallel  <= fifo_dly;
+    elink_o_parallel0 <= fifo_dly0;
+    elink_o_parallel1 <= fifo_dly1;
+    elink_o_parallel2 <= fifo_dly2;
+    elink_o_parallel3 <= fifo_dly3;
+    elink_o_parallel4 <= fifo_dly4;
+    elink_o_parallel5 <= fifo_dly5;
+    elink_o_parallel6 <= fifo_dly6;
+    elink_o_parallel7 <= fifo_dly7;
   end
 
   wire [31:0] gbt_rx_request;
   wire        gbt_rx_valid;
 
-  link_gbt_rx
-  #(
-      `ifdef tenbit_rx
-      .g_16BIT (0)
-      `else
-      .g_16BIT (1)
-      `endif
-  )
+  link_oh_fpga_rx
   i_gbt_rx_link (
       .ttc_clk_40_i  (clk40),
       .reset_i       (1'b0),
 
       // inputs
-      .gbt_rx_data_i (elink_o_parallel),
+      .elink_data_i (elink_o_parallel),
 
       // outputs
-      .req_en_o      (gbt_rx_valid),
-      .req_data_o    (gbt_rx_request)
+      .reg_data_valid_o      (gbt_rx_valid),
+      .reg_data_o    (gbt_rx_request),
+      .error_o ()
   );
 
 //----------------------------------------------------------------------------------------------------------------------

@@ -89,6 +89,9 @@ begin
                     when DATA =>
 
                         if (data_frame_cnt = (g_FRAME_COUNT_MAX-1)) then
+
+                            data_frame_cnt <= 0;
+
                             if (req_valid_i='1') then
                                 state <= DATA;
                             else

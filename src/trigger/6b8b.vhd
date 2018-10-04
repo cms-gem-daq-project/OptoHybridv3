@@ -25,7 +25,7 @@ begin
     elsif (bc0='1')    then eightbit <= BC0_CHAR;
     elsif (resync='1') then eightbit <= RESYNC_CHAR;
     elsif (idle='1')   then eightbit <= IDLE_CHAR;
-    else 
+    else
       case sixbit is
           when "000000" => eightbit <= "01011001";
           when "000001" => eightbit <= "01110001";

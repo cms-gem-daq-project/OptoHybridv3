@@ -7,41 +7,43 @@ use work.sixbit_eightbit_pkg.all;
 
 entity eightbit_sixbit is
 port(
-  eightbit     : in  std_logic_vector (7 downto 0);
-  sixbit       : out std_logic_vector (5 downto 0);
-  not_in_table : out std_logic;
-  char_is_data : out std_logic;
-  char_is_ttc  : out std_logic;
-  l1a          : out std_logic;
-  bc0          : out std_logic;
-  resync       : out std_logic;
-  idle         : out std_logic
+  eightbit       : in  std_logic_vector (7 downto 0);
+  sixbit         : out std_logic_vector (5 downto 0);
+  not_in_table   : out std_logic;
+  char_is_data   : out std_logic;
+  char_is_ttc    : out std_logic;
+  char_is_header : out std_logic;
+  l1a            : out std_logic;
+  bc0            : out std_logic;
+  resync         : out std_logic;
+  idle           : out std_logic
 );
 end eightbit_sixbit;
 
-architecture Behavioral of eightbit_sixbit is 
+architecture Behavioral of eightbit_sixbit is
 
-signal l1a_rx : std_logic; 
-signal bc0_rx : std_logic; 
-signal resync_rx  : std_logic; 
+signal l1a_rx    : std_logic;
+signal bc0_rx    : std_logic;
+signal resync_rx : std_logic;
 
 begin
 
 
-  l1a <= l1a_rx; 
-  bc0 <= bc0_rx; 
-  resync <= resync_rx; 
-  
-  l1a_rx    <= '1' when (eightbit=L1A_CHAR) else '0';
-  bc0_rx    <= '1' when (eightbit=BC0_CHAR) else '0';
-  resync_rx <= '1' when (eightbit=RESYNC_CHAR) else '0';
-  idle      <= '1' when (eightbit=IDLE_CHAR) else '0';
+  l1a <= l1a_rx;
+  bc0 <= bc0_rx;
+  resync <= resync_rx;
 
-  char_is_ttc <= '1' when  (l1a_rx='1' or bc0_rx='1' or resync_rx='1') else '0';
+  l1a_rx         <= '1' when (eightbit=L1A_CHAR)    else '0';
+  bc0_rx         <= '1' when (eightbit=BC0_CHAR)    else '0';
+  resync_rx      <= '1' when (eightbit=RESYNC_CHAR) else '0';
+  idle           <= '1' when (eightbit=IDLE_CHAR)   else '0';
+  char_is_header <= '1' when (eightbit=HEADER_CHAR) else '0';
+
+  char_is_ttc    <= '1' when  (l1a_rx='1' or bc0_rx='1' or resync_rx='1') else '0';
 
   process (eightbit) begin
     -- fast commands
- 
+
     case eightbit is
       when L1A_CHAR    => sixbit <= "000000"; not_in_table <= '0'; char_is_data <= '0';
       when BC0_CHAR    => sixbit <= "000000"; not_in_table <= '0'; char_is_data <= '0';

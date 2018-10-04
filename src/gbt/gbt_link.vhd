@@ -89,33 +89,8 @@ begin
         end if;
     end process;
 
-
-    -- check for N consequtive good bx of link before marking as "ready"
-    process (clock) begin
-        if (rising_edge(clock)) then
-
-            if (reset='1' or rx_error='1') then
-                ready_cnt <= (others => '0');
-            elsif (ready_cnt < ready_cnt_max) then
-                ready_cnt <= ready_cnt + 1;
-            end if;
-
-            if (reset='1') then
-                ready <= '0';
-            elsif (ready_cnt = ready_cnt_max) then
-                ready <= '1';
-            else
-                ready <= '0';
-            end if;
-
-            -- outputs
-
-            ready_o <= ready;
-            error_o <= rx_error;
-
-        end if;
-
-    end process;
+    ready_o <= ready;
+    error_o <= rx_error;
 
     process (clock) begin
         if (rising_edge(clock)) then
@@ -154,6 +129,7 @@ begin
         req_data_o   => gbt_rx_data, -- 49 bit packet (1 bit we + 16 bit addr + 32 bit data)
 
         -- status
+        ready_o      => ready,
         error_o      => rx_error
     );
 
