@@ -326,7 +326,7 @@ parameter DDR = 0;
   reg [1:0] gbtclk;
   always @(*) begin
     gbtclk[0] <= #6.8 clk40; // logic clock
-    gbtclk[1] <= #18  clk40; // gbt   clock
+    gbtclk[1] <= #18   clk40; // gbt   clock
   end
 
   wire logic_clock_p =  gbtclk[0]; // fixed and phase shiftable

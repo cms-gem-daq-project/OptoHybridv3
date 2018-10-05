@@ -36,12 +36,10 @@ port(
     elink_clock_p : in std_logic;
     elink_clock_n : in std_logic;
 
-    -- eport 40/320 serdes clocks
-    gbt_rx_clk_div_o : out std_logic;
-    gbt_rx_clk_o     : out std_logic;
-
-    gbt_tx_clk_div_o : out std_logic;
-    gbt_tx_clk_o     : out std_logic;
+    gbt_clk40_o     : out std_logic; -- 40 MHz phase shiftable frame clock from GBT
+    gbt_clk160_0_o  : out std_logic; -- 320 MHz phase shiftable frame clock from GBT
+    gbt_clk160_90_o : out std_logic; -- 320 MHz phase shiftable frame clock from GBT
+    gbt_clk320_o    : out std_logic; -- 320 MHz phase shiftable frame clock from GBT
 
     -- logic clocks
     clk_1x_o        : out std_logic;
@@ -73,9 +71,6 @@ end clocking;
 
 
 architecture Behavioral of clocking is
-
-    signal gbt_clk40 : std_logic;
-    signal gbt_clk320 : std_logic;
 
     signal clk_5x     : std_logic;
 
@@ -109,13 +104,12 @@ architecture Behavioral of clocking is
     end component;
 
     component gbt_clocking port (
-        clk40_i_p, clk40_i_n   : in  std_logic;
-        clk40_o, clk320_o      : out std_logic;
-        locked_o               : out std_logic
+        clk40_i_p, clk40_i_n    : in  std_logic;
+        clk40_o, clk320_o       : out std_logic;
+        clk160_0_o, clk160_90_o : out std_logic;
+        locked_o                : out std_logic
     );
     end component;
-
-
 
     component logic_clocking_a7
     port
@@ -143,10 +137,9 @@ architecture Behavioral of clocking is
       clk_in1_p : in     std_logic;
       clk_in1_n : in     std_logic;
       -- Clock out ports
-      gbt_clk40   : out    std_logic;
-      gbt_clk320  : out    std_logic;
-      -- Status and control signals
-      locked_o    : out    std_logic
+        clk40_o, clk320_o       : out std_logic;
+        clk160_0_o, clk160_90_o : out std_logic;
+        locked_o                : out std_logic
     );
 end component;
 
@@ -188,17 +181,13 @@ begin
           clk40_i_p    => elink_clock_p,
           clk40_i_n    => elink_clock_n,
 
-          clk40_o      => gbt_clk40,
-          clk320_o     => gbt_clk320,
+          clk40_o      => gbt_clk40_o,
+          clk320_o     => gbt_clk320_o,
+          clk160_0_o   => gbt_clk160_0_o,
+          clk160_90_o   => gbt_clk160_90_o,
 
           locked_o      => mmcm_locked(1)
       );
-
-      gbt_tx_clk_div_o <= gbt_clk40;
-      gbt_tx_clk_o     <= gbt_clk320;
-
-      gbt_rx_clk_div_o <= gbt_clk40;
-      gbt_rx_clk_o     <= gbt_clk320;
 
     end GENERATE clk_gen_virtex6;
 
@@ -227,17 +216,13 @@ begin
         clk_in1_p  => elink_clock_p,
         clk_in1_n  => elink_clock_n,
         -- Clock out ports
-        gbt_clk40  => gbt_clk40,
-        gbt_clk320 => gbt_clk320,
-        -- Status and control signals
-        locked_o => mmcm_locked(1)
+          clk40_o      => gbt_clk40_o,
+          clk320_o     => gbt_clk320_o,
+          clk160_0_o   => gbt_clk160_0_o,
+          clk160_90_o   => gbt_clk160_90_o,
+
+          locked_o      => mmcm_locked(1)
       );
-
-      gbt_rx_clk_div_o <= gbt_clk40;
-      gbt_rx_clk_o     <= gbt_clk320;
-
-      gbt_tx_clk_div_o <= gbt_clk40;
-      gbt_tx_clk_o     <= gbt_clk320;
 
   end GENERATE clk_gen_artix7;
 

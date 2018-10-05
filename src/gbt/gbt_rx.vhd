@@ -106,8 +106,14 @@ begin
     begin
         if (rising_edge(clock)) then
 
-            if  (STATE=ERR)   then error_o <= '1';
-            else                   error_o <= '0';
+            if (ready='1') then
+                if  (STATE=ERR)   then error_o <= '1';
+                else                   error_o <= '0';
+                end if;
+            else
+                if  (idle_rx = '1' or char_is_ttc='1')   then error_o <= '0';
+                else                                          error_o <= '1';
+                end if;
             end if;
 
         end if;
@@ -135,7 +141,7 @@ begin
 
             if (reset = '1' or state=ERR) then
                 ready_cnt <= 0;
-            elsif (idle_rx = '1' and (ready_cnt < g_READY_COUNT_MAX-1)) then
+            elsif ((idle_rx = '1' or char_is_ttc='1') and (ready_cnt < g_READY_COUNT_MAX-1)) then
                 ready_cnt <= ready_cnt + 1;
             end if;
 

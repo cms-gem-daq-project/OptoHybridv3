@@ -102,11 +102,10 @@ architecture Behavioral of optohybrid_top is
 
     signal clock            : std_logic;
 
-    signal gbt_rx_clk_div   : std_logic;
-    signal gbt_rx_clk       : std_logic;
-
-    signal gbt_tx_clk_div   : std_logic;
-    signal gbt_tx_clk       : std_logic;
+    signal gbt_clk40   : std_logic;
+    signal gbt_clk160_0   : std_logic;
+    signal gbt_clk160_90   : std_logic;
+    signal gbt_clk320      : std_logic;
 
     signal clk_1x           : std_logic;
     signal clk_2x           : std_logic;
@@ -231,11 +230,10 @@ begin
         eprt_mmcm_locked_o => eprt_mmcm_locked,
         dskw_mmcm_locked_o => dskw_mmcm_locked,
 
-        gbt_rx_clk_div_o   => gbt_rx_clk_div, -- 40  MHz e-port aligned GBT clock
-        gbt_rx_clk_o       => gbt_rx_clk,     -- 320 MHz e-port aligned GBT clock
-
-        gbt_tx_clk_div_o   => gbt_tx_clk_div, -- 40  MHz e-port aligned GBT clock
-        gbt_tx_clk_o       => gbt_tx_clk,     -- 320 MHz e-port aligned GBT clock
+        gbt_clk40_o     => gbt_clk40, -- 40  MHz e-port aligned GBT clock
+        gbt_clk320_o    => gbt_clk320, -- 40  MHz e-port aligned GBT clock
+        gbt_clk160_0_o  => gbt_clk160_0, -- 40  MHz e-port aligned GBT clock
+        gbt_clk160_90_o => gbt_clk160_90, -- 40  MHz e-port aligned GBT clock
 
         clk_1x_o           => clk_1x, -- phase shiftable logic clocks
         clk_2x_o           => clk_2x,
@@ -274,14 +272,12 @@ begin
         gbt_rxvalid_i => gbt_rxvalid(0),
         gbt_txready_i => gbt_txready(0),
 
-
         -- input clocks
 
-        gbt_rx_clk_div    => gbt_rx_clk_div, -- 40 MHz frame clock
-        gbt_rx_clk        => gbt_rx_clk,     -- 320 MHz sampling clock
-
-        gbt_tx_clk_div    => gbt_tx_clk_div, -- 40 MHz frame clock
-        gbt_tx_clk        => gbt_tx_clk,     -- 320 MHz sampling clock
+        gbt_clk40     => gbt_clk40, -- 40 MHz frame clock
+        gbt_clk160_0  => gbt_clk160_0,
+        gbt_clk160_90 => gbt_clk160_90,
+        gbt_clk320    => gbt_clk320       , -- 320 MHz phase shiftable frame clock from GBT
 
         clock_i => clock,         -- 320 MHz sampling clock
 
@@ -369,7 +365,7 @@ begin
         --== TTC ==--
 
         clock_i                =>   clock,
-        gbt_clock_i            =>   gbt_rx_clk_div,
+        gbt_clock_i            =>   gbt_clk40,
         reset_i                =>   reset,
 
         ttc_l1a                =>   ttc_l1a,

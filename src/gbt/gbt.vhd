@@ -36,12 +36,10 @@ port(
     delay_refclk : in std_logic;
     delay_refclk_reset : in std_logic;
 
-    gbt_rx_clk_div   : in std_logic; -- 40 MHz phase shiftable frame clock from GBT
-    gbt_rx_clk       : in std_logic; -- 320 MHz phase shiftable frame clock from GBT
-
-    gbt_tx_clk_div   : in std_logic; -- 40 MHz phase shiftable frame clock from GBT
-    gbt_tx_clk       : in std_logic; -- 320 MHz phase shiftable frame clock from GBT
-
+    gbt_clk40      : in std_logic; -- 40 MHz phase shiftable frame clock from GBT
+    gbt_clk160_0   : in std_logic; -- 320 MHz phase shiftable frame clock from GBT
+    gbt_clk160_90  : in std_logic; -- 320 MHz phase shiftable frame clock from GBT
+    gbt_clk320     : in std_logic; -- 320 MHz phase shiftable frame clock from GBT
 
     elink_i_p : in  std_logic;
     elink_i_n : in  std_logic;
@@ -159,11 +157,11 @@ begin
 
        -- input clocks
 
-       gbt_rx_clk_div   => gbt_rx_clk_div   , -- 40 MHz phase shiftable frame clock from GBT
-       gbt_rx_clk       => gbt_rx_clk       , -- 320 MHz phase shiftable frame clock from GBT
+       gbt_clk160_0  => gbt_clk160_0,
+       gbt_clk160_90 => gbt_clk160_90,
 
-       gbt_tx_clk_div   => gbt_tx_clk_div   , -- 40 MHz phase shiftable frame clock from GBT
-       gbt_tx_clk       => gbt_tx_clk       , -- 320 MHz phase shiftable frame clock from GBT
+       gbt_clk40     => gbt_clk40   , -- 40 MHz phase shiftable frame clock from GBT
+       gbt_clk320    => gbt_clk320       , -- 320 MHz phase shiftable frame clock from GBT
 
        clock            => clock_i,     -- 40 MHz logic clock
 

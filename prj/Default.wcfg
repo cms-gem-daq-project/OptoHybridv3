@@ -3,7 +3,7 @@
    <wave_state>
    </wave_state>
    <db_ref_list>
-      <db_ref path="D:/Dropbox/CMS/Firmware/OptoHybridv3/prj/optohybrid_top_tb_isim_beh.wdb" id="1" type="auto">
+      <db_ref path="D:/Dropbox/CMS/Firmware/oh_lite/prj/optohybrid_top_tb_isim_beh.wdb" id="1" type="auto">
          <top_modules>
             <top_module name="attributes" />
             <top_module name="glbl" />
@@ -12,6 +12,7 @@
             <top_module name="optohybrid_top_tb" />
             <top_module name="param_pkg" />
             <top_module name="registers" />
+            <top_module name="sixbit_eightbit_pkg" />
             <top_module name="std_logic_1164" />
             <top_module name="std_logic_arith" />
             <top_module name="std_logic_misc" />
@@ -29,229 +30,767 @@
          </top_modules>
       </db_ref>
    </db_ref_list>
-   <WVObjectSize size="44" />
+   <WVObjectSize size="145" />
    <wave_markers>
       <marker time="3935780000" label="" />
       <marker time="12805040000" label="" />
       <marker time="7404320000" label="" />
    </wave_markers>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits_inst/cluster_packer_inst/vpfs" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">vpfs[1535:0]</obj_property>
-      <obj_property name="ObjectShortName">vpfs[1535:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits_inst/cluster_packer_inst/cluster0" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">cluster0[13:0]</obj_property>
-      <obj_property name="ObjectShortName">cluster0[13:0]</obj_property>
-      <obj_property name="Radix">HEXRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits_inst/cluster_packer_inst/cluster1" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">cluster1[13:0]</obj_property>
-      <obj_property name="ObjectShortName">cluster1[13:0]</obj_property>
-      <obj_property name="Radix">HEXRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits_inst/cluster_packer_inst/cluster2" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">cluster2[13:0]</obj_property>
-      <obj_property name="ObjectShortName">cluster2[13:0]</obj_property>
-      <obj_property name="Radix">HEXRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits_inst/cluster_packer_inst/cluster3" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">cluster3[13:0]</obj_property>
-      <obj_property name="ObjectShortName">cluster3[13:0]</obj_property>
-      <obj_property name="Radix">HEXRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits_inst/cluster_packer_inst/cluster4" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">cluster4[13:0]</obj_property>
-      <obj_property name="ObjectShortName">cluster4[13:0]</obj_property>
-      <obj_property name="Radix">HEXRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits_inst/cluster_packer_inst/cluster5" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">cluster5[13:0]</obj_property>
-      <obj_property name="ObjectShortName">cluster5[13:0]</obj_property>
-      <obj_property name="Radix">HEXRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits_inst/cluster_packer_inst/cluster6" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">cluster6[13:0]</obj_property>
-      <obj_property name="ObjectShortName">cluster6[13:0]</obj_property>
-      <obj_property name="Radix">HEXRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits_inst/cluster_packer_inst/cluster7" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">cluster7[13:0]</obj_property>
-      <obj_property name="ObjectShortName">cluster7[13:0]</obj_property>
-      <obj_property name="Radix">HEXRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits_inst/cluster_packer_inst/u_count_clusters/cnt_o" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">cnt_o[10:0]</obj_property>
-      <obj_property name="ObjectShortName">cnt_o[10:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/cluster_count_i" type="array" db_ref_id="1">
+   <wvobject fp_name="group40" type="group">
+      <obj_property name="label">clocking</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="ElementShortName">cluster_count_i[7:0]</obj_property>
-      <obj_property name="ObjectShortName">cluster_count_i[7:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      <obj_property name="label">cluster count from cluster packer</obj_property>
+      <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/clocking/elink_clock_p" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">elink_clock_p</obj_property>
+         <obj_property name="ObjectShortName">elink_clock_p</obj_property>
+      </wvobject>
+      <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/clocking/elink_clock_n" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">elink_clock_n</obj_property>
+         <obj_property name="ObjectShortName">elink_clock_n</obj_property>
+      </wvobject>
+      <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/clocking/clock" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">clock</obj_property>
+         <obj_property name="ObjectShortName">clock</obj_property>
+      </wvobject>
+      <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/clocking/mmcm_locked" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">mmcm_locked[1:0]</obj_property>
+         <obj_property name="ObjectShortName">mmcm_locked[1:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/clocking/mmcm_unlocked" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">mmcm_unlocked[1:0]</obj_property>
+         <obj_property name="ObjectShortName">mmcm_unlocked[1:0]</obj_property>
+      </wvobject>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/active_vfats_i" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">active_vfats_i[23:0]</obj_property>
-      <obj_property name="ObjectShortName">active_vfats_i[23:0]</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/startup_clock" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">startup_clock[11:0]</obj_property>
+      <obj_property name="ObjectShortName">startup_clock[11:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/startup_count" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">startup_count[31:0]</obj_property>
+      <obj_property name="ObjectShortName">startup_count[31:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/startup_done" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">startup_done</obj_property>
+      <obj_property name="ObjectShortName">startup_done</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/elink_i_p" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">elink_i_p</obj_property>
+      <obj_property name="ObjectShortName">elink_i_p</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/elink_data" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">elink_data[7:0]</obj_property>
+      <obj_property name="ObjectShortName">elink_data[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="CustomSignalColor">#ff00ff</obj_property>
+   </wvobject>
+   <wvobject fp_name="vbus158" type="vbus" db_ref_id="1">
+      <obj_property name="label">elink_data_unremapped</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="CustomSignalColor">#00ff00</obj_property>
+      <wvobject fp_name="/optohybrid_top_tb/elink_data[4]" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">[4]</obj_property>
+         <obj_property name="ObjectShortName">elink_data[4]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/optohybrid_top_tb/elink_data[5]" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">[5]</obj_property>
+         <obj_property name="ObjectShortName">elink_data[5]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/optohybrid_top_tb/elink_data[6]" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">[6]</obj_property>
+         <obj_property name="ObjectShortName">elink_data[6]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/optohybrid_top_tb/elink_data[7]" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">[7]</obj_property>
+         <obj_property name="ObjectShortName">elink_data[7]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/optohybrid_top_tb/elink_data[0]" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">[0]</obj_property>
+         <obj_property name="ObjectShortName">elink_data[0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/optohybrid_top_tb/elink_data[1]" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">[1]</obj_property>
+         <obj_property name="ObjectShortName">elink_data[1]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/optohybrid_top_tb/elink_data[2]" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">[2]</obj_property>
+         <obj_property name="ObjectShortName">elink_data[2]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/optohybrid_top_tb/elink_data[3]" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">[3]</obj_property>
+         <obj_property name="ObjectShortName">elink_data[3]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/from_gbt_raw" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">from_gbt_raw[7:0]</obj_property>
+      <obj_property name="ObjectShortName">from_gbt_raw[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="CustomSignalColor">#00ff00</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/from_gbt" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">from_gbt[7:0]</obj_property>
+      <obj_property name="ObjectShortName">from_gbt[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="CustomSignalColor">#00ff00</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/from_gbt_remapped" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">from_gbt_remapped[7:0]</obj_property>
+      <obj_property name="ObjectShortName">from_gbt_remapped[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="CustomSignalColor">#00ff00</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/data_o" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">data_o[7:0]</obj_property>
+      <obj_property name="ObjectShortName">data_o[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="CustomSignalColor">#ff00ff</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/from_gbt0" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">from_gbt0[7:0]</obj_property>
+      <obj_property name="ObjectShortName">from_gbt0[7:0]</obj_property>
       <obj_property name="Radix">HEXRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/trigger_links_inst/valid_clusters" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">valid_clusters[7:0]</obj_property>
-      <obj_property name="ObjectShortName">valid_clusters[7:0]</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/from_gbt1" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">from_gbt1[7:0]</obj_property>
+      <obj_property name="ObjectShortName">from_gbt1[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/trigger_links_inst/valid_clusters_or" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">valid_clusters_or</obj_property>
-      <obj_property name="ObjectShortName">valid_clusters_or</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/from_gbt2" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">from_gbt2[7:0]</obj_property>
+      <obj_property name="ObjectShortName">from_gbt2[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/cluster_rate" type="array" db_ref_id="1">
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/from_gbt3" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">from_gbt3[7:0]</obj_property>
+      <obj_property name="ObjectShortName">from_gbt3[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/from_gbt4" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">from_gbt4[7:0]</obj_property>
+      <obj_property name="ObjectShortName">from_gbt4[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/from_gbt5" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">from_gbt5[7:0]</obj_property>
+      <obj_property name="ObjectShortName">from_gbt5[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/from_gbt6" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">from_gbt6[7:0]</obj_property>
+      <obj_property name="ObjectShortName">from_gbt6[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/from_gbt7" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">from_gbt7[7:0]</obj_property>
+      <obj_property name="ObjectShortName">from_gbt7[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="divider160" type="divider">
+      <obj_property name="label">aligner</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="ElementShortName">cluster_rate[31:0]</obj_property>
-      <obj_property name="ObjectShortName">cluster_rate[31:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      <obj_property name="label">cluster rate from led module</obj_property>
+      <obj_property name="BkColor">128 128 255</obj_property>
+      <obj_property name="TextColor">230 230 230</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/cnt_clusters" type="array" db_ref_id="1">
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/bitslip_increment" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">bitslip_increment</obj_property>
+      <obj_property name="ObjectShortName">bitslip_increment</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/rx_bitslip_cnt" type="other" db_ref_id="1">
+      <obj_property name="ElementShortName">rx_bitslip_cnt</obj_property>
+      <obj_property name="ObjectShortName">rx_bitslip_cnt</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link_inst/gbt_rx_inst/error_o" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">error_o</obj_property>
+      <obj_property name="ObjectShortName">error_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="divider194" type="divider">
+      <obj_property name="label">New Divider</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="ElementShortName">cnt_clusters[31:0]</obj_property>
-      <obj_property name="ObjectShortName">cnt_clusters[31:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      <obj_property name="label">cluster rate from valid or</obj_property>
+      <obj_property name="BkColor">128 128 255</obj_property>
+      <obj_property name="TextColor">230 230 230</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/cnt_vfat0" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">cnt_vfat0[31:0]</obj_property>
-      <obj_property name="ObjectShortName">cnt_vfat0[31:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/from_gbt" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">from_gbt[7:0]</obj_property>
+      <obj_property name="ObjectShortName">from_gbt[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/cnt_vfat1" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">cnt_vfat1[31:0]</obj_property>
-      <obj_property name="ObjectShortName">cnt_vfat1[31:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   <wvobject fp_name="group31" type="group">
+      <obj_property name="label">serdes</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/cnt_vfat2" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">cnt_vfat2[31:0]</obj_property>
-      <obj_property name="ObjectShortName">cnt_vfat2[31:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/bitslip_increment" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">bitslip_increment</obj_property>
+      <obj_property name="ObjectShortName">bitslip_increment</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/cnt_vfat3" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">cnt_vfat3[31:0]</obj_property>
-      <obj_property name="ObjectShortName">cnt_vfat3[31:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/rx_bitslip_cnt" type="other" db_ref_id="1">
+      <obj_property name="ElementShortName">rx_bitslip_cnt</obj_property>
+      <obj_property name="ObjectShortName">rx_bitslip_cnt</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/cnt_vfat4" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">cnt_vfat4[31:0]</obj_property>
-      <obj_property name="ObjectShortName">cnt_vfat4[31:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   <wvobject fp_name="divider51" type="divider">
+      <obj_property name="label">New Divider</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="BkColor">128 128 255</obj_property>
+      <obj_property name="TextColor">230 230 230</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/cnt_vfat5" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">cnt_vfat5[31:0]</obj_property>
-      <obj_property name="ObjectShortName">cnt_vfat5[31:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   <wvobject fp_name="divider84" type="divider">
+      <obj_property name="label">ctp to oh</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="BkColor">128 128 255</obj_property>
+      <obj_property name="TextColor">230 230 230</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/cnt_vfat6" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">cnt_vfat6[31:0]</obj_property>
-      <obj_property name="ObjectShortName">cnt_vfat6[31:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/link_oh_fpga_tx/reset_i" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">reset_i</obj_property>
+      <obj_property name="ObjectShortName">reset_i</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/cnt_vfat7" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">cnt_vfat7[31:0]</obj_property>
-      <obj_property name="ObjectShortName">cnt_vfat7[31:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/link_oh_fpga_tx/ttc_clk_40_i" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">ttc_clk_40_i</obj_property>
+      <obj_property name="ObjectShortName">ttc_clk_40_i</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/cnt_vfat8" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">cnt_vfat8[31:0]</obj_property>
-      <obj_property name="ObjectShortName">cnt_vfat8[31:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/link_oh_fpga_tx/l1a_i" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">l1a_i</obj_property>
+      <obj_property name="ObjectShortName">l1a_i</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/cnt_vfat9" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">cnt_vfat9[31:0]</obj_property>
-      <obj_property name="ObjectShortName">cnt_vfat9[31:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/link_oh_fpga_tx/bc0_i" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">bc0_i</obj_property>
+      <obj_property name="ObjectShortName">bc0_i</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/cnt_vfat10" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">cnt_vfat10[31:0]</obj_property>
-      <obj_property name="ObjectShortName">cnt_vfat10[31:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/link_oh_fpga_tx/resync_i" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">resync_i</obj_property>
+      <obj_property name="ObjectShortName">resync_i</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/cnt_vfat11" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">cnt_vfat11[31:0]</obj_property>
-      <obj_property name="ObjectShortName">cnt_vfat11[31:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/link_oh_fpga_tx/elink_data_o" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">elink_data_o[7:0]</obj_property>
+      <obj_property name="ObjectShortName">elink_data_o[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/cnt_vfat12" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">cnt_vfat12[31:0]</obj_property>
-      <obj_property name="ObjectShortName">cnt_vfat12[31:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/link_oh_fpga_tx/request_valid_i" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">request_valid_i</obj_property>
+      <obj_property name="ObjectShortName">request_valid_i</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/cnt_vfat13" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">cnt_vfat13[31:0]</obj_property>
-      <obj_property name="ObjectShortName">cnt_vfat13[31:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/link_oh_fpga_tx/request_write_i" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">request_write_i</obj_property>
+      <obj_property name="ObjectShortName">request_write_i</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/cnt_vfat14" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">cnt_vfat14[31:0]</obj_property>
-      <obj_property name="ObjectShortName">cnt_vfat14[31:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/link_oh_fpga_tx/request_addr_i" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">request_addr_i[15:0]</obj_property>
+      <obj_property name="ObjectShortName">request_addr_i[15:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/cnt_vfat15" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">cnt_vfat15[31:0]</obj_property>
-      <obj_property name="ObjectShortName">cnt_vfat15[31:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/link_oh_fpga_tx/request_data_i" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">request_data_i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">request_data_i[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/cnt_vfat16" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">cnt_vfat16[31:0]</obj_property>
-      <obj_property name="ObjectShortName">cnt_vfat16[31:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/link_oh_fpga_tx/busy_o" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">busy_o</obj_property>
+      <obj_property name="ObjectShortName">busy_o</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/cnt_vfat17" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">cnt_vfat17[31:0]</obj_property>
-      <obj_property name="ObjectShortName">cnt_vfat17[31:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/link_oh_fpga_tx/state" type="other" db_ref_id="1">
+      <obj_property name="ElementShortName">state</obj_property>
+      <obj_property name="ObjectShortName">state</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/cnt_vfat18" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">cnt_vfat18[31:0]</obj_property>
-      <obj_property name="ObjectShortName">cnt_vfat18[31:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/link_oh_fpga_tx/data_frame_cnt" type="other" db_ref_id="1">
+      <obj_property name="ElementShortName">data_frame_cnt</obj_property>
+      <obj_property name="ObjectShortName">data_frame_cnt</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/cnt_vfat19" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">cnt_vfat19[31:0]</obj_property>
-      <obj_property name="ObjectShortName">cnt_vfat19[31:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/link_oh_fpga_tx/send_idle" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">send_idle</obj_property>
+      <obj_property name="ObjectShortName">send_idle</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/cnt_vfat20" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">cnt_vfat20[31:0]</obj_property>
-      <obj_property name="ObjectShortName">cnt_vfat20[31:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/link_oh_fpga_tx/reg_data" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">reg_data[47:0]</obj_property>
+      <obj_property name="ObjectShortName">reg_data[47:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/cnt_vfat21" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">cnt_vfat21[31:0]</obj_property>
-      <obj_property name="ObjectShortName">cnt_vfat21[31:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/link_oh_fpga_tx/g_frame_count_max" type="other" db_ref_id="1">
+      <obj_property name="ElementShortName">g_frame_count_max</obj_property>
+      <obj_property name="ObjectShortName">g_frame_count_max</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/cnt_vfat22" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">cnt_vfat22[31:0]</obj_property>
-      <obj_property name="ObjectShortName">cnt_vfat22[31:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/link_oh_fpga_tx/g_frame_width" type="other" db_ref_id="1">
+      <obj_property name="ElementShortName">g_frame_width</obj_property>
+      <obj_property name="ObjectShortName">g_frame_width</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/cnt_vfat23" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">cnt_vfat23[31:0]</obj_property>
-      <obj_property name="ObjectShortName">cnt_vfat23[31:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/link_oh_fpga_tx/frame_data" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">frame_data[5:0]</obj_property>
+      <obj_property name="ObjectShortName">frame_data[5:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbit_cnt_time_max" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">sbit_cnt_time_max[31:0]</obj_property>
-      <obj_property name="ObjectShortName">sbit_cnt_time_max[31:0]</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/link_oh_fpga_tx/elink_data" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">elink_data[7:0]</obj_property>
+      <obj_property name="ObjectShortName">elink_data[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbit_cnt_persist" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">sbit_cnt_persist</obj_property>
-      <obj_property name="ObjectShortName">sbit_cnt_persist</obj_property>
+   <wvobject fp_name="divider51" type="divider">
+      <obj_property name="label">fpga_rx</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="BkColor">128 128 255</obj_property>
+      <obj_property name="TextColor">230 230 230</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbit_timer_snap" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">sbit_timer_snap</obj_property>
-      <obj_property name="ObjectShortName">sbit_timer_snap</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_ready_i" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">gbt_ready_i</obj_property>
+      <obj_property name="ObjectShortName">gbt_ready_i</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbit_cnt_snap" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">sbit_cnt_snap</obj_property>
-      <obj_property name="ObjectShortName">sbit_cnt_snap</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link_inst/gbt_rx_inst/data_i" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">data_i[7:0]</obj_property>
+      <obj_property name="ObjectShortName">data_i[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link_inst/gbt_rx_inst/frame_data" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">frame_data[5:0]</obj_property>
+      <obj_property name="ObjectShortName">frame_data[5:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link_inst/gbt_rx_inst/frame_data_delay" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">frame_data_delay[5:0]</obj_property>
+      <obj_property name="ObjectShortName">frame_data_delay[5:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link_inst/gbt_rx_inst/l1a_o" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">l1a_o</obj_property>
+      <obj_property name="ObjectShortName">l1a_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link_inst/gbt_rx_inst/bc0_o" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">bc0_o</obj_property>
+      <obj_property name="ObjectShortName">bc0_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link_inst/gbt_rx_inst/resync_o" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">resync_o</obj_property>
+      <obj_property name="ObjectShortName">resync_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link_inst/gbt_rx_inst/req_en_o" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">req_en_o</obj_property>
+      <obj_property name="ObjectShortName">req_en_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link_inst/gbt_rx_inst/req_data_o" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">req_data_o[48:0]</obj_property>
+      <obj_property name="ObjectShortName">req_data_o[48:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link_inst/gbt_rx_inst/ready_o" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">ready_o</obj_property>
+      <obj_property name="ObjectShortName">ready_o</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="CustomSignalColor">#ff00ff</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link_inst/gbt_rx_inst/error_o" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">error_o</obj_property>
+      <obj_property name="ObjectShortName">error_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link_inst/gbt_rx_inst/req_valid" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">req_valid</obj_property>
+      <obj_property name="ObjectShortName">req_valid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link_inst/gbt_rx_inst/last_data_frame" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">last_data_frame</obj_property>
+      <obj_property name="ObjectShortName">last_data_frame</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link_inst/gbt_rx_inst/req_data" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">req_data[48:0]</obj_property>
+      <obj_property name="ObjectShortName">req_data[48:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link_inst/gbt_rx_inst/state" type="other" db_ref_id="1">
+      <obj_property name="ElementShortName">state</obj_property>
+      <obj_property name="ObjectShortName">state</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link_inst/gbt_rx_inst/data_frame_cnt" type="other" db_ref_id="1">
+      <obj_property name="ElementShortName">data_frame_cnt</obj_property>
+      <obj_property name="ObjectShortName">data_frame_cnt</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link_inst/gbt_rx_inst/ready_cnt" type="other" db_ref_id="1">
+      <obj_property name="ElementShortName">ready_cnt</obj_property>
+      <obj_property name="ObjectShortName">ready_cnt</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link_inst/gbt_rx_inst/ready" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">ready</obj_property>
+      <obj_property name="ObjectShortName">ready</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link_inst/gbt_rx_inst/char_is_data" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">char_is_data</obj_property>
+      <obj_property name="ObjectShortName">char_is_data</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link_inst/gbt_rx_inst/char_is_ttc" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">char_is_ttc</obj_property>
+      <obj_property name="ObjectShortName">char_is_ttc</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link_inst/gbt_rx_inst/char_is_header" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">char_is_header</obj_property>
+      <obj_property name="ObjectShortName">char_is_header</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link_inst/gbt_rx_inst/not_in_table" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">not_in_table</obj_property>
+      <obj_property name="ObjectShortName">not_in_table</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link_inst/gbt_rx_inst/reset" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link_inst/gbt_rx_inst/l1a" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">l1a</obj_property>
+      <obj_property name="ObjectShortName">l1a</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link_inst/gbt_rx_inst/bc0" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">bc0</obj_property>
+      <obj_property name="ObjectShortName">bc0</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link_inst/gbt_rx_inst/idle_rx" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">idle_rx</obj_property>
+      <obj_property name="ObjectShortName">idle_rx</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link_inst/gbt_rx_inst/resync" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">resync</obj_property>
+      <obj_property name="ObjectShortName">resync</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link_inst/gbt_rx_inst/g_frame_count_max" type="other" db_ref_id="1">
+      <obj_property name="ElementShortName">g_frame_count_max</obj_property>
+      <obj_property name="ObjectShortName">g_frame_count_max</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link_inst/gbt_rx_inst/g_ready_count_max" type="other" db_ref_id="1">
+      <obj_property name="ElementShortName">g_ready_count_max</obj_property>
+      <obj_property name="ObjectShortName">g_ready_count_max</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link_inst/gbt_rx_inst/g_frame_width" type="other" db_ref_id="1">
+      <obj_property name="ElementShortName">g_frame_width</obj_property>
+      <obj_property name="ObjectShortName">g_frame_width</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="divider101" type="divider">
+      <obj_property name="label">fpga_tx</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="BkColor">128 128 255</obj_property>
+      <obj_property name="TextColor">230 230 230</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link_inst/gbt_tx_inst/clock" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">clock</obj_property>
+      <obj_property name="ObjectShortName">clock</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link_inst/gbt_tx_inst/reset_i" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">reset_i</obj_property>
+      <obj_property name="ObjectShortName">reset_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link_inst/gbt_tx_inst/req_en_o" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">req_en_o</obj_property>
+      <obj_property name="ObjectShortName">req_en_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link_inst/gbt_tx_inst/req_valid_i" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">req_valid_i</obj_property>
+      <obj_property name="ObjectShortName">req_valid_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link_inst/gbt_tx_inst/req_data_i" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">req_data_i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">req_data_i[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link_inst/gbt_tx_inst/state" type="other" db_ref_id="1">
+      <obj_property name="ElementShortName">state</obj_property>
+      <obj_property name="ObjectShortName">state</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link_inst/gbt_tx_inst/data_frame_cnt" type="other" db_ref_id="1">
+      <obj_property name="ElementShortName">data_frame_cnt</obj_property>
+      <obj_property name="ObjectShortName">data_frame_cnt</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link_inst/gbt_tx_inst/req_valid" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">req_valid</obj_property>
+      <obj_property name="ObjectShortName">req_valid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link_inst/gbt_tx_inst/frame" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">frame[5:0]</obj_property>
+      <obj_property name="ObjectShortName">frame[5:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link_inst/gbt_tx_inst/reg_data" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">reg_data[35:0]</obj_property>
+      <obj_property name="ObjectShortName">reg_data[35:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link_inst/gbt_tx_inst/send_idle" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">send_idle</obj_property>
+      <obj_property name="ObjectShortName">send_idle</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link_inst/gbt_tx_inst/reset" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link_inst/gbt_tx_inst/g_frame_count_max" type="other" db_ref_id="1">
+      <obj_property name="ElementShortName">g_frame_count_max</obj_property>
+      <obj_property name="ObjectShortName">g_frame_count_max</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link_inst/gbt_tx_inst/g_frame_width" type="other" db_ref_id="1">
+      <obj_property name="ElementShortName">g_frame_width</obj_property>
+      <obj_property name="ObjectShortName">g_frame_width</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link_inst/gbt_tx_inst/data_o" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">data_o[7:0]</obj_property>
+      <obj_property name="ObjectShortName">data_o[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="CustomSignalColor">#ff00ff</obj_property>
+   </wvobject>
+   <wvobject fp_name="divider117" type="divider">
+      <obj_property name="label">ctp7_rx</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="BkColor">128 128 255</obj_property>
+      <obj_property name="TextColor">230 230 230</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/i_gbt_rx_link/reset_i" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">reset_i</obj_property>
+      <obj_property name="ObjectShortName">reset_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/i_gbt_rx_link/ttc_clk_40_i" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">ttc_clk_40_i</obj_property>
+      <obj_property name="ObjectShortName">ttc_clk_40_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/i_gbt_rx_link/elink_data_i" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">elink_data_i[7:0]</obj_property>
+      <obj_property name="ObjectShortName">elink_data_i[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/i_gbt_rx_link/reg_data_valid_o" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">reg_data_valid_o</obj_property>
+      <obj_property name="ObjectShortName">reg_data_valid_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/i_gbt_rx_link/reg_data_o" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">reg_data_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">reg_data_o[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/i_gbt_rx_link/error_o" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">error_o</obj_property>
+      <obj_property name="ObjectShortName">error_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/i_gbt_rx_link/state" type="other" db_ref_id="1">
+      <obj_property name="ElementShortName">state</obj_property>
+      <obj_property name="ObjectShortName">state</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/i_gbt_rx_link/data_frame_cnt" type="other" db_ref_id="1">
+      <obj_property name="ElementShortName">data_frame_cnt</obj_property>
+      <obj_property name="ObjectShortName">data_frame_cnt</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/i_gbt_rx_link/reg_data_valid" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">reg_data_valid</obj_property>
+      <obj_property name="ObjectShortName">reg_data_valid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/i_gbt_rx_link/reg_data" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">reg_data[35:0]</obj_property>
+      <obj_property name="ObjectShortName">reg_data[35:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/i_gbt_rx_link/frame_data" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">frame_data[5:0]</obj_property>
+      <obj_property name="ObjectShortName">frame_data[5:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/i_gbt_rx_link/frame_data_delay" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">frame_data_delay[5:0]</obj_property>
+      <obj_property name="ObjectShortName">frame_data_delay[5:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/i_gbt_rx_link/char_is_data" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">char_is_data</obj_property>
+      <obj_property name="ObjectShortName">char_is_data</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/i_gbt_rx_link/not_in_table" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">not_in_table</obj_property>
+      <obj_property name="ObjectShortName">not_in_table</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/i_gbt_rx_link/idle_rx" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">idle_rx</obj_property>
+      <obj_property name="ObjectShortName">idle_rx</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/i_gbt_rx_link/g_frame_count_max" type="other" db_ref_id="1">
+      <obj_property name="ElementShortName">g_frame_count_max</obj_property>
+      <obj_property name="ObjectShortName">g_frame_count_max</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/i_gbt_rx_link/g_frame_width" type="other" db_ref_id="1">
+      <obj_property name="ElementShortName">g_frame_width</obj_property>
+      <obj_property name="ObjectShortName">g_frame_width</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/elink_o_parallel0" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">elink_o_parallel0[7:0]</obj_property>
+      <obj_property name="ObjectShortName">elink_o_parallel0[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="CustomSignalColor">#ff00ff</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/elink_o_parallel1" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">elink_o_parallel1[7:0]</obj_property>
+      <obj_property name="ObjectShortName">elink_o_parallel1[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="CustomSignalColor">#ff00ff</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/elink_o_parallel2" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">elink_o_parallel2[7:0]</obj_property>
+      <obj_property name="ObjectShortName">elink_o_parallel2[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="CustomSignalColor">#ff00ff</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/elink_o_parallel3" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">elink_o_parallel3[7:0]</obj_property>
+      <obj_property name="ObjectShortName">elink_o_parallel3[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="CustomSignalColor">#ff00ff</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/elink_o_parallel4" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">elink_o_parallel4[7:0]</obj_property>
+      <obj_property name="ObjectShortName">elink_o_parallel4[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="CustomSignalColor">#ff00ff</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/elink_o_parallel5" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">elink_o_parallel5[7:0]</obj_property>
+      <obj_property name="ObjectShortName">elink_o_parallel5[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="CustomSignalColor">#ff00ff</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/elink_o_parallel6" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">elink_o_parallel6[7:0]</obj_property>
+      <obj_property name="ObjectShortName">elink_o_parallel6[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="CustomSignalColor">#ff00ff</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/elink_o_parallel7" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">elink_o_parallel7[7:0]</obj_property>
+      <obj_property name="ObjectShortName">elink_o_parallel7[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="CustomSignalColor">#ff00ff</obj_property>
+   </wvobject>
+   <wvobject fp_name="divider230" type="divider">
+      <obj_property name="label">New Divider</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="BkColor">128 128 255</obj_property>
+      <obj_property name="TextColor">230 230 230</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/i_gbt_rx_link/reset_i" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">reset_i</obj_property>
+      <obj_property name="ObjectShortName">reset_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/i_gbt_rx_link/ttc_clk_40_i" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">ttc_clk_40_i</obj_property>
+      <obj_property name="ObjectShortName">ttc_clk_40_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/i_gbt_rx_link/elink_data_i" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">elink_data_i[7:0]</obj_property>
+      <obj_property name="ObjectShortName">elink_data_i[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/i_gbt_rx_link/reg_data_valid_o" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">reg_data_valid_o</obj_property>
+      <obj_property name="ObjectShortName">reg_data_valid_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/i_gbt_rx_link/reg_data_o" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">reg_data_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">reg_data_o[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/i_gbt_rx_link/error_o" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">error_o</obj_property>
+      <obj_property name="ObjectShortName">error_o</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="CustomSignalColor">#ff0000</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/i_gbt_rx_link/state" type="other" db_ref_id="1">
+      <obj_property name="ElementShortName">state</obj_property>
+      <obj_property name="ObjectShortName">state</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/i_gbt_rx_link/data_frame_cnt" type="other" db_ref_id="1">
+      <obj_property name="ElementShortName">data_frame_cnt</obj_property>
+      <obj_property name="ObjectShortName">data_frame_cnt</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/i_gbt_rx_link/reg_data_valid" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">reg_data_valid</obj_property>
+      <obj_property name="ObjectShortName">reg_data_valid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/i_gbt_rx_link/reg_data" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">reg_data[35:0]</obj_property>
+      <obj_property name="ObjectShortName">reg_data[35:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/i_gbt_rx_link/frame_data" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">frame_data[5:0]</obj_property>
+      <obj_property name="ObjectShortName">frame_data[5:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/i_gbt_rx_link/frame_data_delay" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">frame_data_delay[5:0]</obj_property>
+      <obj_property name="ObjectShortName">frame_data_delay[5:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/i_gbt_rx_link/char_is_data" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">char_is_data</obj_property>
+      <obj_property name="ObjectShortName">char_is_data</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/i_gbt_rx_link/not_in_table" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">not_in_table</obj_property>
+      <obj_property name="ObjectShortName">not_in_table</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/i_gbt_rx_link/even_odd" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">even_odd</obj_property>
+      <obj_property name="ObjectShortName">even_odd</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/i_gbt_rx_link/idle_rx" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">idle_rx</obj_property>
+      <obj_property name="ObjectShortName">idle_rx</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/i_gbt_rx_link/bitslip_buf" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">bitslip_buf[15:0]</obj_property>
+      <obj_property name="ObjectShortName">bitslip_buf[15:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/i_gbt_rx_link/bitslip_data" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">bitslip_data[7:0]</obj_property>
+      <obj_property name="ObjectShortName">bitslip_data[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/i_gbt_rx_link/bitslip_cnt" type="other" db_ref_id="1">
+      <obj_property name="ElementShortName">bitslip_cnt</obj_property>
+      <obj_property name="ObjectShortName">bitslip_cnt</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/i_gbt_rx_link/ready" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">ready</obj_property>
+      <obj_property name="ObjectShortName">ready</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/i_gbt_rx_link/ready_cnt" type="other" db_ref_id="1">
+      <obj_property name="ElementShortName">ready_cnt</obj_property>
+      <obj_property name="ObjectShortName">ready_cnt</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/i_gbt_rx_link/rx_err" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">rx_err</obj_property>
+      <obj_property name="ObjectShortName">rx_err</obj_property>
    </wvobject>
 </wave_config>
