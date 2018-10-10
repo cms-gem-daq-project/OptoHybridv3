@@ -64,7 +64,7 @@ architecture Behavioral of gbt_rx is
     type state_t is (ERR, IDLE, START, DATA);
 
     signal req_valid    : std_logic;
-    signal req_data     : std_logic_vector(WB_REQ_BITS-1 downto 0);
+    signal req_data     : std_logic_vector(WB_REQ_BITS-1 downto 0) := (others => '0');
 
     signal state        : state_t := IDLE;
 

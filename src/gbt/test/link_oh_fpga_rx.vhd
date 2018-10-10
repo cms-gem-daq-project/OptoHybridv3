@@ -117,6 +117,7 @@ begin
     --------------------------------------------------------------------------------------------------------------------
     -- Bitslip alignment
     --------------------------------------------------------------------------------------------------------------------
+
     process(ttc_clk_40_i)
     begin
     if (rising_edge(ttc_clk_40_i)) then
@@ -222,7 +223,7 @@ begin
                 reg_data_valid <= '0';
                 if (state = DATA) then
                     reg_data ((g_FRAME_COUNT_MAX - data_frame_cnt) * g_FRAME_WIDTH - 1 downto (g_FRAME_COUNT_MAX-1-data_frame_cnt) * g_FRAME_WIDTH) <= frame_data_delay;
-                    if (data_frame_cnt = g_FRAME_COUNT_MAX) then
+                    if (data_frame_cnt = g_FRAME_COUNT_MAX-1) then
                         reg_data_valid <= '1';
                     end if;
                 end if;
