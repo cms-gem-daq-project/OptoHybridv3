@@ -37,6 +37,7 @@ port(
     elink_clock_n : in std_logic;
 
     gbt_clk40_o     : out std_logic; -- 40 MHz phase shiftable frame clock from GBT
+    gbt_clk80_o     : out std_logic; -- 80 MHz phase shiftable frame clock from GBT
     gbt_clk160_0_o  : out std_logic; -- 320 MHz phase shiftable frame clock from GBT
     gbt_clk160_90_o : out std_logic; -- 320 MHz phase shiftable frame clock from GBT
     gbt_clk320_o    : out std_logic; -- 320 MHz phase shiftable frame clock from GBT
@@ -106,6 +107,7 @@ architecture Behavioral of clocking is
     component gbt_clocking port (
         clk40_i_p, clk40_i_n    : in  std_logic;
         clk40_o, clk320_o       : out std_logic;
+        clk80_o                 : out std_logic;
         clk160_0_o, clk160_90_o : out std_logic;
         locked_o                : out std_logic
     );
@@ -137,8 +139,9 @@ architecture Behavioral of clocking is
       clk_in1_p : in     std_logic;
       clk_in1_n : in     std_logic;
       -- Clock out ports
-        clk40_o, clk320_o       : out std_logic;
+        clk40_o, clk320_o, clk80_o      : out std_logic;
         clk160_0_o, clk160_90_o : out std_logic;
+		  
         locked_o                : out std_logic
     );
 end component;
@@ -182,6 +185,7 @@ begin
           clk40_i_n    => elink_clock_n,
 
           clk40_o      => gbt_clk40_o,
+          clk80_o      => gbt_clk80_o,
           clk320_o     => gbt_clk320_o,
           clk160_0_o   => gbt_clk160_0_o,
           clk160_90_o   => gbt_clk160_90_o,
@@ -217,6 +221,7 @@ begin
         clk_in1_n  => elink_clock_n,
         -- Clock out ports
           clk40_o      => gbt_clk40_o,
+          clk80_o      => gbt_clk80_o,
           clk320_o     => gbt_clk320_o,
           clk160_0_o   => gbt_clk160_0_o,
           clk160_90_o   => gbt_clk160_90_o,

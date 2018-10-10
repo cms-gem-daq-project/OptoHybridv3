@@ -30,12 +30,249 @@
          </top_modules>
       </db_ref>
    </db_ref_list>
-   <WVObjectSize size="145" />
+   <WVObjectSize size="200" />
    <wave_markers>
       <marker time="3935780000" label="" />
       <marker time="12805040000" label="" />
       <marker time="7404320000" label="" />
    </wave_markers>
+   <wvobject fp_name="group213" type="group">
+      <obj_property name="label">New Group</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversample/rxd_p" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">rxd_p</obj_property>
+         <obj_property name="ObjectShortName">rxd_p</obj_property>
+      </wvobject>
+      <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversample/rxd_n" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">rxd_n</obj_property>
+         <obj_property name="ObjectShortName">rxd_n</obj_property>
+      </wvobject>
+      <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversample/data" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">data[1:0]</obj_property>
+         <obj_property name="ObjectShortName">data[1:0]</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversample/nclkio625" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">nclkio625</obj_property>
+         <obj_property name="ObjectShortName">nclkio625</obj_property>
+      </wvobject>
+      <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversample/clkio625" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">clkio625[1:0]</obj_property>
+         <obj_property name="ObjectShortName">clkio625[1:0]</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversample/clk625" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">clk625</obj_property>
+         <obj_property name="ObjectShortName">clk625</obj_property>
+      </wvobject>
+      <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversample/clk312m5" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">clk312m5</obj_property>
+         <obj_property name="ObjectShortName">clk312m5</obj_property>
+      </wvobject>
+      <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversample/rst" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">rst</obj_property>
+         <obj_property name="ObjectShortName">rst</obj_property>
+      </wvobject>
+      <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversample/rxdata_o" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">rxdata_o[7:0]</obj_property>
+         <obj_property name="ObjectShortName">rxdata_o[7:0]</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversample/data_p" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">data_p</obj_property>
+         <obj_property name="ObjectShortName">data_p</obj_property>
+      </wvobject>
+      <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversample/data_n" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">data_n</obj_property>
+         <obj_property name="ObjectShortName">data_n</obj_property>
+      </wvobject>
+      <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversample/q" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">q[7:0]</obj_property>
+         <obj_property name="ObjectShortName">q[7:0]</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversample/rxce" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">rxce</obj_property>
+         <obj_property name="ObjectShortName">rxce</obj_property>
+      </wvobject>
+      <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversample/dr/clk" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">clk</obj_property>
+         <obj_property name="ObjectShortName">clk</obj_property>
+      </wvobject>
+      <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversample/dr/clkp" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">clkp</obj_property>
+         <obj_property name="ObjectShortName">clkp</obj_property>
+      </wvobject>
+      <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversample/dr/i" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">i[7:0]</obj_property>
+         <obj_property name="ObjectShortName">i[7:0]</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversample/dr/o" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">o[7:0]</obj_property>
+         <obj_property name="ObjectShortName">o[7:0]</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversample/dr/vo" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">vo</obj_property>
+         <obj_property name="ObjectShortName">vo</obj_property>
+      </wvobject>
+      <wvobject fp_name="vbus279" type="vbus" db_ref_id="1">
+         <obj_property name="label">data_sel0</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
+         <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversample/dr/data_in_delay_uninverted[0]" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">[0]</obj_property>
+            <obj_property name="ObjectShortName">data_in_delay_uninverted[0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversample/dr/data_in_delay_uninverted[4]" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">[4]</obj_property>
+            <obj_property name="ObjectShortName">data_in_delay_uninverted[4]</obj_property>
+         </wvobject>
+      </wvobject>
+      <wvobject fp_name="vbus278" type="vbus" db_ref_id="1">
+         <obj_property name="label">data_sel1</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
+         <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversample/dr/data_in_delay_uninverted[1]" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">[1]</obj_property>
+            <obj_property name="ObjectShortName">data_in_delay_uninverted[1]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversample/dr/data_in_delay_uninverted[5]" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">[5]</obj_property>
+            <obj_property name="ObjectShortName">data_in_delay_uninverted[5]</obj_property>
+         </wvobject>
+      </wvobject>
+      <wvobject fp_name="vbus269" type="vbus" db_ref_id="1">
+         <obj_property name="label">data_sel2</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
+         <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversample/dr/data_in_delay[3]" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">[3]</obj_property>
+            <obj_property name="ObjectShortName">data_in_delay[3]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversample/dr/data_in_delay[7]" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">[7]</obj_property>
+            <obj_property name="ObjectShortName">data_in_delay[7]</obj_property>
+         </wvobject>
+      </wvobject>
+      <wvobject fp_name="vbus268" type="vbus" db_ref_id="1">
+         <obj_property name="label">data_sel3</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
+         <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversample/dr/data_in_delay_uninverted[2]" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">[2]</obj_property>
+            <obj_property name="ObjectShortName">data_in_delay_uninverted[2]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversample/dr/data_in_delay_uninverted[6]" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">[6]</obj_property>
+            <obj_property name="ObjectShortName">data_in_delay_uninverted[6]</obj_property>
+         </wvobject>
+      </wvobject>
+      <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversample/dr/data_in_delay" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">data_in_delay[7:0]</obj_property>
+         <obj_property name="ObjectShortName">data_in_delay[7:0]</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversample/dr/data_in_delay_uninverted" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">data_in_delay_uninverted[7:0]</obj_property>
+         <obj_property name="ObjectShortName">data_in_delay_uninverted[7:0]</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversample/dr/data7_delay_delay" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">data7_delay_delay</obj_property>
+         <obj_property name="ObjectShortName">data7_delay_delay</obj_property>
+      </wvobject>
+      <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversample/dr/positive_bitslip" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">positive_bitslip</obj_property>
+         <obj_property name="ObjectShortName">positive_bitslip</obj_property>
+      </wvobject>
+      <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversample/dr/negative_bitslip" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">negative_bitslip</obj_property>
+         <obj_property name="ObjectShortName">negative_bitslip</obj_property>
+      </wvobject>
+      <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversample/dr/e4" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">e4[3:0]</obj_property>
+         <obj_property name="ObjectShortName">e4[3:0]</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversample/dr/fifo_s1" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">fifo_s1[2:0]</obj_property>
+         <obj_property name="ObjectShortName">fifo_s1[2:0]</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversample/dr/bitslip_state" type="other" db_ref_id="1">
+         <obj_property name="ElementShortName">bitslip_state</obj_property>
+         <obj_property name="ObjectShortName">bitslip_state</obj_property>
+      </wvobject>
+      <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversample/dr/phase_sel_state" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">phase_sel_state[1:0]</obj_property>
+         <obj_property name="ObjectShortName">phase_sel_state[1:0]</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversample/dr/c_positive_bitslip" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">c_positive_bitslip</obj_property>
+         <obj_property name="ObjectShortName">c_positive_bitslip</obj_property>
+      </wvobject>
+      <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversample/dr/c_negative_bitslip" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">c_negative_bitslip</obj_property>
+         <obj_property name="ObjectShortName">c_negative_bitslip</obj_property>
+      </wvobject>
+      <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversample/dr/fifo_s2" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">fifo_s2[4:0]</obj_property>
+         <obj_property name="ObjectShortName">fifo_s2[4:0]</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversample/dr/fifo_s3" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">fifo_s3[4:0]</obj_property>
+         <obj_property name="ObjectShortName">fifo_s3[4:0]</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversample/dr/rxsh" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">rxsh[6:0]</obj_property>
+         <obj_property name="ObjectShortName">rxsh[6:0]</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversample/dr/rxdata" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">rxdata[7:0]</obj_property>
+         <obj_property name="ObjectShortName">rxdata[7:0]</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversample/dr/rxcnt" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">rxcnt[3:0]</obj_property>
+         <obj_property name="ObjectShortName">rxcnt[3:0]</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversample/dr/rxce" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">rxce</obj_property>
+         <obj_property name="ObjectShortName">rxce</obj_property>
+      </wvobject>
+      <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversample/dr/t" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">t</obj_property>
+         <obj_property name="ObjectShortName">t</obj_property>
+      </wvobject>
+      <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversample/dr/t1d" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">t1d</obj_property>
+         <obj_property name="ObjectShortName">t1d</obj_property>
+      </wvobject>
+      <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversample/dr/t2d" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">t2d</obj_property>
+         <obj_property name="ObjectShortName">t2d</obj_property>
+      </wvobject>
+      <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversample/dr/bitslip1d" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">bitslip1d</obj_property>
+         <obj_property name="ObjectShortName">bitslip1d</obj_property>
+      </wvobject>
+      <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversample/dr/bitslip2d" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">bitslip2d</obj_property>
+         <obj_property name="ObjectShortName">bitslip2d</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/startup_clock" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">startup_clock[11:0]</obj_property>
+      <obj_property name="ObjectShortName">startup_clock[11:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
    <wvobject fp_name="group40" type="group">
       <obj_property name="label">clocking</obj_property>
       <obj_property name="DisplayName">label</obj_property>
@@ -59,11 +296,6 @@
          <obj_property name="ElementShortName">mmcm_unlocked[1:0]</obj_property>
          <obj_property name="ObjectShortName">mmcm_unlocked[1:0]</obj_property>
       </wvobject>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/startup_clock" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">startup_clock[11:0]</obj_property>
-      <obj_property name="ObjectShortName">startup_clock[11:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/optohybrid_top_tb/startup_count" type="array" db_ref_id="1">
       <obj_property name="ElementShortName">startup_count[31:0]</obj_property>
@@ -190,6 +422,253 @@
    <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/from_gbt7" type="array" db_ref_id="1">
       <obj_property name="ElementShortName">from_gbt7[7:0]</obj_property>
       <obj_property name="ObjectShortName">from_gbt7[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="divider159" type="divider">
+      <obj_property name="label">oversampler</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="BkColor">128 128 255</obj_property>
+      <obj_property name="TextColor">230 230 230</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/posedge" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">posedge</obj_property>
+      <obj_property name="ObjectShortName">posedge</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/negedge" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">negedge</obj_property>
+      <obj_property name="ObjectShortName">negedge</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/from_gbt_fifo" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">from_gbt_fifo[7:0]</obj_property>
+      <obj_property name="ObjectShortName">from_gbt_fifo[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversampler/rx_p" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">rx_p</obj_property>
+      <obj_property name="ObjectShortName">rx_p</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversampler/rx_n" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">rx_n</obj_property>
+      <obj_property name="ObjectShortName">rx_n</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversampler/rxd_delay0" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">rxd_delay0</obj_property>
+      <obj_property name="ObjectShortName">rxd_delay0</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversampler/_rxd_delay45" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">_rxd_delay45</obj_property>
+      <obj_property name="ObjectShortName">_rxd_delay45</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversampler/clock" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">clock</obj_property>
+      <obj_property name="ObjectShortName">clock</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversampler/invert" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">invert</obj_property>
+      <obj_property name="ObjectShortName">invert</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversampler/reset_i" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">reset_i</obj_property>
+      <obj_property name="ObjectShortName">reset_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversampler/fastclock" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">fastclock</obj_property>
+      <obj_property name="ObjectShortName">fastclock</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversampler/fastclock90" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">fastclock90</obj_property>
+      <obj_property name="ObjectShortName">fastclock90</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversampler/fastclock180" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">fastclock180</obj_property>
+      <obj_property name="ObjectShortName">fastclock180</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversampler/phase_sel_in" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">phase_sel_in[1:0]</obj_property>
+      <obj_property name="ObjectShortName">phase_sel_in[1:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversampler/phase_sel_out" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">phase_sel_out[1:0]</obj_property>
+      <obj_property name="ObjectShortName">phase_sel_out[1:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversampler/stable_count_to_reset" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">stable_count_to_reset[7:0]</obj_property>
+      <obj_property name="ObjectShortName">stable_count_to_reset[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversampler/err_count_to_shift" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">err_count_to_shift[7:0]</obj_property>
+      <obj_property name="ObjectShortName">err_count_to_shift[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversampler/tap_delay_i" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">tap_delay_i[4:0]</obj_property>
+      <obj_property name="ObjectShortName">tap_delay_i[4:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversampler/rxd" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">rxd</obj_property>
+      <obj_property name="ObjectShortName">rxd</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversampler/_rxd" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">_rxd</obj_property>
+      <obj_property name="ObjectShortName">_rxd</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversampler/q" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">q[7:0]</obj_property>
+      <obj_property name="ObjectShortName">q[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversampler/i" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">i[7:0]</obj_property>
+      <obj_property name="ObjectShortName">i[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversampler/phase_err4" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">phase_err4[3:0]</obj_property>
+      <obj_property name="ObjectShortName">phase_err4[3:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversampler/phase_sel_local" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">phase_sel_local[1:0]</obj_property>
+      <obj_property name="ObjectShortName">phase_sel_local[1:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversampler/sample_sel" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">sample_sel[1:0]</obj_property>
+      <obj_property name="ObjectShortName">sample_sel[1:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversampler/phase_err" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">phase_err</obj_property>
+      <obj_property name="ObjectShortName">phase_err</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversampler/d0" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">d0</obj_property>
+      <obj_property name="ObjectShortName">d0</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversampler/d1" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">d1</obj_property>
+      <obj_property name="ObjectShortName">d1</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversampler/reset" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversampler/tap_delay0" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">tap_delay0[4:0]</obj_property>
+      <obj_property name="ObjectShortName">tap_delay0[4:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversampler/tap_delay45" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">tap_delay45[4:0]</obj_property>
+      <obj_property name="ObjectShortName">tap_delay45[4:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversampler/ii" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">ii[7:0]</obj_property>
+      <obj_property name="ObjectShortName">ii[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversampler/id" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">id[7:0]</obj_property>
+      <obj_property name="ObjectShortName">id[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversampler/i7dd" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">i7dd</obj_property>
+      <obj_property name="ObjectShortName">i7dd</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversampler/eq4" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">eq4[3:0]</obj_property>
+      <obj_property name="ObjectShortName">eq4[3:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversampler/rising" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">rising</obj_property>
+      <obj_property name="ObjectShortName">rising</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversampler/falling" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">falling</obj_property>
+      <obj_property name="ObjectShortName">falling</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversampler/phase_sm" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">phase_sm[1:0]</obj_property>
+      <obj_property name="ObjectShortName">phase_sm[1:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversampler/phase_sm_last" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">phase_sm_last[1:0]</obj_property>
+      <obj_property name="ObjectShortName">phase_sm_last[1:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversampler/err_count" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">err_count[7:0]</obj_property>
+      <obj_property name="ObjectShortName">err_count[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversampler/stable_count" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">stable_count[7:0]</obj_property>
+      <obj_property name="ObjectShortName">stable_count[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversampler/link_stable" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">link_stable</obj_property>
+      <obj_property name="ObjectShortName">link_stable</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversampler/vote_to_shift" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">vote_to_shift</obj_property>
+      <obj_property name="ObjectShortName">vote_to_shift</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversampler/FPGA_TYPE_IS_VIRTEX6" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">FPGA_TYPE_IS_VIRTEX6[31:0]</obj_property>
+      <obj_property name="ObjectShortName">FPGA_TYPE_IS_VIRTEX6[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversampler/FPGA_TYPE_IS_ARTIX7" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">FPGA_TYPE_IS_ARTIX7[31:0]</obj_property>
+      <obj_property name="ObjectShortName">FPGA_TYPE_IS_ARTIX7[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversampler/DDR" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">DDR[31:0]</obj_property>
+      <obj_property name="ObjectShortName">DDR[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversampler/PHASE_SEL_EXTERNAL" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">PHASE_SEL_EXTERNAL[31:0]</obj_property>
+      <obj_property name="ObjectShortName">PHASE_SEL_EXTERNAL[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversampler/DATA_RATE" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">DATA_RATE[31:0]</obj_property>
+      <obj_property name="ObjectShortName">DATA_RATE[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversampler/NUM_TAPS_45" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">NUM_TAPS_45[4:0]</obj_property>
+      <obj_property name="ObjectShortName">NUM_TAPS_45[4:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversampler/sm_00" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">sm_00[1:0]</obj_property>
+      <obj_property name="ObjectShortName">sm_00[1:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversampler/sm_01" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">sm_01[1:0]</obj_property>
+      <obj_property name="ObjectShortName">sm_01[1:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversampler/sm_10" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">sm_10[1:0]</obj_property>
+      <obj_property name="ObjectShortName">sm_10[1:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes_inst/gbt_oversampler/sm_11" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">sm_11[1:0]</obj_property>
+      <obj_property name="ObjectShortName">sm_11[1:0]</obj_property>
       <obj_property name="Radix">HEXRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="divider160" type="divider">

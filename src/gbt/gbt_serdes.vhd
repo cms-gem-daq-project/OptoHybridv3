@@ -37,6 +37,7 @@ port(
     -- input clocks
 
     gbt_clk40      : in std_logic; -- 40 MHz phase shiftable frame clock from GBT
+    gbt_clk80      : in std_logic; -- 320 MHz phase shiftable frame clock from GBT
     gbt_clk160_0   : in std_logic; -- 320 MHz phase shiftable frame clock from GBT
     gbt_clk160_90  : in std_logic; -- 320 MHz phase shiftable frame clock from GBT
     gbt_clk320     : in std_logic; -- 320 MHz phase shiftable frame clock from GBT
@@ -102,33 +103,6 @@ architecture Behavioral of gbt_serdes is
     --== Virtex-6 ==--
     --==============--
 
-    COMPONENT oversampler
-    GENERIC (
-        FPGA_TYPE_IS_VIRTEX6  : INTEGER;
-        FPGA_TYPE_IS_ARTIX7   : INTEGER;
-        DDR                   : INTEGER;
-        PHASE_SEL_EXTERNAL    : INTEGER
-    );
-    PORT(
-        rx_p                  : IN std_logic;
-        rx_n                  : IN std_logic;
-        clock                 : IN std_logic;
-        invert                : IN std_logic;
-        reset_i               : IN std_logic;
-        fastclock             : IN std_logic;
-        fastclock90           : IN std_logic;
-        fastclock180          : IN std_logic;
-        phase_sel_in          : IN std_logic_vector(1 downto 0);
-        stable_count_to_reset : IN std_logic_vector(7 downto 0);
-        err_count_to_shift    : IN std_logic_vector(7 downto 0);
-        tap_delay_i           : IN std_logic_vector(4 downto 0);
-        phase_sel_out         : OUT std_logic_vector(1 downto 0);
-        phase_err             : OUT std_logic;
-        d0                    : OUT std_logic;
-        d1                    : OUT std_logic
-        );
-    END COMPONENT;
-
     component to_gbt_ser
     port(
         data_out_from_device : in std_logic_vector(7 downto 0);
@@ -147,47 +121,9 @@ architecture Behavioral of gbt_serdes is
     );
     end component;
 
-    component from_gbt_des
-    port(
-        data_in_from_pins_p : in  std_logic_vector(0 to 0);
-        data_in_from_pins_n : in  std_logic_vector(0 to 0);
-        delay_reset         : in  std_logic;
-        delay_data_ce       : in  std_logic_vector(0 to 0);
-        delay_data_inc      : in  std_logic_vector(0 to 0);
-        ref_clock           : in  std_logic;
-        bitslip             : in  std_logic;
-        clk_in              : in  std_logic;
-        clk_div_in          : in  std_logic;
-        refclk_reset        : in  std_logic;
-        cntvalueout         : out std_logic_vector (4 downto 0);
-        io_reset            : in  std_logic;
-        data_in_to_device   : out std_logic_vector(7 downto 0)
-    );
-    end component;
-
     --===============--
     --== Artix-7 ==--
     --===============--
-
-    component from_gbt_des_a7
-        generic
-        (-- width of the data for the system
-            SYS_W       : integer := 1;
-        -- width of the data for the device
-            DEV_W       : integer := 8);
-        port
-        (
-        -- From the system into the device
-            data_in_from_pins_p     : in    std_logic_vector(SYS_W-1 downto 0);
-            data_in_from_pins_n     : in    std_logic_vector(SYS_W-1 downto 0);
-            data_in_to_device       : out   std_logic_vector(DEV_W-1 downto 0);
-            bitslip                 : in    std_logic_vector(SYS_W-1 downto 0);                    -- Bitslip module is enabled in NETWORKING mode
-                                                                                                   -- User should tie it to '0' if not needed
-                                                                                                   -- Clock and reset signals
-            clk_in                  : in    std_logic;                    -- Fast clock from PLL/MMCM
-            clk_div_in              : in    std_logic;                    -- Slow clock from PLL/MMCM
-            io_reset                : in    std_logic);                   -- Reset signal for IO circuit
-    end component;
 
     component to_gbt_ser_a7
         generic
@@ -255,62 +191,18 @@ architecture Behavioral of gbt_serdes is
     --== INPUT DATA ==--
     --================--
 
-    -- sample the start of frame signals
-    gbt_oversampler : oversampler
-    generic map (
-        FPGA_TYPE_IS_VIRTEX6  => (FPGA_TYPE_IS_VIRTEX6),
-        FPGA_TYPE_IS_ARTIX7   => (FPGA_TYPE_IS_ARTIX7),
-        DDR                   => 0,
-        PHASE_SEL_EXTERNAL    => 0 -- automatic control
-    )
+    gbt_oversample : entity work.oversample
     port map (
-
-        tap_delay_i => "00000",
-
-        invert => '0',
-
-        rx_p => elink_i_p,
-        rx_n => elink_i_n,
-
-        clock       =>  gbt_clk40,
-        reset_i     =>  reset,
-
-        -- keep all clocks inverted here, so that they are centered w/r/t the rising edge when doing frame alignment
-
-        fastclock        => gbt_clk160_0,
-        fastclock90      => gbt_clk160_90,
-        fastclock180     => not gbt_clk160_0,
-
-        phase_sel_in     => "00",
-        phase_sel_out    => open,
-
-        err_count_to_shift => x"ff",
-        stable_count_to_reset => x"3f",
-
-        phase_err        => open,
-
-        d0               => posedge,
-        d1               => negedge
+        rst         => '0',
+        rxd_p       => elink_i_p,
+        rxd_n       => elink_i_n,
+        clk1x_logic => gbt_clk80,
+        clk2x_logic => gbt_clk160_0,
+        clk2x_0     => gbt_clk160_0,
+        clk2x_90    => gbt_clk160_90,
+        clk2x_180   => not gbt_clk160_0,
+        rxdata_o    => from_gbt_raw
     );
-
-
-    process (gbt_clk160_0) begin
-        if (rising_edge(gbt_clk160_0)) then
-          from_gbt_fifo (7 downto 0) <= from_gbt_fifo (5 downto 0) & negedge & posedge  ;
-        end if;
-    end process;
-
-    process (gbt_clk40) begin
-        if (rising_edge(gbt_clk40)) then
-          from_gbt_raw <= from_gbt_fifo;
-        end if;
-    end process;
-
-    ------------------------------------------------------------------------------------------------------------------------
-    -- mapping
-    ------------------------------------------------------------------------------------------------------------------------
-    --from_gbt_remapped <= from_gbt_raw(0) & from_gbt_raw(1) & from_gbt_raw(2) & from_gbt_raw(3) & from_gbt_raw(4) & from_gbt_raw(5) & from_gbt_raw(6) & from_gbt_raw(7);
-    --from_gbt_remapped <= from_gbt_raw;
 
     --------------------------------------------------------------------------------------------------------------------
     -- Bitslip
@@ -355,7 +247,7 @@ architecture Behavioral of gbt_serdes is
         dout        => from_gbt
     );
 
-    from_gbt_remapped <= from_gbt(6) & from_gbt(7) & from_gbt(4) & from_gbt(5) & from_gbt(2) & from_gbt(3) & from_gbt(0) & from_gbt(1);
+    from_gbt_remapped <= from_gbt;
 
     ------------------------------------------------------------------------------------------------------------------------
     -- cross domain from GBT rx clock to FPGA logic clock
