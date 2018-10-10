@@ -3,11 +3,18 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 entity dru is
+generic (
+  g_PHASE_SEL_EXTERNAL : boolean := FALSE
+);
 port(
   clk1x : in  std_logic;                    -- 80 MHz clock
   clk2x : in  std_logic;                    -- 160 MHz clock
   i     : in  std_logic_vector(7 downto 0); -- 8-bit input, the even bits are inverted!
   o     : out std_logic_vector(7 downto 0); -- 8-bit recovered output
+
+  phase_sel_in  : in std_logic_vector (1 downto 0);
+  phase_sel_out : out std_logic_vector (1 downto 0);
+
   vo    : out std_logic);                   -- valid data out
 end dru;
 
@@ -39,16 +46,15 @@ architecture behavioral of dru is
   signal bitslip_state_dly : bitslip_state_t := slip_none;
 
 begin
+
+  ----------------------------------------------------------------------------------------------------------------------
+  -- Buffer data
+  ----------------------------------------------------------------------------------------------------------------------
   process(clk2x)
   begin
     if rising_edge(clk2x) then
 
       data_in_delay<=i;
-
-      e4(0)<=(data_in_delay(0) xnor data_in_delay(1)) or (data_in_delay(4) xnor data_in_delay(5));
-      e4(1)<=(data_in_delay(1) xnor data_in_delay(2)) or (data_in_delay(5) xnor data_in_delay(6));
-      e4(2)<=(data_in_delay(2) xnor data_in_delay(3)) or (data_in_delay(6) xnor data_in_delay(7));
-      e4(3)<=(data_in_delay(3) xnor data_in_delay(4)) or (data_in_delay_uninverted(7) xnor data_in_delay(0));
 
       data_in_delay_uninverted<=data_in_delay xor x"55";
 
@@ -57,35 +63,77 @@ begin
     end if;
   end process;
 
+  ----------------------------------------------------------------------------------------------------------------------
+  -- Self Phase alignment
+  ----------------------------------------------------------------------------------------------------------------------
+
+  phase_sel_out <= phase_sel_state;
+
+  --==============--
+  --== Internal ==--
+  --==============--
+
+  INTERNAL : if (not g_PHASE_SEL_EXTERNAL) generate
+    process (clk2x)
+    begin
+      if rising_edge(clk2x) then
+
+
+            e4(0)<=(data_in_delay(0) xnor data_in_delay(1)) or (data_in_delay(4) xnor data_in_delay(5));
+            e4(1)<=(data_in_delay(1) xnor data_in_delay(2)) or (data_in_delay(5) xnor data_in_delay(6));
+            e4(2)<=(data_in_delay(2) xnor data_in_delay(3)) or (data_in_delay(6) xnor data_in_delay(7));
+            e4(3)<=(data_in_delay(3) xnor data_in_delay(4)) or (data_in_delay_uninverted(7) xnor data_in_delay(0));
+
+
+            case phase_sel_state is
+
+              when "00"=>if e4(0)='1' then
+                          phase_sel_state<="10";
+                        elsif e4(3)='1' then
+                          phase_sel_state<="01";
+                        end if;
+              when "01"=>if e4(1)='1' then
+                          phase_sel_state<="00";
+                        elsif e4(0)='1' then
+                          phase_sel_state<="11";
+                        end if;
+              when "11"=>if e4(2)='1' then
+                          phase_sel_state<="01";
+                        elsif e4(1)='1' then
+                          phase_sel_state<="10";
+                        end if;
+              when "10"=>if e4(3)='1' then
+                          phase_sel_state<="11";
+                        elsif e4(2)='1' then
+                          phase_sel_state<="00";
+                        end if;
+              when others=>null;
+
+            end case;
+
+      end if;
+    end process;
+
+  end generate INTERNAL;
+
+  --==============--
+  --== External ==--
+  --==============--
+
+  EXTERNAL : if (g_PHASE_SEL_EXTERNAL) generate
+
+  e4 <= "0000";
+  phase_sel_state <= phase_sel_in;
+
+  end generate EXTERNAL;
+
+  ----------------------------------------------------------------------------------------------------------------------
+  -- Bitskip
+  ----------------------------------------------------------------------------------------------------------------------
+
   process (clk2x)
   begin
     if rising_edge(clk2x) then
-
-      case phase_sel_state is
-
-        when "00"=>if e4(0)='1' then
-                     phase_sel_state<="10";
-                   elsif e4(3)='1' then
-                     phase_sel_state<="01";
-                   end if;
-        when "01"=>if e4(1)='1' then
-                     phase_sel_state<="00";
-                   elsif e4(0)='1' then
-                     phase_sel_state<="11";
-                   end if;
-        when "11"=>if e4(2)='1' then
-                     phase_sel_state<="01";
-                   elsif e4(1)='1' then
-                     phase_sel_state<="10";
-                   end if;
-        when "10"=>if e4(3)='1' then
-                     phase_sel_state<="11";
-                   elsif e4(2)='1' then
-                     phase_sel_state<="00";
-                   end if;
-        when others=>null;
-
-      end case;
 
       if (phase_sel_state="10" and e4(3)='0' and e4(2)='1') then negative_bitslip <='1';
       else                                                       negative_bitslip <='0';
@@ -126,6 +174,9 @@ begin
 
   end process;
 
+  ----------------------------------------------------------------------------------------------------------------------
+  -- Output deserialization
+  ----------------------------------------------------------------------------------------------------------------------
 
   process(clk1x)
   begin
