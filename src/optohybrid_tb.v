@@ -244,16 +244,32 @@ parameter DDR = 0;
 
 
   reg          wr_en       = 1'b1;
+
   wire         wr_valid    = startup_done;
 
   wire  [15:0] address     = {5'h0, 11'h0}; // 32'h0; // write to loopback
   reg   [31:0] data        = 32'h12345678;
 
-  wire l1a      = 1'b0;
-  wire bc0      = 1'b0;
-  wire resync   = 1'b0;
+  parameter [11:0] bc0_cnt_max = 10'd512;
+  reg [11:0] bc0_cnt;
+  reg bc0;
 
-  wire [48:0] gbt_packet = {wr_en, wr_valid, address[15:0], data[31:0]};
+  always @(posedge clk40) begin
+
+    if (bc0_cnt == bc0_cnt_max-1) bc0 <= 1'b1;
+    else bc0 <= 1'b0;
+
+    if (bc0_cnt < bc0_cnt_max-1) begin
+      bc0_cnt <= bc0_cnt +1'b1;
+    end
+    else begin
+      bc0_cnt <= 0;
+    end
+  end
+
+
+  wire l1a      = 1'b0;
+  wire resync   = 1'b0;
 
   wire [7:0] elink_data;
 
@@ -277,10 +293,6 @@ parameter DDR = 0;
     .busy_o               ()
 
   );
-
-  always @(posedge clk40) begin
-    wr_en       <= ~wr_en;
-  end
 
   reg [1:0] clk40_sync;
 

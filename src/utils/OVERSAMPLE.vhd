@@ -68,127 +68,51 @@ begin
   );
 
   ----------------------------------------------------------------------------------------------------------------------
-  -- IODELAY
+  -- IODELAY in FPGA agnostic wrapper
   ----------------------------------------------------------------------------------------------------------------------
 
-  id_m:iodelaye1
-  generic map(
-          IDELAY_TYPE           => "VAR_LOADABLE",
-          IDELAY_VALUE          => 0,
-          HIGH_PERFORMANCE_MODE => TRUE,
-          REFCLK_FREQUENCY      => 200.0)
+  delay_master : entity work.iodelay
   port map(
-          c           => '0',
-          t           => '1',
-          rst         => '1',
-          ce          => '0',
-          inc         => '0',
-          cinvctrl    => '0',
-          cntvaluein  => tap_delay_0,
-          clkin       => '0',
-          idatain     => data_p,
-          datain      => '0',
-          odatain     => '0',
-          dataout     => data(0),
-          cntvalueout => open
+          tap_delay_i => tap_delay_0,
+          data_i      => data_p,
+          data_o      => data(0)
   );
 
-  id_s:iodelaye1
-  generic map(
-          IDELAY_TYPE           => "VAR_LOADABLE",
-          IDELAY_VALUE          => g_NUM_TAPS_45, -- 45 degree phase shift in 160 MHz clocks, using 78 ps taps
-          HIGH_PERFORMANCE_MODE => TRUE,
-          REFCLK_FREQUENCY      => 200.0)
+  delay_slave  : entity work.iodelay
   port map(
-          c           => '0',
-          t           => '1',
-          rst         => '1',
-          ce          => '0',
-          inc         => '0',
-          cinvctrl    => '0',
-          cntvaluein  => tap_delay_45,
-          clkin       => '0',
-          idatain     => data_n,
-          datain      => '0',
-          odatain     => '0',
-          dataout     => data(1),
-          cntvalueout => open
+          tap_delay_i => tap_delay_45,
+          data_i      => data_n,
+          data_o      => data(1)
   );
 
   ----------------------------------------------------------------------------------------------------------------------
-  -- ISERDES
+  -- ISERDES in FPGA agnostic wrapper
   ----------------------------------------------------------------------------------------------------------------------
 
-  ise1_m:iserdese1
-  generic map(
-          INTERFACE_TYPE => "OVERSAMPLE",
-          DATA_RATE      => "DDR", -- SPECIFY DATA RATE OF "DDR" OR "SDR"
-          DATA_WIDTH     => 4,     -- SPECIFY DATA WIDTH: NETWORKING SDR: 2, 3, 4, 5, 6, 7, 8 : DDR 4, 6, 8, 10
-          OFB_USED       => FALSE, --
-          NUM_CE         => 2,     -- DEFINE NUMBER OR CLOCK ENABLES TO AN INTEGER OF 1 OR 2
-          SERDES_MODE    => "MASTER",
-          IOBDELAY       => "IFD")
+  ise1_m: entity work.iserdes
   port map(
-          clk          => clk2x_0,
-          clkb         => clk2x_180,
-          oclk         => clk2x_90,
-          d            => '0',
-          bitslip      => '0',
-          ce1          => '1',
-          ce2          => '1',
-          clkdiv       => '0',
-          ddly         => data(0),
-          dynclkdivsel => '0',
-          dynclksel    => '0',
-          ofb          => '0',
-          rst          => '0',
-          shiftin1     => '0',
-          shiftin2     => '0',
-          o            => open,
-          q1           => q(1),
-          q2           => q(5),
-          q3           => q(3),
-          q4           => q(7),
-          q5           => open,
-          q6           => open,
-          shiftout1    => open,
-          shiftout2    => open
+          reset_i   => rst,
+          clk2x_0   => clk2x_0,
+          clk2x_180 => clk2x_180,
+          clk2x_90  => clk2x_90,
+          data_i    => data(0),
+          data_o(0) => q(1),
+          data_o(1) => q(5),
+          data_o(2) => q(3),
+          data_o(3) => q(7)
   );
 
-  ise1_s:iserdese1
-  generic map(
-          INTERFACE_TYPE => "OVERSAMPLE",
-          DATA_RATE      => "DDR", -- SPECIFY DATA RATE OF "DDR" OR "SDR"
-          DATA_WIDTH     => 4,     -- SPECIFY DATA WIDTH: NETWORKING SDR: 2, 3, 4, 5, 6, 7, 8 : DDR 4, 6, 8, 10
-          OFB_USED       => FALSE, --
-          NUM_CE         => 2,     -- DEFINE NUMBER OR CLOCK ENABLES TO AN INTEGER OF 1 OR 2
-          SERDES_MODE    => "MASTER",
-          IOBDELAY       => "IFD")
+  ise1_s: entity work.iserdes
   port map(
-          clk          => clk2x_0,
-          clkb         => clk2x_180,
-          oclk         => clk2x_90,
-          d            => '0',
-          bitslip      => '0',
-          ce1          => '1',
-          ce2          => '1',
-          clkdiv       => '0',
-          ddly         => data(1),
-          dynclkdivsel => '0',
-          dynclksel    => '0',
-          ofb          => '0',
-          rst          => '0',
-          shiftin1     => '0',
-          shiftin2     => '0',
-          o            => open,
-          q1           => q(0),
-          q2           => q(4),
-          q3           => q(2),
-          q4           => q(6),
-          q5           => open,
-          q6           => open,
-          shiftout1    => open,
-          shiftout2    => open
+          reset_i   => rst,
+          clk2x_0   => clk2x_0,
+          clk2x_180 => clk2x_180,
+          clk2x_90  => clk2x_90,
+          data_i    => data(1),
+          data_o(0) => q(0),
+          data_o(1) => q(4),
+          data_o(2) => q(2),
+          data_o(3) => q(6)
   );
 
   ----------------------------------------------------------------------------------------------------------------------
