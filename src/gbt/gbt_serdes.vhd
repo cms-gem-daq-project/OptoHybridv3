@@ -56,9 +56,6 @@ port(
     gbt_link_error_i : in std_logic; -- error on gbt rx
     gbt_ready_i      : in std_logic;
 
-    delay_refclk       : in std_logic;
-    delay_refclk_reset : in std_logic;
-
     -- parallel data to/from FPGA logic
     data_i           : in  std_logic_vector (MXBITS-1 downto 0);
     data_o           : out std_logic_vector (MXBITS-1 downto 0);
@@ -68,35 +65,35 @@ end gbt_serdes;
 
 architecture Behavioral of gbt_serdes is
 
-    signal from_gbt_fifo                 : std_logic_vector(MXBITS-1 downto 0) := (others => '0');
-    signal from_gbt_raw                  : std_logic_vector(MXBITS-1 downto 0) := (others => '0');
-    signal from_gbt_remapped             : std_logic_vector(MXBITS-1 downto 0) := (others => '0');
-    signal from_gbt                      : std_logic_vector(MXBITS-1 downto 0) := (others => '0');
-    signal from_gbt0                     : std_logic_vector(MXBITS-1 downto 0) := (others => '0');
-    signal from_gbt1                     : std_logic_vector(MXBITS-1 downto 0) := (others => '0');
-    signal from_gbt2                     : std_logic_vector(MXBITS-1 downto 0) := (others => '0');
-    signal from_gbt3                     : std_logic_vector(MXBITS-1 downto 0) := (others => '0');
-    signal from_gbt4                     : std_logic_vector(MXBITS-1 downto 0) := (others => '0');
-    signal from_gbt5                     : std_logic_vector(MXBITS-1 downto 0) := (others => '0');
-    signal from_gbt6                     : std_logic_vector(MXBITS-1 downto 0) := (others => '0');
-    signal from_gbt7                     : std_logic_vector(MXBITS-1 downto 0) := (others => '0');
+    signal from_gbt_fifo     : std_logic_vector(MXBITS-1 downto 0) := (others => '0');
+    signal from_gbt_raw      : std_logic_vector(MXBITS-1 downto 0) := (others => '0');
+    signal from_gbt_remapped : std_logic_vector(MXBITS-1 downto 0) := (others => '0');
+    signal from_gbt          : std_logic_vector(MXBITS-1 downto 0) := (others => '0');
+    signal from_gbt0         : std_logic_vector(MXBITS-1 downto 0) := (others => '0');
+    signal from_gbt1         : std_logic_vector(MXBITS-1 downto 0) := (others => '0');
+    signal from_gbt2         : std_logic_vector(MXBITS-1 downto 0) := (others => '0');
+    signal from_gbt3         : std_logic_vector(MXBITS-1 downto 0) := (others => '0');
+    signal from_gbt4         : std_logic_vector(MXBITS-1 downto 0) := (others => '0');
+    signal from_gbt5         : std_logic_vector(MXBITS-1 downto 0) := (others => '0');
+    signal from_gbt6         : std_logic_vector(MXBITS-1 downto 0) := (others => '0');
+    signal from_gbt7         : std_logic_vector(MXBITS-1 downto 0) := (others => '0');
 
-    signal posedge                 : std_logic := '1';
-    signal negedge                 : std_logic := '1';
+    signal posedge           : std_logic := '1';
+    signal negedge           : std_logic := '1';
 
-    signal to_gbt                        : std_logic_vector(MXBITS-1 downto 0) := (others => '0');
-    signal to_gbt_sync                   : std_logic_vector(MXBITS-1 downto 0) := (others => '0');
+    signal to_gbt            : std_logic_vector(MXBITS-1 downto 0) := (others => '0');
+    signal to_gbt_sync       : std_logic_vector(MXBITS-1 downto 0) := (others => '0');
 
-    signal iserdes_reset                 : std_logic := '1';
-    signal oserdes_reset                 : std_logic := '1';
+    signal iserdes_reset     : std_logic := '1';
+    signal oserdes_reset     : std_logic := '1';
 
-    signal bitslip_err_cnt : integer range 0 to BITSLIP_ERR_CNT_MAX-1 := 0;
+    signal bitslip_err_cnt   : integer range 0 to BITSLIP_ERR_CNT_MAX-1 := 0;
 
-    signal rx_bitslip_cnt                : integer range 0 to MXBITS-1 := 0;
+    signal rx_bitslip_cnt    : integer range 0 to MXBITS-1 := 0;
 
-    signal bitslip_increment             : std_logic := '0';
+    signal bitslip_increment : std_logic := '0';
 
-    signal reset                         : std_logic;
+    signal reset             : std_logic;
 
 
     --==============--
@@ -110,8 +107,6 @@ architecture Behavioral of gbt_serdes is
         delay_data_ce        : in std_logic_vector(0 to 0);
         delay_data_inc       : in std_logic_vector(0 to 0);
         delay_tap_in         : in std_logic_vector(4 downto 0);
-        ref_clock            : in std_logic;
-        refclk_reset         : in std_logic;
         clk_in               : in std_logic;
         clk_div_in           : in std_logic;
         io_reset             : in std_logic;
@@ -242,16 +237,16 @@ architecture Behavioral of gbt_serdes is
     port map(
         fabric_clk  => gbt_clk40,
         reset       => reset,
-        bitslip_cnt => rx_bitslip_cnt,
+        bitslip_cnt => std_logic_vector(to_unsigned(rx_bitslip_cnt,3)),
         din         => from_gbt_raw,
         dout        => from_gbt
     );
 
     from_gbt_remapped <= from_gbt;
 
-    ------------------------------------------------------------------------------------------------------------------------
+    --------------------------------------------------------------------------------------------------------------------
     -- cross domain from GBT rx clock to FPGA logic clock
-    ------------------------------------------------------------------------------------------------------------------------
+    --------------------------------------------------------------------------------------------------------------------
 
     gen_gbt_rx_data_synchronizer : for I in 0 to (MXBITS-1) generate
     begin
@@ -265,9 +260,9 @@ architecture Behavioral of gbt_serdes is
       );
     end generate;
 
-    --======================================================================================================================
-    --== OUTPUT DATA ==--
-    --======================================================================================================================
+    --------------------------------------------------------------------------------------------------------------------
+    -- Output Data
+    --------------------------------------------------------------------------------------------------------------------
 
     process(clock)
     begin
@@ -296,9 +291,9 @@ architecture Behavioral of gbt_serdes is
     -- Output serializer
     -- we want to output the data on the falling edge of the clock so that the GBT can sample on the rising edge
 
-    ------------------------------------------------------------------------------------------------------------------------
+    --------------------------------------------------------------------------------------------------------------------
     to_gbt_ser_gen_v6 : IF (FPGA_TYPE="VIRTEX6") GENERATE
-    ------------------------------------------------------------------------------------------------------------------------
+    --------------------------------------------------------------------------------------------------------------------
 
     i_to_gbt_ser320 : to_gbt_ser
     port map(
@@ -314,16 +309,14 @@ architecture Behavioral of gbt_serdes is
         DELAY_DATA_CE           => (others => '1'),
         DELAY_DATA_INC          => (others => '0'),
         DELAY_TAP_IN            => tx_delay_i,
-        DELAY_TAP_OUT           => open,
-        REFCLK_RESET            => delay_refclk_reset,             -- Reference clock calibration POR reset
-        REF_CLOCK               => delay_refclk
+        DELAY_TAP_OUT           => open
     );
 
     END GENERATE to_gbt_ser_gen_v6;
 
-    ------------------------------------------------------------------------------------------------------------------------
+    --------------------------------------------------------------------------------------------------------------------
     to_gbt_ser_gen_a7: IF (FPGA_TYPE="ARTIX7") GENERATE
-    ------------------------------------------------------------------------------------------------------------------------
+    --------------------------------------------------------------------------------------------------------------------
 
     i_to_gbt_ser0 : to_gbt_ser_a7
     port map(

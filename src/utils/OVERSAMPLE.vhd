@@ -12,6 +12,7 @@ generic (
   g_NUM_TAPS_45        : integer := 10
 );
 port(
+  invert        : in std_logic := '0';
   rxd_p         : in std_logic;
   rxd_n         : in std_logic;
   clk2x_0       : in std_logic;
@@ -29,15 +30,28 @@ end oversample;
 
 architecture behavioral of oversample is
 
+  signal reset         : std_logic;
   signal data_p,data_n : std_logic;
   signal q             : std_logic_vector(g_BIT_WIDTH-1 downto 0);
   signal rxdata        : std_logic_vector(g_BIT_WIDTH-1 downto 0):=(others=>'0');
+  signal rxdata_inv    : std_logic_vector(g_BIT_WIDTH-1 downto 0):=(others=>'0');
   signal rxce          : std_logic:='0';
   signal data          : std_logic_vector(1 downto 0);
   signal tap_delay_0   : std_logic_vector (tap_delay_i'high downto 0);
   signal tap_delay_45  : std_logic_vector (tap_delay_i'high downto 0);
 
 begin
+
+  ----------------------------------------------------------------------------------------------------------------------
+  -- Reset
+  ----------------------------------------------------------------------------------------------------------------------
+
+  process(clk2x_0)
+  begin
+    if rising_edge(clk2x_0) then
+      reset <= rst;
+    end if;
+  end process;
 
   ----------------------------------------------------------------------------------------------------------------------
   -- Tap Delay Addition
@@ -91,7 +105,7 @@ begin
 
   ise1_m: entity work.iserdes
   port map(
-          reset_i   => rst,
+          reset_i   => reset,
           clk2x_0   => clk2x_0,
           clk2x_180 => clk2x_180,
           clk2x_90  => clk2x_90,
@@ -104,7 +118,7 @@ begin
 
   ise1_s: entity work.iserdes
   port map(
-          reset_i   => rst,
+          reset_i   => reset,
           clk2x_0   => clk2x_0,
           clk2x_180 => clk2x_180,
           clk2x_90  => clk2x_90,
@@ -133,6 +147,8 @@ begin
           vo            => rxce           --
   );
 
-  rxdata_o <= rxdata (g_BIT_WIDTH-1 downto 0);
+  rxdata_inv <= rxdata when invert='0' else not rxdata;
+
+  rxdata_o <= (others => '0') when reset='1' else rxdata_inv (g_BIT_WIDTH-1 downto 0);
 
 end behavioral;

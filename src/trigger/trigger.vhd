@@ -27,54 +27,51 @@ port(
 
     -- ipbus wishbone
 
-    ipb_mosi_i : in  ipb_wbus;
-    ipb_miso_o : out ipb_rbus;
+    ipb_mosi_i        : in  ipb_wbus;
+    ipb_miso_o        : out ipb_rbus;
 
     -- links
-    mgt_clk_p : in std_logic_vector (1 downto 0); -- 160 MHz Reference Clock
-    mgt_clk_n : in std_logic_vector (1 downto 0); -- 160 MHz Reference Clock
+    mgt_clk_p         : in std_logic_vector (1 downto 0); -- 160 MHz Reference Clock
+    mgt_clk_n         : in std_logic_vector (1 downto 0); -- 160 MHz Reference Clock
 
-    clk_40 : in std_logic;
-    clk_80 : in std_logic;
-    clk_160 : in std_logic;
-    clk_200 : in std_logic;
-    clk_160_90 : in std_logic;
+    clk_40            : in std_logic;
+    clk_80            : in std_logic;
+    clk_160           : in std_logic;
+    clk_200           : in std_logic;
+    clk_160_90        : in std_logic;
 
-    delay_refclk_i : in std_logic;
-    delay_refclk_reset_i : in std_logic;
+    reset_i           : in std_logic;
+    ttc_resync        : in std_logic;
 
-    reset_i : in std_logic;
-    ttc_resync : in std_logic;
-
-    mgt_tx_p : out std_logic_vector(3 downto 0);
-    mgt_tx_n : out std_logic_vector(3 downto 0);
+    mgt_tx_p          : out std_logic_vector(3 downto 0);
+    mgt_tx_n          : out std_logic_vector(3 downto 0);
 
     -- ttc
 
-    trig_stop_i : in std_logic;
-    bxn_counter_i : in std_logic_vector(11 downto 0);
-    ttc_bx0_i     : in std_logic;
+    trig_stop_i       : in std_logic;
+    bxn_counter_i     : in std_logic_vector(11 downto 0);
+    ttc_bx0_i         : in std_logic;
 
     -- cluster packer
 
-    cluster_count_o         : out std_logic_vector (7 downto 0);
-    overflow_o              : out std_logic;
+    cluster_count_o   : out std_logic_vector (7 downto 0);
+    overflow_o        : out std_logic;
 
-    active_vfats_o          : out std_logic_vector (MXVFATS-1 downto 0);
-
-    -- sbits
-    vfat_sot_p     : in std_logic_vector (MXVFATS-1 downto 0);
-    vfat_sot_n     : in std_logic_vector (MXVFATS-1 downto 0);
-
-    vfat_sbits_p : in std_logic_vector ((MXVFATS*8)-1 downto 0);
-    vfat_sbits_n : in std_logic_vector ((MXVFATS*8)-1 downto 0);
+    active_vfats_o    : out std_logic_vector (MXVFATS-1 downto 0);
 
     -- sbits
+    vfat_sot_p        : in std_logic_vector (MXVFATS-1 downto 0);
+    vfat_sot_n        : in std_logic_vector (MXVFATS-1 downto 0);
 
-    master_slave_p : inout  std_logic_vector (11 downto 0);
-    master_slave_n : inout  std_logic_vector (11 downto 0);
+    vfat_sbits_p      : in std_logic_vector ((MXVFATS*8)-1 downto 0);
+    vfat_sbits_n      : in std_logic_vector ((MXVFATS*8)-1 downto 0);
 
-    cnt_snap : in std_logic
+    -- sbits
+
+    master_slave_p    : inout  std_logic_vector (11 downto 0);
+    master_slave_n    : inout  std_logic_vector (11 downto 0);
+
+    cnt_snap          : in std_logic
 
 
 );
@@ -91,8 +88,8 @@ architecture Behavioral of trigger is
     signal cluster6 : std_logic_vector (13 downto 0);
     signal cluster7 : std_logic_vector (13 downto 0);
 
-    signal sbit_overflow : std_logic;
-    signal sbit_clusters : sbit_cluster_array_t (7  downto 0);
+    signal sbit_overflow     : std_logic;
+    signal sbit_clusters     : sbit_cluster_array_t (7  downto 0);
     signal valid_clusters_or : std_logic;
     signal valid_clusters    : std_logic_vector (7 downto 0);
 
@@ -101,14 +98,9 @@ architecture Behavioral of trigger is
     signal vfat_mask : std_logic_vector (MXVFATS-1 downto 0);
     signal trig_deadtime : std_logic_vector (3 downto 0);
 
-    signal sot_frame_offset  : std_logic_vector (3 downto 0);
-
     signal sot_invert : std_logic_vector (MXVFATS-1 downto 0);     -- 24 or 12
     signal  tu_invert : std_logic_vector ((MXVFATS*8)-1 downto 0); -- 192 or 96
     signal  tu_mask   : std_logic_vector ((MXVFATS*8)-1 downto 0); -- 192 or 96
-
-    signal err_count_to_shift : std_logic_vector (7 downto 0);
-    signal stable_count_to_reset : std_logic_vector (7 downto 0);
 
     signal aligned_count_to_ready : std_logic_vector (11 downto 0);
 
@@ -188,6 +180,10 @@ architecture Behavioral of trigger is
 
 begin
 
+    --------------------------------------------------------------------------------------------------------------------
+    -- Resets
+    --------------------------------------------------------------------------------------------------------------------
+
     process (clk_40) begin
         if (rising_edge(clk_40)) then
             reset <= reset_i;
@@ -207,17 +203,21 @@ begin
         end if;
     end process;
 
-    process (clk_40) begin
-        if (rising_edge(clk_40)) then
-            sbit_cnt_snap <= (sbit_timer_snap or sbit_cnt_persist);
-        end if;
-    end process;
+    --------------------------------------------------------------------------------------------------------------------
+    -- Outputs
+    --------------------------------------------------------------------------------------------------------------------
 
     overflow_o <= sbit_overflow;
     active_vfats_o <= active_vfats;
 
+    --------------------------------------------------------------------------------------------------------------------
+    -- Counter Snap
+    --------------------------------------------------------------------------------------------------------------------
+
     process (clk_40) begin
         if (rising_edge(clk_40)) then
+
+            sbit_cnt_snap <= (sbit_timer_snap or sbit_cnt_persist);
 
             if (reset = '1') then
                 sbit_time_counter <= (others => '0');
@@ -237,29 +237,27 @@ begin
         end if;
     end process;
 
+    --------------------------------------------------------------------------------------------------------------------
+    -- S-bit deserilization and cluster building
+    --------------------------------------------------------------------------------------------------------------------
+
     sbits_inst : entity work.sbits
     port map (
 
         trig_stop_i             => trig_stop_i,
 
         clk40_i                 => clk_40,
+        clk80_i                 => clk_80,
         clk160_i                => clk_160,
         clk160_90_i             => clk_160_90,
         clk200_i                => clk_200,
-        delay_refclk_i          => delay_refclk_i,
-        delay_refclk_reset_i    => delay_refclk_reset_i,
 
         sbits_mux_sel           => sbits_mux_sel,
         sbits_mux_o             => sbits_mux,
 
-        sot_frame_offset => sot_frame_offset,
-
         sot_invert => sot_invert (MXVFATS-1 downto 0),
         tu_invert  => tu_invert,
         tu_mask    => tu_mask,
-
-        err_count_to_shift       => err_count_to_shift,
-        stable_count_to_reset    => stable_count_to_reset,
 
         aligned_count_to_ready   => aligned_count_to_ready,
 
@@ -290,9 +288,9 @@ begin
 
     );
 
-    --=================================--
-    --== Fixed latency trigger links ==--
-    --=================================--
+    --------------------------------------------------------------------------------------------------------------------
+    -- Fixed latency trigger links
+    --------------------------------------------------------------------------------------------------------------------
 
     trigger_links_inst : entity work.trigger_links
     generic map (
@@ -454,14 +452,11 @@ begin
     -- Connect read signals
     regs_read_arr(0)(REG_TRIG_CTRL_VFAT_MASK_MSB downto REG_TRIG_CTRL_VFAT_MASK_LSB) <= vfat_mask;
     regs_read_arr(0)(REG_TRIG_CTRL_SBIT_DEADTIME_MSB downto REG_TRIG_CTRL_SBIT_DEADTIME_LSB) <= trig_deadtime;
-    regs_read_arr(0)(REG_TRIG_CTRL_SOT_FRAME_OFFSET_MSB downto REG_TRIG_CTRL_SOT_FRAME_OFFSET_LSB) <= sot_frame_offset;
     regs_read_arr(1)(REG_TRIG_CTRL_ACTIVE_VFATS_MSB downto REG_TRIG_CTRL_ACTIVE_VFATS_LSB) <= active_vfats;
     regs_read_arr(2)(REG_TRIG_CTRL_CNT_OVERFLOW_MSB downto REG_TRIG_CTRL_CNT_OVERFLOW_LSB) <= cnt_sbit_overflow;
     regs_read_arr(2)(REG_TRIG_CTRL_ALIGNED_COUNT_TO_READY_MSB downto REG_TRIG_CTRL_ALIGNED_COUNT_TO_READY_LSB) <= aligned_count_to_ready;
     regs_read_arr(3)(REG_TRIG_CTRL_SBIT_SOT_READY_MSB downto REG_TRIG_CTRL_SBIT_SOT_READY_LSB) <= sot_is_aligned;
-    regs_read_arr(3)(REG_TRIG_CTRL_ERR_CNT_TO_SHIFT_MSB downto REG_TRIG_CTRL_ERR_CNT_TO_SHIFT_LSB) <= err_count_to_shift;
     regs_read_arr(4)(REG_TRIG_CTRL_SBIT_SOT_UNSTABLE_MSB downto REG_TRIG_CTRL_SBIT_SOT_UNSTABLE_LSB) <= sot_unstable;
-    regs_read_arr(4)(REG_TRIG_CTRL_STABLE_CNT_TO_RESET_MSB downto REG_TRIG_CTRL_STABLE_CNT_TO_RESET_LSB) <= stable_count_to_reset;
     regs_read_arr(5)(REG_TRIG_CTRL_INVERT_SOT_INVERT_MSB downto REG_TRIG_CTRL_INVERT_SOT_INVERT_LSB) <= sot_invert;
     regs_read_arr(6)(REG_TRIG_CTRL_INVERT_VFAT0_TU_INVERT_MSB downto REG_TRIG_CTRL_INVERT_VFAT0_TU_INVERT_LSB) <= TU_INVERT (7 downto 0);
     regs_read_arr(6)(REG_TRIG_CTRL_INVERT_VFAT1_TU_INVERT_MSB downto REG_TRIG_CTRL_INVERT_VFAT1_TU_INVERT_LSB) <= TU_INVERT (15 downto 8);
@@ -763,10 +758,7 @@ begin
     -- Connect write signals
     vfat_mask <= regs_write_arr(0)(REG_TRIG_CTRL_VFAT_MASK_MSB downto REG_TRIG_CTRL_VFAT_MASK_LSB);
     trig_deadtime <= regs_write_arr(0)(REG_TRIG_CTRL_SBIT_DEADTIME_MSB downto REG_TRIG_CTRL_SBIT_DEADTIME_LSB);
-    sot_frame_offset <= regs_write_arr(0)(REG_TRIG_CTRL_SOT_FRAME_OFFSET_MSB downto REG_TRIG_CTRL_SOT_FRAME_OFFSET_LSB);
     aligned_count_to_ready <= regs_write_arr(2)(REG_TRIG_CTRL_ALIGNED_COUNT_TO_READY_MSB downto REG_TRIG_CTRL_ALIGNED_COUNT_TO_READY_LSB);
-    err_count_to_shift <= regs_write_arr(3)(REG_TRIG_CTRL_ERR_CNT_TO_SHIFT_MSB downto REG_TRIG_CTRL_ERR_CNT_TO_SHIFT_LSB);
-    stable_count_to_reset <= regs_write_arr(4)(REG_TRIG_CTRL_STABLE_CNT_TO_RESET_MSB downto REG_TRIG_CTRL_STABLE_CNT_TO_RESET_LSB);
     sot_invert <= regs_write_arr(5)(REG_TRIG_CTRL_INVERT_SOT_INVERT_MSB downto REG_TRIG_CTRL_INVERT_SOT_INVERT_LSB);
     TU_INVERT (7 downto 0) <= regs_write_arr(6)(REG_TRIG_CTRL_INVERT_VFAT0_TU_INVERT_MSB downto REG_TRIG_CTRL_INVERT_VFAT0_TU_INVERT_LSB);
     TU_INVERT (15 downto 8) <= regs_write_arr(6)(REG_TRIG_CTRL_INVERT_VFAT1_TU_INVERT_MSB downto REG_TRIG_CTRL_INVERT_VFAT1_TU_INVERT_LSB);
@@ -1392,10 +1384,7 @@ begin
     -- Defaults
     regs_defaults(0)(REG_TRIG_CTRL_VFAT_MASK_MSB downto REG_TRIG_CTRL_VFAT_MASK_LSB) <= REG_TRIG_CTRL_VFAT_MASK_DEFAULT;
     regs_defaults(0)(REG_TRIG_CTRL_SBIT_DEADTIME_MSB downto REG_TRIG_CTRL_SBIT_DEADTIME_LSB) <= REG_TRIG_CTRL_SBIT_DEADTIME_DEFAULT;
-    regs_defaults(0)(REG_TRIG_CTRL_SOT_FRAME_OFFSET_MSB downto REG_TRIG_CTRL_SOT_FRAME_OFFSET_LSB) <= REG_TRIG_CTRL_SOT_FRAME_OFFSET_DEFAULT;
     regs_defaults(2)(REG_TRIG_CTRL_ALIGNED_COUNT_TO_READY_MSB downto REG_TRIG_CTRL_ALIGNED_COUNT_TO_READY_LSB) <= REG_TRIG_CTRL_ALIGNED_COUNT_TO_READY_DEFAULT;
-    regs_defaults(3)(REG_TRIG_CTRL_ERR_CNT_TO_SHIFT_MSB downto REG_TRIG_CTRL_ERR_CNT_TO_SHIFT_LSB) <= REG_TRIG_CTRL_ERR_CNT_TO_SHIFT_DEFAULT;
-    regs_defaults(4)(REG_TRIG_CTRL_STABLE_CNT_TO_RESET_MSB downto REG_TRIG_CTRL_STABLE_CNT_TO_RESET_LSB) <= REG_TRIG_CTRL_STABLE_CNT_TO_RESET_DEFAULT;
     regs_defaults(5)(REG_TRIG_CTRL_INVERT_SOT_INVERT_MSB downto REG_TRIG_CTRL_INVERT_SOT_INVERT_LSB) <= REG_TRIG_CTRL_INVERT_SOT_INVERT_DEFAULT;
     regs_defaults(6)(REG_TRIG_CTRL_INVERT_VFAT0_TU_INVERT_MSB downto REG_TRIG_CTRL_INVERT_VFAT0_TU_INVERT_LSB) <= REG_TRIG_CTRL_INVERT_VFAT0_TU_INVERT_DEFAULT;
     regs_defaults(6)(REG_TRIG_CTRL_INVERT_VFAT1_TU_INVERT_MSB downto REG_TRIG_CTRL_INVERT_VFAT1_TU_INVERT_LSB) <= REG_TRIG_CTRL_INVERT_VFAT1_TU_INVERT_DEFAULT;
@@ -1668,8 +1657,6 @@ begin
     -- Define writable regs
     regs_writable_arr(0) <= '1';
     regs_writable_arr(2) <= '1';
-    regs_writable_arr(3) <= '1';
-    regs_writable_arr(4) <= '1';
     regs_writable_arr(5) <= '1';
     regs_writable_arr(6) <= '1';
     regs_writable_arr(7) <= '1';

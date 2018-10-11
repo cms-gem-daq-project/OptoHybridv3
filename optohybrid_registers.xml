@@ -74,7 +74,7 @@
                 description="Mask of VFAT Reset Outputs; 1=reset 0=enable"
                 fw_signal="vfat_reset(11 downto 0)"
                 fw_default="0x0"/>
-        </node>
+        </node> <!--VFAT-->
 
         <node id="FMM" address="0x6" description = "FMM Run Control Module">
             <node id="DONT_WAIT" address="0x0" permission="rw"
@@ -267,7 +267,7 @@
                 description = "Write to set the soft logic reset of the Optohybrid FPGA"
                 mask="0x1"
                 fw_write_pulse_signal="soft_reset_o">
-        </node>
+        </node> <!--Soft Reset-->
 
         <node id="DNA" address="0x17" description = "57 Bit FPGA-specific device identifier">
             <node id="DNA_LSBS" address="0x0" permission="r"
@@ -367,8 +367,8 @@
                 fw_cnt_reset_signal="reset_i or reset"
                 fw_cnt_snap_signal="cnt_snap"
                 fw_signal="cnt_vccint_alarm"/>
-        </node>
-</node>
+        </node> <!--CTRL-->
+</node> <!--ADC-->
 
 <!--Trigger Module -->
 <node id="TRIG"  address="0x2000"
@@ -399,12 +399,6 @@
                 mask="0x0f000000"
                 fw_default="0x7"/>
 
-            <node id="SOT_FRAME_OFFSET" address="0x0" permission="rw"
-                description="Adjusts a FIFO address to align the 40MHz frame to the s-bit data"
-                fw_signal="sot_frame_offset"
-                mask="0xf0000000"
-                fw_default="0x04"/>
-
             <!-- START: ACTIVE_VFATS DO NOT EDIT -->
             <node id="ACTIVE_VFATS" address="0x1" permission="r"
                 description="24 bit list of VFATs with hits in this BX"
@@ -431,17 +425,6 @@
                 fw_signal="sot_unstable" />
             <!-- END: SOT_READY_UNSTABLE DO NOT EDIT -->
 
-            <node id="ERR_CNT_TO_SHIFT" address="0x3" permission="rw"
-                description="Number of link errors required in the ISERDES to vote for shifting to a new sample phase"
-                fw_signal="err_count_to_shift"
-                mask="0xff000000"
-                fw_default="0xff"/>
-
-            <node id="STABLE_CNT_TO_RESET" address="0x4" permission="rw"
-                description="Number of link consecutive good frames required to reset the err_cnt_to_shift counter"
-                fw_signal="stable_count_to_reset"
-                mask="0xff000000"
-                fw_default="0x3f"/>
 
             <node id="ALIGNED_COUNT_TO_READY" address="0x2" permission="rw"
                 description="Number of link consecutive good frames required before the transmission unit is marked as good and S-bits can be produced"

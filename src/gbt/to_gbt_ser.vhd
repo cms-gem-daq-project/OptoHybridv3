@@ -79,8 +79,6 @@ port
   DELAY_DATA_INC : in    std_logic_vector(sys_w -1 downto 0);   -- Delay increment, decrement signal for bit
   DELAY_TAP_IN   : in    std_logic_vector(5*sys_w -1 downto 0); -- Dynamically loadable delay tap value for bit
   DELAY_TAP_OUT  : out   std_logic_vector(5*sys_w -1 downto 0); -- Bit  Delay tap value for monitoring
-  REF_CLOCK      : in    std_logic;                             -- Reference Clock for IDELAYCTRL. Has to come from BUFG.
-  REFCLK_RESET   : in    std_logic;                             --
 
 -- Clock and reset signals
   CLK_IN                  : in    std_logic;                    -- Fast clock from PLL/MMCM

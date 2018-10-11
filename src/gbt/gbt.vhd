@@ -33,9 +33,6 @@ port(
 
     clock_i : in std_logic; -- 40 MHz logic clock
 
-    delay_refclk : in std_logic;
-    delay_refclk_reset : in std_logic;
-
     gbt_clk40      : in std_logic; -- 40 MHz phase shiftable frame clock from GBT
     gbt_clk80      : in std_logic; -- 40 MHz phase shiftable frame clock from GBT
     gbt_clk160_0   : in std_logic; -- 320 MHz phase shiftable frame clock from GBT
@@ -176,8 +173,6 @@ begin
        gbt_link_error_i => gbt_link_error,
        gbt_ready_i => gbt_link_ready,
 
-       delay_refclk       => delay_refclk,
-       delay_refclk_reset => delay_refclk_reset,
        tx_delay_i         => tx_delay,
 
        -- parallel data

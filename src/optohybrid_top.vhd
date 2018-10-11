@@ -284,9 +284,6 @@ begin
 
         clock_i => clock,         -- 320 MHz sampling clock
 
-        delay_refclk => delay_refclk,
-        delay_refclk_reset => delay_refclk_reset,
-
         -- elinks
         elink_i_p  =>  elink_i_p,
         elink_i_n  =>  elink_i_n,
@@ -461,9 +458,6 @@ begin
         clk_160    => clk_4x,
         clk_200    => clk_5x,
         clk_160_90 => clk_4x_90,
-
-        delay_refclk_i => delay_refclk,
-        delay_refclk_reset_i => delay_refclk_reset,
 
         -- mgt pairs
         mgt_tx_p => mgt_tx_p_o,

@@ -271,11 +271,6 @@ package registers is
     constant REG_TRIG_CTRL_SBIT_DEADTIME_LSB     : integer := 24;
     constant REG_TRIG_CTRL_SBIT_DEADTIME_DEFAULT : std_logic_vector(27 downto 24) := x"7";
 
-    constant REG_TRIG_CTRL_SOT_FRAME_OFFSET_ADDR    : std_logic_vector(7 downto 0) := x"00";
-    constant REG_TRIG_CTRL_SOT_FRAME_OFFSET_MSB    : integer := 31;
-    constant REG_TRIG_CTRL_SOT_FRAME_OFFSET_LSB     : integer := 28;
-    constant REG_TRIG_CTRL_SOT_FRAME_OFFSET_DEFAULT : std_logic_vector(31 downto 28) := x"4";
-
     constant REG_TRIG_CTRL_ACTIVE_VFATS_ADDR    : std_logic_vector(7 downto 0) := x"01";
     constant REG_TRIG_CTRL_ACTIVE_VFATS_MSB    : integer := 23;
     constant REG_TRIG_CTRL_ACTIVE_VFATS_LSB     : integer := 0;
@@ -293,19 +288,9 @@ package registers is
     constant REG_TRIG_CTRL_SBIT_SOT_READY_MSB    : integer := 23;
     constant REG_TRIG_CTRL_SBIT_SOT_READY_LSB     : integer := 0;
 
-    constant REG_TRIG_CTRL_ERR_CNT_TO_SHIFT_ADDR    : std_logic_vector(7 downto 0) := x"03";
-    constant REG_TRIG_CTRL_ERR_CNT_TO_SHIFT_MSB    : integer := 31;
-    constant REG_TRIG_CTRL_ERR_CNT_TO_SHIFT_LSB     : integer := 24;
-    constant REG_TRIG_CTRL_ERR_CNT_TO_SHIFT_DEFAULT : std_logic_vector(31 downto 24) := x"ff";
-
     constant REG_TRIG_CTRL_SBIT_SOT_UNSTABLE_ADDR    : std_logic_vector(7 downto 0) := x"04";
     constant REG_TRIG_CTRL_SBIT_SOT_UNSTABLE_MSB    : integer := 23;
     constant REG_TRIG_CTRL_SBIT_SOT_UNSTABLE_LSB     : integer := 0;
-
-    constant REG_TRIG_CTRL_STABLE_CNT_TO_RESET_ADDR    : std_logic_vector(7 downto 0) := x"04";
-    constant REG_TRIG_CTRL_STABLE_CNT_TO_RESET_MSB    : integer := 31;
-    constant REG_TRIG_CTRL_STABLE_CNT_TO_RESET_LSB     : integer := 24;
-    constant REG_TRIG_CTRL_STABLE_CNT_TO_RESET_DEFAULT : std_logic_vector(31 downto 24) := x"3f";
 
     constant REG_TRIG_CTRL_INVERT_SOT_INVERT_ADDR    : std_logic_vector(7 downto 0) := x"05";
     constant REG_TRIG_CTRL_INVERT_SOT_INVERT_MSB    : integer := 23;

@@ -144,8 +144,8 @@ parameter DDR = 0;
         // then remain idle for a period to make latency measurements clearer
 
 
-        reg [63:0] test_pat_even = 64'h0000000000000001;
-        reg [63:0] test_pat_odd  = 64'h0000000000000002;
+        reg [63:0] test_pat_even = 64'h00000000000000fe;
+        reg [63:0] test_pat_odd  = 64'h0000000000000001;
 
         reg [63:0] pat;
         always @(posedge clk40) begin

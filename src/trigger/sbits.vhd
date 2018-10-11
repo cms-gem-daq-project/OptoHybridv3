@@ -27,59 +27,53 @@ entity sbits is
 generic (oh_lite : integer := OH_LITE);
 port(
 
-    clk160_i                : in std_logic;
-    clk200_i                : in std_logic;
-    clk160_90_i             : in std_logic;
-    clk40_i                 : in std_logic;
-    delay_refclk_i          : in std_logic;
-    delay_refclk_reset_i    : in std_logic;
+    clk80_i                : in std_logic;
+    clk160_i               : in std_logic;
+    clk200_i               : in std_logic;
+    clk160_90_i            : in std_logic;
+    clk40_i                : in std_logic;
 
-    reset_i                 : in std_logic;
+    reset_i                : in std_logic;
 
-    trig_stop_i             : in std_logic;
+    trig_stop_i            : in std_logic;
 
-    vfat_sbit_clusters_o    : out sbit_cluster_array_t(7 downto 0);
+    vfat_sbit_clusters_o   : out sbit_cluster_array_t(7 downto 0);
 
-    sbit_mask_i             : in std_logic_vector (MXVFATS-1 downto 0);
+    sbit_mask_i            : in std_logic_vector (MXVFATS-1 downto 0);
 
-    sbits_mux_sel           : in  std_logic_vector (4 downto 0);
-    sbits_mux_o             : out  std_logic_vector (63 downto 0);
+    sbits_mux_sel          : in  std_logic_vector (4 downto 0);
+    sbits_mux_o            : out  std_logic_vector (63 downto 0);
 
-    sot_frame_offset : in std_logic_vector (3 downto 0);
-
-    sot_invert       : in std_logic_vector (MXVFATS-1 downto 0); -- 24 or 12
-    tu_invert        : in std_logic_vector (MXVFATS*8-1 downto 0); -- 192 or 96
-    tu_mask          : in std_logic_vector (MXVFATS*8-1 downto 0); -- 192 or 96
-
-    err_count_to_shift : in std_logic_vector (7 downto 0);
-    stable_count_to_reset : in std_logic_vector (7 downto 0);
+    sot_invert             : in std_logic_vector (MXVFATS-1 downto 0); -- 24 or 12
+    tu_invert              : in std_logic_vector (MXVFATS*8-1 downto 0); -- 192 or 96
+    tu_mask                : in std_logic_vector (MXVFATS*8-1 downto 0); -- 192 or 96
 
     aligned_count_to_ready : in std_logic_vector (11 downto 0);
 
-    cluster_count_o         : out std_logic_vector (7 downto 0);
+    cluster_count_o        : out std_logic_vector (7 downto 0);
 
-    trigger_deadtime_i      : in  std_logic_vector (3 downto 0);
+    trigger_deadtime_i     : in  std_logic_vector (3 downto 0);
 
-    sbits_p                  : in std_logic_vector (MXVFATS*8-1 downto 0);
-    sbits_n                  : in std_logic_vector (MXVFATS*8-1 downto 0);
+    sbits_p                : in std_logic_vector (MXVFATS*8-1 downto 0);
+    sbits_n                : in std_logic_vector (MXVFATS*8-1 downto 0);
 
-    start_of_frame_p         : in std_logic_vector (MXVFATS-1 downto 0);
-    start_of_frame_n         : in std_logic_vector (MXVFATS-1 downto 0);
+    start_of_frame_p       : in std_logic_vector (MXVFATS-1 downto 0);
+    start_of_frame_n       : in std_logic_vector (MXVFATS-1 downto 0);
 
 
-    active_vfats_o          : out std_logic_vector (MXVFATS-1 downto 0);
+    active_vfats_o         : out std_logic_vector (MXVFATS-1 downto 0);
 
-    overflow_o              : out std_logic;
+    overflow_o             : out std_logic;
 
-    sot_phase_err_o         : out std_logic_vector (MXVFATS-1 downto 0);
+    sot_phase_err_o        : out std_logic_vector (MXVFATS-1 downto 0);
 
-    sot_is_aligned_o        : out std_logic_vector (MXVFATS-1 downto 0);
-    sot_unstable_o          : out std_logic_vector (MXVFATS-1 downto 0);
+    sot_is_aligned_o       : out std_logic_vector (MXVFATS-1 downto 0);
+    sot_unstable_o         : out std_logic_vector (MXVFATS-1 downto 0);
 
-    sot_tap_delay           : in t_std5_array (MXVFATS-1 downto 0);
-    trig_tap_delay          : in t_std5_array (MXVFATS*8-1 downto 0);
+    sot_tap_delay          : in t_std5_array (MXVFATS-1 downto 0);
+    trig_tap_delay         : in t_std5_array (MXVFATS*8-1 downto 0);
 
-    sbit_phase_err_o        : out std_logic_vector (MXVFATS*8-1 downto 0)
+    sbit_phase_err_o       : out std_logic_vector (MXVFATS*8-1 downto 0)
 
 );
 end sbits;
@@ -103,6 +97,7 @@ architecture Behavioral of sbits is
     signal sbits_mux_s1             : std_logic_vector (63 downto 0);
     signal sbits_mux                : std_logic_vector (63 downto 0);
     signal aff_mux                  : std_logic;
+
     -- multiplex together the 1536 s-bits into a single chip-scope accessible register
     -- don't want to affect timing, so do it through a couple of flip-flop stages
 
@@ -137,9 +132,9 @@ begin
     clk160_180 <= not clk160_i;
     active_vfats_o <= active_vfats;
 
-    --=======================--
-    --== Trigger Alignment ==--
-    --=======================--
+    --------------------------------------------------------------------------------------------------------------------
+    -- S-bit Deserialization and Alignment
+    --------------------------------------------------------------------------------------------------------------------
 
     -- deserializes and aligns the 192 320 MHz s-bits into 1536 40MHz s-bits
 
@@ -153,29 +148,20 @@ begin
         sbits_p => sbits_p,
         sbits_n => sbits_n,
 
-        sot_frame_offset => sot_frame_offset,
-
         sot_invert => sot_invert,
         tu_invert  => tu_invert,
         tu_mask    => tu_mask,
-
-        err_count_to_shift     => err_count_to_shift,
-        stable_count_to_reset  => stable_count_to_reset,
 
         aligned_count_to_ready => aligned_count_to_ready,
 
         start_of_frame_p => start_of_frame_p,
         start_of_frame_n => start_of_frame_n,
 
-        fastclk_0    => clk160_i,
-        fastclk_90   => clk160_90_i,
-        fastclk_180  => clk160_180,
-        clock        => clk40_i,
-        delay_refclk => delay_refclk_i,
-        delay_refclk_reset => delay_refclk_reset_i,
-
-        phase_err     => sbit_phase_err_o,
-        sot_phase_err => sot_phase_err_o,
+        clk80_0    => clk80_i,
+        clk160_0   => clk160_i,
+        clk160_90  => clk160_90_i,
+        clk160_180 => clk160_180,
+        clock      => clk40_i,
 
         sot_is_aligned => sot_is_aligned_o,
         sot_unstable   => sot_unstable_o,
@@ -186,9 +172,9 @@ begin
         sbits => sbits
     );
 
-    --==============================--
-    --== Channel to Strip Mapping ==--
-    --==============================--
+    --------------------------------------------------------------------------------------------------------------------
+    -- Channel to Strip Mapping
+    --------------------------------------------------------------------------------------------------------------------
 
     sbit_reverse : for I in 0 to (MXVFATS-1) generate
     begin
@@ -201,9 +187,9 @@ begin
         strips_out  => vfat_sbits_strip_mapped
     );
 
-    --========================--
-    --==  Active VFAT Flags ==--
-    --========================--
+    --------------------------------------------------------------------------------------------------------------------
+    -- Active VFAT Flags
+    --------------------------------------------------------------------------------------------------------------------
 
     -- want to generate 24 bits as active VFAT flags, indicating that at least one s-bit on that VFAT
     -- was active in this 40MHz cycle
@@ -230,6 +216,10 @@ begin
     end process;
     end generate;
 
+    --------------------------------------------------------------------------------------------------------------------
+    -- Sbits Monitor Multiplexer
+    --------------------------------------------------------------------------------------------------------------------
+
     process (clk40_i) begin
         if (rising_edge(clk40_i)) then
             sbits_mux_s0 <= vfat_sbits_strip_mapped(to_integer(unsigned(sbits_mux_sel)));
@@ -243,9 +233,9 @@ begin
 
     sbits_mux_o <= sbits_mux;
 
-    --======================--
-    --== Cluster Packer   ==--
-    --======================--
+    --------------------------------------------------------------------------------------------------------------------
+    -- Cluster Packer
+    --------------------------------------------------------------------------------------------------------------------
 
     --====================================--
     --== Light (12 VFAT) Cluster Packer ==--
