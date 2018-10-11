@@ -50,10 +50,7 @@ port(
     gbt_rxvalid_i : in std_logic_vector (MXREADY-1 downto 0);
     gbt_rxready_i : in std_logic_vector (MXREADY-1 downto 0);
 
-    --== GE21 only ==--
     -- START: Station Specific Ports DO NOT EDIT --
-    sca_io      : in   std_logic_vector (3 downto 0); -- set as input for now
-    sca_ctl     : in   std_logic_vector (2 downto 0);
 
     ext_sbits_o : out  std_logic_vector (7 downto 0);
 

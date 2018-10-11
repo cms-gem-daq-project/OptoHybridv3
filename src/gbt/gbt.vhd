@@ -148,7 +148,7 @@ begin
     --=========--
 
     -- at 320 MHz performs ser-des on incoming
-    gbt_serdes_inst : entity work.gbt_serdes
+    gbt_serdes : entity work.gbt_serdes
     port map(
         -- reset
        reset_i          => reset,
@@ -182,7 +182,7 @@ begin
 
     -- decodes GBT frames to build packets
 
-    gbt_link_inst : entity work.gbt_link
+    gbt_link : entity work.gbt_link
     port map(
 
         -- reset

@@ -295,7 +295,7 @@ architecture Behavioral of gbt_serdes is
     to_gbt_ser_gen_v6 : IF (FPGA_TYPE="VIRTEX6") GENERATE
     --------------------------------------------------------------------------------------------------------------------
 
-    i_to_gbt_ser320 : to_gbt_ser
+    i_to_gbt_ser : to_gbt_ser
     port map(
         -- POLARITY SWAP ON ELINK #1
         data_out_from_device    => ("not"(to_gbt_sync)),
@@ -318,7 +318,7 @@ architecture Behavioral of gbt_serdes is
     to_gbt_ser_gen_a7: IF (FPGA_TYPE="ARTIX7") GENERATE
     --------------------------------------------------------------------------------------------------------------------
 
-    i_to_gbt_ser0 : to_gbt_ser_a7
+    i_to_gbt_ser : to_gbt_ser_a7
     port map(
         data_out_from_device    => to_gbt_sync,
         data_out_to_pins_p(0)   => elink_o_p,

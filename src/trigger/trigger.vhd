@@ -241,7 +241,7 @@ begin
     -- S-bit deserilization and cluster building
     --------------------------------------------------------------------------------------------------------------------
 
-    sbits_inst : entity work.sbits
+    sbits : entity work.sbits
     port map (
 
         trig_stop_i             => trig_stop_i,

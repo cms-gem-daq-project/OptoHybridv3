@@ -40,8 +40,8 @@ def write_oh_ports (file_handle):
         f.write ('%smaster_slave_n : inout  std_logic_vector (11 downto 0);\n'                    %  (padding))
         f.write ('%svtrx_mabs_i    : in    std_logic_vector (1 downto 0);\n'                      %  (padding))
     elif (gem_version=="ge11"):
-        f.write ('%ssca_io      : in   std_logic_vector (3 downto 0); -- set as input for now\n'  %  (padding))
-        f.write ('%ssca_ctl     : in   std_logic_vector (2 downto 0);\n'                          %  (padding))
+#       f.write ('%ssca_io      : in   std_logic_vector (3 downto 0); -- set as input for now\n'  %  (padding))
+#       f.write ('%ssca_ctl     : in   std_logic_vector (2 downto 0);\n'                          %  (padding))
         f.write ('\n');
         f.write ('%sext_sbits_o : out  std_logic_vector (7 downto 0);\n'                          %  (padding))
         f.write ('\n');

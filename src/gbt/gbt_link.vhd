@@ -109,7 +109,7 @@ begin
     --== GBT RX ==--
     --============--
 
-    gbt_rx_inst : entity work.gbt_rx
+    gbt_rx : entity work.gbt_rx
     port map(
         -- reset
         reset_i      => reset,
@@ -137,7 +137,7 @@ begin
     --== GBT TX ==--
     --============--
 
-    gbt_tx_inst : entity work.gbt_tx
+    gbt_tx : entity work.gbt_tx
     port map(
         -- reset
         reset_i     => reset,
@@ -160,7 +160,7 @@ begin
 
     -- create fifos to buffer between GBT and wishbone
 
-    link_request_inst : entity work.link_request
+    link_request : entity work.link_request
     port map(
         -- clocks
         fabric_clock_i  => clock, -- 40 MHz logic clock

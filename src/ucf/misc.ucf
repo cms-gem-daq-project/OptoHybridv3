@@ -1,14 +1,8 @@
 # This file constraints miscellaneous signals
-## HDMI
 
-#NET "TMDS_CLK_p" = H17; # v_diff_m_4_p
-#NET "TMDS_CLK_n" = G17; # v_diff_m_4_n
-#NET "TMDS_D2_p"  = J16; # v_diff_m_15_n
-#NET "TMDS_D2_n"  = J17; # v_diff_m_15_p
-#NET "TMDS_D1_p"  = L14; # v_diff_m_11_n
-#NET "TMDS_D1_n"  = L15; # v_diff_m_11_p
-#NET "TMDS_D0_p"  = M17; # v_diff_m_8_n
-#NET "TMDS_D0_n"  = M18; # v_diff_m_8_p
+########################################################################################################################
+# HDMI
+########################################################################################################################
 
 NET "ext_sbits_o[0]" LOC = H17; # tmds clk p
 NET "ext_sbits_o[1]" LOC = G17; # tmds clk n
@@ -19,8 +13,20 @@ NET "ext_sbits_o[5]" LOC = L15; # tmds d1 n
 NET "ext_sbits_o[6]" LOC = M17; # tmds d0 p
 NET "ext_sbits_o[7]" LOC = M18; # tmds d0 n
 
-## Header
-# INST "led_o" IOB=TRUE;
+INST "ext_sbits_o<0>" TNM = ext_sbits_o;
+INST "ext_sbits_o<1>" TNM = ext_sbits_o;
+INST "ext_sbits_o<2>" TNM = ext_sbits_o;
+INST "ext_sbits_o<3>" TNM = ext_sbits_o;
+INST "ext_sbits_o<4>" TNM = ext_sbits_o;
+INST "ext_sbits_o<5>" TNM = ext_sbits_o;
+
+TIMEGRP "ext_sbits_o" OFFSET = OUT 12.5 ns VALID 25 ns BEFORE "logic_clock_p" RISING;
+
+########################################################################################################################
+# LEDs
+########################################################################################################################
+
+INST "led_o<*>" IOB=TRUE;
 
 NET "led_o<0>"  LOC = H27  ; # vdiff_e_13_p
 NET "led_o<1>"  LOC = G28  ; # vdiff_e_13_n
@@ -39,16 +45,16 @@ NET "led_o<13>" LOC = A15  ; # vdiff_m_16_p
 NET "led_o<14>" LOC = G26  ; # vdiff_e_7_p
 NET "led_o<15>" LOC = G27  ; # vdiff_e_7_n
 
-INST "led_o<0>" TNM = led_o;
-INST "led_o<1>" TNM = led_o;
-INST "led_o<2>" TNM = led_o;
-INST "led_o<3>" TNM = led_o;
-INST "led_o<4>" TNM = led_o;
-INST "led_o<5>" TNM = led_o;
-INST "led_o<6>" TNM = led_o;
-INST "led_o<7>" TNM = led_o;
-INST "led_o<8>" TNM = led_o;
-INST "led_o<9>" TNM = led_o;
+INST "led_o<0>"  TNM = led_o;
+INST "led_o<1>"  TNM = led_o;
+INST "led_o<2>"  TNM = led_o;
+INST "led_o<3>"  TNM = led_o;
+INST "led_o<4>"  TNM = led_o;
+INST "led_o<5>"  TNM = led_o;
+INST "led_o<6>"  TNM = led_o;
+INST "led_o<7>"  TNM = led_o;
+INST "led_o<8>"  TNM = led_o;
+INST "led_o<9>"  TNM = led_o;
 INST "led_o<10>" TNM = led_o;
 INST "led_o<11>" TNM = led_o;
 INST "led_o<12>" TNM = led_o;
@@ -56,55 +62,49 @@ INST "led_o<13>" TNM = led_o;
 INST "led_o<14>" TNM = led_o;
 INST "led_o<15>" TNM = led_o;
 
-INST "ext_sbits_o<0>" TNM = ext_sbits_o;
-INST "ext_sbits_o<1>" TNM = ext_sbits_o;
-INST "ext_sbits_o<2>" TNM = ext_sbits_o;
-INST "ext_sbits_o<3>" TNM = ext_sbits_o;
-INST "ext_sbits_o<4>" TNM = ext_sbits_o;
-INST "ext_sbits_o<5>" TNM = ext_sbits_o;
-
 TIMEGRP "led_o"       OFFSET = OUT 12.5 ns VALID 25 ns BEFORE "logic_clock_p" RISING;
-TIMEGRP "ext_sbits_o" OFFSET = OUT 12.5 ns VALID 25 ns BEFORE "logic_clock_p" RISING;
 
-# XADC
-#INST "xadc_gen.adc_inst/xadc_gen.xadc_inst/SYSMON_INST" LOC = SYSMON_X0Y0;
+########################################################################################################################
+# SCA
+########################################################################################################################
 
-# GBT
-# NET "gbt_txvalid_o" LOC =      ; # hardwired, apparently
-NET "gbt_txready_i<0>" LOC = AF13 ; # v_diff_k_13_p
-NET "gbt_rxvalid_i<0>" LOC = AJ9  ; # R_side_2_n
-NET "gbt_rxready_i<0>" LOC = AH9  ; # R_side_2_p
+# NET "sca_ctl<0>" LOC="L9"  ;
+# NET "sca_ctl<1>" LOC="K9"  ;
+# NET "sca_ctl<2>" LOC="M10" ;
+#
+# NET "sca_ctl<0>"  PULLDOWN;
+# NET "sca_ctl<1>"  PULLDOWN;
+# NET "sca_ctl<2>"  PULLDOWN;
 
-NET "sca_ctl<0>" LOC="L9"  ;
-NET "sca_ctl<1>" LOC="K9"  ;
-NET "sca_ctl<2>" LOC="M10" ;
-
-NET "sca_ctl<0>"  PULLDOWN;
-NET "sca_ctl<1>"  PULLDOWN;
-NET "sca_ctl<2>"  PULLDOWN;
-
-################################################################################
+########################################################################################################################
 # VFAT resets
-################################################################################
-#### START: AUTO GENERATED RESETS UCF -- DO NOT EDIT ####
-NET "ext_reset_o<10>" LOC="AL23";
-NET "ext_reset_o<1>" LOC="D15";
-NET "ext_reset_o<8>" LOC="AL30";
-NET "ext_reset_o<7>" LOC="AL31";
-NET "ext_reset_o<4>" LOC="W27";
-NET "ext_reset_o<2>" LOC="C15";
-NET "ext_reset_o<0>" LOC="A16";
-NET "ext_reset_o<6>" LOC="AK31";
-NET "ext_reset_o<11>" LOC="AP24";
-NET "ext_reset_o<9>" LOC="AM23";
-NET "ext_reset_o<5>" LOC="Y27";
-NET "ext_reset_o<3>" LOC="W26";
-#### END: AUTO GENERATED RESETS UCF -- DO NOT EDIT ####
+########################################################################################################################
+
+NET "ext_reset_o<0>"  LOC ="A16";
+NET "ext_reset_o<1>"  LOC ="D15";
+NET "ext_reset_o<2>"  LOC ="C15";
+NET "ext_reset_o<3>"  LOC ="W26";
+NET "ext_reset_o<4>"  LOC ="W27";
+NET "ext_reset_o<5>"  LOC ="Y27";
+NET "ext_reset_o<6>"  LOC ="AK31";
+NET "ext_reset_o<7>"  LOC ="AL31";
+NET "ext_reset_o<8>"  LOC ="AL30";
+NET "ext_reset_o<9>"  LOC ="AM23";
+NET "ext_reset_o<10>" LOC ="AL23";
+NET "ext_reset_o<11>" LOC ="AP24";
+
+INST "ext_reset_o<*>" TNM = reset_o;
+TIMEGRP "reset_o"       OFFSET = OUT 12.5 ns VALID 25 ns BEFORE "logic_clock_p" RISING;
+
+########################################################################################################################
+# MGT
+########################################################################################################################
 
 NET "mgt_clk_p_i<0>" LOC = H6; #
 NET "mgt_clk_n_i<0>" LOC = H5; #
 #NET "mgt_clk_p_i<1>" LOC = F6; #
 #NET "mgt_clk_n_i<1>" LOC = F5; #
+
 NET "mgt_tx_p_o<0>" LOC = M1; #
 NET "mgt_tx_n_o<0>" LOC = M2; #
 NET "mgt_tx_p_o<1>" LOC = K1; #
@@ -113,444 +113,3 @@ NET "mgt_tx_p_o<2>" LOC = H1; #
 NET "mgt_tx_n_o<2>" LOC = H2; #
 NET "mgt_tx_p_o<3>" LOC = F1; #
 NET "mgt_tx_n_o<3>" LOC = F2; #
-
-################################################################################
-# VFAT Trigger Data
-################################################################################
-#### START: AUTO GENERATED SBITS UCF -- DO NOT EDIT ####
-NET vfat_sot_p<23>     LOC = "AN19" | TNM = vfat_sot; # polarity swap
-NET vfat_sot_n<23>     LOC = "AN20" | TNM = vfat_sot; # polarity swap
-NET vfat_sbits_n<184>  LOC = "AH20" | TNM = vfat_sbits;
-NET vfat_sbits_p<184>  LOC = "AJ20" | TNM = vfat_sbits;
-NET vfat_sbits_n<185>  LOC = "AJ21" | TNM = vfat_sbits;
-NET vfat_sbits_p<185>  LOC = "AK21" | TNM = vfat_sbits;
-NET vfat_sbits_p<186>  LOC = "AG22" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<186>  LOC = "AH22" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<187>  LOC = "AK24" | TNM = vfat_sbits;
-NET vfat_sbits_p<187>  LOC = "AJ24" | TNM = vfat_sbits;
-NET vfat_sbits_p<188>  LOC = "AM25" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<188>  LOC = "AL25" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<189>  LOC = "AG26" | TNM = vfat_sbits;
-NET vfat_sbits_p<189>  LOC = "AG25" | TNM = vfat_sbits;
-NET vfat_sbits_n<190>  LOC = "AE26" | TNM = vfat_sbits;
-NET vfat_sbits_p<190>  LOC = "AF26" | TNM = vfat_sbits;
-NET vfat_sbits_n<191>  LOC = "AH28" | TNM = vfat_sbits;
-NET vfat_sbits_p<191>  LOC = "AH27" | TNM = vfat_sbits;
-NET vfat_sot_p<22>     LOC = "AE14" | TNM = vfat_sot; # polarity swap
-NET vfat_sot_n<22>     LOC = "AF14" | TNM = vfat_sot; # polarity swap
-NET vfat_sbits_n<176>  LOC = "AD15" | TNM = vfat_sbits;
-NET vfat_sbits_p<176>  LOC = "AC15" | TNM = vfat_sbits;
-NET vfat_sbits_p<177>  LOC = "AE16" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<177>  LOC = "AD16" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<178>  LOC = "AE17" | TNM = vfat_sbits;
-NET vfat_sbits_p<178>  LOC = "AD17" | TNM = vfat_sbits;
-NET vfat_sbits_p<179>  LOC = "AC18" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<179>  LOC = "AC17" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<180>  LOC = "AD19" | TNM = vfat_sbits;
-NET vfat_sbits_p<180>  LOC = "AC19" | TNM = vfat_sbits;
-NET vfat_sbits_n<181>  LOC = "AD20" | TNM = vfat_sbits;
-NET vfat_sbits_p<181>  LOC = "AC20" | TNM = vfat_sbits;
-NET vfat_sbits_n<182>  LOC = "AG21" | TNM = vfat_sbits;
-NET vfat_sbits_p<182>  LOC = "AG20" | TNM = vfat_sbits;
-NET vfat_sbits_n<183>  LOC = "AH24" | TNM = vfat_sbits;
-NET vfat_sbits_p<183>  LOC = "AH23" | TNM = vfat_sbits;
-NET vfat_sot_p<21>     LOC = "AM22" | TNM = vfat_sot; # polarity swap
-NET vfat_sot_n<21>     LOC = "AN22" | TNM = vfat_sot; # polarity swap
-NET vfat_sbits_p<168>  LOC = "AK13" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<168>  LOC = "AL13" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_p<169>  LOC = "AL15" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<169>  LOC = "AL14" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<170>  LOC = "AM15" | TNM = vfat_sbits;
-NET vfat_sbits_p<170>  LOC = "AN15" | TNM = vfat_sbits;
-NET vfat_sbits_n<171>  LOC = "AK16" | TNM = vfat_sbits;
-NET vfat_sbits_p<171>  LOC = "AL16" | TNM = vfat_sbits;
-NET vfat_sbits_p<172>  LOC = "AK18" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<172>  LOC = "AK17" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_p<173>  LOC = "AJ19" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<173>  LOC = "AH19" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_p<174>  LOC = "AK19" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<174>  LOC = "AL19" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<175>  LOC = "AL20" | TNM = vfat_sbits;
-NET vfat_sbits_p<175>  LOC = "AM20" | TNM = vfat_sbits;
-NET vfat_sot_p<20>     LOC = "AP22" | TNM = vfat_sot; # polarity swap
-NET vfat_sot_n<20>     LOC = "AN23" | TNM = vfat_sot; # polarity swap
-NET vfat_sbits_n<160>  LOC = "AG17" | TNM = vfat_sbits;
-NET vfat_sbits_p<160>  LOC = "AH17" | TNM = vfat_sbits;
-NET vfat_sbits_n<161>  LOC = "AF18" | TNM = vfat_sbits;
-NET vfat_sbits_p<161>  LOC = "AE18" | TNM = vfat_sbits;
-NET vfat_sbits_n<162>  LOC = "AG18" | TNM = vfat_sbits;
-NET vfat_sbits_p<162>  LOC = "AH18" | TNM = vfat_sbits;
-NET vfat_sbits_n<163>  LOC = "AE19" | TNM = vfat_sbits;
-NET vfat_sbits_p<163>  LOC = "AF19" | TNM = vfat_sbits;
-NET vfat_sbits_n<164>  LOC = "AD11" | TNM = vfat_sbits;
-NET vfat_sbits_p<164>  LOC = "AD12" | TNM = vfat_sbits;
-NET vfat_sbits_p<165>  LOC = "AE13" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<165>  LOC = "AE12" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_p<166>  LOC = "AL11" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<166>  LOC = "AM11" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<167>  LOC = "AJ12" | TNM = vfat_sbits;
-NET vfat_sbits_p<167>  LOC = "AK12" | TNM = vfat_sbits;
-NET vfat_sot_p<19>     LOC = "T33"  | TNM = vfat_sot; # polarity swap
-NET vfat_sot_n<19>     LOC = "T34"  | TNM = vfat_sot; # polarity swap
-NET vfat_sbits_p<152>  LOC = "AA34" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<152>  LOC = "AA33" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<153>  LOC = "Y34"  | TNM = vfat_sbits;
-NET vfat_sbits_p<153>  LOC = "Y33"  | TNM = vfat_sbits;
-NET vfat_sbits_p<154>  LOC = "V34"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<154>  LOC = "W34"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_p<155>  LOC = "V32"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<155>  LOC = "V33"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_p<156>  LOC = "AH29" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<156>  LOC = "AH30" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<157>  LOC = "AF31" | TNM = vfat_sbits;
-NET vfat_sbits_p<157>  LOC = "AG31" | TNM = vfat_sbits;
-NET vfat_sbits_p<158>  LOC = "AE33" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<158>  LOC = "AF33" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<159>  LOC = "AD31" | TNM = vfat_sbits;
-NET vfat_sbits_p<159>  LOC = "AE31" | TNM = vfat_sbits;
-NET vfat_sot_n<18>     LOC = "U32"  | TNM = vfat_sot;
-NET vfat_sot_p<18>     LOC = "U33"  | TNM = vfat_sot;
-NET vfat_sbits_n<144>  LOC = "AK32" | TNM = vfat_sbits;
-NET vfat_sbits_p<144>  LOC = "AK33" | TNM = vfat_sbits;
-NET vfat_sbits_n<145>  LOC = "AH34" | TNM = vfat_sbits;
-NET vfat_sbits_p<145>  LOC = "AJ34" | TNM = vfat_sbits;
-NET vfat_sbits_n<146>  LOC = "AH32" | TNM = vfat_sbits;
-NET vfat_sbits_p<146>  LOC = "AH33" | TNM = vfat_sbits;
-NET vfat_sbits_n<147>  LOC = "AG32" | TNM = vfat_sbits;
-NET vfat_sbits_p<147>  LOC = "AG33" | TNM = vfat_sbits;
-NET vfat_sbits_p<148>  LOC = "AE34" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<148>  LOC = "AF34" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_p<149>  LOC = "AD32" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<149>  LOC = "AE32" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<150>  LOC = "AC34" | TNM = vfat_sbits;
-NET vfat_sbits_p<150>  LOC = "AD34" | TNM = vfat_sbits;
-NET vfat_sbits_n<151>  LOC = "AB33" | TNM = vfat_sbits;
-NET vfat_sbits_p<151>  LOC = "AC33" | TNM = vfat_sbits;
-NET vfat_sot_n<17>     LOC = "AJ32" | TNM = vfat_sot;
-NET vfat_sot_p<17>     LOC = "AJ31" | TNM = vfat_sot;
-NET vfat_sbits_n<136>  LOC = "AM26" | TNM = vfat_sbits;
-NET vfat_sbits_p<136>  LOC = "AL26" | TNM = vfat_sbits;
-NET vfat_sbits_p<137>  LOC = "AP27" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<137>  LOC = "AP26" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_p<138>  LOC = "AN28" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<138>  LOC = "AM28" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<139>  LOC = "AP29" | TNM = vfat_sbits;
-NET vfat_sbits_p<139>  LOC = "AN29" | TNM = vfat_sbits;
-NET vfat_sbits_n<140>  LOC = "AN34" | TNM = vfat_sbits;
-NET vfat_sbits_p<140>  LOC = "AN33" | TNM = vfat_sbits;
-NET vfat_sbits_n<141>  LOC = "AM32" | TNM = vfat_sbits;
-NET vfat_sbits_p<141>  LOC = "AN32" | TNM = vfat_sbits;
-NET vfat_sbits_n<142>  LOC = "AL33" | TNM = vfat_sbits;
-NET vfat_sbits_p<142>  LOC = "AM33" | TNM = vfat_sbits;
-NET vfat_sbits_n<143>  LOC = "AK34" | TNM = vfat_sbits;
-NET vfat_sbits_p<143>  LOC = "AL34" | TNM = vfat_sbits;
-NET vfat_sot_p<16>     LOC = "N33"  | TNM = vfat_sot; # polarity swap
-NET vfat_sot_n<16>     LOC = "M33"  | TNM = vfat_sot; # polarity swap
-NET vfat_sbits_n<128>  LOC = "F29"  | TNM = vfat_sbits;
-NET vfat_sbits_p<128>  LOC = "E29"  | TNM = vfat_sbits;
-NET vfat_sbits_p<129>  LOC = "F31"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<129>  LOC = "E31"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<130>  LOC = "G30"  | TNM = vfat_sbits;
-NET vfat_sbits_p<130>  LOC = "F30"  | TNM = vfat_sbits;
-NET vfat_sbits_n<131>  LOC = "H32"  | TNM = vfat_sbits;
-NET vfat_sbits_p<131>  LOC = "G32"  | TNM = vfat_sbits;
-NET vfat_sbits_n<132>  LOC = "H30"  | TNM = vfat_sbits;
-NET vfat_sbits_p<132>  LOC = "G31"  | TNM = vfat_sbits;
-NET vfat_sbits_p<133>  LOC = "AF28" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<133>  LOC = "AF29" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_p<134>  LOC = "AG27" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<134>  LOC = "AG28" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_p<135>  LOC = "AL29" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<135>  LOC = "AK29" | TNM = vfat_sbits; # polarity swap
-NET vfat_sot_p<15>     LOC = "AG11" | TNM = vfat_sot; # polarity swap
-NET vfat_sot_n<15>     LOC = "AG10" | TNM = vfat_sot; # polarity swap
-NET vfat_sbits_p<120>  LOC = "AM18" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<120>  LOC = "AL18" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_p<121>  LOC = "AP19" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<121>  LOC = "AN18" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_p<122>  LOC = "AJ11" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<122>  LOC = "AK11" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_p<123>  LOC = "AG12" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<123>  LOC = "AH12" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<124>  LOC = "AH14" | TNM = vfat_sbits;
-NET vfat_sbits_p<124>  LOC = "AH13" | TNM = vfat_sbits;
-NET vfat_sbits_n<125>  LOC = "AJ14" | TNM = vfat_sbits;
-NET vfat_sbits_p<125>  LOC = "AK14" | TNM = vfat_sbits;
-NET vfat_sbits_n<126>  LOC = "AH15" | TNM = vfat_sbits;
-NET vfat_sbits_p<126>  LOC = "AJ15" | TNM = vfat_sbits;
-NET vfat_sbits_p<127>  LOC = "AJ17" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<127>  LOC = "AJ16" | TNM = vfat_sbits; # polarity swap
-NET vfat_sot_n<14>     LOC = "AH10" | TNM = vfat_sot;
-NET vfat_sot_p<14>     LOC = "AJ10" | TNM = vfat_sot;
-NET vfat_sbits_p<112>  LOC = "AM10" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<112>  LOC = "AL10" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<113>  LOC = "AP12" | TNM = vfat_sbits;
-NET vfat_sbits_p<113>  LOC = "AP11" | TNM = vfat_sbits;
-NET vfat_sbits_p<114>  LOC = "AM12" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<114>  LOC = "AN12" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<115>  LOC = "AM13" | TNM = vfat_sbits;
-NET vfat_sbits_p<115>  LOC = "AN13" | TNM = vfat_sbits;
-NET vfat_sbits_n<116>  LOC = "AN14" | TNM = vfat_sbits;
-NET vfat_sbits_p<116>  LOC = "AP14" | TNM = vfat_sbits;
-NET vfat_sbits_p<117>  LOC = "AP16" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<117>  LOC = "AP15" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_p<118>  LOC = "AM17" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<118>  LOC = "AM16" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_p<119>  LOC = "AN17" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<119>  LOC = "AP17" | TNM = vfat_sbits; # polarity swap
-NET vfat_sot_n<13>     LOC = "J15"  | TNM = vfat_sot;
-NET vfat_sot_p<13>     LOC = "H15"  | TNM = vfat_sot;
-NET vfat_sbits_p<104>  LOC = "J20"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<104>  LOC = "J21"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_p<105>  LOC = "H19"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<105>  LOC = "H20"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_p<106>  LOC = "K19"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<106>  LOC = "J19"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<107>  LOC = "K17"  | TNM = vfat_sbits;
-NET vfat_sbits_p<107>  LOC = "K18"  | TNM = vfat_sbits;
-NET vfat_sbits_p<108>  LOC = "K16"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<108>  LOC = "L16"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<109>  LOC = "M15"  | TNM = vfat_sbits;
-NET vfat_sbits_p<109>  LOC = "M16"  | TNM = vfat_sbits;
-NET vfat_sbits_n<110>  LOC = "K12"  | TNM = vfat_sbits;
-NET vfat_sbits_p<110>  LOC = "K13"  | TNM = vfat_sbits;
-NET vfat_sbits_n<111>  LOC = "M13"  | TNM = vfat_sbits;
-NET vfat_sbits_p<111>  LOC = "L13"  | TNM = vfat_sbits;
-NET vfat_sot_p<12>     LOC = "K14"  | TNM = vfat_sot; # polarity swap
-NET vfat_sot_n<12>     LOC = "J14"  | TNM = vfat_sot; # polarity swap
-NET vfat_sbits_p<96>   LOC = "G21"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<96>   LOC = "G22"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<97>   LOC = "G20"  | TNM = vfat_sbits;
-NET vfat_sbits_p<97>   LOC = "F21"  | TNM = vfat_sbits;
-NET vfat_sbits_p<98>   LOC = "F19"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<98>   LOC = "F20"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_p<99>   LOC = "G18"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<99>   LOC = "H18"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<100>  LOC = "E17"  | TNM = vfat_sbits;
-NET vfat_sbits_p<100>  LOC = "F18"  | TNM = vfat_sbits;
-NET vfat_sbits_p<101>  LOC = "F16"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<101>  LOC = "G16"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<102>  LOC = "K23"  | TNM = vfat_sbits;
-NET vfat_sbits_p<102>  LOC = "K24"  | TNM = vfat_sbits;
-NET vfat_sbits_p<103>  LOC = "K21"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<103>  LOC = "K22"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sot_n<11>     LOC = "R34"  | TNM = vfat_sot;
-NET vfat_sot_p<11>     LOC = "R33"  | TNM = vfat_sot;
-NET vfat_sbits_n<88>   LOC = "AC30" | TNM = vfat_sbits;
-NET vfat_sbits_p<88>   LOC = "AD30" | TNM = vfat_sbits;
-NET vfat_sbits_p<89>   LOC = "AB32" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<89>   LOC = "AC32" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_p<90>   LOC = "AB30" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<90>   LOC = "AB31" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_p<91>   LOC = "Y32"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<91>   LOC = "Y31"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<92>   LOC = "W32"  | TNM = vfat_sbits;
-NET vfat_sbits_p<92>   LOC = "W31"  | TNM = vfat_sbits;
-NET vfat_sbits_p<93>   LOC = "V30"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<93>   LOC = "W30"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_p<94>   LOC = "U28"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<94>   LOC = "V29"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_p<95>   LOC = "U31"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<95>   LOC = "U30"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sot_n<10>     LOC = "P34"  | TNM = vfat_sot;
-NET vfat_sot_p<10>     LOC = "N34"  | TNM = vfat_sot;
-NET vfat_sbits_n<80>   LOC = "T31"  | TNM = vfat_sbits;
-NET vfat_sbits_p<80>   LOC = "T30"  | TNM = vfat_sbits;
-NET vfat_sbits_n<81>   LOC = "R32"  | TNM = vfat_sbits;
-NET vfat_sbits_p<81>   LOC = "R31"  | TNM = vfat_sbits;
-NET vfat_sbits_p<82>   LOC = "P31"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<82>   LOC = "P30"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_p<83>   LOC = "N32"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<83>   LOC = "P32"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_p<84>   LOC = "M30"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<84>   LOC = "N30"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<85>   LOC = "L31"  | TNM = vfat_sbits;
-NET vfat_sbits_p<85>   LOC = "M31"  | TNM = vfat_sbits;
-NET vfat_sbits_p<86>   LOC = "K32"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<86>   LOC = "K31"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_p<87>   LOC = "J30"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<87>   LOC = "K29"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sot_p<9>      LOC = "AJ29" | TNM = vfat_sot; # polarity swap
-NET vfat_sot_n<9>      LOC = "AJ30" | TNM = vfat_sot; # polarity swap
-NET vfat_sbits_p<72>   LOC = "AN25" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<72>   LOC = "AN24" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_p<73>   LOC = "AK26" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<73>   LOC = "AJ26" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_p<74>   LOC = "AN27" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<74>   LOC = "AM27" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<75>   LOC = "AJ27" | TNM = vfat_sbits;
-NET vfat_sbits_p<75>   LOC = "AK27" | TNM = vfat_sbits;
-NET vfat_sbits_n<76>   LOC = "AK28" | TNM = vfat_sbits;
-NET vfat_sbits_p<76>   LOC = "AL28" | TNM = vfat_sbits;
-NET vfat_sbits_n<77>   LOC = "AP31" | TNM = vfat_sbits;
-NET vfat_sbits_p<77>   LOC = "AP30" | TNM = vfat_sbits;
-NET vfat_sbits_n<78>   LOC = "AP33" | TNM = vfat_sbits;
-NET vfat_sbits_p<78>   LOC = "AP32" | TNM = vfat_sbits;
-NET vfat_sbits_n<79>   LOC = "AM30" | TNM = vfat_sbits;
-NET vfat_sbits_p<79>   LOC = "AN30" | TNM = vfat_sbits;
-NET vfat_sot_n<8>      LOC = "M32"  | TNM = vfat_sot;
-NET vfat_sot_p<8>      LOC = "L33"  | TNM = vfat_sot;
-NET vfat_sbits_p<64>   LOC = "AH25" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<64>   LOC = "AJ25" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<65>   LOC = "AF21" | TNM = vfat_sbits;
-NET vfat_sbits_p<65>   LOC = "AF20" | TNM = vfat_sbits;
-NET vfat_sbits_n<66>   LOC = "AD21" | TNM = vfat_sbits;
-NET vfat_sbits_p<66>   LOC = "AE21" | TNM = vfat_sbits;
-NET vfat_sbits_n<67>   LOC = "AD26" | TNM = vfat_sbits;
-NET vfat_sbits_p<67>   LOC = "AD25" | TNM = vfat_sbits;
-NET vfat_sbits_p<68>   LOC = "AB25" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<68>   LOC = "AC25" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_p<69>   LOC = "AB27" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<69>   LOC = "AC27" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_p<70>   LOC = "AA26" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<70>   LOC = "AB26" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<71>   LOC = "Y26"  | TNM = vfat_sbits;
-NET vfat_sbits_p<71>   LOC = "AA25" | TNM = vfat_sbits;
-NET vfat_sot_p<7>      LOC = "J25"  | TNM = vfat_sot; # polarity swap
-NET vfat_sot_n<7>      LOC = "J24"  | TNM = vfat_sot; # polarity swap
-NET vfat_sbits_n<56>   LOC = "J22"  | TNM = vfat_sbits;
-NET vfat_sbits_p<56>   LOC = "H22"  | TNM = vfat_sbits;
-NET vfat_sbits_p<57>   LOC = "T24"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<57>   LOC = "T23"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<58>   LOC = "M25"  | TNM = vfat_sbits;
-NET vfat_sbits_p<58>   LOC = "N25"  | TNM = vfat_sbits;
-NET vfat_sbits_n<59>   LOC = "G25"  | TNM = vfat_sbits;
-NET vfat_sbits_p<59>   LOC = "F25"  | TNM = vfat_sbits;
-NET vfat_sbits_p<60>   LOC = "K11"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<60>   LOC = "L11"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_p<61>   LOC = "G11"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<61>   LOC = "F11"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<62>   LOC = "E12"  | TNM = vfat_sbits;
-NET vfat_sbits_p<62>   LOC = "D12"  | TNM = vfat_sbits;
-NET vfat_sbits_n<63>   LOC = "F13"  | TNM = vfat_sbits;
-NET vfat_sbits_p<63>   LOC = "E13"  | TNM = vfat_sbits;
-NET vfat_sot_n<6>      LOC = "L26"  | TNM = vfat_sot;
-NET vfat_sot_p<6>      LOC = "L25"  | TNM = vfat_sot;
-NET vfat_sbits_n<48>   LOC = "D22"  | TNM = vfat_sbits;
-NET vfat_sbits_p<48>   LOC = "C22"  | TNM = vfat_sbits;
-NET vfat_sbits_n<49>   LOC = "E21"  | TNM = vfat_sbits;
-NET vfat_sbits_p<49>   LOC = "D21"  | TNM = vfat_sbits;
-NET vfat_sbits_n<50>   LOC = "D20"  | TNM = vfat_sbits;
-NET vfat_sbits_p<50>   LOC = "C20"  | TNM = vfat_sbits;
-NET vfat_sbits_p<51>   LOC = "E19"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<51>   LOC = "D19"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<52>   LOC = "D17"  | TNM = vfat_sbits;
-NET vfat_sbits_p<52>   LOC = "E18"  | TNM = vfat_sbits;
-NET vfat_sbits_n<53>   LOC = "D16"  | TNM = vfat_sbits;
-NET vfat_sbits_p<53>   LOC = "E16"  | TNM = vfat_sbits;
-NET vfat_sbits_n<54>   LOC = "F15"  | TNM = vfat_sbits;
-NET vfat_sbits_p<54>   LOC = "G15"  | TNM = vfat_sbits;
-NET vfat_sbits_n<55>   LOC = "E14"  | TNM = vfat_sbits;
-NET vfat_sbits_p<55>   LOC = "F14"  | TNM = vfat_sbits;
-NET vfat_sot_p<5>      LOC = "J11"  | TNM = vfat_sot; # polarity swap
-NET vfat_sot_n<5>      LOC = "J10"  | TNM = vfat_sot; # polarity swap
-NET vfat_sbits_p<40>   LOC = "C29"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<40>   LOC = "D29"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<41>   LOC = "E28"  | TNM = vfat_sbits;
-NET vfat_sbits_p<41>   LOC = "F28"  | TNM = vfat_sbits;
-NET vfat_sbits_p<42>   LOC = "D27"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<42>   LOC = "E27"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_p<43>   LOC = "E26"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<43>   LOC = "F26"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_p<44>   LOC = "D25"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<44>   LOC = "D26"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_p<45>   LOC = "C24"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<45>   LOC = "C25"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<46>   LOC = "E24"  | TNM = vfat_sbits;
-NET vfat_sbits_p<46>   LOC = "D24"  | TNM = vfat_sbits;
-NET vfat_sbits_p<47>   LOC = "E22"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<47>   LOC = "E23"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sot_n<4>      LOC = "E11"  | TNM = vfat_sot;
-NET vfat_sot_p<4>      LOC = "D11"  | TNM = vfat_sot;
-NET vfat_sbits_p<32>   LOC = "A23"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<32>   LOC = "A24"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<33>   LOC = "C23"  | TNM = vfat_sbits;
-NET vfat_sbits_p<33>   LOC = "B23"  | TNM = vfat_sbits;
-NET vfat_sbits_p<34>   LOC = "B21"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<34>   LOC = "B22"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_p<35>   LOC = "A20"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<35>   LOC = "A21"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<36>   LOC = "C19"  | TNM = vfat_sbits;
-NET vfat_sbits_p<36>   LOC = "B20"  | TNM = vfat_sbits;
-NET vfat_sbits_p<37>   LOC = "A18"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<37>   LOC = "A19"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<38>   LOC = "C18"  | TNM = vfat_sbits;
-NET vfat_sbits_p<38>   LOC = "B18"  | TNM = vfat_sbits;
-NET vfat_sbits_n<39>   LOC = "B17"  | TNM = vfat_sbits;
-NET vfat_sbits_p<39>   LOC = "C17"  | TNM = vfat_sbits;
-NET vfat_sot_n<3>      LOC = "H29"  | TNM = vfat_sot;
-NET vfat_sot_p<3>      LOC = "H28"  | TNM = vfat_sot;
-NET vfat_sbits_p<24>   LOC = "F33"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<24>   LOC = "G33"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_p<25>   LOC = "E34"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<25>   LOC = "F34"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_p<26>   LOC = "E32"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<26>   LOC = "E33"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<27>   LOC = "C34"  | TNM = vfat_sbits;
-NET vfat_sbits_p<27>   LOC = "D34"  | TNM = vfat_sbits;
-NET vfat_sbits_n<28>   LOC = "B34"  | TNM = vfat_sbits;
-NET vfat_sbits_p<28>   LOC = "C33"  | TNM = vfat_sbits;
-NET vfat_sbits_p<29>   LOC = "A33"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<29>   LOC = "B33"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_p<30>   LOC = "A28"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<30>   LOC = "A29"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_p<31>   LOC = "C28"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<31>   LOC = "B28"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sot_p<2>      LOC = "A30"  | TNM = vfat_sot; # polarity swap
-NET vfat_sot_n<2>      LOC = "B30"  | TNM = vfat_sot; # polarity swap
-NET vfat_sbits_n<16>   LOC = "M27"  | TNM = vfat_sbits;
-NET vfat_sbits_p<16>   LOC = "M26"  | TNM = vfat_sbits;
-NET vfat_sbits_p<17>   LOC = "L28"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<17>   LOC = "M28"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_p<18>   LOC = "L29"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<18>   LOC = "L30"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<19>   LOC = "J29"  | TNM = vfat_sbits;
-NET vfat_sbits_p<19>   LOC = "K28"  | TNM = vfat_sbits;
-NET vfat_sbits_n<20>   LOC = "D32"  | TNM = vfat_sbits;
-NET vfat_sbits_p<20>   LOC = "D31"  | TNM = vfat_sbits;
-NET vfat_sbits_n<21>   LOC = "A31"  | TNM = vfat_sbits;
-NET vfat_sbits_p<21>   LOC = "B31"  | TNM = vfat_sbits;
-NET vfat_sbits_p<22>   LOC = "J31"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<22>   LOC = "J32"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<23>   LOC = "H33"  | TNM = vfat_sbits;
-NET vfat_sbits_p<23>   LOC = "H34"  | TNM = vfat_sbits;
-NET vfat_sot_p<1>      LOC = "K33"  | TNM = vfat_sot; # polarity swap
-NET vfat_sot_n<1>      LOC = "J34"  | TNM = vfat_sot; # polarity swap
-NET vfat_sbits_p<8>    LOC = "AA28" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<8>    LOC = "AA29" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_p<9>    LOC = "W29"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<9>    LOC = "Y29"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_p<10>   LOC = "V28"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<10>   LOC = "V27"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<11>   LOC = "U27"  | TNM = vfat_sbits;
-NET vfat_sbits_p<11>   LOC = "U26"  | TNM = vfat_sbits;
-NET vfat_sbits_n<12>   LOC = "T29"  | TNM = vfat_sbits;
-NET vfat_sbits_p<12>   LOC = "T28"  | TNM = vfat_sbits;
-NET vfat_sbits_p<13>   LOC = "R28"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<13>   LOC = "R27"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_p<14>   LOC = "P29"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<14>   LOC = "R29"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<15>   LOC = "N29"  | TNM = vfat_sbits;
-NET vfat_sbits_p<15>   LOC = "N28"  | TNM = vfat_sbits;
-NET vfat_sot_n<0>      LOC = "L34"  | TNM = vfat_sot;
-NET vfat_sot_p<0>      LOC = "K34"  | TNM = vfat_sot;
-NET vfat_sbits_p<0>    LOC = "C30"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<0>    LOC = "D30"  | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<1>    LOC = "B32"  | TNM = vfat_sbits;
-NET vfat_sbits_p<1>    LOC = "C32"  | TNM = vfat_sbits;
-NET vfat_sbits_p<2>    LOC = "AF30" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<2>    LOC = "AG30" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<3>    LOC = "AE29" | TNM = vfat_sbits;
-NET vfat_sbits_p<3>    LOC = "AE28" | TNM = vfat_sbits;
-NET vfat_sbits_n<4>    LOC = "AD27" | TNM = vfat_sbits;
-NET vfat_sbits_p<4>    LOC = "AE27" | TNM = vfat_sbits;
-NET vfat_sbits_n<5>    LOC = "AC29" | TNM = vfat_sbits;
-NET vfat_sbits_p<5>    LOC = "AD29" | TNM = vfat_sbits;
-NET vfat_sbits_p<6>    LOC = "AB28" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<6>    LOC = "AC28" | TNM = vfat_sbits; # polarity swap
-NET vfat_sbits_n<7>    LOC = "AA31" | TNM = vfat_sbits;
-NET vfat_sbits_p<7>    LOC = "AA30" | TNM = vfat_sbits;
-#### END: AUTO GENERATED SBITS UCF -- DO NOT EDIT ####
-
-TIMEGRP "vfat_sbits" OFFSET = IN  1.5625 ns VALID 3.125 ns BEFORE "logic_clock_p" RISING;
-TIMEGRP "vfat_sot"   OFFSET = IN  1.5625 ns VALID 3.125 ns BEFORE "logic_clock_p" RISING;

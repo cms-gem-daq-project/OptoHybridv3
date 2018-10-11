@@ -1,17 +1,17 @@
 ########################################################################################################################
+# GBT Status
+########################################################################################################################
+
+NET "gbt_txready_i<0>" LOC = AF13 ; # v_diff_k_13_p
+NET "gbt_rxvalid_i<0>" LOC = AJ9  ; # R_side_2_n
+NET "gbt_rxready_i<0>" LOC = AH9  ; # R_side_2_p
+
+########################################################################################################################
 # E-links
 ########################################################################################################################
 
 # outputs
 
-# 80 MHZ e-link
-#NET "elink_o_p<0>" LOC = AG16; # GBTx DOUT 28
-#NET "elink_o_n<0>" LOC = AF16; #
-
-# 320 MHz e-link
-# POLSWAPed, make sure to account in firmware
-#NET "elink_o_p<0>" LOC = L19;
-#NET "elink_o_n<0>" LOC = L18;
 NET "elink_o_p" LOC = L19;
 NET "elink_o_n" LOC = L18;
 
@@ -24,6 +24,7 @@ NET "elink_i_n" LOC = AE24 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE; #
 ########################################################################################################################
 # GBT E-Port Clocks
 ########################################################################################################################
+
 ### GBTx data clock -- these are 320MHz data clock (terminated outside), the phase is aligned such that rising edge is in the middle of the data bit
 ## gbt dclk28 = fdck28_from_gbt = v_diff_k_10 = AC13, AC12
 #NET "gbt_eclk_p<0>"   LOC = AC13 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE;
@@ -32,41 +33,39 @@ NET "elink_i_n" LOC = AE24 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE; #
 ## gbt dclk36 = fdck36_from_gbt = GC_J = J9/H9
 #NET "gbt_eclk_p<1>"   LOC = J9 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE;
 #NET "gbt_eclk_n<1>"   LOC = H9 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE;
-#
 
 ########################################################################################################################
-# GBT Deskew Clocks
+# GBT Deskew (Phase Shiftable) Clocks
 ########################################################################################################################
 
-## GBTx to FPGA clock 0 -- this is a configurable GBTX clock (terminated outside),
-#  should be set to 40MHz with 180deg phase offset from the GBTX data clock. why :((
-#  what does this even mean :(( they are at different frequencies
-#clockdes6 = clk0_to_fpga =  v_diff_b_10 = AP20, AP21
-NET "logic_clock_p"  LOC = AP20 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE;
-NET "logic_clock_n"  LOC = AP21 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE;
+NET "logic_clock_p"  LOC = AP20 | IOSTANDARD = LVDS_25 | DIFF_TERM = FALSE;
+NET "logic_clock_n"  LOC = AP21 | IOSTANDARD = LVDS_25 | DIFF_TERM = FALSE;
 
-#clockdes1 = clk1_to_fpga =  GC_A = A10, B10
-NET "elink_clock_p"  LOC = A10 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE;
-NET "elink_clock_n"  LOC = B10 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE;
+NET "elink_clock_p"  LOC = A10 | IOSTANDARD = LVDS_25 | DIFF_TERM = FALSE;
+NET "elink_clock_n"  LOC = B10 | IOSTANDARD = LVDS_25 | DIFF_TERM = FALSE;
 
+NET "logic_clock_p"  TNM_NET = "logic_clock_p";
+NET "logic_clock_n"  TNM_NET = "logic_clock_n";
 
-NET "logic_clock_p"      TNM_NET = "logic_clock_p";
-NET "logic_clock_n"      TNM_NET = "logic_clock_n";
+NET "elink_clock_p"  TNM_NET = "elink_clock_p";
+NET "elink_clock_n"  TNM_NET = "elink_clock_n";
 
-NET "elink_clock_p"      TNM_NET = "elink_clock_p";
-NET "elink_clock_n"      TNM_NET = "elink_clock_n";
+# Output
 
-# NET "gtx_inst/mgt_refclk" TNM_NET = "mgt_refclk";
-# TIMESPEC "TS_mgt_refclk" = PERIOD "mgt_refclk" 6.25 ns HIGH 50%;
-# ELINKS
+INST "elink_o_p"                     TNM = elink_o_grp;
+INST "elink_o_n"                     TNM = elink_o_grp;
+INST "gbt/gbt_serdes*/to_gbt_ser*/*" TNM = elink_o_serdes_grp;
 
-INST "elink_o_p" TNM = elink320_o;
-INST "elink_o_n" TNM = elink320_o;
+TIMESPEC TS_ELINK_O_TIG = FROM elink_o_serdes_grp TO elink_o_grp TIG;
 
-INST "elink_i_n" TNM = elink_i;
-INST "elink_i_n"  TNM = elink_i;
+# Input
 
-TIMEGRP "elink_i" OFFSET = IN  1.5625 ns VALID 3.125 ns BEFORE "elink_clock_p" RISING;
+INST "elink_i_p"                                       TNM = elink_i_grp;
+INST "elink_i_n"                                       TNM = elink_i_grp;
+INST "gbt/gbt_serdes*/*oversample/ise1*/*"             TNM = elink_i_serdes_grp;
+INST "gbt/gbt_serdes*/*oversample/dru/*data_in_delay*" TNM = gbt_ff_grp;
 
-TIMEGRP "elink320_o" OFFSET = OUT 1.5625  ns VALID 3.125 ns AFTER  "elink_clock_p" RISING;
+TIMESPEC TS_GBT_TIG   = FROM elink_i_serdes_grp TO gbt_ff_grp TIG;
+TIMESPEC TS_GBT_IOTIG = FROM elink_i_grp        TO elink_i_serdes_grp TIG;
 
+NET "gbt/*gbt_serdes*/*oversample*/q<*>" MAXDELAY = 2.000 ns;

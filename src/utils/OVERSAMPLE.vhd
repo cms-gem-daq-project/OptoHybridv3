@@ -40,6 +40,10 @@ architecture behavioral of oversample is
   signal tap_delay_0   : std_logic_vector (tap_delay_i'high downto 0);
   signal tap_delay_45  : std_logic_vector (tap_delay_i'high downto 0);
 
+  -- keep q for timing constraint
+  attribute mark_debug : string;
+  attribute mark_debug of q : signal is "true";
+
 begin
 
   ----------------------------------------------------------------------------------------------------------------------
