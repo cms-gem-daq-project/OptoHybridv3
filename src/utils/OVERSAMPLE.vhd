@@ -133,7 +133,7 @@ begin
   -- Data Recovery Unit
   ----------------------------------------------------------------------------------------------------------------------
 
-  dr: entity work.dru
+  dru: entity work.dru
   generic map(
     g_PHASE_SEL_EXTERNAL => g_PHASE_SEL_EXTERNAL
   )
