@@ -1,42 +1,72 @@
+//--------------------------------------------------------------------------------
+// CMS Muon Endcap
+// GEM Collaboration
+// Optohybrid v3 Firmware -- Device DNA
+// A. Peck
+//--------------------------------------------------------------------------------
+// Description:
+//   This module reads the Virtex-6 Device DNA
+//--------------------------------------------------------------------------------
+// 2018/10/11 -- Initial tested version
+//--------------------------------------------------------------------------------
+
 module device_dna (
   input clock,
   input reset,
-  output reg [56:0] dna
+  output reg [DNA_LENGTH-1:0] dna
 );
 
-   wire DOUT, CLK, DIN;
-	reg  READ, SHIFT;
+  wire DOUT, CLK, DIN;
+  reg  READ, SHIFT;
 
-   reg [56:0] dna_sr;
-   reg  [5:0] read_cnt;
+  parameter READ_SIZE  = 'd6;
+  parameter DNA_LENGTH = 'd57;
 
-   always @(posedge clock) begin
+  reg [DNA_LENGTH-1:0] dna_sr   = {DNA_LENGTH{1'b0}};
+  reg [READ_SIZE -1:0] read_cnt = {READ_SIZE{1'b0}};
 
-     if      (reset)         begin read_cnt <= 0;               SHIFT <= 1'b0; READ <= 1'b1; end
-     else if (read_cnt < 56) begin read_cnt <= read_cnt + 1'b1; SHIFT <= 1'b1; READ <= 1'b0; end
-     else                    begin read_cnt <= read_cnt;        SHIFT <= 1'b0; READ <= 1'b0; end
+  wire read_done = (read_cnt == DNA_LENGTH+1);
+  wire busy      = ~read_done;
 
-     dna_sr <= {dna_sr[55:0], DOUT};
+  // A Low-to-High transition on SHIFT should be avoided when CLK is High because this
+  // causes a spurious initial clock edge. Ideally, SHIFT should only be asserted when CLK is
+  // Low or on a falling edge of CLK.
 
-     if (read_cnt==56)
-        dna <= dna_sr;
+  always @(negedge clock) begin
+    if      (reset)     SHIFT <= 1'b0;
+    else if (busy)      SHIFT <= 1'b1;
+    else if (read_done) SHIFT <= 1'b0;
+  end
 
-   end
+  always @(posedge clock) begin
 
-   assign CLK  = clock;
-   assign DIN  = DOUT;
+    if      (reset)     begin read_cnt <= 0;               READ <= 1'b1; end
+    else if (busy)      begin read_cnt <= read_cnt + 1'b1; READ <= 1'b0; end
+    else if (read_done) begin read_cnt <= read_cnt;        READ <= 1'b0; end
 
-   DNA_PORT #(
-      .SIM_DNA_VALUE(57'h123456789abcdef)  // Specifies the Pre-programmed factory ID value for simulation
-   )
-   DNA_PORT_inst (
-      .DOUT      (DOUT), // 1-bit output: DNA output data
-      .CLK       (CLK),  // 1-bit input: Clock input
-      .DIN       (DIN),  // 1-bit input: User data input pin
-      .READ      (READ), // 1-bit input: Active high load DNA, active low read input
-      .SHIFT     (SHIFT) // 1-bit input: Active high SHIFT enable input
-   );
+    if (busy) begin
+      dna_sr <= {dna_sr[DNA_LENGTH-2:0], DOUT & ~(reset)};
+    end
 
-   // End of DNA_PORT_inst instantiation
+    if (read_done) dna <= dna_sr[DNA_LENGTH-1:0];
+    else           dna <= {DNA_LENGTH{1'b0}};
 
- endmodule
+  end
+
+  assign CLK  = clock;
+  assign DIN  = DOUT;
+
+  DNA_PORT #(
+    .SIM_DNA_VALUE(57'h123456789abcdef)  // Specifies the ID value for simulation
+  )
+  DNA_PORT_inst (
+    .DOUT      (DOUT), // 1-bit output: DNA output data
+    .CLK       (CLK),  // 1-bit input: Clock input
+    .DIN       (DIN),  // 1-bit input: User data input pin
+    .READ      (READ), // 1-bit input: Active high load DNA, active low read input
+    .SHIFT     (SHIFT) // 1-bit input: Active high SHIFT enable input
+  );
+
+  // End of DNA_PORT_inst instantiation
+
+endmodule
