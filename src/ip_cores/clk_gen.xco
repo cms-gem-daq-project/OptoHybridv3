@@ -1,7 +1,7 @@
 ##############################################################
 #
 # Xilinx Core Generator version 14.7
-# Date: Thu Sep 13 02:48:51 2018
+# Date: Fri Oct 12 20:16:10 2018
 #
 ##############################################################
 #
@@ -64,8 +64,8 @@ CSET clkfb_out_n_port=CLKFB_OUT_N
 CSET clkfb_out_p_port=CLKFB_OUT_P
 CSET clkfb_out_port=CLKFB_OUT
 CSET clkfb_stopped_port=CLKFB_STOPPED
-CSET clkin1_jitter_ps=250.0
-CSET clkin1_ui_jitter=0.010
+CSET clkin1_jitter_ps=50.0
+CSET clkin1_ui_jitter=0.002
 CSET clkin2_jitter_ps=100.0
 CSET clkin2_ui_jitter=0.010
 CSET clkout1_drives=BUFG
@@ -186,7 +186,7 @@ CSET mmcm_clock_hold=false
 CSET mmcm_compensation=ZHOLD
 CSET mmcm_divclk_divide=1
 CSET mmcm_notes=None
-CSET mmcm_ref_jitter1=0.010
+CSET mmcm_ref_jitter1=0.002
 CSET mmcm_ref_jitter2=0.010
 CSET mmcm_startup_wait=false
 CSET num_out_clks=5
@@ -224,7 +224,7 @@ CSET pll_notes=None
 CSET pll_ref_jitter=0.010
 CSET power_down_port=POWER_DOWN
 CSET prim_in_freq=40.000
-CSET prim_in_jitter=0.010
+CSET prim_in_jitter=0.002
 CSET prim_source=Differential_clock_capable_pin
 CSET primary_port=clk40_i
 CSET primitive=MMCM
@@ -266,4 +266,4 @@ CSET use_status=false
 MISC pkg_timestamp=2012-05-10T12:44:55Z
 # END Extra information
 GENERATE
-# CRC: 6b81ff2c
+# CRC:  1b86f1b
