@@ -20,7 +20,7 @@ INST "ext_sbits_o<3>" TNM = ext_sbits_o;
 INST "ext_sbits_o<4>" TNM = ext_sbits_o;
 INST "ext_sbits_o<5>" TNM = ext_sbits_o;
 
-TIMEGRP "ext_sbits_o" OFFSET = OUT 12.5 ns VALID 25 ns BEFORE "logic_clock_p" RISING;
+TIMEGRP "ext_sbits_o" OFFSET = OUT 12.5 ns VALID 25 ns AFTER "logic_clock_p" RISING;
 
 ########################################################################################################################
 # LEDs
@@ -62,7 +62,7 @@ INST "led_o<13>" TNM = led_o;
 INST "led_o<14>" TNM = led_o;
 INST "led_o<15>" TNM = led_o;
 
-TIMEGRP "led_o"       OFFSET = OUT 12.5 ns VALID 25 ns BEFORE "logic_clock_p" RISING;
+TIMEGRP "led_o"       OFFSET = OUT 12.5 ns VALID 25 ns AFTER "logic_clock_p" RISING;
 
 ########################################################################################################################
 # SCA
@@ -94,7 +94,7 @@ NET "ext_reset_o<10>" LOC ="AL23";
 NET "ext_reset_o<11>" LOC ="AP24";
 
 INST "ext_reset_o<*>" TNM = reset_o;
-TIMEGRP "reset_o"       OFFSET = OUT 12.5 ns VALID 25 ns BEFORE "logic_clock_p" RISING;
+TIMEGRP "reset_o"       OFFSET = OUT 12.5 ns VALID 25 ns AFTER "logic_clock_p" RISING;
 
 ########################################################################################################################
 # MGT
@@ -113,3 +113,23 @@ NET "mgt_tx_p_o<2>" LOC = H1; #
 NET "mgt_tx_n_o<2>" LOC = H2; #
 NET "mgt_tx_p_o<3>" LOC = F1; #
 NET "mgt_tx_n_o<3>" LOC = F2; #
+
+#######################################################################################################################
+# CFGMCLK
+#######################################################################################################################
+
+NET "control/led_control/CFGMCLK" TNM_NET = "cfgmclk";
+TIMESPEC "TS_cfgmclk" = PERIOD "cfgmclk" 12.5 ns HIGH 50 %;
+
+#######################################################################################################################
+# Sync
+#######################################################################################################################
+
+NET "gbt_clk40"                   TNM_NET = "gbt_clk40_grp";
+NET "clk_1x"                       TNM_NET = "clk_1x_grp";
+
+NET "control/led_control/CFGMCLK" TNM_NET = "cfgmclk_grp";
+
+TIMESPEC TS_clk_gbt_to_clk_logic = FROM "gbt_clk40_grp" TO "clk_1x_grp"     5 ns;
+TIMESPEC TS_clk_logic_to_clk_gbt = FROM "clk_1x_grp"     TO "gbt_clk40_grp" 5 ns;
+TIMESPEC TS_clk_cfg_to_clk_logic = FROM "cfgmclk_grp"   TO "clk_1x_grp"     5 ns;

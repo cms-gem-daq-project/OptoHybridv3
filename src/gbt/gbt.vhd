@@ -29,75 +29,74 @@ generic(
 );
 port(
 
-    reset_i : in std_logic;
+    reset_i            : in std_logic;
 
-    clock_i : in std_logic; -- 40 MHz logic clock
+    clock_i            : in std_logic; -- 40 MHz logic clock
 
-    gbt_clk40      : in std_logic; -- 40 MHz phase shiftable frame clock from GBT
-    gbt_clk80      : in std_logic; -- 40 MHz phase shiftable frame clock from GBT
-    gbt_clk160_0   : in std_logic; -- 320 MHz phase shiftable frame clock from GBT
-    gbt_clk160_90  : in std_logic; -- 320 MHz phase shiftable frame clock from GBT
-    gbt_clk320     : in std_logic; -- 320 MHz phase shiftable frame clock from GBT
+    gbt_clk40          : in std_logic; -- 40 MHz phase shiftable frame clock from GBT
+    gbt_clk80          : in std_logic; -- 40 MHz phase shiftable frame clock from GBT
+    gbt_clk160_0       : in std_logic; -- 320 MHz phase shiftable frame clock from GBT
+    gbt_clk160_90      : in std_logic; -- 320 MHz phase shiftable frame clock from GBT
+    gbt_clk320         : in std_logic; -- 320 MHz phase shiftable frame clock from GBT
 
-    elink_i_p : in  std_logic;
-    elink_i_n : in  std_logic;
+    elink_i_p          : in  std_logic;
+    elink_i_n          : in  std_logic;
 
-    elink_o_p : out std_logic;
-    elink_o_n : out std_logic;
+    elink_o_p          : out std_logic;
+    elink_o_n          : out std_logic;
 
-    gbt_link_error_o : out std_logic;
-    gbt_link_ready_o : out std_logic;
+    gbt_link_error_o   : out std_logic;
+    gbt_link_ready_o   : out std_logic;
 
-    l1a_o         : out std_logic;
-    bc0_o         : out std_logic;
-    resync_o      : out std_logic;
+    l1a_o              : out std_logic;
+    bc0_o              : out std_logic;
+    resync_o           : out std_logic;
 
-    cnt_snap : in std_logic;
+    cnt_snap           : in std_logic;
 
     -- GBTx
 
-    gbt_rxready_i : in std_logic;
-    gbt_rxvalid_i : in std_logic;
-    gbt_txready_i : in std_logic;
+    gbt_rxready_i      : in std_logic;
+    gbt_rxvalid_i      : in std_logic;
+    gbt_txready_i      : in std_logic;
 
     -- wishbone master
-    ipb_mosi_o : out ipb_wbus;
-    ipb_miso_i : in  ipb_rbus;
+    ipb_mosi_o         : out ipb_wbus;
+    ipb_miso_i         : in  ipb_rbus;
 
     -- wishbone slave
-    ipb_mosi_i : in  ipb_wbus;
-    ipb_miso_o : out ipb_rbus;
-    ipb_reset_i : in std_logic
+    ipb_mosi_i         : in  ipb_wbus;
+    ipb_miso_o         : out ipb_rbus;
+    ipb_reset_i        : in std_logic
 );
 
 end gbt;
 
 architecture Behavioral of gbt is
 
-    signal gbt_tx_data  : std_logic_vector(7 downto 0) := (others => '0');
-    signal gbt_rx_data  : std_logic_vector(7 downto 0) := (others => '0');
+    signal gbt_tx_data        : std_logic_vector(7 downto 0) := (others => '0');
+    signal gbt_rx_data        : std_logic_vector(7 downto 0) := (others => '0');
 
-    signal test_pattern : std_logic_vector (63 downto 0);
+    signal test_pattern       : std_logic_vector (63 downto 0);
 
-    signal gbt_link_error    : std_logic;
-    signal gbt_link_unstable : std_logic;
-    signal gbt_link_ready    : std_logic;
+    signal gbt_link_error     : std_logic;
+    signal gbt_link_unstable  : std_logic;
+    signal gbt_link_ready     : std_logic;
 
     signal gbt_link_err_ready : std_logic;
 
-    signal l1a_force         :  std_logic;
-    signal bc0_force         :  std_logic;
-    signal resync_force      :  std_logic;
+    signal l1a_force          : std_logic;
+    signal bc0_force          : std_logic;
+    signal resync_force       : std_logic;
 
-    signal l1a_gbt         :  std_logic;
-    signal bc0_gbt         :  std_logic;
-    signal resync_gbt      :  std_logic;
+    signal l1a_gbt            : std_logic;
+    signal bc0_gbt            : std_logic;
+    signal resync_gbt         : std_logic;
 
-    signal reset     : std_logic;
-    signal cnt_reset     : std_logic;
+    signal reset              : std_logic;
+    signal cnt_reset          : std_logic;
 
-
-    signal tx_delay : std_logic_vector (4 downto 0);
+    signal tx_delay           : std_logic_vector (4 downto 0);
 
     -- wishbone master
     signal ipb_mosi : ipb_wbus;
@@ -143,9 +142,9 @@ begin
         end if;
     end process;
 
-    --=========--
-    --== GBT ==--
-    --=========--
+    --------------------------------------------------------------------------------------------------------------------
+    -- GBT Serdes
+    --------------------------------------------------------------------------------------------------------------------
 
     -- at 320 MHz performs ser-des on incoming
     gbt_serdes : entity work.gbt_serdes
@@ -180,7 +179,9 @@ begin
        data_i           => gbt_tx_data     -- Parallel data in
     );
 
-    -- decodes GBT frames to build packets
+    --------------------------------------------------------------------------------------------------------------------
+    -- GBT Link
+    --------------------------------------------------------------------------------------------------------------------
 
     gbt_link : entity work.gbt_link
     port map(

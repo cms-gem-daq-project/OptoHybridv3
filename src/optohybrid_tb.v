@@ -351,9 +351,6 @@ parameter DDR = 0;
   wire elink_o_p;
   wire elink_o_n;
 
-  // SCA IO
-  wire [3:0] sca_io = {4'b0000};
-
   // GBTx Control
   wire gbt_txready_i = 1'b1;
   wire gbt_rxvalid_i = 1'b1;
@@ -389,8 +386,6 @@ parameter DDR = 0;
 
       .elink_o_p     (elink_o_p),
       .elink_o_n     (elink_o_n),
-
-      .sca_io        (sca_io),
 
       .gbt_txready_i (gbt_txready_i),
       .gbt_rxvalid_i (gbt_rxvalid_i),

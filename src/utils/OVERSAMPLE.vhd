@@ -15,11 +15,11 @@ port(
   invert        : in std_logic := '0';
   rxd_p         : in std_logic;
   rxd_n         : in std_logic;
+  clk1x_logic   : in std_logic;
+  clk2x_logic   : in std_logic;
   clk2x_0       : in std_logic;
   clk2x_90      : in std_logic;
   clk2x_180     : in std_logic;
-  clk1x_logic   : in std_logic;
-  clk2x_logic   : in std_logic;
   rst           : in std_logic;
   tap_delay_i   : in std_logic_vector (4 downto 0) := "00000";
   phase_sel_in  : in std_logic_vector (1 downto 0) := "00";
@@ -37,8 +37,12 @@ architecture behavioral of oversample is
   signal rxdata_inv    : std_logic_vector(g_BIT_WIDTH-1 downto 0):=(others=>'0');
   signal rxce          : std_logic:='0';
   signal data          : std_logic_vector(1 downto 0);
+  signal tap_delay     : std_logic_vector (tap_delay_i'high downto 0);
   signal tap_delay_0   : std_logic_vector (tap_delay_i'high downto 0);
   signal tap_delay_45  : std_logic_vector (tap_delay_i'high downto 0);
+
+  attribute ASYNC_REG  : string;
+  attribute ASYNC_REG  of tap_delay : signal is "TRUE";
 
   -- keep q for timing constraint
   attribute mark_debug : string;
@@ -61,11 +65,12 @@ begin
   -- Tap Delay Addition
   ----------------------------------------------------------------------------------------------------------------------
 
-  process(clk2x_0)
+  process(clk1x_logic)
   begin
-    if rising_edge(clk2x_0) then
-      tap_delay_0  <= tap_delay_i ;
-      tap_delay_45 <= std_logic_vector (unsigned(tap_delay_i)  + to_unsigned(g_NUM_TAPS_45,tap_delay_i'length));
+    if rising_edge(clk1x_logic) then
+      tap_delay    <= tap_delay_i;
+      tap_delay_0  <= tap_delay ;
+      tap_delay_45 <= std_logic_vector (unsigned(tap_delay)  + to_unsigned(g_NUM_TAPS_45,tap_delay'length));
     end if;
   end process;
 
