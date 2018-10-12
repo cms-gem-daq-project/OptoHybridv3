@@ -250,9 +250,9 @@ architecture Behavioral of gbt_serdes is
 
     gen_gbt_rx_data_synchronizer : for I in 0 to (MXBITS-1) generate
     begin
-      synchronizer_oserdes_reset:
+      synchronizer_rx_data:
       entity work.synchronizer
-      generic map(N_STAGES => 2)
+      generic map(N_STAGES => 3)
       port map(
         async_i => from_gbt_remapped(I),
         clk_i   => clock,
