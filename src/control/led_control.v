@@ -26,30 +26,7 @@ module led_control (
 // Emergency Clock
 //----------------------------------------------------------------------------------------------------------------------
 
-  wire CFGMCLK; // approx 50 MHz
-
-   STARTUP_VIRTEX6 #(
-      .PROG_USR("FALSE")  // Activate program event security feature. Requires encrypted bitstreams.
-   )
-   STARTUP_VIRTEX6_inst (
-      .CFGCLK    (CFGCLK),  // 1-bit output: Configuration main clock output
-      .CFGMCLK   (CFGMCLK), // 1-bit output: Configuration internal oscillator clock output
-      .DINSPI    (DINSPI),  // 1-bit output: DIN SPI PROM access output
-      .EOS       (EOS),     // 1-bit output: Active high output signal indicating the End Of Configuration.
-      .PREQ      (PREQ),    // 1-bit output: PROGRAM request to fabric output
-      .TCKSPI    (TCKSPI),  // 1-bit output: TCK configuration pin access output
-      .CLK       (),        // 1-bit input: User start-up clock input
-      .GSR       (),        // 1-bit input: Global Set/Reset input (GSR cannot be used for the port name)
-      .GTS       (),        // 1-bit input: Global 3-state input   (GTS cannot be used for the port name)
-      .KEYCLEARB (),        // 1-bit input: Clear AES Decrypter Key input from Battery-Backed RAM (BBRAM)
-      .PACK      (),        // 1-bit input: PROGRAM acknowledge input
-      .USRCCLKO  (),        // 1-bit input: User CCLK input
-      .USRCCLKTS (),        // 1-bit input: User CCLK 3-state enable input
-      .USRDONEO  (),        // 1-bit input: User DONE pin output control
-      .USRDONETS ()         // 1-bit input: User DONE 3-state enable output
-   );
-
-   wire async_clock = CFGMCLK;
+  startup startup (.clock_o (async_clock)); // get ~50MHz clock from internal oscillator
 
 //----------------------------------------------------------------------------------------------------------------------
 // LED Source
