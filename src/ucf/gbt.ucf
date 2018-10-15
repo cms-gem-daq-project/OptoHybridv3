@@ -8,7 +8,7 @@ NET "gbt_txready_i<0>" TNM = gbt_status_grp;
 NET "gbt_rxvalid_i<0>" TNM = gbt_status_grp;
 NET "gbt_rxready_i<0>" TNM = gbt_status_grp;
 
-TIMEGRP "gbt_status_grp" OFFSET = IN 12.5 ns VALID 25.0 ns BEFORE "logic_clock_p" RISING;
+TIMEGRP "gbt_status_grp" OFFSET = IN 12.5 ns VALID 25.0 ns BEFORE "TN_logic_clock" RISING;
 
 ########################################################################################################################
 # E-links

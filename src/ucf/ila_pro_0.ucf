@@ -1,0 +1,17 @@
+#
+# Clock constraints
+
+NET "U_ila_pro_*/CLK" TNM_NET = D_CLK ;
+INST "U_ila_pro_*/U0/*/U_STAT/U_DIRTY_LDC" TNM = D2_CLK;
+
+INST "U_ila_pro_*/U0/*/U_RST/U_ARM_XFER/U_GEN_DELAY*" TNM = GENDLY;
+
+TIMESPEC TS_D2_TO_T2_ila_pro_0 = FROM D2_CLK TO "FFS" TIG;
+TIMESPEC TS_J2_TO_D2_ila_pro_0 = FROM "FFS" TO D2_CLK TIG;
+
+TIMESPEC TS_J3_TO_D2_ila_pro_0 = FROM GENDLY TO D2_CLK 10ns DATAPATHONLY;
+
+# Input keep/save net constraints
+#
+#NET "U_ila_pro_*/TRIG0<*" S;
+#NET "U_ila_pro_*/TRIG0<*" KEEP;

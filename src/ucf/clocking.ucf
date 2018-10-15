@@ -37,12 +37,6 @@ NET "logic_clock_n"  LOC = AP21 | IOSTANDARD = LVDS_25 | DIFF_TERM = FALSE;
 NET "elink_clock_p"  LOC = A10 | IOSTANDARD = LVDS_25 | DIFF_TERM = FALSE;
 NET "elink_clock_n"  LOC = B10 | IOSTANDARD = LVDS_25 | DIFF_TERM = FALSE;
 
-NET "logic_clock_p"  TNM_NET = "logic_clock_p";
-NET "logic_clock_n"  TNM_NET = "logic_clock_n";
-
-NET "elink_clock_p"  TNM_NET = "elink_clock_p";
-NET "elink_clock_n"  TNM_NET = "elink_clock_n";
-
 # Output
 INST "elink_o_p"                     TNM = elink_o_grp;
 INST "elink_o_n"                     TNM = elink_o_grp;
