@@ -69,15 +69,18 @@ module led_control (
 
     led_out <= led;
 
-    if (gbt_rxready && gbt_rxvalid && mmcm_locked)
-       if (cylon_mode)
-        led <= led_cylon;
-      else
-        led <= led_logic;
-    else
-      led <= {16{fader_led}}; // no clock
-  end
+    if (mmcm_locked)
+      led <= led_err;
 
+    else if (!gbt_rxready || !gbt_rxvalid) begin
+      led <= {16{fader_led}}; // no clock
+    end
+
+    else begin
+       if (cylon_mode) led <= led_cylon;
+       else led <= led_logic;
+    end
+  end
 
 //----------------------------------------------------------------------------------------------------------------------
 // LED Blinkers
@@ -177,7 +180,7 @@ module led_control (
 // Error Mode
 //----------------------------------------------------------------------------------------------------------------------
 
-  // err_indicator u_err_ind (async_clock, 2'd0, ~mmcm_locked, led_err[15:0]);
+  err_indicator u_err_ind (async_clock, 2'd0, ~mmcm_locked, led_err[15:0]);
 
 //----------------------------------------------------------------------------------------------------------------------
 // GBT Req Rx
@@ -203,9 +206,9 @@ module led_control (
 
   assign led_logic [7:0]  = progress_bar;
 
-  assign led_logic [15]   = eclk_led;
+  assign led_logic [15]   = gbt_link_ready & eclk_led;
   assign led_logic [14]   = clk_led;
-  assign led_logic [13]   = gbt_link_ready ? fader_led : 1'b0; // gbt_rxready && gbt_rxvalid;
+  assign led_logic [13]   = gbt_link_ready ? fader_led : 1'b0;
   assign led_logic [12]   = gbt_flash;
 
   assign led_logic [11]   = l1a_flash;
