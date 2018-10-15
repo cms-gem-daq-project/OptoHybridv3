@@ -1,11 +1,9 @@
 ########################################################################################################################
 # GBT Status
 ########################################################################################################################
-
 NET "gbt_txready_i<0>" LOC = AF13 ; # v_diff_k_13_p
 NET "gbt_rxvalid_i<0>" LOC = AJ9  ; # R_side_2_n
 NET "gbt_rxready_i<0>" LOC = AH9  ; # R_side_2_p
-
 NET "gbt_txready_i<0>" TNM = gbt_status_grp;
 NET "gbt_rxvalid_i<0>" TNM = gbt_status_grp;
 NET "gbt_rxready_i<0>" TNM = gbt_status_grp;
@@ -15,14 +13,11 @@ TIMEGRP "gbt_status_grp" OFFSET = IN 12.5 ns VALID 25.0 ns BEFORE "logic_clock_p
 ########################################################################################################################
 # E-links
 ########################################################################################################################
-
 # outputs
-
 NET "elink_o_p" LOC = L19;
 NET "elink_o_n" LOC = L18;
 
 # inputs
-
 # 320 MHz e-link
 NET "elink_i_p" LOC = AD24 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE; # GBTx DIN 36
 NET "elink_i_n" LOC = AE24 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE; #
@@ -39,39 +34,3 @@ NET "elink_i_n" LOC = AE24 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE; #
 ## gbt dclk36 = fdck36_from_gbt = GC_J = J9/H9
 #NET "gbt_eclk_p<1>"   LOC = J9 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE;
 #NET "gbt_eclk_n<1>"   LOC = H9 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE;
-
-########################################################################################################################
-# GBT Deskew (Phase Shiftable) Clocks
-########################################################################################################################
-
-NET "logic_clock_p"  LOC = AP20 | IOSTANDARD = LVDS_25 | DIFF_TERM = FALSE;
-NET "logic_clock_n"  LOC = AP21 | IOSTANDARD = LVDS_25 | DIFF_TERM = FALSE;
-
-NET "elink_clock_p"  LOC = A10 | IOSTANDARD = LVDS_25 | DIFF_TERM = FALSE;
-NET "elink_clock_n"  LOC = B10 | IOSTANDARD = LVDS_25 | DIFF_TERM = FALSE;
-
-NET "logic_clock_p"  TNM_NET = "logic_clock_p";
-NET "logic_clock_n"  TNM_NET = "logic_clock_n";
-
-NET "elink_clock_p"  TNM_NET = "elink_clock_p";
-NET "elink_clock_n"  TNM_NET = "elink_clock_n";
-
-# Output
-
-INST "elink_o_p"                     TNM = elink_o_grp;
-INST "elink_o_n"                     TNM = elink_o_grp;
-INST "gbt/gbt_serdes*/to_gbt_ser*/*" TNM = elink_o_serdes_grp;
-
-TIMESPEC TS_ELINK_O_TIG = FROM elink_o_serdes_grp TO elink_o_grp TIG;
-
-# Input
-
-INST "elink_i_p"                                       TNM = elink_i_grp;
-INST "elink_i_n"                                       TNM = elink_i_grp;
-INST "gbt/gbt_serdes*/*oversample/ise1*/*"             TNM = elink_i_serdes_grp;
-INST "gbt/gbt_serdes*/*oversample/dru/*data_in_delay*" TNM = gbt_ff_grp;
-
-TIMESPEC TS_GBT_TIG   = FROM elink_i_serdes_grp TO gbt_ff_grp TIG;
-TIMESPEC TS_GBT_IOTIG = FROM elink_i_grp        TO elink_i_serdes_grp TIG;
-
-NET "gbt/*gbt_serdes*/*oversample*/q<*>" MAXDELAY = 2.000 ns;

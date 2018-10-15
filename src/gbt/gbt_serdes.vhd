@@ -248,17 +248,17 @@ architecture Behavioral of gbt_serdes is
     -- cross domain from GBT rx clock to FPGA logic clock
     --------------------------------------------------------------------------------------------------------------------
 
-    gen_gbt_rx_data_synchronizer : for I in 0 to (MXBITS-1) generate
-    begin
-      synchronizer_rx_data:
-      entity work.synchronizer
-      generic map(N_STAGES => 3)
-      port map(
-        async_i => from_gbt_remapped(I),
-        clk_i   => clock,
-        sync_o  => data_o(I)
-      );
-    end generate;
+    gbt_rx_data_sync : entity work.fifo_8b
+    port map(
+        wr_clk => gbt_clk40,
+        rd_clk => clock,
+        din    => from_gbt_remapped,
+        wr_en  => '1',
+        rd_en  => '1',
+        dout   => data_o,
+        full   => open,
+        empty  => open
+    );
 
     --------------------------------------------------------------------------------------------------------------------
     -- Output Data
@@ -276,17 +276,17 @@ architecture Behavioral of gbt_serdes is
     --  2) Clock the register by the CLKDIV clock of the OSERDESE1.
     --  3) Use the same reset signal for the register as for the OSERDESE1.
 
-    gen_gbt_tx_data_synchronizer : for I in 0 to (MXBITS-1) generate
-    begin
-      synchronizer_oserdes_reset:
-      entity work.synchronizer
-      generic map(N_STAGES => 2)
-      port map(
-        async_i => to_gbt(I),
-        clk_i   => gbt_clk40,
-        sync_o  => to_gbt_sync(I)
-      );
-    end generate;
+    gbt_tx_data_sync : entity work.fifo_8b
+    port map(
+        wr_clk => clock,
+        rd_clk => gbt_clk40,
+        din    => to_gbt,
+        wr_en  => '1',
+        rd_en  => '1',
+        dout   => to_gbt_sync,
+        full   => open,
+        empty  => open
+    );
 
     -- Output serializer
     -- we want to output the data on the falling edge of the clock so that the GBT can sample on the rising edge
