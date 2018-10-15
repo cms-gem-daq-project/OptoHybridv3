@@ -1,7 +1,7 @@
 ##############################################################
 #
 # Xilinx Core Generator version 14.7
-# Date: Fri Oct 12 20:17:45 2018
+# Date: Mon Oct 15 22:31:46 2018
 #
 ##############################################################
 #
@@ -226,7 +226,7 @@ CSET power_down_port=POWER_DOWN
 CSET prim_in_freq=40.000
 CSET prim_in_jitter=0.002
 CSET prim_source=Differential_clock_capable_pin
-CSET primary_port=clk40_i
+CSET primary_port=clk_in1
 CSET primitive=MMCM
 CSET primtype_sel=DCM_SP
 CSET psclk_port=PSCLK
@@ -266,4 +266,4 @@ CSET use_status=false
 MISC pkg_timestamp=2012-05-10T12:44:55Z
 # END Extra information
 GENERATE
-# CRC: 6ec3aea6
+# CRC: 86b384b8

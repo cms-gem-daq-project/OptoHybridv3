@@ -95,57 +95,6 @@ architecture Behavioral of clocking is
     signal cnt_dskw_mmcm_unlocked : std_logic_vector (7 downto 0) := (others => '0');
     ------ Register signals end ----------------------------------------------
 
-
-
-    component clk_gen port (
-        clk40_i_p, clk40_i_n                              : in  std_logic;
-        clk40_o, clk80_o, clk160_o, clk160_90_o, clk200_o : out std_logic;
-        locked_o                                          : out std_logic
-    );
-    end component;
-
-    component gbt_clocking port (
-        clk40_i_p, clk40_i_n    : in  std_logic;
-        clk40_o, clk320_o       : out std_logic;
-        clk80_o                 : out std_logic;
-        clk160_0_o, clk160_90_o : out std_logic;
-        locked_o                : out std_logic
-    );
-    end component;
-
-    component logic_clocking_a7
-    port
-    (
-      -- Clock out ports
-      clk40_o     : out    std_logic;
-      clk80_o     : out    std_logic;
-      clk160_o    : out    std_logic;
-      clk160_90_o : out    std_logic;
-      clk200_o    : out    std_logic;
-      clk40_ps_o  : out    std_logic;
-      -- Status and control signals
-      reset     : in     std_logic;
-      locked_o  : out    std_logic;
-      -- Clock in ports
-      clk_in1_p : in     std_logic;
-      clk_in1_n : in     std_logic
-    );
-    end component;
-
-    component gbt_clocking_a7
-    port
-    (
-      -- Clock in ports
-      clk_in1_p : in     std_logic;
-      clk_in1_n : in     std_logic;
-      -- Clock out ports
-        clk40_o, clk320_o, clk80_o      : out std_logic;
-        clk160_0_o, clk160_90_o : out std_logic;
-		  
-        locked_o                : out std_logic
-    );
-end component;
-
 begin
 
     clk_1x_o <= clock;
@@ -155,81 +104,36 @@ begin
     clk_5x_o <= clk_5x;
     delay_refclk_o <= clk_5x;
 
-    --------- MMCMs ---------
 
-    --===============--
-    --== Virtex-6  ==--
-    --===============--
+    logic_clocking : entity work.logic_clocking
+    port map(
 
-    clk_gen_virtex6 : IF (FPGA_TYPE="VIRTEX6") GENERATE
+        clk_in1_p   => logic_clock_p,
+        clk_in1_n   => logic_clock_n,
 
-      clk_gen_logic : clk_gen
-      port map(
+        clk40_o     => clock,
+        clk80_o     => clk_2x_o,
+        clk160_o    => clk_4x_o,
+        clk160_90_o => clk_4x_90_o,
+        clk200_o    => clk_5x,
 
-          clk40_i_p   => logic_clock_p,
-          clk40_i_n   => logic_clock_n,
+        locked_o    => mmcm_locked(0)
+    );
 
-          clk40_o     => clock,
-          clk80_o     => clk_2x_o,
-          clk160_o    => clk_4x_o,
-          clk160_90_o => clk_4x_90_o,
-          clk200_o    => clk_5x,
+    gbt_clocking : entity work.gbt_clocking
+    port map(
 
-          locked_o    => mmcm_locked(0)
-      );
+        clk_in1_p    => elink_clock_p,
+        clk_in1_n    => elink_clock_n,
 
-      u_gbt_clocking : gbt_clocking
-      port map(
+        clk40_o      => gbt_clk40_o,
+        clk80_o      => gbt_clk80_o,
+        clk320_o     => gbt_clk320_o,
+        clk160_0_o   => gbt_clk160_0_o,
+        clk160_90_o   => gbt_clk160_90_o,
 
-          clk40_i_p    => elink_clock_p,
-          clk40_i_n    => elink_clock_n,
-
-          clk40_o      => gbt_clk40_o,
-          clk80_o      => gbt_clk80_o,
-          clk320_o     => gbt_clk320_o,
-          clk160_0_o   => gbt_clk160_0_o,
-          clk160_90_o   => gbt_clk160_90_o,
-
-          locked_o      => mmcm_locked(1)
-      );
-
-    end GENERATE clk_gen_virtex6;
-
-    clk_gen_artix7 : IF (FPGA_TYPE="ARTIX7") GENERATE
-
-      u_logic_clocking : logic_clocking_a7
-      port map (
-        -- Clock in ports
-        clk_in1_p  => logic_clock_p,
-        clk_in1_n  => logic_clock_n,
-        -- Clock out ports
-        clk40_o      => clock,
-        clk80_o      => clk_2x_o,
-        clk160_o     => clk_4x_o,
-        clk160_90_o  => clk_4x_90_o,
-        clk200_o     => clk_5x,
-        clk40_ps_o   => open,
-        -- Status and control  signals
-        reset        => '0',
-        locked_o     => mmcm_locked(0)
-      );
-
-      u_gbt_clocking : gbt_clocking_a7
-        port map (
-        -- Clock in ports
-        clk_in1_p  => elink_clock_p,
-        clk_in1_n  => elink_clock_n,
-        -- Clock out ports
-          clk40_o      => gbt_clk40_o,
-          clk80_o      => gbt_clk80_o,
-          clk320_o     => gbt_clk320_o,
-          clk160_0_o   => gbt_clk160_0_o,
-          clk160_90_o   => gbt_clk160_90_o,
-
-          locked_o      => mmcm_locked(1)
-      );
-
-  end GENERATE clk_gen_artix7;
+        locked_o      => mmcm_locked(1)
+    );
 
     mmcms_locked_o     <= mmcm_locked(0) and mmcm_locked(1);
 

@@ -34,3 +34,8 @@ NET "elink_i_n" LOC = AE24 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE; #
 ## gbt dclk36 = fdck36_from_gbt = GC_J = J9/H9
 #NET "gbt_eclk_p<1>"   LOC = J9 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE;
 #NET "gbt_eclk_n<1>"   LOC = H9 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE;
+
+
+NET "gbt/gbt_serdes/gbt_rx_data_sync/*/xst_fifo_generator/gconvfifo.rf/grf.rf/*/wr_pntr_gc_*" TIG;
+NET "gbt/gbt_serdes/gbt_rx_data_sync/*/xst_fifo_generator/gconvfifo.rf/grf.rf/*/rd_pntr_gc_*" TIG;
+

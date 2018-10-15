@@ -1,7 +1,7 @@
 ##############################################################
 #
 # Xilinx Core Generator version 14.7
-# Date: Fri Oct 12 20:16:10 2018
+# Date: Mon Oct 15 22:33:49 2018
 #
 ##############################################################
 #
@@ -103,7 +103,7 @@ CSET clkout7_requested_out_freq=100.000
 CSET clkout7_requested_phase=0.000
 CSET clkout7_used=false
 CSET clock_mgr_type=MANUAL
-CSET component_name=clk_gen
+CSET component_name=logic_clocking
 CSET daddr_port=DADDR
 CSET dclk_port=DCLK
 CSET dcm_clk_feedback=1X
@@ -226,7 +226,7 @@ CSET power_down_port=POWER_DOWN
 CSET prim_in_freq=40.000
 CSET prim_in_jitter=0.002
 CSET prim_source=Differential_clock_capable_pin
-CSET primary_port=clk40_i
+CSET primary_port=clk_in1
 CSET primitive=MMCM
 CSET primtype_sel=MMCM_ADV
 CSET psclk_port=PSCLK
@@ -266,4 +266,4 @@ CSET use_status=false
 MISC pkg_timestamp=2012-05-10T12:44:55Z
 # END Extra information
 GENERATE
-# CRC:  1b86f1b
+# CRC: 266042fc
