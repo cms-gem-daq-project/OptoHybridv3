@@ -252,7 +252,7 @@ begin
         clk160_90_i             => clk_160_90,
         clk200_i                => clk_200,
 
-        sbits_mux_sel           => sbits_mux_sel,
+        sbits_mux_sel_i         => sbits_mux_sel,
         sbits_mux_o             => sbits_mux,
 
         sot_invert => sot_invert (MXVFATS-1 downto 0),

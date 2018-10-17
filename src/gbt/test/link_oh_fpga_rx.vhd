@@ -37,13 +37,15 @@ end link_oh_fpga_rx;
 
 architecture link_oh_fpga_rx_arch of link_oh_fpga_rx is
 
-    type state_t is (IDLE, DATA);
+    type state_t is (NOT_READY, IDLE, DATA);
 
-    signal state            : state_t := IDLE;
+    signal reset : std_logic := '1';
+
+    signal state            : state_t := NOT_READY;
 
     signal data_frame_cnt   : integer range 0 to g_FRAME_COUNT_MAX-1 := 0;
 
-    signal reg_data_valid   : std_logic;
+    signal reg_data_valid   : std_logic := '0';
     signal reg_data         : std_logic_vector(g_FRAME_COUNT_MAX*g_FRAME_WIDTH-1 downto 0) := (others => '0');
 
     signal frame_data       : std_logic_vector(g_FRAME_WIDTH-1 downto 0) := (others => '0');
@@ -62,7 +64,7 @@ architecture link_oh_fpga_rx_arch of link_oh_fpga_rx is
     signal ready : std_logic := '0';
     signal ready_cnt  : integer range 0 to g_READY_COUNT_MAX;
 
-    signal rx_err : std_logic;
+    signal rx_err : std_logic := '1';
 
     signal even_odd : std_logic := '0'; -- simple strobe to increment bitslip only every other bx
 
@@ -70,23 +72,33 @@ architecture link_oh_fpga_rx_arch of link_oh_fpga_rx is
 begin
 
     --------------------------------------------------------------------------------------------------------------------
-    -- Combinatorial assignments
+    -- Reset Fanout
     --------------------------------------------------------------------------------------------------------------------
-    ready <= '1' when ready_cnt =  (g_READY_COUNT_MAX-1) else '0';
+
+    process (ttc_clk_40_i) begin
+        if (rising_edge(ttc_clk_40_i)) then
+            reset <= reset_i;
+        end if;
+    end process;
+
+    --------------------------------------------------------------------------------------------------------------------
+    -- Combinatorial Assignments
+    --------------------------------------------------------------------------------------------------------------------
 
     error_o <= rx_err;
 
     --------------------------------------------------------------------------------------------------------------------
-    -- Output
+    -- Output Data
     --------------------------------------------------------------------------------------------------------------------
 
-    reg_data_valid_o <= reg_data_valid;
     process (ttc_clk_40_i) begin
         if (rising_edge(ttc_clk_40_i)) then
-            if (ready='0') then
+            if (reset='1' or ready='0') then
                 reg_data_o       <= x"00000000";
+                reg_data_valid_o <= '0';
             else
                 reg_data_o       <= reg_data (31 downto 0);
+                reg_data_valid_o <= reg_data_valid;
             end if;
         end if;
     end process;
@@ -94,6 +106,16 @@ begin
     --------------------------------------------------------------------------------------------------------------------
     -- Ready Counter
     --------------------------------------------------------------------------------------------------------------------
+
+    process (ttc_clk_40_i) begin
+    if (rising_edge(ttc_clk_40_i)) then
+        if (ready_cnt =  (g_READY_COUNT_MAX-1)) then
+            ready <= '1';
+        else
+            ready <= '0';
+        end if;
+    end if;
+    end process;
 
     process (ttc_clk_40_i) begin
     if (rising_edge(ttc_clk_40_i)) then
@@ -164,13 +186,20 @@ begin
     begin
     if (rising_edge(ttc_clk_40_i)) then
 
-    if (reset_i = '1') then
-        state <= IDLE;
+    if (reset = '1') then
+        state <= NOT_READY;
         data_frame_cnt <= 0;
     else
         case state is
+            when NOT_READY =>
+                if (ready='1') then
+                    state <= IDLE;
+                    data_frame_cnt <= 0;
+                end if;
             when IDLE =>
-                if (char_is_data='1') then
+                if (ready='0') then
+                    state <= NOT_READY;
+                elsif (char_is_data='1') then
                     state <= DATA;
                     data_frame_cnt <= 0;
                 else
@@ -184,7 +213,7 @@ begin
                     data_frame_cnt <= data_frame_cnt + 1;
                 end if;
             when others =>
-                state <= IDLE;
+                state <= NOT_READY;
                 data_frame_cnt <= 0;
         end case;
     end if;
@@ -216,7 +245,7 @@ begin
     process(ttc_clk_40_i)
     begin
         if (rising_edge(ttc_clk_40_i)) then
-            if (reset_i = '1') then
+            if (reset = '1' or ready='0') then
                 reg_data_valid <= '0';
                 reg_data <= (others => '0');
             else
@@ -238,7 +267,7 @@ begin
     process(ttc_clk_40_i)
     begin
         if (rising_edge(ttc_clk_40_i)) then
-            if (reset_i = '1') then
+            if (reset = '1') then
                 rx_err <= '0';
             else
                 if (not_in_table = '1' or (state=DATA and char_is_data_delay/='1') or (ready='0' and idle_rx='0')) then
@@ -251,4 +280,3 @@ begin
     end process;
 
 end link_oh_fpga_rx_arch;
-

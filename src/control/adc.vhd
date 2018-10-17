@@ -47,9 +47,11 @@ architecture Behavioral of adc is
     signal data_in    : std_logic_vector (15 downto 0);
     signal data_out   : std_logic_vector (15 downto 0);
     signal den        : std_logic;
+    signal den_os     : std_logic;
     signal data_ready : std_logic;
     signal reset      : std_logic;
     signal write_en   : std_logic;
+    signal write_en_os: std_logic; --write_en oneshot for Vivado bug https://www.xilinx.com/support/answers/67468.html
 
     signal overtemp     : std_logic;
     signal vccaux_alarm : std_logic;
@@ -122,15 +124,31 @@ architecture Behavioral of adc is
 
 begin
 
+    -- Note: The read/write operation is not valid or complete until the DRDY signal goes active.
+
+    process (clock_i) begin
+        if (rising_edge(clock_i)) then
+            if (write_en_os='1') then write_en_os<='0';
+            elsif (data_ready='1' and write_en='1') then write_en_os<='1';
+            else                      write_en_os<='0';
+            end if;
+
+            if (den_os='1') then den_os<='0';
+            elsif (data_ready='1' and den='1') then den_os<='1';
+            else                 den_os<='0';
+            end if;
+        end if;
+    end process;
+
     xadc_gen : IF (FPGA_TYPE="VIRTEX6") GENERATE
 
     xadc_inst : xadc
     port map(
         daddr_in         => daddr,            -- Address bus for the dynamic reconfiguration port
         dclk_in          => clock_i,          -- Clock input for the dynamic reconfiguration port
-        den_in           => den,              -- Enable Signal for the dynamic reconfiguration port
+        den_in           => den_os,              -- Enable Signal for the dynamic reconfiguration port
         di_in            => data_in,          -- Input data bus for the dynamic reconfiguration port
-        dwe_in           => write_en,         -- Write Enable for the dynamic reconfiguration port
+        dwe_in           => write_en_os,      -- Write Enable for the dynamic reconfiguration port
         reset_in         => reset_i or reset, -- Reset signal for the System Monitor control logic
         busy_out         => open,             -- ADC Busy signal
         channel_out      => open,             -- Channel Selection Outputs
@@ -153,9 +171,9 @@ begin
     port map(
         daddr_in            => daddr,            -- Address bus for the dynamic reconfiguration port
         dclk_in             => clock_i,          -- Clock input for the dynamic reconfiguration port
-        den_in              => den,              -- Enable Signal for the dynamic reconfiguration port
+        den_in              => den_os,              -- Enable Signal for the dynamic reconfiguration port
         di_in               => data_in,          -- Input data bus for the dynamic reconfiguration port
-        dwe_in              => write_en,         -- Write Enable for the dynamic reconfiguration port
+        dwe_in              => write_en_os,      -- Write Enable for the dynamic reconfiguration port
         reset_in            => reset_i or reset, -- Reset signal for the System Monitor control logic
         busy_out            => open,             -- ADC Busy signal
         channel_out         => open,             -- Channel Selection Outputs

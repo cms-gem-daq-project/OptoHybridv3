@@ -41,7 +41,7 @@ port(
 
     sbit_mask_i            : in std_logic_vector (MXVFATS-1 downto 0);
 
-    sbits_mux_sel          : in  std_logic_vector (4 downto 0);
+    sbits_mux_sel_i        : in  std_logic_vector (4 downto 0);
     sbits_mux_o            : out  std_logic_vector (63 downto 0);
 
     sot_invert             : in std_logic_vector (MXVFATS-1 downto 0); -- 24 or 12
@@ -98,6 +98,8 @@ architecture Behavioral of sbits is
     signal sbits_mux                : std_logic_vector (63 downto 0);
     signal aff_mux                  : std_logic;
 
+    signal sbits_mux_sel            : std_logic_vector (4 downto 0);
+
     -- multiplex together the 1536 s-bits into a single chip-scope accessible register
     -- don't want to affect timing, so do it through a couple of flip-flop stages
 
@@ -128,6 +130,16 @@ begin
         end if;
     end process;
 
+    process (clk40_i) begin
+        if (rising_edge(clk40_i)) then
+            if (unsigned(sbits_mux_sel_i) > to_unsigned(MXVFATS,sbits_mux_sel_i'length)-1) then
+                sbits_mux_sel <= (others => '0');
+            else
+                sbits_mux_sel <= sbits_mux_sel_i;
+            end if;
+        end if;
+    end process;
+
     -- don't need to do a 180 on the clock-- use local inverters for deserialization to save 1 global clock
     clk160_180 <= not clk160_i;
     active_vfats_o <= active_vfats;
@@ -141,35 +153,35 @@ begin
     trig_alignment : entity work.trig_alignment
     port map (
 
-        sbit_mask  => sbit_mask_i,
+        sbit_mask              => sbit_mask_i,
 
-        reset_i => reset,
+        reset_i                => reset,
 
-        sbits_p => sbits_p,
-        sbits_n => sbits_n,
+        sbits_p                => sbits_p,
+        sbits_n                => sbits_n,
 
-        sot_invert => sot_invert,
-        tu_invert  => tu_invert,
-        tu_mask    => tu_mask,
+        sot_invert             => sot_invert,
+        tu_invert              => tu_invert,
+        tu_mask                => tu_mask,
 
         aligned_count_to_ready => aligned_count_to_ready,
 
-        start_of_frame_p => start_of_frame_p,
-        start_of_frame_n => start_of_frame_n,
+        start_of_frame_p       => start_of_frame_p,
+        start_of_frame_n       => start_of_frame_n,
 
-        clk80_0    => clk80_i,
-        clk160_0   => clk160_i,
-        clk160_90  => clk160_90_i,
-        clk160_180 => clk160_180,
-        clock      => clk40_i,
+        clk80_0                => clk80_i,
+        clk160_0               => clk160_i,
+        clk160_90              => clk160_90_i,
+        clk160_180             => clk160_180,
+        clock                  => clk40_i,
 
-        sot_is_aligned => sot_is_aligned_o,
-        sot_unstable   => sot_unstable_o,
+        sot_is_aligned         => sot_is_aligned_o,
+        sot_unstable           => sot_unstable_o,
 
-        sot_tap_delay => sot_tap_delay,
-        trig_tap_delay => trig_tap_delay,
+        sot_tap_delay          => sot_tap_delay,
+        trig_tap_delay         => trig_tap_delay,
 
-        sbits => sbits
+        sbits                  => sbits
     );
 
     --------------------------------------------------------------------------------------------------------------------
@@ -225,13 +237,12 @@ begin
             sbits_mux_s0 <= vfat_sbits_strip_mapped(to_integer(unsigned(sbits_mux_sel)));
             sbits_mux_s1 <= sbits_mux_s0;
             sbits_mux    <= sbits_mux_s1;
+            sbits_mux_o  <= sbits_mux;
 
             aff_mux      <= active_vfats(to_integer(unsigned(sbits_mux_sel)));
 
         end if;
     end process;
-
-    sbits_mux_o <= sbits_mux;
 
     --------------------------------------------------------------------------------------------------------------------
     -- Cluster Packer

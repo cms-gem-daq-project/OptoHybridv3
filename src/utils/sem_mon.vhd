@@ -119,9 +119,9 @@ architecture behavioral of sem_mon is
 
 begin
 
-    --=========--
-    --== sem ==--
-    --=========--
+    --------------------------------------------------------------------------------------------------------------------
+    -- Virtex-6
+    --------------------------------------------------------------------------------------------------------------------
 
     sem_gen_v6 : IF (FPGA_TYPE="VIRTEX6") GENERATE
         sem_core_inst : sem
@@ -164,8 +164,8 @@ begin
 
         frame_ecc_inst : frame_ecc_virtex6
         generic map (
-            frame_rbt_in_filename   => "none",
-            farsrc                  => "efar"
+            frame_rbt_in_filename   => "None",
+            farsrc                  => "EFAR"
         )
         port map (
             crcerror                => fecc_crcerr,
@@ -185,8 +185,8 @@ begin
 
         icap_inst : icap_virtex6
         generic map (
-            sim_cfg_file_name   => "none",
-            device_id           => x"ffffffff",
+            sim_cfg_file_name   => "None",
+            DEVICE_ID           => x"ffff_ffff",
             icap_width          => "x32"
         )
         port map (
@@ -199,6 +199,10 @@ begin
         );
 
     end GENERATE sem_gen_v6;
+
+    --------------------------------------------------------------------------------------------------------------------
+    -- Artix-7
+    --------------------------------------------------------------------------------------------------------------------
 
     sem_gen_a7 : IF (FPGA_TYPE="ARTIX7") GENERATE
 
@@ -241,15 +245,15 @@ begin
 
     ICAPE2_inst : ICAPE2
     generic map (
-        DEVICE_ID => X"3651093",     -- Specifies the pre-programmed Device ID value to be used for simulation purposes.
-        ICAP_WIDTH => "X32",         -- Specifies the input and output data width.
-        SIM_CFG_FILE_NAME => "NONE"  -- Specifies the Raw Bitstream (RBT) file to be parsed by the simulation model.
+        DEVICE_ID         => X"03651093", -- Specifies the pre-programmed Device ID value to be used for simulation purposes.
+        ICAP_WIDTH        => "X32",       -- Specifies the input and output data width.
+        SIM_CFG_FILE_NAME => "NONE"       -- Specifies the Raw Bitstream (RBT) file to be parsed by the simulation model.
     )
     port map (
-        o    => icap_o,    -- 32-bit output: configuration data output bus
-        clk  => clk_i,     -- 1-bit input: clock input
-        csib => icap_csb,  -- 1-bit input: active-low icap enable
-        i    => icap_i,    -- 32-bit input: configuration data input bus
+        o     => icap_o,    -- 32-bit output: configuration data output bus
+        clk   => clk_i,     -- 1-bit input: clock input
+        csib  => icap_csb,  -- 1-bit input: active-low icap enable
+        i     => icap_i,    -- 32-bit input: configuration data input bus
         rdwrb => icap_rdwrb -- 1-bit input: read/write select input
     );
 
@@ -257,7 +261,7 @@ begin
    generic map (
       FARSRC => "EFAR",                -- Determines if the output of FAR[25:0] configuration register points
                                        -- to the FAR or EFAR. Sets configuration option register bit CTL0[7].
-      FRAME_RBT_IN_FILENAME => "NONE"  -- This file is output by the ICAP_E2 model and it contains Frame Data
+      FRAME_RBT_IN_FILENAME => "None"  -- This file is output by the ICAP_E2 model and it contains Frame Data
                                        -- information for the Raw Bitstream (RBT) file. The FRAME_ECCE2 model
                                        -- will parse this file, calculate ECC and output any error conditions.
    )

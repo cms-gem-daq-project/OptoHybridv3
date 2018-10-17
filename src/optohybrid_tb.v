@@ -1,6 +1,3 @@
-`timescale 1ns/1ps
-
-
 module sr64 (
   input CLK,
   input CE,
@@ -25,6 +22,19 @@ endmodule
 //----------------------------------------------------------------------------------------------------------------------
 
 module optohybrid_top_tb;
+
+`include "sbit_cluster_packer/source/constants.v"
+
+`timescale 1ns/1ps
+`ifdef ohlite
+  parameter elink_o_polswap = 0;
+  parameter MXREADY = 2;
+`else
+  parameter elink_o_polswap = 1;
+  parameter MXREADY = 1;
+`endif
+
+
 
 reg[23:0] SOT_INVERT;
 
@@ -352,9 +362,10 @@ parameter DDR = 0;
   wire elink_o_n;
 
   // GBTx Control
-  wire gbt_txready_i = 1'b1;
-  wire gbt_rxvalid_i = 1'b1;
-  wire gbt_rxready_i = 1'b1;
+
+  wire [2-1:0] gbt_txready_i = 2'b11;
+  wire [2-1:0] gbt_rxvalid_i = 2'b11;
+  wire [2-1:0] gbt_rxready_i = 2'b11;
 
   // MGT
   wire mgt_clk_p_i =  clk160;
@@ -387,22 +398,31 @@ parameter DDR = 0;
       .elink_o_p     (elink_o_p),
       .elink_o_n     (elink_o_n),
 
-      .gbt_txready_i (gbt_txready_i),
-      .gbt_rxvalid_i (gbt_rxvalid_i),
-      .gbt_rxready_i (gbt_rxready_i),
+      `ifdef ohlite
+      .gbt_txvalid_o (),
+
+      .master_slave (1'b0),
+
+      .master_slave_p (),
+      .master_slave_n (),
+
+      .vtrx_mabs_i (2'b00),
+      `endif
+
+      .gbt_txready_i (gbt_txready_i [MXREADY-1:0]),
+      .gbt_rxvalid_i (gbt_rxvalid_i [MXREADY-1:0]),
+      .gbt_rxready_i (gbt_rxready_i [MXREADY-1:0]),
 
       .mgt_clk_p_i   ({2{mgt_clk_p_i}}),
       .mgt_clk_n_i   ({2{mgt_clk_n_i}}),
 
-      .vfat_sot_p    (vfat_sot_p),
-      .vfat_sot_n    (vfat_sot_n),
+      .vfat_sot_p    (vfat_sot_p [MXVFATS-1:0]),
+      .vfat_sot_n    (vfat_sot_n [MXVFATS-1:0]),
 
-      .vfat_sbits_p  (vfat_sbits_p),
-      .vfat_sbits_n  (vfat_sbits_n),
+      .vfat_sbits_p  (vfat_sbits_p [8*MXVFATS-1:0]),
+      .vfat_sbits_n  (vfat_sbits_n [8*MXVFATS-1:0]),
 
-      .led_o         (led_o),
-
-      .ext_reset_o   (ext_reset_o),
+      .led_o         (),
 
       .mgt_tx_p_o    (mgt_tx_p_o),
       .mgt_tx_n_o    (mgt_tx_n_o)
@@ -440,7 +460,7 @@ parameter DDR = 0;
 
   always @(posedge gbt_eclk_p[0]) begin
   // this may need to be bitslipped... depending on the phase alignment of the clocks
-  fifo_tmp[7:0]  <= {fifo_tmp[ 6:0], ~elink_o_p}; // polarity swap on e-link 1
+  fifo_tmp[7:0]  <= {fifo_tmp[ 6:0], elink_o_polswap ? ~elink_o_p : elink_o_p}; // polarity swap on e-link 1
   end
 
   wire  [7:0] elink_o_fifo = fifo_tmp;
@@ -487,16 +507,16 @@ parameter DDR = 0;
 
   link_oh_fpga_rx
   i_gbt_rx_link (
-      .ttc_clk_40_i  (clk40),
-      .reset_i       (1'b0),
+      .ttc_clk_40_i     (clk40),
+      .reset_i          (1'b0),
 
       // inputs
-      .elink_data_i (elink_o_parallel),
+      .elink_data_i     (elink_o_parallel),
 
       // outputs
-      .reg_data_valid_o      (gbt_rx_valid),
-      .reg_data_o    (gbt_rx_request),
-      .error_o ()
+      .reg_data_valid_o (gbt_rx_valid),
+      .reg_data_o       (gbt_rx_request),
+      .error_o          ()
   );
 
 //----------------------------------------------------------------------------------------------------------------------

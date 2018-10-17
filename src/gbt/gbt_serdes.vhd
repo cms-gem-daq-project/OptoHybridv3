@@ -44,7 +44,7 @@ port(
 
     clock            : in std_logic;
 
-    tx_delay_i       : in std_logic_vector (4 downto 0);
+    tx_delay_i       : in std_logic_vector (4 downto 0) := (others => '0');
 
     -- serial data to/from GBTx
     elink_o_p        : out std_logic;
@@ -58,8 +58,7 @@ port(
 
     -- parallel data to/from FPGA logic
     data_i           : in  std_logic_vector (MXBITS-1 downto 0);
-    data_o           : out std_logic_vector (MXBITS-1 downto 0);
-    valid_o          : out std_logic
+    data_o           : out std_logic_vector (MXBITS-1 downto 0)
 );
 end gbt_serdes;
 
@@ -93,7 +92,7 @@ architecture Behavioral of gbt_serdes is
 
     signal bitslip_increment : std_logic := '0';
 
-    signal reset             : std_logic;
+    signal reset             : std_logic := '0';
 
 
     --==============--

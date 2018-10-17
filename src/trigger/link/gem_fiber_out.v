@@ -155,7 +155,7 @@ assign tx_dly_align_mon_ena = 1'b0;
           a7_trig_tx_buf_bypass_inst     (
               .SYSCLK_IN                       (SYSCLK_IN),
               .SOFT_RESET_TX_IN                (1'b0),
-              .DONT_RESET_ON_DATA_ERROR_IN     (0),
+              .DONT_RESET_ON_DATA_ERROR_IN     (1'b0),
               .GT0_TX_FSM_RESET_DONE_OUT       (),
               .GT0_RX_FSM_RESET_DONE_OUT       (),
               .GT0_DATA_VALID_IN               (1'b1),
