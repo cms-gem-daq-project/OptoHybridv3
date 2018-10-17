@@ -135,7 +135,7 @@ begin
                         ipb_timer <= (others => '0');
                     when SYNC_WRITE =>
                         if (regs_write_ack_sync_ipb = '1') then
-                            ipb_miso <= (ipb_ack => '1', ipb_err => '0', ipb_rdata => (others => '0'));
+                            ipb_miso <= (ipb_ack => '1', ipb_err => '0', ipb_rdata => reg_write_data);
                             regs_write_strb <= '0';
                             ipb_state <= RST;
                         -- Timeout (useful if user clock is not available)
