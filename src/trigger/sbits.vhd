@@ -286,6 +286,9 @@ begin
             cluster2            => vfat_sbit_clusters_o(2),
             cluster3            => vfat_sbit_clusters_o(3),
             cluster4            => vfat_sbit_clusters_o(4),
+            cluster5            => vfat_sbit_clusters_o(5),
+            cluster6            => vfat_sbit_clusters_o(6),
+            cluster7            => vfat_sbit_clusters_o(7),
 
             overflow            => overflow_o
         );

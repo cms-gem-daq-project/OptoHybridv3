@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 
 module   gem_fiber_out #(
-    parameter SIM_SPEEDUP = 0, FPGA_TYPE_IS_VIRTEX6 = 0, FPGA_TYPE_IS_SPARTAN6 = 0, FPGA_TYPE_IS_ARTIX7 = 0)
+  parameter NLINKS=1, parameter SIM_SPEEDUP = 0, FPGA_TYPE_IS_VIRTEX6 = 0, FPGA_TYPE_IS_SPARTAN6 = 0, FPGA_TYPE_IS_ARTIX7 = 0)
 (
   input         PRBS_RST,           // PRBS Reset
 
@@ -37,7 +37,6 @@ module   gem_fiber_out #(
 
 wire trg_tx_dis;
 
-parameter NLINKS = FPGA_TYPE_IS_VIRTEX6 ? 1 : 2;
 
 //Inputs to TRG GTX transmitter
 wire [ 3:0] trg_tx_isk;
@@ -73,142 +72,146 @@ assign MON_TRG_TX_DATA      = trg_tx_data;
 assign trg_tx_dis           = 1'b0;
 assign tx_dly_align_mon_ena = 1'b0;
 
-//----------------------------------------------------------------------------------------------------------------------
-//
-//----------------------------------------------------------------------------------------------------------------------
 
-  generate
+    generate
 
+    //------------------------------------------------------------------------------------------------------------------
+    // Virtex 6
+    //------------------------------------------------------------------------------------------------------------------
 
-  if (FPGA_TYPE_IS_VIRTEX6) begin
+    if (FPGA_TYPE_IS_VIRTEX6) begin
 
-    TRG_TX_BUF_BYPASS # ( .WRAPPER_SIM_GTXRESET_SPEEDUP   (SIM_SPEEDUP))      // Set this to 1 for simulation
-    trg_tx_buf_bypass_i (
+      TRG_TX_BUF_BYPASS # ( .WRAPPER_SIM_GTXRESET_SPEEDUP   (SIM_SPEEDUP))      // Set this to 1 for simulation
+      trg_tx_buf_bypass_i (
 
-      //----- Receive Ports - RX Driver,OOB signalling,Coupling and Eq.,CDR ------
-      .GTX0_RXN_IN                    (),
-      .GTX0_RXP_IN                    (),
-      //-------------- Transmit Ports - 8b10b Encoder Control Ports --------------
-      .GTX0_TXCHARISK_IN              (trg_tx_isk),
-      //---------------- Transmit Ports - TX Data Path interface -----------------
-      .GTX0_TXDATA_IN                 (trg_tx_data),
-      .GTX0_TXOUTCLK_OUT              (TRG_TXOUTCLK),
-      .GTX0_TXUSRCLK_IN               (TRG_TXUSRCLK),
-      .GTX0_TXUSRCLK2_IN              (TRG_TXUSRCLK2),
-      //-------------- Transmit Ports - TX Driver and OOB signaling --------------
-      .GTX0_TXN_OUT                   (TRG_TX_N[0]),
-      .GTX0_TXP_OUT                   (TRG_TX_P[0]),
-      //------ Transmit Ports - TX Elastic Buffer and Phase Alignment Ports ------
-      .GTX0_TXDLYALIGNDISABLE_IN      (tx_dlyaligndisable),
-      .GTX0_TXDLYALIGNMONENB_IN       (tx_dly_align_mon_ena),
-      .GTX0_TXDLYALIGNMONITOR_OUT     (tx_dly_align_mon),
-      .GTX0_TXDLYALIGNRESET_IN        (tx_dlyalignreset),
-      .GTX0_TXENPMAPHASEALIGN_IN      (tx_enpmaphasealign),
-      .GTX0_TXPMASETPHASE_IN          (tx_pmasetphase),
-      //--------------------- Transmit Ports - TX PLL Ports ----------------------
-      .GTX0_GTXTXRESET_IN             (TRG_GTXTXRST),
-      .GTX0_MGTREFCLKTX_IN            (TRG_TX_REFCLK),
-      .GTX0_PLLTXRESET_IN             (TRG_TX_PLLRST),
-      .GTX0_TXPLLLKDET_OUT            (TRG_TX_PLL_LOCK),
-      .GTX0_TXRESETDONE_OUT           (TRG_TXRESETDONE)
-    );
+        //----- Receive Ports - RX Driver,OOB signalling,Coupling and Eq.,CDR ------
+        .GTX0_RXN_IN                    (),
+        .GTX0_RXP_IN                    (),
+        //-------------- Transmit Ports - 8b10b Encoder Control Ports --------------
+        .GTX0_TXCHARISK_IN              (trg_tx_isk),
+        //---------------- Transmit Ports - TX Data Path interface -----------------
+        .GTX0_TXDATA_IN                 (trg_tx_data),
+        .GTX0_TXOUTCLK_OUT              (TRG_TXOUTCLK),
+        .GTX0_TXUSRCLK_IN               (TRG_TXUSRCLK),
+        .GTX0_TXUSRCLK2_IN              (TRG_TXUSRCLK2),
+        //-------------- Transmit Ports - TX Driver and OOB signaling --------------
+        .GTX0_TXN_OUT                   (TRG_TX_N[0]),
+        .GTX0_TXP_OUT                   (TRG_TX_P[0]),
+        //------ Transmit Ports - TX Elastic Buffer and Phase Alignment Ports ------
+        .GTX0_TXDLYALIGNDISABLE_IN      (tx_dlyaligndisable),
+        .GTX0_TXDLYALIGNMONENB_IN       (tx_dly_align_mon_ena),
+        .GTX0_TXDLYALIGNMONITOR_OUT     (tx_dly_align_mon),
+        .GTX0_TXDLYALIGNRESET_IN        (tx_dlyalignreset),
+        .GTX0_TXENPMAPHASEALIGN_IN      (tx_enpmaphasealign),
+        .GTX0_TXPMASETPHASE_IN          (tx_pmasetphase),
+        //--------------------- Transmit Ports - TX PLL Ports ----------------------
+        .GTX0_GTXTXRESET_IN             (TRG_GTXTXRST),
+        .GTX0_MGTREFCLKTX_IN            (TRG_TX_REFCLK),
+        .GTX0_PLLTXRESET_IN             (TRG_TX_PLLRST),
+        .GTX0_TXPLLLKDET_OUT            (TRG_TX_PLL_LOCK),
+        .GTX0_TXRESETDONE_OUT           (TRG_TXRESETDONE)
+      );
 
-  //---------------------------- TXSYNC module ------------------------------
-  // Since you are bypassing the TX Buffer in your wrapper, you will need to drive
-  // the phase alignment ports to align the phase of the TX Datapath. Include
-  // this module in your design to have phase alignment performed automatically as
-  // it is done in the example design.
+    //---------------------------- TXSYNC module ------------------------------
+    // Since you are bypassing the TX Buffer in your wrapper, you will need to drive
+    // the phase alignment ports to align the phase of the TX Datapath. Include
+    // this module in your design to have phase alignment performed automatically as
+    // it is done in the example design.
 
-    always @(posedge TRG_CLK80 or negedge TRG_TXRESETDONE) begin
-      trg_txresetdone_r  <= (!TRG_TXRESETDONE) ? 1'b0 : TRG_TXRESETDONE;
-      trg_txresetdone_r2 <= (!TRG_TXRESETDONE) ? 1'b0 : trg_txresetdone_r;
-    end
+      always @(posedge TRG_CLK80 or negedge TRG_TXRESETDONE) begin
+        trg_txresetdone_r  <= (!TRG_TXRESETDONE) ? 1'b0 : TRG_TXRESETDONE;
+        trg_txresetdone_r2 <= (!TRG_TXRESETDONE) ? 1'b0 : trg_txresetdone_r;
+      end
 
-    TX_SYNC #( .SIM_TXPMASETPHASE_SPEEDUP   (SIM_SPEEDUP))
-    gtx0_txsync_i (
-      .TXENPMAPHASEALIGN  (tx_enpmaphasealign),
-      .TXPMASETPHASE      (tx_pmasetphase),
-      .TXDLYALIGNDISABLE  (tx_dlyaligndisable),
-      .TXDLYALIGNRESET    (tx_dlyalignreset),
-      .SYNC_DONE          (TX_SYNC_DONE),
-      .USER_CLK           (TRG_CLK80),
-      .RESET              (!trg_txresetdone_r2)
-    );
-
-  end
-
-  if (FPGA_TYPE_IS_ARTIX7) begin
-
-  // txusrclk rate  = line rate / internal datapath width = 3200 / 20 = 160 MHz
-  // txusrclk2 rate = txusrclk / 2 (when in 32 or 40 bit) = 80MHz
-
-    assign SYSCLK_IN = TRG_TXUSRCLK2; // check the frequency on this
-
-    wire gt0_gttxreset_in = 1'b0;
-    wire gt0_txuserrdy_in = 1'b1;
-    wire gt0_pll0lock_in = 1'b1;
-
-    a7_trig_tx_buf_bypass
-        a7_trig_tx_buf_bypass_inst     (
-            .SYSCLK_IN                       (SYSCLK_IN),
-            .SOFT_RESET_TX_IN                (0),
-            .DONT_RESET_ON_DATA_ERROR_IN     (0),
-            .GT0_TX_FSM_RESET_DONE_OUT       (),
-            .GT0_RX_FSM_RESET_DONE_OUT       (),
-            .GT0_DATA_VALID_IN               (1'b1),
-            .GT0_TX_MMCM_LOCK_IN             (1'b1), // SHOULD CONNECT THIS TO SOMETHING
-            .GT0_TX_MMCM_RESET_OUT (),
-            //_________________________________________________________________________
-            //GT0  (X0Y0)
-            //____________________________CHANNEL PORTS________________________________
-            //-------------------------- Channel - DRP Ports  --------------------------
-            .gt0_drpaddr_in                  (9'd0),
-            .gt0_drpclk_in                   (1'd0),
-            .gt0_drpdi_in                    (16'd0),
-            .gt0_drpdo_out                   (),
-            .gt0_drpen_in                    (1'd0),
-            .gt0_drprdy_out                  (),
-            .gt0_drpwe_in                    (1'd0),
-            //------------------- RX Initialization and Reset Ports --------------------
-            .gt0_eyescanreset_in             (1'd0),
-            //------------------------ RX Margin Analysis Ports ------------------------
-            .gt0_eyescandataerror_out        (),
-            .gt0_eyescantrigger_in           (1'd0),
-            //---------- Receive Ports - RX Decision Feedback Equalizer(DFE) -----------
-            .gt0_dmonitorout_out             (),
-            //----------- Receive Ports - RX Initialization and Reset Ports ------------
-            .gt0_gtrxreset_in                (1'd0),
-            .gt0_rxlpmreset_in               (1'd0),
-            //------------------- TX Initialization and Reset Ports --------------------
-            .gt0_gttxreset_in                (gt0_gttxreset_in),
-            .gt0_txuserrdy_in                (gt0_txuserrdy_in),
-            //---------------- Transmit Ports - FPGA TX Interface Ports ----------------
-            .gt0_txdata_in                   (trg_tx_data),
-            .gt0_txusrclk_in                 (TRG_TXUSRCLK),
-            .gt0_txusrclk2_in                (TRG_TXUSRCLK2),
-            //---------------- Transmit Ports - TX 8B/10B Encoder Ports ----------------
-            .gt0_txcharisk_in                (trg_tx_isk),
-            //------------- Transmit Ports - TX Configurable Driver Ports --------------
-            .gt0_gtptxn_out                  (TRG_TX_N[0]),
-            .gt0_gtptxp_out                  (TRG_TX_P[0]),
-            //--------- Transmit Ports - TX Fabric Clock Output Control Ports ----------
-            .gt0_txoutclk_out                (TRG_TXOUTCLK),
-            .gt0_txoutclkfabric_out          (),
-            .gt0_txoutclkpcs_out             (),
-            //----------- Transmit Ports - TX Initialization and Reset Ports -----------
-            .gt0_txresetdone_out             (TRG_TXRESETDONE),
-            //____________________________COMMON PORTS________________________________
-            .GT0_PLL0OUTCLK_IN               (0),
-            .GT0_PLL0OUTREFCLK_IN            (TRG_TX_REFCLK),
-            .GT0_PLL0RESET_OUT               (),
-            .GT0_PLL0LOCK_IN                 (gt0_pll0lock_in),
-            .GT0_PLL0REFCLKLOST_IN           (0),
-            .GT0_PLL1OUTCLK_IN               (0),
-            .GT0_PLL1OUTREFCLK_IN            (0)
-    );
+      TX_SYNC #( .SIM_TXPMASETPHASE_SPEEDUP   (SIM_SPEEDUP))
+      gtx0_txsync_i (
+        .TXENPMAPHASEALIGN  (tx_enpmaphasealign),
+        .TXPMASETPHASE      (tx_pmasetphase),
+        .TXDLYALIGNDISABLE  (tx_dlyaligndisable),
+        .TXDLYALIGNRESET    (tx_dlyalignreset),
+        .SYNC_DONE          (TX_SYNC_DONE),
+        .USER_CLK           (TRG_CLK80),
+        .RESET              (!trg_txresetdone_r2)
+      );
 
     end
-  endgenerate;
+
+    //------------------------------------------------------------------------------------------------------------------
+    // Artix-7
+    //------------------------------------------------------------------------------------------------------------------
+
+    if (FPGA_TYPE_IS_ARTIX7) begin
+
+    // txusrclk rate  = line rate / internal datapath width = 3200 / 20 = 160 MHz
+    // txusrclk2 rate = txusrclk / 2 (when in 32 or 40 bit) = 80MHz
+
+      assign SYSCLK_IN = TRG_TXUSRCLK2; // check the frequency on this
+
+      wire gt0_gttxreset_in = 1'b0;
+      wire gt0_txuserrdy_in = 1'b1;
+      wire gt0_pll0lock_in = 1'b1;
+
+      a7_trig_tx_buf_bypass
+          a7_trig_tx_buf_bypass_inst     (
+              .SYSCLK_IN                       (SYSCLK_IN),
+              .SOFT_RESET_TX_IN                (1'b0),
+              .DONT_RESET_ON_DATA_ERROR_IN     (0),
+              .GT0_TX_FSM_RESET_DONE_OUT       (),
+              .GT0_RX_FSM_RESET_DONE_OUT       (),
+              .GT0_DATA_VALID_IN               (1'b1),
+              .GT0_TX_MMCM_LOCK_IN             (1'b1), // SHOULD CONNECT THIS TO SOMETHING
+              .GT0_TX_MMCM_RESET_OUT (),
+              //_________________________________________________________________________
+              //GT0  (X0Y0)
+              //____________________________CHANNEL PORTS________________________________
+              //-------------------------- Channel - DRP Ports  --------------------------
+              .gt0_drpaddr_in                  (9'd0),
+              .gt0_drpclk_in                   (1'd0),
+              .gt0_drpdi_in                    (16'd0),
+              .gt0_drpdo_out                   (),
+              .gt0_drpen_in                    (1'd0),
+              .gt0_drprdy_out                  (),
+              .gt0_drpwe_in                    (1'd0),
+              //------------------- RX Initialization and Reset Ports --------------------
+              .gt0_eyescanreset_in             (1'd0),
+              //------------------------ RX Margin Analysis Ports ------------------------
+              .gt0_eyescandataerror_out        (),
+              .gt0_eyescantrigger_in           (1'd0),
+              //---------- Receive Ports - RX Decision Feedback Equalizer(DFE) -----------
+              .gt0_dmonitorout_out             (),
+              //----------- Receive Ports - RX Initialization and Reset Ports ------------
+              .gt0_gtrxreset_in                (1'd0),
+              .gt0_rxlpmreset_in               (1'd0),
+              //------------------- TX Initialization and Reset Ports --------------------
+              .gt0_gttxreset_in                (gt0_gttxreset_in),
+              .gt0_txuserrdy_in                (gt0_txuserrdy_in),
+              //---------------- Transmit Ports - FPGA TX Interface Ports ----------------
+              .gt0_txdata_in                   (trg_tx_data),
+              .gt0_txusrclk_in                 (TRG_TXUSRCLK),
+              .gt0_txusrclk2_in                (TRG_TXUSRCLK2),
+              //---------------- Transmit Ports - TX 8B/10B Encoder Ports ----------------
+              .gt0_txcharisk_in                (trg_tx_isk),
+              //------------- Transmit Ports - TX Configurable Driver Ports --------------
+              .gt0_gtptxn_out                  (TRG_TX_N[0]),
+              .gt0_gtptxp_out                  (TRG_TX_P[0]),
+              //--------- Transmit Ports - TX Fabric Clock Output Control Ports ----------
+              .gt0_txoutclk_out                (TRG_TXOUTCLK),
+              .gt0_txoutclkfabric_out          (),
+              .gt0_txoutclkpcs_out             (),
+              //----------- Transmit Ports - TX Initialization and Reset Ports -----------
+              .gt0_txresetdone_out             (TRG_TXRESETDONE),
+              //____________________________COMMON PORTS________________________________
+              .GT0_PLL0OUTCLK_IN               (0),
+              .GT0_PLL0OUTREFCLK_IN            (TRG_TX_REFCLK),
+              .GT0_PLL0RESET_OUT               (),
+              .GT0_PLL0LOCK_IN                 (gt0_pll0lock_in),
+              .GT0_PLL0REFCLKLOST_IN           (0),
+              .GT0_PLL1OUTCLK_IN               (0),
+              .GT0_PLL1OUTREFCLK_IN            (0)
+      );
+
+      end
+    endgenerate
 
 //----------------------------------------------------------------------------------------------------------------------
 // Transmit data

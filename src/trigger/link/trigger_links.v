@@ -164,37 +164,38 @@ assign mgt_refclk_array = (FPGA_TYPE_IS_VIRTEX6 || FPGA_TYPE_IS_ARTIX7) ? {4{mgt
 for (igem=0; igem<imodules; igem=igem+1'b1) begin: gemgen
 gem_fiber_out  #(
   .FPGA_TYPE_IS_VIRTEX6(FPGA_TYPE_IS_VIRTEX6),
-  .FPGA_TYPE_IS_ARTIX7(FPGA_TYPE_IS_ARTIX7)
+  .FPGA_TYPE_IS_ARTIX7(FPGA_TYPE_IS_ARTIX7),
+  .NLINKS (ilinks_per_module)
 )
 gem_fibers_out   (
-  .PRBS_RST            (1'b0),           // Manual only
-  .TRG_TX_P           (trg_tx_p[(igem+1)*ilinks_per_module-1:igem*ilinks_per_module]), // pick a fiber
-  .TRG_TX_N           (trg_tx_n[(igem+1)*ilinks_per_module-1:igem*ilinks_per_module]), // pick a fiber
+    .PRBS_RST            (1'b0),           // Manual only
+    .TRG_TX_P            (trg_tx_p[(igem+1)*ilinks_per_module-1:igem*ilinks_per_module]), // pick a fiber
+    .TRG_TX_N            (trg_tx_n[(igem+1)*ilinks_per_module-1:igem*ilinks_per_module]), // pick a fiber
 
-  .GEM_DATA            (link[igem][55:0]),
-  .GEM_OVERFLOW        (overflow),
+    .GEM_DATA            (link[igem][55:0]),
+    .GEM_OVERFLOW        (overflow),
 
-  .BXN_COUNTER         (bxn_counter),
-  .BC0                 (ttc_bx0),
+    .BXN_COUNTER         (bxn_counter),
+    .BC0                 (ttc_bx0),
 
-  .TRG_TX_REFCLK       (mgt_refclk_array[igem]), // QPLL 160 from MGT clk
-  .TRG_TXUSRCLK        (usrclk),                 // get 160 from TXOUTCLK (times 2)
-  .TRG_TXUSRCLK2       (usrclk2),                // get 80 from TXOUTCLK
-  .TRG_CLK80           (usrclk2),                // get 80 from TXOUTCLK
-  .TRG_GTXTXRST        (txpll_rst),              // maybe Manual "reset" only
-  .TRG_TX_PLLRST       (txpll_rst),              // Tie LOW.
-  .TRG_RST             (reset),                  // gtx_reset =  PBrst | !TxSyncDone | !RxSyncDone
-  .ENA_TEST_PAT        (1'b0),                   // HIGH for PRBS! (Low will send data from GxC registers)  Use This Later, send low-rate pattern.
-  .INJ_ERR             (1'b0),                   // use my switch/PB combo logic for this, high-true? Pulse high once.
-  .TRG_TXOUTCLK        (tx_out_clk[igem]),       // 80 MHz; This has to go to MCM to generate 160/80
-  .TRG_TX_PLL_LOCK     (tx_pll_locked[igem]),    // inverse holds the MCM in Reset; Tx GTX PLL Ref lock
-  .TRG_TXRESETDONE     (tx_resetdone[igem]),  // N/A
-  .TX_SYNC_DONE        (),                       // not used in DCFEB tests
-  .STRT_LTNCY          (),                       // after every Reset, to TP for debug only  -- !sw7 ?
-  .LTNCY_TRIG          (),                       // bring out to TP.  Signals when TX sends "FC" (once every 128 BX).  Send raw to TP  --sw8,7
-  .MON_TX_SEL          (),                       // N/A
-  .MON_TRG_TX_ISK      (),                       // N/A returns 4 bits
-  .MON_TRG_TX_DATA     ()                        // N/A returns 32 bits
+    .TRG_TX_REFCLK       (mgt_refclk_array[igem]), // QPLL 160 from MGT clk
+    .TRG_TXUSRCLK        (usrclk),                 // get 160 from TXOUTCLK (times 2)
+    .TRG_TXUSRCLK2       (usrclk2),                // get 80 from TXOUTCLK
+    .TRG_CLK80           (usrclk2),                // get 80 from TXOUTCLK
+    .TRG_GTXTXRST        (txpll_rst),              // maybe Manual "reset" only
+    .TRG_TX_PLLRST       (txpll_rst),              // Tie LOW.
+    .TRG_RST             (reset),                  // gtx_reset =  PBrst | !TxSyncDone | !RxSyncDone
+    .ENA_TEST_PAT        (1'b0),                   // HIGH for PRBS! (Low will send data from GxC registers)  Use This Later, send low-rate pattern.
+    .INJ_ERR             (1'b0),                   // use my switch/PB combo logic for this, high-true? Pulse high once.
+    .TRG_TXOUTCLK        (tx_out_clk[igem]),       // 80 MHz; This has to go to MCM to generate 160/80
+    .TRG_TX_PLL_LOCK     (tx_pll_locked[igem]),    // inverse holds the MCM in Reset; Tx GTX PLL Ref lock
+    .TRG_TXRESETDONE     (tx_resetdone[igem]),  // N/A
+    .TX_SYNC_DONE        (),                       // not used in DCFEB tests
+    .STRT_LTNCY          (),                       // after every Reset, to TP for debug only  -- !sw7 ?
+    .LTNCY_TRIG          (),                       // bring out to TP.  Signals when TX sends "FC" (once every 128 BX).  Send raw to TP  --sw8,7
+    .MON_TX_SEL          (),                       // N/A
+    .MON_TRG_TX_ISK      (),                       // N/A returns 4 bits
+    .MON_TRG_TX_DATA     ()                        // N/A returns 32 bits
 );
 end
 

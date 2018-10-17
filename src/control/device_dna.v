@@ -10,7 +10,10 @@
 // 2018/10/11 -- Initial tested version
 //--------------------------------------------------------------------------------
 
-module device_dna (
+module device_dna #(
+parameter  DNA_LENGTH = 'd57
+)
+(
   input clock,
   input reset,
   output reg [DNA_LENGTH-1:0] dna
@@ -20,7 +23,6 @@ module device_dna (
   reg  READ, SHIFT;
 
   parameter READ_SIZE  = 'd6;
-  parameter DNA_LENGTH = 'd57;
 
   reg [DNA_LENGTH-1:0] dna_sr   = {DNA_LENGTH{1'b0}};
   reg [READ_SIZE -1:0] read_cnt = {READ_SIZE{1'b0}};
