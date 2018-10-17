@@ -25,8 +25,10 @@ module optohybrid_top_tb;
 
 `include "sbit_cluster_packer/source/constants.v"
 
+`define oh_lite
+
 `timescale 1ns/1ps
-`ifdef ohlite
+`ifdef oh_lite
   parameter elink_o_polswap = 0;
   parameter MXREADY = 2;
 `else
@@ -258,7 +260,7 @@ parameter DDR = 0;
   wire         wr_valid    = startup_done;
 
   wire  [15:0] address     = {5'h0, 11'h0}; // 32'h0; // write to loopback
-  reg   [31:0] data        = 32'h12345678;
+  reg   [31:0] data        = 32'h8765_4321;
 
   parameter [11:0] bc0_cnt_max = 10'd512;
   reg [11:0] bc0_cnt;
@@ -398,7 +400,7 @@ parameter DDR = 0;
       .elink_o_p     (elink_o_p),
       .elink_o_n     (elink_o_n),
 
-      `ifdef ohlite
+      `ifdef oh_lite
       .gbt_txvalid_o (),
 
       .master_slave (1'b0),
@@ -460,7 +462,7 @@ parameter DDR = 0;
 
   always @(posedge gbt_eclk_p[0]) begin
   // this may need to be bitslipped... depending on the phase alignment of the clocks
-  fifo_tmp[7:0]  <= {fifo_tmp[ 6:0], elink_o_polswap ? ~elink_o_p : elink_o_p}; // polarity swap on e-link 1
+  fifo_tmp[7:0]  <= {fifo_tmp[ 6:0], elink_o_polswap ? ~elink_o_p : elink_o_p}; // polarity swap on e-link 1 for ge11
   end
 
   wire  [7:0] elink_o_fifo = fifo_tmp;

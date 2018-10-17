@@ -93,12 +93,13 @@ begin
 
     process (ttc_clk_40_i) begin
         if (rising_edge(ttc_clk_40_i)) then
-            if (reset='1' or ready='0') then
+
+            reg_data_valid_o <= reg_data_valid;
+
+            if (reg_data_valid='0') then
                 reg_data_o       <= x"00000000";
-                reg_data_valid_o <= '0';
             else
                 reg_data_o       <= reg_data (31 downto 0);
-                reg_data_valid_o <= reg_data_valid;
             end if;
         end if;
     end process;

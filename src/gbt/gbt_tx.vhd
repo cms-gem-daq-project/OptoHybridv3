@@ -2,7 +2,7 @@
 -- CMS Muon Endcap
 -- GEM Collaboration
 -- Optohybrid v3 Firmware -- GBT Transmit Packet Builder
--- T. Lenzi, E. Juska, A. Peck
+-- A. Peck
 ----------------------------------------------------------------------------------
 -- Description:
 --   This module generates data packets for transmission to the CTP-7

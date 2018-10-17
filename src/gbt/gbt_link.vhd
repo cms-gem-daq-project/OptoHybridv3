@@ -62,21 +62,18 @@ architecture Behavioral of gbt_link is
 
     --== GTX requests ==--
 
-    signal ready       : std_logic; -- gbt rx link went good
-    signal rx_unstable : std_logic; -- gbt rx link was good then went bad
-    signal rx_error    : std_logic; -- error on gbt rx link
+    signal ready       : std_logic := '0'; -- gbt rx link is good
+    signal rx_unstable : std_logic := '1'; -- gbt rx link was good then went bad
+    signal rx_error    : std_logic := '1'; -- error on gbt rx link
 
-    signal ready_cnt : unsigned (15 downto 0);
-    signal ready_cnt_max : natural := 65535;
+    signal gbt_rx_req  : std_logic := '0'; -- rx fifo write request
+    signal gbt_rx_data : std_logic_vector(IPB_REQ_BITS-1 downto 0) := (others => '0');
 
-    signal gbt_rx_req  : std_logic; -- rx fifo write request
-    signal gbt_rx_data : std_logic_vector(IPB_REQ_BITS-1 downto 0);
+    signal oh_tx_req   : std_logic := '0'; -- tx fifo read request
+    signal oh_tx_valid : std_logic := '0'; -- tx fifo data available
+    signal oh_tx_data  : std_logic_vector(31 downto 0) := (others => '0');
 
-    signal oh_tx_req   : std_logic; -- tx fifo read request
-    signal oh_tx_valid : std_logic; -- tx fifo data available
-    signal oh_tx_data  : std_logic_vector(31 downto 0);
-
-    signal reset       : std_logic;
+    signal reset       : std_logic := '1';
 
 begin
 

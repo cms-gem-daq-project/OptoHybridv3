@@ -2,7 +2,7 @@
 -- CMS Muon Endcap
 -- GEM Collaboration
 -- Optohybrid v3 Firmware -- GBT Rx Parser
--- T. Lenzi, E. Juska, A. Peck
+-- A. Peck
 ----------------------------------------------------------------------------------
 -- Description:
 --   This module decodes received GBT frames and outputs a wishbone request
