@@ -36,36 +36,31 @@ module optohybrid_top_tb;
   parameter MXREADY = 1;
 `endif
 
-
-
-reg[23:0] SOT_INVERT;
-
-initial SOT_INVERT  = 24'hf99286;
-
-reg [7:0] VFAT0_TU_INVERT  = 8'h45;
-reg [7:0] VFAT1_TU_INVERT  = 8'h67;
-reg [7:0] VFAT2_TU_INVERT  = 8'h46;
-reg [7:0] VFAT3_TU_INVERT  = 8'he7;
-reg [7:0] VFAT4_TU_INVERT  = 8'h2d;
-reg [7:0] VFAT5_TU_INVERT  = 8'hbd;
-reg [7:0] VFAT6_TU_INVERT  = 8'h8;
-reg [7:0] VFAT7_TU_INVERT  = 8'h32;
-reg [7:0] VFAT8_TU_INVERT  = 8'h71;
-reg [7:0] VFAT9_TU_INVERT  = 8'h7;
-reg [7:0] VFAT10_TU_INVERT = 8'hdc;
-reg [7:0] VFAT11_TU_INVERT = 8'hee;
-reg [7:0] VFAT12_TU_INVERT = 8'had;
-reg [7:0] VFAT13_TU_INVERT = 8'h17;
-reg [7:0] VFAT14_TU_INVERT = 8'he5;
-reg [7:0] VFAT15_TU_INVERT = 8'h8f;
-reg [7:0] VFAT16_TU_INVERT = 8'he2;
-reg [7:0] VFAT17_TU_INVERT = 8'h6;
-reg [7:0] VFAT18_TU_INVERT = 8'h30;
-reg [7:0] VFAT19_TU_INVERT = 8'h5d;
-reg [7:0] VFAT20_TU_INVERT = 8'h60;
-reg [7:0] VFAT21_TU_INVERT = 8'h73;
-reg [7:0] VFAT22_TU_INVERT = 8'ha;
-reg [7:0] VFAT23_TU_INVERT = 8'h14;
+reg[23:0] SOT_INVERT       = OH_LITE ? 'h000004 : 'hf99286;
+reg [7:0] VFAT0_TU_INVERT  = OH_LITE ? 'h00 : 'h45;
+reg [7:0] VFAT1_TU_INVERT  = OH_LITE ? 'hFE : 'h67;
+reg [7:0] VFAT2_TU_INVERT  = OH_LITE ? 'h02 : 'h46;
+reg [7:0] VFAT3_TU_INVERT  = OH_LITE ? 'h00 : 'he7;
+reg [7:0] VFAT4_TU_INVERT  = OH_LITE ? 'h00 : 'h2d;
+reg [7:0] VFAT5_TU_INVERT  = OH_LITE ? 'h00 : 'hbd;
+reg [7:0] VFAT6_TU_INVERT  = OH_LITE ? 'h00 : 'h8;
+reg [7:0] VFAT7_TU_INVERT  = OH_LITE ? 'h00 : 'h32;
+reg [7:0] VFAT8_TU_INVERT  = OH_LITE ? 'hD8 : 'h71;
+reg [7:0] VFAT9_TU_INVERT  = OH_LITE ? 'h00 : 'h7;
+reg [7:0] VFAT10_TU_INVERT = OH_LITE ? 'hBC : 'hdc;
+reg [7:0] VFAT11_TU_INVERT = OH_LITE ? 'hFA : 'hee;
+reg [7:0] VFAT12_TU_INVERT = OH_LITE ? 'h00 : 'had;
+reg [7:0] VFAT13_TU_INVERT = OH_LITE ? 'h00 : 'h17;
+reg [7:0] VFAT14_TU_INVERT = OH_LITE ? 'h00 : 'he5;
+reg [7:0] VFAT15_TU_INVERT = OH_LITE ? 'h00 : 'h8f;
+reg [7:0] VFAT16_TU_INVERT = OH_LITE ? 'h00 : 'he2;
+reg [7:0] VFAT17_TU_INVERT = OH_LITE ? 'h00 : 'h6;
+reg [7:0] VFAT18_TU_INVERT = OH_LITE ? 'h00 : 'h30;
+reg [7:0] VFAT19_TU_INVERT = OH_LITE ? 'h00 : 'h5d;
+reg [7:0] VFAT20_TU_INVERT = OH_LITE ? 'h00 : 'h60;
+reg [7:0] VFAT21_TU_INVERT = OH_LITE ? 'h00 : 'h73;
+reg [7:0] VFAT22_TU_INVERT = OH_LITE ? 'h00 : 'ha;
+reg [7:0] VFAT23_TU_INVERT = OH_LITE ? 'h00 : 'h14;
 
 reg [191:0] TU_INVERT;
 
