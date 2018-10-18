@@ -47,7 +47,6 @@ port(
     trig_tap_delay         : in t_std5_array (MXVFATS*8-1 downto 0);
 
     sot_is_aligned         : out std_logic_vector (MXVFATS-1 downto 0);
-    sot_phase_err          : out std_logic_vector (MXVFATS-1 downto 0);
     sot_unstable           : out std_logic_vector (MXVFATS-1 downto 0);
 
     aligned_count_to_ready : in std_logic_vector (11 downto 0);
@@ -157,7 +156,6 @@ begin
             mask    => sbit_mask(ivfat),
             reset_i => reset,
 
-            -- keep all clocks inverted here, so that they are centered w/r/t the rising edge when doing frame alignment
             start_of_frame => start_of_frame_8b(ivfat),
 
             clock          => clock,
