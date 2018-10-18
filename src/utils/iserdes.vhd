@@ -25,7 +25,11 @@ end iserdes;
 
 architecture behavioral of iserdes is
 
+  signal clk2x_270 : std_logic;
+
 begin
+
+  clk2x_270 <= not clk2x_90;
 
   ----------------------------------------------------------------------------------------------------------------------
   -- iserdes
@@ -111,12 +115,12 @@ begin
           ce2       => '1',       -- ce1, ce2: 1-bit each input: data register clock enable inputs
 
           -- clocks
-          clkdivp => '0',          -- 1-bit input: tbd
-          clk     => clk2x_0,      -- 1-bit input: high-speed clock
-          clkb    => not clk2x_0,  -- 1-bit input: high-speed secondary clock
-          oclk    => clk2x_90,     -- 1-bit input: high speed output clock used when interface_type="memory"
-          oclkb   => not clk2x_90, -- 1-bit input: high speed negative edge output clock
-          clkdiv  => '0',          -- 1-bit input: divided clock
+          clkdivp => '0',       -- 1-bit input: tbd
+          clk     => clk2x_0,   -- 1-bit input: high-speed clock
+          clkb    => clk2x_180, -- 1-bit input: high-speed secondary clock
+          oclk    => clk2x_90,  -- 1-bit input: high speed output clock used when interface_type="memory"
+          oclkb   => clk2x_270, -- 1-bit input: high speed negative edge output clock
+          clkdiv  => '0',       -- 1-bit input: divided clock
 
           -- dynamic clock inversions: 1-bit each input: dynamic clock inversion pins to switch clock polarity
           dynclkdivsel => '0', -- 1-bit input: dynamic clkdiv inversion

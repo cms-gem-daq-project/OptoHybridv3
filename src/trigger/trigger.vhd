@@ -73,7 +73,6 @@ port(
 
     cnt_snap          : in std_logic
 
-
 );
 end trigger;
 
@@ -93,6 +92,8 @@ architecture Behavioral of trigger is
     signal valid_clusters_or : std_logic;
     signal valid_clusters    : std_logic_vector (7 downto 0);
 
+    signal cnt_en            : std_logic_vector (MXVFATS-1 downto 0);
+
     signal active_vfats : std_logic_vector (MXVFATS-1 downto 0);
 
     signal vfat_mask : std_logic_vector (MXVFATS-1 downto 0);
@@ -106,10 +107,8 @@ architecture Behavioral of trigger is
 
     signal reset : std_logic;
 
-    signal sot_phase_err       : std_logic_vector (MXVFATS-1 downto 0);
     signal sot_is_aligned      : std_logic_vector (MXVFATS-1 downto 0);
     signal sot_unstable        : std_logic_vector (MXVFATS-1 downto 0);
-    signal sbit_phase_err      : std_logic_vector ((MXVFATS*8)-1 downto 0);
 
     signal sot_tap_delay       : t_std5_array (MXVFATS-1 downto 0);
     signal trig_tap_delay      : t_std5_array ((MXVFATS*8)-1 downto 0);
@@ -204,6 +203,20 @@ begin
     end process;
 
     --------------------------------------------------------------------------------------------------------------------
+    -- Cnt_en static expression
+    --------------------------------------------------------------------------------------------------------------------
+
+    cnt_en_loop : for I in 0 to (MXVFATS-1) generate
+    begin
+    process (clk_40)
+    begin
+        if (rising_edge(clk_40)) then
+            cnt_en(I) <= active_vfats(I) or cnt_pulse;
+        end if;
+    end process;
+    end generate;
+
+    --------------------------------------------------------------------------------------------------------------------
     -- Outputs
     --------------------------------------------------------------------------------------------------------------------
 
@@ -281,10 +294,8 @@ begin
         sot_tap_delay           => sot_tap_delay,
         trig_tap_delay          => trig_tap_delay,
 
-        sot_phase_err_o         => sot_phase_err,
         sot_is_aligned_o        => sot_is_aligned,
-        sot_unstable_o          => sot_unstable,
-        sbit_phase_err_o        => sbit_phase_err
+        sot_unstable_o          => sot_unstable
 
     );
 

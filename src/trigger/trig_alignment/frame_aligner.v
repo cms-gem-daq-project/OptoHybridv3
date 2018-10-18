@@ -94,7 +94,7 @@ module frame_aligner (
   //
   // in this case the bitslip cnt should progress from 0,1,2,3,4,5,6,7 in the logical way
   //
-  // but emperically the firmware seems to require:
+  // but empirically the firmware seems to require:
   // sot:  s
   // dat: 01234567
   //
@@ -129,7 +129,7 @@ module frame_aligner (
   end
 
   always @(posedge clock) begin
-    if      (reset)              sot_unstable <= 1'b0;
+    if      (reset)                       sot_unstable <= 1'b0;
     else if (sot_is_aligned && !sot_good) sot_unstable <= 1'b1;
   end
 

@@ -40,6 +40,7 @@ port(
     gbt_clk80      : in std_logic; -- 320 MHz phase shiftable frame clock from GBT
     gbt_clk160_0   : in std_logic; -- 320 MHz phase shiftable frame clock from GBT
     gbt_clk160_90  : in std_logic; -- 320 MHz phase shiftable frame clock from GBT
+    gbt_clk160_180 : in std_logic; -- 320 MHz phase shiftable frame clock from GBT
     gbt_clk320     : in std_logic; -- 320 MHz phase shiftable frame clock from GBT
 
     clock            : in std_logic;
@@ -64,21 +65,8 @@ end gbt_serdes;
 
 architecture Behavioral of gbt_serdes is
 
-    signal from_gbt_fifo     : std_logic_vector(MXBITS-1 downto 0) := (others => '0');
     signal from_gbt_raw      : std_logic_vector(MXBITS-1 downto 0) := (others => '0');
-    signal from_gbt_remapped : std_logic_vector(MXBITS-1 downto 0) := (others => '0');
     signal from_gbt          : std_logic_vector(MXBITS-1 downto 0) := (others => '0');
-    signal from_gbt0         : std_logic_vector(MXBITS-1 downto 0) := (others => '0');
-    signal from_gbt1         : std_logic_vector(MXBITS-1 downto 0) := (others => '0');
-    signal from_gbt2         : std_logic_vector(MXBITS-1 downto 0) := (others => '0');
-    signal from_gbt3         : std_logic_vector(MXBITS-1 downto 0) := (others => '0');
-    signal from_gbt4         : std_logic_vector(MXBITS-1 downto 0) := (others => '0');
-    signal from_gbt5         : std_logic_vector(MXBITS-1 downto 0) := (others => '0');
-    signal from_gbt6         : std_logic_vector(MXBITS-1 downto 0) := (others => '0');
-    signal from_gbt7         : std_logic_vector(MXBITS-1 downto 0) := (others => '0');
-
-    signal posedge           : std_logic := '1';
-    signal negedge           : std_logic := '1';
 
     signal to_gbt            : std_logic_vector(MXBITS-1 downto 0) := (others => '0');
     signal to_gbt_sync       : std_logic_vector(MXBITS-1 downto 0) := (others => '0');
@@ -89,6 +77,7 @@ architecture Behavioral of gbt_serdes is
     signal bitslip_err_cnt   : integer range 0 to BITSLIP_ERR_CNT_MAX-1 := 0;
 
     signal rx_bitslip_cnt    : integer range 0 to MXBITS-1 := 0;
+    signal rx_bitslip_cnt_stdlog : std_logic_vector(2 downto 0) := (others => '0');
 
     signal bitslip_increment : std_logic := '0';
 
@@ -194,7 +183,7 @@ architecture Behavioral of gbt_serdes is
         clk2x_logic => gbt_clk160_0,
         clk2x_0     => gbt_clk160_0,
         clk2x_90    => gbt_clk160_90,
-        clk2x_180   => not gbt_clk160_0,
+        clk2x_180   => gbt_clk160_180,
         rxdata_o    => from_gbt_raw
     );
 
@@ -229,6 +218,9 @@ architecture Behavioral of gbt_serdes is
         end if;
     end process;
 
+    -- typecasting
+    rx_bitslip_cnt_stdlog <= std_logic_vector(to_unsigned(rx_bitslip_cnt,rx_bitslip_cnt_stdlog'length));
+
     i_gbt_rx_bitslip : entity work.bitslip
     generic map(
       g_WORD_SIZE => MXBITS
@@ -236,12 +228,10 @@ architecture Behavioral of gbt_serdes is
     port map(
         fabric_clk  => gbt_clk40,
         reset       => reset,
-        bitslip_cnt => std_logic_vector(to_unsigned(rx_bitslip_cnt,3)),
+        bitslip_cnt => rx_bitslip_cnt_stdlog,
         din         => from_gbt_raw,
         dout        => from_gbt
     );
-
-    from_gbt_remapped <= from_gbt;
 
     --------------------------------------------------------------------------------------------------------------------
     -- cross domain from GBT rx clock to FPGA logic clock
@@ -251,7 +241,7 @@ architecture Behavioral of gbt_serdes is
     port map(
         wr_clk => gbt_clk40,
         rd_clk => clock,
-        din    => from_gbt_remapped,
+        din    => from_gbt,
         wr_en  => '1',
         rd_en  => '1',
         dout   => data_o,

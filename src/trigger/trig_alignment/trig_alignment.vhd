@@ -105,7 +105,7 @@ begin
             clk2x_logic   => clk160_0,
             clk2x_0       => clk160_0,
             clk2x_90      => clk160_90,
-            clk2x_180     => not clk160_0,
+            clk2x_180     => clk160_180,
             rxdata_o      => start_of_frame_8b(ivfat),
             tap_delay_i   => sot_tap_delay(ivfat),
             phase_sel_out => vfat_phase_sel(ivfat)
@@ -132,7 +132,7 @@ begin
             clk2x_logic  => clk160_0,
             clk2x_0      => clk160_0,
             clk2x_90     => clk160_90,
-            clk2x_180    => not clk160_0,
+            clk2x_180    => clk160_180,
             rxdata_o     => sbits_unaligned ((ipin+1)*8 - 1 downto ipin*8),
             tap_delay_i  => trig_tap_delay(ipin),
             phase_sel_in => vfat_phase_sel(ipin/8)
@@ -146,7 +146,7 @@ begin
 
     aligner_loop: for ivfat in 0 to MXVFATS-1 generate begin
 
-        frame_aligner_inst : entity frame_aligner
+        frame_aligner_inst : entity work.frame_aligner
         generic map (
             DDR     => DDR
         )

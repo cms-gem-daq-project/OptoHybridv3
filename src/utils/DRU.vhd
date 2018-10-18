@@ -182,7 +182,7 @@ begin
   begin
     if rising_edge(clk1x) then
 
-      fifo_s3<=fifo_s2;
+      fifo_s3           <= fifo_s2;
       bitslip_state_dly <= bitslip_state;
 
       case bitslip_state_dly is

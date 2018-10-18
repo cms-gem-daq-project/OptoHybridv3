@@ -91,7 +91,7 @@ begin
           when "111101" => eightbit <= "01001101";
           when "111110" => eightbit <= "01001110";
           when "111111" => eightbit <= "01100110";
-			 when others   => eightbit <= "00000000";
+	  when others   => eightbit <= "00000000";
         end case;
     end if;
   end process;

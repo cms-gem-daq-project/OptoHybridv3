@@ -65,15 +65,11 @@ port(
 
     overflow_o             : out std_logic;
 
-    sot_phase_err_o        : out std_logic_vector (MXVFATS-1 downto 0);
-
     sot_is_aligned_o       : out std_logic_vector (MXVFATS-1 downto 0);
     sot_unstable_o         : out std_logic_vector (MXVFATS-1 downto 0);
 
     sot_tap_delay          : in t_std5_array (MXVFATS-1 downto 0);
-    trig_tap_delay         : in t_std5_array (MXVFATS*8-1 downto 0);
-
-    sbit_phase_err_o       : out std_logic_vector (MXVFATS*8-1 downto 0)
+    trig_tap_delay         : in t_std5_array (MXVFATS*8-1 downto 0)
 
 );
 end sbits;

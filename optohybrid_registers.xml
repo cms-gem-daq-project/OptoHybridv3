@@ -337,7 +337,7 @@
             <node id="RESET" address="0x2" permission="w"
                 mask="0x00000001"
                 description="XADC Reset"
-                fw_write_pulse_signal="reset"/>
+                fw_write_pulse_signal="reset_local"/>
 
             <node id="WR_EN" address="0x3" permission="w"
                 mask="0x00000001"
@@ -348,7 +348,7 @@
                 mask="0x3f800"
                 description="Overtemperature counter"
                 fw_cnt_en_signal="overtemp"
-                fw_cnt_reset_signal="reset_i or reset"
+                fw_cnt_reset_signal="reset"
                 fw_cnt_snap_signal="cnt_snap"
                 fw_signal="cnt_overtemp"/>
 
@@ -356,7 +356,7 @@
                 description="VCCAUX Alarm Counter"
                 mask="0x1fc0000"
                 fw_cnt_en_signal="vccaux_alarm"
-                fw_cnt_reset_signal="reset_i or reset"
+                fw_cnt_reset_signal="reset"
                 fw_cnt_snap_signal="cnt_snap"
                 fw_signal="cnt_vccaux_alarm"/>
 
@@ -364,7 +364,7 @@
                 mask="0xfe000000"
                 description="VCCINT Alarm Counter"
                 fw_cnt_en_signal="vccint_alarm"
-                fw_cnt_reset_signal="reset_i or reset"
+                fw_cnt_reset_signal="reset"
                 fw_cnt_snap_signal="cnt_snap"
                 fw_signal="cnt_vccint_alarm"/>
         </node> <!--CTRL-->
@@ -715,7 +715,7 @@
                 <node id="VFAT${VFAT_IDX}" address="0x0" permission="r"
                     mask="0xffffffff"
                     description="VFAT ${VFAT_IDX} Counter"
-                    fw_cnt_en_signal="active_vfats(${VFAT_IDX}) or cnt_pulse"
+                    fw_cnt_en_signal="cnt_en(${VFAT_IDX})"
                     fw_cnt_snap_signal="sbit_cnt_snap"
                     fw_cnt_reset_signal="cnt_reset_strobed"
                     fw_signal="cnt_vfat${VFAT_IDX}"
