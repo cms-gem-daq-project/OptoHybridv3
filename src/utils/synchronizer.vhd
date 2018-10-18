@@ -27,14 +27,19 @@ begin
   s_resync(0) <= async_i;
 
   -- https://forums.xilinx.com/t5/Timing-Analysis/Setting-ASYNC-REG-in-VHDL-for-Two-Flop-Synchronizer/td-p/700175/page/2
-  gen_ff : for i in 0 to N_STAGES-1 generate
-  begin
-    process (clk_i) begin
-      if (rising_edge(clk_i)) then
-        s_resync(i+1) <= s_resync(i);
-      end if;
-    end process;
-  end generate gen_ff;
+
+  sync_gen : IF (N_STAGES > 0) GENERATE
+
+    gen_ff : for i in 0 to N_STAGES-1 generate
+    begin
+        process (clk_i) begin
+            if (rising_edge(clk_i)) then
+              s_resync(i+1) <= s_resync(i);
+            end if;
+        end process;
+    end generate gen_ff;
+
+  END GENERATE sync_gen;
 
   sync_o <= s_resync(N_STAGES);
 
