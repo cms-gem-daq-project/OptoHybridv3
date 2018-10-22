@@ -19,7 +19,7 @@ module frame_aligner (
   input  [MXSBITS-1:0] sbits_i,
   output [MXSBITS-1:0] sbits_o,
 
-  input [FRAME_SIZE-1:0]         start_of_frame,
+  input [FRAME_SIZE-1:0] start_of_frame,
 
   input reset_i,
   input mask,
@@ -51,6 +51,15 @@ module frame_aligner (
   end
 
   //--------------------------------------------------------------------------------------------------------------------
+  // Copy SoF Register
+  //--------------------------------------------------------------------------------------------------------------------
+
+  reg [FRAME_SIZE-1:0] start_of_frame_reg;
+  always @(posedge clock) begin
+    start_of_frame_reg <= start_of_frame_reg;
+  end
+
+  //--------------------------------------------------------------------------------------------------------------------
   //  Bitslips
   //--------------------------------------------------------------------------------------------------------------------
 
@@ -76,7 +85,7 @@ module frame_aligner (
     .fabric_clk   (clock),
     .reset        (reset),
     .bitslip_cnt  (bitslip_cnt),
-    .din          (start_of_frame),
+    .din          (start_of_frame_reg),
     .dout         (start_of_frame_slipped)
   );
 
@@ -84,7 +93,7 @@ module frame_aligner (
   // Bitslip Control
   //--------------------------------------------------------------------------------------------------------------------
 
-  reg sot_good          = 0;
+  reg sot_good             = 0;
   reg [11:0] stable_counts = 0;
 
   // the bitslip_cnt here is determined by the phase of the S-bits relative to the SoT signal
@@ -101,7 +110,7 @@ module frame_aligner (
   // I have no idea why
 
   always @(posedge clock) begin
-    case (start_of_frame)
+    case (start_of_frame_reg)
       8'b00000001: begin bitslip_cnt <= 3'd1; sot_good <= 1'b1; end
       8'b00000010: begin bitslip_cnt <= 3'd2; sot_good <= 1'b1; end
       8'b00000100: begin bitslip_cnt <= 3'd3; sot_good <= 1'b1; end

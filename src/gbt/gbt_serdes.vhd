@@ -71,8 +71,10 @@ architecture Behavioral of gbt_serdes is
     signal to_gbt            : std_logic_vector(MXBITS-1 downto 0) := (others => '0');
     signal to_gbt_sync       : std_logic_vector(MXBITS-1 downto 0) := (others => '0');
 
-    signal iserdes_reset     : std_logic := '1';
-    signal oserdes_reset     : std_logic := '1';
+    signal iserdes_reset  : std_logic := '1';
+    signal oserdes_reset  : std_logic := '1';
+    signal gbt_ready      : std_logic := '0';
+    signal gbt_link_error : std_logic := '0';
 
     signal bitslip_err_cnt   : integer range 0 to BITSLIP_ERR_CNT_MAX-1 := 0;
 
@@ -154,6 +156,22 @@ architecture Behavioral of gbt_serdes is
     -- synchronize resets from logic clock to gbt clock domains
     --------------------------------------------------------------------------------------------------------------------
 
+    synchronizer_link_error:
+    entity work.synchronizer generic map(N_STAGES => 2)
+    port map(
+      async_i => gbt_link_error_i,
+      clk_i   => gbt_clk40,
+      sync_o  => gbt_link_error
+    );
+
+    synchronizer_gbt_ready:
+    entity work.synchronizer generic map(N_STAGES => 2)
+    port map(
+      async_i => gbt_ready_i,
+      clk_i   => gbt_clk40,
+      sync_o  => gbt_ready
+    );
+
     synchronizer_oserdes_reset:
     entity work.synchronizer generic map(N_STAGES => 2)
     port map(
@@ -194,11 +212,11 @@ architecture Behavioral of gbt_serdes is
     process (gbt_clk40) begin
         if (rising_edge(gbt_clk40)) then
 
-          if (gbt_ready_i='1') then
+          if (gbt_ready='1') then
             bitslip_err_cnt <= 0;
           elsif (bitslip_err_cnt = BITSLIP_ERR_CNT_MAX-1) then
             bitslip_err_cnt <= 0;
-          elsif (gbt_link_error_i='1') then
+          elsif (gbt_link_error='1') then
             bitslip_err_cnt <= bitslip_err_cnt + 1;
           end if;
         end if;

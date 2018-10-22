@@ -45,16 +45,15 @@ architecture Behavioral of adc is
 
     signal reset : std_logic;
 
-    signal daddr      : std_logic_vector  (6 downto 0);
-    signal data_in    : std_logic_vector (15 downto 0);
-    signal data_out   : std_logic_vector (15 downto 0);
-    signal den        : std_logic;
-    signal den_os     : std_logic;
-    signal data_ready : std_logic;
-    signal reset_local      : std_logic;
-    signal write_en   : std_logic;
-    signal write_en_os: std_logic; --write_en oneshot for Vivado bug https://www.xilinx.com/support/answers/67468.html
-
+    signal daddr        : std_logic_vector  (6 downto 0);
+    signal data_in      : std_logic_vector (15 downto 0);
+    signal data_out     : std_logic_vector (15 downto 0);
+    signal den          : std_logic;
+    signal den_os       : std_logic;
+    signal data_ready   : std_logic;
+    signal reset_local  : std_logic;
+    signal write_en     : std_logic;
+    signal write_en_os  : std_logic; --write_en oneshot for Vivado bug https://www.xilinx.com/support/answers/67468.html
     signal overtemp     : std_logic;
     signal vccaux_alarm : std_logic;
     signal vccint_alarm : std_logic;
@@ -267,7 +266,7 @@ begin
     )
     port map (
         ref_clk_i => clock_i,
-        reset_i   => reset_i or reset_local,
+        reset_i   => reset,
         en_i      => overtemp,
         snap_i    => cnt_snap,
         count_o   => cnt_overtemp
@@ -280,7 +279,7 @@ begin
     )
     port map (
         ref_clk_i => clock_i,
-        reset_i   => reset_i or reset_local,
+        reset_i   => reset,
         en_i      => vccaux_alarm,
         snap_i    => cnt_snap,
         count_o   => cnt_vccaux_alarm
@@ -293,7 +292,7 @@ begin
     )
     port map (
         ref_clk_i => clock_i,
-        reset_i   => reset_i or reset_local,
+        reset_i   => reset,
         en_i      => vccint_alarm,
         snap_i    => cnt_snap,
         count_o   => cnt_vccint_alarm

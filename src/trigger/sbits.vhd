@@ -44,9 +44,9 @@ port(
     sbits_mux_sel_i        : in  std_logic_vector (4 downto 0);
     sbits_mux_o            : out  std_logic_vector (63 downto 0);
 
-    sot_invert             : in std_logic_vector (MXVFATS-1 downto 0); -- 24 or 12
-    tu_invert              : in std_logic_vector (MXVFATS*8-1 downto 0); -- 192 or 96
-    tu_mask                : in std_logic_vector (MXVFATS*8-1 downto 0); -- 192 or 96
+    sot_invert_i           : in std_logic_vector (MXVFATS-1 downto 0); -- 24 or 12
+    tu_invert_i            : in std_logic_vector (MXVFATS*8-1 downto 0); -- 192 or 96
+    tu_mask_i              : in std_logic_vector (MXVFATS*8-1 downto 0); -- 192 or 96
 
     aligned_count_to_ready : in std_logic_vector (11 downto 0);
 
@@ -105,6 +105,9 @@ architecture Behavioral of sbits is
 
     signal reset : std_logic;
 
+    attribute EQUIVALENT_REGISTER_REMOVAL : string;
+    attribute EQUIVALENT_REGISTER_REMOVAL of reset : signal is "NO";
+
     function reverse_vector (a: in std_logic_vector)
     return std_logic_vector is
     variable result: std_logic_vector(a'RANGE);
@@ -149,16 +152,16 @@ begin
     trig_alignment : entity work.trig_alignment
     port map (
 
-        sbit_mask              => sbit_mask_i,
+        sbit_mask_i            => sbit_mask_i,
 
         reset_i                => reset,
 
         sbits_p                => sbits_p,
         sbits_n                => sbits_n,
 
-        sot_invert             => sot_invert,
-        tu_invert              => tu_invert,
-        tu_mask                => tu_mask,
+        sot_invert_i           => sot_invert_i,
+        tu_invert_i            => tu_invert_i,
+        tu_mask_i              => tu_mask_i,
 
         aligned_count_to_ready => aligned_count_to_ready,
 

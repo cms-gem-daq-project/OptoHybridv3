@@ -67,8 +67,14 @@ architecture Behavioral of ipbus_slave is
     signal regs_write_strb_sync_usr : std_logic := '0';
     signal ipb_reset_sync_usr       : std_logic := '0';
 
-    attribute MAX_FANOUT : integer;
-    attribute MAX_FANOUT of ipb_reset_sync_usr : signal is g_NUM_REGS;
+    signal ipb_reset                : std_logic := '1';
+
+    attribute EQUIVALENT_REGISTER_REMOVAL                       : string;
+    attribute EQUIVALENT_REGISTER_REMOVAL of ipb_reset_sync_usr : signal is "NO";
+    attribute EQUIVALENT_REGISTER_REMOVAL of ipb_reset          : signal is "NO";
+
+    attribute MAX_FANOUT                                        : integer;
+    attribute MAX_FANOUT of ipb_reset_sync_usr                  : signal is 128;
 
     signal regs_write_pulse_done    : std_logic := '0';
     signal regs_read_pulse_done     : std_logic := '0';
@@ -85,7 +91,10 @@ begin
     process(ipb_clk_i)
     begin
         if (rising_edge(ipb_clk_i)) then
-            if (ipb_reset_i = '1') then
+
+            ipb_reset <= ipb_reset_i;
+
+            if (ipb_reset = '1') then
                 ipb_miso        <= (ipb_ack => '0', ipb_err => '0', ipb_rdata => (others => '0'));
                 ipb_state       <= IDLE;
                 ipb_reg_sel     <= 0;
@@ -95,6 +104,7 @@ begin
                 ipb_timer       <= (others => '0');
                 ipb_mosi        <= (ipb_addr => (others => '0'), ipb_wdata => (others => '0'), ipb_strobe => '0', ipb_write => '0');
             else
+
                 ipb_mosi <= ipb_mosi_i;
 
                 case ipb_state is

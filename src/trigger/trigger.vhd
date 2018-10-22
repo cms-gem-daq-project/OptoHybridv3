@@ -105,7 +105,12 @@ architecture Behavioral of trigger is
 
     signal aligned_count_to_ready : std_logic_vector (11 downto 0);
 
-    signal reset : std_logic;
+    signal reset     : std_logic;
+    signal ipb_reset : std_logic;
+
+    attribute EQUIVALENT_REGISTER_REMOVAL : string;
+    attribute EQUIVALENT_REGISTER_REMOVAL of reset : signal is "NO";
+    attribute EQUIVALENT_REGISTER_REMOVAL of ipb_reset : signal is "NO";
 
     signal sot_is_aligned      : std_logic_vector (MXVFATS-1 downto 0);
     signal sot_unstable        : std_logic_vector (MXVFATS-1 downto 0);
@@ -185,7 +190,8 @@ begin
 
     process (clk_40) begin
         if (rising_edge(clk_40)) then
-            reset <= reset_i;
+            reset     <= reset_i;
+            ipb_reset <= reset;
         end if;
     end process;
 
@@ -268,9 +274,6 @@ begin
         sbits_mux_sel_i         => sbits_mux_sel,
         sbits_mux_o             => sbits_mux,
 
-        sot_invert => sot_invert (MXVFATS-1 downto 0),
-        tu_invert  => tu_invert,
-        tu_mask    => tu_mask,
 
         aligned_count_to_ready   => aligned_count_to_ready,
 
@@ -282,7 +285,10 @@ begin
         start_of_frame_p         => vfat_sot_p,
         start_of_frame_n         => vfat_sot_n,
 
-        sbit_mask_i             => vfat_mask (MXVFATS -1 downto 0),
+        sbit_mask_i  => vfat_mask (MXVFATS -1 downto 0),
+        sot_invert_i => sot_invert (MXVFATS-1 downto 0),
+        tu_invert_i  => tu_invert,
+        tu_mask_i    => tu_mask,
 
         active_vfats_o          => active_vfats,
 
@@ -355,7 +361,7 @@ begin
            g_USE_INDIVIDUAL_ADDRS => true
        )
        port map(
-           ipb_reset_i            => reset,
+           ipb_reset_i            => ipb_reset,
            ipb_clk_i              => clk_40,
            ipb_mosi_i             => ipb_mosi_i,
            ipb_miso_o             => ipb_miso_o,

@@ -69,6 +69,9 @@ architecture Behavioral of gbt_link is
     signal gbt_rx_req  : std_logic := '0'; -- rx fifo write request
     signal gbt_rx_data : std_logic_vector(IPB_REQ_BITS-1 downto 0) := (others => '0');
 
+    signal gbt_rx_req_reg  : std_logic := '0'; -- rx fifo write request
+    signal gbt_rx_data_reg : std_logic_vector(IPB_REQ_BITS-1 downto 0) := (others => '0');
+
     signal oh_tx_req   : std_logic := '0'; -- tx fifo read request
     signal oh_tx_valid : std_logic := '0'; -- tx fifo data available
     signal oh_tx_data  : std_logic_vector(31 downto 0) := (others => '0');
@@ -157,6 +160,13 @@ begin
 
     -- create fifos to buffer between GBT and wishbone
 
+    process (clock) begin
+        if (rising_edge(clock)) then
+            gbt_rx_req_reg  <= gbt_rx_req;
+            gbt_rx_data_reg <= gbt_rx_data;
+        end if;
+    end process;
+
     link_request : entity work.link_request
     port map(
         -- clocks
@@ -167,8 +177,8 @@ begin
 
         -- rx parallel data (from GBT)
         ipb_mosi_o    => ipb_mosi_o, -- 16 bit adr + 32 bit data + we
-        rx_en_i       => gbt_rx_req,
-        rx_data_i     => gbt_rx_data,  -- 16 bit adr + 32 bit data
+        rx_en_i       => gbt_rx_req_reg,
+        rx_data_i     => gbt_rx_data_reg,  -- 16 bit adr + 32 bit data
 
         -- tx parallel data (to GBT)
 
