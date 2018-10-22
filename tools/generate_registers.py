@@ -833,12 +833,12 @@ def updateModuleFile(module):
         # signal section
         if VHDL_REG_SIGNAL_MARKER_START in line:
             signalSectionFound = True
-            signalDeclaration         = '    signal regs_read_arr        : t_std32_array(<num_regs> - 1 downto 0);\n'\
-                                        '    signal regs_write_arr       : t_std32_array(<num_regs> - 1 downto 0);\n'\
-                                        '    signal regs_addresses       : t_std32_array(<num_regs> - 1 downto 0);\n'\
+            signalDeclaration         = "    signal regs_read_arr        : t_std32_array(<num_regs> - 1 downto 0) := (others => (others => '0'));\n"\
+                                        "    signal regs_write_arr       : t_std32_array(<num_regs> - 1 downto 0) := (others => (others => '0'));\n"\
+                                        "    signal regs_addresses       : t_std32_array(<num_regs> - 1 downto 0) := (others => (others => '0'));\n"\
                                         "    signal regs_defaults        : t_std32_array(<num_regs> - 1 downto 0) := (others => (others => '0'));\n"\
-                                        '    signal regs_read_pulse_arr  : std_logic_vector(<num_regs> - 1 downto 0);\n'\
-                                        '    signal regs_write_pulse_arr : std_logic_vector(<num_regs> - 1 downto 0);\n'\
+                                        "    signal regs_read_pulse_arr  : std_logic_vector(<num_regs> - 1 downto 0) := (others => '0');\n"\
+                                        "    signal regs_write_pulse_arr : std_logic_vector(<num_regs> - 1 downto 0) := (others => '0');\n"\
                                         "    signal regs_read_ready_arr  : std_logic_vector(<num_regs> - 1 downto 0) := (others => '1');\n" \
                                         "    signal regs_write_done_arr  : std_logic_vector(<num_regs> - 1 downto 0) := (others => '1');\n" \
                                         "    signal regs_writable_arr    : std_logic_vector(<num_regs> - 1 downto 0) := (others => '0');\n"

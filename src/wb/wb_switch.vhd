@@ -42,6 +42,8 @@ end wb_switch;
 
 architecture Behavioral of wb_switch is
 
+    signal reset : std_logic;
+
     type state_t is (IDLE, WAITING, ACK_WAIT);
     type state_array_t is array(integer range <>) of state_t;
 
@@ -55,6 +57,11 @@ architecture Behavioral of wb_switch is
 
 begin
 
+    process(ref_clk_i) begin
+        if (rising_edge(ref_clk_i)) then
+            reset <= reset_i;
+        end if;
+    end process;
     --========================--
     --== Request forwarding ==--
     --========================--
@@ -65,7 +72,7 @@ begin
     begin
         if (rising_edge(ref_clk_i)) then
             -- Reset & default values
-            if (reset_i = '1') then
+            if (reset = '1') then
                 wb_req_o <= (others => (stb => '0', we => '0', addr => (others => '0'), data => (others => '0')));
                 wb_res_o <= (others => (ack => '0', stat => (others => '0'), data => (others => '0')));
                 states <= (others => IDLE);
