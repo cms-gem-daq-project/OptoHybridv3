@@ -11,6 +11,7 @@ use work.param_pkg.all;
 
 entity iodelay is
 port(
+  clock         : in std_logic;
   data_i        : in std_logic;
   data_o        : out std_logic;
   tap_delay_i   : in std_logic_vector (4 downto 0) := "00000"
@@ -30,17 +31,17 @@ begin
   iodelay:iodelaye1
   generic map(
           IDELAY_TYPE           => "VAR_LOADABLE",
-          IDELAY_VALUE          => 0, -- 45 degree phase shift in 160 MHz clocks, using 78 ps taps
+          IDELAY_VALUE          => 0, -- ignored in var_loadable
           HIGH_PERFORMANCE_MODE => TRUE,
           REFCLK_FREQUENCY      => 200.0)
   port map(
-          c           => '0',
+          c           => clock,
           t           => '1',
           rst         => '1',
           ce          => '0',
           inc         => '0',
           cinvctrl    => '0',
-          cntvaluein  => tap_delay_i,
+          cntvaluein  => tap_delay_i, -- 45 degree phase shift in 160 MHz clocks, using 78 ps taps
           clkin       => '0',
           idatain     => data_i,
           datain      => '0',
@@ -66,7 +67,7 @@ begin
    port map (
         CNTVALUEOUT => open ,       -- 5-bit output: Counter value output
         DATAOUT     => data_o,      -- 1-bit output: Delayed data output
-        C           => '0',         -- 1-bit input: Clock input
+        C           => clock,       -- 1-bit input: Clock input
         CE          => '0',         -- 1-bit input: Active high enable increment/decrement input
         CINVCTRL    => '0',         -- 1-bit input: Dynamic clock inversion input
         CNTVALUEIN  => tap_delay_i, -- 5-bit input: Counter value input
@@ -75,7 +76,7 @@ begin
         INC         => '0',         -- 1-bit input: Increment / Decrement tap delay input
         LD          => '1',         -- 1-bit input: Load IDELAY_VALUE input
         LDPIPEEN    => '0',         -- 1-bit input: Enable PIPELINE register to load data input
-        REGRST      => '0'          -- 1-bit input: Active-high reset tap-delay input
+        REGRST      => '1'          -- 1-bit input: Active-high reset tap-delay input
   );
 
   end generate iodelay_a7;

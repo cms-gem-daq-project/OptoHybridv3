@@ -45,8 +45,8 @@ architecture behavioral of oversample is
   attribute ASYNC_REG  of tap_delay : signal is "TRUE";
 
   -- keep q for timing constraint
-  attribute mark_debug : string;
-  attribute mark_debug of q : signal is "true";
+  attribute MARK_DEBUG : string;
+  attribute MARK_DEBUG of q : signal is "true";
 
 begin
 
@@ -96,6 +96,7 @@ begin
 
   delay_master : entity work.iodelay
   port map(
+          clock       => clk1x_logic,
           tap_delay_i => tap_delay_0,
           data_i      => data_p,
           data_o      => data(0)
@@ -103,6 +104,7 @@ begin
 
   delay_slave  : entity work.iodelay
   port map(
+          clock       => clk1x_logic,
           tap_delay_i => tap_delay_45,
           data_i      => data_n,
           data_o      => data(1)
