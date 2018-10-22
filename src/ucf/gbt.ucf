@@ -8,7 +8,7 @@ NET "gbt_txready_i<0>" TNM = gbt_status_grp;
 NET "gbt_rxvalid_i<0>" TNM = gbt_status_grp;
 NET "gbt_rxready_i<0>" TNM = gbt_status_grp;
 
-TIMEGRP "gbt_status_grp" OFFSET = IN 12.5 ns VALID 25.0 ns BEFORE "TN_logic_clock" RISING;
+TIMEGRP "gbt_status_grp" OFFSET = IN 12.5 ns VALID 25.0 ns BEFORE "logic_clock_p" RISING;
 
 ########################################################################################################################
 # E-links
@@ -36,6 +36,17 @@ NET "elink_i_n" LOC = AE24 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE; #
 #NET "gbt_eclk_n<1>"   LOC = H9 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE;
 
 
-NET "gbt/gbt_serdes/gbt_rx_data_sync/*/xst_fifo_generator/gconvfifo.rf/grf.rf/*/wr_pntr_gc_*" TIG;
-NET "gbt/gbt_serdes/gbt_rx_data_sync/*/xst_fifo_generator/gconvfifo.rf/grf.rf/*/rd_pntr_gc_*" TIG;
+#NET "gbt/gbt_serdes/gbt_rx_data_sync/*/xst_fifo_generator/gconvfifo.rf/grf.rf/*/wr_pntr_gc_*" TIG;
+#NET "gbt/gbt_serdes/gbt_rx_data_sync/*/xst_fifo_generator/gconvfifo.rf/grf.rf/*/rd_pntr_gc_*" TIG;
+
+NET "gbt/gbt_serdes/gbt_rx_data_sync/*/xst_fifo_generator/gconvfifo.rf/grf.rf/*/wr_pntr_gc_*" TNM_NET = WR_PNTR;
+NET "gbt/gbt_serdes/gbt_rx_data_sync/*/xst_fifo_generator/gconvfifo.rf/grf.rf/*/rd_pntr_gc_*" TNM_NET = RD_PNTR;
+
+# Datapathonly indicates that timing should not take into account clock skew or phase information
+
+TIMESPEC TS_wr_pntr = FROM WR_PNTR TO "FFS" 10ns DATAPATHONLY;
+TIMESPEC TS_rd_pntr = FROM "FFS" TO RD_PNTR 10ns DATAPATHONLY;
+
+TIMESPEC TS_wr_pntr_tig = FROM WR_PNTR TO "FFS" TIG;
+TIMESPEC TS_rd_pntr_tig = FROM "FFS" TO RD_PNTR TIG;
 

@@ -17,7 +17,7 @@ INST "ext_sbits_o<3>" TNM = ext_sbits_o;
 INST "ext_sbits_o<4>" TNM = ext_sbits_o;
 INST "ext_sbits_o<5>" TNM = ext_sbits_o;
 
-TIMEGRP "ext_sbits_o" OFFSET = OUT 12.5 ns VALID 25 ns AFTER "TN_logic_clock" RISING;
+TIMEGRP "ext_sbits_o" OFFSET = OUT 12.5 ns VALID 25 ns AFTER "logic_clock_p" RISING;
 
 ########################################################################################################################
 # LEDs
@@ -57,7 +57,7 @@ INST "led_o<13>" TNM = led_o;
 INST "led_o<14>" TNM = led_o;
 INST "led_o<15>" TNM = led_o;
 
-TIMEGRP "led_o"       OFFSET = OUT 12.5 ns VALID 25 ns AFTER "TN_logic_clock" RISING;
+TIMEGRP "led_o"       OFFSET = OUT 12.5 ns VALID 25 ns AFTER "logic_clock_p" RISING;
 
 ########################################################################################################################
 # SCA
@@ -86,7 +86,7 @@ NET "ext_reset_o<10>" LOC ="AL23";
 NET "ext_reset_o<11>" LOC ="AP24";
 
 INST "ext_reset_o<*>" TNM = reset_o;
-TIMEGRP "reset_o"       OFFSET = OUT 12.5 ns VALID 25 ns AFTER "TN_logic_clock" RISING;
+TIMEGRP "reset_o"       OFFSET = OUT 12.5 ns VALID 25 ns AFTER "logic_clock_p" RISING;
 
 ########################################################################################################################
 # MGT

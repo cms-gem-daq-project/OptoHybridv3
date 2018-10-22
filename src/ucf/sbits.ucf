@@ -8,11 +8,11 @@ INST "trigger/sbits/trig_alignment/*oversample*/*dru*/*data_in_delay*" TNM = sbi
 INST "vfat_sbits_*"                                                    TNM = sbit_i_grp;
 
 TIMESPEC TS_SBIT_IOTIG = FROM sbit_i_grp      TO sbit_serdes_grp TIG;
-TIMESPEC TS_SBIT_TIG   = FROM sbit_serdes_grp TO sbit_ff_grp TIG;
+TIMESPEC TS_SBIT_TIG   = FROM sbit_serdes_grp TO sbit_ff_grp     TIG;
 
 NET "trigger/sbits/trig_alignment/*oversample*/q<*>" MAXDELAY = 0.600 ns;
 
-TIMEGRP "sbit_i_grp" OFFSET = IN 4 ns VALID 3.125 ns BEFORE "TN_logic_clock" RISING;
+TIMEGRP "sbit_i_grp" OFFSET = IN 4 ns VALID 3.125 ns BEFORE "logic_clock_p" RISING;
 
 #### START: AUTO GENERATED SBITS UCF -- DO NOT EDIT ####
 NET vfat_sot_p<23>     LOC = "AN19" | TNM = vfat_sot   ; # polarity swap
