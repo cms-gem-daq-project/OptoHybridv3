@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 def write_mapping_nomap (filename):
     padding="        "
     #filename.write ("%s-- constants written for 1-to-1 (nomap);\n" % (padding))

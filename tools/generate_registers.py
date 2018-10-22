@@ -1,5 +1,8 @@
+from __future__ import unicode_literals
+
 __author__ = 'evka'
 
+import io
 import xml.etree.ElementTree as xml
 import textwrap as tw
 import sys
@@ -734,7 +737,7 @@ def writePackageFile (modules, filename):
 
 
 def writeConstantsFile(modules, filename):
-    f = open(filename, 'w')
+    f = io.open (filename, "w", newline='')
     f.write('library IEEE;\n'\
             'use IEEE.STD_LOGIC_1164.all;\n\n')
     f.write('-----> !! This package is auto-generated from an address table file using <repo_root>/scripts/generate_registers.py !! <-----\n')
@@ -809,7 +812,7 @@ def updateModuleFile(module):
     # create temp file for writing to
     tempname = tempfile.mktemp()
     shutil.copy (module.file, tempname)
-    f = open (tempname, "w")
+    f = io.open (tempname, "w", newline='')
 
     signalSectionFound = False
     signalSectionDone = False
@@ -817,6 +820,7 @@ def updateModuleFile(module):
     slaveSectionDone = False
     registersLibraryFound = False
     for line in lines:
+        line = unicode(line)
         if line.startswith('use work.registers.all;'):
             registersLibraryFound = True
 

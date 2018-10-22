@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from oh_settings import *
 from insert_code import *
 

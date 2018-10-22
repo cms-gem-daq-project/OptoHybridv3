@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+import io
 import shutil
 import tempfile
 import sys
@@ -6,7 +8,7 @@ def insert_code (input_file_name, output_file_name, marker_start, marker_end, wr
 
     # build a python netlist from the Altium exported Multiwire netlist
 
-    f = open(input_file_name, 'r')
+    f = io.open (input_file_name, "r", newline='')
     lines = f.readlines()
     f.close()
 
@@ -17,6 +19,7 @@ def insert_code (input_file_name, output_file_name, marker_start, marker_end, wr
     end_found   = False
 
     # check for the presence of delimiters
+
     for line in lines:
         if marker_start in line:
             start_found = True
@@ -38,7 +41,7 @@ def insert_code (input_file_name, output_file_name, marker_start, marker_end, wr
 
         wrote_constraints = False
 
-        f = open(tempname, 'w')
+        f = io.open (tempname, "w", newline='')
 
         for line in lines:
 
