@@ -178,9 +178,14 @@ begin
   -- Output deserialization
   ----------------------------------------------------------------------------------------------------------------------
 
-  process(clk1x)
+  -- put 3/4/5 bits into the frame per 80MHz clock
+  -- presumably could be done with 1/2/3 bits per 160 MHz clock to stay in the same clock domain
+  --                       or with 7/8/9 bits per 40  MHz clock
+  -- but the deserializer would have to be rewritten...
+
+  process(clk2x)
   begin
-    if rising_edge(clk1x) then
+    if rising_edge(clk2x) then
 
       fifo_s3           <= fifo_s2;
       bitslip_state_dly <= bitslip_state;
@@ -271,6 +276,4 @@ begin
   vo<=rxvalid;
   o <= rxdata;
 
-
 end behavioral;
-
