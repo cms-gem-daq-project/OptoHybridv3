@@ -39,7 +39,7 @@ port(
 
     vfat_sbit_clusters_o   : out sbit_cluster_array_t(7 downto 0);
 
-    sbit_mask_i            : in std_logic_vector (MXVFATS-1 downto 0);
+    vfat_mask_i            : in std_logic_vector (MXVFATS-1 downto 0);
 
     sbits_mux_sel_i        : in  std_logic_vector (4 downto 0);
     sbits_mux_o            : out  std_logic_vector (63 downto 0);
@@ -152,7 +152,7 @@ begin
     trig_alignment : entity work.trig_alignment
     port map (
 
-        sbit_mask_i            => sbit_mask_i,
+        vfat_mask_i            => vfat_mask_i,
 
         reset_i                => reset,
 

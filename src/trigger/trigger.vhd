@@ -285,7 +285,7 @@ begin
         start_of_frame_p         => vfat_sot_p,
         start_of_frame_n         => vfat_sot_n,
 
-        sbit_mask_i  => vfat_mask (MXVFATS -1 downto 0),
+        vfat_mask_i  => vfat_mask (MXVFATS -1 downto 0),
         sot_invert_i => sot_invert (MXVFATS-1 downto 0),
         tu_invert_i  => tu_invert,
         tu_mask_i    => tu_mask,

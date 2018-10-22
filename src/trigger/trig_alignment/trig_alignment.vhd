@@ -37,7 +37,7 @@ port(
     sot_invert_i           : in std_logic_vector (MXVFATS-1 downto 0);
     tu_invert_i            : in std_logic_vector (MXVFATS*8-1 downto 0);
 
-    sbit_mask_i            : in std_logic_vector (MXVFATS-1 downto 0);
+    vfat_mask_i            : in std_logic_vector (MXVFATS-1 downto 0);
     tu_mask_i              : in std_logic_vector (MXVFATS*8-1 downto 0);
 
     start_of_frame_p       : in std_logic_vector (MXVFATS-1 downto 0);
@@ -70,7 +70,7 @@ architecture Behavioral of trig_alignment is
     signal sbits_unaligned   : std_logic_vector (( MXSBITS_CHAMBER - 1) downto 0);
     signal sot_invert        : std_logic_vector (MXVFATS-1 downto 0);
     signal tu_invert         : std_logic_vector (MXVFATS*8-1 downto 0);
-    signal sbit_mask         : std_logic_vector (MXVFATS-1 downto 0);
+    signal vfat_mask         : std_logic_vector (MXVFATS-1 downto 0);
     signal tu_mask           : std_logic_vector (MXVFATS*8-1 downto 0);
 
     -- fanout reset to help with timing
@@ -102,7 +102,7 @@ begin
         if (rising_edge(clock)) then
             sot_invert <= sot_invert_i;
             tu_invert  <= tu_invert_i;
-            sbit_mask  <= sbit_mask_i;
+            vfat_mask  <= vfat_mask_i;
             tu_mask    <= tu_mask_i;
         end if;
     end process;
@@ -115,7 +115,7 @@ begin
 
         process (clock) is begin
             if (rising_edge(clock)) then
-                sot_reset(ivfat) <= reset;
+                sot_reset(ivfat) <= reset or (vfat_mask(ivfat));
             end if;
         end process;
 
@@ -187,7 +187,7 @@ begin
 
             sbits_i => sbits_unaligned ((ivfat+1)*MXSBITS - 1 downto ivfat*MXSBITS),
             sbits_o => sbits((ivfat+1)*MXSBITS - 1 downto ivfat*MXSBITS),
-            mask    => sbit_mask(ivfat),
+            mask    => vfat_mask(ivfat),
             reset_i => reset,
 
             start_of_frame => start_of_frame_8b(ivfat),
