@@ -33,7 +33,7 @@ begin
           IDELAY_TYPE           => "VAR_LOADABLE",
           IDELAY_VALUE          => 0, -- ignored in var_loadable
           HIGH_PERFORMANCE_MODE => TRUE,
-          REFCLK_FREQUENCY      => 200.0)
+          REFCLK_FREQUENCY      => 200.401)
   port map(
           c           => clock,
           t           => '1',
@@ -61,7 +61,7 @@ begin
         IDELAY_TYPE           => "VAR_LOAD", -- FIXED, VARIABLE, VAR_LOAD, VAR_LOAD_PIPE
         IDELAY_VALUE          => 0,          -- Input delay tap setting (0-31)
         PIPE_SEL              => "FALSE",    -- Select pipelined mode, FALSE, TRUE
-        REFCLK_FREQUENCY      => 200.0,      -- IDELAYCTRL clock input frequency in MHz (190.0-210.0, 290.0-310.0).
+        REFCLK_FREQUENCY      => 200.401,      -- IDELAYCTRL clock input frequency in MHz (190.0-210.0, 290.0-310.0).
         SIGNAL_PATTERN        => "DATA"      -- DATA, CLOCK input signal
 	)
    port map (
