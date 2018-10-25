@@ -19,8 +19,11 @@ architecture synchronizer_arch of synchronizer is
 
   signal s_resync : std_logic_vector(N_STAGES downto 0) := (others => '0');
 
-  attribute ASYNC_REG  : string;
-  attribute ASYNC_REG  of s_resync  : signal is "TRUE";
+  attribute ASYNC_REG                 : string;
+  attribute ASYNC_REG     of s_resync : signal is "TRUE";
+  attribute SHREG_EXTRACT             : string;
+  attribute SHREG_EXTRACT of s_resync : signal is "NO";
+
 
 begin
 
