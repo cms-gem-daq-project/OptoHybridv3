@@ -255,7 +255,7 @@ begin
 
     cluster_packer_inst : entity work.cluster_packer
 
-        generic map (TRUNCATE_CLUSTERS => 1)
+        generic map (SPLIT_CLUSTERS => 0)
 
         port map(
             trig_stop_i         => trig_stop_i,
@@ -313,7 +313,7 @@ begin
 
     cluster_packer_inst : entity work.cluster_packer
 
-        generic map (TRUNCATE_CLUSTERS => 1)
+        generic map (SPLIT_CLUSTERS => 0)
 
         port map(
             trig_stop_i         => trig_stop_i,
