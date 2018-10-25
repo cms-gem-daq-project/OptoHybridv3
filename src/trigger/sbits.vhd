@@ -207,25 +207,12 @@ begin
 
     -- I don't want to do 64 bit reduction in 1 clock... split it over 2 to add slack to PAR and timing
 
-    active_vfat_s1 : for I in 0 to (MXVFATS*8-1) generate
-    begin
-    process (clk40_i)
-    begin
-        if (rising_edge(clk40_i)) then
-            active_vfats_s1 (I)   <= or_reduce (sbits (8*(I+1)-1 downto (8*I)));
-        end if;
-    end process;
-    end generate;
-
-    active_vfat_s2 : for I in 0 to (MXVFATS-1) generate
-    begin
-    process (clk40_i)
-    begin
-        if (rising_edge(clk40_i)) then
-            active_vfats (I)   <= or_reduce (active_vfats_s1 (8*(I+1)-1 downto (8*I)));
-        end if;
-    end process;
-    end generate;
+    active_vfats_inst : entity work.active_vfats
+    port map (
+        clock          => clk40_i,
+        sbits_i        => sbits,
+        active_vfats_o => active_vfats
+    );
 
     --------------------------------------------------------------------------------------------------------------------
     -- Sbits Monitor Multiplexer
