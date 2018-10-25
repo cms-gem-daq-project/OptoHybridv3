@@ -155,6 +155,7 @@ begin
     -- 8b to 6b conversion
     eightbit_sixbit_inst : entity work.eightbit_sixbit
     port map (
+        clock          => clock,
         eightbit       => data_i,
         sixbit         => frame_data,
         not_in_table   => not_in_table,
@@ -171,8 +172,8 @@ begin
         if (rising_edge(clock)) then
             -- only latch if char_is_data so that we can "pause" the sequencer if a ttc command is received
             -- during a packet
-            if (char_is_data='1') then
-                frame_data_delay <= frame_data;
+            if    (char_is_data='1') then frame_data_delay <= frame_data;
+            else                          frame_data_delay <= frame_data_delay;
             end if;
         end if;
     end process;
@@ -266,22 +267,16 @@ begin
 
             if (reset = '1' or ready='0') then
                 req_valid  <= '0';
-                req_data   <= (others => '0');
             else
                 case state is
-                    when IDLE  =>
-                                   req_valid              <= '0';
-                                   req_data               <= (others => '0');
-                    when START =>
-                                   req_valid              <= frame_data_delay(5);              -- request valid
-                                   req_data(48)           <= frame_data_delay(4);              -- write enable
-                                -- reserved               <= frame_data_delay(3 downto 0);
-                    when DATA =>
-                        req_data ((g_FRAME_COUNT_MAX - data_frame_cnt) * g_FRAME_WIDTH - 1 downto (g_FRAME_COUNT_MAX-1-data_frame_cnt) * g_FRAME_WIDTH) <= frame_data_delay;
-
-                    when others =>
-                        req_valid <= '0';
-                        req_data <= (others => '0');
+                    when IDLE   => req_valid               <= '0';
+                    when START  => req_valid               <= frame_data_delay(5);              -- request valid
+                                   req_data(WB_REQ_BITS-1) <= frame_data_delay(4);              -- write enable
+                                -- reserved                <= frame_data_delay(3 downto 0);
+                    when DATA   => req_data (
+                                    (g_FRAME_COUNT_MAX - data_frame_cnt) * g_FRAME_WIDTH - 1 downto
+                                    (g_FRAME_COUNT_MAX-1-data_frame_cnt) * g_FRAME_WIDTH) <= frame_data_delay;
+                    when others => req_valid <= '0';
 
                 end case;
             end if;

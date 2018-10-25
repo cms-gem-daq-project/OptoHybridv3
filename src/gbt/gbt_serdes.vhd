@@ -175,7 +175,7 @@ architecture Behavioral of gbt_serdes is
     synchronizer_oserdes_reset:
     entity work.synchronizer generic map(N_STAGES => 2)
     port map(
-      async_i => reset_i,
+      async_i => reset,
       clk_i   => gbt_clk40,
       sync_o  => oserdes_reset
     );
@@ -183,7 +183,7 @@ architecture Behavioral of gbt_serdes is
     synchronizer_iserdes_reset:
     entity work.synchronizer generic map(N_STAGES => 2)
     port map(
-      async_i => reset_i,
+      async_i => reset,
       clk_i   => gbt_clk40,
       sync_o  => iserdes_reset
     );

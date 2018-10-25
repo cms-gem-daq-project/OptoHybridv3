@@ -155,6 +155,7 @@ begin
     -- 8b to 6b conversion
     sixbit_eightbit_inst : entity work.sixbit_eightbit
     port map (
+        clock        => clock,
         eightbit     => data_o,
         sixbit       => frame,
         l1a          => '0',
