@@ -49,3 +49,12 @@ set_property MAX_FANOUT 128 [get_nets -hierarchical -filter { NAME =~  "trigger/
 set_false_path -from [get_clocks {control/led_control/fader_cnt_reg[0]_0}] -to [get_clocks -of_objects [get_pins clocking/logic_clocking/inst/plle2_adv_inst/CLKOUT0]]
 set_false_path -from [get_pins {gbt/gbt_serdes/to_gbt_ser_gen_a7.i_to_gbt_ser/inst/pins[0].oserdese2_master/CLK}] -to [get_ports elink_o_p]
 
+#should constrain this to just the cluster ffs
+#set_multicycle_path -from [get_clocks -of_objects [get_pins clocking/logic_clocking/inst/plle2_adv_inst/CLKOUT4]] -to [get_clocks -of_objects [get_pins clocking/logic_clocking/inst/plle2_adv_inst/CLKOUT1]] 5
+#set_false_path -from [get_clocks -of_objects [get_pins clocking/logic_clocking/inst/plle2_adv_inst/CLKOUT4]]
+
+set_false_path -from [get_cells -regexp -hierarchical -filter { NAME =~  "trigger/sbits/.*cluster_reg\[\d\].*" }]
+set_max_delay -from [get_cells -regexp -hierarchical -filter { NAME =~  "trigger/sbits/.*cluster_reg\[\d\].*" }] 10
+set_max_delay -from [get_cells -hierarchical -filter { NAME =~  "trigger/sbits/*cluster_packer*/*overflow_ff*" }] 10
+set_false_path -from [get_cells -hierarchical -filter { NAME =~  "trigger/sbits/*cluster_packer*/*overflow_ff*" }]
+

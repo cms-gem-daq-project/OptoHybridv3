@@ -297,8 +297,3 @@ set_property IOSTANDARD LVCMOS25 [get_ports {gbt_txready_i[0]}]
 set_property IOSTANDARD LVCMOS25 [get_ports {gbt_txvalid_o[1]}]
 set_property IOSTANDARD LVCMOS25 [get_ports {gbt_txvalid_o[0]}]
 
-
-
-
-
-

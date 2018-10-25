@@ -28,9 +28,10 @@ resize_pblock [get_pblocks pblock_reset_ctl] -add {SLICE_X42Y159:SLICE_X47Y169}
 
 
 create_pblock pblock_cluster_packer
+add_cells_to_pblock [get_pblocks pblock_cluster_packer] [get_cells -hierarchical -filter { NAME =~  "trigger/sbits/*cluster_packer*" }]
+remove_cells_from_pblock [get_pblocks pblock_trigger] [get_cells -hierarchical -filter { NAME =~  "trigger/trigger_links*" }]
 resize_pblock [get_pblocks pblock_cluster_packer] -add {SLICE_X0Y0:SLICE_X89Y74}
 resize_pblock [get_pblocks pblock_cluster_packer] -add {DSP48_X0Y0:DSP48_X2Y29}
 resize_pblock [get_pblocks pblock_cluster_packer] -add {RAMB18_X0Y0:RAMB18_X3Y29}
 resize_pblock [get_pblocks pblock_cluster_packer] -add {RAMB36_X0Y0:RAMB36_X3Y14}
 
-add_cells_to_pblock [get_pblocks pblock_cluster_packer] [get_cells -hierarchical -filter { NAME =~  "trigger/sbits/*cluster_packer*" }]
