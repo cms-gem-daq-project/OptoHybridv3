@@ -1,4 +1,12 @@
-library ieee;
+----------------------------------------------------------------------------------
+-- CMS Muon Endcap
+-- GEM Collaboration (A. Peck)
+-- Optohybrid v3 Firmware -- IpBus Switch
+----------------------------------------------------------------------------------
+-- Wrapper between IPBUS naming conventions and Wishbone switch
+----------------------------------------------------------------------------------
+
+ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 

@@ -1,6 +1,8 @@
 module trigger_links #(
-FPGA_TYPE_IS_VIRTEX6 = 0,
-FPGA_TYPE_IS_ARTIX7 = 0
+parameter FPGA_TYPE_IS_VIRTEX6 = 0,
+parameter FPGA_TYPE_IS_ARTIX7 = 0,
+parameter ILINKS = 4
+
 ) (
 
   input [1:0] mgt_clk_p, // 160 MHz Reference Clock direct from IO
@@ -12,8 +14,8 @@ FPGA_TYPE_IS_ARTIX7 = 0
 
   input reset_i,
 
-  output reg [3:0] pll_locked,
-  output reg [3:0] reset_done,
+  output reg [ILINKS-1:0] pll_locked,
+  output reg [ILINKS-1:0] reset_done,
 
   output [ILINKS-1:0] trg_tx_p,
   output [ILINKS-1:0] trg_tx_n,
@@ -86,7 +88,6 @@ generate
         .CEB     (1'b0)
     );
 
-    wire cpll_reset;
     wire cpll_outclk0;
     wire cpll_outrefclk0;
     wire cpll_plllock;
@@ -109,7 +110,7 @@ generate
     );
 
     a7_trig_tx_buf_bypass_common #(
-      .WRAPPER_SIM_GTRESET_SPEEDUP (1'b0),
+      .WRAPPER_SIM_GTRESET_SPEEDUP ("FALSE"),
       .SIM_PLL0REFCLK_SEL          (3'b001),
       .SIM_PLL1REFCLK_SEL          (3'b001)
     ) common0_i (
@@ -184,10 +185,8 @@ always @(posedge clk_80) begin
   pll_locked <= tx_pll_locked;
 end
 
-parameter ILINKS            = 4;
-parameter ILINKS_PER_MODULE = 1;
-parameter IMODULES          = ILINKS / ILINKS_PER_MODULE;
-
+localparam ILINKS_PER_MODULE = 1;
+localparam IMODULES          = ILINKS / ILINKS_PER_MODULE;
 
 genvar igem;
 generate

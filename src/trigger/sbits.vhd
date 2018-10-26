@@ -242,8 +242,6 @@ begin
 
     cluster_packer_inst : entity work.cluster_packer
 
-        generic map (SPLIT_CLUSTERS => 0)
-
         port map(
             trig_stop_i         => trig_stop_i,
             clock5x             => clk200_i,
@@ -299,8 +297,6 @@ begin
     OH_FULL_GEN : if (oh_lite=0) GENERATE
 
     cluster_packer_inst : entity work.cluster_packer
-
-        generic map (SPLIT_CLUSTERS => 0)
 
         port map(
             trig_stop_i         => trig_stop_i,
