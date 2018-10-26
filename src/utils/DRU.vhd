@@ -183,9 +183,9 @@ begin
   --                       or with 7/8/9 bits per 40  MHz clock
   -- but the deserializer would have to be rewritten...
 
-  process(clk2x)
+  process(clk1x)
   begin
-    if rising_edge(clk2x) then
+    if rising_edge(clk1x) then
 
       fifo_s3           <= fifo_s2;
       bitslip_state_dly <= bitslip_state;

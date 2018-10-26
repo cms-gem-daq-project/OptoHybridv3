@@ -39,7 +39,7 @@ begin
   resync_rx         <= '1' when (eightbit=RESYNC_CHAR) else '0';
   idle_rx           <= '1' when (eightbit=IDLE_CHAR)   else '0';
   char_is_header_rx <= '1' when (eightbit=HEADER_CHAR) else '0';
-  char_is_ttc_rx    <= '1' when  (l1a_rx='1' or bc0_rx='1' or resync_rx='1') else '0';
+  char_is_ttc_rx    <= '1' when (l1a_rx='1' or bc0_rx='1' or resync_rx='1') else '0';
 
   process (clock) begin
   if (rising_edge(clock)) then
@@ -51,13 +51,14 @@ begin
     char_is_header <= char_is_header_rx;
     char_is_ttc    <= char_is_ttc_rx;
 
-    -- fast commands
-
     case eightbit is
+
+      -- fast commands
       when L1A_CHAR    => sixbit <= "000000"; not_in_table <= '0'; char_is_data <= '0';
       when BC0_CHAR    => sixbit <= "000000"; not_in_table <= '0'; char_is_data <= '0';
       when RESYNC_CHAR => sixbit <= "000000"; not_in_table <= '0'; char_is_data <= '0';
       when IDLE_CHAR   => sixbit <= "000000"; not_in_table <= '0'; char_is_data <= '0';
+      when HEADER_CHAR => sixbit <= "000000"; not_in_table <= '0'; char_is_data <= '0';
 
       -- data words
       when "01011001" => sixbit <= "000000"; not_in_table <= '0'; char_is_data <= '1';

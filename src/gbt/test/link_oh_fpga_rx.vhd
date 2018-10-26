@@ -37,11 +37,11 @@ end link_oh_fpga_rx;
 
 architecture link_oh_fpga_rx_arch of link_oh_fpga_rx is
 
-    type state_t is (NOT_READY, IDLE, DATA);
+    type state_t is (SYNCING, IDLE, HEADER, DATA);
 
     signal reset : std_logic := '1';
 
-    signal state            : state_t := NOT_READY;
+    signal state            : state_t := SYNCING;
 
     signal data_frame_cnt   : integer range 0 to g_FRAME_COUNT_MAX-1 := 0;
 
@@ -55,6 +55,7 @@ architecture link_oh_fpga_rx_arch of link_oh_fpga_rx is
     signal char_is_data_delay : std_logic := '0';
     signal not_in_table       : std_logic := '0';
     signal idle_rx            : std_logic := '0';
+    signal header_rx          : std_logic := '0';
 
     signal bitslip_buf  : std_logic_vector(g_ELINK_WIDTH*2-1 downto 0) := (others => '0');
     signal bitslip_data : std_logic_vector(g_ELINK_WIDTH-1   downto 0) := (others => '0');
@@ -66,7 +67,8 @@ architecture link_oh_fpga_rx_arch of link_oh_fpga_rx is
 
     signal rx_err : std_logic := '1';
 
-    signal even_odd : std_logic := '0'; -- simple strobe to increment bitslip only every other bx
+    signal strobe_sr : std_logic_vector (3 downto 0) := "0001"; -- simple strobe to increment bitslip only every 4th bx
+    signal strobe    : std_logic; -- simple strobe to increment bitslip only every 4th bx
 
 
 begin
@@ -96,9 +98,7 @@ begin
 
             reg_data_valid_o <= reg_data_valid;
 
-            if (reg_data_valid='0') then
-                reg_data_o       <= x"00000000";
-            else
+            if (reg_data_valid='1') then
                 reg_data_o       <= reg_data (31 downto 0);
             end if;
         end if;
@@ -130,10 +130,11 @@ begin
     end if;
     end process;
 
-    -- create a 20 MHz strobe
+    -- create a 10 MHz strobe
     process (ttc_clk_40_i) begin
     if (rising_edge(ttc_clk_40_i)) then
-            even_odd <= not even_odd;
+            strobe_sr <= strobe_sr(strobe_sr'length-2 downto 0) & strobe_sr(strobe_sr'length-1);
+            strobe <= strobe_sr(0);
     end if;
     end process;
 
@@ -144,7 +145,7 @@ begin
     process(ttc_clk_40_i)
     begin
     if (rising_edge(ttc_clk_40_i)) then
-        if (even_odd = '1'  and rx_err = '1' and idle_rx='0' and ready='0') then
+        if (strobe = '1'  and rx_err = '1' and idle_rx='0' and ready='0') then
             if (bitslip_cnt = g_ELINK_WIDTH-1) then
                 bitslip_cnt <= 0;
             else
@@ -169,14 +170,16 @@ begin
 
     eightbit_sixbit_inst : entity work.eightbit_sixbit
     port map (
-        eightbit     => bitslip_data,
-        sixbit       => frame_data,
-        not_in_table => not_in_table,
-        char_is_data => char_is_data,
-        l1a          => open,
-        bc0          => open,
-        resync       => open,
-        idle         => idle_rx
+        clock          => ttc_clk_40_i,
+        eightbit       => bitslip_data,
+        sixbit         => frame_data,
+        not_in_table   => not_in_table,
+        char_is_data   => char_is_data,
+        char_is_header => header_rx,
+        l1a            => open,
+        bc0            => open,
+        resync         => open,
+        idle           => idle_rx
     );
 
     --------------------------------------------------------------------------------------------------------------------
@@ -188,18 +191,28 @@ begin
     if (rising_edge(ttc_clk_40_i)) then
 
     if (reset = '1') then
-        state <= NOT_READY;
+        state <= SYNCING;
         data_frame_cnt <= 0;
     else
         case state is
-            when NOT_READY =>
+            when SYNCING =>
                 if (ready='1') then
                     state <= IDLE;
                     data_frame_cnt <= 0;
                 end if;
             when IDLE =>
                 if (ready='0') then
-                    state <= NOT_READY;
+                    state <= SYNCING;
+                elsif (header_rx='1') then
+                    state <= HEADER;
+                    data_frame_cnt <= 0;
+                else
+                    state <= IDLE;
+                    data_frame_cnt <= 0;
+                end if;
+            when HEADER =>
+                if (ready='0') then
+                    state <= SYNCING;
                 elsif (char_is_data='1') then
                     state <= DATA;
                     data_frame_cnt <= 0;
@@ -214,7 +227,7 @@ begin
                     data_frame_cnt <= data_frame_cnt + 1;
                 end if;
             when others =>
-                state <= NOT_READY;
+                state <= SYNCING;
                 data_frame_cnt <= 0;
         end case;
     end if;

@@ -61,12 +61,12 @@ end gbt_rx ;
 
 architecture Behavioral of gbt_rx is
 
-    type state_t is (ERR, IDLE, START, DATA);
+    type state_t is (ERR, SYNCING, IDLE, HEADER, START, DATA);
 
     signal req_valid    : std_logic;
-    signal req_data     : std_logic_vector(WB_REQ_BITS-1 downto 0) := (others => '0');
+    signal req_data_buf     : std_logic_vector(WB_REQ_BITS-1 downto 0) := (others => '0');
 
-    signal state        : state_t := IDLE;
+    signal state        : state_t := SYNCING;
 
     signal data_frame_cnt   : integer range 0 to g_FRAME_COUNT_MAX-1 := 0;
 
@@ -111,8 +111,8 @@ begin
                 else                   error_o <= '0';
                 end if;
             else
-                if  (idle_rx = '1' or char_is_ttc='1')   then error_o <= '0';
-                else                                          error_o <= '1';
+                if  (idle_rx = '1' or char_is_ttc='1' ) then error_o <= '0';
+                else                                         error_o <= '1';
                 end if;
             end if;
 
@@ -183,7 +183,7 @@ begin
         if (rising_edge(clock)) then
 
             if (reset = '1') then
-                state <= IDLE;
+                state <= SYNCING;
                 data_frame_cnt <= 0;
             elsif (not_in_table='1') then
                 state <= ERR;
@@ -194,23 +194,39 @@ begin
                     when ERR =>
 
                         if (not_in_table='0') then
-                            state <= IDLE;
+                            state <= SYNCING;
                             data_frame_cnt <= 0;
                         end if;
 
+                    when SYNCING =>
+
+                        if (ready='1') then
+                            state <= IDLE;
+                        end if;
+                        data_frame_cnt <= 0;
+
                     when IDLE =>
 
-                        if (char_is_data='1') then
-                            state <= START;
+                        if (char_is_header='1') then
+                            state <= HEADER;
+                        end if;
+                        data_frame_cnt <= 0;
+
+                    when HEADER =>
+
+                        if    (char_is_ttc='1')  then state <= HEADER;
+                        elsif (char_is_data='1') then state <= START;
+                        else                          state <= ERR;
                         end if;
                         data_frame_cnt <= 0;
 
                     when START =>
 
-                        if    (idle_rx='1')      then state <= IDLE;
-                        elsif (char_is_ttc='1')  then state <= START;
+                        if    (char_is_ttc='1')  then state <= START;
                         elsif (char_is_data='1') then state <= DATA;
+                        else                          state <= ERR;
                         end if;
+                        data_frame_cnt <= 0;
 
                     when DATA =>
 
@@ -220,17 +236,16 @@ begin
 
                         elsif (data_frame_cnt = g_FRAME_COUNT_MAX-1) then
 
-                            -- process consecutive frames
-                            if    (char_is_data='1') then state <= START;
+                            data_frame_cnt <= 0;
 
-                            -- or go back to idle
-                            elsif (idle_rx='1')      then state <= IDLE;
-
+                            if    (char_is_data='1') then state <= START; -- process consecutive frames
+                            elsif (idle_rx='1')      then state <= IDLE; -- or go back to idle
                             end if;
 
                         else
-                            if (idle_rx='1') then
-                                state <= IDLE;
+                            if (char_is_data='0') then
+                                state <= ERR;
+                                data_frame_cnt <= 0;
                             else
                                 data_frame_cnt <= data_frame_cnt + 1;
                             end if;
@@ -259,24 +274,25 @@ begin
 
             if (last_data_frame='1') then
                     req_en_o   <= req_valid; -- fifo_wr
-                    req_data_o <= req_data;  -- 49 bit stable output (1 bit WE, 16 bit adr, 32 bit data)
+                    req_data_o <= req_data_buf;  -- 49 bit stable output (1 bit WE, 16 bit adr, 32 bit data)
             else
                     req_en_o   <= '0';
-                    req_data_o <= (others => '0');  -- 49 bit stable output (1 bit WE, 16 bit adr, 32 bit data)
             end if;
 
             if (reset = '1' or ready='0') then
                 req_valid  <= '0';
             else
                 case state is
-                    when IDLE   => req_valid               <= '0';
-                    when START  => req_valid               <= frame_data_delay(5);              -- request valid
-                                   req_data(WB_REQ_BITS-1) <= frame_data_delay(4);              -- write enable
-                                -- reserved                <= frame_data_delay(3 downto 0);
-                    when DATA   => req_data (
-                                    (g_FRAME_COUNT_MAX - data_frame_cnt) * g_FRAME_WIDTH - 1 downto
-                                    (g_FRAME_COUNT_MAX-1-data_frame_cnt) * g_FRAME_WIDTH) <= frame_data_delay;
-                    when others => req_valid <= '0';
+                    when SYNCING => req_valid                   <= '0';
+                    when IDLE    => req_valid                   <= '0';
+                    when HEADER  => req_valid                   <= '0';
+                    when START   => req_valid                   <= frame_data(5);              -- request valid
+                                    req_data_buf(WB_REQ_BITS-1) <= frame_data(4);              -- write enable
+                                 -- reserved                    <= frame_data(3 downto 0);
+                    when DATA    => req_data_buf (
+                                     (g_FRAME_COUNT_MAX - data_frame_cnt) * g_FRAME_WIDTH - 1 downto
+                                     (g_FRAME_COUNT_MAX-1-data_frame_cnt) * g_FRAME_WIDTH) <= frame_data;
+                    when others  => req_valid <= '0';
 
                 end case;
             end if;

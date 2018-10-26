@@ -43,7 +43,7 @@ end gbt_tx;
 
 architecture Behavioral of gbt_tx is
 
-    type state_t is (IDLE, DATA);
+    type state_t is (IDLE, HEADER, DATA);
 
     signal state : state_t := IDLE;
 
@@ -53,7 +53,8 @@ architecture Behavioral of gbt_tx is
     signal frame     : std_logic_vector (g_FRAME_COUNT_MAX-1 downto 0);
     signal reg_data  : std_logic_vector (g_FRAME_COUNT_MAX*g_FRAME_WIDTH-1 downto 0); -- multiples of 6
 
-    signal send_idle : std_logic;
+    signal send_idle   : std_logic;
+    signal send_header : std_logic;
 
     signal reset : std_logic;
 
@@ -83,8 +84,12 @@ begin
                         data_frame_cnt <= 0;
 
                         if (req_valid_i='1') then
-                            state <= DATA;
+                            state <= HEADER;
                         end if;
+
+                    when HEADER =>
+
+                            state <= DATA;
 
                     when DATA =>
 
@@ -118,17 +123,24 @@ begin
             else
                 case state is
                     when IDLE =>
-                        send_idle <= '1';
-                        req_en_o  <= '1';
-                        req_valid <= req_valid_i;
+                        send_idle   <= '1';
+                        send_header <= '0';
+                        req_en_o    <= '1';
+                        req_valid   <= req_valid_i;
+                    when HEADER =>
+                        send_idle   <= '0';
+                        send_header <= '1';
+                        req_en_o    <= '0';
+                        req_valid   <= req_valid_i;
                     when DATA      =>
-                        send_idle <= '0';
-                        req_en_o  <= '0';
+                        send_header <= '0';
+                        send_idle   <= '0';
+                        req_en_o    <= '0';
                         if (data_frame_cnt=(g_FRAME_COUNT_MAX-1)) then
                             req_valid <= req_valid_i;
                         end if;
 
-                    when others =>    send_idle <= '1'; req_en_o  <= '0'; req_valid <= '0';
+                    when others =>    send_idle <= '1'; req_en_o  <= '0'; req_valid <= '0'; send_header <='0';
 
                 end case;
             end if;
@@ -145,6 +157,7 @@ begin
             else
                 case state is
                     when IDLE      => frame <= "00" & x"0";
+                    when HEADER    => frame <= "00" & x"0";
                     when DATA      => frame <= reg_data((g_FRAME_COUNT_MAX - data_frame_cnt) * g_FRAME_WIDTH - 1 downto (g_FRAME_COUNT_MAX-1-data_frame_cnt) * g_FRAME_WIDTH);
                     when others    => frame <= (others => '0');
                 end case;
@@ -158,9 +171,12 @@ begin
         clock        => clock,
         eightbit     => data_o,
         sixbit       => frame,
+        --ttc
         l1a          => '0',
         bc0          => '0',
         resync       => '0',
+        --frame control
+        header       => send_header,
         idle         => send_idle
     );
 
