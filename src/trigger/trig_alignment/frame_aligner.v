@@ -56,7 +56,7 @@ module frame_aligner (
 
   reg [FRAME_SIZE-1:0] start_of_frame_reg;
   always @(posedge clock) begin
-    start_of_frame_reg <= start_of_frame_reg;
+    start_of_frame_reg <= start_of_frame;
   end
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -65,6 +65,8 @@ module frame_aligner (
 
   reg [2:0] bitslip_cnt;
   wire [7:0] start_of_frame_slipped;
+
+  (* KEEP = "TRUE" *) wire sot_mon;
 
   genvar I;
   generate
@@ -88,6 +90,8 @@ module frame_aligner (
     .din          (start_of_frame_reg),
     .dout         (start_of_frame_slipped)
   );
+
+  assign sot_mon = start_of_frame_slipped[0];
 
   //--------------------------------------------------------------------------------------------------------------------
   // Bitslip Control
