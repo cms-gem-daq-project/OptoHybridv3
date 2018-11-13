@@ -43,7 +43,8 @@ always @(posedge clock_i) begin
 end
 
 
-  reg [5:0] reset_hold = -1;
+  parameter MXHOLDB = 6;
+  reg [MXHOLDB-1:0] reset_hold = -1;
 
   initial reset_o <= 1'b1;
 
@@ -53,7 +54,7 @@ end
 
   always @ (posedge clock_i)
     if (reset_start)
-      reset_hold <= -1;
+      reset_hold <= {MXHOLDB{1'b1}};
     else if (reset_hold != 0)
       reset_hold <= reset_hold - 1'b1;
 
