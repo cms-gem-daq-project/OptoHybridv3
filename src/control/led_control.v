@@ -46,7 +46,7 @@ module led_control (
 
     led_out <= led;
 
-    if (mmcm_locked)
+    if (!mmcm_locked)
       led <= led_err;
 
     else if (!gbt_rxready || !gbt_rxvalid) begin
@@ -93,8 +93,8 @@ module led_control (
   // count to 27 bits
 
   reg [26:0] fader_cnt=0;
+  reg [4:0] pwm_cnt=0;
   reg fader_rising=0;
-  reg [4:0] pwm_cnt;
 
   wire [3:0] pwm_brightness = fader_cnt[26] ? fader_cnt[25:22] : ~fader_cnt[25:22];
 
