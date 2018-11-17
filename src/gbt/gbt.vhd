@@ -78,8 +78,6 @@ architecture Behavioral of gbt is
     signal gbt_tx_data        : std_logic_vector(7 downto 0) := (others => '0');
     signal gbt_rx_data        : std_logic_vector(7 downto 0) := (others => '0');
 
-    signal test_pattern       : std_logic_vector (63 downto 0);
-
     signal gbt_link_error     : std_logic;
     signal gbt_link_unstable  : std_logic;
     signal gbt_link_ready     : std_logic;

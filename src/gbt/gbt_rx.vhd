@@ -50,7 +50,7 @@ port(
 
     -- 49 bit output packet to fifo
     req_en_o        : out std_logic;
-    req_data_o      : out std_logic_vector(WB_REQ_BITS-1 downto 0);
+    req_data_o      : out std_logic_vector(WB_REQ_BITS-1 downto 0) := (others => '0');
 
     -- status
     ready_o         : out std_logic;

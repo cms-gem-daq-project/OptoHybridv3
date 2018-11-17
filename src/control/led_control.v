@@ -32,7 +32,6 @@ module led_control (
 // LED Source
 //----------------------------------------------------------------------------------------------------------------------
 
-
   wire cylon_mode;
 
   wire [15:0] led_cylon;
@@ -40,23 +39,20 @@ module led_control (
   wire [15:0] led_err;
   wire fader_led;
 
-  reg [15:0] led;
-
   always @(*) begin
 
-    led_out <= led;
+    if (!gbt_rxready || !gbt_rxvalid)
+      led_out <= {led_logic[15:8],{8{fader_led}}};
 
-    if (!mmcm_locked)
-      led <= led_err;
+    else if (!mmcm_locked)
+      led_out <= {led_logic[15:8], led_err[7:0]};
 
-    else if (!gbt_rxready || !gbt_rxvalid) begin
-      led <= {16{fader_led}}; // no clock
-    end
+    else if (cylon_mode)
+      led_out <= led_cylon;
 
-    else begin
-       if (cylon_mode) led <= led_cylon;
-       else led <= led_logic;
-    end
+    else
+      led_out <= led_logic;
+
   end
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -89,21 +85,8 @@ module led_control (
       eclk_led <= ~ eclk_led;
   end
 
-
-  // count to 27 bits
-
-  reg [26:0] fader_cnt=0;
-  reg [4:0] pwm_cnt=0;
-  reg fader_rising=0;
-
-  wire [3:0] pwm_brightness = fader_cnt[26] ? fader_cnt[25:22] : ~fader_cnt[25:22];
-
-  always @(posedge async_clock) begin
-    fader_cnt <= fader_cnt + 1'b1;
-    pwm_cnt <= pwm_cnt[3:0] + pwm_brightness + 4'd8;
-  end
-
-  assign fader_led = pwm_cnt[4];
+  // count to 27 bits , ~3.5 second period
+  fader #(.MXFADERCNT(27), .MXFADERBITS(5)) fader (.clock (async_clock), .led(fader_led));
 
 //----------------------------------------------------------------------------------------------------------------------
 // Rate Display

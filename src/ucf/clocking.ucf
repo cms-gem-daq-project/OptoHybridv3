@@ -3,26 +3,26 @@
 #######################################################################################################################
 
 NET "logic_clock_p" TNM_NET = "TN_LOGIC_CLOCK";
-TIMESPEC TS_logic_clock = PERIOD "TN_LOGIC_CLOCK" 25 ns HIGH 50%;
+TIMESPEC TS_logic_clock = PERIOD "TN_LOGIC_CLOCK" 25 ns HIGH 50 %;
 
 NET "elink_clock_p" TNM_NET = "TN_ELINK_CLOCK";
-TIMESPEC TS_elink_clock = PERIOD "TN_ELINK_CLOCK" 25 ns HIGH 50%;
+TIMESPEC TS_elink_clock = PERIOD "TN_ELINK_CLOCK" 25 ns HIGH 50 %;
 
 #######################################################################################################################
 # CFGMCLK
 #######################################################################################################################
 
 NET "control/led_control/async_clock" TNM_NET = "cfgmclk";
-TIMESPEC "TS_cfgmclk" = PERIOD "cfgmclk" 12.5 ns HIGH 50 %;
+TIMESPEC TS_cfgmclk = PERIOD "cfgmclk" 12.5 ns HIGH 50 %;
 
-TIMESPEC TS_clk_cfg_to_clk_logic = FROM "cfgmclk"    TO "clk_1x_grp"    5 ns;
+TIMESPEC TS_clk_cfg_to_clk_logic = FROM "cfgmclk" TO "clk_1x_grp" 15 ns;
 
 #######################################################################################################################
 # Sync
 #######################################################################################################################
 
-NET "gbt_clk40"  TNM_NET = "gbt_clk40_grp";
-NET "clk_1x"     TNM_NET = "clk_1x_grp";
+NET "gbt_clk40" TNM_NET = "gbt_clk40_grp";
+NET "clk_1x" TNM_NET = "clk_1x_grp";
 
 #TIMESPEC TS_clk_gbt_to_clk_logic = FROM "gbt_clk40_grp" TO "clk_1x_grp"    2.5ns;
 #TIMESPEC TS_clk_logic_to_clk_gbt = FROM "clk_1x_grp"    TO "gbt_clk40_grp" 2.5ns;
@@ -31,25 +31,48 @@ NET "clk_1x"     TNM_NET = "clk_1x_grp";
 # GBT Deskew (Phase Shiftable) Clocks
 ########################################################################################################################
 
-NET "logic_clock_p"  LOC = AP20 | IOSTANDARD = LVDS_25 | DIFF_TERM = FALSE;
-NET "logic_clock_n"  LOC = AP21 | IOSTANDARD = LVDS_25 | DIFF_TERM = FALSE;
+NET "logic_clock_p" IOSTANDARD = LVDS_25;
+NET "logic_clock_p" DIFF_TERM = "FALSE";
+NET "logic_clock_n" IOSTANDARD = LVDS_25;
+NET "logic_clock_n" DIFF_TERM = "FALSE";
 
-NET "elink_clock_p"  LOC = A10 | IOSTANDARD = LVDS_25 | DIFF_TERM = FALSE;
-NET "elink_clock_n"  LOC = B10 | IOSTANDARD = LVDS_25 | DIFF_TERM = FALSE;
+NET "elink_clock_p" IOSTANDARD = LVDS_25;
+NET "elink_clock_p" DIFF_TERM = "FALSE";
+NET "elink_clock_n" IOSTANDARD = LVDS_25;
+NET "elink_clock_n" DIFF_TERM = "FALSE";
+
+### GBTx data clock -- these are 320MHz data clock (terminated outside), the phase is aligned such that rising edge is in the middle of the data bit
+## gbt dclk28 = fdck28_from_gbt = v_diff_k_10 = AC13, AC12
+NET "logic_clock_p"   LOC = AC13;
+NET "logic_clock_n"   LOC = AC12;
+#
+## gbt dclk36 = fdck36_from_gbt = GC_J = J9/H9
+NET "elink_clock_p"   LOC = J9;
+NET "elink_clock_n"   LOC = H9;
+
+########################################################################################################################
+#
+########################################################################################################################
 
 # Output
-INST "elink_o_p"                     TNM = elink_o_grp;
-INST "elink_o_n"                     TNM = elink_o_grp;
-INST "gbt/gbt_serdes*/to_gbt_ser*/*" TNM = elink_o_serdes_grp;
+INST "elink_o_p" TNM = "elink_o_grp";
+INST "elink_o_n" TNM = "elink_o_grp";
+INST "gbt/gbt_serdes*/to_gbt_ser*/*" TNM = "elink_o_serdes_grp";
 
-TIMESPEC TS_ELINK_O_TIG = FROM elink_o_serdes_grp TO elink_o_grp TIG;
+TIMESPEC TS_ELINK_O_TIG = FROM "elink_o_serdes_grp" TO "elink_o_grp" TIG ;
 # Input
-INST "elink_i_p"                                       TNM = elink_i_grp;
-INST "elink_i_n"                                       TNM = elink_i_grp;
-INST "gbt/gbt_serdes*/*oversample/ise1*/*"             TNM = elink_i_serdes_grp;
-INST "gbt/gbt_serdes*/*oversample/dru/*data_in_delay*" TNM = gbt_ff_grp;
+INST "elink_i_p" TNM = "elink_i_grp";
+INST "elink_i_n" TNM = "elink_i_grp";
+INST "gbt/gbt_serdes*/*oversample/ise1*/*" TNM = "elink_i_serdes_grp";
+INST "gbt/gbt_serdes*/*oversample/dru/*data_in_delay*" TNM = "gbt_ff_grp";
 
-TIMESPEC TS_GBT_TIG   = FROM elink_i_serdes_grp TO gbt_ff_grp TIG;
-TIMESPEC TS_GBT_IOTIG = FROM elink_i_grp        TO elink_i_serdes_grp TIG;
+TIMESPEC TS_GBT_TIG = FROM "elink_i_serdes_grp" TO "gbt_ff_grp" TIG ;
+TIMESPEC TS_GBT_IOTIG = FROM "elink_i_grp" TO "elink_i_serdes_grp" TIG ;
 
-NET "gbt/*gbt_serdes*/*oversample*/q<*>" MAXDELAY = 2.000 ns;
+NET "gbt/gbt_serdes/gbt_oversample/q[6]" MAXDELAY = 2 ns;
+NET "gbt/gbt_serdes/gbt_oversample/q[7]" MAXDELAY = 2 ns;
+
+INST "*s_resync*"                              TNM = "resync_grp";
+INST "gbt/gbt_serdes/synchronizer_*/s_resync*" TNM = "resync_grp";
+
+TIMESPEC TS_SYNC = FROM "FFS" TO "resync_grp" 10 ns DATAPATHONLY;

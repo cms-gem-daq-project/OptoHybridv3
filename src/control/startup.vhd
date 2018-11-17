@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------------
--- cms muon endcap
--- gem collaboration
--- optohybrid v3 firmware -- startup clock; generic wrapper around v6 and a7
+-- CMS Muon Endcap
+-- GEM Collaboration
+-- Optohybrid v3 Firmware -- startup clock; generic wrapper around v6 and a7
 -- a. peck
 ----------------------------------------------------------------------------------
 -- 2018/10/15 -- initial
@@ -20,10 +20,13 @@ entity startup is
 port(
     clock_o : out std_logic
 );
+
+attribute clock_signal            : string;
+attribute clock_signal of clock_o : signal is "yes";
+
 end startup;
 
-architecture behavioral of startup is
-begin
+architecture behavioral of startup is begin
 
     startup_gen : if (FPGA_TYPE="VIRTEX6") generate
 
@@ -44,12 +47,12 @@ begin
                      CLK       => '0',    -- 1-bit input: user start-up clock input
                      GSR       => '0',    -- 1-bit input: global set/reset input (gsr cannot be used for the port name)
                      GTS       => '0',    -- 1-bit input: global 3-state input   (gts cannot be used for the port name)
-                     KEYCLEARB => '1',    -- 1-bit input: clear aes decrypter key input from battery-backed ram (bbram)
+                     KEYCLEARB => '0',    -- 1-bit input: clear aes decrypter key input from battery-backed ram (bbram)
                      PACK      => '0',    -- 1-bit input: program acknowledge input
                      USRCCLKO  => '0',    -- 1-bit input: user cclk input
                      USRCCLKTS => '0',    -- 1-bit input: user cclk 3-state enable input
                      USRDONEO  => '1',    -- 1-bit input: user done pin output control
-                     USRDONETS => '0'     -- 1-bit input: user done 3-state enable output
+                     USRDONETS => '1'     -- 1-bit input: user done 3-state enable output
                  );
 
 
@@ -76,9 +79,8 @@ begin
                      USRCCLKO  => '0',    -- 1-bit input: user cclk input for zynq-7000 devices, this input must be tied to gnd
                      USRCCLKTS => '0',    -- 1-bit input: user cclk 3-state enable input for zynq-7000 devices, this input must be tied to vcc
                      USRDONEO  => '1',    -- 1-bit input: user done pin output control
-                     USRDONETS => '0'     -- 1-bit input: user done 3-state enable output
-                 );
-
+                     USRDONETS => '1'     -- 1-bit input: user done 3-state enable output
+					   );
 
     end generate startup_gen_a7;
 

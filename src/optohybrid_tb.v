@@ -1,3 +1,4 @@
+`timescale 1ns/1ps
 module sr64 (
   input CLK,
   input CE,
@@ -8,7 +9,7 @@ module sr64 (
 
 parameter SELWIDTH = 6;
 localparam DATAWIDTH = 2**SELWIDTH;
-reg [DATAWIDTH-1:0] data;
+reg [DATAWIDTH-1:0] data={DATAWIDTH{1'b0}};
 assign DO = data[SEL];
 always @(posedge CLK)
 begin
@@ -25,9 +26,7 @@ module optohybrid_top_tb;
 
 `include "sbit_cluster_packer/source/constants.v"
 
-`define oh_lite
 
-`timescale 1ns/1ps
 `ifdef oh_lite
   parameter elink_o_polswap = 0;
   parameter MXREADY = 2;
@@ -85,7 +84,7 @@ parameter DDR = 0;
   reg clk1280   = 0; // 1280 MHz for stimulus at DDR
   reg clk12G8   = 0; // 12.8 GHz for IOdelay generation
 
-  always @* begin
+  always @(*) begin
     clk12G8   <= #  0.039 ~clk12G8; // 78 ps clock (12.8GHz) to simulate TAP delay
     clk1280   <= #  0.390 ~clk1280;
     clk640    <= #  0.780 ~clk640;

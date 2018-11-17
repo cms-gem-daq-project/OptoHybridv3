@@ -1,7 +1,7 @@
 ##############################################################
 #
 # Xilinx Core Generator version 14.7
-# Date: Mon Oct 15 22:33:49 2018
+# Date: Sat Oct 27 00:58:00 2018
 #
 ##############################################################
 #
@@ -64,7 +64,7 @@ CSET clkfb_out_n_port=CLKFB_OUT_N
 CSET clkfb_out_p_port=CLKFB_OUT_P
 CSET clkfb_out_port=CLKFB_OUT
 CSET clkfb_stopped_port=CLKFB_STOPPED
-CSET clkin1_jitter_ps=50.0
+CSET clkin1_jitter_ps=49.9
 CSET clkin1_ui_jitter=0.002
 CSET clkin2_jitter_ps=100.0
 CSET clkin2_ui_jitter=0.010
@@ -151,7 +151,7 @@ CSET mmcm_bandwidth=OPTIMIZED
 CSET mmcm_clkfbout_mult_f=20.000
 CSET mmcm_clkfbout_phase=0.000
 CSET mmcm_clkfbout_use_fine_ps=false
-CSET mmcm_clkin1_period=25.000
+CSET mmcm_clkin1_period=24.950
 CSET mmcm_clkin2_period=10.0
 CSET mmcm_clkout0_divide_f=20.000
 CSET mmcm_clkout0_duty_cycle=0.500
@@ -223,7 +223,7 @@ CSET pll_divclk_divide=1
 CSET pll_notes=None
 CSET pll_ref_jitter=0.010
 CSET power_down_port=POWER_DOWN
-CSET prim_in_freq=40.000
+CSET prim_in_freq=40.08
 CSET prim_in_jitter=0.002
 CSET prim_source=Differential_clock_capable_pin
 CSET primary_port=clk_in1
@@ -266,4 +266,4 @@ CSET use_status=false
 MISC pkg_timestamp=2012-05-10T12:44:55Z
 # END Extra information
 GENERATE
-# CRC: 266042fc
+# CRC: bfaa9d3e

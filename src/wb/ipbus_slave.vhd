@@ -260,6 +260,7 @@ begin
                     if (writable_regs_i(i) = '1') then
                         regs_write_arr_o(i) <= regs_defaults_arr_i(i);
                     end if;
+                    write_pulse_arr_o(i) <= '0';
                 end loop;
 
                 regs_write_pulse_done <= '0';

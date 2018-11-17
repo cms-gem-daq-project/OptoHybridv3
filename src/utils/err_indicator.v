@@ -22,17 +22,6 @@
   input               err;
   output  reg [15:0]  q;
 
-// Initialization
-  wire [3:0] pdly  = 0;
-  reg        ready = 0;
-  wire       idly;
-
-  SRL16E uinit (.CLK(clock),.CE(!idly),.D(1'b1),.A0(pdly[0]),.A1(pdly[1]),.A2(pdly[2]),.A3(pdly[3]),.Q(idly));
-
-  always @(posedge clock) begin
-  ready <= idly;
-  end
-
 // Scale clock down below visual fusion
   `ifndef DEBUG_ERR_INDICATOR
   parameter MXPRE = 24;  `else
@@ -43,14 +32,13 @@
   wire [MXPRE-1:0] full_scale = {MXPRE{1'b1}};
 
   always @(posedge clock) begin
-  if (ready)
-  prescaler <= prescaler + rate + 1'b1;
+    prescaler <= prescaler + rate + 1'b1;
   end
 
   wire next_adr = (prescaler==full_scale);
 
 // ROM address pointer runs 0 to 13
-  reg  [4:0] adr = 0;
+  reg [4:0] adr = 'd1;
 
   wire last_adr = (adr==1);
 

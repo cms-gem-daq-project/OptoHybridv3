@@ -1,52 +1,48 @@
 ########################################################################################################################
 # GBT Status
 ########################################################################################################################
-NET "gbt_txready_i<0>" LOC = AF13 ; # v_diff_k_13_p
-NET "gbt_rxvalid_i<0>" LOC = AJ9  ; # R_side_2_n
-NET "gbt_rxready_i<0>" LOC = AH9  ; # R_side_2_p
-NET "gbt_txready_i<0>" TNM = gbt_status_grp;
-NET "gbt_rxvalid_i<0>" TNM = gbt_status_grp;
-NET "gbt_rxready_i<0>" TNM = gbt_status_grp;
+# v_diff_k_13_p
+# R_side_2_n
+# R_side_2_p
+NET "gbt_txready_i[0]" TNM = "gbt_status_grp";
+NET "gbt_rxvalid_i[0]" TNM = "gbt_status_grp";
+NET "gbt_rxready_i[0]" TNM = "gbt_status_grp";
 
-TIMEGRP "gbt_status_grp" OFFSET = IN 12.5 ns VALID 25.0 ns BEFORE "logic_clock_p" RISING;
+TIMEGRP "gbt_status_grp" OFFSET = IN 12.5 ns VALID 25 ns BEFORE "logic_clock_p" RISING;
 
 ########################################################################################################################
 # E-links
 ########################################################################################################################
 # outputs
-NET "elink_o_p" LOC = L19;
-NET "elink_o_n" LOC = L18;
 
 # inputs
 # 320 MHz e-link
-NET "elink_i_p" LOC = AD24 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE; # GBTx DIN 36
-NET "elink_i_n" LOC = AE24 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE; #
-
-########################################################################################################################
-# GBT E-Port Clocks
-########################################################################################################################
-
-### GBTx data clock -- these are 320MHz data clock (terminated outside), the phase is aligned such that rising edge is in the middle of the data bit
-## gbt dclk28 = fdck28_from_gbt = v_diff_k_10 = AC13, AC12
-#NET "gbt_eclk_p<0>"   LOC = AC13 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE;
-#NET "gbt_eclk_n<0>"   LOC = AC12 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE;
+# GBTx DIN 36
+NET "elink_i_p" IOSTANDARD = LVDS_25;
+NET "elink_i_p" DIFF_TERM = "FALSE";
 #
-## gbt dclk36 = fdck36_from_gbt = GC_J = J9/H9
-#NET "gbt_eclk_p<1>"   LOC = J9 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE;
-#NET "gbt_eclk_n<1>"   LOC = H9 |IOSTANDARD = LVDS_25 |DIFF_TERM = FALSE;
+NET "elink_i_n" IOSTANDARD = LVDS_25;
+NET "elink_i_n" DIFF_TERM = "FALSE";
+
+NET "elink_o_p" LOC = L19;
+NET "elink_o_n" LOC = L18;
+
+NET "elink_i_p" LOC = AD24;
+NET "elink_i_n" LOC = AE24;
+
 
 
 #NET "gbt/gbt_serdes/gbt_rx_data_sync/*/xst_fifo_generator/gconvfifo.rf/grf.rf/*/wr_pntr_gc_*" TIG;
 #NET "gbt/gbt_serdes/gbt_rx_data_sync/*/xst_fifo_generator/gconvfifo.rf/grf.rf/*/rd_pntr_gc_*" TIG;
 
-NET "gbt/gbt_serdes/gbt_rx_data_sync/*/xst_fifo_generator/gconvfifo.rf/grf.rf/*/wr_pntr_gc_*" TNM_NET = WR_PNTR;
-NET "gbt/gbt_serdes/gbt_rx_data_sync/*/xst_fifo_generator/gconvfifo.rf/grf.rf/*/rd_pntr_gc_*" TNM_NET = RD_PNTR;
+NET "gbt/gbt_serdes/gbt_rx_data_sync/*/xst_fifo_generator/gconvfifo.rf/grf.rf/*/wr_pntr_gc_*" TNM_NET = "WR_PNTR";
+NET "gbt/gbt_serdes/gbt_rx_data_sync/*/xst_fifo_generator/gconvfifo.rf/grf.rf/*/rd_pntr_gc_*" TNM_NET = "RD_PNTR";
 
 # Datapathonly indicates that timing should not take into account clock skew or phase information
 
-TIMESPEC TS_wr_pntr = FROM WR_PNTR TO "FFS" 10ns DATAPATHONLY;
-TIMESPEC TS_rd_pntr = FROM "FFS" TO RD_PNTR 10ns DATAPATHONLY;
+TIMESPEC TS_wr_pntr = FROM "WR_PNTR" TO  FFS 10 ns DATAPATHONLY;
+TIMESPEC TS_rd_pntr = FROM  FFS TO "RD_PNTR" 10 ns DATAPATHONLY;
 
-TIMESPEC TS_wr_pntr_tig = FROM WR_PNTR TO "FFS" TIG;
-TIMESPEC TS_rd_pntr_tig = FROM "FFS" TO RD_PNTR TIG;
+TIMESPEC TS_wr_pntr_tig = FROM "WR_PNTR" TO  FFS TIG ;
+TIMESPEC TS_rd_pntr_tig = FROM  FFS TO "RD_PNTR" TIG ;
 

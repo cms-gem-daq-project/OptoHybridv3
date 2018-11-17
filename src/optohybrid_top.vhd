@@ -186,11 +186,12 @@ begin
     begin
     if (rising_edge(clock)) then
             led_o (MXLED-1 downto 0) <= led (MXLED-1 downto 0);
-            gbt_rxready   <= gbt_rxready_i;
-            gbt_rxvalid   <= gbt_rxvalid_i;
-            gbt_txready   <= gbt_txready_i;
     end if;
     end process;
+
+    gbt_rxready   <= gbt_rxready_i;
+    gbt_rxvalid   <= gbt_rxvalid_i;
+    gbt_txready   <= gbt_txready_i;
 
     -- START: Station Specific IO DO NOT EDIT --
     --===========--

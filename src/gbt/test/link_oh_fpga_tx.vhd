@@ -144,17 +144,6 @@ begin
 
     --== Data transmission ==--
 
-    process(ttc_clk_40_i)
-    begin
-        if (rising_edge(ttc_clk_40_i)) then
-            if (state=IDLE) then
-                    send_idle <= '1';
-            else
-                    send_idle <= '0';
-            end if;
-        end if;
-    end process;
-
     send_header <= '1' when state=HEADER else '0';
     send_idle   <= '1' when state=IDLE   else '0';
 
