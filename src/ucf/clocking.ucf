@@ -42,13 +42,11 @@ NET "elink_clock_n" IOSTANDARD = LVDS_25;
 NET "elink_clock_n" DIFF_TERM = "FALSE";
 
 ### GBTx data clock -- these are 320MHz data clock (terminated outside), the phase is aligned such that rising edge is in the middle of the data bit
-## gbt dclk28 = fdck28_from_gbt = v_diff_k_10 = AC13, AC12
-NET "logic_clock_p"   LOC = AC13;
-NET "logic_clock_n"   LOC = AC12;
+NET "logic_clock_p"   LOC = AP20;
+NET "logic_clock_n"   LOC = AP21;
 #
-## gbt dclk36 = fdck36_from_gbt = GC_J = J9/H9
-NET "elink_clock_p"   LOC = J9;
-NET "elink_clock_n"   LOC = H9;
+NET "elink_clock_p"   LOC = A10;
+NET "elink_clock_n"   LOC = B10;
 
 ########################################################################################################################
 #

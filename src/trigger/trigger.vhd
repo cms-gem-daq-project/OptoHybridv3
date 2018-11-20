@@ -31,8 +31,8 @@ port(
     ipb_miso_o        : out ipb_rbus;
 
     -- links
-    mgt_clk_p         : in std_logic_vector (1 downto 0); -- 160 MHz Reference Clock
-    mgt_clk_n         : in std_logic_vector (1 downto 0); -- 160 MHz Reference Clock
+    mgt_clk_p         : in std_logic; -- 160 MHz Reference Clock
+    mgt_clk_n         : in std_logic; -- 160 MHz Reference Clock
 
     clk_40            : in std_logic;
     clk_80            : in std_logic;

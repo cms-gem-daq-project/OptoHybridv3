@@ -64,9 +64,9 @@ architecture link_oh_fpga_tx_arch of link_oh_fpga_tx is
 
 begin
 
+   busy_o <= '0' when state = IDLE else '1';
    reg_data  <= request_addr_i & request_data_i;
    ttc_cmd_rx <=  '1' when (l1a_i ='1' or resync_i ='1'  or bc0_i ='1') else '0';
-   busy_o <= '0' when state = IDLE else '1';
 
     -- need to delay ttc signals to encoder so that state machine has time to "pause" while
     -- ttc signals are being sent
@@ -74,8 +74,8 @@ begin
     process(ttc_clk_40_i)
     begin
         if (rising_edge(ttc_clk_40_i)) then
-            l1a <= l1a_i;
-            bc0 <= bc0_i;
+            l1a    <= l1a_i;
+            bc0    <= bc0_i;
             resync <= resync_i;
    end if;
    end process;

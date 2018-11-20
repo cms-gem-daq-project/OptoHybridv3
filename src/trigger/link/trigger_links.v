@@ -5,8 +5,8 @@ parameter ILINKS = 4
 
 ) (
 
-  input [1:0] mgt_clk_p, // 160 MHz Reference Clock direct from IO
-  input [1:0] mgt_clk_n, // 160 MHz Reference Clock direct from IO
+  input mgt_clk_p, // 160 MHz Reference Clock direct from IO
+  input mgt_clk_n, // 160 MHz Reference Clock direct from IO
 
   input clk_40,  // 40  MHz from logic MMCM
   input clk_80,  // 80  MHz from logic MMCM
@@ -53,7 +53,7 @@ always @(posedge clk_40) begin
   reset <= !(&reset_cnt);
 end
 
-wire [1:0] mgt_refclk;
+wire mgt_refclk;
 
 generate
 
@@ -63,14 +63,12 @@ generate
   if (FPGA_TYPE_IS_VIRTEX6) begin
     IBUFDS_GTXE1 ibufds_mgt
     (
-        .I       (mgt_clk_p[0]),
-        .IB      (mgt_clk_n[0]),
-        .O       (mgt_refclk[0]),
+        .I       (mgt_clk_p),
+        .IB      (mgt_clk_n),
+        .O       (mgt_refclk),
         .ODIV2   (),
         .CEB     (1'b0)
     );
-
-    assign mgt_refclk[1]=1'b0;
 
   end
 
@@ -81,9 +79,9 @@ generate
   if (FPGA_TYPE_IS_ARTIX7) begin
     IBUFDS_GTE2  ibufds_mgtclk0
     (
-        .I       (mgt_clk_p [0]),
-        .IB      (mgt_clk_n [0]),
-        .O       (mgt_refclk[0]),
+        .I       (mgt_clk_p ),
+        .IB      (mgt_clk_n ),
+        .O       (mgt_refclk),
         .ODIV2   (),
         .CEB     (1'b0)
     );
@@ -98,7 +96,7 @@ generate
     wire cpll_outrefclk1;
 
     wire cpll_reset     = reset || gtp_pllreset_out || cpll_reset;
-    wire cpll_refclk_in = mgt_refclk[0];
+    wire cpll_refclk_in = mgt_refclk;
 
     // keep CPLL powered down for some number of clocks
     a7_trig_tx_buf_bypass_cpll_railing #( .USE_BUFG(0))
@@ -118,7 +116,7 @@ generate
       .PLL0RESET_IN       (cpll_reset),
       .PLL0REFCLKSEL_IN   (3'b001),
       .PLL0PD_IN          (cpll_powerdown),
-      .GTREFCLK0_IN       (mgt_refclk[0]),
+      .GTREFCLK0_IN       (mgt_refclk),
       .GTREFCLK1_IN       (1'b0),
       .PLL0OUTCLK_OUT     (cpll_outclk0),
       .PLL0OUTREFCLK_OUT  (cpll_outrefclk0),
@@ -127,8 +125,6 @@ generate
       .PLL1OUTCLK_OUT     (cpll_outclk1),
       .PLL1OUTREFCLK_OUT  (cpll_outrefclk1)
     );
-
-    assign mgt_refclk[1]=1'b0;
 
   end
 endgenerate
@@ -191,7 +187,7 @@ localparam IMODULES          = ILINKS / ILINKS_PER_MODULE;
 genvar igem;
 generate
 
-  wire [3:0] mgt_refclk_array = FPGA_TYPE_IS_VIRTEX6 ? {4{mgt_refclk[0]}} : 4'd0;
+  wire [3:0] mgt_refclk_array = FPGA_TYPE_IS_VIRTEX6 ? {4{mgt_refclk}} : 4'd0;
 
   for (igem=0; igem<IMODULES; igem=igem+1'b1) begin: gemgen
   gem_fiber_out  #(

@@ -258,6 +258,9 @@ begin
         clock         => clock_i,
         gbt_eclk      => gbt_clock_i,
 
+        elink_mmcm_locked => eprt_mmcm_locked_i,
+        logic_mmcm_locked => dskw_mmcm_locked_i,
+
         -- signals
         mmcm_locked          => mmcms_locked_i,
         gbt_rxready          => gbt_rxready_i,

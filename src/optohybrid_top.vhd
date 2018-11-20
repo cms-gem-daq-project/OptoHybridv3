@@ -66,8 +66,8 @@ port(
 
     --== GTX ==--
 
-    mgt_clk_p_i : in std_logic_vector(1 downto 0);
-    mgt_clk_n_i : in std_logic_vector(1 downto 0);
+    mgt_clk_p_i : in std_logic;
+    mgt_clk_n_i : in std_logic;
 
     mgt_tx_p_o : out std_logic_vector(3 downto 0);
     mgt_tx_n_o : out std_logic_vector(3 downto 0);

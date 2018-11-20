@@ -1,6 +1,10 @@
 module led_control (
   input clock,
+
   input mmcm_locked,
+  input elink_mmcm_locked,
+  input logic_mmcm_locked,
+
   input gbt_eclk,
 
   input ttc_l1a,
@@ -45,7 +49,10 @@ module led_control (
       led_out <= {led_logic[15:8],{8{fader_led}}};
 
     else if (!mmcm_locked)
-      led_out <= {led_logic[15:8], led_err[7:0]};
+      led_out <= {
+        led_logic[15:8],
+        (led_err[7:0] |  { {4{elink_mmcm_locked}},{4{logic_mmcm_locked}}})
+      };
 
     else if (cylon_mode)
       led_out <= led_cylon;
@@ -166,7 +173,7 @@ module led_control (
 
   assign led_logic [7:0]  = progress_bar;
 
-  assign led_logic [15]   = gbt_link_ready & eclk_led;
+  assign led_logic [15]   = eclk_led;
   assign led_logic [14]   = clk_led;
   assign led_logic [13]   = gbt_link_ready ? fader_led : 1'b0;
   assign led_logic [12]   = gbt_flash;
