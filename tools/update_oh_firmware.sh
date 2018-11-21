@@ -21,3 +21,8 @@ echo "Updating optohybrid top..." \
 && python ./update_oh_top.py \
 echo "Regenerating registers and documentation..." \
 && python generate_registers.py oh \
+&& python update_latex_version.py oh \
+echo "Regenerating pdf documentation..." \
+&& cd ../doc/latex/ \
+&& pdflatex address_table.tex \
+&& cd - \

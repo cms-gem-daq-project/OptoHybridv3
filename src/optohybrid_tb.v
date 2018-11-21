@@ -254,9 +254,9 @@ parameter DDR = 0;
   wire         wr_valid    = startup_done;
 
   wire  [15:0] address     = {5'h0, 11'h0}; // 32'h0; // write to loopback
-  reg   [31:0] data        = 32'h8765_4321;
+  reg   [31:0] data        = 32'h0000_0000;
 
-  parameter [11:0] bc0_cnt_max = 10'd512;
+  parameter [11:0] bc0_cnt_max = 10'd32;
   reg [11:0] bc0_cnt;
   reg bc0;
 
@@ -409,8 +409,8 @@ parameter DDR = 0;
       .gbt_rxvalid_i (gbt_rxvalid_i [MXREADY-1:0]),
       .gbt_rxready_i (gbt_rxready_i [MXREADY-1:0]),
 
-      .mgt_clk_p_i   ({2{mgt_clk_p_i}}),
-      .mgt_clk_n_i   ({2{mgt_clk_n_i}}),
+      .mgt_clk_p_i   (mgt_clk_p_i),
+      .mgt_clk_n_i   (mgt_clk_n_i),
 
       .vfat_sot_p    (vfat_sot_p [MXVFATS-1:0]),
       .vfat_sot_n    (vfat_sot_n [MXVFATS-1:0]),
