@@ -367,11 +367,13 @@
 
         <node id="CTRL" address="0x0" description = "Trig Control">
 
+            <!-- START: VFAT_MASK DO NOT EDIT -->
             <node id="VFAT_MASK" address="0x0" permission="rw"
                 description="24 bit mask of VFATs (1=off)"
-                mask="0xfff"
+                mask="0xffffff"
                 fw_signal="vfat_mask"
                 fw_default="0x0"/>
+            <!-- END: VFAT_MASK DO NOT EDIT -->
 
             <node id="SBIT_DEADTIME" address="0x1" permission="rw"
                 description="Set programmable oneshot deadtime which applies to retriggers on individual VFAT channels"
@@ -391,10 +393,12 @@
                 mask="0xf000"
                 fw_default="0x04"/>
 
+            <!-- START: ACTIVE_VFATS DO NOT EDIT -->
             <node id="ACTIVE_VFATS" address="0x2" permission="r"
                 description="24 bit list of VFATs with hits in this BX"
-                mask="0xfff"
+                mask="0xffffff"
                 fw_signal="active_vfats"/>
+            <!-- END: ACTIVE_VFATS DO NOT EDIT -->
 
             <node id="CNT_OVERFLOW" address="0x3" permission="r"
                 mask="0xffff"
@@ -404,15 +408,16 @@
                 fw_cnt_snap_signal="cnt_snap"
                 fw_signal="cnt_sbit_overflow"/>
 
+            <!-- START: SOT_READY_UNSTABLE DO NOT EDIT -->
             <node id="SBIT_SOT_READY" address="0x4" permission="r"
                 description="24 bit list of VFATs with stable Start-of-frame pulses (in sync for a number of clock cycles)"
-                mask="0xfff"
-                fw_signal="sot_is_aligned" />
-
+                mask="0xffffff"
+                fw_signal="sot_is_aligned"/>
             <node id="SBIT_SOT_UNSTABLE" address="0x5" permission="r"
                 description="24 bit list of VFATs with unstable Start-of-frame pulses (became misaligned after already achieving lock)"
-                mask="0xfff"
+                mask="0xffffff"
                 fw_signal="sot_unstable" />
+            <!-- END: SOT_READY_UNSTABLE DO NOT EDIT -->
 
             <node id="ERR_CNT_TO_SHIFT" address="0x6" permission="rw"
                 description="Number of link errors required in the ISERDES to vote for shifting to a new sample phase"
@@ -432,132 +437,133 @@
                 mask="0x0fff0000"
                 fw_default="0xfff"/>
 
+            <!-- START: INVERT_REGS DO NOT EDIT -->
             <node id="SOT_INVERT" address="0x7" permission="rw"
                 description="Set to 1 to invert the S-bit SoT Frame"
                 fw_signal="sot_invert"
-                mask="0x00fff"
-                fw_default="0xf99286"/>
-
+                mask="0x00ffffff"
+                fw_default="0x1F3250C"/>
             <node id="VFAT0_TU_INVERT" address="0x8" permission="rw"
                 description="8 bit mask; set a bit to 1 to invert the differential pair"
                 fw_signal="TU_INVERT (7 downto 0)"
-                mask="0x000000ff"
+                mask="0x000000FF"
                 fw_default="0x45"/>
             <node id="VFAT1_TU_INVERT" address="0x8" permission="rw"
                 description="8 bit mask; set a bit to 1 to invert the differential pair"
                 fw_signal="TU_INVERT (15 downto 8)"
-                mask="0x0000ff00"
+                mask="0x0000FF00"
                 fw_default="0x67"/>
             <node id="VFAT2_TU_INVERT" address="0x8" permission="rw"
                 description="8 bit mask; set a bit to 1 to invert the differential pair"
                 fw_signal="TU_INVERT (23 downto 16)"
-                mask="0x00ff0000"
+                mask="0x00FF0000"
                 fw_default="0x46"/>
             <node id="VFAT3_TU_INVERT" address="0x8" permission="rw"
                 description="8 bit mask; set a bit to 1 to invert the differential pair"
                 fw_signal="TU_INVERT (31 downto 24)"
-                mask="0xff000000"
-                fw_default="0xe7"/>
+                mask="0xFF000000"
+                fw_default="0xE7"/>
             <node id="VFAT4_TU_INVERT" address="0x9" permission="rw"
                 description="8 bit mask; set a bit to 1 to invert the differential pair"
                 fw_signal="TU_INVERT (39 downto 32)"
-                mask="0x000000ff"
-                fw_default="0x2d"/>
+                mask="0x000000FF"
+                fw_default="0x2D"/>
             <node id="VFAT5_TU_INVERT" address="0x9" permission="rw"
                 description="8 bit mask; set a bit to 1 to invert the differential pair"
                 fw_signal="TU_INVERT (47 downto 40)"
-                mask="0x0000ff00"
-                fw_default="0xbd"/>
+                mask="0x0000FF00"
+                fw_default="0xBD"/>
             <node id="VFAT6_TU_INVERT" address="0x9" permission="rw"
                 description="8 bit mask; set a bit to 1 to invert the differential pair"
                 fw_signal="TU_INVERT (55 downto 48)"
-                mask="0x00ff0000"
-                fw_default="0x8"/>
+                mask="0x00FF0000"
+                fw_default="0x08"/>
             <node id="VFAT7_TU_INVERT" address="0x9" permission="rw"
                 description="8 bit mask; set a bit to 1 to invert the differential pair"
                 fw_signal="TU_INVERT (63 downto 56)"
-                mask="0xff000000"
+                mask="0xFF000000"
                 fw_default="0x32"/>
             <node id="VFAT8_TU_INVERT" address="0xa" permission="rw"
                 description="8 bit mask; set a bit to 1 to invert the differential pair"
                 fw_signal="TU_INVERT (71 downto 64)"
-                mask="0x000000ff"
+                mask="0x000000FF"
                 fw_default="0x71"/>
             <node id="VFAT9_TU_INVERT" address="0xa" permission="rw"
                 description="8 bit mask; set a bit to 1 to invert the differential pair"
                 fw_signal="TU_INVERT (79 downto 72)"
-                mask="0x0000ff00"
-                fw_default="0x7"/>
+                mask="0x0000FF00"
+                fw_default="0x07"/>
             <node id="VFAT10_TU_INVERT" address="0xa" permission="rw"
                 description="8 bit mask; set a bit to 1 to invert the differential pair"
                 fw_signal="TU_INVERT (87 downto 80)"
-                mask="0x00ff0000"
-                fw_default="0xdc"/>
+                mask="0x00FF0000"
+                fw_default="0xDC"/>
             <node id="VFAT11_TU_INVERT" address="0xa" permission="rw"
                 description="8 bit mask; set a bit to 1 to invert the differential pair"
                 fw_signal="TU_INVERT (95 downto 88)"
-                mask="0xff000000"
-                fw_default="0xee"/>
+                mask="0xFF000000"
+                fw_default="0xEE"/>
             <node id="VFAT12_TU_INVERT" address="0xb" permission="rw"
                 description="8 bit mask; set a bit to 1 to invert the differential pair"
                 fw_signal="TU_INVERT (103 downto 96)"
-                mask="0x000000ff"
-                fw_default="0xad"/>
+                mask="0x000000FF"
+                fw_default="0xAD"/>
             <node id="VFAT13_TU_INVERT" address="0xb" permission="rw"
                 description="8 bit mask; set a bit to 1 to invert the differential pair"
                 fw_signal="TU_INVERT (111 downto 104)"
-                mask="0x0000ff00"
+                mask="0x0000FF00"
                 fw_default="0x17"/>
             <node id="VFAT14_TU_INVERT" address="0xb" permission="rw"
                 description="8 bit mask; set a bit to 1 to invert the differential pair"
                 fw_signal="TU_INVERT (119 downto 112)"
-                mask="0x00ff0000"
-                fw_default="0xe5"/>
+                mask="0x00FF0000"
+                fw_default="0xE5"/>
             <node id="VFAT15_TU_INVERT" address="0xb" permission="rw"
                 description="8 bit mask; set a bit to 1 to invert the differential pair"
                 fw_signal="TU_INVERT (127 downto 120)"
-                mask="0xff000000"
-                fw_default="0x8f"/>
+                mask="0xFF000000"
+                fw_default="0x8F"/>
             <node id="VFAT16_TU_INVERT" address="0xc" permission="rw"
                 description="8 bit mask; set a bit to 1 to invert the differential pair"
                 fw_signal="TU_INVERT (135 downto 128)"
-                mask="0x000000ff"
-                fw_default="0xe2"/>
+                mask="0x000000FF"
+                fw_default="0xE2"/>
             <node id="VFAT17_TU_INVERT" address="0xc" permission="rw"
                 description="8 bit mask; set a bit to 1 to invert the differential pair"
                 fw_signal="TU_INVERT (143 downto 136)"
-                mask="0x0000ff00"
-                fw_default="0x6"/>
+                mask="0x0000FF00"
+                fw_default="0x06"/>
             <node id="VFAT18_TU_INVERT" address="0xc" permission="rw"
                 description="8 bit mask; set a bit to 1 to invert the differential pair"
                 fw_signal="TU_INVERT (151 downto 144)"
-                mask="0x00ff0000"
+                mask="0x00FF0000"
                 fw_default="0x30"/>
             <node id="VFAT19_TU_INVERT" address="0xc" permission="rw"
                 description="8 bit mask; set a bit to 1 to invert the differential pair"
                 fw_signal="TU_INVERT (159 downto 152)"
-                mask="0xff000000"
-                fw_default="0x5d"/>
+                mask="0xFF000000"
+                fw_default="0x5D"/>
             <node id="VFAT20_TU_INVERT" address="0xd" permission="rw"
                 description="8 bit mask; set a bit to 1 to invert the differential pair"
                 fw_signal="TU_INVERT (167 downto 160)"
-                mask="0x000000ff"
+                mask="0x000000FF"
                 fw_default="0x60"/>
             <node id="VFAT21_TU_INVERT" address="0xd" permission="rw"
                 description="8 bit mask; set a bit to 1 to invert the differential pair"
                 fw_signal="TU_INVERT (175 downto 168)"
-                mask="0x0000ff00"
+                mask="0x0000FF00"
                 fw_default="0x73"/>
             <node id="VFAT22_TU_INVERT" address="0xd" permission="rw"
                 description="8 bit mask; set a bit to 1 to invert the differential pair"
                 fw_signal="TU_INVERT (183 downto 176)"
-                mask="0x00ff0000"
-                fw_default="0xa"/>
+                mask="0x00FF0000"
+                fw_default="0x0A"/>
             <node id="VFAT23_TU_INVERT" address="0xd" permission="rw"
                 description="8 bit mask; set a bit to 1 to invert the differential pair"
                 fw_signal="TU_INVERT (191 downto 184)"
-                mask="0xff000000"
+                mask="0xFF000000"
                 fw_default="0x14"/>
+            <!-- END: INVERT_REGS DO NOT EDIT -->
 
             <node id="SBITS_MUX_LSB" address="0xe" permission="r"
                 description="Multiplexed copy of Sbits from a selected VFAT"
@@ -569,322 +575,145 @@
                 fw_signal="sbits_mux(63 downto 32)"
                 mask="0xffffffff"/>
 
+            <!-- START: TU_MASK DO NOT EDIT -->
             <node id="VFAT0_TU_MASK" address="0x10" permission="rw"
                 description="8 bit mask; set a bit to 1 to mask the differential pair"
                 fw_signal="TU_MASK (7 downto 0)"
-                mask="0x000000ff"
+                mask="0x000000FF"
                 fw_default="0x0"/>
             <node id="VFAT1_TU_MASK" address="0x10" permission="rw"
                 description="8 bit mask; set a bit to 1 to mask the differential pair"
                 fw_signal="TU_MASK (15 downto 8)"
-                mask="0x0000ff00"
+                mask="0x0000FF00"
                 fw_default="0x0"/>
             <node id="VFAT2_TU_MASK" address="0x10" permission="rw"
                 description="8 bit mask; set a bit to 1 to mask the differential pair"
                 fw_signal="TU_MASK (23 downto 16)"
-                mask="0x00ff0000"
+                mask="0x00FF0000"
                 fw_default="0x0"/>
             <node id="VFAT3_TU_MASK" address="0x10" permission="rw"
                 description="8 bit mask; set a bit to 1 to mask the differential pair"
                 fw_signal="TU_MASK (31 downto 24)"
-                mask="0xff000000"
+                mask="0xFF000000"
                 fw_default="0x0"/>
             <node id="VFAT4_TU_MASK" address="0x11" permission="rw"
                 description="8 bit mask; set a bit to 1 to mask the differential pair"
                 fw_signal="TU_MASK (39 downto 32)"
-                mask="0x000000ff"
+                mask="0x000000FF"
                 fw_default="0x0"/>
             <node id="VFAT5_TU_MASK" address="0x11" permission="rw"
                 description="8 bit mask; set a bit to 1 to mask the differential pair"
                 fw_signal="TU_MASK (47 downto 40)"
-                mask="0x0000ff00"
+                mask="0x0000FF00"
                 fw_default="0x0"/>
             <node id="VFAT6_TU_MASK" address="0x11" permission="rw"
                 description="8 bit mask; set a bit to 1 to mask the differential pair"
                 fw_signal="TU_MASK (55 downto 48)"
-                mask="0x00ff0000"
+                mask="0x00FF0000"
                 fw_default="0x0"/>
             <node id="VFAT7_TU_MASK" address="0x11" permission="rw"
                 description="8 bit mask; set a bit to 1 to mask the differential pair"
                 fw_signal="TU_MASK (63 downto 56)"
-                mask="0xff000000"
+                mask="0xFF000000"
                 fw_default="0x0"/>
             <node id="VFAT8_TU_MASK" address="0x12" permission="rw"
                 description="8 bit mask; set a bit to 1 to mask the differential pair"
                 fw_signal="TU_MASK (71 downto 64)"
-                mask="0x000000ff"
+                mask="0x000000FF"
                 fw_default="0x0"/>
             <node id="VFAT9_TU_MASK" address="0x12" permission="rw"
                 description="8 bit mask; set a bit to 1 to mask the differential pair"
                 fw_signal="TU_MASK (79 downto 72)"
-                mask="0x0000ff00"
+                mask="0x0000FF00"
                 fw_default="0x0"/>
             <node id="VFAT10_TU_MASK" address="0x12" permission="rw"
                 description="8 bit mask; set a bit to 1 to mask the differential pair"
                 fw_signal="TU_MASK (87 downto 80)"
-                mask="0x00ff0000"
+                mask="0x00FF0000"
                 fw_default="0x0"/>
             <node id="VFAT11_TU_MASK" address="0x12" permission="rw"
                 description="8 bit mask; set a bit to 1 to mask the differential pair"
                 fw_signal="TU_MASK (95 downto 88)"
-                mask="0xff000000"
+                mask="0xFF000000"
                 fw_default="0x0"/>
             <node id="VFAT12_TU_MASK" address="0x13" permission="rw"
                 description="8 bit mask; set a bit to 1 to mask the differential pair"
                 fw_signal="TU_MASK (103 downto 96)"
-                mask="0x000000ff"
+                mask="0x000000FF"
                 fw_default="0x0"/>
             <node id="VFAT13_TU_MASK" address="0x13" permission="rw"
                 description="8 bit mask; set a bit to 1 to mask the differential pair"
                 fw_signal="TU_MASK (111 downto 104)"
-                mask="0x0000ff00"
+                mask="0x0000FF00"
                 fw_default="0x0"/>
             <node id="VFAT14_TU_MASK" address="0x13" permission="rw"
                 description="8 bit mask; set a bit to 1 to mask the differential pair"
                 fw_signal="TU_MASK (119 downto 112)"
-                mask="0x00ff0000"
+                mask="0x00FF0000"
                 fw_default="0x0"/>
             <node id="VFAT15_TU_MASK" address="0x13" permission="rw"
                 description="8 bit mask; set a bit to 1 to mask the differential pair"
                 fw_signal="TU_MASK (127 downto 120)"
-                mask="0xff000000"
+                mask="0xFF000000"
                 fw_default="0x0"/>
             <node id="VFAT16_TU_MASK" address="0x14" permission="rw"
                 description="8 bit mask; set a bit to 1 to mask the differential pair"
                 fw_signal="TU_MASK (135 downto 128)"
-                mask="0x000000ff"
+                mask="0x000000FF"
                 fw_default="0x0"/>
             <node id="VFAT17_TU_MASK" address="0x14" permission="rw"
                 description="8 bit mask; set a bit to 1 to mask the differential pair"
                 fw_signal="TU_MASK (143 downto 136)"
-                mask="0x0000ff00"
+                mask="0x0000FF00"
                 fw_default="0x0"/>
             <node id="VFAT18_TU_MASK" address="0x14" permission="rw"
                 description="8 bit mask; set a bit to 1 to mask the differential pair"
                 fw_signal="TU_MASK (151 downto 144)"
-                mask="0x00ff0000"
+                mask="0x00FF0000"
                 fw_default="0x0"/>
             <node id="VFAT19_TU_MASK" address="0x14" permission="rw"
                 description="8 bit mask; set a bit to 1 to mask the differential pair"
                 fw_signal="TU_MASK (159 downto 152)"
-                mask="0xff000000"
+                mask="0xFF000000"
                 fw_default="0x0"/>
             <node id="VFAT20_TU_MASK" address="0x15" permission="rw"
                 description="8 bit mask; set a bit to 1 to mask the differential pair"
                 fw_signal="TU_MASK (167 downto 160)"
-                mask="0x000000ff"
+                mask="0x000000FF"
                 fw_default="0x0"/>
             <node id="VFAT21_TU_MASK" address="0x15" permission="rw"
                 description="8 bit mask; set a bit to 1 to mask the differential pair"
                 fw_signal="TU_MASK (175 downto 168)"
-                mask="0x0000ff00"
+                mask="0x0000FF00"
                 fw_default="0x0"/>
             <node id="VFAT22_TU_MASK" address="0x15" permission="rw"
                 description="8 bit mask; set a bit to 1 to mask the differential pair"
                 fw_signal="TU_MASK (183 downto 176)"
-                mask="0x00ff0000"
+                mask="0x00FF0000"
                 fw_default="0x0"/>
             <node id="VFAT23_TU_MASK" address="0x15" permission="rw"
                 description="8 bit mask; set a bit to 1 to mask the differential pair"
                 fw_signal="TU_MASK (191 downto 184)"
-                mask="0xff000000"
+                mask="0xFF000000"
                 fw_default="0x0"/>
-
+            <!-- END: TU_MASK DO NOT EDIT -->
         </node>
 
         <node id="CNT" address="0x16" description = "S-BIT Counters">
 
-            <node id="VFAT0_SBITS" address="0x0" permission="r"
-                mask="0xffffffff"
-                description="VFAT 0 Sbit Counter"
-                fw_cnt_en_signal="active_vfats(0) or cnt_pulse"
-                fw_cnt_snap_signal="sbit_cnt_snap"
-                fw_cnt_reset_signal="cnt_reset_strobed"
-                fw_signal="cnt_vfat0"/>
-
-            <node id="VFAT1_SBITS" address="0x1" permission="r"
-                mask="0xffffffff"
-                description="VFAT 1 Sbit Counter"
-                fw_cnt_en_signal="active_vfats(1) or cnt_pulse"
-                fw_cnt_snap_signal="sbit_cnt_snap"
-                fw_cnt_reset_signal="cnt_reset_strobed"
-                fw_signal="cnt_vfat1"/>
-
-            <node id="VFAT2_SBITS" address="0x2" permission="r"
-                mask="0xffffffff"
-                description="VFAT 2 Sbit Counter"
-                fw_cnt_en_signal="active_vfats(2) or cnt_pulse"
-                fw_cnt_snap_signal="sbit_cnt_snap"
-                fw_cnt_reset_signal="cnt_reset_strobed"
-                fw_signal="cnt_vfat2"/>
-
-            <node id="VFAT3_SBITS" address="0x3" permission="r"
-                mask="0xffffffff"
-                description="VFAT 3 Sbit Counter"
-                fw_cnt_en_signal="active_vfats(3) or cnt_pulse"
-                fw_cnt_snap_signal="sbit_cnt_snap"
-                fw_cnt_reset_signal="cnt_reset_strobed"
-                fw_signal="cnt_vfat3"/>
-
-            <node id="VFAT4_SBITS" address="0x4" permission="r"
-                mask="0xffffffff"
-                description="VFAT 4 Sbit Counter"
-                fw_cnt_en_signal="active_vfats(4) or cnt_pulse"
-                fw_cnt_snap_signal="sbit_cnt_snap"
-                fw_cnt_reset_signal="cnt_reset_strobed"
-                fw_signal="cnt_vfat4"/>
-
-            <node id="VFAT5_SBITS" address="0x5" permission="r"
-                mask="0xffffffff"
-                description="VFAT 5 Sbit Counter"
-                fw_cnt_en_signal="active_vfats(5) or cnt_pulse"
-                fw_cnt_snap_signal="sbit_cnt_snap"
-                fw_cnt_reset_signal="cnt_reset_strobed"
-                fw_signal="cnt_vfat5"/>
-
-            <node id="VFAT6_SBITS" address="0x6" permission="r"
-                mask="0xffffffff"
-                description="VFAT 6 Sbit Counter"
-                fw_cnt_en_signal="active_vfats(6) or cnt_pulse"
-                fw_cnt_snap_signal="sbit_cnt_snap"
-                fw_cnt_reset_signal="cnt_reset_strobed"
-                fw_signal="cnt_vfat6"/>
-
-            <node id="VFAT7_SBITS" address="0x7" permission="r"
-                mask="0xffffffff"
-                description="VFAT 7 Sbit Counter"
-                fw_cnt_en_signal="active_vfats(7) or cnt_pulse"
-                fw_cnt_snap_signal="sbit_cnt_snap"
-                fw_cnt_reset_signal="cnt_reset_strobed"
-                fw_signal="cnt_vfat7"/>
-
-            <node id="VFAT8_SBITS" address="0x8" permission="r"
-                mask="0xffffffff"
-                description="VFAT 8 Sbit Counter"
-                fw_cnt_en_signal="active_vfats(8) or cnt_pulse"
-                fw_cnt_snap_signal="sbit_cnt_snap"
-                fw_cnt_reset_signal="cnt_reset_strobed"
-                fw_signal="cnt_vfat8"/>
-
-            <node id="VFAT9_SBITS" address="0x9" permission="r"
-                mask="0xffffffff"
-                description="VFAT 9 Sbit Counter"
-                fw_cnt_en_signal="active_vfats(9) or cnt_pulse"
-                fw_cnt_snap_signal="sbit_cnt_snap"
-                fw_cnt_reset_signal="cnt_reset_strobed"
-                fw_signal="cnt_vfat9"/>
-
-            <node id="VFAT10_SBITS" address="0xa" permission="r"
-                mask="0xffffffff"
-                description="VFAT 10 Sbit Counter"
-                fw_cnt_en_signal="active_vfats(10) or cnt_pulse"
-                fw_cnt_snap_signal="sbit_cnt_snap"
-                fw_cnt_reset_signal="cnt_reset_strobed"
-                fw_signal="cnt_vfat10"/>
-
-            <node id="VFAT11_SBITS" address="0xb" permission="r"
-                mask="0xffffffff"
-                description="VFAT 11 Sbit Counter"
-                fw_cnt_en_signal="active_vfats(11) or cnt_pulse"
-                fw_cnt_snap_signal="sbit_cnt_snap"
-                fw_cnt_reset_signal="cnt_reset_strobed"
-                fw_signal="cnt_vfat11"/>
-
-            <node id="VFAT12_SBITS" address="0xc" permission="r"
-                mask="0xffffffff"
-                description="VFAT 12 Sbit Counter"
-                fw_cnt_en_signal="active_vfats(12) or cnt_pulse"
-                fw_cnt_snap_signal="sbit_cnt_snap"
-                fw_cnt_reset_signal="cnt_reset_strobed"
-                fw_signal="cnt_vfat12"/>
-
-            <node id="VFAT13_SBITS" address="0xd" permission="r"
-                mask="0xffffffff"
-                description="VFAT 13 Sbit Counter"
-                fw_cnt_en_signal="active_vfats(13) or cnt_pulse"
-                fw_cnt_snap_signal="sbit_cnt_snap"
-                fw_cnt_reset_signal="cnt_reset_strobed"
-                fw_signal="cnt_vfat13"/>
-
-            <node id="VFAT14_SBITS" address="0xe" permission="r"
-                mask="0xffffffff"
-                description="VFAT 14 Sbit Counter"
-                fw_cnt_en_signal="active_vfats(14) or cnt_pulse"
-                fw_cnt_snap_signal="sbit_cnt_snap"
-                fw_cnt_reset_signal="cnt_reset_strobed"
-                fw_signal="cnt_vfat14"/>
-
-            <node id="VFAT15_SBITS" address="0xf" permission="r"
-                mask="0xffffffff"
-                description="VFAT 15 Sbit Counter"
-                fw_cnt_en_signal="active_vfats(15) or cnt_pulse"
-                fw_cnt_snap_signal="sbit_cnt_snap"
-                fw_cnt_reset_signal="cnt_reset_strobed"
-                fw_signal="cnt_vfat15"/>
-
-            <node id="VFAT16_SBITS" address="0x10" permission="r"
-                mask="0xffffffff"
-                description="VFAT 16 Sbit Counter"
-                fw_cnt_en_signal="active_vfats(16) or cnt_pulse"
-                fw_cnt_snap_signal="sbit_cnt_snap"
-                fw_cnt_reset_signal="cnt_reset_strobed"
-                fw_signal="cnt_vfat16"/>
-
-            <node id="VFAT17_SBITS" address="0x11" permission="r"
-                mask="0xffffffff"
-                description="VFAT 17 Sbit Counter"
-                fw_cnt_en_signal="active_vfats(17) or cnt_pulse"
-                fw_cnt_snap_signal="sbit_cnt_snap"
-                fw_cnt_reset_signal="cnt_reset_strobed"
-                fw_signal="cnt_vfat17"/>
-
-            <node id="VFAT18_SBITS" address="0x12" permission="r"
-                mask="0xffffffff"
-                description="VFAT 18 Sbit Counter"
-                fw_cnt_en_signal="active_vfats(18) or cnt_pulse"
-                fw_cnt_snap_signal="sbit_cnt_snap"
-                fw_cnt_reset_signal="cnt_reset_strobed"
-                fw_signal="cnt_vfat18"/>
-
-            <node id="VFAT19_SBITS" address="0x13" permission="r"
-                mask="0xffffffff"
-                description="VFAT 19 Sbit Counter"
-                fw_cnt_en_signal="active_vfats(19) or cnt_pulse"
-                fw_cnt_snap_signal="sbit_cnt_snap"
-                fw_cnt_reset_signal="cnt_reset_strobed"
-                fw_signal="cnt_vfat19"/>
-
-            <node id="VFAT20_SBITS" address="0x14" permission="r"
-                mask="0xffffffff"
-                description="VFAT 20 Sbit Counter"
-                fw_cnt_en_signal="active_vfats(20) or cnt_pulse"
-                fw_cnt_snap_signal="sbit_cnt_snap"
-                fw_cnt_reset_signal="cnt_reset_strobed"
-                fw_signal="cnt_vfat20"/>
-
-            <node id="VFAT21_SBITS" address="0x15" permission="r"
-                mask="0xffffffff"
-                description="VFAT 21 Sbit Counter"
-                fw_cnt_en_signal="active_vfats(21) or cnt_pulse"
-                fw_cnt_snap_signal="sbit_cnt_snap"
-                fw_cnt_reset_signal="cnt_reset_strobed"
-                fw_signal="cnt_vfat21"/>
-
-            <node id="VFAT22_SBITS" address="0x16" permission="r"
-                mask="0xffffffff"
-                description="VFAT 22 Sbit Counter"
-                fw_cnt_en_signal="active_vfats(22) or cnt_pulse"
-                fw_cnt_snap_signal="sbit_cnt_snap"
-                fw_cnt_reset_signal="cnt_reset_strobed"
-                fw_signal="cnt_vfat22"/>
-
-            <node id="VFAT23_SBITS" address="0x17" permission="r"
-                mask="0xffffffff"
-                description="VFAT 23 Sbit Counter"
-                fw_cnt_en_signal="active_vfats(23) or cnt_pulse"
-                fw_cnt_snap_signal="sbit_cnt_snap"
-                fw_cnt_reset_signal="cnt_reset_strobed"
-                fw_signal="cnt_vfat23"/>
+            <!-- START: VFAT_COUNTERS DO NOT EDIT -->
+                <node id="VFAT${VFAT_IDX}" address="0x0" permission="r"
+                    mask="0xffffffff"
+                    description="VFAT ${VFAT_IDX} Counter"
+                    fw_cnt_en_signal="active_vfats(${VFAT_IDX}) or cnt_pulse"
+                    fw_cnt_snap_signal="sbit_cnt_snap"
+                    fw_cnt_reset_signal="cnt_reset_strobed"
+                    fw_signal="cnt_vfat${VFAT_IDX}"
+                    generate="true"
+                    generate_size="24"
+                    generate_address_step="0x1"
+                    generate_idx_var="VFAT_IDX"/>
+            <!-- END: VFAT_COUNTERS DO NOT EDIT -->
 
             <node id="RESET" address="0x18" permission="w"
                 mask="0x1"
@@ -919,7 +748,6 @@
         </node>
 
         <node id="TIMING" address="0x3a" description = "Trig Control">
-
 
             <!-- START: TIMING_DELAYS DO NOT EDIT -->
                     <node id="TAP_DELAY_VFAT0_BIT0" address="0x0" permission="rw"
@@ -2003,7 +1831,7 @@
                         fw_signal="sot_tap_delay(23)"
                         fw_default="0"/>
             <!-- END: TIMING_DELAYS DO NOT EDIT -->
-        </node>
+        </node> <!--Timing Delays-->
 
         <node id="LINKS" address="0x5d" description = "Trigger links control">
 

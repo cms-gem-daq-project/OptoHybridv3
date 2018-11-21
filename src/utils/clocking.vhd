@@ -254,12 +254,7 @@ begin
     dskw_mmcm_locked_o <= mmcm_locked(0);
     eprt_mmcm_locked_o <= mmcm_locked(1);
 
-    -- fanout
-    process (clock) begin
-    if (rising_edge(clock)) then
-        delay_refclk_reset_o <= not (mmcm_locked(0));
-    end if;
-    end process;
+    delay_refclk_reset_o <= not (mmcm_locked(0));
 
 
 

@@ -85,8 +85,6 @@ architecture Behavioral of trig_alignment is
     signal start_of_frame_d1 : std_logic_vector (MXVFATS-1 downto 0);
     signal vfat_phase_sel  : t_std2_array (MXVFATS-1 downto 0);
 
-    signal serdesstrobe : std_logic;
-
     signal idly_rdy   : std_logic := '0';
     signal idly_rdy_r : std_logic := '0';
 
@@ -103,7 +101,6 @@ architecture Behavioral of trig_alignment is
         clock                 : IN std_logic;
         invert                : IN std_logic;
         reset_i               : IN std_logic;
-        strobe                : IN std_logic;
         fastclock             : IN std_logic;
         fastclock90           : IN std_logic;
         fastclock180          : IN std_logic;
@@ -210,9 +207,7 @@ begin
             fastclock90      => fastclk_90,
             fastclock180     => fastclk_180,
 
-            strobe           => serdesstrobe,
-
-            phase_sel_in     => (others=> std_logic ' ('0')),
+            phase_sel_in     => "00",
             phase_sel_out    => vfat_phase_sel(ifat),
 
             err_count_to_shift => err_count_to_shift,
@@ -266,8 +261,6 @@ begin
             fastclock90  => fastclk_90,
             fastclock180 => fastclk_180,
 
-            strobe           => serdesstrobe,
-
             err_count_to_shift => err_count_to_shift,
             stable_count_to_reset => stable_count_to_reset,
 
@@ -299,8 +292,8 @@ begin
             clock          => clock,
             fastclock      => fastclk_0,
 
-            sot_on_negedge => sot_on_negedge(ifat),
-            sot_frame_offset => sot_frame_offset,
+            sot_on_negedge         => sot_on_negedge(ifat),
+            sot_frame_offset       => sot_frame_offset,
             aligned_count_to_ready => aligned_count_to_ready,
 
             sot_is_aligned => sot_is_aligned(ifat),

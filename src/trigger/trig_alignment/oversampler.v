@@ -24,8 +24,6 @@ module oversampler (
 
   input reset_i,
 
-  input strobe,
-
   input fastclock, // input clocks should be 1/2 the data rate (160 MHz for standard operation, 320 for DDR)
   input fastclock90,
   input fastclock180,
@@ -237,7 +235,7 @@ module oversampler (
       .BITSLIP      (1'b0),
       .CE1          (1'b1),
       .CE2          (1'b1),
-      .CLKDIV       (fastclock),
+      .CLKDIV       (1'b0),
       .DDLY         (rxd_delay0),
       .DYNCLKDIVSEL (1'b0),
       .DYNCLKSEL    (1'b0),

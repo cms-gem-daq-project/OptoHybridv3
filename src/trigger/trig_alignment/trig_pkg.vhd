@@ -18,15 +18,20 @@ use ieee.numeric_std.all;
 
 package trig_pkg is
 
-  constant OH_LITE : integer := 1; -- lite oh only has 12 VFATs
+  -- START: TRIG_PKG DO NOT EDIT --
 
-  constant MXVFATS : integer := 24 - 12*OH_LITE;
+    constant OH_LITE : integer := 0; -- lite oh only has 12 VFATs
+
+    constant MXVFATS : integer := 24;
+
+    constant REVERSE_VFAT_SBITS : std_logic_vector (23 downto 0) := x"000000";
+
+  -- END: TRIG_PKG DO NOT EDIT --
 
   constant DDR : integer := 0;
   constant MXSBITS : integer := 64 * (DDR+1);
 
   constant MXSBITS_CHAMBER : integer := MXVFATS*MXSBITS;
 
-  constant REVERSE_VFAT_SBITS : std_logic_vector (23 downto 0) := x"000000";
 
 end package;

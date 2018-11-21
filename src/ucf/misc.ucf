@@ -67,7 +67,7 @@ TIMEGRP "led_o"       OFFSET = OUT 12.5 ns VALID 25 ns BEFORE "gbt_dclk_p<0>" RI
 TIMEGRP "ext_sbits_o" OFFSET = OUT 12.5 ns VALID 25 ns BEFORE "gbt_dclk_p<0>" RISING;
 
 # XADC
-INST "adc_inst/xadc_inst/SYSMON_INST" LOC = SYSMON_X0Y0;
+INST "xadc_gen.adc_inst/xadc_gen.xadc_inst/SYSMON_INST" LOC = SYSMON_X0Y0;
 
 # GBT
 # NET "gbt_txvalid_o" LOC =      ; # hardwired, apparently
@@ -101,8 +101,8 @@ NET "ext_reset_o<5>" LOC="Y27";
 NET "ext_reset_o<3>" LOC="W26";
 #### END: AUTO GENERATED RESETS UCF -- DO NOT EDIT ####
 
-NET "mgt_clk_p_i" LOC = H6; #
-NET "mgt_clk_n_i" LOC = H5; #
+NET "mgt_clk_p_i<0>" LOC = H6; #
+NET "mgt_clk_n_i<0>" LOC = H5; #
 #NET "mgt_clk_p_i<1>" LOC = F6; #
 #NET "mgt_clk_n_i<1>" LOC = F5; #
 NET "mgt_tx_p_o<0>" LOC = M1; #

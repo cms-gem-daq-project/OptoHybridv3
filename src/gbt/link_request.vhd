@@ -134,9 +134,9 @@ begin
             valid   => rd_valid,
             dout    => rd_data,
             full    => open,
-            empty   => open
-    --        sbiterr => open,
-    --        dbiterr => open
+            empty   => open,
+            sbiterr => open,
+            dbiterr => open
         );
     END GENERATE gen_rx_fifo_series6;
 
@@ -192,7 +192,7 @@ begin
     --==============--
 
     gen_tx_fifo_series6 : IF (FPGA_TYPE="VIRTEX6") GENERATE
-    fifo_request_tx_inst : entity work.fifo_request_tx
+    fifo_request_tx_inst : fifo_request_tx
     port map(
         rst     => reset_i,
         clk     => fabric_clock_i,
@@ -202,9 +202,9 @@ begin
         valid   => tx_valid_o,
         dout    => tx_data_o,
         full    => open,
-        empty   => open
-     -- sbiterr => open,
-     -- dbiterr => open
+        empty   => open,
+        sbiterr => open,
+        dbiterr => open
     );
     END GENERATE gen_tx_fifo_series6;
 
@@ -213,7 +213,7 @@ begin
     --=============--
 
     gen_tx_fifo_series7 : IF (FPGA_TYPE="ARTIX7") GENERATE
-        fifo_request_tx_a7_inst : entity work.fifo_request_tx_a7
+        fifo_request_tx_a7_inst : fifo_request_tx_a7
         port map(
             srst    => reset_i,
             clk     => fabric_clock_i,
