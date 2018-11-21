@@ -126,6 +126,7 @@ begin
         )
         port map (
             rst           => sot_reset(ivfat),
+            invert        => sot_invert (ivfat),
             rxd_p         => start_of_frame_p(ivfat),
             rxd_n         => start_of_frame_n(ivfat),
             clk1x_logic   => clk80_0,
