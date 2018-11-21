@@ -74,7 +74,7 @@ module frame_aligner (
 
   bitslip data_bitslip (
     .fabric_clk   (clock),
-    .reset        (reset || mask || ~sot_is_aligned),
+    .reset        (1'b0), //(reset || mask || ~sot_is_aligned),
     .bitslip_cnt  (bitslip_cnt),
     .din          (sbits_i[8*(I+1)-1 : 8*I]),
     .dout         (sbits_o[8*(I+1)-1 : 8*I])

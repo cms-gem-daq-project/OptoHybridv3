@@ -64,14 +64,15 @@ end trig_alignment;
 
 architecture Behavioral of trig_alignment is
 
-    signal reset             : std_logic := '0';
-    signal start_of_frame_8b : t_std8_array (MXVFATS-1 downto 0);
-    signal vfat_phase_sel    : t_std2_array (MXVFATS-1 downto 0);
-    signal sbits_unaligned   : std_logic_vector (( MXSBITS_CHAMBER - 1) downto 0);
-    signal sot_invert        : std_logic_vector (MXVFATS-1 downto 0);
-    signal tu_invert         : std_logic_vector (MXVFATS*8-1 downto 0);
-    signal vfat_mask         : std_logic_vector (MXVFATS-1 downto 0);
-    signal tu_mask           : std_logic_vector (MXVFATS*8-1 downto 0);
+    signal reset              : std_logic := '0';
+    signal start_of_frame_8b  : t_std8_array (MXVFATS-1 downto 0);
+    signal vfat_phase_sel     : t_std2_array (MXVFATS-1 downto 0);
+    signal sbits_unaligned    : std_logic_vector (( MXSBITS_CHAMBER - 1) downto 0);
+    signal sot_invert         : std_logic_vector (MXVFATS-1 downto 0);
+    signal tu_invert          : std_logic_vector (MXVFATS*8-1 downto 0);
+    signal vfat_mask          : std_logic_vector (MXVFATS-1 downto 0);
+    signal tu_mask            : std_logic_vector (MXVFATS*8-1 downto 0);
+    signal sot_is_aligned_int : std_logic_vector (MXVFATS-1 downto 0);
 
     -- fanout reset to help with timing
     signal sot_reset         : std_logic_vector (MXVFATS-1 downto 0);
@@ -148,7 +149,7 @@ begin
 
         process (clock) is begin
             if (rising_edge(clock)) then
-                tu_reset(ipin) <= reset or tu_mask(ipin);
+                tu_reset(ipin) <= reset or tu_mask(ipin) or (not sot_is_aligned_int (ipin/8)) or vfat_mask(ipin/8);
             end if;
         end process;
 
@@ -197,11 +198,13 @@ begin
 
             aligned_count_to_ready => aligned_count_to_ready,
 
-            sot_is_aligned => sot_is_aligned(ivfat),
+            sot_is_aligned => sot_is_aligned_int(ivfat),
 
             sot_unstable   => sot_unstable(ivfat)
         );
 
     end generate;
+
+    sot_is_aligned <= sot_is_aligned_int;
 
 end Behavioral;

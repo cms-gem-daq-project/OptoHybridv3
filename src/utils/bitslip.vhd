@@ -44,6 +44,6 @@ begin
         end if;
     end process;
 
-    dout <= data;
+    dout <= (others => '0') when reset ='1' else data;
 
 end behavioral;
