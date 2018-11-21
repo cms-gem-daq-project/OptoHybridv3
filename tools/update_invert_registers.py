@@ -40,7 +40,7 @@ def write_xml_invert_map (file_handle):
         else:
             swap = 0
 
-        sot_default = sot_default | (swap << j)
+        sot_default = sot_default | (swap << (j-1))
 
     sot_mask="0x00000"
     if (num_vfats==12):

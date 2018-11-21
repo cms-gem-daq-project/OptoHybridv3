@@ -295,7 +295,7 @@ package registers is
     constant REG_TRIG_CTRL_INVERT_SOT_INVERT_ADDR    : std_logic_vector(7 downto 0) := x"05";
     constant REG_TRIG_CTRL_INVERT_SOT_INVERT_MSB    : integer := 23;
     constant REG_TRIG_CTRL_INVERT_SOT_INVERT_LSB     : integer := 0;
-    constant REG_TRIG_CTRL_INVERT_SOT_INVERT_DEFAULT : std_logic_vector(23 downto 0) := x"f3250c";
+    constant REG_TRIG_CTRL_INVERT_SOT_INVERT_DEFAULT : std_logic_vector(23 downto 0) := x"f99286";
 
     constant REG_TRIG_CTRL_INVERT_VFAT0_TU_INVERT_ADDR    : std_logic_vector(7 downto 0) := x"06";
     constant REG_TRIG_CTRL_INVERT_VFAT0_TU_INVERT_MSB    : integer := 7;
