@@ -25,11 +25,6 @@ module   gem_fiber_out #(
   input  TRG_TX_PLL1OUTCLK_IN,
   input  TRG_TX_PLL1OUTREFCLK_IN,
 
-  input         TRG_TX_OUTREFCLK_IN,  //
-  output        TRG_TX_PLLRST_OUT,    //
-  output        TRG_TX_PLLLOCK_IN,    //
-  output        TRG_TX_PLLREFCLKLOST, //
-
   input         TRG_TXUSRCLK,      // 160 MHz (derived from TXOUTCLK)
   input         TRG_TXUSRCLK2,     //
   input         TRG_GTXTXRST,      // GTX Transmit Data Reset

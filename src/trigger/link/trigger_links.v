@@ -39,7 +39,7 @@ parameter ILINKS = 4
   input overflow
 );
 
-reg [3:0] reset_cnt;
+reg [6:0] reset_cnt=0;
 reg reset;
 
 always @(posedge clk_40) begin
@@ -50,10 +50,30 @@ always @(posedge clk_40) begin
   else
     reset_cnt <= reset_cnt;
 
-  reset <= !(&reset_cnt);
+  reset <= ~(&reset_cnt);
 end
 
 wire mgt_refclk;
+
+//----------------------------------------------------------------------------------------------------------------------
+// Artix-7
+//----------------------------------------------------------------------------------------------------------------------
+wire cpll_outclk0;
+wire cpll_outrefclk0;
+wire cpll_plllock;
+wire cpll_refclklost;
+reg cpll_powerdown;
+wire cpll_outclk1;
+wire cpll_outrefclk1;
+
+reg cpll_reset;
+wire [3:0] gtp_pllreset_out;
+wire gtpcommon_reset     = reset || (|gtp_pllreset_out) || cpll_reset;
+
+reg [7:0] cpll_powerdown_cnt = 0;
+reg [7:0] cpll_reset_cnt = 0;
+
+wire mgt_refclk_bufh;
 
 generate
 
@@ -79,33 +99,51 @@ generate
   if (FPGA_TYPE_IS_ARTIX7) begin
     IBUFDS_GTE2  ibufds_mgtclk0
     (
-        .I       (mgt_clk_p ),
-        .IB      (mgt_clk_n ),
+        .I       (mgt_clk_p),
+        .IB      (mgt_clk_n),
         .O       (mgt_refclk),
         .ODIV2   (),
         .CEB     (1'b0)
     );
 
-    wire cpll_outclk0;
-    wire cpll_outrefclk0;
-    wire cpll_plllock;
-    wire cpll_refclklost;
-    wire cpll_powerdown;
-    wire gtp_pllreset_out;
-    wire cpll_outclk1;
-    wire cpll_outrefclk1;
-
-    wire cpll_reset     = reset || gtp_pllreset_out || cpll_reset;
-    wire cpll_refclk_in = mgt_refclk;
+    BUFH i_mgtrefclk_bufh (.O (mgt_refclk_bufh), .I (mgt_refclk));
 
     // keep CPLL powered down for some number of clocks
-    a7_trig_tx_buf_bypass_cpll_railing #( .USE_BUFG(0))
-    cpll_railing_pll0_q0_clk0_refclk_i (
-      .cpll_reset_out (cpll_reset),
-      .cpll_pd_out    (cpll_powerdown),
-      .refclk_out     (),
-      .refclk_in      (cpll_refclk_in)
-    );
+    // release reset some clocks later
+
+    parameter PDCNT = 96;
+    parameter RSTCNT = 128;
+
+    always @(posedge mgt_refclk_bufh) begin
+
+      if (reset)
+        cpll_powerdown_cnt <= 0;
+      else if (cpll_powerdown_cnt <= (PDCNT-1))
+        cpll_powerdown_cnt <= cpll_powerdown_cnt + 1'b1;
+      else
+        cpll_powerdown_cnt <= cpll_powerdown_cnt;
+
+      if (reset)
+        cpll_reset_cnt <= 0;
+      else if (cpll_reset_cnt <= (RSTCNT-1))
+        cpll_reset_cnt <= cpll_reset_cnt + 1'b1;
+      else
+        cpll_reset_cnt <= cpll_reset_cnt;
+
+      cpll_powerdown <= cpll_powerdown_cnt == PDCNT;
+      cpll_reset <= cpll_reset_cnt == RSTCNT;
+
+    end
+
+
+    // keep CPLL powered down for some number of clocks
+    //a7_trig_tx_buf_bypass_cpll_railing #(.USE_BUFG(0))
+    //cpll_railing_pll0_q0_clk0_refclk_i (
+    //  .cpll_reset (cpll_reset),
+    //  .cpll_pd_out    (cpll_powerdown),
+    //  .refclk_out     (),
+    //  .refclk_in      (mgt_refclk)
+    //);
 
     a7_trig_tx_buf_bypass_common #(
       .WRAPPER_SIM_GTRESET_SPEEDUP ("FALSE"),
@@ -113,7 +151,7 @@ generate
       .SIM_PLL1REFCLK_SEL          (3'b001)
     ) common0_i (
       .PLL0LOCKDETCLK_IN  (clk_40),
-      .PLL0RESET_IN       (cpll_reset),
+      .PLL0RESET_IN       (gtpcommon_reset),
       .PLL0REFCLKSEL_IN   (3'b001),
       .PLL0PD_IN          (cpll_powerdown),
       .GTREFCLK0_IN       (mgt_refclk),
@@ -219,13 +257,14 @@ generate
       .STRT_LTNCY          (),                                                              // after every Reset, to TP for debug only  -- !sw7 ?
       .LTNCY_TRIG          (),                                                              // bring out to TP.  Signals when TX sends "FC" (once every 128 BX).  Send raw to TP  --sw8,7
 
-      .TRG_TX_PLL0PLLRST_OUT       (gtp_pllreset_out),
+      .TRG_TX_PLL0PLLRST_OUT       (gtp_pllreset_out[igem]),
       .TRG_TX_PLL0PLLLOCK_IN       (cpll_plllock),
       .TRG_TX_PLL0PLLREFCLKLOST_IN (cpll_refclklost),
       .TRG_TX_PLL0OUTCLK_IN        (cpll_outclk0),
       .TRG_TX_PLL0OUTREFCLK_IN     (cpll_outrefclk0),
       .TRG_TX_PLL1OUTCLK_IN        (cpll_outclk1),
       .TRG_TX_PLL1OUTREFCLK_IN     (cpll_outrefclk1)
+
   );
   end
 

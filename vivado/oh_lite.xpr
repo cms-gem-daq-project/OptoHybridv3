@@ -57,6 +57,13 @@
   <FileSets Version="1" Minor="31">
     <FileSet Name="sources_1" Type="DesignSrcs" RelSrcDir="$PSRCDIR/sources_1">
       <Filter Type="Srcs"/>
+      <File Path="$PPRDIR/../src/ip_cores_a7/a7_trig_tx_buf_bypass/a7_trig_tx_buf_bypass.xci">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
       <File Path="$PPRDIR/../src/sbit_cluster_packer/source/cluster_packer.v">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -71,7 +78,7 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../src/sbit_cluster_packer/source/count_clusters.v">
+      <File Path="$PPRDIR/../src/sbit_cluster_packer/source/count_clusters_lite.v">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -270,12 +277,6 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../src/trigger/link/a7_trig_tx_buf_bypass_cpll_railing.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PPRDIR/../src/trigger/active_vfats.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -432,15 +433,14 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../src/ip_cores_a7/a7_trig_tx_buf_bypass/a7_trig_tx_buf_bypass.xci">
+      <File Path="$PPRDIR/../src/trigger/link/a7_trig_tx_buf_bypass_cpll_railing.vhd">
         <FileInfo>
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../src/sbit_cluster_packer/source/count_clusters_lite.v">
+      <File Path="$PPRDIR/../src/sbit_cluster_packer/source/count_clusters.v">
         <FileInfo>
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -493,12 +493,6 @@
     </FileSet>
     <FileSet Name="constrs_1" Type="Constrs" RelSrcDir="$PSRCDIR/constrs_1">
       <Filter Type="Constrs"/>
-      <File Path="$PPRDIR/../src/ucf/xc7a75tfgg484_v2.xdc">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-        </FileInfo>
-      </File>
       <File Path="$PPRDIR/../src/ucf/iostandards.xdc">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -512,6 +506,12 @@
         </FileInfo>
       </File>
       <File Path="$PPRDIR/../src/ucf/auto_constraints.xdc">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../src/ucf/xc7a75tfgg484_v1.xdc">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -544,7 +544,6 @@
     <FileSet Name="fifo_request_tx_a7" Type="BlockSrcs" RelSrcDir="$PSRCDIR/fifo_request_tx_a7">
       <File Path="$PPRDIR/../src/ip_cores_a7/fifo_request_tx_a7/fifo_request_tx_a7.xci">
         <FileInfo>
-          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -558,7 +557,6 @@
     <FileSet Name="fifo_request_rx_a7" Type="BlockSrcs" RelSrcDir="$PSRCDIR/fifo_request_rx_a7">
       <File Path="$PPRDIR/../src/ip_cores_a7/fifo_request_rx_a7/fifo_request_rx_a7.xci">
         <FileInfo>
-          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -572,7 +570,6 @@
     <FileSet Name="xadc_a7" Type="BlockSrcs" RelSrcDir="$PSRCDIR/xadc_a7">
       <File Path="$PPRDIR/../src/ip_cores_a7/xadc_a7/xadc_a7.xci">
         <FileInfo>
-          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -599,7 +596,6 @@
     <FileSet Name="sem_a7" Type="BlockSrcs" RelSrcDir="$PSRCDIR/sem_a7">
       <File Path="$PPRDIR/../src/ip_cores_a7/sem_a7/sem_a7.xci">
         <FileInfo>
-          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -613,7 +609,6 @@
     <FileSet Name="to_gbt_ser_a7" Type="BlockSrcs" RelSrcDir="$PSRCDIR/to_gbt_ser_a7">
       <File Path="$PPRDIR/../src/ip_cores_a7/to_gbt_ser_a7/to_gbt_ser_a7.xci">
         <FileInfo>
-          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -648,150 +643,6 @@
       <Config>
         <Option Name="TopModule" Val="logic_clocking"/>
         <Option Name="UseBlackboxStub" Val="1"/>
-      </Config>
-    </FileSet>
-    <FileSet Name="constrs_2" Type="Constrs" RelSrcDir="$PSRCDIR/constrs_2">
-      <File Path="$PSRCDIR/constrs_2/xc7a75tfgg484_v2.xdc">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/constrs_2/iostandards.xdc">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/constrs_2/clocking.xdc">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-        </FileInfo>
-      </File>
-      <Config>
-        <Option Name="TargetConstrsFile" Val="$PSRCDIR/constrs_2/clocking.xdc"/>
-        <Option Name="ConstrsType" Val="XDC"/>
-      </Config>
-    </FileSet>
-    <FileSet Name="constrs_3" Type="Constrs" RelSrcDir="$PSRCDIR/constrs_3">
-      <File Path="$PSRCDIR/constrs_3/xc7a75tfgg484_v2.xdc">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/constrs_3/iostandards.xdc">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/constrs_3/clocking.xdc">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/constrs_3/auto_constraints.xdc">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-        </FileInfo>
-      </File>
-      <Config>
-        <Option Name="TargetConstrsFile" Val="$PSRCDIR/constrs_3/auto_constraints.xdc"/>
-        <Option Name="ConstrsType" Val="XDC"/>
-      </Config>
-    </FileSet>
-    <FileSet Name="constrs_4" Type="Constrs" RelSrcDir="$PSRCDIR/constrs_4">
-      <File Path="$PSRCDIR/constrs_4/xc7a75tfgg484_v2.xdc">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/constrs_4/iostandards.xdc">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/constrs_4/clocking.xdc">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/constrs_4/auto_constraints.xdc">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-        </FileInfo>
-      </File>
-      <Config>
-        <Option Name="TargetConstrsFile" Val="$PSRCDIR/constrs_4/auto_constraints.xdc"/>
-        <Option Name="ConstrsType" Val="XDC"/>
-      </Config>
-    </FileSet>
-    <FileSet Name="constrs_5" Type="Constrs" RelSrcDir="$PSRCDIR/constrs_5">
-      <File Path="$PSRCDIR/constrs_5/xc7a75tfgg484_v2.xdc">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/constrs_5/iostandards.xdc">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/constrs_5/clocking.xdc">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/constrs_5/auto_constraints.xdc">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-        </FileInfo>
-      </File>
-      <Config>
-        <Option Name="TargetConstrsFile" Val="$PSRCDIR/constrs_5/auto_constraints.xdc"/>
-        <Option Name="ConstrsType" Val="XDC"/>
-      </Config>
-    </FileSet>
-    <FileSet Name="constrs_6" Type="Constrs" RelSrcDir="$PSRCDIR/constrs_6">
-      <File Path="$PSRCDIR/constrs_6/xc7a75tfgg484_v2.xdc">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/constrs_6/iostandards.xdc">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/constrs_6/clocking.xdc">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/constrs_6/auto_constraints.xdc">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-        </FileInfo>
-      </File>
-      <Config>
-        <Option Name="TargetConstrsFile" Val="$PSRCDIR/constrs_6/auto_constraints.xdc"/>
-        <Option Name="ConstrsType" Val="XDC"/>
       </Config>
     </FileSet>
   </FileSets>
