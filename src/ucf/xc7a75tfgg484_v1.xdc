@@ -306,11 +306,11 @@ set_property PACKAGE_PIN F21 [get_ports {gbt_txvalid_o[1]}]
 
 ## ELINKS
 
-set_property PACKAGE_PIN F16 [get_ports elink_i_p]
-set_property PACKAGE_PIN E17 [get_ports elink_i_n]
+set_property PACKAGE_PIN F13 [get_ports elink_i_p]
+set_property PACKAGE_PIN F14 [get_ports elink_i_n]
 
-set_property PACKAGE_PIN E16 [get_ports elink_o_p]
-set_property PACKAGE_PIN D16 [get_ports elink_o_n]
+set_property PACKAGE_PIN F16 [get_ports elink_o_p]
+set_property PACKAGE_PIN E17 [get_ports elink_o_n]
 
 set_property PACKAGE_PIN J19 [get_ports elink_clock_p]
 set_property PACKAGE_PIN H19 [get_ports elink_clock_n]
