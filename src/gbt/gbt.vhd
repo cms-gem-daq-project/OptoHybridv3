@@ -20,6 +20,7 @@ use unisim.vcomponents.all;
 library work;
 use work.types_pkg.all;
 use work.ipbus_pkg.all;
+use work.param_pkg.all;
 use work.registers.all;
 
 entity gbt is
@@ -28,111 +29,85 @@ generic(
 );
 port(
 
-    reset_i : in std_logic;
+    reset_i            : in std_logic;
 
-    clock_i : in std_logic; -- 40 MHz logic clock
+    clock_i            : in std_logic; -- 40 MHz logic clock
 
-    delay_refclk : in std_logic;
-    delay_refclk_reset : in std_logic;
+    gbt_clk40          : in std_logic; -- 40  MHz phase shiftable frame clock from GBT
+    gbt_clk80          : in std_logic; -- 40  MHz phase shiftable frame clock from GBT
+    gbt_clk160_0       : in std_logic; -- 320 MHz phase shiftable frame clock from GBT
+    gbt_clk160_90      : in std_logic; -- 320 MHz phase shiftable frame clock from GBT
+    gbt_clk160_180     : in std_logic; -- 320 MHz phase shiftable frame clock from GBT
+    gbt_clk320         : in std_logic; -- 320 MHz phase shiftable frame clock from GBT
 
-    gbt_rx_clk_div_i : in std_logic; -- 40 MHz phase shiftable frame clock from GBT
-    gbt_rx_clk_i     : in std_logic; -- 320 MHz phase shiftable frame clock from GBT
+    elink_i_p          : in  std_logic;
+    elink_i_n          : in  std_logic;
 
-    gbt_tx_clk_div_i : in std_logic_vector (1 downto 0); -- 40 MHz phase shiftable frame clock from GBT
-    gbt_tx_clk_i     : in std_logic_vector (1 downto 0); -- 320 MHz phase shiftable frame clock from GBT
+    elink_o_p          : out std_logic;
+    elink_o_n          : out std_logic;
 
-    elink_i_p : in  std_logic_vector (1 downto 0);
-    elink_i_n : in  std_logic_vector (1 downto 0);
+    gbt_link_error_o   : out std_logic;
+    gbt_link_ready_o   : out std_logic;
 
-    elink_o_p : out std_logic_vector (1 downto 0);
-    elink_o_n : out std_logic_vector (1 downto 0);
+    l1a_o              : out std_logic;
+    bc0_o              : out std_logic;
+    resync_o           : out std_logic;
 
-    gbt_rx_data_o : out std_logic_vector (15 downto 0);
-
-    gbt_link_error_o : out std_logic;
-    gbt_link_ready_o : out std_logic;
-
-    l1a_o         : out std_logic;
-    bc0_o         : out std_logic;
-    resync_o      : out std_logic;
-    reset_vfats_o : out std_logic;
-
-    cnt_snap : in std_logic;
-
-    -- SCA Control
-
-    tx_sync_mode_sca      : in std_logic;
-    gbt_loopback_mode_sca : in std_logic;
+    cnt_snap           : in std_logic;
 
     -- GBTx
 
-    gbt_rxready_i : in std_logic;
-    gbt_rxvalid_i : in std_logic;
-    gbt_txready_i : in std_logic;
+    gbt_rxready_i      : in std_logic;
+    gbt_rxvalid_i      : in std_logic;
+    gbt_txready_i      : in std_logic;
 
     -- wishbone master
-    ipb_mosi_o : out ipb_wbus;
-    ipb_miso_i : in  ipb_rbus;
+    ipb_mosi_o         : out ipb_wbus;
+    ipb_miso_i         : in  ipb_rbus;
 
     -- wishbone slave
-    ipb_mosi_i : in  ipb_wbus;
-    ipb_miso_o : out ipb_rbus;
-    ipb_reset_i : in std_logic
+    ipb_mosi_i         : in  ipb_wbus;
+    ipb_miso_o         : out ipb_rbus;
+    ipb_reset_i        : in std_logic
 );
 
 end gbt;
 
 architecture Behavioral of gbt is
 
-    signal gbt_tx_data  : std_logic_vector(15 downto 0) := (others => '0');
-    signal gbt_rx_data   : std_logic_vector(15 downto 0) := (others => '0');
+    signal gbt_tx_data        : std_logic_vector(7 downto 0) := (others => '0');
+    signal gbt_rx_data        : std_logic_vector(7 downto 0) := (others => '0');
 
-    signal gbt_tx_bitslip0 : std_logic_vector(2 downto 0) ;
-    signal gbt_tx_bitslip1: std_logic_vector(2 downto 0) ;
-
-    signal test_pattern : std_logic_vector (63 downto 0);
-
-    signal gbt_link_error    : std_logic;
-    signal gbt_link_unstable : std_logic;
-    signal gbt_link_ready    : std_logic;
+    signal gbt_link_error     : std_logic;
+    signal gbt_link_unstable  : std_logic;
+    signal gbt_link_ready     : std_logic;
 
     signal gbt_link_err_ready : std_logic;
 
-    signal l1a_force         :  std_logic;
-    signal bc0_force         :  std_logic;
-    signal resync_force      :  std_logic;
-    signal reset_vfats_force :  std_logic;
+    signal l1a_force          : std_logic;
+    signal bc0_force          : std_logic;
+    signal resync_force       : std_logic;
 
-    signal l1a_gbt         :  std_logic;
-    signal bc0_gbt         :  std_logic;
-    signal resync_gbt      :  std_logic;
-    signal reset_vfats_gbt :  std_logic;
+    signal l1a_gbt            : std_logic;
+    signal bc0_gbt            : std_logic;
+    signal resync_gbt         : std_logic;
 
-    signal reset     : std_logic;
-    signal cnt_reset     : std_logic;
+    signal reset              : std_logic;
+    signal cnt_reset          : std_logic;
 
-
-    signal tx_delay : std_logic_vector (4 downto 0);
-
-    signal tx_sync_mode : std_logic;
-    signal tx_sync_mode_ipb : std_logic;
-
-    signal gbt_direct_loopback_mode      : std_logic;
-
-    attribute mark_debug : string;
-    attribute mark_debug of tx_sync_mode : signal is "TRUE";
+    signal tx_delay           : std_logic_vector (4 downto 0);
 
     -- wishbone master
     signal ipb_mosi : ipb_wbus;
     signal ipb_miso : ipb_rbus;
 
     ------ Register signals begin (this section is generated by <optohybrid_top>/tools/generate_registers.py -- do not edit)
-    signal regs_read_arr        : t_std32_array(REG_GBT_NUM_REGS - 1 downto 0);
-    signal regs_write_arr       : t_std32_array(REG_GBT_NUM_REGS - 1 downto 0);
-    signal regs_addresses       : t_std32_array(REG_GBT_NUM_REGS - 1 downto 0);
+    signal regs_read_arr        : t_std32_array(REG_GBT_NUM_REGS - 1 downto 0) := (others => (others => '0'));
+    signal regs_write_arr       : t_std32_array(REG_GBT_NUM_REGS - 1 downto 0) := (others => (others => '0'));
+    signal regs_addresses       : t_std32_array(REG_GBT_NUM_REGS - 1 downto 0) := (others => (others => '0'));
     signal regs_defaults        : t_std32_array(REG_GBT_NUM_REGS - 1 downto 0) := (others => (others => '0'));
-    signal regs_read_pulse_arr  : std_logic_vector(REG_GBT_NUM_REGS - 1 downto 0);
-    signal regs_write_pulse_arr : std_logic_vector(REG_GBT_NUM_REGS - 1 downto 0);
+    signal regs_read_pulse_arr  : std_logic_vector(REG_GBT_NUM_REGS - 1 downto 0) := (others => '0');
+    signal regs_write_pulse_arr : std_logic_vector(REG_GBT_NUM_REGS - 1 downto 0) := (others => '0');
     signal regs_read_ready_arr  : std_logic_vector(REG_GBT_NUM_REGS - 1 downto 0) := (others => '1');
     signal regs_write_done_arr  : std_logic_vector(REG_GBT_NUM_REGS - 1 downto 0) := (others => '1');
     signal regs_writable_arr    : std_logic_vector(REG_GBT_NUM_REGS - 1 downto 0) := (others => '0');
@@ -143,14 +118,6 @@ architecture Behavioral of gbt is
     ------ Register signals end ----------------------------------------------
 
 begin
-
-    -- gbt data output
-
-    process (clock_i) begin
-        if (rising_edge(clock_i)) then
-            gbt_rx_data_o <= gbt_rx_data;
-        end if;
-    end process;
 
     -- wishbone master
 
@@ -171,34 +138,27 @@ begin
             l1a_o        <= l1a_force or l1a_gbt;
             bc0_o        <= bc0_force or bc0_gbt;
             resync_o     <= resync_force or resync_gbt;
-            reset_vfats_o <= reset_vfats_force or reset_vfats_gbt;
         end if;
     end process;
 
-    --=========--
-    --== GBT ==--
-    --=========--
-
-    process (clock_i) begin
-        if (rising_edge(clock_i)) then
-            gbt_direct_loopback_mode <= (gbt_loopback_mode_sca);
-            tx_sync_mode             <= (tx_sync_mode_ipb or tx_sync_mode_sca);
-        end if;
-    end process;
+    --------------------------------------------------------------------------------------------------------------------
+    -- GBT Serdes
+    --------------------------------------------------------------------------------------------------------------------
 
     -- at 320 MHz performs ser-des on incoming
-    gbt_serdes_inst : entity work.gbt_serdes
+    gbt_serdes : entity work.gbt_serdes
     port map(
         -- reset
        reset_i          => reset,
 
        -- input clocks
 
-       gbt_rx_clk_div_i => gbt_rx_clk_div_i , -- 40 MHz phase shiftable frame clock from GBT
-       gbt_rx_clk_i     => gbt_rx_clk_i     , -- 320 MHz phase shiftable frame clock from GBT
-
-       gbt_tx_clk_div_i => gbt_tx_clk_div_i , -- 40 MHz phase shiftable frame clock from GBT
-       gbt_tx_clk_i     => gbt_tx_clk_i     , -- 320 MHz phase shiftable frame clock from GBT
+       gbt_clk40      => gbt_clk40,      -- 40 MHz phase shiftable frame clock from GBT
+       gbt_clk80      => gbt_clk80,      -- 80 MHz phase shiftable frame clock from GBT
+       gbt_clk160_0   => gbt_clk160_0,   --
+       gbt_clk160_90  => gbt_clk160_90,  --
+       gbt_clk160_180 => gbt_clk160_180, --
+       gbt_clk320     => gbt_clk320,     -- 320 MHz phase shiftable frame clock from GBT
 
        clock            => clock_i,     -- 40 MHz logic clock
 
@@ -210,29 +170,20 @@ begin
        elink_i_n       => elink_i_n,   -- input e-links
 
        gbt_link_error_i => gbt_link_error,
+       gbt_ready_i => gbt_link_ready,
 
-       delay_refclk       => delay_refclk,
-       delay_refclk_reset => delay_refclk_reset,
        tx_delay_i         => tx_delay,
-
-       -- gbt tx bitslip
-
-       gbt_tx_bitslip0 => gbt_tx_bitslip0,
-       gbt_tx_bitslip1 => gbt_tx_bitslip1,
-
-       gbt_direct_loopback_mode => gbt_direct_loopback_mode,
-       tx_sync_mode             => tx_sync_mode,
-
-       test_pattern             => test_pattern,
 
        -- parallel data
        data_o           => gbt_rx_data,    -- Parallel data out
        data_i           => gbt_tx_data     -- Parallel data in
     );
 
-    -- decodes GBT frames to build packets
+    --------------------------------------------------------------------------------------------------------------------
+    -- GBT Link
+    --------------------------------------------------------------------------------------------------------------------
 
-    gbt_link_inst : entity work.gbt_link
+    gbt_link : entity work.gbt_link
     port map(
 
         -- reset
@@ -250,7 +201,6 @@ begin
         ipb_miso_i    => ipb_miso,
 
         -- decoded TTC
-        reset_vfats_o   => reset_vfats_gbt,
         resync_o        => resync_gbt,
         l1a_o           => l1a_gbt,
         bc0_o           => bc0_gbt,
@@ -263,7 +213,9 @@ begin
     );
 
     gbt_link_err_ready <= gbt_link_ready and gbt_link_error;
+
     gbt_link_ready_o <= gbt_link_ready;
+    gbt_link_error_o <= gbt_link_error;
 
     --===============================================================================================
     -- (this section is generated by <optohybrid_top>/tools/generate_registers.py -- do not edit)
@@ -297,41 +249,27 @@ begin
     -- Addresses
     regs_addresses(0)(REG_GBT_ADDRESS_MSB downto REG_GBT_ADDRESS_LSB) <= x"0";
     regs_addresses(1)(REG_GBT_ADDRESS_MSB downto REG_GBT_ADDRESS_LSB) <= x"1";
-    regs_addresses(2)(REG_GBT_ADDRESS_MSB downto REG_GBT_ADDRESS_LSB) <= x"2";
-    regs_addresses(3)(REG_GBT_ADDRESS_MSB downto REG_GBT_ADDRESS_LSB) <= x"3";
-    regs_addresses(4)(REG_GBT_ADDRESS_MSB downto REG_GBT_ADDRESS_LSB) <= x"4";
-    regs_addresses(5)(REG_GBT_ADDRESS_MSB downto REG_GBT_ADDRESS_LSB) <= x"5";
-    regs_addresses(6)(REG_GBT_ADDRESS_MSB downto REG_GBT_ADDRESS_LSB) <= x"6";
-    regs_addresses(7)(REG_GBT_ADDRESS_MSB downto REG_GBT_ADDRESS_LSB) <= x"7";
-    regs_addresses(8)(REG_GBT_ADDRESS_MSB downto REG_GBT_ADDRESS_LSB) <= x"8";
+    regs_addresses(2)(REG_GBT_ADDRESS_MSB downto REG_GBT_ADDRESS_LSB) <= x"4";
+    regs_addresses(3)(REG_GBT_ADDRESS_MSB downto REG_GBT_ADDRESS_LSB) <= x"5";
+    regs_addresses(4)(REG_GBT_ADDRESS_MSB downto REG_GBT_ADDRESS_LSB) <= x"6";
+    regs_addresses(5)(REG_GBT_ADDRESS_MSB downto REG_GBT_ADDRESS_LSB) <= x"7";
 
     -- Connect read signals
-    regs_read_arr(0)(REG_GBT_TX_BITSLIP0_MSB downto REG_GBT_TX_BITSLIP0_LSB) <= gbt_tx_bitslip0;
-    regs_read_arr(0)(REG_GBT_TX_BITSLIP1_MSB downto REG_GBT_TX_BITSLIP1_LSB) <= gbt_tx_bitslip1;
     regs_read_arr(0)(REG_GBT_TX_CNT_RESPONSE_SENT_MSB downto REG_GBT_TX_CNT_RESPONSE_SENT_LSB) <= cnt_ipb_response;
     regs_read_arr(1)(REG_GBT_TX_TX_READY_BIT) <= gbt_txready_i;
-    regs_read_arr(1)(REG_GBT_TX_SYNC_MODE_BIT) <= tx_sync_mode_ipb;
     regs_read_arr(1)(REG_GBT_TX_TX_DELAY_MSB downto REG_GBT_TX_TX_DELAY_LSB) <= tx_delay;
-    regs_read_arr(2)(REG_GBT_TX_TEST_PAT0_MSB downto REG_GBT_TX_TEST_PAT0_LSB) <= test_pattern (31 downto 0);
-    regs_read_arr(3)(REG_GBT_TX_TEST_PAT1_MSB downto REG_GBT_TX_TEST_PAT1_LSB) <= test_pattern (63 downto 32);
-    regs_read_arr(4)(REG_GBT_RX_RX_READY_BIT) <= gbt_rxready_i;
-    regs_read_arr(4)(REG_GBT_RX_RX_VALID_BIT) <= gbt_rxvalid_i;
-    regs_read_arr(4)(REG_GBT_RX_CNT_REQUEST_RECEIVED_MSB downto REG_GBT_RX_CNT_REQUEST_RECEIVED_LSB) <= cnt_ipb_request;
-    regs_read_arr(5)(REG_GBT_RX_CNT_LINK_ERR_MSB downto REG_GBT_RX_CNT_LINK_ERR_LSB) <= cnt_link_err;
+    regs_read_arr(2)(REG_GBT_RX_RX_READY_BIT) <= gbt_rxready_i;
+    regs_read_arr(2)(REG_GBT_RX_RX_VALID_BIT) <= gbt_rxvalid_i;
+    regs_read_arr(2)(REG_GBT_RX_CNT_REQUEST_RECEIVED_MSB downto REG_GBT_RX_CNT_REQUEST_RECEIVED_LSB) <= cnt_ipb_request;
+    regs_read_arr(3)(REG_GBT_RX_CNT_LINK_ERR_MSB downto REG_GBT_RX_CNT_LINK_ERR_LSB) <= cnt_link_err;
 
     -- Connect write signals
-    gbt_tx_bitslip0 <= regs_write_arr(0)(REG_GBT_TX_BITSLIP0_MSB downto REG_GBT_TX_BITSLIP0_LSB);
-    gbt_tx_bitslip1 <= regs_write_arr(0)(REG_GBT_TX_BITSLIP1_MSB downto REG_GBT_TX_BITSLIP1_LSB);
-    tx_sync_mode_ipb <= regs_write_arr(1)(REG_GBT_TX_SYNC_MODE_BIT);
     tx_delay <= regs_write_arr(1)(REG_GBT_TX_TX_DELAY_MSB downto REG_GBT_TX_TX_DELAY_LSB);
-    test_pattern (31 downto 0) <= regs_write_arr(2)(REG_GBT_TX_TEST_PAT0_MSB downto REG_GBT_TX_TEST_PAT0_LSB);
-    test_pattern (63 downto 32) <= regs_write_arr(3)(REG_GBT_TX_TEST_PAT1_MSB downto REG_GBT_TX_TEST_PAT1_LSB);
 
     -- Connect write pulse signals
-    l1a_force <= regs_write_pulse_arr(5);
-    bc0_force <= regs_write_pulse_arr(6);
-    resync_force <= regs_write_pulse_arr(7);
-    reset_vfats_force <= regs_write_pulse_arr(8);
+    l1a_force <= regs_write_pulse_arr(3);
+    bc0_force <= regs_write_pulse_arr(4);
+    resync_force <= regs_write_pulse_arr(5);
 
     -- Connect write done signals
 
@@ -383,18 +321,10 @@ begin
     -- Connect read ready signals
 
     -- Defaults
-    regs_defaults(0)(REG_GBT_TX_BITSLIP0_MSB downto REG_GBT_TX_BITSLIP0_LSB) <= REG_GBT_TX_BITSLIP0_DEFAULT;
-    regs_defaults(0)(REG_GBT_TX_BITSLIP1_MSB downto REG_GBT_TX_BITSLIP1_LSB) <= REG_GBT_TX_BITSLIP1_DEFAULT;
-    regs_defaults(1)(REG_GBT_TX_SYNC_MODE_BIT) <= REG_GBT_TX_SYNC_MODE_DEFAULT;
     regs_defaults(1)(REG_GBT_TX_TX_DELAY_MSB downto REG_GBT_TX_TX_DELAY_LSB) <= REG_GBT_TX_TX_DELAY_DEFAULT;
-    regs_defaults(2)(REG_GBT_TX_TEST_PAT0_MSB downto REG_GBT_TX_TEST_PAT0_LSB) <= REG_GBT_TX_TEST_PAT0_DEFAULT;
-    regs_defaults(3)(REG_GBT_TX_TEST_PAT1_MSB downto REG_GBT_TX_TEST_PAT1_LSB) <= REG_GBT_TX_TEST_PAT1_DEFAULT;
 
     -- Define writable regs
-    regs_writable_arr(0) <= '1';
     regs_writable_arr(1) <= '1';
-    regs_writable_arr(2) <= '1';
-    regs_writable_arr(3) <= '1';
 
     --==== Registers end ============================================================================
 end Behavioral;

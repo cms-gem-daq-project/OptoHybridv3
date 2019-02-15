@@ -9,6 +9,8 @@
 --   as well as the cluster packer
 ----------------------------------------------------------------------------------
 -- 2017/11/01 -- Add description / comments
+-- 2018/04/17 -- Add options for "light" oh firmware
+-- 2018/09/18 -- Add module for S-bit remapping in firmware
 ----------------------------------------------------------------------------------
 
 library ieee;
@@ -22,82 +24,78 @@ use work.types_pkg.all;
 use work.trig_pkg.all;
 
 entity sbits is
+generic (oh_lite : integer := OH_LITE);
 port(
 
-    clk160_i                : in std_logic;
-    clk160_90_i             : in std_logic;
-    clk40_i                 : in std_logic;
-    delay_refclk_i          : in std_logic;
-    delay_refclk_reset_i    : in std_logic;
+    clk80_i                : in std_logic;
+    clk160_i               : in std_logic;
+    clk200_i               : in std_logic;
+    clk160_90_i            : in std_logic;
+    clk40_i                : in std_logic;
 
-    cluster_clk             : in std_logic;
+    reset_i                : in std_logic;
 
-    reset_i                 : in std_logic;
+    trig_stop_i            : in std_logic;
 
-    trig_stop_i             : in std_logic;
+    vfat_sbit_clusters_o   : out sbit_cluster_array_t(7 downto 0);
 
-    vfat_sbit_clusters_o    : out sbit_cluster_array_t(7 downto 0);
+    vfat_mask_i            : in std_logic_vector (MXVFATS-1 downto 0);
 
-    sbit_mask_i             : in std_logic_vector (23 downto 0);
+    sbits_mux_sel_i        : in  std_logic_vector (4 downto 0);
+    sbits_mux_o            : out  std_logic_vector (63 downto 0);
 
-    sbits_mux_sel           : in  std_logic_vector (4 downto 0);
-    sbits_mux_o             : out  std_logic_vector (63 downto 0);
-
-    sot_frame_offset : in std_logic_vector (3 downto 0);
-    sot_invert       : in std_logic_vector (23 downto 0);
-    tu_invert        : in std_logic_vector (191 downto 0);
-    tu_mask          : in std_logic_vector (191 downto 0);
-
-    err_count_to_shift : in std_logic_vector (7 downto 0);
-    stable_count_to_reset : in std_logic_vector (7 downto 0);
+    sot_invert_i           : in std_logic_vector (MXVFATS-1 downto 0); -- 24 or 12
+    tu_invert_i            : in std_logic_vector (MXVFATS*8-1 downto 0); -- 192 or 96
+    tu_mask_i              : in std_logic_vector (MXVFATS*8-1 downto 0); -- 192 or 96
 
     aligned_count_to_ready : in std_logic_vector (11 downto 0);
 
-    cluster_count_o         : out std_logic_vector (7 downto 0);
+    cluster_count_o        : out std_logic_vector (7 downto 0);
 
-    trigger_deadtime_i      : in  std_logic_vector (3 downto 0);
+    trigger_deadtime_i     : in  std_logic_vector (3 downto 0);
 
-    trigger_unit_i          : in trigger_unit_array_t (23 downto 0);
+    sbits_p                : in std_logic_vector (MXVFATS*8-1 downto 0);
+    sbits_n                : in std_logic_vector (MXVFATS*8-1 downto 0);
 
-    active_vfats_o          : out std_logic_vector (23 downto 0);
+    start_of_frame_p       : in std_logic_vector (MXVFATS-1 downto 0);
+    start_of_frame_n       : in std_logic_vector (MXVFATS-1 downto 0);
 
-    overflow_o              : out std_logic;
 
-    sot_phase_err_o         : out std_logic_vector (23 downto 0);
+    active_vfats_o         : out std_logic_vector (MXVFATS-1 downto 0);
 
-    sot_is_aligned_o        : out std_logic_vector (23 downto 0);
-    sot_unstable_o          : out std_logic_vector (23 downto 0);
+    overflow_o             : out std_logic;
 
-    sot_tap_delay           : in t_std5_array (23 downto 0);
-    trig_tap_delay          : in t_std5_array (191 downto 0);
+    sot_is_aligned_o       : out std_logic_vector (MXVFATS-1 downto 0);
+    sot_unstable_o         : out std_logic_vector (MXVFATS-1 downto 0);
 
-    sbit_phase_err_o        : out std_logic_vector (191 downto 0)
+    sot_tap_delay          : in t_std5_array (MXVFATS-1 downto 0);
+    trig_tap_delay         : in t_std5_array (MXVFATS*8-1 downto 0)
 
 );
 end sbits;
 
 architecture Behavioral of sbits is
 
-    signal vfat_sbits               : sbits_array_t(23 downto 0);
+    signal vfat_sbits_strip_mapped  : sbits_array_t(MXVFATS-1 downto 0);
+    signal vfat_sbits               : sbits_array_t(MXVFATS-1 downto 0);
 
-    signal active_vfats             : std_logic_vector (23 downto 0);
+    constant empty_vfat             : std_logic_vector (63 downto 0) := x"0000000000000000";
 
-    signal sbits_p                  : std_logic_vector (191 downto 0);
-    signal sbits_n                  : std_logic_vector (191 downto 0);
-
-    signal start_of_frame_p         : std_logic_vector (23 downto 0);
-    signal start_of_frame_n         : std_logic_vector (23 downto 0);
+    signal active_vfats             : std_logic_vector (MXVFATS-1 downto 0);
 
     signal clk160_180               : std_logic;
 
-    signal sbits                    : std_logic_vector (1535 downto 0);
+    signal sbits                    : std_logic_vector (MXSBITS_CHAMBER-1 downto 0);
 
-    signal active_vfats_s1          : std_logic_vector (191 downto 0);
+    signal active_vfats_s1          : std_logic_vector (MXVFATS*8-1 downto 0);
 
     signal sbits_mux_s0             : std_logic_vector (63 downto 0);
     signal sbits_mux_s1             : std_logic_vector (63 downto 0);
     signal sbits_mux                : std_logic_vector (63 downto 0);
     signal aff_mux                  : std_logic;
+
+    signal sbits_mux_sel            : std_logic_vector (4 downto 0);
+
     -- multiplex together the 1536 s-bits into a single chip-scope accessible register
     -- don't want to affect timing, so do it through a couple of flip-flop stages
 
@@ -106,6 +104,9 @@ architecture Behavioral of sbits is
     attribute mark_debug of aff_mux   : signal is "TRUE";
 
     signal reset : std_logic;
+
+    attribute EQUIVALENT_REGISTER_REMOVAL : string;
+    attribute EQUIVALENT_REGISTER_REMOVAL of reset : signal is "NO";
 
     function reverse_vector (a: in std_logic_vector)
     return std_logic_vector is
@@ -128,282 +129,218 @@ begin
         end if;
     end process;
 
+    process (clk40_i) begin
+        if (rising_edge(clk40_i)) then
+            if (unsigned(sbits_mux_sel_i) > to_unsigned(MXVFATS,sbits_mux_sel_i'length)-1) then
+                sbits_mux_sel <= (others => '0');
+            else
+                sbits_mux_sel <= sbits_mux_sel_i;
+            end if;
+        end if;
+    end process;
+
     -- don't need to do a 180 on the clock-- use local inverters for deserialization to save 1 global clock
     clk160_180 <= not clk160_i;
     active_vfats_o <= active_vfats;
 
-    -- remap VFATs for input to cluster packer
-
-    -- want to remap S-bits from the electronics convention to a "logical"
-    -- convention so that neighboring VFATs are next to eachother
-
-    sbits_p <=  trigger_unit_i(23).trig_data_p
-              & trigger_unit_i(22).trig_data_p
-              & trigger_unit_i(21).trig_data_p
-              & trigger_unit_i(20).trig_data_p
-              & trigger_unit_i(19).trig_data_p
-              & trigger_unit_i(18).trig_data_p
-              & trigger_unit_i(17).trig_data_p
-              & trigger_unit_i(16).trig_data_p
-              & trigger_unit_i(15).trig_data_p
-              & trigger_unit_i(14).trig_data_p
-              & trigger_unit_i(13).trig_data_p
-              & trigger_unit_i(12).trig_data_p
-              & trigger_unit_i(11).trig_data_p
-              & trigger_unit_i(10).trig_data_p
-              &  trigger_unit_i(9).trig_data_p
-              &  trigger_unit_i(8).trig_data_p
-              &  trigger_unit_i(7).trig_data_p
-              &  trigger_unit_i(6).trig_data_p
-              &  trigger_unit_i(5).trig_data_p
-              &  trigger_unit_i(4).trig_data_p
-              &  trigger_unit_i(3).trig_data_p
-              &  trigger_unit_i(2).trig_data_p
-              &  trigger_unit_i(1).trig_data_p
-              &  trigger_unit_i(0).trig_data_p;
-
-    sbits_n <=  trigger_unit_i(23).trig_data_n
-              & trigger_unit_i(22).trig_data_n
-              & trigger_unit_i(21).trig_data_n
-              & trigger_unit_i(20).trig_data_n
-              & trigger_unit_i(19).trig_data_n
-              & trigger_unit_i(18).trig_data_n
-              & trigger_unit_i(17).trig_data_n
-              & trigger_unit_i(16).trig_data_n
-              & trigger_unit_i(15).trig_data_n
-              & trigger_unit_i(14).trig_data_n
-              & trigger_unit_i(13).trig_data_n
-              & trigger_unit_i(12).trig_data_n
-              & trigger_unit_i(11).trig_data_n
-              & trigger_unit_i(10).trig_data_n
-              &  trigger_unit_i(9).trig_data_n
-              &  trigger_unit_i(8).trig_data_n
-              &  trigger_unit_i(7).trig_data_n
-              &  trigger_unit_i(6).trig_data_n
-              &  trigger_unit_i(5).trig_data_n
-              &  trigger_unit_i(4).trig_data_n
-              &  trigger_unit_i(3).trig_data_n
-              &  trigger_unit_i(2).trig_data_n
-              &  trigger_unit_i(1).trig_data_n
-              &  trigger_unit_i(0).trig_data_n;
-
-    start_of_frame_p <=  trigger_unit_i(23).start_of_frame_p
-                       & trigger_unit_i(22).start_of_frame_p
-                       & trigger_unit_i(21).start_of_frame_p
-                       & trigger_unit_i(20).start_of_frame_p
-                       & trigger_unit_i(19).start_of_frame_p
-                       & trigger_unit_i(18).start_of_frame_p
-                       & trigger_unit_i(17).start_of_frame_p
-                       & trigger_unit_i(16).start_of_frame_p
-                       & trigger_unit_i(15).start_of_frame_p
-                       & trigger_unit_i(14).start_of_frame_p
-                       & trigger_unit_i(13).start_of_frame_p
-                       & trigger_unit_i(12).start_of_frame_p
-                       & trigger_unit_i(11).start_of_frame_p
-                       & trigger_unit_i(10).start_of_frame_p
-                       & trigger_unit_i(9).start_of_frame_p
-                       & trigger_unit_i(8).start_of_frame_p
-                       & trigger_unit_i(7).start_of_frame_p
-                       & trigger_unit_i(6).start_of_frame_p
-                       & trigger_unit_i(5).start_of_frame_p
-                       & trigger_unit_i(4).start_of_frame_p
-                       & trigger_unit_i(3).start_of_frame_p
-                       & trigger_unit_i(2).start_of_frame_p
-                       & trigger_unit_i(1).start_of_frame_p
-                       & trigger_unit_i(0).start_of_frame_p;
-
-    start_of_frame_n <=  trigger_unit_i(23).start_of_frame_n
-                       & trigger_unit_i(22).start_of_frame_n
-                       & trigger_unit_i(21).start_of_frame_n
-                       & trigger_unit_i(20).start_of_frame_n
-                       & trigger_unit_i(19).start_of_frame_n
-                       & trigger_unit_i(18).start_of_frame_n
-                       & trigger_unit_i(17).start_of_frame_n
-                       & trigger_unit_i(16).start_of_frame_n
-                       & trigger_unit_i(15).start_of_frame_n
-                       & trigger_unit_i(14).start_of_frame_n
-                       & trigger_unit_i(13).start_of_frame_n
-                       & trigger_unit_i(12).start_of_frame_n
-                       & trigger_unit_i(11).start_of_frame_n
-                       & trigger_unit_i(10).start_of_frame_n
-                       & trigger_unit_i(9).start_of_frame_n
-                       & trigger_unit_i(8).start_of_frame_n
-                       & trigger_unit_i(7).start_of_frame_n
-                       & trigger_unit_i(6).start_of_frame_n
-                       & trigger_unit_i(5).start_of_frame_n
-                       & trigger_unit_i(4).start_of_frame_n
-                       & trigger_unit_i(3).start_of_frame_n
-                       & trigger_unit_i(2).start_of_frame_n
-                       & trigger_unit_i(1).start_of_frame_n
-                       & trigger_unit_i(0).start_of_frame_n;
-
-
-    --=======================--
-    --== Trigger Alignment ==--
-    --=======================--
+    --------------------------------------------------------------------------------------------------------------------
+    -- S-bit Deserialization and Alignment
+    --------------------------------------------------------------------------------------------------------------------
 
     -- deserializes and aligns the 192 320 MHz s-bits into 1536 40MHz s-bits
 
     trig_alignment : entity work.trig_alignment
     port map (
 
-        sbit_mask  => sbit_mask_i,
+        vfat_mask_i            => vfat_mask_i,
 
-        reset_i => reset,
+        reset_i                => reset,
 
-        sbits_p => sbits_p,
-        sbits_n => sbits_n,
+        sbits_p                => sbits_p,
+        sbits_n                => sbits_n,
 
-        sot_frame_offset => sot_frame_offset,
-
-        sot_invert => sot_invert,
-        tu_invert  => tu_invert,
-        tu_mask    => tu_mask,
-
-        err_count_to_shift     => err_count_to_shift,
-        stable_count_to_reset  => stable_count_to_reset,
+        sot_invert_i           => sot_invert_i,
+        tu_invert_i            => tu_invert_i,
+        tu_mask_i              => tu_mask_i,
 
         aligned_count_to_ready => aligned_count_to_ready,
 
-        start_of_frame_p => start_of_frame_p,
-        start_of_frame_n => start_of_frame_n,
+        start_of_frame_p       => start_of_frame_p,
+        start_of_frame_n       => start_of_frame_n,
 
-        fastclk_0    => clk160_i,
-        fastclk_90   => clk160_90_i,
-        fastclk_180  => clk160_180,
-        clock        => clk40_i,
-        delay_refclk => delay_refclk_i,
-        delay_refclk_reset => delay_refclk_reset_i,
+        clk80_0                => clk80_i,
+        clk160_0               => clk160_i,
+        clk160_90              => clk160_90_i,
+        clk160_180             => clk160_180,
+        clock                  => clk40_i,
 
-        phase_err     => sbit_phase_err_o,
-        sot_phase_err => sot_phase_err_o,
+        sot_is_aligned         => sot_is_aligned_o,
+        sot_unstable           => sot_unstable_o,
 
-        sot_is_aligned => sot_is_aligned_o,
-        sot_unstable   => sot_unstable_o,
+        sot_tap_delay          => sot_tap_delay,
+        trig_tap_delay         => trig_tap_delay,
 
-        sot_tap_delay => sot_tap_delay,
-        trig_tap_delay => trig_tap_delay,
-
-        sbits => sbits
+        sbits                  => sbits
     );
 
-    -- combinatorial renaming for input to cluster packing module
+    --------------------------------------------------------------------------------------------------------------------
+    -- Channel to Strip Mapping
+    --------------------------------------------------------------------------------------------------------------------
 
-    vfat_sbits (0)  <= sbits (63   downto 0)    when REVERSE_VFAT_SBITS(0)='0' else reverse_vector(sbits (63   downto 0)   );
-    vfat_sbits (1)  <= sbits (127  downto 64)   when REVERSE_VFAT_SBITS(0)='0' else reverse_vector(sbits (127  downto 64)  );
-    vfat_sbits (2)  <= sbits (191  downto 128)  when REVERSE_VFAT_SBITS(0)='0' else reverse_vector(sbits (191  downto 128) );
-    vfat_sbits (3)  <= sbits (255  downto 192)  when REVERSE_VFAT_SBITS(0)='0' else reverse_vector(sbits (255  downto 192) );
-    vfat_sbits (4)  <= sbits (319  downto 256)  when REVERSE_VFAT_SBITS(0)='0' else reverse_vector(sbits (319  downto 256) );
-    vfat_sbits (5)  <= sbits (383  downto 320)  when REVERSE_VFAT_SBITS(0)='0' else reverse_vector(sbits (383  downto 320) );
-    vfat_sbits (6)  <= sbits (447  downto 384)  when REVERSE_VFAT_SBITS(0)='0' else reverse_vector(sbits (447  downto 384) );
-    vfat_sbits (7)  <= sbits (511  downto 448)  when REVERSE_VFAT_SBITS(0)='0' else reverse_vector(sbits (511  downto 448) );
-    vfat_sbits (8)  <= sbits (575  downto 512)  when REVERSE_VFAT_SBITS(0)='0' else reverse_vector(sbits (575  downto 512) );
-    vfat_sbits (9)  <= sbits (639  downto 576)  when REVERSE_VFAT_SBITS(0)='0' else reverse_vector(sbits (639  downto 576) );
-    vfat_sbits (10) <= sbits (703  downto 640)  when REVERSE_VFAT_SBITS(0)='0' else reverse_vector(sbits (703  downto 640) );
-    vfat_sbits (11) <= sbits (767  downto 704)  when REVERSE_VFAT_SBITS(0)='0' else reverse_vector(sbits (767  downto 704) );
-    vfat_sbits (12) <= sbits (831  downto 768)  when REVERSE_VFAT_SBITS(0)='0' else reverse_vector(sbits (831  downto 768) );
-    vfat_sbits (13) <= sbits (895  downto 832)  when REVERSE_VFAT_SBITS(0)='0' else reverse_vector(sbits (895  downto 832) );
-    vfat_sbits (14) <= sbits (959  downto 896)  when REVERSE_VFAT_SBITS(0)='0' else reverse_vector(sbits (959  downto 896) );
-    vfat_sbits (15) <= sbits (1023 downto 960)  when REVERSE_VFAT_SBITS(0)='0' else reverse_vector(sbits (1023 downto 960) );
-    vfat_sbits (16) <= sbits (1087 downto 1024) when REVERSE_VFAT_SBITS(0)='0' else reverse_vector(sbits (1087 downto 1024));
-    vfat_sbits (17) <= sbits (1151 downto 1088) when REVERSE_VFAT_SBITS(0)='0' else reverse_vector(sbits (1151 downto 1088));
-    vfat_sbits (18) <= sbits (1215 downto 1152) when REVERSE_VFAT_SBITS(0)='0' else reverse_vector(sbits (1215 downto 1152));
-    vfat_sbits (19) <= sbits (1279 downto 1216) when REVERSE_VFAT_SBITS(0)='0' else reverse_vector(sbits (1279 downto 1216));
-    vfat_sbits (20) <= sbits (1343 downto 1280) when REVERSE_VFAT_SBITS(0)='0' else reverse_vector(sbits (1343 downto 1280));
-    vfat_sbits (21) <= sbits (1407 downto 1344) when REVERSE_VFAT_SBITS(0)='0' else reverse_vector(sbits (1407 downto 1344));
-    vfat_sbits (22) <= sbits (1471 downto 1408) when REVERSE_VFAT_SBITS(0)='0' else reverse_vector(sbits (1471 downto 1408));
-    vfat_sbits (23) <= sbits (1535 downto 1472) when REVERSE_VFAT_SBITS(0)='0' else reverse_vector(sbits (1535 downto 1472));
+    sbit_reverse : for I in 0 to (MXVFATS-1) generate
+    begin
+        vfat_sbits (I)  <= sbits ((I+1)*MXSBITS-1 downto (I)*MXSBITS) when REVERSE_VFAT_SBITS(0)='0' else reverse_vector(sbits ((I+1)*MXSBITS-1 downto (I)*MXSBITS));
+    end generate;
 
-    --========================--
-    --==  Active VFAT Flags ==--
-    --========================--
+    channel_to_strip_inst : entity work.channel_to_strip
+    port map (
+        channels_in => vfat_sbits,
+        strips_out  => vfat_sbits_strip_mapped
+    );
+
+    --------------------------------------------------------------------------------------------------------------------
+    -- Active VFAT Flags
+    --------------------------------------------------------------------------------------------------------------------
 
     -- want to generate 24 bits as active VFAT flags, indicating that at least one s-bit on that VFAT
     -- was active in this 40MHz cycle
 
     -- I don't want to do 64 bit reduction in 1 clock... split it over 2 to add slack to PAR and timing
 
-    active_vfat_s1 : for I in 0 to (191) generate
-    begin
-    process (clk40_i)
-    begin
-        if (rising_edge(clk40_i)) then
-            active_vfats_s1 (I)   <= or_reduce (sbits (8*(I+1)-1 downto (8*I)));
-        end if;
-    end process;
-    end generate;
+    active_vfats_inst : entity work.active_vfats
+    port map (
+        clock          => clk40_i,
+        sbits_i        => sbits,
+        active_vfats_o => active_vfats
+    );
 
-    active_vfat_s2 : for I in 0 to (23) generate
-    begin
-    process (clk40_i)
-    begin
-        if (rising_edge(clk40_i)) then
-            active_vfats (I)   <= or_reduce (active_vfats_s1 (8*(I+1)-1 downto (8*I)));
-        end if;
-    end process;
-    end generate;
+    --------------------------------------------------------------------------------------------------------------------
+    -- Sbits Monitor Multiplexer
+    --------------------------------------------------------------------------------------------------------------------
 
     process (clk40_i) begin
         if (rising_edge(clk40_i)) then
-            sbits_mux_s0 <= vfat_sbits(to_integer(unsigned(sbits_mux_sel)));
+            sbits_mux_s0 <= vfat_sbits_strip_mapped(to_integer(unsigned(sbits_mux_sel)));
             sbits_mux_s1 <= sbits_mux_s0;
             sbits_mux    <= sbits_mux_s1;
+            sbits_mux_o  <= sbits_mux;
 
             aff_mux      <= active_vfats(to_integer(unsigned(sbits_mux_sel)));
 
         end if;
     end process;
 
-    sbits_mux_o <= sbits_mux;
+    --------------------------------------------------------------------------------------------------------------------
+    -- Cluster Packer
+    --------------------------------------------------------------------------------------------------------------------
 
-    --======================--
-    --== Cluster Packer   ==--
-    --======================--
+    --====================================--
+    --== Light (12 VFAT) Cluster Packer ==--
+    --====================================--
+
+    OH_LITE_GEN : if (oh_lite=1) GENERATE
 
     cluster_packer_inst : entity work.cluster_packer
 
-    generic map (TRUNCATE_CLUSTERS => 1)
+        port map(
+            trig_stop_i         => trig_stop_i,
+            clock5x             => clk200_i,
+            clock4x             => clk160_i,
+            clock1x             => clk40_i,
+            reset_i             => reset,
+            cluster_count       => cluster_count_o,
+            deadtime_i          => trigger_deadtime_i,
 
-    port map(
-        trig_stop_i         => trig_stop_i,
-        clock4x             => clk160_i,
-        clock1x             => clk40_i,
-        reset_i             => reset,
-        cluster_count       => cluster_count_o,
-        deadtime_i          => trigger_deadtime_i,
-        vfat0               => vfat_sbits(0),
-        vfat1               => vfat_sbits(1),
-        vfat2               => vfat_sbits(2),
-        vfat3               => vfat_sbits(3),
-        vfat4               => vfat_sbits(4),
-        vfat5               => vfat_sbits(5),
-        vfat6               => vfat_sbits(6),
-        vfat7               => vfat_sbits(7),
-        vfat8               => vfat_sbits(8),
-        vfat9               => vfat_sbits(9),
-        vfat10              => vfat_sbits(10),
-        vfat11              => vfat_sbits(11),
-        vfat12              => vfat_sbits(12),
-        vfat13              => vfat_sbits(13),
-        vfat14              => vfat_sbits(14),
-        vfat15              => vfat_sbits(15),
-        vfat16              => vfat_sbits(16),
-        vfat17              => vfat_sbits(17),
-        vfat18              => vfat_sbits(18),
-        vfat19              => vfat_sbits(19),
-        vfat20              => vfat_sbits(20),
-        vfat21              => vfat_sbits(21),
-        vfat22              => vfat_sbits(22),
-        vfat23              => vfat_sbits(23),
-        cluster0            => vfat_sbit_clusters_o(0),
-        cluster1            => vfat_sbit_clusters_o(1),
-        cluster2            => vfat_sbit_clusters_o(2),
-        cluster3            => vfat_sbit_clusters_o(3),
-        cluster4            => vfat_sbit_clusters_o(4),
-        cluster5            => vfat_sbit_clusters_o(5),
-        cluster6            => vfat_sbit_clusters_o(6),
-        cluster7            => vfat_sbit_clusters_o(7),
-        overflow            => overflow_o
-    );
+            vfat0               => vfat_sbits_strip_mapped(0),
+            vfat1               => vfat_sbits_strip_mapped(1),
+            vfat2               => vfat_sbits_strip_mapped(2),
+            vfat3               => vfat_sbits_strip_mapped(3),
+            vfat4               => vfat_sbits_strip_mapped(4),
+            vfat5               => vfat_sbits_strip_mapped(5),
+            vfat6               => vfat_sbits_strip_mapped(6),
+            vfat7               => vfat_sbits_strip_mapped(7),
+            vfat8               => vfat_sbits_strip_mapped(8),
+            vfat9               => vfat_sbits_strip_mapped(9),
+            vfat10              => vfat_sbits_strip_mapped(10),
+            vfat11              => vfat_sbits_strip_mapped(11),
+            vfat12              => empty_vfat,
+            vfat13              => empty_vfat,
+            vfat14              => empty_vfat,
+            vfat15              => empty_vfat,
+            vfat16              => empty_vfat,
+            vfat17              => empty_vfat,
+            vfat18              => empty_vfat,
+            vfat19              => empty_vfat,
+            vfat20              => empty_vfat,
+            vfat21              => empty_vfat,
+            vfat22              => empty_vfat,
+            vfat23              => empty_vfat,
+
+            cluster0            => vfat_sbit_clusters_o(0),
+            cluster1            => vfat_sbit_clusters_o(1),
+            cluster2            => vfat_sbit_clusters_o(2),
+            cluster3            => vfat_sbit_clusters_o(3),
+            cluster4            => vfat_sbit_clusters_o(4),
+            cluster5            => vfat_sbit_clusters_o(5),
+            cluster6            => vfat_sbit_clusters_o(6),
+            cluster7            => vfat_sbit_clusters_o(7),
+
+            overflow            => overflow_o
+        );
+
+    end generate;
+
+    --====================================--
+    --== Heavy (24 VFAT) Cluster Packer ==--
+    --====================================--
+
+    OH_FULL_GEN : if (oh_lite=0) GENERATE
+
+    cluster_packer_inst : entity work.cluster_packer
+
+        port map(
+            trig_stop_i         => trig_stop_i,
+            clock5x             => clk200_i,
+            clock4x             => clk160_i,
+            clock1x             => clk40_i,
+            reset_i             => reset,
+            cluster_count       => cluster_count_o,
+            deadtime_i          => trigger_deadtime_i,
+            vfat0               => vfat_sbits_strip_mapped(0),
+            vfat1               => vfat_sbits_strip_mapped(1),
+            vfat2               => vfat_sbits_strip_mapped(2),
+            vfat3               => vfat_sbits_strip_mapped(3),
+            vfat4               => vfat_sbits_strip_mapped(4),
+            vfat5               => vfat_sbits_strip_mapped(5),
+            vfat6               => vfat_sbits_strip_mapped(6),
+            vfat7               => vfat_sbits_strip_mapped(7),
+            vfat8               => vfat_sbits_strip_mapped(8),
+            vfat9               => vfat_sbits_strip_mapped(9),
+            vfat10              => vfat_sbits_strip_mapped(10),
+            vfat11              => vfat_sbits_strip_mapped(11),
+            vfat12              => vfat_sbits_strip_mapped(12),
+            vfat13              => vfat_sbits_strip_mapped(13),
+            vfat14              => vfat_sbits_strip_mapped(14),
+            vfat15              => vfat_sbits_strip_mapped(15),
+            vfat16              => vfat_sbits_strip_mapped(16),
+            vfat17              => vfat_sbits_strip_mapped(17),
+            vfat18              => vfat_sbits_strip_mapped(18),
+            vfat19              => vfat_sbits_strip_mapped(19),
+            vfat20              => vfat_sbits_strip_mapped(20),
+            vfat21              => vfat_sbits_strip_mapped(21),
+            vfat22              => vfat_sbits_strip_mapped(22),
+            vfat23              => vfat_sbits_strip_mapped(23),
+            cluster0            => vfat_sbit_clusters_o(0),
+            cluster1            => vfat_sbit_clusters_o(1),
+            cluster2            => vfat_sbit_clusters_o(2),
+            cluster3            => vfat_sbit_clusters_o(3),
+            cluster4            => vfat_sbit_clusters_o(4),
+            cluster5            => vfat_sbit_clusters_o(5),
+            cluster6            => vfat_sbit_clusters_o(6),
+            cluster7            => vfat_sbit_clusters_o(7),
+            overflow            => overflow_o
+        );
+
+    end generate;
 
 end Behavioral;

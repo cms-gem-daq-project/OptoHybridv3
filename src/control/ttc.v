@@ -18,7 +18,10 @@
 // 2017/08/07 -- Add bc0 counters (local and received)
 //--------------------------------------------------------------------------------
 
-module ttc (
+module ttc #(
+  parameter HOLD_UNTIL_BX0 = 0,
+  parameter MXBXN          = 12 // Number BXN bits, LHC bunchs numbered 0 to 3563
+) (
 
   input clock,
 
@@ -38,11 +41,8 @@ module ttc (
 
 );
 
-  parameter        MXBXN          = 12;       // Number BXN bits, LHC bunchs numbered 0 to 3563
-  parameter [11:0] LHC_CYCLE      = 12'd3564; // LHC period, max BXN count+1
-  parameter        MXCNT          = 32;       // Maximum counter length
-  parameter        HOLD_UNTIL_BX0 = 0;
-
+  localparam [11:0] LHC_CYCLE      = 12'd3564; // LHC period, max BXN count+1
+  localparam        MXCNT          = 32;       // Maximum counter length
 
   // Bunch Crossing Counter, counts 0 to 3563, presets at resync or bxreset, stops counting, resumes at bx0
 

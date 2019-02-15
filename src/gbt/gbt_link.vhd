@@ -38,8 +38,8 @@ port(
     clock         : in std_logic;
 
     -- parallel data to/from serdes
-    data_i          : in std_logic_vector (15 downto 0);
-    data_o          : out std_logic_vector(15 downto 0);
+    data_i          : in std_logic_vector (7 downto 0);
+    data_o          : out std_logic_vector(7 downto 0);
 
     -- wishbone
     ipb_mosi_o    : out ipb_wbus;
@@ -49,7 +49,6 @@ port(
     l1a_o           : out std_logic;
     bc0_o           : out std_logic;
     resync_o        : out std_logic;
-    reset_vfats_o   : out std_logic;
 
     -- status
     ready_o         : out std_logic;
@@ -63,21 +62,21 @@ architecture Behavioral of gbt_link is
 
     --== GTX requests ==--
 
-    signal ready       : std_logic; -- gbt rx link went good
-    signal rx_unstable : std_logic; -- gbt rx link was good then went bad
-    signal rx_error    : std_logic; -- error on gbt rx link
+    signal ready       : std_logic := '0'; -- gbt rx link is good
+    signal rx_unstable : std_logic := '1'; -- gbt rx link was good then went bad
+    signal rx_error    : std_logic := '1'; -- error on gbt rx link
 
-    signal ready_cnt : unsigned (15 downto 0);
-    signal ready_cnt_max : natural := 65535;
+    signal gbt_rx_req  : std_logic := '0'; -- rx fifo write request
+    signal gbt_rx_data : std_logic_vector(IPB_REQ_BITS-1 downto 0) := (others => '0');
 
-    signal gbt_rx_req  : std_logic; -- rx fifo write request
-    signal gbt_rx_data : std_logic_vector(IPB_REQ_BITS-1 downto 0);
+    signal gbt_rx_req_reg  : std_logic := '0'; -- rx fifo write request
+    signal gbt_rx_data_reg : std_logic_vector(IPB_REQ_BITS-1 downto 0) := (others => '0');
 
-    signal oh_tx_req   : std_logic; -- tx fifo read request
-    signal oh_tx_valid : std_logic; -- tx fifo data available
-    signal oh_tx_data  : std_logic_vector(31 downto 0);
+    signal oh_tx_req   : std_logic := '0'; -- tx fifo read request
+    signal oh_tx_valid : std_logic := '0'; -- tx fifo data available
+    signal oh_tx_data  : std_logic_vector(31 downto 0) := (others => '0');
 
-    signal reset       : std_logic;
+    signal reset       : std_logic := '1';
 
 begin
 
@@ -90,33 +89,8 @@ begin
         end if;
     end process;
 
-
-    -- check for N consequtive good bx of link before marking as "ready"
-    process (clock) begin
-        if (rising_edge(clock)) then
-
-            if (reset='1' or rx_error='1') then
-                ready_cnt <= (others => '0');
-            elsif (ready_cnt < ready_cnt_max) then
-                ready_cnt <= ready_cnt + 1;
-            end if;
-
-            if (reset='1') then
-                ready <= '0';
-            elsif (ready_cnt = ready_cnt_max) then
-                ready <= '1';
-            else
-                ready <= '0';
-            end if;
-
-            -- outputs
-
-            ready_o <= ready;
-            error_o <= rx_error;
-
-        end if;
-
-    end process;
+    ready_o <= ready;
+    error_o <= rx_error;
 
     process (clock) begin
         if (rising_edge(clock)) then
@@ -135,7 +109,7 @@ begin
     --== GBT RX ==--
     --============--
 
-    gbt_rx_inst : entity work.gbt_rx
+    gbt_rx : entity work.gbt_rx
     port map(
         -- reset
         reset_i      => reset,
@@ -150,12 +124,12 @@ begin
         l1a_o         => l1a_o,
         bc0_o         => bc0_o,
         resync_o      => resync_o,
-        reset_vfats_o => reset_vfats_o,
 
         req_en_o     => gbt_rx_req, -- 1 bit, wishbone request recevied from GBTx
         req_data_o   => gbt_rx_data, -- 49 bit packet (1 bit we + 16 bit addr + 32 bit data)
 
         -- status
+        ready_o      => ready,
         error_o      => rx_error
     );
 
@@ -163,7 +137,7 @@ begin
     --== GBT TX ==--
     --============--
 
-    gbt_tx_inst : entity work.gbt_tx
+    gbt_tx : entity work.gbt_tx
     port map(
         -- reset
         reset_i     => reset,
@@ -177,7 +151,7 @@ begin
         req_en_o    => oh_tx_req,   -- fifo read enable
 
         -- parallel data output to serializer
-        data_o      => data_o       -- 16 bit output frames
+        data_o      => data_o       -- 8 bit output frames
     );
 
     --========================--
@@ -186,7 +160,14 @@ begin
 
     -- create fifos to buffer between GBT and wishbone
 
-    link_request_inst : entity work.link_request
+    process (clock) begin
+        if (rising_edge(clock)) then
+            gbt_rx_req_reg  <= gbt_rx_req;
+            gbt_rx_data_reg <= gbt_rx_data;
+        end if;
+    end process;
+
+    link_request : entity work.link_request
     port map(
         -- clocks
         fabric_clock_i  => clock, -- 40 MHz logic clock
@@ -196,8 +177,8 @@ begin
 
         -- rx parallel data (from GBT)
         ipb_mosi_o    => ipb_mosi_o, -- 16 bit adr + 32 bit data + we
-        rx_en_i       => gbt_rx_req,
-        rx_data_i     => gbt_rx_data,  -- 16 bit adr + 32 bit data
+        rx_en_i       => gbt_rx_req_reg,
+        rx_data_i     => gbt_rx_data_reg,  -- 16 bit adr + 32 bit data
 
         -- tx parallel data (to GBT)
 

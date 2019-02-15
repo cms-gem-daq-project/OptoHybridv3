@@ -25,25 +25,24 @@ package ipbus_pkg is
     constant WB_ERR_I2C_REG     : std_logic_vector(3 downto 0) := x"2";
     constant WB_ERR_I2C_ACK     : std_logic_vector(3 downto 0) := x"3";
 
-
     -- IPbus slave index definition
 
+    -- START: IPBUS_SLAVES :: DO NOT EDIT
     type t_ipb_slv is record
-        CONTROL   : integer;
-        ADC       : integer;
-        TRIG      : integer;
-        CLOCKING  : integer;
-        GBT       : integer;
+                CONTROL   : integer;
+                    ADC   : integer;
+                   TRIG   : integer;
+               CLOCKING   : integer;
+                    GBT   : integer;
     end record;
-
     -- IPbus slave index definition
     constant IPB_SLAVE : t_ipb_slv := (
-        CONTROL => 0,
-        ADC => 1,
-        TRIG => 2,
-        CLOCKING => 3,
-        GBT => 4
-    );
+                CONTROL  => 0,
+                    ADC  => 1,
+                   TRIG  => 2,
+               CLOCKING  => 3,
+                    GBT  => 4    );
+    -- END: IPBUS_SLAVES :: DO NOT EDIT
 
     constant IPB_REQ_BITS        : integer := 49;
     constant WB_REQ_BITS        : integer := IPB_REQ_BITS;
@@ -87,12 +86,14 @@ package body ipbus_pkg is
         -- lowest  12 bits are used by the wishbone splitters as individual register addresses
         -- highest  4 are used as the module ID (wishbone slave #)
 
-        if    (std_match(addr, std_logic_vector(to_unsigned(IPB_SLAVE.CONTROL,  4))  & "------------")) then sel := IPB_SLAVE.CONTROL;
-        elsif (std_match(addr, std_logic_vector(to_unsigned(IPB_SLAVE.ADC,      4))  & "------------")) then sel := IPB_SLAVE.ADC;
-        elsif (std_match(addr, std_logic_vector(to_unsigned(IPB_SLAVE.TRIG,     4))  & "------------")) then sel := IPB_SLAVE.TRIG;
-        elsif (std_match(addr, std_logic_vector(to_unsigned(IPB_SLAVE.CLOCKING, 4))  & "------------")) then sel := IPB_SLAVE.CLOCKING;
-        elsif (std_match(addr, std_logic_vector(to_unsigned(IPB_SLAVE.GBT     , 4))  & "------------")) then sel := IPB_SLAVE.GBT;
-        --
+        -- START: IPBUS_ADDR_SEL :: DO NOT EDIT
+        if   (std_match(addr, std_logic_vector(to_unsigned(IPB_SLAVE.        CONTROL,     4))  & "------------")) then sel := IPB_SLAVE.CONTROL;
+        elsif(std_match(addr, std_logic_vector(to_unsigned(IPB_SLAVE.            ADC,     4))  & "------------")) then sel := IPB_SLAVE.ADC;
+        elsif(std_match(addr, std_logic_vector(to_unsigned(IPB_SLAVE.           TRIG,     4))  & "------------")) then sel := IPB_SLAVE.TRIG;
+        elsif(std_match(addr, std_logic_vector(to_unsigned(IPB_SLAVE.       CLOCKING,     4))  & "------------")) then sel := IPB_SLAVE.CLOCKING;
+        elsif(std_match(addr, std_logic_vector(to_unsigned(IPB_SLAVE.            GBT,     4))  & "------------")) then sel := IPB_SLAVE.GBT;
+        -- END: IPBUS_ADDR_SEL :: DO NOT EDIT
+
         else sel := 99;
         end if;
         return sel;

@@ -1,6 +1,10 @@
 module led_control (
   input clock,
+
   input mmcm_locked,
+  input elink_mmcm_locked,
+  input logic_mmcm_locked,
+
   input gbt_eclk,
 
   input ttc_l1a,
@@ -15,9 +19,6 @@ module led_control (
 
   input reset,
 
-  input [15:0] gbt_rx_data_i,
-  input led_sync_mode_i,
-
   input [7:0] cluster_count_i,
 
   output [31:0] cluster_rate,
@@ -29,35 +30,11 @@ module led_control (
 // Emergency Clock
 //----------------------------------------------------------------------------------------------------------------------
 
-  wire CFGMCLK; // approx 50 MHz
-
-   STARTUP_VIRTEX6 #(
-      .PROG_USR("FALSE")  // Activate program event security feature. Requires encrypted bitstreams.
-   )
-   STARTUP_VIRTEX6_inst (
-      .CFGCLK    (CFGCLK),  // 1-bit output: Configuration main clock output
-      .CFGMCLK   (CFGMCLK), // 1-bit output: Configuration internal oscillator clock output
-      .DINSPI    (DINSPI),  // 1-bit output: DIN SPI PROM access output
-      .EOS       (EOS),     // 1-bit output: Active high output signal indicating the End Of Configuration.
-      .PREQ      (PREQ),    // 1-bit output: PROGRAM request to fabric output
-      .TCKSPI    (TCKSPI),  // 1-bit output: TCK configuration pin access output
-      .CLK       (CLK),     // 1-bit input: User start-up clock input
-      .GSR       (),        // 1-bit input: Global Set/Reset input (GSR cannot be used for the port name)
-      .GTS       (),        // 1-bit input: Global 3-state input   (GTS cannot be used for the port name)
-      .KEYCLEARB (),        // 1-bit input: Clear AES Decrypter Key input from Battery-Backed RAM (BBRAM)
-      .PACK      (),        // 1-bit input: PROGRAM acknowledge input
-      .USRCCLKO  (),        // 1-bit input: User CCLK input
-      .USRCCLKTS (),        // 1-bit input: User CCLK 3-state enable input
-      .USRDONEO  (),        // 1-bit input: User DONE pin output control
-      .USRDONETS ()         // 1-bit input: User DONE 3-state enable output
-   );
-
-   wire async_clock = CFGMCLK;
+  startup startup (.clock_o (async_clock)); // get ~50MHz clock from internal oscillator
 
 //----------------------------------------------------------------------------------------------------------------------
 // LED Source
 //----------------------------------------------------------------------------------------------------------------------
-
 
   wire cylon_mode;
 
@@ -66,30 +43,24 @@ module led_control (
   wire [15:0] led_err;
   wire fader_led;
 
-  reg [15:0] led;
-
-  reg [15:0] gbt_rx_data;
-  reg  led_sync_mode;
-  always @(posedge async_clock) begin
-      gbt_rx_data <= gbt_rx_data_i;
-      led_sync_mode <= led_sync_mode_i;
-  end
-
   always @(*) begin
 
-    led_out <= led;
+    if (!gbt_rxready || !gbt_rxvalid)
+      led_out <= {led_logic[15:8],{8{fader_led}}};
 
-    if (gbt_rxready && gbt_rxvalid && mmcm_locked)
-      if (led_sync_mode)
-        led <= gbt_rx_data;
-      else if (cylon_mode)
-        led <= led_cylon;
-      else
-        led <= led_logic;
+    else if (!mmcm_locked)
+      led_out <= {
+        led_logic[15:8],
+        (led_err[7:0] |  { {4{elink_mmcm_locked}},{4{logic_mmcm_locked}}})
+      };
+
+    else if (cylon_mode)
+      led_out <= led_cylon;
+
     else
-      led <= {16{fader_led}}; // no clock
-  end
+      led_out <= led_logic;
 
+  end
 
 //----------------------------------------------------------------------------------------------------------------------
 // LED Blinkers
@@ -121,21 +92,8 @@ module led_control (
       eclk_led <= ~ eclk_led;
   end
 
-
-  // count to 27 bits
-
-  reg [26:0] fader_cnt=0;
-  reg fader_rising=0;
-  reg [4:0] pwm_cnt;
-
-  wire [3:0] pwm_brightness = fader_cnt[26] ? fader_cnt[25:22] : ~fader_cnt[25:22];
-
-  always @(posedge async_clock) begin
-    fader_cnt <= fader_cnt + 1'b1;
-    pwm_cnt <= pwm_cnt[3:0] + pwm_brightness + 2'd12;
-  end
-
-  assign fader_led = pwm_cnt[4];
+  // count to 27 bits , ~3.5 second period
+  fader #(.MXFADERCNT(27), .MXFADERBITS(5)) fader (.clock (async_clock), .led(fader_led));
 
 //----------------------------------------------------------------------------------------------------------------------
 // Rate Display
@@ -189,7 +147,7 @@ module led_control (
 // Error Mode
 //----------------------------------------------------------------------------------------------------------------------
 
-  // err_indicator u_err_ind (async_clock, 2'd0, ~mmcm_locked, led_err[15:0]);
+  err_indicator u_err_ind (async_clock, 2'd0, ~mmcm_locked, led_err[15:0]);
 
 //----------------------------------------------------------------------------------------------------------------------
 // GBT Req Rx
@@ -217,7 +175,7 @@ module led_control (
 
   assign led_logic [15]   = eclk_led;
   assign led_logic [14]   = clk_led;
-  assign led_logic [13]   = gbt_link_ready ? fader_led : 1'b0; // gbt_rxready && gbt_rxvalid;
+  assign led_logic [13]   = gbt_link_ready ? fader_led : 1'b0;
   assign led_logic [12]   = gbt_flash;
 
   assign led_logic [11]   = l1a_flash;

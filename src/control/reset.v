@@ -25,7 +25,8 @@ module reset (
   output reg reset_o
 );
 
-reg [7:0] soft_reset_delay = 0;
+parameter MXRESETB = 10;
+reg [MXRESETB-1:0] soft_reset_delay = 0;
 reg soft_reset_start=0;
 
 
@@ -33,16 +34,17 @@ reg soft_reset_start=0;
 always @(posedge clock_i) begin
 
   // strobe soft_reset for 1 clock cycle
-  soft_reset_start <= (soft_reset_delay == 8'd1);
+  soft_reset_start <= (soft_reset_delay == 'd1);
 
   if (soft_reset)
-    soft_reset_delay <= 8'd255;
+    soft_reset_delay <= 'd1023;
   else if (soft_reset_delay != 0)
     soft_reset_delay <= soft_reset_delay - 1'b1;
 end
 
 
-  reg [5:0] reset_hold = -1;
+  parameter MXHOLDB = 6;
+  reg [MXHOLDB-1:0] reset_hold = -1;
 
   initial reset_o <= 1'b1;
 
@@ -52,7 +54,7 @@ end
 
   always @ (posedge clock_i)
     if (reset_start)
-      reset_hold <= -1;
+      reset_hold <= {MXHOLDB{1'b1}};
     else if (reset_hold != 0)
       reset_hold <= reset_hold - 1'b1;
 
