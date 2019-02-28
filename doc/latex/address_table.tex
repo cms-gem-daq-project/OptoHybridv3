@@ -22,7 +22,7 @@
 
 \title{Optohybrid v3 Address Table}
 % START: ADDRESS_TABLE_VERSION :: DO NOT EDIT
-    \author{ Firmware Version 03.02.00.1C \\ 20181121}
+    \author{ Firmware Version 03.02.01.1C \\ 20190228}
 % END: ADDRESS_TABLE_VERSION :: DO NOT EDIT
 \begin{document}
 
@@ -463,7 +463,7 @@
     \nopagebreak
     VFAT0 & \texttt{0x2017} & \texttt{[31:0]} & r & \texttt{} & VFAT \{Y\} Counter \\\hline
     RESET & \texttt{0x202f} & \texttt{[0:0]} & w & Pulsed & Reset S-bit counters \\\hline
-    SBIT\_CNT\_PERSIST & \texttt{0x2030} & \texttt{[0:0]} & rw & \texttt{0x0} & 1=counters will persist until manually reset; \\ & & & & &                              0=counters will automatically reset at CNT\_TIME \\\hline
+    SBIT\_CNT\_PERSIST & \texttt{0x2030} & \texttt{[0:0]} & rw & \texttt{0x0} & 1=counters will persist until manually reset; \\ & & & & &                                 0=counters will automatically reset at CNT\_TIME \\\hline
     SBIT\_CNT\_TIME\_MAX & \texttt{0x2031} & \texttt{[31:0]} & rw & \texttt{0x2638E98} & Number of BX that the VFAT S-bit counters will count to before automatically resetting to zero \\\hline
     CLUSTER\_COUNT & \texttt{0x2032} & \texttt{[31:0]} & r & \texttt{} & VFAT Cluster Counter (chamber) \\\hline
     CNT\_PULSE & \texttt{0x2033} & \texttt{[0:0]} & w & Pulsed & Pulses S-bit counters for testing \\\hline
@@ -476,7 +476,7 @@
 
     \vspace{4mm}
     \noindent
-    Controls the tap delay settings of the S-bit trigger unit inputs.             Phase shifts the inputs in 78 ps increments             \\\\ The delay of each S-bit in a VFAT should be increased to match the longest delay incurred by the GEB + Optohybrid routing on that VFAT
+    Controls the tap delay settings of the S-bit trigger unit inputs.                 Phase shifts the inputs in 78 ps increments                 \\\\ The delay of each S-bit in a VFAT should be increased to match the longest delay incurred by the GEB + Optohybrid routing on that VFAT
     \noindent
 
     \keepXColumns
@@ -694,41 +694,6 @@
     SOT\_TAP\_DELAY\_VFAT15 & \texttt{0x205d} & \texttt{[19:15]} & rw & \texttt{0x0} & VFAT 15 SOT tap delay \\\hline
     SOT\_TAP\_DELAY\_VFAT16 & \texttt{0x205d} & \texttt{[24:20]} & rw & \texttt{0x4} & VFAT 16 SOT tap delay \\\hline
     SOT\_TAP\_DELAY\_VFAT17 & \texttt{0x205d} & \texttt{[29:25]} & rw & \texttt{0x0} & VFAT 17 SOT tap delay \\\hline
-    \end{tabularx}
-    \vspace{5mm}
-
-
-    \noindent
-    \textcolor{parentcolor}{\textbf{FPGA.TRIG.LINKS}}
-
-    \vspace{4mm}
-    \noindent
-    Controls and monitors the multi-gigabit links that drive the trigger fiber tranceivers
-    \noindent
-
-    \keepXColumns
-    \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
-    \hline
-    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
-    \nopagebreak
-    RESET & \texttt{0x205e} & \texttt{[0:0]} & w & Pulsed & Reset trigger links \\\hline
-    \end{tabularx}
-    \vspace{5mm}
-
-
-    \noindent
-    \textcolor{parentcolor}{\textbf{FPGA.TRIG.TIMING}}
-
-    \vspace{4mm}
-    \noindent
-    Controls the tap delay settings of the S-bit trigger unit inputs.             Phase shifts the inputs in 78 ps increments             \\\\ The delay of each S-bit in a VFAT should be increased to match the longest delay incurred by the GEB + Optohybrid routing on that VFAT
-    \noindent
-
-    \keepXColumns
-    \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
-    \hline
-    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
-    \nopagebreak
     SOT\_TAP\_DELAY\_VFAT18 & \texttt{0x205e} & \texttt{[4:0]} & rw & \texttt{0x4} & VFAT 18 SOT tap delay \\\hline
     SOT\_TAP\_DELAY\_VFAT19 & \texttt{0x205e} & \texttt{[9:5]} & rw & \texttt{0x2} & VFAT 19 SOT tap delay \\\hline
     SOT\_TAP\_DELAY\_VFAT20 & \texttt{0x205e} & \texttt{[14:10]} & rw & \texttt{0x0} & VFAT 20 SOT tap delay \\\hline
@@ -752,8 +717,9 @@
     \hline
     \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
     \nopagebreak
-    TX\_PLL\_LOCKED & \texttt{0x205f} & \texttt{[3:0]} & r & \texttt{} & Transmit PLLs are Locked \\\hline
-    TX\_RESET\_DONE & \texttt{0x205f} & \texttt{[7:4]} & r & \texttt{} & Transmit Resets are Done \\\hline
+    RESET & \texttt{0x205f} & \texttt{[0:0]} & w & Pulsed & Reset trigger links \\\hline
+    TX\_PLL\_LOCKED & \texttt{0x2060} & \texttt{[3:0]} & r & \texttt{} & Transmit PLLs are Locked \\\hline
+    TX\_RESET\_DONE & \texttt{0x2060} & \texttt{[7:4]} & r & \texttt{} & Transmit Resets are Done \\\hline
     \end{tabularx}
     \vspace{5mm}
 

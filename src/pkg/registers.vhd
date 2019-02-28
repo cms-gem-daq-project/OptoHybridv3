@@ -258,7 +258,7 @@ package registers is
     -- Connects to the trigger control module
     --============================================================================
 
-    constant REG_TRIG_NUM_REGS : integer := 87;
+    constant REG_TRIG_NUM_REGS : integer := 88;
     constant REG_TRIG_ADDRESS_MSB : integer := 7;
     constant REG_TRIG_ADDRESS_LSB : integer := 0;
     constant REG_TRIG_CTRL_VFAT_MASK_ADDR    : std_logic_vector(7 downto 0) := x"00";
@@ -1715,9 +1715,6 @@ package registers is
     constant REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT17_LSB     : integer := 25;
     constant REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT17_DEFAULT : std_logic_vector(29 downto 25) := '0' & x"0";
 
-    constant REG_TRIG_LINKS_RESET_ADDR    : std_logic_vector(7 downto 0) := x"5e";
-    constant REG_TRIG_LINKS_RESET_BIT    : integer := 0;
-
     constant REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT18_ADDR    : std_logic_vector(7 downto 0) := x"5e";
     constant REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT18_MSB    : integer := 4;
     constant REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT18_LSB     : integer := 0;
@@ -1748,11 +1745,14 @@ package registers is
     constant REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT23_LSB     : integer := 25;
     constant REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT23_DEFAULT : std_logic_vector(29 downto 25) := '0' & x"0";
 
-    constant REG_TRIG_LINKS_TX_PLL_LOCKED_ADDR    : std_logic_vector(7 downto 0) := x"5f";
+    constant REG_TRIG_LINKS_RESET_ADDR    : std_logic_vector(7 downto 0) := x"5f";
+    constant REG_TRIG_LINKS_RESET_BIT    : integer := 0;
+
+    constant REG_TRIG_LINKS_TX_PLL_LOCKED_ADDR    : std_logic_vector(7 downto 0) := x"60";
     constant REG_TRIG_LINKS_TX_PLL_LOCKED_MSB    : integer := 3;
     constant REG_TRIG_LINKS_TX_PLL_LOCKED_LSB     : integer := 0;
 
-    constant REG_TRIG_LINKS_TX_RESET_DONE_ADDR    : std_logic_vector(7 downto 0) := x"5f";
+    constant REG_TRIG_LINKS_TX_RESET_DONE_ADDR    : std_logic_vector(7 downto 0) := x"60";
     constant REG_TRIG_LINKS_TX_RESET_DONE_MSB    : integer := 7;
     constant REG_TRIG_LINKS_TX_RESET_DONE_LSB     : integer := 4;
 

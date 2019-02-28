@@ -498,6 +498,7 @@ begin
     regs_addresses(84)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"5d";
     regs_addresses(85)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"5e";
     regs_addresses(86)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"5f";
+    regs_addresses(87)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"60";
 
     -- Connect read signals
     regs_read_arr(0)(REG_TRIG_CTRL_VFAT_MASK_MSB downto REG_TRIG_CTRL_VFAT_MASK_LSB) <= vfat_mask;
@@ -802,8 +803,8 @@ begin
     regs_read_arr(85)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT21_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT21_LSB) <= sot_tap_delay(21);
     regs_read_arr(85)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT22_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT22_LSB) <= sot_tap_delay(22);
     regs_read_arr(85)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT23_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT23_LSB) <= sot_tap_delay(23);
-    regs_read_arr(86)(REG_TRIG_LINKS_TX_PLL_LOCKED_MSB downto REG_TRIG_LINKS_TX_PLL_LOCKED_LSB) <= tx_pll_locked;
-    regs_read_arr(86)(REG_TRIG_LINKS_TX_RESET_DONE_MSB downto REG_TRIG_LINKS_TX_RESET_DONE_LSB) <= tx_reset_done;
+    regs_read_arr(87)(REG_TRIG_LINKS_TX_PLL_LOCKED_MSB downto REG_TRIG_LINKS_TX_PLL_LOCKED_LSB) <= tx_pll_locked;
+    regs_read_arr(87)(REG_TRIG_LINKS_TX_RESET_DONE_MSB downto REG_TRIG_LINKS_TX_RESET_DONE_LSB) <= tx_reset_done;
 
     -- Connect write signals
     vfat_mask <= regs_write_arr(0)(REG_TRIG_CTRL_VFAT_MASK_MSB downto REG_TRIG_CTRL_VFAT_MASK_LSB);
@@ -1081,7 +1082,7 @@ begin
     -- Connect write pulse signals
     reset_counters <= regs_write_pulse_arr(45);
     cnt_pulse <= regs_write_pulse_arr(49);
-    reset_links <= regs_write_pulse_arr(85);
+    reset_links <= regs_write_pulse_arr(86);
 
     -- Connect write done signals
 

@@ -279,142 +279,141 @@
                 mask="0x01ffffff"
                 fw_signal="dna(56 downto 32)"/>
         </node> <!--DNA-->
-
     </node> <!--CTRL-->
 
-<!--ADC module -->
-<node id="ADC"  address="0x1000"
-    description="Connects to the Virtex-6 XADC and allows for reading of temperature, VCCINT, and VCCAUX voltages"
-    fw_is_module="true"
-    fw_module_file="../src/control/adc.vhd"
-    fw_user_clock_signal="clock_i"
-    fw_bus_clock_signal="ipb_clk_i"
-    fw_bus_reset_signal="ipb_reset_i"
-    fw_master_bus_signal="ipb_mosi_i"
-    fw_slave_bus_signal="ipb_miso_o"
-    fw_reg_addr_msb="3"
-    fw_reg_addr_lsb="0">
+    <!--ADC module -->
+    <node id="ADC"  address="0x1000"
+        description="Connects to the Virtex-6 XADC and allows for reading of temperature, VCCINT, and VCCAUX voltages"
+        fw_is_module="true"
+        fw_module_file="../src/control/adc.vhd"
+        fw_user_clock_signal="clock_i"
+        fw_bus_clock_signal="ipb_clk_i"
+        fw_bus_reset_signal="ipb_reset_i"
+        fw_master_bus_signal="ipb_mosi_i"
+        fw_slave_bus_signal="ipb_miso_o"
+        fw_reg_addr_msb="3"
+        fw_reg_addr_lsb="0">
 
-        <node id="CTRL" address="0x0">
+            <node id="CTRL" address="0x0">
 
-            <node id="OVERTEMP" address="0x0" permission="r"
-                mask="0x00000001"
-                description="FPGA over temperature"
-                fw_signal="overtemp"/>
-            <node id="VCCAUX_ALARM" address="0x0" permission="r"
-                mask="0x00000002"
-                description="FPGA VCCAUX Alarm"
-                fw_signal="vccaux_alarm"/>
-            <node id="VCCINT_ALARM" address="0x0" permission="r"
-                mask="0x00000004"
-                description="FPGA VCCINT Alarm"
-                fw_signal="vccint_alarm"/>
+                <node id="OVERTEMP" address="0x0" permission="r"
+                    mask="0x00000001"
+                    description="FPGA over temperature"
+                    fw_signal="overtemp"/>
+                <node id="VCCAUX_ALARM" address="0x0" permission="r"
+                    mask="0x00000002"
+                    description="FPGA VCCAUX Alarm"
+                    fw_signal="vccaux_alarm"/>
+                <node id="VCCINT_ALARM" address="0x0" permission="r"
+                    mask="0x00000004"
+                    description="FPGA VCCINT Alarm"
+                    fw_signal="vccint_alarm"/>
 
-            <node id="ADR_IN" address="0x0" permission="rw"
-                description="XADC Addr In"
-                fw_default="0x0"
-                mask="0x3f8"
-                fw_signal="daddr"/>
+                <node id="ADR_IN" address="0x0" permission="rw"
+                    description="XADC Addr In"
+                    fw_default="0x0"
+                    mask="0x3f8"
+                    fw_signal="daddr"/>
 
-            <node id="ENABLE" address="0x0" permission="rw"
-                description="XADC Data In"
-                mask="0x400"
-                fw_default="0x1"
-                fw_signal="den"/>
+                <node id="ENABLE" address="0x0" permission="rw"
+                    description="XADC Data In"
+                    mask="0x400"
+                    fw_default="0x1"
+                    fw_signal="den"/>
 
-            <node id="DATA_IN" address="0x1" permission="rw"
-                description="XADC Data In"
-                mask="0x0000ffff"
-                fw_default="0x0"
-                fw_signal="data_in"/>
+                <node id="DATA_IN" address="0x1" permission="rw"
+                    description="XADC Data In"
+                    mask="0x0000ffff"
+                    fw_default="0x0"
+                    fw_signal="data_in"/>
 
-            <node id="DATA_OUT" address="0x1" permission="r"
-                description="XADC Data Out"
-                mask="0xffff0000"
-                fw_read_ready_signal="data_ready"
-                fw_signal="data_out"/>
+                <node id="DATA_OUT" address="0x1" permission="r"
+                    description="XADC Data Out"
+                    mask="0xffff0000"
+                    fw_read_ready_signal="data_ready"
+                    fw_signal="data_out"/>
 
-            <node id="RESET" address="0x2" permission="w"
-                mask="0x00000001"
-                description="XADC Reset"
-                fw_write_pulse_signal="reset_local"/>
+                <node id="RESET" address="0x2" permission="w"
+                    mask="0x00000001"
+                    description="XADC Reset"
+                    fw_write_pulse_signal="reset_local"/>
 
-            <node id="WR_EN" address="0x3" permission="w"
-                mask="0x00000001"
-                description="XADC Write Enable"
-                fw_write_pulse_signal="write_en"/>
+                <node id="WR_EN" address="0x3" permission="w"
+                    mask="0x00000001"
+                    description="XADC Write Enable"
+                    fw_write_pulse_signal="write_en"/>
 
-            <node id="CNT_OVERTEMP" address="0x0" permission="r"
-                mask="0x3f800"
-                description="Overtemperature counter"
-                fw_cnt_en_signal="overtemp"
-                fw_cnt_reset_signal="reset"
-                fw_cnt_snap_signal="cnt_snap"
-                fw_signal="cnt_overtemp"/>
+                <node id="CNT_OVERTEMP" address="0x0" permission="r"
+                    mask="0x3f800"
+                    description="Overtemperature counter"
+                    fw_cnt_en_signal="overtemp"
+                    fw_cnt_reset_signal="reset"
+                    fw_cnt_snap_signal="cnt_snap"
+                    fw_signal="cnt_overtemp"/>
 
-            <node id="CNT_VCCAUX_ALARM" address="0x0" permission="r"
-                description="VCCAUX Alarm Counter"
-                mask="0x1fc0000"
-                fw_cnt_en_signal="vccaux_alarm"
-                fw_cnt_reset_signal="reset"
-                fw_cnt_snap_signal="cnt_snap"
-                fw_signal="cnt_vccaux_alarm"/>
+                <node id="CNT_VCCAUX_ALARM" address="0x0" permission="r"
+                    description="VCCAUX Alarm Counter"
+                    mask="0x1fc0000"
+                    fw_cnt_en_signal="vccaux_alarm"
+                    fw_cnt_reset_signal="reset"
+                    fw_cnt_snap_signal="cnt_snap"
+                    fw_signal="cnt_vccaux_alarm"/>
 
-            <node id="CNT_VCCINT_ALARM" address="0x0" permission="r"
-                mask="0xfe000000"
-                description="VCCINT Alarm Counter"
-                fw_cnt_en_signal="vccint_alarm"
-                fw_cnt_reset_signal="reset"
-                fw_cnt_snap_signal="cnt_snap"
-                fw_signal="cnt_vccint_alarm"/>
-        </node> <!--CTRL-->
-</node> <!--ADC-->
+                <node id="CNT_VCCINT_ALARM" address="0x0" permission="r"
+                    mask="0xfe000000"
+                    description="VCCINT Alarm Counter"
+                    fw_cnt_en_signal="vccint_alarm"
+                    fw_cnt_reset_signal="reset"
+                    fw_cnt_snap_signal="cnt_snap"
+                    fw_signal="cnt_vccint_alarm"/>
+            </node> <!--CTRL-->
+    </node> <!--ADC-->
 
-<!--Trigger Module -->
-<node id="TRIG"  address="0x2000"
-    description="Connects to the trigger control module"
-    fw_is_module="true"
-    fw_module_file="../src/trigger/trigger.vhd"
-    fw_user_clock_signal="clk_40"
-    fw_bus_clock_signal="clk_40"
-    fw_bus_reset_signal="ipb_reset"
-    fw_master_bus_signal="ipb_mosi_i"
-    fw_slave_bus_signal="ipb_miso_o"
-    fw_reg_addr_msb="7"
-    fw_reg_addr_lsb="0">
+    <!--Trigger Module -->
+    <node id="TRIG"  address="0x2000"
+        description="Connects to the trigger control module"
+        fw_is_module="true"
+        fw_module_file="../src/trigger/trigger.vhd"
+        fw_user_clock_signal="clk_40"
+        fw_bus_clock_signal="clk_40"
+        fw_bus_reset_signal="ipb_reset"
+        fw_master_bus_signal="ipb_mosi_i"
+        fw_slave_bus_signal="ipb_miso_o"
+        fw_reg_addr_msb="7"
+        fw_reg_addr_lsb="0">
 
-        <node id="CTRL" address="0x0" description = "Controls and monitors various parameters of the S-bit deserialization and cluster building.">
+            <node id="CTRL" address="0x0" description = "Controls and monitors various parameters of the S-bit deserialization and cluster building.">
 
-            <!-- START: VFAT_MASK DO NOT EDIT -->
+                <!-- START: VFAT_MASK DO NOT EDIT -->
             <node id="VFAT_MASK" address="0x0" permission="rw"
                 description="24 bit mask of VFATs (1=off)"
                 mask="0xffffff"
                 fw_signal="vfat_mask"
                 fw_default="0x0"/>
-            <!-- END: VFAT_MASK DO NOT EDIT -->
+                <!-- END: VFAT_MASK DO NOT EDIT -->
 
-            <node id="SBIT_DEADTIME" address="0x0" permission="rw"
-                description="Set programmable oneshot deadtime which applies to retriggers on individual VFAT channels"
-                fw_signal="trig_deadtime"
-                mask="0x0f000000"
-                fw_default="0x7"/>
+                <node id="SBIT_DEADTIME" address="0x0" permission="rw"
+                    description="Set programmable oneshot deadtime which applies to retriggers on individual VFAT channels"
+                    fw_signal="trig_deadtime"
+                    mask="0x0f000000"
+                    fw_default="0x7"/>
 
-            <!-- START: ACTIVE_VFATS DO NOT EDIT -->
+                <!-- START: ACTIVE_VFATS DO NOT EDIT -->
             <node id="ACTIVE_VFATS" address="0x1" permission="r"
                 description="24 bit list of VFATs with hits in this BX"
                 mask="0xffffff"
                 fw_signal="active_vfats"/>
-            <!-- END: ACTIVE_VFATS DO NOT EDIT -->
+                <!-- END: ACTIVE_VFATS DO NOT EDIT -->
 
-            <node id="CNT_OVERFLOW" address="0x2" permission="r"
-                mask="0xffff"
-                description="Overflow Counter (more than 8 clusters in a bx)"
-                fw_cnt_en_signal="sbit_overflow"
-                fw_cnt_reset_signal="cnt_reset"
-                fw_cnt_snap_signal="cnt_snap"
-                fw_signal="cnt_sbit_overflow"/>
+                <node id="CNT_OVERFLOW" address="0x2" permission="r"
+                    mask="0xffff"
+                    description="Overflow Counter (more than 8 clusters in a bx)"
+                    fw_cnt_en_signal="sbit_overflow"
+                    fw_cnt_reset_signal="cnt_reset"
+                    fw_cnt_snap_signal="cnt_snap"
+                    fw_signal="cnt_sbit_overflow"/>
 
-            <!-- START: SOT_READY_UNSTABLE DO NOT EDIT -->
+                <!-- START: SOT_READY_UNSTABLE DO NOT EDIT -->
             <node id="SBIT_SOT_READY" address="0x3" permission="r"
                 description="24 bit list of VFATs with stable Start-of-frame pulses (in sync for a number of clock cycles)"
                 mask="0xffffff"
@@ -423,17 +422,17 @@
                 description="24 bit list of VFATs with unstable Start-of-frame pulses (became misaligned after already achieving lock)"
                 mask="0xffffff"
                 fw_signal="sot_unstable" />
-            <!-- END: SOT_READY_UNSTABLE DO NOT EDIT -->
+                <!-- END: SOT_READY_UNSTABLE DO NOT EDIT -->
 
 
-            <node id="ALIGNED_COUNT_TO_READY" address="0x2" permission="rw"
-                description="Number of link consecutive good frames required before the transmission unit is marked as good and S-bits can be produced"
-                fw_signal="aligned_count_to_ready"
-                mask="0xfff0000"
-                fw_default="0xfff"/>
+                <node id="ALIGNED_COUNT_TO_READY" address="0x2" permission="rw"
+                    description="Number of link consecutive good frames required before the transmission unit is marked as good and S-bits can be produced"
+                    fw_signal="aligned_count_to_ready"
+                    mask="0xfff0000"
+                    fw_default="0xfff"/>
 
-            <node id="INVERT" address="0x5" description="Controls the polarity of S-bit signals to account for polarity swaps on the GEB or OH">
-            <!-- START: INVERT_REGS DO NOT EDIT -->
+                <node id="INVERT" address="0x5" description="Controls the polarity of S-bit signals to account for polarity swaps on the GEB or OH">
+                <!-- START: INVERT_REGS DO NOT EDIT -->
                 <node id="SOT_INVERT" address="0x0" permission="rw"
                     description="1=invert pair"
                     fw_signal="sot_invert"
@@ -559,32 +558,32 @@
                     fw_signal="TU_INVERT (191 downto 184)"
                     mask="0xFF000000"
                     fw_default="0x14"/>
-                <!-- END: INVERT_REGS DO NOT EDIT -->
-            </node> <!--INVERT-->
+                    <!-- END: INVERT_REGS DO NOT EDIT -->
+                </node> <!--INVERT-->
 
-            <node id="SBITS_MUX" address="0xe" description="Multiplexed copy of Sbits from a selected VFAT">
+                <node id="SBITS_MUX" address="0xe" description="Multiplexed copy of Sbits from a selected VFAT">
 
-                <node id="SBIT_MUX_SEL" address="0x0" permission="rw"
-                    description="Select a VFAT which will connect to the S-bit multiplexer"
-                    fw_signal="sbits_mux_sel"
-                    mask="0x1f0"
-                    fw_default="0x10"/>
+                    <node id="SBIT_MUX_SEL" address="0x0" permission="rw"
+                        description="Select a VFAT which will connect to the S-bit multiplexer"
+                        fw_signal="sbits_mux_sel"
+                        mask="0x1f0"
+                        fw_default="0x10"/>
 
-                <node id="SBITS_MUX_LSB" address="0x1" permission="r"
-                    description="Multiplexed S-bits 31 to 0"
-                    fw_signal="sbits_mux(31 downto 0)"
-                    mask="0xffffffff"/>
+                    <node id="SBITS_MUX_LSB" address="0x1" permission="r"
+                        description="Multiplexed S-bits 31 to 0"
+                        fw_signal="sbits_mux(31 downto 0)"
+                        mask="0xffffffff"/>
 
-                <node id="SBITS_MUX_MSB" address="0x2" permission="r"
-                    description="Multiplexed S-bits 63 to 32"
-                    fw_signal="sbits_mux(63 downto 32)"
-                    mask="0xffffffff"/>
+                    <node id="SBITS_MUX_MSB" address="0x2" permission="r"
+                        description="Multiplexed S-bits 63 to 32"
+                        fw_signal="sbits_mux(63 downto 32)"
+                        mask="0xffffffff"/>
 
-            </node> <!--SBITS_MUX-->
+                </node> <!--SBITS_MUX-->
 
-            <node id="TU_MASK" address="0x11" description = "VFAT Trigger Unit Mask \\ Set a pair to 1 to invert it">
+                <node id="TU_MASK" address="0x11" description = "VFAT Trigger Unit Mask \\ Set a pair to 1 to invert it">
 
-            <!-- START: TU_MASK DO NOT EDIT -->
+                <!-- START: TU_MASK DO NOT EDIT -->
                 <node id="VFAT0_TU_MASK" address="0x0" permission="rw"
                     description="1 = mask the differential pair"
                     fw_signal="TU_MASK (7 downto 0)"
@@ -705,13 +704,13 @@
                     fw_signal="TU_MASK (191 downto 184)"
                     mask="0xFF000000"
                     fw_default="0x0"/>
-            <!-- END: TU_MASK DO NOT EDIT -->
-            </node> <!--TU_MASK-->
-        </node> <!--CTRL-->
+                <!-- END: TU_MASK DO NOT EDIT -->
+                </node> <!--TU_MASK-->
+            </node> <!--CTRL-->
 
-        <node id="CNT" address="0x17" description = "S-BIT Counters \\  Set CNT_PERSIST to 1 to accumulate. Otherwise the counters will automatically reset after a programmable time. By default this time is 1 second, making these counters a rate counter in Hertz">
+            <node id="CNT" address="0x17" description = "S-BIT Counters \\  Set CNT_PERSIST to 1 to accumulate. Otherwise the counters will automatically reset after a programmable time. By default this time is 1 second, making these counters a rate counter in Hertz">
 
-            <!-- START: VFAT_COUNTERS DO NOT EDIT -->
+                <!-- START: VFAT_COUNTERS DO NOT EDIT -->
                 <node id="VFAT${VFAT_IDX}" address="0x0" permission="r"
                     mask="0xffffffff"
                     description="VFAT ${VFAT_IDX} Counter"
@@ -723,47 +722,47 @@
                     generate_size="24"
                     generate_address_step="0x1"
                     generate_idx_var="VFAT_IDX"/>
-            <!-- END: VFAT_COUNTERS DO NOT EDIT -->
+                <!-- END: VFAT_COUNTERS DO NOT EDIT -->
 
-            <node id="RESET" address="0x18" permission="w"
-                mask="0x1"
-                description="Reset S-bit counters"
-                fw_write_pulse_signal="reset_counters"/>
+                <node id="RESET" address="0x18" permission="w"
+                    mask="0x1"
+                    description="Reset S-bit counters"
+                    fw_write_pulse_signal="reset_counters"/>
 
-            <node id="SBIT_CNT_PERSIST" address="0x19" permission="rw"
-                mask="0x1"
-                description="1=counters will persist until manually reset; \n
-                             0=counters will automatically reset at CNT_TIME"
-                fw_signal="sbit_cnt_persist"
-                fw_default="0"/>
+                <node id="SBIT_CNT_PERSIST" address="0x19" permission="rw"
+                    mask="0x1"
+                    description="1=counters will persist until manually reset; \n
+                                0=counters will automatically reset at CNT_TIME"
+                    fw_signal="sbit_cnt_persist"
+                    fw_default="0"/>
 
-            <node id="SBIT_CNT_TIME_MAX" address="0x1a" permission="rw"
-                mask="0xffffffff"
-                description="Number of BX that the VFAT S-bit counters will count to before automatically resetting to zero"
-                fw_signal="sbit_cnt_time_max"
-                fw_default="0x2638e98"/>
+                <node id="SBIT_CNT_TIME_MAX" address="0x1a" permission="rw"
+                    mask="0xffffffff"
+                    description="Number of BX that the VFAT S-bit counters will count to before automatically resetting to zero"
+                    fw_signal="sbit_cnt_time_max"
+                    fw_default="0x2638e98"/>
 
-            <node id="CLUSTER_COUNT" address="0x1b" permission="r"
-                mask="0xffffffff"
-                description="VFAT Cluster Counter (chamber)"
-                fw_cnt_en_signal="valid_clusters_or or cnt_pulse"
-                fw_cnt_snap_signal="sbit_cnt_snap"
-                fw_cnt_reset_signal="cnt_reset_strobed"
-                fw_signal="cnt_clusters"/>
+                <node id="CLUSTER_COUNT" address="0x1b" permission="r"
+                    mask="0xffffffff"
+                    description="VFAT Cluster Counter (chamber)"
+                    fw_cnt_en_signal="valid_clusters_or or cnt_pulse"
+                    fw_cnt_snap_signal="sbit_cnt_snap"
+                    fw_cnt_reset_signal="cnt_reset_strobed"
+                    fw_signal="cnt_clusters"/>
 
-            <node id="CNT_PULSE" address="0x1c" permission="w"
-                mask="0x1"
-                description="Pulses S-bit counters for testing"
-                fw_write_pulse_signal="cnt_pulse"/>
+                <node id="CNT_PULSE" address="0x1c" permission="w"
+                    mask="0x1"
+                    description="Pulses S-bit counters for testing"
+                    fw_write_pulse_signal="cnt_pulse"/>
 
-        </node> <!--CNT-->
+            </node> <!--CNT-->
 
-        <node id="TIMING" address="0x3b"
-            description = "Controls the tap delay settings of the S-bit trigger unit inputs.
-            Phase shifts the inputs in 78 ps increments
-            \\ The delay of each S-bit in a VFAT should be increased to match the longest delay incurred by the GEB + Optohybrid routing on that VFAT">
+            <node id="TIMING" address="0x3b"
+                description = "Controls the tap delay settings of the S-bit trigger unit inputs.
+                Phase shifts the inputs in 78 ps increments
+                \\ The delay of each S-bit in a VFAT should be increased to match the longest delay incurred by the GEB + Optohybrid routing on that VFAT">
 
-            <!-- START: TIMING_DELAYS DO NOT EDIT -->
+                <!-- START: TIMING_DELAYS DO NOT EDIT -->
                     <node id="TAP_DELAY_VFAT0_BIT0" address="0x0" permission="rw"
                         mask="0x0000001F"
                         description="VFAT 0 S-bit 0 tap delay"
@@ -1844,129 +1843,128 @@
                         description="VFAT 23 SOT tap delay"
                         fw_signal="sot_tap_delay(23)"
                         fw_default="0"/>
-            <!-- END: TIMING_DELAYS DO NOT EDIT -->
-        </node> <!--Timing Delays-->
+                <!-- END: TIMING_DELAYS DO NOT EDIT -->
+            </node> <!--Timing Delays-->
 
-        <node id="LINKS" address="0x5e" description = "Controls and monitors the multi-gigabit links that drive the trigger fiber tranceivers">
+            <node id="LINKS" address="0x5f" description = "Controls and monitors the multi-gigabit links that drive the trigger fiber tranceivers">
 
-            <node id="RESET" address="0x0" permission="w"
-                mask="0x1"
-                description="Reset trigger links"
-                fw_write_pulse_signal="reset_links"/>
-            <node id="TX_PLL_LOCKED" address="0x1" permission="r"
-                mask="0x0000000f"
-                description="Transmit PLLs are Locked"
-                fw_signal="tx_pll_locked"/>
-            <node id="TX_RESET_DONE" address="0x1" permission="r"
-                mask="0x000000f0"
-                description="Transmit Resets are Done"
-                fw_signal="tx_reset_done"/>
+                <node id="RESET" address="0x0" permission="w"
+                    mask="0x1"
+                    description="Reset trigger links"
+                    fw_write_pulse_signal="reset_links"/>
+                <node id="TX_PLL_LOCKED" address="0x1" permission="r"
+                    mask="0x0000000f"
+                    description="Transmit PLLs are Locked"
+                    fw_signal="tx_pll_locked"/>
+                <node id="TX_RESET_DONE" address="0x1" permission="r"
+                    mask="0x000000f0"
+                    description="Transmit Resets are Done"
+                    fw_signal="tx_reset_done"/>
 
-        </node> <!--Links-->
-</node> <!--TRIG-->
+            </node> <!--Links-->
+    </node> <!--TRIG-->
 
-<!--Clocking module -->
-<node id="CLOCKING"  address="0x3000"
-        description="Controls and monitors the status of the Optohybrid clocks"
-        fw_is_module="true"
-        fw_module_file="../src/utils/clocking.vhd"
-        fw_user_clock_signal="clock"
-        fw_bus_clock_signal="clock"
-        fw_bus_reset_signal="ipb_reset_i"
-        fw_master_bus_signal="ipb_mosi_i"
-        fw_slave_bus_signal="ipb_miso_o"
-        fw_reg_addr_msb="1"
-        fw_reg_addr_lsb="0">
+    <!--Clocking module -->
+    <node id="CLOCKING"  address="0x3000"
+            description="Controls and monitors the status of the Optohybrid clocks"
+            fw_is_module="true"
+            fw_module_file="../src/utils/clocking.vhd"
+            fw_user_clock_signal="clock"
+            fw_bus_clock_signal="clock"
+            fw_bus_reset_signal="ipb_reset_i"
+            fw_master_bus_signal="ipb_mosi_i"
+            fw_slave_bus_signal="ipb_miso_o"
+            fw_reg_addr_msb="1"
+            fw_reg_addr_lsb="0">
 
-        <node id="GBT_MMCM_LOCKED" address="0x0" permission="r"
-            mask="0x00000001"
-            description="GBT deserialization MMCM locked"
-            fw_signal="mmcm_locked(1)"/>
-        <node id="LOGIC_MMCM_LOCKED" address="0x0" permission="r"
-            mask="0x00000002"
-            description="User logic MMCM locked"
-            fw_signal="mmcm_locked(0)"/>
-        <node id="GBT_MMCM_UNLOCKED_CNT" address="0x0" permission="r"
-            mask="0x00ff0000"
-            description="GBT deserialization MMCM unlocked cnt"
-            fw_cnt_en_signal="mmcm_unlocked(1)"
-            fw_signal="cnt_eprt_mmcm_unlocked"/>
-        <node id="LOGIC_MMCM_UNLOCKED_CNT" address="0x0" permission="r"
-            mask="0xff000000"
-            description="User logic MMCM unlocked cnt"
-            fw_cnt_en_signal="mmcm_unlocked(0)"
-            fw_signal="cnt_dskw_mmcm_unlocked"/>
-
-</node>
-
-<!--GBT module -->
-<node id="GBT"  address="0x4000"
-        description="Contains functionality for controlling and monitoring the bidirectional GBTx to FPGA link"
-        fw_is_module="true"
-        fw_module_file="../src/gbt/gbt.vhd"
-        fw_user_clock_signal="clock_i"
-        fw_bus_clock_signal="clock_i"
-        fw_bus_reset_signal="ipb_reset_i"
-        fw_master_bus_signal="ipb_mosi_i"
-        fw_slave_bus_signal="ipb_miso_o"
-        fw_reg_addr_msb="3"
-        fw_reg_addr_lsb="0">
-
-        <node id="TX" address="0x0" description = "Controls and monitors the transmit link from the FPGA to the GBTx">
-            <node id="CNT_RESPONSE_SENT" address="0x0" permission="r"
-                mask="0xffffff00"
-                description="Number of wishbone responses sent back"
-                fw_cnt_en_signal="ipb_miso.ipb_ack"
-                fw_cnt_reset_signal="cnt_reset"
-                fw_cnt_snap_signal="cnt_snap"
-                fw_signal="cnt_ipb_response"/>
-            <node id="TX_READY" address="0x1" permission="r"
+            <node id="GBT_MMCM_LOCKED" address="0x0" permission="r"
                 mask="0x00000001"
-                description="GBT TX READY from GBTx Chip"
-                fw_signal="gbt_txready_i"/>
-            <node id="TX_DELAY" address="0x1" permission="rw"
-                mask="0x1f0"
-                description="GBT TX IODELAY in 78 ps steps, 0-31"
-                fw_default="0x0"
-                fw_signal="tx_delay"/>
-        </node> <!--TX-->
-
-        <node id="RX" address="0x4" description = "Controls and monitors the transmit link from the GBTx to the FPGA">
-            <node id="RX_READY" address="0x0" permission="r"
-                mask="0x00000001"
-                description="GBT RX READY from GBTx Chip"
-                fw_signal="gbt_rxready_i"/>
-            <node id="RX_VALID" address="0x0" permission="r"
+                description="GBT deserialization MMCM locked"
+                fw_signal="mmcm_locked(1)"/>
+            <node id="LOGIC_MMCM_LOCKED" address="0x0" permission="r"
                 mask="0x00000002"
-                description="GBT RX VALID from GBTx Chip"
-                fw_signal="gbt_rxvalid_i"/>
-            <node id="CNT_REQUEST_RECEIVED" address="0x0" permission="r"
-                mask="0xffffff00"
-                description="Number of wishbone requests received"
-                fw_cnt_en_signal="ipb_mosi.ipb_strobe"
-                fw_cnt_reset_signal="cnt_reset"
-                fw_cnt_snap_signal="cnt_snap"
-                fw_signal="cnt_ipb_request"/>
-            <node id="CNT_LINK_ERR" address="0x1" permission="r"
-                mask="0x00ffffff"
-                description="Number of GBT link errrors detected"
-                fw_cnt_en_signal="gbt_link_err_ready"
-                fw_cnt_reset_signal="cnt_reset"
-                fw_cnt_snap_signal="cnt_snap"
-                fw_signal="cnt_link_err"/>
-        </node> <!--RX-->
+                description="User logic MMCM locked"
+                fw_signal="mmcm_locked(0)"/>
+            <node id="GBT_MMCM_UNLOCKED_CNT" address="0x0" permission="r"
+                mask="0x00ff0000"
+                description="GBT deserialization MMCM unlocked cnt"
+                fw_cnt_en_signal="mmcm_unlocked(1)"
+                fw_signal="cnt_eprt_mmcm_unlocked"/>
+            <node id="LOGIC_MMCM_UNLOCKED_CNT" address="0x0" permission="r"
+                mask="0xff000000"
+                description="User logic MMCM unlocked cnt"
+                fw_cnt_en_signal="mmcm_unlocked(0)"
+                fw_signal="cnt_dskw_mmcm_unlocked"/>
+    </node>
 
-        <node id="TTC" address="0x5" description = "Emulates the TTC commands from GBTx through Wishbone">
-        <node id="FORCE_L1A" address="0x0" permission="w"
-            description="GBT Force L1A"
-            fw_write_pulse_signal="l1a_force"/>
-        <node id="FORCE_BC0" address="0x1" permission="w"
-            description="GBT Force BC0"
-            fw_write_pulse_signal="bc0_force"/>
-        <node id="FORCE_RESYNC" address="0x2" permission="w"
-            description="GBT Force Resync"
-            fw_write_pulse_signal="resync_force"/>
-        </node> <!--TTC-->
+    <!--GBT module -->
+    <node id="GBT"  address="0x4000"
+            description="Contains functionality for controlling and monitoring the bidirectional GBTx to FPGA link"
+            fw_is_module="true"
+            fw_module_file="../src/gbt/gbt.vhd"
+            fw_user_clock_signal="clock_i"
+            fw_bus_clock_signal="clock_i"
+            fw_bus_reset_signal="ipb_reset_i"
+            fw_master_bus_signal="ipb_mosi_i"
+            fw_slave_bus_signal="ipb_miso_o"
+            fw_reg_addr_msb="3"
+            fw_reg_addr_lsb="0">
+
+            <node id="TX" address="0x0" description = "Controls and monitors the transmit link from the FPGA to the GBTx">
+                <node id="CNT_RESPONSE_SENT" address="0x0" permission="r"
+                    mask="0xffffff00"
+                    description="Number of wishbone responses sent back"
+                    fw_cnt_en_signal="ipb_miso.ipb_ack"
+                    fw_cnt_reset_signal="cnt_reset"
+                    fw_cnt_snap_signal="cnt_snap"
+                    fw_signal="cnt_ipb_response"/>
+                <node id="TX_READY" address="0x1" permission="r"
+                    mask="0x00000001"
+                    description="GBT TX READY from GBTx Chip"
+                    fw_signal="gbt_txready_i"/>
+                <node id="TX_DELAY" address="0x1" permission="rw"
+                    mask="0x1f0"
+                    description="GBT TX IODELAY in 78 ps steps, 0-31"
+                    fw_default="0x0"
+                    fw_signal="tx_delay"/>
+            </node> <!--TX-->
+
+            <node id="RX" address="0x4" description = "Controls and monitors the transmit link from the GBTx to the FPGA">
+                <node id="RX_READY" address="0x0" permission="r"
+                    mask="0x00000001"
+                    description="GBT RX READY from GBTx Chip"
+                    fw_signal="gbt_rxready_i"/>
+                <node id="RX_VALID" address="0x0" permission="r"
+                    mask="0x00000002"
+                    description="GBT RX VALID from GBTx Chip"
+                    fw_signal="gbt_rxvalid_i"/>
+                <node id="CNT_REQUEST_RECEIVED" address="0x0" permission="r"
+                    mask="0xffffff00"
+                    description="Number of wishbone requests received"
+                    fw_cnt_en_signal="ipb_mosi.ipb_strobe"
+                    fw_cnt_reset_signal="cnt_reset"
+                    fw_cnt_snap_signal="cnt_snap"
+                    fw_signal="cnt_ipb_request"/>
+                <node id="CNT_LINK_ERR" address="0x1" permission="r"
+                    mask="0x00ffffff"
+                    description="Number of GBT link errrors detected"
+                    fw_cnt_en_signal="gbt_link_err_ready"
+                    fw_cnt_reset_signal="cnt_reset"
+                    fw_cnt_snap_signal="cnt_snap"
+                    fw_signal="cnt_link_err"/>
+            </node> <!--RX-->
+
+            <node id="TTC" address="0x5" description = "Emulates the TTC commands from GBTx through Wishbone">
+            <node id="FORCE_L1A" address="0x0" permission="w"
+                description="GBT Force L1A"
+                fw_write_pulse_signal="l1a_force"/>
+            <node id="FORCE_BC0" address="0x1" permission="w"
+                description="GBT Force BC0"
+                fw_write_pulse_signal="bc0_force"/>
+            <node id="FORCE_RESYNC" address="0x2" permission="w"
+                description="GBT Force Resync"
+                fw_write_pulse_signal="resync_force"/>
+            </node> <!--TTC-->
 
 
     </node> <!--GBT-->
