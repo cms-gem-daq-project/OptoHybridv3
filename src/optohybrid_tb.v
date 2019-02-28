@@ -248,13 +248,26 @@ parameter DDR = 0;
 
   wire startup_done = (startup_clock == startup_count);
 
-
   reg          wr_en       = 1'b1;
 
-  wire         wr_valid    = startup_done;
+  wire tx_busy;
 
   wire  [15:0] address     = {5'h0, 11'h0}; // 32'h0; // write to loopback
-  reg   [31:0] data        = 32'h0000_0000;
+  reg   [31:0] data        = 32'hAAAA_AAAA;
+
+  reg [2:0] bsy_dly = 0;
+
+  wire         wr_valid    = (startup_done && bsy_dly==0);
+
+  always @(posedge clk40) begin
+      if (tx_busy!=0)
+        bsy_dly <= 3'b111;
+      else if (bsy_dly != 0)
+        bsy_dly <= bsy_dly - 1'b1;
+
+      if (bsy_dly==0)
+        data <= ~data;
+  end
 
   parameter [11:0] bc0_cnt_max = 10'd32;
   reg [11:0] bc0_cnt;
@@ -296,7 +309,7 @@ parameter DDR = 0;
     .request_addr_i       (address),
     .request_data_i       (data),
 
-    .busy_o               ()
+    .busy_o               (tx_busy)
 
   );
 

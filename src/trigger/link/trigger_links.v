@@ -130,8 +130,8 @@ generate
       else
         cpll_reset_cnt <= cpll_reset_cnt;
 
-      cpll_powerdown <= cpll_powerdown_cnt == PDCNT;
-      cpll_reset <= cpll_reset_cnt == RSTCNT;
+      cpll_powerdown <= ~(cpll_powerdown_cnt == PDCNT);
+      cpll_reset <= ~(cpll_reset_cnt == RSTCNT);
 
     end
 
@@ -215,8 +215,8 @@ wire usrclk  = clk_160;
 wire usrclk2 = clk_80;
 
 always @(posedge clk_80) begin
-  reset_done <= tx_resetdone;
-  pll_locked <= tx_pll_locked;
+  reset_done <= &tx_resetdone;
+  pll_locked <= &tx_pll_locked;
 end
 
 localparam ILINKS_PER_MODULE = 1;
