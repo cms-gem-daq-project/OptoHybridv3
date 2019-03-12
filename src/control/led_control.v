@@ -19,7 +19,7 @@ module led_control (
 
   input reset,
 
-  input [7:0] cluster_count_i,
+  input [10:0] cluster_count_i,
 
   output [31:0] cluster_rate,
 
@@ -100,7 +100,7 @@ module led_control (
 //----------------------------------------------------------------------------------------------------------------------
 
   wire [7:0] progress_bar;
-  reg [7:0] cluster_count;
+  reg [10:0] cluster_count;
 
   always @(posedge clock) begin
     cluster_count <= cluster_count_i;
@@ -110,7 +110,7 @@ module led_control (
     .g_LOGARITHMIC           (32'd1), // 1 for LOG scale (ignores step )
     .g_CLK_FREQUENCY         (32'd40079000), // 40MHz LHC frequency
     .g_COUNTER_WIDTH         (32'd32),
-    .g_INCREMENTER_WIDTH     (32'd8),
+    .g_INCREMENTER_WIDTH     (32'd11),
     .g_PROGRESS_BAR_WIDTH    (32'd8),   // we'll have 8 LEDs as a rate progress bar
     .g_PROGRESS_BAR_STEP     (32'd100), // each bar is 100 Hz
     .g_SPEEDUP_FACTOR        (32'd4)    // update 16 times per second

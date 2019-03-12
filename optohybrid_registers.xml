@@ -384,6 +384,7 @@
 
             <node id="CTRL" address="0x0" description = "Controls and monitors various parameters of the S-bit deserialization and cluster building.">
 
+                <!-- updated by update_vfat_counters.py-->
                 <!-- START: VFAT_MASK DO NOT EDIT -->
             <node id="VFAT_MASK" address="0x0" permission="rw"
                 description="24 bit mask of VFATs (1=off)"
@@ -398,6 +399,7 @@
                     mask="0x0f000000"
                     fw_default="0x7"/>
 
+                <!-- updated by update_vfat_counters.py-->
                 <!-- START: ACTIVE_VFATS DO NOT EDIT -->
             <node id="ACTIVE_VFATS" address="0x1" permission="r"
                 description="24 bit list of VFATs with hits in this BX"
@@ -413,6 +415,7 @@
                     fw_cnt_snap_signal="cnt_snap"
                     fw_signal="cnt_sbit_overflow"/>
 
+                <!-- updated by update_vfat_counters.py-->
                 <!-- START: SOT_READY_UNSTABLE DO NOT EDIT -->
             <node id="SBIT_SOT_READY" address="0x3" permission="r"
                 description="24 bit list of VFATs with stable Start-of-frame pulses (in sync for a number of clock cycles)"
@@ -710,6 +713,7 @@
 
             <node id="CNT" address="0x17" description = "S-BIT Counters \\  Set CNT_PERSIST to 1 to accumulate. Otherwise the counters will automatically reset after a programmable time. By default this time is 1 second, making these counters a rate counter in Hertz">
 
+                <!-- updated by update_vfat_counters.py-->
                 <!-- START: VFAT_COUNTERS DO NOT EDIT -->
                 <node id="VFAT${VFAT_IDX}" address="0x0" permission="r"
                     mask="0xffffffff"
@@ -755,9 +759,24 @@
                     description="Pulses S-bit counters for testing"
                     fw_write_pulse_signal="cnt_pulse"/>
 
+                <!-- updated by update_vfat_counters.py-->
+                <!-- START: OVERFLOW_COUNTERS DO NOT EDIT -->
+                <node id="SBITS_OVER_64x${OVERFLOW_IDX}" address="0x1f" permission="r"
+                    mask="0x0000ffff"
+                    description="More than 64 * ${OVERFLOW_IDX} Sbits in a bx Counter"
+                    fw_cnt_en_signal="sbits_comparator_over_threshold(${OVERFLOW_IDX}) or cnt_pulse"
+                    fw_cnt_snap_signal="sbit_cnt_snap"
+                    fw_cnt_reset_signal="cnt_reset_strobed"
+                    fw_signal="cnt_over_threshold${OVERFLOW_IDX}"
+                    generate="true"
+                    generate_size="24"
+                    generate_address_step="0x1"
+                    generate_idx_var="OVERFLOW_IDX"/>
+                <!-- END: OVERFLOW_COUNTERS DO NOT EDIT -->
+
             </node> <!--CNT-->
 
-            <node id="TIMING" address="0x3b"
+            <node id="TIMING" address="0x53"
                 description = "Controls the tap delay settings of the S-bit trigger unit inputs.
                 Phase shifts the inputs in 78 ps increments
                 \\ The delay of each S-bit in a VFAT should be increased to match the longest delay incurred by the GEB + Optohybrid routing on that VFAT">
@@ -1846,7 +1865,7 @@
                 <!-- END: TIMING_DELAYS DO NOT EDIT -->
             </node> <!--Timing Delays-->
 
-            <node id="LINKS" address="0x5f" description = "Controls and monitors the multi-gigabit links that drive the trigger fiber tranceivers">
+            <node id="LINKS" address="0x80" description = "Controls and monitors the multi-gigabit links that drive the trigger fiber tranceivers">
 
                 <node id="RESET" address="0x0" permission="w"
                     mask="0x1"
@@ -1862,6 +1881,21 @@
                     fw_signal="tx_reset_done"/>
 
             </node> <!--Links-->
+
+            <node id="SBIT_MONITOR" address="0x90"
+                    description="sbit monitor module which shows the first valid sbit clusters after a reset on the selected link">
+                <node id="RESET" address="0x0" permission="w"
+                    description="Reset the sbit monitor module and re-arm for triggering"
+                    fw_write_pulse_signal="reset_monitor"/>
+                <node id="CLUSTER${CLUSTER_IDX}" address="0x1" mask="0x0000ffff" permission="r"
+                    description="Last cluster ${CLUSTER_IDX}"
+                    fw_signal="'0' &amp; frozen_cluster_${CLUSTER_IDX}(13 downto 11) &amp; '0' &amp; frozen_cluster_${CLUSTER_IDX} (10 downto 0)"
+                    generate="true" generate_size="8" generate_address_step="0x1" generate_idx_var="CLUSTER_IDX"/>
+                <node id="L1A_DELAY" address="0x10" mask="0xffffffff" permission="r"
+                    description="Number of BX between this sbit and the subsequent L1A"
+                    fw_signal="sbitmon_l1a_delay"/>
+            </node>
+
     </node> <!--TRIG-->
 
     <!--Clocking module -->

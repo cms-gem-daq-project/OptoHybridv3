@@ -114,7 +114,8 @@ generate
     parameter PDCNT = 96;
     parameter RSTCNT = 128;
 
-    always @(posedge mgt_refclk_bufh) begin
+    //always @(posedge mgt_refclk_bufh) begin
+    always @(posedge clk_40) begin
 
       if (reset)
         cpll_powerdown_cnt <= 0;
@@ -146,7 +147,7 @@ generate
     //);
 
     a7_trig_tx_buf_bypass_common #(
-      .WRAPPER_SIM_GTRESET_SPEEDUP ("FALSE"),
+      .WRAPPER_SIM_GTRESET_SPEEDUP ("TRUE"),
       .SIM_PLL0REFCLK_SEL          (3'b001),
       .SIM_PLL1REFCLK_SEL          (3'b001)
     ) common0_i (
@@ -163,6 +164,22 @@ generate
       .PLL1OUTCLK_OUT     (cpll_outclk1),
       .PLL1OUTREFCLK_OUT  (cpll_outrefclk1)
     );
+
+
+    ila_trigger_link ila_trigger_link_inst (
+      .clk ( clk_40),
+
+      .probe0 ( gtpcommon_reset),
+      .probe1 ( cpll_powerdown),
+      .probe2 ( cpll_plllock),
+      .probe3 ( cpll_refclklost),
+      .probe4 ( reset),
+      .probe5 ( gtp_pllreset_out[0]),
+      .probe6 ( gtp_pllreset_out[1]),
+      .probe7 ( gtp_pllreset_out[2]),
+      .probe8 ( gtp_pllreset_out[3])
+    );
+
 
   end
 endgenerate

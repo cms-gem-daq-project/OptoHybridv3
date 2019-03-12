@@ -160,8 +160,22 @@ assign tx_dly_align_mon_ena = 1'b0;
 
     assign SYSCLK_IN = TRG_TXUSRCLK2; // check the frequency on this
 
-    wire gt0_gttxreset_in = 1'b0;
-    wire gt0_txuserrdy_in = 1'b1;
+    wire gt0_gttxreset_in = 1'b0; // tied to GND in exdes
+    wire gt0_txuserrdy_in = 1'b1; // tied to VCC in exdes
+
+    ila_gem_fiber_out ila_gem_fiber_out_inst (
+
+      .clk     (TRG_TXUSRCLK),
+
+      .probe0  (TRG_TXUSRCLK),
+      .probe1  (TRG_TXUSRCLK2),
+      .probe2  (trg_tx_isk[0]),
+      .probe3  (trg_tx_isk[1]),
+      .probe4  (trg_tx_isk[2]),
+      .probe5  (trg_tx_isk[3]),
+      .probe6  (TRG_TXRESETDONE),
+      .probe7  (trg_tx_data[31:0])
+    );
 
     a7_trig_tx_buf_bypass
         a7_trig_tx_buf_bypass_inst     (
@@ -221,6 +235,12 @@ assign tx_dly_align_mon_ena = 1'b0;
             .GT0_PLL1OUTCLK_IN               (TRG_TX_PLL1OUTCLK_IN),
             .GT0_PLL1OUTREFCLK_IN            (TRG_TX_PLL1OUTREFCLK_IN)
     );
+
+    assign TRG_TX_PLL_LOCK = 1'b1;
+    assign TX_SYNC_DONE = 1'b1;
+    assign tx_dlyalignreset = 1'b0;
+    assign tx_enpmaphasealign = 1'b0;
+    assign tx_pmasetphase = 1'b0;
 
     end
   endgenerate

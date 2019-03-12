@@ -88,7 +88,7 @@ architecture Behavioral of optohybrid_top is
     --== SBit cluster packer ==--
 
     signal sbit_overflow : std_logic;
-    signal cluster_count : std_logic_vector     (7  downto 0);
+    signal cluster_count : std_logic_vector     (10  downto 0);
     signal active_vfats  : std_logic_vector     (MXVFATS-1 downto 0);
 
     --== Global signals ==--
@@ -469,6 +469,7 @@ begin
         overflow_o         => sbit_overflow,
         bxn_counter_i      => bxn_counter,
         ttc_bx0_i          => ttc_bc0,
+        ttc_l1a_i          => ttc_l1a,
 
         -- sbit_ors
 

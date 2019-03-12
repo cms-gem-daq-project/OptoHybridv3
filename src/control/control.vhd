@@ -59,7 +59,7 @@ port(
 
     active_vfats_i  : in std_logic_vector (MXVFATS-1 downto 0);
     sbit_overflow_i : in std_logic;
-    cluster_count_i : in std_logic_vector (7 downto 0);
+    cluster_count_i : in std_logic_vector (10 downto 0);
 
     -- GBT
     gbt_link_error_i       : in std_logic;
@@ -178,7 +178,7 @@ architecture Behavioral of control is
         gbt_link_ready       : IN std_logic;
         gbt_request_received : IN std_logic;
         reset                : IN std_logic;
-        cluster_count_i      : IN std_logic_vector(7 downto 0);
+        cluster_count_i      : IN std_logic_vector(10 downto 0);
         cluster_rate         : OUT std_logic_vector(31 downto 0);
         led_out              : OUT std_logic_vector(15 downto 0)
         );
@@ -291,7 +291,7 @@ begin
         gbt_link_ready       => gbt_link_ready_i,
         gbt_request_received => gbt_request_received_i,
 
-        cluster_count_i      => cluster_count_i (7 downto 0),
+        cluster_count_i      => cluster_count_i (10 downto 0),
 
         cluster_rate  => cluster_rate (31 downto 0),
 
