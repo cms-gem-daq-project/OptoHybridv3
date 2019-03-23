@@ -356,6 +356,10 @@
     <file xil_pn:name="../src/ucf/misc_v3b.ucf" xil_pn:type="FILE_UCF">
       <association xil_pn:name="Implementation" xil_pn:seqID="0"/>
     </file>
+    <file xil_pn:name="../src/trigger/sbit_monitor.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="196"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="196"/>
+    </file>
     <file xil_pn:name="../src/ip_cores/sem.xise" xil_pn:type="FILE_COREGENISE">
       <association xil_pn:name="Implementation" xil_pn:seqID="0"/>
     </file>

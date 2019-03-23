@@ -50,7 +50,7 @@ port(
 
     aligned_count_to_ready : in std_logic_vector (11 downto 0);
 
-    cluster_count_o        : out std_logic_vector (7 downto 0);
+    cluster_count_o        : out std_logic_vector (10 downto 0);
 
     trigger_deadtime_i     : in  std_logic_vector (3 downto 0);
 

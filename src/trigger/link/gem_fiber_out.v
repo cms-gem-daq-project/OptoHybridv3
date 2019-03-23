@@ -16,6 +16,9 @@ module   gem_fiber_out #(
   input         BC0         ,  //  1  bit bx0 flag
 
   input         TRG_TX_REFCLK,        // 160 MHz Reference Clock from QPLL
+  input         SYSCLK_IN,
+  input         MMCM_LOCK_I,
+  output        MMCM_RESET_O,
 
   output TRG_TX_PLL0PLLRST_OUT,
   input  TRG_TX_PLL0OUTCLK_IN,
@@ -158,21 +161,34 @@ assign tx_dly_align_mon_ena = 1'b0;
   // txusrclk rate  = line rate / internal datapath width = 3200 / 20 = 160 MHz
   // txusrclk2 rate = txusrclk / 2 (when in 32 or 40 bit) = 80MHz
 
-    assign SYSCLK_IN = TRG_TXUSRCLK2; // check the frequency on this
+    wire gt0_gttxreset_in = 1'b0; // tied to GND in exdes
+    wire gt0_txuserrdy_in = 1'b1; // tied to VCC in exdes
+    wire tx_reset_fsm_done;
+    wire rx_reset_fsm_done;
 
-    wire gt0_gttxreset_in = 1'b0;
-    wire gt0_txuserrdy_in = 1'b1;
+    ila_gem_fiber_out ila_gem_fiber_out_inst (
+
+      .clk     (SYSCLK_IN),
+
+      .probe0  (trg_tx_isk[3:0]),
+      .probe1  (TRG_TXRESETDONE),
+      .probe2  (trg_tx_data[31:0]),
+      .probe3  (tx_reset_fsm_done),
+      .probe4  (rx_reset_fsm_done),
+      .probe5  (MMCM_LOCK_I),
+      .probe6  (MMCM_RESET_O)
+    );
 
     a7_trig_tx_buf_bypass
         a7_trig_tx_buf_bypass_inst     (
             .SYSCLK_IN                       (SYSCLK_IN),
             .SOFT_RESET_TX_IN                (1'b0),
             .DONT_RESET_ON_DATA_ERROR_IN     (1'b0),
-            .GT0_TX_FSM_RESET_DONE_OUT       (),
-            .GT0_RX_FSM_RESET_DONE_OUT       (),
+            .GT0_TX_FSM_RESET_DONE_OUT       (tx_reset_fsm_done),
+            .GT0_RX_FSM_RESET_DONE_OUT       (rx_reset_fsm_done),
             .GT0_DATA_VALID_IN               (1'b1),
-            .GT0_TX_MMCM_LOCK_IN             (1'b1), // SHOULD CONNECT THIS TO SOMETHING
-            .GT0_TX_MMCM_RESET_OUT (),
+            .GT0_TX_MMCM_LOCK_IN             (MMCM_LOCK_I),
+            .GT0_TX_MMCM_RESET_OUT           (MMCM_RESET_O),
             //_________________________________________________________________________
             //GT0  (X0Y0)
             //____________________________CHANNEL PORTS________________________________
@@ -221,6 +237,12 @@ assign tx_dly_align_mon_ena = 1'b0;
             .GT0_PLL1OUTCLK_IN               (TRG_TX_PLL1OUTCLK_IN),
             .GT0_PLL1OUTREFCLK_IN            (TRG_TX_PLL1OUTREFCLK_IN)
     );
+
+    assign TRG_TX_PLL_LOCK = 1'b1;
+    assign TX_SYNC_DONE = 1'b1;
+    assign tx_dlyalignreset = 1'b0;
+    assign tx_enpmaphasealign = 1'b0;
+    assign tx_pmasetphase = 1'b0;
 
     end
   endgenerate

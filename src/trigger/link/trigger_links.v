@@ -12,6 +12,9 @@ parameter ILINKS = 4
   input clk_80,  // 80  MHz from logic MMCM
   input clk_160, // 160 MHz from logic MMCM
 
+  input mmcm_lock_i,
+  output mmcm_reset_o,
+
   input reset_i,
 
   output reg [ILINKS-1:0] pll_locked,
@@ -42,7 +45,9 @@ parameter ILINKS = 4
 reg [6:0] reset_cnt=0;
 reg reset;
 
-always @(posedge clk_40) begin
+wire mgt_refclk_bufh;
+
+always @(posedge  mgt_refclk_bufh) begin
   if (reset_i)
     reset_cnt <= 0;
   else if (~(&reset_cnt))
@@ -73,7 +78,6 @@ wire gtpcommon_reset     = reset || (|gtp_pllreset_out) || cpll_reset;
 reg [7:0] cpll_powerdown_cnt = 0;
 reg [7:0] cpll_reset_cnt = 0;
 
-wire mgt_refclk_bufh;
 
 generate
 
@@ -106,7 +110,7 @@ generate
         .CEB     (1'b0)
     );
 
-    BUFH i_mgtrefclk_bufh (.O (mgt_refclk_bufh), .I (mgt_refclk));
+    BUFG i_mgtrefclk_bufh (.O (mgt_refclk_bufh), .I (mgt_refclk));
 
     // keep CPLL powered down for some number of clocks
     // release reset some clocks later
@@ -130,8 +134,8 @@ generate
       else
         cpll_reset_cnt <= cpll_reset_cnt;
 
-      cpll_powerdown <= cpll_powerdown_cnt == PDCNT;
-      cpll_reset <= cpll_reset_cnt == RSTCNT;
+      cpll_powerdown <= ~(cpll_powerdown_cnt == PDCNT);
+      cpll_reset <= ~(cpll_reset_cnt == RSTCNT);
 
     end
 
@@ -146,7 +150,7 @@ generate
     //);
 
     a7_trig_tx_buf_bypass_common #(
-      .WRAPPER_SIM_GTRESET_SPEEDUP ("FALSE"),
+      .WRAPPER_SIM_GTRESET_SPEEDUP ("TRUE"),
       .SIM_PLL0REFCLK_SEL          (3'b001),
       .SIM_PLL1REFCLK_SEL          (3'b001)
     ) common0_i (
@@ -163,6 +167,28 @@ generate
       .PLL1OUTCLK_OUT     (cpll_outclk1),
       .PLL1OUTREFCLK_OUT  (cpll_outrefclk1)
     );
+
+
+    ila_trigger_link ila_trigger_link_inst (
+      .clk ( mgt_refclk_bufh),
+
+      .probe0  ( gtpcommon_reset),
+      .probe1  ( reset),
+      .probe2  ( |gtp_pllreset_out),
+      .probe3  ( cpll_powerdown),
+      .probe4  ( cpll_powerdown_cnt[7:0]),
+      .probe5  ( cpll_reset),
+      .probe6  ( cpll_reset_cnt[7:0]),
+      .probe7  ( cpll_plllock),
+      .probe8  ( cpll_refclklost),
+      .probe9  ( mmcm_lock_i),
+      .probe10 ( mmcm_reset_o),
+      .probe11 ( gtp_pllreset_out[0]),
+      .probe12 ( gtp_pllreset_out[1]),
+      .probe13 ( gtp_pllreset_out[2]),
+      .probe14 ( gtp_pllreset_out[3])
+    );
+
 
   end
 endgenerate
@@ -184,6 +210,10 @@ end
 assign valid_clusters_or = |valid_clusters;
 
 reg [55:0] link [3:0];
+
+wire [3:0] mmcm_reset_o_3to0;
+
+assign mmcm_reset_o = |mmcm_reset_o_3to0;
 
 always @(*) begin
   // to csc
@@ -215,8 +245,8 @@ wire usrclk  = clk_160;
 wire usrclk2 = clk_80;
 
 always @(posedge clk_80) begin
-  reset_done <= tx_resetdone;
-  pll_locked <= tx_pll_locked;
+  reset_done <= &tx_resetdone;
+  pll_locked <= &tx_pll_locked;
 end
 
 localparam ILINKS_PER_MODULE = 1;
@@ -256,6 +286,9 @@ generate
       .TX_SYNC_DONE        (),                                                              // not used in DCFEB tests
       .STRT_LTNCY          (),                                                              // after every Reset, to TP for debug only  -- !sw7 ?
       .LTNCY_TRIG          (),                                                              // bring out to TP.  Signals when TX sends "FC" (once every 128 BX).  Send raw to TP  --sw8,7
+      .SYSCLK_IN (mgt_refclk_bufh),
+      .MMCM_LOCK_I (mmcm_lock_i),
+      .MMCM_RESET_O (mmcm_reset_o_3to0[igem]),
 
       .TRG_TX_PLL0PLLRST_OUT       (gtp_pllreset_out[igem]),
       .TRG_TX_PLL0PLLLOCK_IN       (cpll_plllock),

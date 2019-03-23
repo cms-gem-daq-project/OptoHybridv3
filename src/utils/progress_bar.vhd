@@ -21,7 +21,7 @@ entity progress_bar is
         g_LOGARITHMIC           : natural := 1;
         g_CLK_FREQUENCY         : natural := 40079000;
         g_COUNTER_WIDTH         : natural := 26;     --
-        g_INCREMENTER_WIDTH     : natural := 8;      -- allow for incrementing more than 1 step per clock
+        g_INCREMENTER_WIDTH     : natural := 11;      -- allow for incrementing more than 1 step per clock
         g_PROGRESS_BAR_WIDTH    : natural := 13;     -- number of indicators in the bar (FULLSCALE = WIDTH*STEP)
         g_PROGRESS_BAR_STEP     : natural := 20_000; -- hertz per indicator
         g_SPEEDUP_FACTOR        : natural := 19      -- changes the "refresh" rate of the indicator by sampling at a higher rate

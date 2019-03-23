@@ -22,7 +22,7 @@
 
 \title{Optohybrid v3 Address Table}
 % START: ADDRESS_TABLE_VERSION :: DO NOT EDIT
-    \author{ Firmware Version 03.02.00.1C \\ 20181121}
+    \author{ Firmware Version 03.02.03.1C \\ 20190322}
 % END: ADDRESS_TABLE_VERSION :: DO NOT EDIT
 \begin{document}
 
@@ -463,10 +463,34 @@
     \nopagebreak
     VFAT0 & \texttt{0x2017} & \texttt{[31:0]} & r & \texttt{} & VFAT \{Y\} Counter \\\hline
     RESET & \texttt{0x202f} & \texttt{[0:0]} & w & Pulsed & Reset S-bit counters \\\hline
-    SBIT\_CNT\_PERSIST & \texttt{0x2030} & \texttt{[0:0]} & rw & \texttt{0x0} & 1=counters will persist until manually reset; \\ & & & & &                              0=counters will automatically reset at CNT\_TIME \\\hline
+    SBIT\_CNT\_PERSIST & \texttt{0x2030} & \texttt{[0:0]} & rw & \texttt{0x0} & 1=counters will persist until manually reset; \\ & & & & &                                 0=counters will automatically reset at CNT\_TIME \\\hline
     SBIT\_CNT\_TIME\_MAX & \texttt{0x2031} & \texttt{[31:0]} & rw & \texttt{0x2638E98} & Number of BX that the VFAT S-bit counters will count to before automatically resetting to zero \\\hline
     CLUSTER\_COUNT & \texttt{0x2032} & \texttt{[31:0]} & r & \texttt{} & VFAT Cluster Counter (chamber) \\\hline
     CNT\_PULSE & \texttt{0x2033} & \texttt{[0:0]} & w & Pulsed & Pulses S-bit counters for testing \\\hline
+    SBITS\_OVER\_64x0 & \texttt{0x2036} & \texttt{[15:0]} & r & \texttt{} & More than 64 * \$\{OVERFLOW\_IDX\} Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x1 & \texttt{0x2037} & \texttt{[15:0]} & r & \texttt{} & More than 64 * \$\{OVERFLOW\_IDX\} Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x2 & \texttt{0x2038} & \texttt{[15:0]} & r & \texttt{} & More than 64 * \$\{OVERFLOW\_IDX\} Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x3 & \texttt{0x2039} & \texttt{[15:0]} & r & \texttt{} & More than 64 * \$\{OVERFLOW\_IDX\} Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x4 & \texttt{0x203a} & \texttt{[15:0]} & r & \texttt{} & More than 64 * \$\{OVERFLOW\_IDX\} Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x5 & \texttt{0x203b} & \texttt{[15:0]} & r & \texttt{} & More than 64 * \$\{OVERFLOW\_IDX\} Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x6 & \texttt{0x203c} & \texttt{[15:0]} & r & \texttt{} & More than 64 * \$\{OVERFLOW\_IDX\} Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x7 & \texttt{0x203d} & \texttt{[15:0]} & r & \texttt{} & More than 64 * \$\{OVERFLOW\_IDX\} Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x8 & \texttt{0x203e} & \texttt{[15:0]} & r & \texttt{} & More than 64 * \$\{OVERFLOW\_IDX\} Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x9 & \texttt{0x203f} & \texttt{[15:0]} & r & \texttt{} & More than 64 * \$\{OVERFLOW\_IDX\} Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x10 & \texttt{0x2040} & \texttt{[15:0]} & r & \texttt{} & More than 64 * \$\{OVERFLOW\_IDX\} Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x11 & \texttt{0x2041} & \texttt{[15:0]} & r & \texttt{} & More than 64 * \$\{OVERFLOW\_IDX\} Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x12 & \texttt{0x2042} & \texttt{[15:0]} & r & \texttt{} & More than 64 * \$\{OVERFLOW\_IDX\} Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x13 & \texttt{0x2043} & \texttt{[15:0]} & r & \texttt{} & More than 64 * \$\{OVERFLOW\_IDX\} Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x14 & \texttt{0x2044} & \texttt{[15:0]} & r & \texttt{} & More than 64 * \$\{OVERFLOW\_IDX\} Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x15 & \texttt{0x2045} & \texttt{[15:0]} & r & \texttt{} & More than 64 * \$\{OVERFLOW\_IDX\} Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x16 & \texttt{0x2046} & \texttt{[15:0]} & r & \texttt{} & More than 64 * \$\{OVERFLOW\_IDX\} Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x17 & \texttt{0x2047} & \texttt{[15:0]} & r & \texttt{} & More than 64 * \$\{OVERFLOW\_IDX\} Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x18 & \texttt{0x2048} & \texttt{[15:0]} & r & \texttt{} & More than 64 * \$\{OVERFLOW\_IDX\} Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x19 & \texttt{0x2049} & \texttt{[15:0]} & r & \texttt{} & More than 64 * \$\{OVERFLOW\_IDX\} Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x20 & \texttt{0x204a} & \texttt{[15:0]} & r & \texttt{} & More than 64 * \$\{OVERFLOW\_IDX\} Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x21 & \texttt{0x204b} & \texttt{[15:0]} & r & \texttt{} & More than 64 * \$\{OVERFLOW\_IDX\} Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x22 & \texttt{0x204c} & \texttt{[15:0]} & r & \texttt{} & More than 64 * \$\{OVERFLOW\_IDX\} Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x23 & \texttt{0x204d} & \texttt{[15:0]} & r & \texttt{} & More than 64 * \$\{OVERFLOW\_IDX\} Sbits in a bx Counter \\\hline
     \end{tabularx}
     \vspace{5mm}
 
@@ -476,7 +500,7 @@
 
     \vspace{4mm}
     \noindent
-    Controls the tap delay settings of the S-bit trigger unit inputs.             Phase shifts the inputs in 78 ps increments             \\\\ The delay of each S-bit in a VFAT should be increased to match the longest delay incurred by the GEB + Optohybrid routing on that VFAT
+    Controls the tap delay settings of the S-bit trigger unit inputs.                 Phase shifts the inputs in 78 ps increments                 \\\\ The delay of each S-bit in a VFAT should be increased to match the longest delay incurred by the GEB + Optohybrid routing on that VFAT
     \noindent
 
     \keepXColumns
@@ -484,216 +508,222 @@
     \hline
     \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
     \nopagebreak
-    TAP\_DELAY\_VFAT0\_BIT0 & \texttt{0x203b} & \texttt{[4:0]} & rw & \texttt{0x0} & VFAT 0 S-bit 0 tap delay \\\hline
-    TAP\_DELAY\_VFAT0\_BIT1 & \texttt{0x203b} & \texttt{[9:5]} & rw & \texttt{0x0} & VFAT 0 S-bit 1 tap delay \\\hline
-    TAP\_DELAY\_VFAT0\_BIT2 & \texttt{0x203b} & \texttt{[14:10]} & rw & \texttt{0x6} & VFAT 0 S-bit 2 tap delay \\\hline
-    TAP\_DELAY\_VFAT0\_BIT3 & \texttt{0x203b} & \texttt{[19:15]} & rw & \texttt{0x2} & VFAT 0 S-bit 3 tap delay \\\hline
-    TAP\_DELAY\_VFAT0\_BIT4 & \texttt{0x203b} & \texttt{[24:20]} & rw & \texttt{0x4} & VFAT 0 S-bit 4 tap delay \\\hline
-    TAP\_DELAY\_VFAT0\_BIT5 & \texttt{0x203b} & \texttt{[29:25]} & rw & \texttt{0x2} & VFAT 0 S-bit 5 tap delay \\\hline
-    TAP\_DELAY\_VFAT0\_BIT6 & \texttt{0x203c} & \texttt{[4:0]} & rw & \texttt{0x2} & VFAT 0 S-bit 6 tap delay \\\hline
-    TAP\_DELAY\_VFAT0\_BIT7 & \texttt{0x203c} & \texttt{[9:5]} & rw & \texttt{0x0} & VFAT 0 S-bit 7 tap delay \\\hline
-    TAP\_DELAY\_VFAT1\_BIT0 & \texttt{0x203c} & \texttt{[14:10]} & rw & \texttt{0x0} & VFAT 1 S-bit 0 tap delay \\\hline
-    TAP\_DELAY\_VFAT1\_BIT1 & \texttt{0x203c} & \texttt{[19:15]} & rw & \texttt{0x5} & VFAT 1 S-bit 1 tap delay \\\hline
-    TAP\_DELAY\_VFAT1\_BIT2 & \texttt{0x203c} & \texttt{[24:20]} & rw & \texttt{0x2} & VFAT 1 S-bit 2 tap delay \\\hline
-    TAP\_DELAY\_VFAT1\_BIT3 & \texttt{0x203c} & \texttt{[29:25]} & rw & \texttt{0x5} & VFAT 1 S-bit 3 tap delay \\\hline
-    TAP\_DELAY\_VFAT1\_BIT4 & \texttt{0x203d} & \texttt{[4:0]} & rw & \texttt{0x5} & VFAT 1 S-bit 4 tap delay \\\hline
-    TAP\_DELAY\_VFAT1\_BIT5 & \texttt{0x203d} & \texttt{[9:5]} & rw & \texttt{0x5} & VFAT 1 S-bit 5 tap delay \\\hline
-    TAP\_DELAY\_VFAT1\_BIT6 & \texttt{0x203d} & \texttt{[14:10]} & rw & \texttt{0x6} & VFAT 1 S-bit 6 tap delay \\\hline
-    TAP\_DELAY\_VFAT1\_BIT7 & \texttt{0x203d} & \texttt{[19:15]} & rw & \texttt{0x0} & VFAT 1 S-bit 7 tap delay \\\hline
-    TAP\_DELAY\_VFAT2\_BIT0 & \texttt{0x203d} & \texttt{[24:20]} & rw & \texttt{0x4} & VFAT 2 S-bit 0 tap delay \\\hline
-    TAP\_DELAY\_VFAT2\_BIT1 & \texttt{0x203d} & \texttt{[29:25]} & rw & \texttt{0x3} & VFAT 2 S-bit 1 tap delay \\\hline
-    TAP\_DELAY\_VFAT2\_BIT2 & \texttt{0x203e} & \texttt{[4:0]} & rw & \texttt{0x3} & VFAT 2 S-bit 2 tap delay \\\hline
-    TAP\_DELAY\_VFAT2\_BIT3 & \texttt{0x203e} & \texttt{[9:5]} & rw & \texttt{0x3} & VFAT 2 S-bit 3 tap delay \\\hline
-    TAP\_DELAY\_VFAT2\_BIT4 & \texttt{0x203e} & \texttt{[14:10]} & rw & \texttt{0x3} & VFAT 2 S-bit 4 tap delay \\\hline
-    TAP\_DELAY\_VFAT2\_BIT5 & \texttt{0x203e} & \texttt{[19:15]} & rw & \texttt{0x3} & VFAT 2 S-bit 5 tap delay \\\hline
-    TAP\_DELAY\_VFAT2\_BIT6 & \texttt{0x203e} & \texttt{[24:20]} & rw & \texttt{0x2} & VFAT 2 S-bit 6 tap delay \\\hline
-    TAP\_DELAY\_VFAT2\_BIT7 & \texttt{0x203e} & \texttt{[29:25]} & rw & \texttt{0x2} & VFAT 2 S-bit 7 tap delay \\\hline
-    TAP\_DELAY\_VFAT3\_BIT0 & \texttt{0x203f} & \texttt{[4:0]} & rw & \texttt{0x2} & VFAT 3 S-bit 0 tap delay \\\hline
-    TAP\_DELAY\_VFAT3\_BIT1 & \texttt{0x203f} & \texttt{[9:5]} & rw & \texttt{0x2} & VFAT 3 S-bit 1 tap delay \\\hline
-    TAP\_DELAY\_VFAT3\_BIT2 & \texttt{0x203f} & \texttt{[14:10]} & rw & \texttt{0x1} & VFAT 3 S-bit 2 tap delay \\\hline
-    TAP\_DELAY\_VFAT3\_BIT3 & \texttt{0x203f} & \texttt{[19:15]} & rw & \texttt{0x1} & VFAT 3 S-bit 3 tap delay \\\hline
-    TAP\_DELAY\_VFAT3\_BIT4 & \texttt{0x203f} & \texttt{[24:20]} & rw & \texttt{0x1} & VFAT 3 S-bit 4 tap delay \\\hline
-    TAP\_DELAY\_VFAT3\_BIT5 & \texttt{0x203f} & \texttt{[29:25]} & rw & \texttt{0x1} & VFAT 3 S-bit 5 tap delay \\\hline
-    TAP\_DELAY\_VFAT3\_BIT6 & \texttt{0x2040} & \texttt{[4:0]} & rw & \texttt{0x0} & VFAT 3 S-bit 6 tap delay \\\hline
-    TAP\_DELAY\_VFAT3\_BIT7 & \texttt{0x2040} & \texttt{[9:5]} & rw & \texttt{0x0} & VFAT 3 S-bit 7 tap delay \\\hline
-    TAP\_DELAY\_VFAT4\_BIT0 & \texttt{0x2040} & \texttt{[14:10]} & rw & \texttt{0x3} & VFAT 4 S-bit 0 tap delay \\\hline
-    TAP\_DELAY\_VFAT4\_BIT1 & \texttt{0x2040} & \texttt{[19:15]} & rw & \texttt{0x4} & VFAT 4 S-bit 1 tap delay \\\hline
-    TAP\_DELAY\_VFAT4\_BIT2 & \texttt{0x2040} & \texttt{[24:20]} & rw & \texttt{0x4} & VFAT 4 S-bit 2 tap delay \\\hline
-    TAP\_DELAY\_VFAT4\_BIT3 & \texttt{0x2040} & \texttt{[29:25]} & rw & \texttt{0x4} & VFAT 4 S-bit 3 tap delay \\\hline
-    TAP\_DELAY\_VFAT4\_BIT4 & \texttt{0x2041} & \texttt{[4:0]} & rw & \texttt{0x5} & VFAT 4 S-bit 4 tap delay \\\hline
-    TAP\_DELAY\_VFAT4\_BIT5 & \texttt{0x2041} & \texttt{[9:5]} & rw & \texttt{0x5} & VFAT 4 S-bit 5 tap delay \\\hline
-    TAP\_DELAY\_VFAT4\_BIT6 & \texttt{0x2041} & \texttt{[14:10]} & rw & \texttt{0x5} & VFAT 4 S-bit 6 tap delay \\\hline
-    TAP\_DELAY\_VFAT4\_BIT7 & \texttt{0x2041} & \texttt{[19:15]} & rw & \texttt{0x6} & VFAT 4 S-bit 7 tap delay \\\hline
-    TAP\_DELAY\_VFAT5\_BIT0 & \texttt{0x2041} & \texttt{[24:20]} & rw & \texttt{0x6} & VFAT 5 S-bit 0 tap delay \\\hline
-    TAP\_DELAY\_VFAT5\_BIT1 & \texttt{0x2041} & \texttt{[29:25]} & rw & \texttt{0x6} & VFAT 5 S-bit 1 tap delay \\\hline
-    TAP\_DELAY\_VFAT5\_BIT2 & \texttt{0x2042} & \texttt{[4:0]} & rw & \texttt{0x6} & VFAT 5 S-bit 2 tap delay \\\hline
-    TAP\_DELAY\_VFAT5\_BIT3 & \texttt{0x2042} & \texttt{[9:5]} & rw & \texttt{0x7} & VFAT 5 S-bit 3 tap delay \\\hline
-    TAP\_DELAY\_VFAT5\_BIT4 & \texttt{0x2042} & \texttt{[14:10]} & rw & \texttt{0x7} & VFAT 5 S-bit 4 tap delay \\\hline
-    TAP\_DELAY\_VFAT5\_BIT5 & \texttt{0x2042} & \texttt{[19:15]} & rw & \texttt{0x7} & VFAT 5 S-bit 5 tap delay \\\hline
-    TAP\_DELAY\_VFAT5\_BIT6 & \texttt{0x2042} & \texttt{[24:20]} & rw & \texttt{0x8} & VFAT 5 S-bit 6 tap delay \\\hline
-    TAP\_DELAY\_VFAT5\_BIT7 & \texttt{0x2042} & \texttt{[29:25]} & rw & \texttt{0x8} & VFAT 5 S-bit 7 tap delay \\\hline
-    TAP\_DELAY\_VFAT6\_BIT0 & \texttt{0x2043} & \texttt{[4:0]} & rw & \texttt{0x1} & VFAT 6 S-bit 0 tap delay \\\hline
-    TAP\_DELAY\_VFAT6\_BIT1 & \texttt{0x2043} & \texttt{[9:5]} & rw & \texttt{0x0} & VFAT 6 S-bit 1 tap delay \\\hline
-    TAP\_DELAY\_VFAT6\_BIT2 & \texttt{0x2043} & \texttt{[14:10]} & rw & \texttt{0x2} & VFAT 6 S-bit 2 tap delay \\\hline
-    TAP\_DELAY\_VFAT6\_BIT3 & \texttt{0x2043} & \texttt{[19:15]} & rw & \texttt{0x3} & VFAT 6 S-bit 3 tap delay \\\hline
-    TAP\_DELAY\_VFAT6\_BIT4 & \texttt{0x2043} & \texttt{[24:20]} & rw & \texttt{0x3} & VFAT 6 S-bit 4 tap delay \\\hline
-    TAP\_DELAY\_VFAT6\_BIT5 & \texttt{0x2043} & \texttt{[29:25]} & rw & \texttt{0x2} & VFAT 6 S-bit 5 tap delay \\\hline
-    TAP\_DELAY\_VFAT6\_BIT6 & \texttt{0x2044} & \texttt{[4:0]} & rw & \texttt{0x2} & VFAT 6 S-bit 6 tap delay \\\hline
-    TAP\_DELAY\_VFAT6\_BIT7 & \texttt{0x2044} & \texttt{[9:5]} & rw & \texttt{0x2} & VFAT 6 S-bit 7 tap delay \\\hline
-    TAP\_DELAY\_VFAT7\_BIT0 & \texttt{0x2044} & \texttt{[14:10]} & rw & \texttt{0x8} & VFAT 7 S-bit 0 tap delay \\\hline
-    TAP\_DELAY\_VFAT7\_BIT1 & \texttt{0x2044} & \texttt{[19:15]} & rw & \texttt{0x7} & VFAT 7 S-bit 1 tap delay \\\hline
-    TAP\_DELAY\_VFAT7\_BIT2 & \texttt{0x2044} & \texttt{[24:20]} & rw & \texttt{0x6} & VFAT 7 S-bit 2 tap delay \\\hline
-    TAP\_DELAY\_VFAT7\_BIT3 & \texttt{0x2044} & \texttt{[29:25]} & rw & \texttt{0x5} & VFAT 7 S-bit 3 tap delay \\\hline
-    TAP\_DELAY\_VFAT7\_BIT4 & \texttt{0x2045} & \texttt{[4:0]} & rw & \texttt{0x4} & VFAT 7 S-bit 4 tap delay \\\hline
-    TAP\_DELAY\_VFAT7\_BIT5 & \texttt{0x2045} & \texttt{[9:5]} & rw & \texttt{0x3} & VFAT 7 S-bit 5 tap delay \\\hline
-    TAP\_DELAY\_VFAT7\_BIT6 & \texttt{0x2045} & \texttt{[14:10]} & rw & \texttt{0x2} & VFAT 7 S-bit 6 tap delay \\\hline
-    TAP\_DELAY\_VFAT7\_BIT7 & \texttt{0x2045} & \texttt{[19:15]} & rw & \texttt{0x0} & VFAT 7 S-bit 7 tap delay \\\hline
-    TAP\_DELAY\_VFAT8\_BIT0 & \texttt{0x2045} & \texttt{[24:20]} & rw & \texttt{0x4} & VFAT 8 S-bit 0 tap delay \\\hline
-    TAP\_DELAY\_VFAT8\_BIT1 & \texttt{0x2045} & \texttt{[29:25]} & rw & \texttt{0x4} & VFAT 8 S-bit 1 tap delay \\\hline
-    TAP\_DELAY\_VFAT8\_BIT2 & \texttt{0x2046} & \texttt{[4:0]} & rw & \texttt{0x4} & VFAT 8 S-bit 2 tap delay \\\hline
-    TAP\_DELAY\_VFAT8\_BIT3 & \texttt{0x2046} & \texttt{[9:5]} & rw & \texttt{0x4} & VFAT 8 S-bit 3 tap delay \\\hline
-    TAP\_DELAY\_VFAT8\_BIT4 & \texttt{0x2046} & \texttt{[14:10]} & rw & \texttt{0x4} & VFAT 8 S-bit 4 tap delay \\\hline
-    TAP\_DELAY\_VFAT8\_BIT5 & \texttt{0x2046} & \texttt{[19:15]} & rw & \texttt{0x3} & VFAT 8 S-bit 5 tap delay \\\hline
-    TAP\_DELAY\_VFAT8\_BIT6 & \texttt{0x2046} & \texttt{[24:20]} & rw & \texttt{0x3} & VFAT 8 S-bit 6 tap delay \\\hline
-    TAP\_DELAY\_VFAT8\_BIT7 & \texttt{0x2046} & \texttt{[29:25]} & rw & \texttt{0x3} & VFAT 8 S-bit 7 tap delay \\\hline
-    TAP\_DELAY\_VFAT9\_BIT0 & \texttt{0x2047} & \texttt{[4:0]} & rw & \texttt{0x0} & VFAT 9 S-bit 0 tap delay \\\hline
-    TAP\_DELAY\_VFAT9\_BIT1 & \texttt{0x2047} & \texttt{[9:5]} & rw & \texttt{0x6} & VFAT 9 S-bit 1 tap delay \\\hline
-    TAP\_DELAY\_VFAT9\_BIT2 & \texttt{0x2047} & \texttt{[14:10]} & rw & \texttt{0x6} & VFAT 9 S-bit 2 tap delay \\\hline
-    TAP\_DELAY\_VFAT9\_BIT3 & \texttt{0x2047} & \texttt{[19:15]} & rw & \texttt{0x4} & VFAT 9 S-bit 3 tap delay \\\hline
-    TAP\_DELAY\_VFAT9\_BIT4 & \texttt{0x2047} & \texttt{[24:20]} & rw & \texttt{0x4} & VFAT 9 S-bit 4 tap delay \\\hline
-    TAP\_DELAY\_VFAT9\_BIT5 & \texttt{0x2047} & \texttt{[29:25]} & rw & \texttt{0x2} & VFAT 9 S-bit 5 tap delay \\\hline
-    TAP\_DELAY\_VFAT9\_BIT6 & \texttt{0x2048} & \texttt{[4:0]} & rw & \texttt{0x2} & VFAT 9 S-bit 6 tap delay \\\hline
-    TAP\_DELAY\_VFAT9\_BIT7 & \texttt{0x2048} & \texttt{[9:5]} & rw & \texttt{0x1} & VFAT 9 S-bit 7 tap delay \\\hline
-    TAP\_DELAY\_VFAT10\_BIT0 & \texttt{0x2048} & \texttt{[14:10]} & rw & \texttt{0x2} & VFAT 10 S-bit 0 tap delay \\\hline
-    TAP\_DELAY\_VFAT10\_BIT1 & \texttt{0x2048} & \texttt{[19:15]} & rw & \texttt{0x1} & VFAT 10 S-bit 1 tap delay \\\hline
-    TAP\_DELAY\_VFAT10\_BIT2 & \texttt{0x2048} & \texttt{[24:20]} & rw & \texttt{0x1} & VFAT 10 S-bit 2 tap delay \\\hline
-    TAP\_DELAY\_VFAT10\_BIT3 & \texttt{0x2048} & \texttt{[29:25]} & rw & \texttt{0x1} & VFAT 10 S-bit 3 tap delay \\\hline
-    TAP\_DELAY\_VFAT10\_BIT4 & \texttt{0x2049} & \texttt{[4:0]} & rw & \texttt{0x1} & VFAT 10 S-bit 4 tap delay \\\hline
-    TAP\_DELAY\_VFAT10\_BIT5 & \texttt{0x2049} & \texttt{[9:5]} & rw & \texttt{0x1} & VFAT 10 S-bit 5 tap delay \\\hline
-    TAP\_DELAY\_VFAT10\_BIT6 & \texttt{0x2049} & \texttt{[14:10]} & rw & \texttt{0x0} & VFAT 10 S-bit 6 tap delay \\\hline
-    TAP\_DELAY\_VFAT10\_BIT7 & \texttt{0x2049} & \texttt{[19:15]} & rw & \texttt{0x0} & VFAT 10 S-bit 7 tap delay \\\hline
-    TAP\_DELAY\_VFAT11\_BIT0 & \texttt{0x2049} & \texttt{[24:20]} & rw & \texttt{0x2} & VFAT 11 S-bit 0 tap delay \\\hline
-    TAP\_DELAY\_VFAT11\_BIT1 & \texttt{0x2049} & \texttt{[29:25]} & rw & \texttt{0x1} & VFAT 11 S-bit 1 tap delay \\\hline
-    TAP\_DELAY\_VFAT11\_BIT2 & \texttt{0x204a} & \texttt{[4:0]} & rw & \texttt{0x1} & VFAT 11 S-bit 2 tap delay \\\hline
-    TAP\_DELAY\_VFAT11\_BIT3 & \texttt{0x204a} & \texttt{[9:5]} & rw & \texttt{0x1} & VFAT 11 S-bit 3 tap delay \\\hline
-    TAP\_DELAY\_VFAT11\_BIT4 & \texttt{0x204a} & \texttt{[14:10]} & rw & \texttt{0x1} & VFAT 11 S-bit 4 tap delay \\\hline
-    TAP\_DELAY\_VFAT11\_BIT5 & \texttt{0x204a} & \texttt{[19:15]} & rw & \texttt{0x0} & VFAT 11 S-bit 5 tap delay \\\hline
-    TAP\_DELAY\_VFAT11\_BIT6 & \texttt{0x204a} & \texttt{[24:20]} & rw & \texttt{0x0} & VFAT 11 S-bit 6 tap delay \\\hline
-    TAP\_DELAY\_VFAT11\_BIT7 & \texttt{0x204a} & \texttt{[29:25]} & rw & \texttt{0x0} & VFAT 11 S-bit 7 tap delay \\\hline
-    TAP\_DELAY\_VFAT12\_BIT0 & \texttt{0x204b} & \texttt{[4:0]} & rw & \texttt{0x0} & VFAT 12 S-bit 0 tap delay \\\hline
-    TAP\_DELAY\_VFAT12\_BIT1 & \texttt{0x204b} & \texttt{[9:5]} & rw & \texttt{0x0} & VFAT 12 S-bit 1 tap delay \\\hline
-    TAP\_DELAY\_VFAT12\_BIT2 & \texttt{0x204b} & \texttt{[14:10]} & rw & \texttt{0x1} & VFAT 12 S-bit 2 tap delay \\\hline
-    TAP\_DELAY\_VFAT12\_BIT3 & \texttt{0x204b} & \texttt{[19:15]} & rw & \texttt{0x1} & VFAT 12 S-bit 3 tap delay \\\hline
-    TAP\_DELAY\_VFAT12\_BIT4 & \texttt{0x204b} & \texttt{[24:20]} & rw & \texttt{0x1} & VFAT 12 S-bit 4 tap delay \\\hline
-    TAP\_DELAY\_VFAT12\_BIT5 & \texttt{0x204b} & \texttt{[29:25]} & rw & \texttt{0x2} & VFAT 12 S-bit 5 tap delay \\\hline
-    TAP\_DELAY\_VFAT12\_BIT6 & \texttt{0x204c} & \texttt{[4:0]} & rw & \texttt{0x3} & VFAT 12 S-bit 6 tap delay \\\hline
-    TAP\_DELAY\_VFAT12\_BIT7 & \texttt{0x204c} & \texttt{[9:5]} & rw & \texttt{0x3} & VFAT 12 S-bit 7 tap delay \\\hline
-    TAP\_DELAY\_VFAT13\_BIT0 & \texttt{0x204c} & \texttt{[14:10]} & rw & \texttt{0x3} & VFAT 13 S-bit 0 tap delay \\\hline
-    TAP\_DELAY\_VFAT13\_BIT1 & \texttt{0x204c} & \texttt{[19:15]} & rw & \texttt{0x3} & VFAT 13 S-bit 1 tap delay \\\hline
-    TAP\_DELAY\_VFAT13\_BIT2 & \texttt{0x204c} & \texttt{[24:20]} & rw & \texttt{0x4} & VFAT 13 S-bit 2 tap delay \\\hline
-    TAP\_DELAY\_VFAT13\_BIT3 & \texttt{0x204c} & \texttt{[29:25]} & rw & \texttt{0x4} & VFAT 13 S-bit 3 tap delay \\\hline
-    TAP\_DELAY\_VFAT13\_BIT4 & \texttt{0x204d} & \texttt{[4:0]} & rw & \texttt{0x5} & VFAT 13 S-bit 4 tap delay \\\hline
-    TAP\_DELAY\_VFAT13\_BIT5 & \texttt{0x204d} & \texttt{[9:5]} & rw & \texttt{0x5} & VFAT 13 S-bit 5 tap delay \\\hline
-    TAP\_DELAY\_VFAT13\_BIT6 & \texttt{0x204d} & \texttt{[14:10]} & rw & \texttt{0x5} & VFAT 13 S-bit 6 tap delay \\\hline
-    TAP\_DELAY\_VFAT13\_BIT7 & \texttt{0x204d} & \texttt{[19:15]} & rw & \texttt{0x6} & VFAT 13 S-bit 7 tap delay \\\hline
-    TAP\_DELAY\_VFAT14\_BIT0 & \texttt{0x204d} & \texttt{[24:20]} & rw & \texttt{0x1} & VFAT 14 S-bit 0 tap delay \\\hline
-    TAP\_DELAY\_VFAT14\_BIT1 & \texttt{0x204d} & \texttt{[29:25]} & rw & \texttt{0x1} & VFAT 14 S-bit 1 tap delay \\\hline
-    TAP\_DELAY\_VFAT14\_BIT2 & \texttt{0x204e} & \texttt{[4:0]} & rw & \texttt{0x1} & VFAT 14 S-bit 2 tap delay \\\hline
-    TAP\_DELAY\_VFAT14\_BIT3 & \texttt{0x204e} & \texttt{[9:5]} & rw & \texttt{0x1} & VFAT 14 S-bit 3 tap delay \\\hline
-    TAP\_DELAY\_VFAT14\_BIT4 & \texttt{0x204e} & \texttt{[14:10]} & rw & \texttt{0x2} & VFAT 14 S-bit 4 tap delay \\\hline
-    TAP\_DELAY\_VFAT14\_BIT5 & \texttt{0x204e} & \texttt{[19:15]} & rw & \texttt{0x1} & VFAT 14 S-bit 5 tap delay \\\hline
-    TAP\_DELAY\_VFAT14\_BIT6 & \texttt{0x204e} & \texttt{[24:20]} & rw & \texttt{0x2} & VFAT 14 S-bit 6 tap delay \\\hline
-    TAP\_DELAY\_VFAT14\_BIT7 & \texttt{0x204e} & \texttt{[29:25]} & rw & \texttt{0x2} & VFAT 14 S-bit 7 tap delay \\\hline
-    TAP\_DELAY\_VFAT15\_BIT0 & \texttt{0x204f} & \texttt{[4:0]} & rw & \texttt{0x3} & VFAT 15 S-bit 0 tap delay \\\hline
-    TAP\_DELAY\_VFAT15\_BIT1 & \texttt{0x204f} & \texttt{[9:5]} & rw & \texttt{0x2} & VFAT 15 S-bit 1 tap delay \\\hline
-    TAP\_DELAY\_VFAT15\_BIT2 & \texttt{0x204f} & \texttt{[14:10]} & rw & \texttt{0x3} & VFAT 15 S-bit 2 tap delay \\\hline
-    TAP\_DELAY\_VFAT15\_BIT3 & \texttt{0x204f} & \texttt{[19:15]} & rw & \texttt{0x3} & VFAT 15 S-bit 3 tap delay \\\hline
-    TAP\_DELAY\_VFAT15\_BIT4 & \texttt{0x204f} & \texttt{[24:20]} & rw & \texttt{0x3} & VFAT 15 S-bit 4 tap delay \\\hline
-    TAP\_DELAY\_VFAT15\_BIT5 & \texttt{0x204f} & \texttt{[29:25]} & rw & \texttt{0x3} & VFAT 15 S-bit 5 tap delay \\\hline
-    TAP\_DELAY\_VFAT15\_BIT6 & \texttt{0x2050} & \texttt{[4:0]} & rw & \texttt{0x3} & VFAT 15 S-bit 6 tap delay \\\hline
-    TAP\_DELAY\_VFAT15\_BIT7 & \texttt{0x2050} & \texttt{[9:5]} & rw & \texttt{0x3} & VFAT 15 S-bit 7 tap delay \\\hline
-    TAP\_DELAY\_VFAT16\_BIT0 & \texttt{0x2050} & \texttt{[14:10]} & rw & \texttt{0x9} & VFAT 16 S-bit 0 tap delay \\\hline
-    TAP\_DELAY\_VFAT16\_BIT1 & \texttt{0x2050} & \texttt{[19:15]} & rw & \texttt{0x8} & VFAT 16 S-bit 1 tap delay \\\hline
-    TAP\_DELAY\_VFAT16\_BIT2 & \texttt{0x2050} & \texttt{[24:20]} & rw & \texttt{0x7} & VFAT 16 S-bit 2 tap delay \\\hline
-    TAP\_DELAY\_VFAT16\_BIT3 & \texttt{0x2050} & \texttt{[29:25]} & rw & \texttt{0x5} & VFAT 16 S-bit 3 tap delay \\\hline
-    TAP\_DELAY\_VFAT16\_BIT4 & \texttt{0x2051} & \texttt{[4:0]} & rw & \texttt{0x4} & VFAT 16 S-bit 4 tap delay \\\hline
-    TAP\_DELAY\_VFAT16\_BIT5 & \texttt{0x2051} & \texttt{[9:5]} & rw & \texttt{0x3} & VFAT 16 S-bit 5 tap delay \\\hline
-    TAP\_DELAY\_VFAT16\_BIT6 & \texttt{0x2051} & \texttt{[14:10]} & rw & \texttt{0x2} & VFAT 16 S-bit 6 tap delay \\\hline
-    TAP\_DELAY\_VFAT16\_BIT7 & \texttt{0x2051} & \texttt{[19:15]} & rw & \texttt{0x0} & VFAT 16 S-bit 7 tap delay \\\hline
-    TAP\_DELAY\_VFAT17\_BIT0 & \texttt{0x2051} & \texttt{[24:20]} & rw & \texttt{0x2} & VFAT 17 S-bit 0 tap delay \\\hline
-    TAP\_DELAY\_VFAT17\_BIT1 & \texttt{0x2051} & \texttt{[29:25]} & rw & \texttt{0x2} & VFAT 17 S-bit 1 tap delay \\\hline
-    TAP\_DELAY\_VFAT17\_BIT2 & \texttt{0x2052} & \texttt{[4:0]} & rw & \texttt{0x3} & VFAT 17 S-bit 2 tap delay \\\hline
-    TAP\_DELAY\_VFAT17\_BIT3 & \texttt{0x2052} & \texttt{[9:5]} & rw & \texttt{0x3} & VFAT 17 S-bit 3 tap delay \\\hline
-    TAP\_DELAY\_VFAT17\_BIT4 & \texttt{0x2052} & \texttt{[14:10]} & rw & \texttt{0x3} & VFAT 17 S-bit 4 tap delay \\\hline
-    TAP\_DELAY\_VFAT17\_BIT5 & \texttt{0x2052} & \texttt{[19:15]} & rw & \texttt{0x3} & VFAT 17 S-bit 5 tap delay \\\hline
-    TAP\_DELAY\_VFAT17\_BIT6 & \texttt{0x2052} & \texttt{[24:20]} & rw & \texttt{0x3} & VFAT 17 S-bit 6 tap delay \\\hline
-    TAP\_DELAY\_VFAT17\_BIT7 & \texttt{0x2052} & \texttt{[29:25]} & rw & \texttt{0x3} & VFAT 17 S-bit 7 tap delay \\\hline
-    TAP\_DELAY\_VFAT18\_BIT0 & \texttt{0x2053} & \texttt{[4:0]} & rw & \texttt{0x0} & VFAT 18 S-bit 0 tap delay \\\hline
-    TAP\_DELAY\_VFAT18\_BIT1 & \texttt{0x2053} & \texttt{[9:5]} & rw & \texttt{0x0} & VFAT 18 S-bit 1 tap delay \\\hline
-    TAP\_DELAY\_VFAT18\_BIT2 & \texttt{0x2053} & \texttt{[14:10]} & rw & \texttt{0x0} & VFAT 18 S-bit 2 tap delay \\\hline
-    TAP\_DELAY\_VFAT18\_BIT3 & \texttt{0x2053} & \texttt{[19:15]} & rw & \texttt{0x0} & VFAT 18 S-bit 3 tap delay \\\hline
-    TAP\_DELAY\_VFAT18\_BIT4 & \texttt{0x2053} & \texttt{[24:20]} & rw & \texttt{0x1} & VFAT 18 S-bit 4 tap delay \\\hline
-    TAP\_DELAY\_VFAT18\_BIT5 & \texttt{0x2053} & \texttt{[29:25]} & rw & \texttt{0x1} & VFAT 18 S-bit 5 tap delay \\\hline
-    TAP\_DELAY\_VFAT18\_BIT6 & \texttt{0x2054} & \texttt{[4:0]} & rw & \texttt{0x1} & VFAT 18 S-bit 6 tap delay \\\hline
-    TAP\_DELAY\_VFAT18\_BIT7 & \texttt{0x2054} & \texttt{[9:5]} & rw & \texttt{0x1} & VFAT 18 S-bit 7 tap delay \\\hline
-    TAP\_DELAY\_VFAT19\_BIT0 & \texttt{0x2054} & \texttt{[14:10]} & rw & \texttt{0x5} & VFAT 19 S-bit 0 tap delay \\\hline
-    TAP\_DELAY\_VFAT19\_BIT1 & \texttt{0x2054} & \texttt{[19:15]} & rw & \texttt{0x4} & VFAT 19 S-bit 1 tap delay \\\hline
-    TAP\_DELAY\_VFAT19\_BIT2 & \texttt{0x2054} & \texttt{[24:20]} & rw & \texttt{0x4} & VFAT 19 S-bit 2 tap delay \\\hline
-    TAP\_DELAY\_VFAT19\_BIT3 & \texttt{0x2054} & \texttt{[29:25]} & rw & \texttt{0x3} & VFAT 19 S-bit 3 tap delay \\\hline
-    TAP\_DELAY\_VFAT19\_BIT4 & \texttt{0x2055} & \texttt{[4:0]} & rw & \texttt{0x2} & VFAT 19 S-bit 4 tap delay \\\hline
-    TAP\_DELAY\_VFAT19\_BIT5 & \texttt{0x2055} & \texttt{[9:5]} & rw & \texttt{0x2} & VFAT 19 S-bit 5 tap delay \\\hline
-    TAP\_DELAY\_VFAT19\_BIT6 & \texttt{0x2055} & \texttt{[14:10]} & rw & \texttt{0x1} & VFAT 19 S-bit 6 tap delay \\\hline
-    TAP\_DELAY\_VFAT19\_BIT7 & \texttt{0x2055} & \texttt{[19:15]} & rw & \texttt{0x0} & VFAT 19 S-bit 7 tap delay \\\hline
-    TAP\_DELAY\_VFAT20\_BIT0 & \texttt{0x2055} & \texttt{[24:20]} & rw & \texttt{0x3} & VFAT 20 S-bit 0 tap delay \\\hline
-    TAP\_DELAY\_VFAT20\_BIT1 & \texttt{0x2055} & \texttt{[29:25]} & rw & \texttt{0x3} & VFAT 20 S-bit 1 tap delay \\\hline
-    TAP\_DELAY\_VFAT20\_BIT2 & \texttt{0x2056} & \texttt{[4:0]} & rw & \texttt{0x3} & VFAT 20 S-bit 2 tap delay \\\hline
-    TAP\_DELAY\_VFAT20\_BIT3 & \texttt{0x2056} & \texttt{[9:5]} & rw & \texttt{0x2} & VFAT 20 S-bit 3 tap delay \\\hline
-    TAP\_DELAY\_VFAT20\_BIT4 & \texttt{0x2056} & \texttt{[14:10]} & rw & \texttt{0x2} & VFAT 20 S-bit 4 tap delay \\\hline
-    TAP\_DELAY\_VFAT20\_BIT5 & \texttt{0x2056} & \texttt{[19:15]} & rw & \texttt{0x1} & VFAT 20 S-bit 5 tap delay \\\hline
-    TAP\_DELAY\_VFAT20\_BIT6 & \texttt{0x2056} & \texttt{[24:20]} & rw & \texttt{0x1} & VFAT 20 S-bit 6 tap delay \\\hline
-    TAP\_DELAY\_VFAT20\_BIT7 & \texttt{0x2056} & \texttt{[29:25]} & rw & \texttt{0x0} & VFAT 20 S-bit 7 tap delay \\\hline
-    TAP\_DELAY\_VFAT21\_BIT0 & \texttt{0x2057} & \texttt{[4:0]} & rw & \texttt{0x3} & VFAT 21 S-bit 0 tap delay \\\hline
-    TAP\_DELAY\_VFAT21\_BIT1 & \texttt{0x2057} & \texttt{[9:5]} & rw & \texttt{0x2} & VFAT 21 S-bit 1 tap delay \\\hline
-    TAP\_DELAY\_VFAT21\_BIT2 & \texttt{0x2057} & \texttt{[14:10]} & rw & \texttt{0x3} & VFAT 21 S-bit 2 tap delay \\\hline
-    TAP\_DELAY\_VFAT21\_BIT3 & \texttt{0x2057} & \texttt{[19:15]} & rw & \texttt{0x2} & VFAT 21 S-bit 3 tap delay \\\hline
-    TAP\_DELAY\_VFAT21\_BIT4 & \texttt{0x2057} & \texttt{[24:20]} & rw & \texttt{0x2} & VFAT 21 S-bit 4 tap delay \\\hline
-    TAP\_DELAY\_VFAT21\_BIT5 & \texttt{0x2057} & \texttt{[29:25]} & rw & \texttt{0x1} & VFAT 21 S-bit 5 tap delay \\\hline
-    TAP\_DELAY\_VFAT21\_BIT6 & \texttt{0x2058} & \texttt{[4:0]} & rw & \texttt{0x1} & VFAT 21 S-bit 6 tap delay \\\hline
-    TAP\_DELAY\_VFAT21\_BIT7 & \texttt{0x2058} & \texttt{[9:5]} & rw & \texttt{0x0} & VFAT 21 S-bit 7 tap delay \\\hline
-    TAP\_DELAY\_VFAT22\_BIT0 & \texttt{0x2058} & \texttt{[14:10]} & rw & \texttt{0x3} & VFAT 22 S-bit 0 tap delay \\\hline
-    TAP\_DELAY\_VFAT22\_BIT1 & \texttt{0x2058} & \texttt{[19:15]} & rw & \texttt{0x2} & VFAT 22 S-bit 1 tap delay \\\hline
-    TAP\_DELAY\_VFAT22\_BIT2 & \texttt{0x2058} & \texttt{[24:20]} & rw & \texttt{0x2} & VFAT 22 S-bit 2 tap delay \\\hline
-    TAP\_DELAY\_VFAT22\_BIT3 & \texttt{0x2058} & \texttt{[29:25]} & rw & \texttt{0x2} & VFAT 22 S-bit 3 tap delay \\\hline
-    TAP\_DELAY\_VFAT22\_BIT4 & \texttt{0x2059} & \texttt{[4:0]} & rw & \texttt{0x2} & VFAT 22 S-bit 4 tap delay \\\hline
-    TAP\_DELAY\_VFAT22\_BIT5 & \texttt{0x2059} & \texttt{[9:5]} & rw & \texttt{0x1} & VFAT 22 S-bit 5 tap delay \\\hline
-    TAP\_DELAY\_VFAT22\_BIT6 & \texttt{0x2059} & \texttt{[14:10]} & rw & \texttt{0x1} & VFAT 22 S-bit 6 tap delay \\\hline
-    TAP\_DELAY\_VFAT22\_BIT7 & \texttt{0x2059} & \texttt{[19:15]} & rw & \texttt{0x0} & VFAT 22 S-bit 7 tap delay \\\hline
-    TAP\_DELAY\_VFAT23\_BIT0 & \texttt{0x2059} & \texttt{[24:20]} & rw & \texttt{0x2} & VFAT 23 S-bit 0 tap delay \\\hline
-    TAP\_DELAY\_VFAT23\_BIT1 & \texttt{0x2059} & \texttt{[29:25]} & rw & \texttt{0x5} & VFAT 23 S-bit 1 tap delay \\\hline
-    TAP\_DELAY\_VFAT23\_BIT2 & \texttt{0x205a} & \texttt{[4:0]} & rw & \texttt{0x5} & VFAT 23 S-bit 2 tap delay \\\hline
-    TAP\_DELAY\_VFAT23\_BIT3 & \texttt{0x205a} & \texttt{[9:5]} & rw & \texttt{0x3} & VFAT 23 S-bit 3 tap delay \\\hline
-    TAP\_DELAY\_VFAT23\_BIT4 & \texttt{0x205a} & \texttt{[14:10]} & rw & \texttt{0x3} & VFAT 23 S-bit 4 tap delay \\\hline
-    TAP\_DELAY\_VFAT23\_BIT5 & \texttt{0x205a} & \texttt{[19:15]} & rw & \texttt{0x3} & VFAT 23 S-bit 5 tap delay \\\hline
-    TAP\_DELAY\_VFAT23\_BIT6 & \texttt{0x205a} & \texttt{[24:20]} & rw & \texttt{0x1} & VFAT 23 S-bit 6 tap delay \\\hline
-    TAP\_DELAY\_VFAT23\_BIT7 & \texttt{0x205a} & \texttt{[29:25]} & rw & \texttt{0x2} & VFAT 23 S-bit 7 tap delay \\\hline
-    SOT\_TAP\_DELAY\_VFAT0 & \texttt{0x205b} & \texttt{[4:0]} & rw & \texttt{0x2} & VFAT 0 SOT tap delay \\\hline
-    SOT\_TAP\_DELAY\_VFAT1 & \texttt{0x205b} & \texttt{[9:5]} & rw & \texttt{0x2} & VFAT 1 SOT tap delay \\\hline
-    SOT\_TAP\_DELAY\_VFAT2 & \texttt{0x205b} & \texttt{[14:10]} & rw & \texttt{0x0} & VFAT 2 SOT tap delay \\\hline
-    SOT\_TAP\_DELAY\_VFAT3 & \texttt{0x205b} & \texttt{[19:15]} & rw & \texttt{0x0} & VFAT 3 SOT tap delay \\\hline
-    SOT\_TAP\_DELAY\_VFAT4 & \texttt{0x205b} & \texttt{[24:20]} & rw & \texttt{0x0} & VFAT 4 SOT tap delay \\\hline
-    SOT\_TAP\_DELAY\_VFAT5 & \texttt{0x205b} & \texttt{[29:25]} & rw & \texttt{0x0} & VFAT 5 SOT tap delay \\\hline
-    SOT\_TAP\_DELAY\_VFAT6 & \texttt{0x205c} & \texttt{[4:0]} & rw & \texttt{0x1} & VFAT 6 SOT tap delay \\\hline
-    SOT\_TAP\_DELAY\_VFAT7 & \texttt{0x205c} & \texttt{[9:5]} & rw & \texttt{0x6} & VFAT 7 SOT tap delay \\\hline
-    SOT\_TAP\_DELAY\_VFAT8 & \texttt{0x205c} & \texttt{[14:10]} & rw & \texttt{0x0} & VFAT 8 SOT tap delay \\\hline
-    SOT\_TAP\_DELAY\_VFAT9 & \texttt{0x205c} & \texttt{[19:15]} & rw & \texttt{0x7} & VFAT 9 SOT tap delay \\\hline
-    SOT\_TAP\_DELAY\_VFAT10 & \texttt{0x205c} & \texttt{[24:20]} & rw & \texttt{0x1} & VFAT 10 SOT tap delay \\\hline
-    SOT\_TAP\_DELAY\_VFAT11 & \texttt{0x205c} & \texttt{[29:25]} & rw & \texttt{0x2} & VFAT 11 SOT tap delay \\\hline
-    SOT\_TAP\_DELAY\_VFAT12 & \texttt{0x205d} & \texttt{[4:0]} & rw & \texttt{0x2} & VFAT 12 SOT tap delay \\\hline
-    SOT\_TAP\_DELAY\_VFAT13 & \texttt{0x205d} & \texttt{[9:5]} & rw & \texttt{0x0} & VFAT 13 SOT tap delay \\\hline
-    SOT\_TAP\_DELAY\_VFAT14 & \texttt{0x205d} & \texttt{[14:10]} & rw & \texttt{0x0} & VFAT 14 SOT tap delay \\\hline
-    SOT\_TAP\_DELAY\_VFAT15 & \texttt{0x205d} & \texttt{[19:15]} & rw & \texttt{0x0} & VFAT 15 SOT tap delay \\\hline
-    SOT\_TAP\_DELAY\_VFAT16 & \texttt{0x205d} & \texttt{[24:20]} & rw & \texttt{0x4} & VFAT 16 SOT tap delay \\\hline
-    SOT\_TAP\_DELAY\_VFAT17 & \texttt{0x205d} & \texttt{[29:25]} & rw & \texttt{0x0} & VFAT 17 SOT tap delay \\\hline
+    TAP\_DELAY\_VFAT0\_BIT0 & \texttt{0x2053} & \texttt{[4:0]} & rw & \texttt{0x0} & VFAT 0 S-bit 0 tap delay \\\hline
+    TAP\_DELAY\_VFAT0\_BIT1 & \texttt{0x2053} & \texttt{[9:5]} & rw & \texttt{0x0} & VFAT 0 S-bit 1 tap delay \\\hline
+    TAP\_DELAY\_VFAT0\_BIT2 & \texttt{0x2053} & \texttt{[14:10]} & rw & \texttt{0x6} & VFAT 0 S-bit 2 tap delay \\\hline
+    TAP\_DELAY\_VFAT0\_BIT3 & \texttt{0x2053} & \texttt{[19:15]} & rw & \texttt{0x2} & VFAT 0 S-bit 3 tap delay \\\hline
+    TAP\_DELAY\_VFAT0\_BIT4 & \texttt{0x2053} & \texttt{[24:20]} & rw & \texttt{0x4} & VFAT 0 S-bit 4 tap delay \\\hline
+    TAP\_DELAY\_VFAT0\_BIT5 & \texttt{0x2053} & \texttt{[29:25]} & rw & \texttt{0x2} & VFAT 0 S-bit 5 tap delay \\\hline
+    TAP\_DELAY\_VFAT0\_BIT6 & \texttt{0x2054} & \texttt{[4:0]} & rw & \texttt{0x2} & VFAT 0 S-bit 6 tap delay \\\hline
+    TAP\_DELAY\_VFAT0\_BIT7 & \texttt{0x2054} & \texttt{[9:5]} & rw & \texttt{0x0} & VFAT 0 S-bit 7 tap delay \\\hline
+    TAP\_DELAY\_VFAT1\_BIT0 & \texttt{0x2054} & \texttt{[14:10]} & rw & \texttt{0x0} & VFAT 1 S-bit 0 tap delay \\\hline
+    TAP\_DELAY\_VFAT1\_BIT1 & \texttt{0x2054} & \texttt{[19:15]} & rw & \texttt{0x5} & VFAT 1 S-bit 1 tap delay \\\hline
+    TAP\_DELAY\_VFAT1\_BIT2 & \texttt{0x2054} & \texttt{[24:20]} & rw & \texttt{0x2} & VFAT 1 S-bit 2 tap delay \\\hline
+    TAP\_DELAY\_VFAT1\_BIT3 & \texttt{0x2054} & \texttt{[29:25]} & rw & \texttt{0x5} & VFAT 1 S-bit 3 tap delay \\\hline
+    TAP\_DELAY\_VFAT1\_BIT4 & \texttt{0x2055} & \texttt{[4:0]} & rw & \texttt{0x5} & VFAT 1 S-bit 4 tap delay \\\hline
+    TAP\_DELAY\_VFAT1\_BIT5 & \texttt{0x2055} & \texttt{[9:5]} & rw & \texttt{0x5} & VFAT 1 S-bit 5 tap delay \\\hline
+    TAP\_DELAY\_VFAT1\_BIT6 & \texttt{0x2055} & \texttt{[14:10]} & rw & \texttt{0x6} & VFAT 1 S-bit 6 tap delay \\\hline
+    TAP\_DELAY\_VFAT1\_BIT7 & \texttt{0x2055} & \texttt{[19:15]} & rw & \texttt{0x0} & VFAT 1 S-bit 7 tap delay \\\hline
+    TAP\_DELAY\_VFAT2\_BIT0 & \texttt{0x2055} & \texttt{[24:20]} & rw & \texttt{0x4} & VFAT 2 S-bit 0 tap delay \\\hline
+    TAP\_DELAY\_VFAT2\_BIT1 & \texttt{0x2055} & \texttt{[29:25]} & rw & \texttt{0x3} & VFAT 2 S-bit 1 tap delay \\\hline
+    TAP\_DELAY\_VFAT2\_BIT2 & \texttt{0x2056} & \texttt{[4:0]} & rw & \texttt{0x3} & VFAT 2 S-bit 2 tap delay \\\hline
+    TAP\_DELAY\_VFAT2\_BIT3 & \texttt{0x2056} & \texttt{[9:5]} & rw & \texttt{0x3} & VFAT 2 S-bit 3 tap delay \\\hline
+    TAP\_DELAY\_VFAT2\_BIT4 & \texttt{0x2056} & \texttt{[14:10]} & rw & \texttt{0x3} & VFAT 2 S-bit 4 tap delay \\\hline
+    TAP\_DELAY\_VFAT2\_BIT5 & \texttt{0x2056} & \texttt{[19:15]} & rw & \texttt{0x3} & VFAT 2 S-bit 5 tap delay \\\hline
+    TAP\_DELAY\_VFAT2\_BIT6 & \texttt{0x2056} & \texttt{[24:20]} & rw & \texttt{0x2} & VFAT 2 S-bit 6 tap delay \\\hline
+    TAP\_DELAY\_VFAT2\_BIT7 & \texttt{0x2056} & \texttt{[29:25]} & rw & \texttt{0x2} & VFAT 2 S-bit 7 tap delay \\\hline
+    TAP\_DELAY\_VFAT3\_BIT0 & \texttt{0x2057} & \texttt{[4:0]} & rw & \texttt{0x2} & VFAT 3 S-bit 0 tap delay \\\hline
+    TAP\_DELAY\_VFAT3\_BIT1 & \texttt{0x2057} & \texttt{[9:5]} & rw & \texttt{0x2} & VFAT 3 S-bit 1 tap delay \\\hline
+    TAP\_DELAY\_VFAT3\_BIT2 & \texttt{0x2057} & \texttt{[14:10]} & rw & \texttt{0x1} & VFAT 3 S-bit 2 tap delay \\\hline
+    TAP\_DELAY\_VFAT3\_BIT3 & \texttt{0x2057} & \texttt{[19:15]} & rw & \texttt{0x1} & VFAT 3 S-bit 3 tap delay \\\hline
+    TAP\_DELAY\_VFAT3\_BIT4 & \texttt{0x2057} & \texttt{[24:20]} & rw & \texttt{0x1} & VFAT 3 S-bit 4 tap delay \\\hline
+    TAP\_DELAY\_VFAT3\_BIT5 & \texttt{0x2057} & \texttt{[29:25]} & rw & \texttt{0x1} & VFAT 3 S-bit 5 tap delay \\\hline
+    TAP\_DELAY\_VFAT3\_BIT6 & \texttt{0x2058} & \texttt{[4:0]} & rw & \texttt{0x0} & VFAT 3 S-bit 6 tap delay \\\hline
+    TAP\_DELAY\_VFAT3\_BIT7 & \texttt{0x2058} & \texttt{[9:5]} & rw & \texttt{0x0} & VFAT 3 S-bit 7 tap delay \\\hline
+    TAP\_DELAY\_VFAT4\_BIT0 & \texttt{0x2058} & \texttt{[14:10]} & rw & \texttt{0x3} & VFAT 4 S-bit 0 tap delay \\\hline
+    TAP\_DELAY\_VFAT4\_BIT1 & \texttt{0x2058} & \texttt{[19:15]} & rw & \texttt{0x4} & VFAT 4 S-bit 1 tap delay \\\hline
+    TAP\_DELAY\_VFAT4\_BIT2 & \texttt{0x2058} & \texttt{[24:20]} & rw & \texttt{0x4} & VFAT 4 S-bit 2 tap delay \\\hline
+    TAP\_DELAY\_VFAT4\_BIT3 & \texttt{0x2058} & \texttt{[29:25]} & rw & \texttt{0x4} & VFAT 4 S-bit 3 tap delay \\\hline
+    TAP\_DELAY\_VFAT4\_BIT4 & \texttt{0x2059} & \texttt{[4:0]} & rw & \texttt{0x5} & VFAT 4 S-bit 4 tap delay \\\hline
+    TAP\_DELAY\_VFAT4\_BIT5 & \texttt{0x2059} & \texttt{[9:5]} & rw & \texttt{0x5} & VFAT 4 S-bit 5 tap delay \\\hline
+    TAP\_DELAY\_VFAT4\_BIT6 & \texttt{0x2059} & \texttt{[14:10]} & rw & \texttt{0x5} & VFAT 4 S-bit 6 tap delay \\\hline
+    TAP\_DELAY\_VFAT4\_BIT7 & \texttt{0x2059} & \texttt{[19:15]} & rw & \texttt{0x6} & VFAT 4 S-bit 7 tap delay \\\hline
+    TAP\_DELAY\_VFAT5\_BIT0 & \texttt{0x2059} & \texttt{[24:20]} & rw & \texttt{0x6} & VFAT 5 S-bit 0 tap delay \\\hline
+    TAP\_DELAY\_VFAT5\_BIT1 & \texttt{0x2059} & \texttt{[29:25]} & rw & \texttt{0x6} & VFAT 5 S-bit 1 tap delay \\\hline
+    TAP\_DELAY\_VFAT5\_BIT2 & \texttt{0x205a} & \texttt{[4:0]} & rw & \texttt{0x6} & VFAT 5 S-bit 2 tap delay \\\hline
+    TAP\_DELAY\_VFAT5\_BIT3 & \texttt{0x205a} & \texttt{[9:5]} & rw & \texttt{0x7} & VFAT 5 S-bit 3 tap delay \\\hline
+    TAP\_DELAY\_VFAT5\_BIT4 & \texttt{0x205a} & \texttt{[14:10]} & rw & \texttt{0x7} & VFAT 5 S-bit 4 tap delay \\\hline
+    TAP\_DELAY\_VFAT5\_BIT5 & \texttt{0x205a} & \texttt{[19:15]} & rw & \texttt{0x7} & VFAT 5 S-bit 5 tap delay \\\hline
+    TAP\_DELAY\_VFAT5\_BIT6 & \texttt{0x205a} & \texttt{[24:20]} & rw & \texttt{0x8} & VFAT 5 S-bit 6 tap delay \\\hline
+    TAP\_DELAY\_VFAT5\_BIT7 & \texttt{0x205a} & \texttt{[29:25]} & rw & \texttt{0x8} & VFAT 5 S-bit 7 tap delay \\\hline
+    TAP\_DELAY\_VFAT6\_BIT0 & \texttt{0x205b} & \texttt{[4:0]} & rw & \texttt{0x1} & VFAT 6 S-bit 0 tap delay \\\hline
+    TAP\_DELAY\_VFAT6\_BIT1 & \texttt{0x205b} & \texttt{[9:5]} & rw & \texttt{0x0} & VFAT 6 S-bit 1 tap delay \\\hline
+    TAP\_DELAY\_VFAT6\_BIT2 & \texttt{0x205b} & \texttt{[14:10]} & rw & \texttt{0x2} & VFAT 6 S-bit 2 tap delay \\\hline
+    TAP\_DELAY\_VFAT6\_BIT3 & \texttt{0x205b} & \texttt{[19:15]} & rw & \texttt{0x3} & VFAT 6 S-bit 3 tap delay \\\hline
+    TAP\_DELAY\_VFAT6\_BIT4 & \texttt{0x205b} & \texttt{[24:20]} & rw & \texttt{0x3} & VFAT 6 S-bit 4 tap delay \\\hline
+    TAP\_DELAY\_VFAT6\_BIT5 & \texttt{0x205b} & \texttt{[29:25]} & rw & \texttt{0x2} & VFAT 6 S-bit 5 tap delay \\\hline
+    TAP\_DELAY\_VFAT6\_BIT6 & \texttt{0x205c} & \texttt{[4:0]} & rw & \texttt{0x2} & VFAT 6 S-bit 6 tap delay \\\hline
+    TAP\_DELAY\_VFAT6\_BIT7 & \texttt{0x205c} & \texttt{[9:5]} & rw & \texttt{0x2} & VFAT 6 S-bit 7 tap delay \\\hline
+    TAP\_DELAY\_VFAT7\_BIT0 & \texttt{0x205c} & \texttt{[14:10]} & rw & \texttt{0x8} & VFAT 7 S-bit 0 tap delay \\\hline
+    TAP\_DELAY\_VFAT7\_BIT1 & \texttt{0x205c} & \texttt{[19:15]} & rw & \texttt{0x7} & VFAT 7 S-bit 1 tap delay \\\hline
+    TAP\_DELAY\_VFAT7\_BIT2 & \texttt{0x205c} & \texttt{[24:20]} & rw & \texttt{0x6} & VFAT 7 S-bit 2 tap delay \\\hline
+    TAP\_DELAY\_VFAT7\_BIT3 & \texttt{0x205c} & \texttt{[29:25]} & rw & \texttt{0x5} & VFAT 7 S-bit 3 tap delay \\\hline
+    TAP\_DELAY\_VFAT7\_BIT4 & \texttt{0x205d} & \texttt{[4:0]} & rw & \texttt{0x4} & VFAT 7 S-bit 4 tap delay \\\hline
+    TAP\_DELAY\_VFAT7\_BIT5 & \texttt{0x205d} & \texttt{[9:5]} & rw & \texttt{0x3} & VFAT 7 S-bit 5 tap delay \\\hline
+    TAP\_DELAY\_VFAT7\_BIT6 & \texttt{0x205d} & \texttt{[14:10]} & rw & \texttt{0x2} & VFAT 7 S-bit 6 tap delay \\\hline
+    TAP\_DELAY\_VFAT7\_BIT7 & \texttt{0x205d} & \texttt{[19:15]} & rw & \texttt{0x0} & VFAT 7 S-bit 7 tap delay \\\hline
+    TAP\_DELAY\_VFAT8\_BIT0 & \texttt{0x205d} & \texttt{[24:20]} & rw & \texttt{0x4} & VFAT 8 S-bit 0 tap delay \\\hline
+    TAP\_DELAY\_VFAT8\_BIT1 & \texttt{0x205d} & \texttt{[29:25]} & rw & \texttt{0x4} & VFAT 8 S-bit 1 tap delay \\\hline
+    TAP\_DELAY\_VFAT8\_BIT2 & \texttt{0x205e} & \texttt{[4:0]} & rw & \texttt{0x4} & VFAT 8 S-bit 2 tap delay \\\hline
+    TAP\_DELAY\_VFAT8\_BIT3 & \texttt{0x205e} & \texttt{[9:5]} & rw & \texttt{0x4} & VFAT 8 S-bit 3 tap delay \\\hline
+    TAP\_DELAY\_VFAT8\_BIT4 & \texttt{0x205e} & \texttt{[14:10]} & rw & \texttt{0x4} & VFAT 8 S-bit 4 tap delay \\\hline
+    TAP\_DELAY\_VFAT8\_BIT5 & \texttt{0x205e} & \texttt{[19:15]} & rw & \texttt{0x3} & VFAT 8 S-bit 5 tap delay \\\hline
+    TAP\_DELAY\_VFAT8\_BIT6 & \texttt{0x205e} & \texttt{[24:20]} & rw & \texttt{0x3} & VFAT 8 S-bit 6 tap delay \\\hline
+    TAP\_DELAY\_VFAT8\_BIT7 & \texttt{0x205e} & \texttt{[29:25]} & rw & \texttt{0x3} & VFAT 8 S-bit 7 tap delay \\\hline
+    TAP\_DELAY\_VFAT9\_BIT0 & \texttt{0x205f} & \texttt{[4:0]} & rw & \texttt{0x0} & VFAT 9 S-bit 0 tap delay \\\hline
+    TAP\_DELAY\_VFAT9\_BIT1 & \texttt{0x205f} & \texttt{[9:5]} & rw & \texttt{0x6} & VFAT 9 S-bit 1 tap delay \\\hline
+    TAP\_DELAY\_VFAT9\_BIT2 & \texttt{0x205f} & \texttt{[14:10]} & rw & \texttt{0x6} & VFAT 9 S-bit 2 tap delay \\\hline
+    TAP\_DELAY\_VFAT9\_BIT3 & \texttt{0x205f} & \texttt{[19:15]} & rw & \texttt{0x4} & VFAT 9 S-bit 3 tap delay \\\hline
+    TAP\_DELAY\_VFAT9\_BIT4 & \texttt{0x205f} & \texttt{[24:20]} & rw & \texttt{0x4} & VFAT 9 S-bit 4 tap delay \\\hline
+    TAP\_DELAY\_VFAT9\_BIT5 & \texttt{0x205f} & \texttt{[29:25]} & rw & \texttt{0x2} & VFAT 9 S-bit 5 tap delay \\\hline
+    TAP\_DELAY\_VFAT9\_BIT6 & \texttt{0x2060} & \texttt{[4:0]} & rw & \texttt{0x2} & VFAT 9 S-bit 6 tap delay \\\hline
+    TAP\_DELAY\_VFAT9\_BIT7 & \texttt{0x2060} & \texttt{[9:5]} & rw & \texttt{0x1} & VFAT 9 S-bit 7 tap delay \\\hline
+    TAP\_DELAY\_VFAT10\_BIT0 & \texttt{0x2060} & \texttt{[14:10]} & rw & \texttt{0x2} & VFAT 10 S-bit 0 tap delay \\\hline
+    TAP\_DELAY\_VFAT10\_BIT1 & \texttt{0x2060} & \texttt{[19:15]} & rw & \texttt{0x1} & VFAT 10 S-bit 1 tap delay \\\hline
+    TAP\_DELAY\_VFAT10\_BIT2 & \texttt{0x2060} & \texttt{[24:20]} & rw & \texttt{0x1} & VFAT 10 S-bit 2 tap delay \\\hline
+    TAP\_DELAY\_VFAT10\_BIT3 & \texttt{0x2060} & \texttt{[29:25]} & rw & \texttt{0x1} & VFAT 10 S-bit 3 tap delay \\\hline
+    TAP\_DELAY\_VFAT10\_BIT4 & \texttt{0x2061} & \texttt{[4:0]} & rw & \texttt{0x1} & VFAT 10 S-bit 4 tap delay \\\hline
+    TAP\_DELAY\_VFAT10\_BIT5 & \texttt{0x2061} & \texttt{[9:5]} & rw & \texttt{0x1} & VFAT 10 S-bit 5 tap delay \\\hline
+    TAP\_DELAY\_VFAT10\_BIT6 & \texttt{0x2061} & \texttt{[14:10]} & rw & \texttt{0x0} & VFAT 10 S-bit 6 tap delay \\\hline
+    TAP\_DELAY\_VFAT10\_BIT7 & \texttt{0x2061} & \texttt{[19:15]} & rw & \texttt{0x0} & VFAT 10 S-bit 7 tap delay \\\hline
+    TAP\_DELAY\_VFAT11\_BIT0 & \texttt{0x2061} & \texttt{[24:20]} & rw & \texttt{0x2} & VFAT 11 S-bit 0 tap delay \\\hline
+    TAP\_DELAY\_VFAT11\_BIT1 & \texttt{0x2061} & \texttt{[29:25]} & rw & \texttt{0x1} & VFAT 11 S-bit 1 tap delay \\\hline
+    TAP\_DELAY\_VFAT11\_BIT2 & \texttt{0x2062} & \texttt{[4:0]} & rw & \texttt{0x1} & VFAT 11 S-bit 2 tap delay \\\hline
+    TAP\_DELAY\_VFAT11\_BIT3 & \texttt{0x2062} & \texttt{[9:5]} & rw & \texttt{0x1} & VFAT 11 S-bit 3 tap delay \\\hline
+    TAP\_DELAY\_VFAT11\_BIT4 & \texttt{0x2062} & \texttt{[14:10]} & rw & \texttt{0x1} & VFAT 11 S-bit 4 tap delay \\\hline
+    TAP\_DELAY\_VFAT11\_BIT5 & \texttt{0x2062} & \texttt{[19:15]} & rw & \texttt{0x0} & VFAT 11 S-bit 5 tap delay \\\hline
+    TAP\_DELAY\_VFAT11\_BIT6 & \texttt{0x2062} & \texttt{[24:20]} & rw & \texttt{0x0} & VFAT 11 S-bit 6 tap delay \\\hline
+    TAP\_DELAY\_VFAT11\_BIT7 & \texttt{0x2062} & \texttt{[29:25]} & rw & \texttt{0x0} & VFAT 11 S-bit 7 tap delay \\\hline
+    TAP\_DELAY\_VFAT12\_BIT0 & \texttt{0x2063} & \texttt{[4:0]} & rw & \texttt{0x0} & VFAT 12 S-bit 0 tap delay \\\hline
+    TAP\_DELAY\_VFAT12\_BIT1 & \texttt{0x2063} & \texttt{[9:5]} & rw & \texttt{0x0} & VFAT 12 S-bit 1 tap delay \\\hline
+    TAP\_DELAY\_VFAT12\_BIT2 & \texttt{0x2063} & \texttt{[14:10]} & rw & \texttt{0x1} & VFAT 12 S-bit 2 tap delay \\\hline
+    TAP\_DELAY\_VFAT12\_BIT3 & \texttt{0x2063} & \texttt{[19:15]} & rw & \texttt{0x1} & VFAT 12 S-bit 3 tap delay \\\hline
+    TAP\_DELAY\_VFAT12\_BIT4 & \texttt{0x2063} & \texttt{[24:20]} & rw & \texttt{0x1} & VFAT 12 S-bit 4 tap delay \\\hline
+    TAP\_DELAY\_VFAT12\_BIT5 & \texttt{0x2063} & \texttt{[29:25]} & rw & \texttt{0x2} & VFAT 12 S-bit 5 tap delay \\\hline
+    TAP\_DELAY\_VFAT12\_BIT6 & \texttt{0x2064} & \texttt{[4:0]} & rw & \texttt{0x3} & VFAT 12 S-bit 6 tap delay \\\hline
+    TAP\_DELAY\_VFAT12\_BIT7 & \texttt{0x2064} & \texttt{[9:5]} & rw & \texttt{0x3} & VFAT 12 S-bit 7 tap delay \\\hline
+    TAP\_DELAY\_VFAT13\_BIT0 & \texttt{0x2064} & \texttt{[14:10]} & rw & \texttt{0x3} & VFAT 13 S-bit 0 tap delay \\\hline
+    TAP\_DELAY\_VFAT13\_BIT1 & \texttt{0x2064} & \texttt{[19:15]} & rw & \texttt{0x3} & VFAT 13 S-bit 1 tap delay \\\hline
+    TAP\_DELAY\_VFAT13\_BIT2 & \texttt{0x2064} & \texttt{[24:20]} & rw & \texttt{0x4} & VFAT 13 S-bit 2 tap delay \\\hline
+    TAP\_DELAY\_VFAT13\_BIT3 & \texttt{0x2064} & \texttt{[29:25]} & rw & \texttt{0x4} & VFAT 13 S-bit 3 tap delay \\\hline
+    TAP\_DELAY\_VFAT13\_BIT4 & \texttt{0x2065} & \texttt{[4:0]} & rw & \texttt{0x5} & VFAT 13 S-bit 4 tap delay \\\hline
+    TAP\_DELAY\_VFAT13\_BIT5 & \texttt{0x2065} & \texttt{[9:5]} & rw & \texttt{0x5} & VFAT 13 S-bit 5 tap delay \\\hline
+    TAP\_DELAY\_VFAT13\_BIT6 & \texttt{0x2065} & \texttt{[14:10]} & rw & \texttt{0x5} & VFAT 13 S-bit 6 tap delay \\\hline
+    TAP\_DELAY\_VFAT13\_BIT7 & \texttt{0x2065} & \texttt{[19:15]} & rw & \texttt{0x6} & VFAT 13 S-bit 7 tap delay \\\hline
+    TAP\_DELAY\_VFAT14\_BIT0 & \texttt{0x2065} & \texttt{[24:20]} & rw & \texttt{0x1} & VFAT 14 S-bit 0 tap delay \\\hline
+    TAP\_DELAY\_VFAT14\_BIT1 & \texttt{0x2065} & \texttt{[29:25]} & rw & \texttt{0x1} & VFAT 14 S-bit 1 tap delay \\\hline
+    TAP\_DELAY\_VFAT14\_BIT2 & \texttt{0x2066} & \texttt{[4:0]} & rw & \texttt{0x1} & VFAT 14 S-bit 2 tap delay \\\hline
+    TAP\_DELAY\_VFAT14\_BIT3 & \texttt{0x2066} & \texttt{[9:5]} & rw & \texttt{0x1} & VFAT 14 S-bit 3 tap delay \\\hline
+    TAP\_DELAY\_VFAT14\_BIT4 & \texttt{0x2066} & \texttt{[14:10]} & rw & \texttt{0x2} & VFAT 14 S-bit 4 tap delay \\\hline
+    TAP\_DELAY\_VFAT14\_BIT5 & \texttt{0x2066} & \texttt{[19:15]} & rw & \texttt{0x1} & VFAT 14 S-bit 5 tap delay \\\hline
+    TAP\_DELAY\_VFAT14\_BIT6 & \texttt{0x2066} & \texttt{[24:20]} & rw & \texttt{0x2} & VFAT 14 S-bit 6 tap delay \\\hline
+    TAP\_DELAY\_VFAT14\_BIT7 & \texttt{0x2066} & \texttt{[29:25]} & rw & \texttt{0x2} & VFAT 14 S-bit 7 tap delay \\\hline
+    TAP\_DELAY\_VFAT15\_BIT0 & \texttt{0x2067} & \texttt{[4:0]} & rw & \texttt{0x3} & VFAT 15 S-bit 0 tap delay \\\hline
+    TAP\_DELAY\_VFAT15\_BIT1 & \texttt{0x2067} & \texttt{[9:5]} & rw & \texttt{0x2} & VFAT 15 S-bit 1 tap delay \\\hline
+    TAP\_DELAY\_VFAT15\_BIT2 & \texttt{0x2067} & \texttt{[14:10]} & rw & \texttt{0x3} & VFAT 15 S-bit 2 tap delay \\\hline
+    TAP\_DELAY\_VFAT15\_BIT3 & \texttt{0x2067} & \texttt{[19:15]} & rw & \texttt{0x3} & VFAT 15 S-bit 3 tap delay \\\hline
+    TAP\_DELAY\_VFAT15\_BIT4 & \texttt{0x2067} & \texttt{[24:20]} & rw & \texttt{0x3} & VFAT 15 S-bit 4 tap delay \\\hline
+    TAP\_DELAY\_VFAT15\_BIT5 & \texttt{0x2067} & \texttt{[29:25]} & rw & \texttt{0x3} & VFAT 15 S-bit 5 tap delay \\\hline
+    TAP\_DELAY\_VFAT15\_BIT6 & \texttt{0x2068} & \texttt{[4:0]} & rw & \texttt{0x3} & VFAT 15 S-bit 6 tap delay \\\hline
+    TAP\_DELAY\_VFAT15\_BIT7 & \texttt{0x2068} & \texttt{[9:5]} & rw & \texttt{0x3} & VFAT 15 S-bit 7 tap delay \\\hline
+    TAP\_DELAY\_VFAT16\_BIT0 & \texttt{0x2068} & \texttt{[14:10]} & rw & \texttt{0x9} & VFAT 16 S-bit 0 tap delay \\\hline
+    TAP\_DELAY\_VFAT16\_BIT1 & \texttt{0x2068} & \texttt{[19:15]} & rw & \texttt{0x8} & VFAT 16 S-bit 1 tap delay \\\hline
+    TAP\_DELAY\_VFAT16\_BIT2 & \texttt{0x2068} & \texttt{[24:20]} & rw & \texttt{0x7} & VFAT 16 S-bit 2 tap delay \\\hline
+    TAP\_DELAY\_VFAT16\_BIT3 & \texttt{0x2068} & \texttt{[29:25]} & rw & \texttt{0x5} & VFAT 16 S-bit 3 tap delay \\\hline
+    TAP\_DELAY\_VFAT16\_BIT4 & \texttt{0x2069} & \texttt{[4:0]} & rw & \texttt{0x4} & VFAT 16 S-bit 4 tap delay \\\hline
+    TAP\_DELAY\_VFAT16\_BIT5 & \texttt{0x2069} & \texttt{[9:5]} & rw & \texttt{0x3} & VFAT 16 S-bit 5 tap delay \\\hline
+    TAP\_DELAY\_VFAT16\_BIT6 & \texttt{0x2069} & \texttt{[14:10]} & rw & \texttt{0x2} & VFAT 16 S-bit 6 tap delay \\\hline
+    TAP\_DELAY\_VFAT16\_BIT7 & \texttt{0x2069} & \texttt{[19:15]} & rw & \texttt{0x0} & VFAT 16 S-bit 7 tap delay \\\hline
+    TAP\_DELAY\_VFAT17\_BIT0 & \texttt{0x2069} & \texttt{[24:20]} & rw & \texttt{0x2} & VFAT 17 S-bit 0 tap delay \\\hline
+    TAP\_DELAY\_VFAT17\_BIT1 & \texttt{0x2069} & \texttt{[29:25]} & rw & \texttt{0x2} & VFAT 17 S-bit 1 tap delay \\\hline
+    TAP\_DELAY\_VFAT17\_BIT2 & \texttt{0x206a} & \texttt{[4:0]} & rw & \texttt{0x3} & VFAT 17 S-bit 2 tap delay \\\hline
+    TAP\_DELAY\_VFAT17\_BIT3 & \texttt{0x206a} & \texttt{[9:5]} & rw & \texttt{0x3} & VFAT 17 S-bit 3 tap delay \\\hline
+    TAP\_DELAY\_VFAT17\_BIT4 & \texttt{0x206a} & \texttt{[14:10]} & rw & \texttt{0x3} & VFAT 17 S-bit 4 tap delay \\\hline
+    TAP\_DELAY\_VFAT17\_BIT5 & \texttt{0x206a} & \texttt{[19:15]} & rw & \texttt{0x3} & VFAT 17 S-bit 5 tap delay \\\hline
+    TAP\_DELAY\_VFAT17\_BIT6 & \texttt{0x206a} & \texttt{[24:20]} & rw & \texttt{0x3} & VFAT 17 S-bit 6 tap delay \\\hline
+    TAP\_DELAY\_VFAT17\_BIT7 & \texttt{0x206a} & \texttt{[29:25]} & rw & \texttt{0x3} & VFAT 17 S-bit 7 tap delay \\\hline
+    TAP\_DELAY\_VFAT18\_BIT0 & \texttt{0x206b} & \texttt{[4:0]} & rw & \texttt{0x0} & VFAT 18 S-bit 0 tap delay \\\hline
+    TAP\_DELAY\_VFAT18\_BIT1 & \texttt{0x206b} & \texttt{[9:5]} & rw & \texttt{0x0} & VFAT 18 S-bit 1 tap delay \\\hline
+    TAP\_DELAY\_VFAT18\_BIT2 & \texttt{0x206b} & \texttt{[14:10]} & rw & \texttt{0x0} & VFAT 18 S-bit 2 tap delay \\\hline
+    TAP\_DELAY\_VFAT18\_BIT3 & \texttt{0x206b} & \texttt{[19:15]} & rw & \texttt{0x0} & VFAT 18 S-bit 3 tap delay \\\hline
+    TAP\_DELAY\_VFAT18\_BIT4 & \texttt{0x206b} & \texttt{[24:20]} & rw & \texttt{0x1} & VFAT 18 S-bit 4 tap delay \\\hline
+    TAP\_DELAY\_VFAT18\_BIT5 & \texttt{0x206b} & \texttt{[29:25]} & rw & \texttt{0x1} & VFAT 18 S-bit 5 tap delay \\\hline
+    TAP\_DELAY\_VFAT18\_BIT6 & \texttt{0x206c} & \texttt{[4:0]} & rw & \texttt{0x1} & VFAT 18 S-bit 6 tap delay \\\hline
+    TAP\_DELAY\_VFAT18\_BIT7 & \texttt{0x206c} & \texttt{[9:5]} & rw & \texttt{0x1} & VFAT 18 S-bit 7 tap delay \\\hline
+    TAP\_DELAY\_VFAT19\_BIT0 & \texttt{0x206c} & \texttt{[14:10]} & rw & \texttt{0x5} & VFAT 19 S-bit 0 tap delay \\\hline
+    TAP\_DELAY\_VFAT19\_BIT1 & \texttt{0x206c} & \texttt{[19:15]} & rw & \texttt{0x4} & VFAT 19 S-bit 1 tap delay \\\hline
+    TAP\_DELAY\_VFAT19\_BIT2 & \texttt{0x206c} & \texttt{[24:20]} & rw & \texttt{0x4} & VFAT 19 S-bit 2 tap delay \\\hline
+    TAP\_DELAY\_VFAT19\_BIT3 & \texttt{0x206c} & \texttt{[29:25]} & rw & \texttt{0x3} & VFAT 19 S-bit 3 tap delay \\\hline
+    TAP\_DELAY\_VFAT19\_BIT4 & \texttt{0x206d} & \texttt{[4:0]} & rw & \texttt{0x2} & VFAT 19 S-bit 4 tap delay \\\hline
+    TAP\_DELAY\_VFAT19\_BIT5 & \texttt{0x206d} & \texttt{[9:5]} & rw & \texttt{0x2} & VFAT 19 S-bit 5 tap delay \\\hline
+    TAP\_DELAY\_VFAT19\_BIT6 & \texttt{0x206d} & \texttt{[14:10]} & rw & \texttt{0x1} & VFAT 19 S-bit 6 tap delay \\\hline
+    TAP\_DELAY\_VFAT19\_BIT7 & \texttt{0x206d} & \texttt{[19:15]} & rw & \texttt{0x0} & VFAT 19 S-bit 7 tap delay \\\hline
+    TAP\_DELAY\_VFAT20\_BIT0 & \texttt{0x206d} & \texttt{[24:20]} & rw & \texttt{0x3} & VFAT 20 S-bit 0 tap delay \\\hline
+    TAP\_DELAY\_VFAT20\_BIT1 & \texttt{0x206d} & \texttt{[29:25]} & rw & \texttt{0x3} & VFAT 20 S-bit 1 tap delay \\\hline
+    TAP\_DELAY\_VFAT20\_BIT2 & \texttt{0x206e} & \texttt{[4:0]} & rw & \texttt{0x3} & VFAT 20 S-bit 2 tap delay \\\hline
+    TAP\_DELAY\_VFAT20\_BIT3 & \texttt{0x206e} & \texttt{[9:5]} & rw & \texttt{0x2} & VFAT 20 S-bit 3 tap delay \\\hline
+    TAP\_DELAY\_VFAT20\_BIT4 & \texttt{0x206e} & \texttt{[14:10]} & rw & \texttt{0x2} & VFAT 20 S-bit 4 tap delay \\\hline
+    TAP\_DELAY\_VFAT20\_BIT5 & \texttt{0x206e} & \texttt{[19:15]} & rw & \texttt{0x1} & VFAT 20 S-bit 5 tap delay \\\hline
+    TAP\_DELAY\_VFAT20\_BIT6 & \texttt{0x206e} & \texttt{[24:20]} & rw & \texttt{0x1} & VFAT 20 S-bit 6 tap delay \\\hline
+    TAP\_DELAY\_VFAT20\_BIT7 & \texttt{0x206e} & \texttt{[29:25]} & rw & \texttt{0x0} & VFAT 20 S-bit 7 tap delay \\\hline
+    TAP\_DELAY\_VFAT21\_BIT0 & \texttt{0x206f} & \texttt{[4:0]} & rw & \texttt{0x3} & VFAT 21 S-bit 0 tap delay \\\hline
+    TAP\_DELAY\_VFAT21\_BIT1 & \texttt{0x206f} & \texttt{[9:5]} & rw & \texttt{0x2} & VFAT 21 S-bit 1 tap delay \\\hline
+    TAP\_DELAY\_VFAT21\_BIT2 & \texttt{0x206f} & \texttt{[14:10]} & rw & \texttt{0x3} & VFAT 21 S-bit 2 tap delay \\\hline
+    TAP\_DELAY\_VFAT21\_BIT3 & \texttt{0x206f} & \texttt{[19:15]} & rw & \texttt{0x2} & VFAT 21 S-bit 3 tap delay \\\hline
+    TAP\_DELAY\_VFAT21\_BIT4 & \texttt{0x206f} & \texttt{[24:20]} & rw & \texttt{0x2} & VFAT 21 S-bit 4 tap delay \\\hline
+    TAP\_DELAY\_VFAT21\_BIT5 & \texttt{0x206f} & \texttt{[29:25]} & rw & \texttt{0x1} & VFAT 21 S-bit 5 tap delay \\\hline
+    TAP\_DELAY\_VFAT21\_BIT6 & \texttt{0x2070} & \texttt{[4:0]} & rw & \texttt{0x1} & VFAT 21 S-bit 6 tap delay \\\hline
+    TAP\_DELAY\_VFAT21\_BIT7 & \texttt{0x2070} & \texttt{[9:5]} & rw & \texttt{0x0} & VFAT 21 S-bit 7 tap delay \\\hline
+    TAP\_DELAY\_VFAT22\_BIT0 & \texttt{0x2070} & \texttt{[14:10]} & rw & \texttt{0x3} & VFAT 22 S-bit 0 tap delay \\\hline
+    TAP\_DELAY\_VFAT22\_BIT1 & \texttt{0x2070} & \texttt{[19:15]} & rw & \texttt{0x2} & VFAT 22 S-bit 1 tap delay \\\hline
+    TAP\_DELAY\_VFAT22\_BIT2 & \texttt{0x2070} & \texttt{[24:20]} & rw & \texttt{0x2} & VFAT 22 S-bit 2 tap delay \\\hline
+    TAP\_DELAY\_VFAT22\_BIT3 & \texttt{0x2070} & \texttt{[29:25]} & rw & \texttt{0x2} & VFAT 22 S-bit 3 tap delay \\\hline
+    TAP\_DELAY\_VFAT22\_BIT4 & \texttt{0x2071} & \texttt{[4:0]} & rw & \texttt{0x2} & VFAT 22 S-bit 4 tap delay \\\hline
+    TAP\_DELAY\_VFAT22\_BIT5 & \texttt{0x2071} & \texttt{[9:5]} & rw & \texttt{0x1} & VFAT 22 S-bit 5 tap delay \\\hline
+    TAP\_DELAY\_VFAT22\_BIT6 & \texttt{0x2071} & \texttt{[14:10]} & rw & \texttt{0x1} & VFAT 22 S-bit 6 tap delay \\\hline
+    TAP\_DELAY\_VFAT22\_BIT7 & \texttt{0x2071} & \texttt{[19:15]} & rw & \texttt{0x0} & VFAT 22 S-bit 7 tap delay \\\hline
+    TAP\_DELAY\_VFAT23\_BIT0 & \texttt{0x2071} & \texttt{[24:20]} & rw & \texttt{0x2} & VFAT 23 S-bit 0 tap delay \\\hline
+    TAP\_DELAY\_VFAT23\_BIT1 & \texttt{0x2071} & \texttt{[29:25]} & rw & \texttt{0x5} & VFAT 23 S-bit 1 tap delay \\\hline
+    TAP\_DELAY\_VFAT23\_BIT2 & \texttt{0x2072} & \texttt{[4:0]} & rw & \texttt{0x5} & VFAT 23 S-bit 2 tap delay \\\hline
+    TAP\_DELAY\_VFAT23\_BIT3 & \texttt{0x2072} & \texttt{[9:5]} & rw & \texttt{0x3} & VFAT 23 S-bit 3 tap delay \\\hline
+    TAP\_DELAY\_VFAT23\_BIT4 & \texttt{0x2072} & \texttt{[14:10]} & rw & \texttt{0x3} & VFAT 23 S-bit 4 tap delay \\\hline
+    TAP\_DELAY\_VFAT23\_BIT5 & \texttt{0x2072} & \texttt{[19:15]} & rw & \texttt{0x3} & VFAT 23 S-bit 5 tap delay \\\hline
+    TAP\_DELAY\_VFAT23\_BIT6 & \texttt{0x2072} & \texttt{[24:20]} & rw & \texttt{0x1} & VFAT 23 S-bit 6 tap delay \\\hline
+    TAP\_DELAY\_VFAT23\_BIT7 & \texttt{0x2072} & \texttt{[29:25]} & rw & \texttt{0x2} & VFAT 23 S-bit 7 tap delay \\\hline
+    SOT\_TAP\_DELAY\_VFAT0 & \texttt{0x2073} & \texttt{[4:0]} & rw & \texttt{0x2} & VFAT 0 SOT tap delay \\\hline
+    SOT\_TAP\_DELAY\_VFAT1 & \texttt{0x2073} & \texttt{[9:5]} & rw & \texttt{0x2} & VFAT 1 SOT tap delay \\\hline
+    SOT\_TAP\_DELAY\_VFAT2 & \texttt{0x2073} & \texttt{[14:10]} & rw & \texttt{0x0} & VFAT 2 SOT tap delay \\\hline
+    SOT\_TAP\_DELAY\_VFAT3 & \texttt{0x2073} & \texttt{[19:15]} & rw & \texttt{0x0} & VFAT 3 SOT tap delay \\\hline
+    SOT\_TAP\_DELAY\_VFAT4 & \texttt{0x2073} & \texttt{[24:20]} & rw & \texttt{0x0} & VFAT 4 SOT tap delay \\\hline
+    SOT\_TAP\_DELAY\_VFAT5 & \texttt{0x2073} & \texttt{[29:25]} & rw & \texttt{0x0} & VFAT 5 SOT tap delay \\\hline
+    SOT\_TAP\_DELAY\_VFAT6 & \texttt{0x2074} & \texttt{[4:0]} & rw & \texttt{0x1} & VFAT 6 SOT tap delay \\\hline
+    SOT\_TAP\_DELAY\_VFAT7 & \texttt{0x2074} & \texttt{[9:5]} & rw & \texttt{0x6} & VFAT 7 SOT tap delay \\\hline
+    SOT\_TAP\_DELAY\_VFAT8 & \texttt{0x2074} & \texttt{[14:10]} & rw & \texttt{0x0} & VFAT 8 SOT tap delay \\\hline
+    SOT\_TAP\_DELAY\_VFAT9 & \texttt{0x2074} & \texttt{[19:15]} & rw & \texttt{0x7} & VFAT 9 SOT tap delay \\\hline
+    SOT\_TAP\_DELAY\_VFAT10 & \texttt{0x2074} & \texttt{[24:20]} & rw & \texttt{0x1} & VFAT 10 SOT tap delay \\\hline
+    SOT\_TAP\_DELAY\_VFAT11 & \texttt{0x2074} & \texttt{[29:25]} & rw & \texttt{0x2} & VFAT 11 SOT tap delay \\\hline
+    SOT\_TAP\_DELAY\_VFAT12 & \texttt{0x2075} & \texttt{[4:0]} & rw & \texttt{0x2} & VFAT 12 SOT tap delay \\\hline
+    SOT\_TAP\_DELAY\_VFAT13 & \texttt{0x2075} & \texttt{[9:5]} & rw & \texttt{0x0} & VFAT 13 SOT tap delay \\\hline
+    SOT\_TAP\_DELAY\_VFAT14 & \texttt{0x2075} & \texttt{[14:10]} & rw & \texttt{0x0} & VFAT 14 SOT tap delay \\\hline
+    SOT\_TAP\_DELAY\_VFAT15 & \texttt{0x2075} & \texttt{[19:15]} & rw & \texttt{0x0} & VFAT 15 SOT tap delay \\\hline
+    SOT\_TAP\_DELAY\_VFAT16 & \texttt{0x2075} & \texttt{[24:20]} & rw & \texttt{0x4} & VFAT 16 SOT tap delay \\\hline
+    SOT\_TAP\_DELAY\_VFAT17 & \texttt{0x2075} & \texttt{[29:25]} & rw & \texttt{0x0} & VFAT 17 SOT tap delay \\\hline
+    SOT\_TAP\_DELAY\_VFAT18 & \texttt{0x2076} & \texttt{[4:0]} & rw & \texttt{0x4} & VFAT 18 SOT tap delay \\\hline
+    SOT\_TAP\_DELAY\_VFAT19 & \texttt{0x2076} & \texttt{[9:5]} & rw & \texttt{0x2} & VFAT 19 SOT tap delay \\\hline
+    SOT\_TAP\_DELAY\_VFAT20 & \texttt{0x2076} & \texttt{[14:10]} & rw & \texttt{0x0} & VFAT 20 SOT tap delay \\\hline
+    SOT\_TAP\_DELAY\_VFAT21 & \texttt{0x2076} & \texttt{[19:15]} & rw & \texttt{0x2} & VFAT 21 SOT tap delay \\\hline
+    SOT\_TAP\_DELAY\_VFAT22 & \texttt{0x2076} & \texttt{[24:20]} & rw & \texttt{0x0} & VFAT 22 SOT tap delay \\\hline
+    SOT\_TAP\_DELAY\_VFAT23 & \texttt{0x2076} & \texttt{[29:25]} & rw & \texttt{0x0} & VFAT 23 SOT tap delay \\\hline
     \end{tabularx}
     \vspace{5mm}
 
@@ -711,17 +741,19 @@
     \hline
     \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
     \nopagebreak
-    RESET & \texttt{0x205e} & \texttt{[0:0]} & w & Pulsed & Reset trigger links \\\hline
+    RESET & \texttt{0x2080} & \texttt{[0:0]} & w & Pulsed & Reset trigger links \\\hline
+    TX\_PLL\_LOCKED & \texttt{0x2081} & \texttt{[3:0]} & r & \texttt{} & Transmit PLLs are Locked \\\hline
+    TX\_RESET\_DONE & \texttt{0x2081} & \texttt{[7:4]} & r & \texttt{} & Transmit Resets are Done \\\hline
     \end{tabularx}
     \vspace{5mm}
 
 
     \noindent
-    \textcolor{parentcolor}{\textbf{FPGA.TRIG.TIMING}}
+    \textcolor{parentcolor}{\textbf{FPGA.TRIG.SBIT\_MONITOR}}
 
     \vspace{4mm}
     \noindent
-    Controls the tap delay settings of the S-bit trigger unit inputs.             Phase shifts the inputs in 78 ps increments             \\\\ The delay of each S-bit in a VFAT should be increased to match the longest delay incurred by the GEB + Optohybrid routing on that VFAT
+    sbit monitor module which shows the first valid sbit clusters after a reset on the selected link
     \noindent
 
     \keepXColumns
@@ -729,31 +761,16 @@
     \hline
     \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
     \nopagebreak
-    SOT\_TAP\_DELAY\_VFAT18 & \texttt{0x205e} & \texttt{[4:0]} & rw & \texttt{0x4} & VFAT 18 SOT tap delay \\\hline
-    SOT\_TAP\_DELAY\_VFAT19 & \texttt{0x205e} & \texttt{[9:5]} & rw & \texttt{0x2} & VFAT 19 SOT tap delay \\\hline
-    SOT\_TAP\_DELAY\_VFAT20 & \texttt{0x205e} & \texttt{[14:10]} & rw & \texttt{0x0} & VFAT 20 SOT tap delay \\\hline
-    SOT\_TAP\_DELAY\_VFAT21 & \texttt{0x205e} & \texttt{[19:15]} & rw & \texttt{0x2} & VFAT 21 SOT tap delay \\\hline
-    SOT\_TAP\_DELAY\_VFAT22 & \texttt{0x205e} & \texttt{[24:20]} & rw & \texttt{0x0} & VFAT 22 SOT tap delay \\\hline
-    SOT\_TAP\_DELAY\_VFAT23 & \texttt{0x205e} & \texttt{[29:25]} & rw & \texttt{0x0} & VFAT 23 SOT tap delay \\\hline
-    \end{tabularx}
-    \vspace{5mm}
-
-
-    \noindent
-    \textcolor{parentcolor}{\textbf{FPGA.TRIG.LINKS}}
-
-    \vspace{4mm}
-    \noindent
-    Controls and monitors the multi-gigabit links that drive the trigger fiber tranceivers
-    \noindent
-
-    \keepXColumns
-    \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
-    \hline
-    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
-    \nopagebreak
-    TX\_PLL\_LOCKED & \texttt{0x205f} & \texttt{[3:0]} & r & \texttt{} & Transmit PLLs are Locked \\\hline
-    TX\_RESET\_DONE & \texttt{0x205f} & \texttt{[7:4]} & r & \texttt{} & Transmit Resets are Done \\\hline
+    RESET & \texttt{0x2090} & \texttt{[31:0]} & w & Pulsed & Reset the sbit monitor module and re-arm for triggering \\\hline
+    CLUSTER0 & \texttt{0x2091} & \texttt{[15:0]} & r & \texttt{} & Last cluster \$\{CLUSTER\_IDX\} \\\hline
+    CLUSTER1 & \texttt{0x2092} & \texttt{[15:0]} & r & \texttt{} & Last cluster \$\{CLUSTER\_IDX\} \\\hline
+    CLUSTER2 & \texttt{0x2093} & \texttt{[15:0]} & r & \texttt{} & Last cluster \$\{CLUSTER\_IDX\} \\\hline
+    CLUSTER3 & \texttt{0x2094} & \texttt{[15:0]} & r & \texttt{} & Last cluster \$\{CLUSTER\_IDX\} \\\hline
+    CLUSTER4 & \texttt{0x2095} & \texttt{[15:0]} & r & \texttt{} & Last cluster \$\{CLUSTER\_IDX\} \\\hline
+    CLUSTER5 & \texttt{0x2096} & \texttt{[15:0]} & r & \texttt{} & Last cluster \$\{CLUSTER\_IDX\} \\\hline
+    CLUSTER6 & \texttt{0x2097} & \texttt{[15:0]} & r & \texttt{} & Last cluster \$\{CLUSTER\_IDX\} \\\hline
+    CLUSTER7 & \texttt{0x2098} & \texttt{[15:0]} & r & \texttt{} & Last cluster \$\{CLUSTER\_IDX\} \\\hline
+    L1A\_DELAY & \texttt{0x20a0} & \texttt{[31:0]} & r & \texttt{} & Number of BX between this sbit and the subsequent L1A \\\hline
     \end{tabularx}
     \vspace{5mm}
 

@@ -50,12 +50,13 @@ architecture link_oh_fpga_tx_arch of link_oh_fpga_tx is
 
     signal elink_data       : std_logic_vector(7 downto 0);
     signal frame_data       : std_logic_vector(g_FRAME_WIDTH-1 downto 0);
-    signal frame_data_delay : std_logic_vector(g_FRAME_WIDTH-1 downto 0);
 
     signal reg_data         : std_logic_vector(47 downto 0);
 
     signal send_idle        : std_logic;
     signal send_header      : std_logic;
+    signal send_idle_reg    : std_logic;
+    signal send_header_reg  : std_logic;
     signal ttc_cmd_rx       : std_logic;
 
     signal l1a    : std_logic;
@@ -65,8 +66,16 @@ architecture link_oh_fpga_tx_arch of link_oh_fpga_tx is
 begin
 
    busy_o <= '0' when state = IDLE else '1';
-   reg_data  <= request_addr_i & request_data_i;
    ttc_cmd_rx <=  '1' when (l1a_i ='1' or resync_i ='1'  or bc0_i ='1') else '0';
+
+    process(ttc_clk_40_i)
+    begin
+      if (rising_edge(ttc_clk_40_i)) then
+         if (state=START) then
+            reg_data  <= request_addr_i & request_data_i;
+         end if;
+      end if;
+   end process;
 
     -- need to delay ttc signals to encoder so that state machine has time to "pause" while
     -- ttc signals are being sent
@@ -151,7 +160,8 @@ begin
     begin
         if (rising_edge(ttc_clk_40_i)) then
 
-            frame_data_delay <= frame_data;
+            send_header_reg <= send_header;
+            send_idle_reg   <= send_idle;
 
             if (reset_i = '1') then
                 frame_data <= (others => '0');
@@ -176,13 +186,13 @@ begin
     sixbit_eightbit_inst : entity work.sixbit_eightbit
     port map (
         clock        => ttc_clk_40_i,
-        sixbit       => frame_data,  -- 6 bit data input
-        eightbit     => elink_data,  -- 8 bit encoded output
-        l1a          => l1a,         -- send l1a
-        bc0          => bc0,         -- send bc0
-        resync       => resync,      -- send resync character
-        header       => send_header, -- send header character
-        idle         => send_idle    -- send idle
+        sixbit       => frame_data,      -- 6 bit data input
+        eightbit     => elink_data,      -- 8 bit encoded output
+        l1a          => l1a,             -- send l1a
+        bc0          => bc0,             -- send bc0
+        resync       => resync,          -- send resync character
+        header       => send_header_reg, -- send header character
+        idle         => send_idle_reg    -- send idle
    );
 
     process(ttc_clk_40_i)

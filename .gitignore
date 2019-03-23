@@ -43,7 +43,7 @@ _xmsgs
 *.xcix
 src/ip_cores_a7/*
 src/ip_cores/*
-!src/ip_cores_a7/*/*/*.xci
+!src/ip_cores_a7/*/*.xci
 !src/ip_cores/*.xco
 !src/ip_cores/*/*.xco
 tags

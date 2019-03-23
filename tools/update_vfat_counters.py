@@ -14,6 +14,10 @@ def main():
     MARKER_END="<!-- END: VFAT_COUNTERS DO NOT EDIT -->"
     insert_code (ADDRESS_TABLE_TOP, ADDRESS_TABLE_TOP, MARKER_START, MARKER_END, write_vfat_counters)
 
+    MARKER_START='<!-- START: OVERFLOW_COUNTERS DO NOT EDIT -->'
+    MARKER_END="<!-- END: OVERFLOW_COUNTERS DO NOT EDIT -->"
+    insert_code (ADDRESS_TABLE_TOP, ADDRESS_TABLE_TOP, MARKER_START, MARKER_END, write_overflow_counters)
+
     MARKER_START='<!-- START: VFAT_MASK DO NOT EDIT -->'
     MARKER_END="<!-- END: VFAT_MASK DO NOT EDIT -->"
     insert_code (ADDRESS_TABLE_TOP, ADDRESS_TABLE_TOP, MARKER_START, MARKER_END, write_vfat_mask)
@@ -25,6 +29,28 @@ def main():
     MARKER_START='<!-- START: ACTIVE_VFATS DO NOT EDIT -->'
     MARKER_END="<!-- END: ACTIVE_VFATS DO NOT EDIT -->"
     insert_code (ADDRESS_TABLE_TOP, ADDRESS_TABLE_TOP, MARKER_START, MARKER_END, write_active_vfats)
+
+def write_overflow_counters (file_handle):
+
+    f = file_handle
+
+    ################################################################################
+    # Trigger Units
+    ################################################################################
+
+    padding = "                " #spaces for indentation
+
+    f.write('%s<node id="SBITS_OVER_64x${OVERFLOW_IDX}" address="0x1f" permission="r"\n'                %  (padding) )
+    f.write('%s    mask="0x0000ffff"\n'                                                                %  (padding) )
+    f.write('%s    description="More than 64 * ${OVERFLOW_IDX} Sbits in a bx Counter"\n'               %  (padding) )
+    f.write('%s    fw_cnt_en_signal="sbits_comparator_over_threshold(${OVERFLOW_IDX}) or cnt_pulse"\n' %  (padding) )
+    f.write('%s    fw_cnt_snap_signal="sbit_cnt_snap"\n'                                               %  (padding) )
+    f.write('%s    fw_cnt_reset_signal="cnt_reset_strobed"\n'                                          %  (padding) )
+    f.write('%s    fw_signal="cnt_over_threshold${OVERFLOW_IDX}"\n'                                    %  (padding) )
+    f.write('%s    generate="true"\n'                                                                  %  (padding) )
+    f.write('%s    generate_size="%d"\n'                                                               %  (padding, num_vfats) )
+    f.write('%s    generate_address_step="0x1"\n'                                                      %  (padding) )
+    f.write('%s    generate_idx_var="OVERFLOW_IDX"/>\n'                                                %  (padding) )
 
 def write_vfat_counters (file_handle):
 

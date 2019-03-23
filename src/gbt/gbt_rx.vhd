@@ -266,7 +266,7 @@ begin
         if (rising_edge(clock)) then
 
             -- latch request after data frame 4
-            if (state=DATA and ((g_FRAME_COUNT_MAX-1) = data_frame_cnt)) then
+            if (state=DATA and ((g_FRAME_COUNT_MAX-1) = data_frame_cnt) and char_is_ttc='0') then
                 last_data_frame <= '1';
             else
                 last_data_frame <= '0';
@@ -286,12 +286,12 @@ begin
                     when SYNCING => req_valid                   <= '0';
                     when IDLE    => req_valid                   <= '0';
                     when HEADER  => req_valid                   <= '0';
-                    when START   => req_valid                   <= frame_data(5);              -- request valid
-                                    req_data_buf(WB_REQ_BITS-1) <= frame_data(4);              -- write enable
+                    when START   => req_valid                   <= frame_data_delay(5);              -- request valid
+                                    req_data_buf(WB_REQ_BITS-1) <= frame_data_delay(4);              -- write enable
                                  -- reserved                    <= frame_data(3 downto 0);
                     when DATA    => req_data_buf (
                                      (g_FRAME_COUNT_MAX - data_frame_cnt) * g_FRAME_WIDTH - 1 downto
-                                     (g_FRAME_COUNT_MAX-1-data_frame_cnt) * g_FRAME_WIDTH) <= frame_data;
+                                     (g_FRAME_COUNT_MAX-1-data_frame_cnt) * g_FRAME_WIDTH) <= frame_data_delay;
                     when others  => req_valid <= '0';
 
                 end case;
