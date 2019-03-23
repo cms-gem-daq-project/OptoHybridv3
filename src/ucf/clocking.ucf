@@ -12,7 +12,7 @@ TIMESPEC TS_elink_clock = PERIOD "TN_ELINK_CLOCK" 25 ns HIGH 50 %;
 # CFGMCLK
 #######################################################################################################################
 
-NET "control/led_control/async_clock" TNM_NET = "cfgmclk";
+NET "control/led_control_inst/async_clock" TNM_NET = "cfgmclk";
 TIMESPEC TS_cfgmclk = PERIOD "cfgmclk" 12.5 ns HIGH 50 %;
 
 TIMESPEC TS_clk_cfg_to_clk_logic = FROM "cfgmclk" TO "clk_1x_grp" 15 ns;
