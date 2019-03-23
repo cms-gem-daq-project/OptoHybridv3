@@ -40,13 +40,13 @@
     <Option Name="WTVcsLaunchSim" Val="0"/>
     <Option Name="WTRivieraLaunchSim" Val="0"/>
     <Option Name="WTActivehdlLaunchSim" Val="0"/>
-    <Option Name="WTXSimExportSim" Val="55"/>
-    <Option Name="WTModelSimExportSim" Val="55"/>
-    <Option Name="WTQuestaExportSim" Val="55"/>
-    <Option Name="WTIesExportSim" Val="55"/>
-    <Option Name="WTVcsExportSim" Val="55"/>
-    <Option Name="WTRivieraExportSim" Val="55"/>
-    <Option Name="WTActivehdlExportSim" Val="55"/>
+    <Option Name="WTXSimExportSim" Val="61"/>
+    <Option Name="WTModelSimExportSim" Val="61"/>
+    <Option Name="WTQuestaExportSim" Val="61"/>
+    <Option Name="WTIesExportSim" Val="61"/>
+    <Option Name="WTVcsExportSim" Val="61"/>
+    <Option Name="WTRivieraExportSim" Val="61"/>
+    <Option Name="WTActivehdlExportSim" Val="61"/>
     <Option Name="GenerateIPUpgradeLog" Val="TRUE"/>
     <Option Name="XSimRadix" Val="hex"/>
     <Option Name="XSimTimeUnit" Val="ns"/>
@@ -72,7 +72,7 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../src/sbit_cluster_packer/source/count_clusters.v">
+      <File Path="$PPRDIR/../src/sbit_cluster_packer/source/count_clusters_lite.v">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -433,7 +433,7 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../src/sbit_cluster_packer/source/count_clusters_lite.v">
+      <File Path="$PPRDIR/../src/sbit_cluster_packer/source/count_clusters.v">
         <FileInfo>
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -528,7 +528,6 @@
     <FileSet Name="fifo_request_tx_a7" Type="BlockSrcs" RelSrcDir="$PSRCDIR/fifo_request_tx_a7">
       <File Path="$PPRDIR/../src/ip_cores_a7/fifo_request_tx_a7/fifo_request_tx_a7.xci">
         <FileInfo>
-          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -542,7 +541,6 @@
     <FileSet Name="fifo_request_rx_a7" Type="BlockSrcs" RelSrcDir="$PSRCDIR/fifo_request_rx_a7">
       <File Path="$PPRDIR/../src/ip_cores_a7/fifo_request_rx_a7/fifo_request_rx_a7.xci">
         <FileInfo>
-          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -556,7 +554,6 @@
     <FileSet Name="xadc_a7" Type="BlockSrcs" RelSrcDir="$PSRCDIR/xadc_a7">
       <File Path="$PPRDIR/../src/ip_cores_a7/xadc_a7/xadc_a7.xci">
         <FileInfo>
-          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -583,7 +580,6 @@
     <FileSet Name="sem_a7" Type="BlockSrcs" RelSrcDir="$PSRCDIR/sem_a7">
       <File Path="$PPRDIR/../src/ip_cores_a7/sem_a7/sem_a7.xci">
         <FileInfo>
-          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -597,7 +593,6 @@
     <FileSet Name="to_gbt_ser_a7" Type="BlockSrcs" RelSrcDir="$PSRCDIR/to_gbt_ser_a7">
       <File Path="$PPRDIR/../src/ip_cores_a7/to_gbt_ser_a7/to_gbt_ser_a7.xci">
         <FileInfo>
-          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -637,7 +632,6 @@
     <FileSet Name="a7_trig_tx_buf_bypass" Type="BlockSrcs" RelSrcDir="$PSRCDIR/a7_trig_tx_buf_bypass">
       <File Path="$PPRDIR/../src/ip_cores_a7/a7_trig_tx_buf_bypass/a7_trig_tx_buf_bypass.xci">
         <FileInfo>
-          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -651,7 +645,6 @@
     <FileSet Name="ila_trigger_link" Type="BlockSrcs" RelSrcDir="$PSRCDIR/ila_trigger_link">
       <File Path="$PPRDIR/../src/ip_cores_a7/ila_trigger_link/ila_trigger_link.xci">
         <FileInfo>
-          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -665,7 +658,6 @@
     <FileSet Name="ila_gem_fiber_out" Type="BlockSrcs" RelSrcDir="$PSRCDIR/ila_gem_fiber_out">
       <File Path="$PSRCDIR/sources_1/ip/ila_gem_fiber_out/ila_gem_fiber_out.xci">
         <FileInfo>
-          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -673,6 +665,20 @@
       </File>
       <Config>
         <Option Name="TopModule" Val="ila_gem_fiber_out"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="master_slave_selectio" Type="BlockSrcs" RelSrcDir="$PSRCDIR/master_slave_selectio">
+      <File Path="$PPRDIR/../src/ip_cores_a7/master_slave_selectio/master_slave_selectio.xci">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <Config>
+        <Option Name="TopModule" Val="master_slave_selectio"/>
         <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
@@ -801,6 +807,17 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
     </Run>
     <Run Id="ila_gem_fiber_out_synth_1" Type="Ft3:Synth" SrcSet="ila_gem_fiber_out" Part="xc7a75tfgg484-3" ConstrsSet="ila_gem_fiber_out" Description="Vivado Synthesis Defaults" WriteIncrSynthDcp="false" Dir="$PRUNDIR/ila_gem_fiber_out_synth_1" IncludeInArchive="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2018">
+          <Desc>Vivado Synthesis Defaults</Desc>
+        </StratHandle>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2018"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="master_slave_selectio_synth_1" Type="Ft3:Synth" SrcSet="master_slave_selectio" Part="xc7a75tfgg484-3" ConstrsSet="master_slave_selectio" Description="Vivado Synthesis Defaults" WriteIncrSynthDcp="false" Dir="$PRUNDIR/master_slave_selectio_synth_1" IncludeInArchive="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2018">
           <Desc>Vivado Synthesis Defaults</Desc>
@@ -993,6 +1010,24 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
     </Run>
     <Run Id="ila_gem_fiber_out_impl_1" Type="Ft2:EntireDesign" Part="xc7a75tfgg484-3" ConstrsSet="ila_gem_fiber_out" Description="Default settings for Implementation." WriteIncrSynthDcp="false" SynthRun="ila_gem_fiber_out_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2018">
+          <Desc>Default settings for Implementation.</Desc>
+        </StratHandle>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2018"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="master_slave_selectio_impl_1" Type="Ft2:EntireDesign" Part="xc7a75tfgg484-3" ConstrsSet="master_slave_selectio" Description="Default settings for Implementation." WriteIncrSynthDcp="false" SynthRun="master_slave_selectio_synth_1" IncludeInArchive="false" GenFullBitstream="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2018">
           <Desc>Default settings for Implementation.</Desc>

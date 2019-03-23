@@ -34,6 +34,9 @@ port(
     mgt_clk_p         : in std_logic; -- 160 MHz Reference Clock
     mgt_clk_n         : in std_logic; -- 160 MHz Reference Clock
 
+    logic_mmcm_lock_i  : in std_logic;
+    logic_mmcm_reset_o : out std_logic;
+
     clk_40            : in std_logic;
     clk_80            : in std_logic;
     clk_160           : in std_logic;
@@ -170,9 +173,11 @@ architecture Behavioral of trigger is
     PORT (
             clk_40            : IN std_logic;
             clk_80            : IN std_logic;
+            clk_160           : IN std_logic;
             mgt_clk_p         : IN std_logic;
             mgt_clk_n         : IN std_logic;
-            clk_160           : IN std_logic;
+            mmcm_lock_i       : IN std_logic;
+            mmcm_reset_o      : OUT std_logic;
             reset_i           : IN std_logic;
             cluster0          : IN std_logic_vector(13 downto 0);
             cluster1          : IN std_logic_vector(13 downto 0);
@@ -456,6 +461,9 @@ begin
 
         mgt_clk_p  => mgt_clk_p, -- 160 MHz Reference Clock Positive
         mgt_clk_n  => mgt_clk_n, -- 160 MHz Reference Clock Negative
+
+        mmcm_lock_i => logic_mmcm_lock_i,
+        mmcm_reset_o => logic_mmcm_reset_o,
 
         clk_40     => clk_40,  -- 40 MHz  Logic Clock
         clk_80     => clk_80,  -- 80 MHz  User Clock 2
