@@ -57,6 +57,9 @@ port(
     dskw_mmcm_locked_o   : out std_logic;
     eprt_mmcm_locked_o   : out std_logic;
 
+    dskw_mmcm_reset_i   : in std_logic;
+    eprt_mmcm_reset_i   : in std_logic;
+
     mmcms_locked_o   : out std_logic;
 
     -- ipbus
@@ -109,6 +112,8 @@ begin
 
     logic_clocking : entity work.logic_clocking
     port map(
+
+        reset => dskw_mmcm_reset_i,
 
         clk_in1_p   => logic_clock_p,
         clk_in1_n   => logic_clock_n,
