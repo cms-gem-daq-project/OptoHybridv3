@@ -2,7 +2,7 @@
 
 module   gem_fiber_out #(
   parameter NLINKS               = 1,
-  parameter SIM_SPEEDUP          = 0,
+  parameter SIM_SPEEDUP          = 1,
   parameter FPGA_TYPE_IS_VIRTEX6 = 0,
   parameter FPGA_TYPE_IS_ARTIX7  = 0
 )
@@ -97,7 +97,7 @@ assign tx_dly_align_mon_ena = 1'b0;
 
   if (FPGA_TYPE_IS_VIRTEX6) begin
 
-    TRG_TX_BUF_BYPASS # ( .WRAPPER_SIM_GTXRESET_SPEEDUP   (SIM_SPEEDUP))      // Set this to 1 for simulation
+    TRG_TX_BUF_BYPASS # ( .WRAPPER_SIM_GTXRESET_SPEEDUP   (1))      // Set this to 1 for simulation
     trg_tx_buf_bypass_i (
 
       //----- Receive Ports - RX Driver,OOB signalling,Coupling and Eq.,CDR ------
@@ -139,7 +139,7 @@ assign tx_dly_align_mon_ena = 1'b0;
       trg_txresetdone_r2 <= (!TRG_TXRESETDONE) ? 1'b0 : trg_txresetdone_r;
     end
 
-    TX_SYNC #( .SIM_TXPMASETPHASE_SPEEDUP   (SIM_SPEEDUP))
+    TX_SYNC #( .SIM_TXPMASETPHASE_SPEEDUP   (1))
     gtx0_txsync_i (
       .TXENPMAPHASEALIGN  (tx_enpmaphasealign),
       .TXPMASETPHASE      (tx_pmasetphase),

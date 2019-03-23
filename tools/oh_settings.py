@@ -2,7 +2,7 @@ import datetime
 now = datetime.datetime.now()
 
 # START: OH_VERSION
-gem_version = "ge11"
+gem_version = "ge21"
 oh_version  = "v3c"
 geb_version = "v3c"
 geb_length  = "long"
