@@ -282,7 +282,7 @@ package registers is
     constant REG_TRIG_CTRL_ALIGNED_COUNT_TO_READY_ADDR    : std_logic_vector(7 downto 0) := x"02";
     constant REG_TRIG_CTRL_ALIGNED_COUNT_TO_READY_MSB    : integer := 27;
     constant REG_TRIG_CTRL_ALIGNED_COUNT_TO_READY_LSB     : integer := 16;
-    constant REG_TRIG_CTRL_ALIGNED_COUNT_TO_READY_DEFAULT : std_logic_vector(27 downto 16) := x"fff";
+    constant REG_TRIG_CTRL_ALIGNED_COUNT_TO_READY_DEFAULT : std_logic_vector(27 downto 16) := x"1ff";
 
     constant REG_TRIG_CTRL_SBIT_SOT_READY_ADDR    : std_logic_vector(7 downto 0) := x"03";
     constant REG_TRIG_CTRL_SBIT_SOT_READY_MSB    : integer := 23;

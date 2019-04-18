@@ -90,10 +90,11 @@ NET "ext_reset_o<1>" LOC="D15";
 NET "ext_reset_o<9>" LOC="AM23";
 #### END: AUTO GENERATED RESETS UCF -- DO NOT EDIT ####
 
-NET "mgt_clk_p_i" LOC = H6; #
-NET "mgt_clk_n_i" LOC = H5; #
-#NET "mgt_clk_p_i<1>" LOC = F6; #
-#NET "mgt_clk_n_i<1>" LOC = F5; #
+NET "mgt_clk_p_i<0>" LOC = H6; #
+NET "mgt_clk_n_i<0>" LOC = H5; #
+NET "mgt_clk_p_i<1>" LOC = F6; #
+NET "mgt_clk_n_i<1>" LOC = F5; #
+
 NET "mgt_tx_p_o<0>" LOC = M1; #
 NET "mgt_tx_n_o<0>" LOC = M2; #
 NET "mgt_tx_p_o<1>" LOC = K1; #

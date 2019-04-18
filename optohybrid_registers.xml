@@ -432,7 +432,7 @@
                     description="Number of link consecutive good frames required before the transmission unit is marked as good and S-bits can be produced"
                     fw_signal="aligned_count_to_ready"
                     mask="0xfff0000"
-                    fw_default="0xfff"/>
+                    fw_default="0x1ff"/>
 
                 <node id="INVERT" address="0x5" description="Controls the polarity of S-bit signals to account for polarity swaps on the GEB or OH">
                 <!-- START: INVERT_REGS DO NOT EDIT -->

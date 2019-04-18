@@ -15,10 +15,10 @@ set_property PACKAGE_PIN B6 [get_ports {mgt_tx_p_o[2]}]
 set_property PACKAGE_PIN C7 [get_ports {mgt_tx_n_o[3]}]
 set_property PACKAGE_PIN D7 [get_ports {mgt_tx_p_o[3]}]
 
-set_property PACKAGE_PIN E6 [get_ports mgt_clk_n_i]
-set_property PACKAGE_PIN F6 [get_ports mgt_clk_p_i]
-#set_property PACKAGE_PIN E10 [get_ports {mgt_clk_n_i[1]}]
-#set_property PACKAGE_PIN F10 [get_ports {mgt_clk_p_i[1]}]
+set_property PACKAGE_PIN E6  [get_ports {mgt_clk_n_i[0]}]
+set_property PACKAGE_PIN F6  [get_ports {mgt_clk_p_i[0]}]
+set_property PACKAGE_PIN E10 [get_ports {mgt_clk_n_i[1]}]
+set_property PACKAGE_PIN F10 [get_ports {mgt_clk_p_i[1]}]
 
 ### VFAT1
 set_property PACKAGE_PIN E18 [get_ports {vfat_sbits_n[0]}]

@@ -22,7 +22,7 @@
 
 \title{Optohybrid v3 Address Table}
 % START: ADDRESS_TABLE_VERSION :: DO NOT EDIT
-    \author{ Firmware Version 03.02.02.1C \\ 20190325}
+    \author{ Firmware Version 03.02.03.1C \\ 20190412}
 % END: ADDRESS_TABLE_VERSION :: DO NOT EDIT
 \begin{document}
 
@@ -338,7 +338,7 @@
     SBIT\_DEADTIME & \texttt{0x2000} & \texttt{[27:24]} & rw & \texttt{0x7} & Set programmable oneshot deadtime which applies to retriggers on individual VFAT channels \\\hline
     ACTIVE\_VFATS & \texttt{0x2001} & \texttt{[23:0]} & r & \texttt{} & 24 bit list of VFATs with hits in this BX \\\hline
     CNT\_OVERFLOW & \texttt{0x2002} & \texttt{[15:0]} & r & \texttt{} & Overflow Counter (more than 8 clusters in a bx) \\\hline
-    ALIGNED\_COUNT\_TO\_READY & \texttt{0x2002} & \texttt{[27:16]} & rw & \texttt{0xFFF} & Number of link consecutive good frames required before the transmission unit is marked as good and S-bits can be produced \\\hline
+    ALIGNED\_COUNT\_TO\_READY & \texttt{0x2002} & \texttt{[27:16]} & rw & \texttt{0x1FF} & Number of link consecutive good frames required before the transmission unit is marked as good and S-bits can be produced \\\hline
     SBIT\_SOT\_READY & \texttt{0x2003} & \texttt{[23:0]} & r & \texttt{} & 24 bit list of VFATs with stable Start-of-frame pulses (in sync for a number of clock cycles) \\\hline
     SBIT\_SOT\_UNSTABLE & \texttt{0x2004} & \texttt{[23:0]} & r & \texttt{} & 24 bit list of VFATs with unstable Start-of-frame pulses (became misaligned after already achieving lock) \\\hline
     \end{tabularx}

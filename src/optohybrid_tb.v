@@ -192,9 +192,6 @@ parameter DDR = 0;
   wire [191:0] phase_err;
   wire aligner_sump;
 
-  wire [1535+1536*DDR:0] sbits;
-
-
   // apply a delay, opposite to the delay that we we later counteract with TU_POSNEG
 
   wire [191:0] tu_p;
@@ -422,8 +419,8 @@ parameter DDR = 0;
       .gbt_rxvalid_i (gbt_rxvalid_i [MXREADY-1:0]),
       .gbt_rxready_i (gbt_rxready_i [MXREADY-1:0]),
 
-      .mgt_clk_p_i   (mgt_clk_p_i),
-      .mgt_clk_n_i   (mgt_clk_n_i),
+      .mgt_clk_p_i   ({2{mgt_clk_p_i}}),
+      .mgt_clk_n_i   ({2{mgt_clk_n_i}}),
 
       .vfat_sot_p    (vfat_sot_p [MXVFATS-1:0]),
       .vfat_sot_n    (vfat_sot_n [MXVFATS-1:0]),

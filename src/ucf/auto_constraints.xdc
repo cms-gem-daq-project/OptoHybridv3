@@ -33,7 +33,7 @@ resize_pblock [get_pblocks pblock_cluster_packer] -add {SLICE_X0Y0:SLICE_X89Y74}
 resize_pblock [get_pblocks pblock_cluster_packer] -add {DSP48_X0Y0:DSP48_X2Y29}
 resize_pblock [get_pblocks pblock_cluster_packer] -add {RAMB18_X0Y0:RAMB18_X3Y29}
 resize_pblock [get_pblocks pblock_cluster_packer] -add {RAMB36_X0Y0:RAMB36_X3Y14}
-remove_cells_from_pblock [get_pblocks pblock_trigger] [get_cells -hierarchical -filter { NAME =~  "trigger/trigger_links*" }]
+remove_cells_from_pblock [get_pblocks pblock_trigger] [get_cells -hierarchical -filter { NAME =~  "trigger/gem_data_out*" }]
 
 
 set_property C_CLK_INPUT_FREQ_HZ 300000000 [get_debug_cores dbg_hub]

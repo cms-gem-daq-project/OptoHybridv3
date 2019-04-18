@@ -14,6 +14,8 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+use ieee.std_logic_misc.all;
+
 
 library work;
 use work.types_pkg.all;
@@ -31,8 +33,8 @@ port(
     ipb_miso_o        : out ipb_rbus;
 
     -- links
-    mgt_clk_p         : in std_logic; -- 160 MHz Reference Clock
-    mgt_clk_n         : in std_logic; -- 160 MHz Reference Clock
+    mgt_clk_p         : in std_logic_vector(1 downto 0); -- 160 MHz Reference Clock
+    mgt_clk_n         : in std_logic_vector(1 downto 0); -- 160 MHz Reference Clock
 
     logic_mmcm_lock_i  : in std_logic;
     logic_mmcm_reset_o : out std_logic;
@@ -164,40 +166,67 @@ architecture Behavioral of trigger is
     signal tx_reset_done        : std_logic_vector(3 downto 0);
     signal tx_pll_locked        : std_logic_vector(3 downto 0);
 
-    COMPONENT trigger_links
-    GENERIC(
-        FPGA_TYPE_IS_VIRTEX6  : integer := 0;
-        FPGA_TYPE_IS_ARTIX7   : integer := 0;
-        ILINKS                : integer := 4
+    COMPONENT   gem_data_out
+    GENERIC (
+        FPGA_TYPE_IS_VIRTEX6 : integer := 0;
+        FPGA_TYPE_IS_ARTIX7  : integer := 1
     );
     PORT (
-            clk_40            : IN std_logic;
-            clk_80            : IN std_logic;
-            clk_160           : IN std_logic;
-            mgt_clk_p         : IN std_logic;
-            mgt_clk_n         : IN std_logic;
-            mmcm_lock_i       : IN std_logic;
-            mmcm_reset_o      : OUT std_logic;
-            reset_i           : IN std_logic;
-            cluster0          : IN std_logic_vector(13 downto 0);
-            cluster1          : IN std_logic_vector(13 downto 0);
-            cluster2          : IN std_logic_vector(13 downto 0);
-            cluster3          : IN std_logic_vector(13 downto 0);
-            cluster4          : IN std_logic_vector(13 downto 0);
-            cluster5          : IN std_logic_vector(13 downto 0);
-            cluster6          : IN std_logic_vector(13 downto 0);
-            cluster7          : IN std_logic_vector(13 downto 0);
-            bxn_counter       : IN std_logic_vector(11 downto 0);
-            ttc_bx0           : IN std_logic;
-            overflow          : IN std_logic;
-            pll_locked        : OUT std_logic_vector(3 downto 0);
-            reset_done        : OUT std_logic_vector(3 downto 0);
-            trg_tx_p          : OUT std_logic_vector(3 downto 0);
-            trg_tx_n          : OUT std_logic_vector(3 downto 0);
-            valid_clusters    : OUT std_logic_vector(7 downto 0);
-            valid_clusters_or : OUT std_logic
+        trg_tx_n : OUT std_logic_vector (3 downto 0);
+        trg_tx_p : OUT std_logic_vector (3 downto 0);
+
+        refclk_n: IN std_logic_vector (1 downto 0);
+        refclk_p: IN std_logic_vector (1 downto 0);
+
+        gem_data      : IN std_logic_vector (111 downto 0); -- 56 bit gem data
+        overflow_i    : IN std_logic;                       -- 1 bit gem has more than 8 clusters
+        bxn_counter_i : IN std_logic_vector (11 downto 0);  -- 12 bit bxn counter
+        bc0_i         : IN std_logic;                       -- 1  bit bx0 flag
+        resync_i      : IN std_logic;                       -- 1  bit bx0 flag
+
+        clock_40  : IN std_logic;
+        clock_80  : IN std_logic;
+        clock_160 : IN std_logic;
+
+        reset_i : IN std_logic
     );
     END COMPONENT;
+
+
+    --COMPONENT trigger_links
+    --GENERIC(
+    --    FPGA_TYPE_IS_VIRTEX6  : integer := 0;
+    --    FPGA_TYPE_IS_ARTIX7   : integer := 0;
+    --    ILINKS                : integer := 4
+    --);
+    --PORT (
+    --        clk_40            : IN std_logic;
+    --        clk_80            : IN std_logic;
+    --        clk_160           : IN std_logic;
+    --        mgt_clk_p         : IN std_logic;
+    --        mgt_clk_n         : IN std_logic;
+    --        mmcm_lock_i       : IN std_logic;
+    --        mmcm_reset_o      : OUT std_logic;
+    --        reset_i           : IN std_logic;
+    --        cluster0          : IN std_logic_vector(13 downto 0);
+    --        cluster1          : IN std_logic_vector(13 downto 0);
+    --        cluster2          : IN std_logic_vector(13 downto 0);
+    --        cluster3          : IN std_logic_vector(13 downto 0);
+    --        cluster4          : IN std_logic_vector(13 downto 0);
+    --        cluster5          : IN std_logic_vector(13 downto 0);
+    --        cluster6          : IN std_logic_vector(13 downto 0);
+    --        cluster7          : IN std_logic_vector(13 downto 0);
+    --        bxn_counter       : IN std_logic_vector(11 downto 0);
+    --        ttc_bx0           : IN std_logic;
+    --        overflow          : IN std_logic;
+    --        pll_locked        : OUT std_logic_vector(3 downto 0);
+    --        reset_done        : OUT std_logic_vector(3 downto 0);
+    --        trg_tx_p          : OUT std_logic_vector(3 downto 0);
+    --        trg_tx_n          : OUT std_logic_vector(3 downto 0);
+    --        valid_clusters    : OUT std_logic_vector(7 downto 0);
+    --        valid_clusters_or : OUT std_logic
+    --);
+    --END COMPONENT;
 
     ------ Register signals begin (this section is generated by <optohybrid_top>/tools/generate_registers.py -- do not edit)
     signal regs_read_arr        : t_std32_array(REG_TRIG_NUM_REGS - 1 downto 0) := (others => (others => '0'));
@@ -425,14 +454,14 @@ begin
         reset_i          => (reset or reset_monitor),
         ttc_clk_i        => clk_40,
         l1a_i            => ttc_l1a_i,
-        sbit_cluster_0   => cluster0,
-        sbit_cluster_1   => cluster1,
-        sbit_cluster_2   => cluster2,
-        sbit_cluster_3   => cluster3,
-        sbit_cluster_4   => cluster4,
-        sbit_cluster_5   => cluster5,
-        sbit_cluster_6   => cluster6,
-        sbit_cluster_7   => cluster7,
+        sbit_cluster_0   => sbit_clusters(0),
+        sbit_cluster_1   => sbit_clusters(1),
+        sbit_cluster_2   => sbit_clusters(2),
+        sbit_cluster_3   => sbit_clusters(3),
+        sbit_cluster_4   => sbit_clusters(4),
+        sbit_cluster_5   => sbit_clusters(5),
+        sbit_cluster_6   => sbit_clusters(6),
+        sbit_cluster_7   => sbit_clusters(7),
         sbit_cluster_8   => ("000" & "111" & x"FA"),
         sbit_cluster_9   => ("000" & "111" & x"FA"),
         frozen_cluster_0 => frozen_cluster_0,
@@ -448,51 +477,91 @@ begin
         l1a_delay_o      => sbitmon_l1a_delay
     );
 
+
     --------------------------------------------------------------------------------------------------------------------
     -- Fixed latency trigger links
     --------------------------------------------------------------------------------------------------------------------
 
-    trigger_links_inst : trigger_links
+    valid_clusters(0) <= '0' when sbit_clusters(0)(10 downto 9) = "11" else '1';
+    valid_clusters(1) <= '0' when sbit_clusters(1)(10 downto 9) = "11" else '1';
+    valid_clusters(2) <= '0' when sbit_clusters(2)(10 downto 9) = "11" else '1';
+    valid_clusters(3) <= '0' when sbit_clusters(3)(10 downto 9) = "11" else '1';
+    valid_clusters(4) <= '0' when sbit_clusters(4)(10 downto 9) = "11" else '1';
+    valid_clusters(5) <= '0' when sbit_clusters(5)(10 downto 9) = "11" else '1';
+    valid_clusters(6) <= '0' when sbit_clusters(6)(10 downto 9) = "11" else '1';
+    valid_clusters(7) <= '0' when sbit_clusters(7)(10 downto 9) = "11" else '1';
+
+    valid_clusters_or <= or_reduce (valid_clusters(7 downto 0));
+
+    gem_data_out_inst : gem_data_out
     generic map (
         FPGA_TYPE_IS_VIRTEX6  => FPGA_TYPE_IS_VIRTEX6,
         FPGA_TYPE_IS_ARTIX7   => FPGA_TYPE_IS_ARTIX7
     )
     port map (
 
-        mgt_clk_p  => mgt_clk_p, -- 160 MHz Reference Clock Positive
-        mgt_clk_n  => mgt_clk_n, -- 160 MHz Reference Clock Negative
+        refclk_p  => mgt_clk_p, -- 160 MHz Reference Clock Positive
+        refclk_n  => mgt_clk_n, -- 160 MHz Reference Clock Negative
 
-        mmcm_lock_i => logic_mmcm_lock_i,
-        mmcm_reset_o => logic_mmcm_reset_o,
+        clock_40  => clk_40,  -- 40 MHz  Logic Clock
+        clock_80  => clk_80,  -- 80 MHz  Logic Clock
+        clock_160 => clk_160, -- 160 MHz  Logic Clock
 
-        clk_40     => clk_40,  -- 40 MHz  Logic Clock
-        clk_80     => clk_80,  -- 80 MHz  User Clock 2
-        clk_160    => clk_160, -- 160 MHz User Clock
-
-        bxn_counter => bxn_counter_i,
-        ttc_bx0     => ttc_bx0_i    ,
+        bxn_counter_i => bxn_counter_i,
+        bc0_i       => ttc_bx0_i,
+        resync_i    => ttc_resync,
 
         reset_i    => tx_link_reset,
-        pll_locked => tx_pll_locked,
-        reset_done => tx_reset_done,
 
         trg_tx_p   => mgt_tx_p (3 downto 0),
         trg_tx_n   => mgt_tx_n (3 downto 0),
 
-        cluster0   => sbit_clusters(0),
-        cluster1   => sbit_clusters(1),
-        cluster2   => sbit_clusters(2),
-        cluster3   => sbit_clusters(3),
-        cluster4   => sbit_clusters(4),
-        cluster5   => sbit_clusters(5),
-        cluster6   => sbit_clusters(6),
-        cluster7   => sbit_clusters(7),
+        gem_data => sbit_clusters(7) & sbit_clusters(6) & sbit_clusters(5) & sbit_clusters(4) & sbit_clusters(3) & sbit_clusters(2) & sbit_clusters(1) & sbit_clusters(0),
 
-        valid_clusters    => valid_clusters,
-        valid_clusters_or => valid_clusters_or,
-
-        overflow   => sbit_overflow
+        overflow_i => sbit_overflow
     );
+
+--    trigger_links_inst : trigger_links
+--    generic map (
+--        FPGA_TYPE_IS_VIRTEX6  => FPGA_TYPE_IS_VIRTEX6,
+--        FPGA_TYPE_IS_ARTIX7   => FPGA_TYPE_IS_ARTIX7
+--    )
+--    port map (
+--
+--        mgt_clk_p  => mgt_clk_p, -- 160 MHz Reference Clock Positive
+--        mgt_clk_n  => mgt_clk_n, -- 160 MHz Reference Clock Negative
+--
+--        mmcm_lock_i => logic_mmcm_lock_i,
+--        mmcm_reset_o => logic_mmcm_reset_o,
+--
+--        clk_40     => clk_40,  -- 40 MHz  Logic Clock
+--        clk_80     => clk_80,  -- 80 MHz  User Clock 2
+--        clk_160    => clk_160, -- 160 MHz User Clock
+--
+--        bxn_counter => bxn_counter_i,
+--        ttc_bx0     => ttc_bx0_i    ,
+--
+--        reset_i    => tx_link_reset,
+--        pll_locked => tx_pll_locked,
+--        reset_done => tx_reset_done,
+--
+--        trg_tx_p   => mgt_tx_p (3 downto 0),
+--        trg_tx_n   => mgt_tx_n (3 downto 0),
+--
+--        cluster0   => sbit_clusters(0),
+--        cluster1   => sbit_clusters(1),
+--        cluster2   => sbit_clusters(2),
+--        cluster3   => sbit_clusters(3),
+--        cluster4   => sbit_clusters(4),
+--        cluster5   => sbit_clusters(5),
+--        cluster6   => sbit_clusters(6),
+--        cluster7   => sbit_clusters(7),
+--
+--        valid_clusters    => valid_clusters,
+--        valid_clusters_or => valid_clusters_or,
+--
+--        overflow   => sbit_overflow
+--    );
 
     --===============================================================================================
     -- (this section is generated by <optohybrid_top>/tools/generate_registers.py -- do not edit)

@@ -1,4 +1,4 @@
-create_clock -period 10.000 -name {control/led_control/fader_cnt_reg[0]_0} -waveform {0.000 5.000} [get_pins control/led_control/async_clock]
+create_clock -period 10.000 -name {control/led_control/fader_cnt_reg[0]_0} -waveform {0.000 5.000} [get_pins control/led_control_inst/prescaler_reg[0]
 create_clock -period 6.250 -name VIRTUAL_clk160_o_logic_clocking -waveform {0.000 3.125}
 create_clock -period 3.125 -name VIRTUAL_clk320_o_gbt_clocking   -waveform {0.000 1.563}
 
@@ -58,3 +58,7 @@ set_max_delay -from [get_cells -regexp -hierarchical -filter { NAME =~  "trigger
 set_max_delay -from [get_cells -hierarchical -filter { NAME =~  "trigger/sbits/*cluster_packer*/*overflow_ff*" }] 10
 set_false_path -from [get_cells -hierarchical -filter { NAME =~  "trigger/sbits/*cluster_packer*/*overflow_ff*" }]
 
+set_max_delay -from [get_pins {trigger/gem_data_out_inst/usrclk_rdy_cnt_reg*/C}]   -to [get_pins {trigger/gem_data_out_inst/synchronizer_wr_en/sync_gen.gen_ff[0].s_resync_reg[1]/D}] 5.0 -datapath_only
+set_max_delay -from [get_pins trigger/tx_link_reset_reg/C] -to [get_pins {trigger/gem_data_out_inst/synchronizer_reset/sync_gen.gen_ff[0].s_resync_reg[1]/D}] 5.0 -datapath_only
+
+set_max_delay -datapath_only
