@@ -72,32 +72,34 @@ use UNISIM.VCOMPONENTS.ALL;
 entity a7_gtp_wrapper is
   port
   (
-    Q0_CLK0_GTREFCLK_PAD_N_IN               : in   std_logic;
-    Q0_CLK0_GTREFCLK_PAD_P_IN               : in   std_logic;
-    Q0_CLK1_GTREFCLK_PAD_N_IN               : in   std_logic;
-    Q0_CLK1_GTREFCLK_PAD_P_IN               : in   std_logic;
-    sysclk_in                               : in   std_logic;
-    soft_reset_tx_in                        : in std_logic;
-    PLL_LOCK_OUT                            : out  std_logic;
-    TXN_OUT                                 : out  std_logic_vector(3 downto 0);
-    TXP_OUT                                 : out  std_logic_vector(3 downto 0);
+    refclk_in_p               : in std_logic_vector(1 downto 0);
+    refclk_in_n               : in std_logic_vector(1 downto 0);
 
-    tx_fsm_reset_done                       : out std_logic_vector (3 downto 0);
+    sysclk_in                 : in   std_logic;
 
-    gt0_txcharisk_i                         : in   std_logic_vector(1 downto 0);
-    gt1_txcharisk_i                         : in   std_logic_vector(1 downto 0);
-    gt2_txcharisk_i                         : in   std_logic_vector(1 downto 0);
-    gt3_txcharisk_i                         : in   std_logic_vector(1 downto 0);
+    soft_reset_tx_in          : in   std_logic;
 
-    gt0_txdata_i                         : in   std_logic_vector(15 downto 0);
-    gt1_txdata_i                         : in   std_logic_vector(15 downto 0);
-    gt2_txdata_i                         : in   std_logic_vector(15 downto 0);
-    gt3_txdata_i                         : in   std_logic_vector(15 downto 0);
+    pll_lock_out              : out  std_logic;
 
-    gt0_txusrclk_o                      : out   std_logic;
-    gt1_txusrclk_o                      : out   std_logic;
-    gt2_txusrclk_o                      : out   std_logic;
-    gt3_txusrclk_o                      : out   std_logic
+    txn_out                   : out  std_logic_vector(3 downto 0);
+    txp_out                   : out  std_logic_vector(3 downto 0);
+
+    tx_fsm_reset_done         : out std_logic_vector (3 downto 0);
+
+    gt0_txcharisk_i           : in   std_logic_vector(1 downto 0);
+    gt1_txcharisk_i           : in   std_logic_vector(1 downto 0);
+    gt2_txcharisk_i           : in   std_logic_vector(1 downto 0);
+    gt3_txcharisk_i           : in   std_logic_vector(1 downto 0);
+
+    gt0_txdata_i              : in   std_logic_vector(15 downto 0);
+    gt1_txdata_i              : in   std_logic_vector(15 downto 0);
+    gt2_txdata_i              : in   std_logic_vector(15 downto 0);
+    gt3_txdata_i              : in   std_logic_vector(15 downto 0);
+
+    gt0_txusrclk_o            : out   std_logic;
+    gt1_txusrclk_o            : out   std_logic;
+    gt2_txusrclk_o            : out   std_logic;
+    gt3_txusrclk_o            : out   std_logic
   );
 
 end a7_gtp_wrapper;
@@ -150,10 +152,10 @@ begin
   (
     soft_reset_tx_in            => soft_reset_tx_in,
     DONT_RESET_ON_DATA_ERROR_IN => '0',
-    Q0_CLK0_GTREFCLK_PAD_N_IN   => Q0_CLK0_GTREFCLK_PAD_N_IN,
-    Q0_CLK0_GTREFCLK_PAD_P_IN   => Q0_CLK0_GTREFCLK_PAD_P_IN,
-    Q0_CLK1_GTREFCLK_PAD_N_IN   => Q0_CLK1_GTREFCLK_PAD_N_IN,
-    Q0_CLK1_GTREFCLK_PAD_P_IN   => Q0_CLK1_GTREFCLK_PAD_P_IN,
+    Q0_CLK0_GTREFCLK_PAD_N_IN   => refclk_in_n(0),
+    Q0_CLK0_GTREFCLK_PAD_P_IN   => refclk_in_p(0),
+  --Q0_CLK1_GTREFCLK_PAD_N_IN   => refclk_in_n(1),
+  --Q0_CLK1_GTREFCLK_PAD_P_IN   => refclk_in_p(1),
     GT0_TX_FSM_RESET_DONE_OUT   => tx_fsm_reset_done(0),
     GT0_RX_FSM_RESET_DONE_OUT   => open,
     GT0_DATA_VALID_IN           => '0',
@@ -167,10 +169,15 @@ begin
     GT3_RX_FSM_RESET_DONE_OUT   => open,
     GT3_DATA_VALID_IN           => '0',
 
-    GT0_TXUSRCLK_OUT => gt0_txusrclk_o,
-    GT1_TXUSRCLK_OUT => gt1_txusrclk_o,
-    GT2_TXUSRCLK_OUT => gt2_txusrclk_o,
-    GT3_TXUSRCLK_OUT => gt3_txusrclk_o,
+    GT0_TXUSRCLK_OUT => open,
+    GT1_TXUSRCLK_OUT => open,
+    GT2_TXUSRCLK_OUT => open,
+    GT3_TXUSRCLK_OUT => open,
+
+    GT0_TXUSRCLK2_OUT => gt0_txusrclk_o,
+    GT1_TXUSRCLK2_OUT => gt1_txusrclk_o,
+    GT2_TXUSRCLK2_OUT => gt2_txusrclk_o,
+    GT3_TXUSRCLK2_OUT => gt3_txusrclk_o,
 
     --_____________________________________________________________________
     --_____________________________________________________________________
@@ -201,8 +208,8 @@ begin
     ------------------ Transmit Ports - TX 8B/10B Encoder Ports ----------------
     gt0_txcharisk_in                =>      gt0_txcharisk_i,
     --------------- Transmit Ports - TX Configurable Driver Ports --------------
-    gt0_gtptxn_out                  =>      TXN_OUT(0),
-    gt0_gtptxp_out                  =>      TXP_OUT(0),
+    gt0_gtptxn_out                  =>      txn_out(0),
+    gt0_gtptxp_out                  =>      txp_out(0),
     --gt0_txdiffctrl_in               =>      gt0_txdiffctrl_i,
     ----------- Transmit Ports - TX Fabric Clock Output Control Ports ----------
     gt0_txoutclkfabric_out          =>      open,
@@ -240,8 +247,8 @@ begin
     ------------------ Transmit Ports - TX 8B/10B Encoder Ports ----------------
     gt1_txcharisk_in                =>      gt1_txcharisk_i,
     --------------- Transmit Ports - TX Configurable Driver Ports --------------
-    gt1_gtptxn_out                  =>      TXN_OUT(1),
-    gt1_gtptxp_out                  =>      TXP_OUT(1),
+    gt1_gtptxn_out                  =>      txn_out(1),
+    gt1_gtptxp_out                  =>      txp_out(1),
     --gt1_txdiffctrl_in               =>      gt1_txdiffctrl_i,
     ----------- Transmit Ports - TX Fabric Clock Output Control Ports ----------
     gt1_txoutclkfabric_out          =>      open,
@@ -279,8 +286,8 @@ begin
     ------------------ Transmit Ports - TX 8B/10B Encoder Ports ----------------
     gt2_txcharisk_in                =>      gt2_txcharisk_i,
     --------------- Transmit Ports - TX Configurable Driver Ports --------------
-    gt2_gtptxn_out                  =>      TXN_OUT(2),
-    gt2_gtptxp_out                  =>      TXP_OUT(2),
+    gt2_gtptxn_out                  =>      txn_out(2),
+    gt2_gtptxp_out                  =>      txp_out(2),
     --gt2_txdiffctrl_in               =>      gt2_txdiffctrl_i,
     ----------- Transmit Ports - TX Fabric Clock Output Control Ports ----------
     gt2_txoutclkfabric_out          =>      open,
@@ -318,8 +325,8 @@ begin
     ------------------ Transmit Ports - TX 8B/10B Encoder Ports ----------------
     gt3_txcharisk_in                =>      gt3_txcharisk_i,
     --------------- Transmit Ports - TX Configurable Driver Ports --------------
-    gt3_gtptxn_out                  =>      TXN_OUT(3),
-    gt3_gtptxp_out                  =>      TXP_OUT(3),
+    gt3_gtptxn_out                  =>      txn_out(3),
+    gt3_gtptxp_out                  =>      txp_out(3),
     --gt3_txdiffctrl_in               =>      gt3_txdiffctrl_i,
     ----------- Transmit Ports - TX Fabric Clock Output Control Ports ----------
     gt3_txoutclkfabric_out          =>      open,
@@ -337,7 +344,7 @@ begin
     --____________________________COMMON PORTS________________________________
     GT0_PLL0OUTCLK_OUT     => open,
     GT0_PLL0OUTREFCLK_OUT  => open,
-    GT0_PLL0LOCK_OUT       => PLL_LOCK_OUT,
+    GT0_PLL0LOCK_OUT       => pll_lock_out,
     GT0_PLL0REFCLKLOST_OUT => open,
     GT0_PLL1OUTCLK_OUT     => open,
     GT0_PLL1OUTREFCLK_OUT  => open,
@@ -346,6 +353,3 @@ begin
 
 
 end RTL;
-
-
-

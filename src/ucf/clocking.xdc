@@ -49,16 +49,13 @@ set_property MAX_FANOUT 128 [get_nets -hierarchical -filter { NAME =~  "trigger/
 set_false_path -from [get_clocks {control/led_control/fader_cnt_reg[0]_0}] -to [get_clocks -of_objects [get_pins clocking/logic_clocking/inst/plle2_adv_inst/CLKOUT0]]
 set_false_path -from [get_pins {gbt/gbt_serdes/to_gbt_ser_gen_a7.i_to_gbt_ser/inst/pins[0].oserdese2_master/CLK}] -to [get_ports elink_o_p]
 
-#should constrain this to just the cluster ffs
-#set_multicycle_path -from [get_clocks -of_objects [get_pins clocking/logic_clocking/inst/plle2_adv_inst/CLKOUT4]] -to [get_clocks -of_objects [get_pins clocking/logic_clocking/inst/plle2_adv_inst/CLKOUT1]] 5
-#set_false_path -from [get_clocks -of_objects [get_pins clocking/logic_clocking/inst/plle2_adv_inst/CLKOUT4]]
+#set_false_path -from [get_cells -regexp -hierarchical -filter { NAME =~  "trigger/sbits/.*cluster_reg\[\d\].*" }]
+#set_max_delay -from [get_cells -regexp -hierarchical -filter { NAME =~  "trigger/sbits/.*cluster_reg\[\d\].*" }] 10
+#set_max_delay -from [get_cells -hierarchical -filter { NAME =~  "trigger/sbits/*cluster_packer*/*overflow_ff*" }] 10
+#set_false_path -from [get_cells -hierarchical -filter { NAME =~  "trigger/sbits/*cluster_packer*/*overflow_ff*" }]
 
-set_false_path -from [get_cells -regexp -hierarchical -filter { NAME =~  "trigger/sbits/.*cluster_reg\[\d\].*" }]
-set_max_delay -from [get_cells -regexp -hierarchical -filter { NAME =~  "trigger/sbits/.*cluster_reg\[\d\].*" }] 10
-set_max_delay -from [get_cells -hierarchical -filter { NAME =~  "trigger/sbits/*cluster_packer*/*overflow_ff*" }] 10
-set_false_path -from [get_cells -hierarchical -filter { NAME =~  "trigger/sbits/*cluster_packer*/*overflow_ff*" }]
+set_max_delay -from [get_cells trigger/tx_link_reset_reg]                                                                                                                         -to [get_cells {trigger/gem_data_out_inst/synchronizer_reset/sync_gen.gen_ff*.s_resync_reg*}]      20.0 -datapath_only
+set_max_delay -from [get_cells trigger/gem_data_out_inst/a7_gtp_wrapper/a7_mgts_with_buffer0_support_i/U0/a7_mgts_with_buffer0_init_i/gt*_txresetfsm_i/tx_fsm_reset_done_int_reg] -to [get_cells {trigger/gem_data_out_inst/synchronizer_ready_sync/sync_gen.gen_ff*.s_resync_reg*}] 20.0 -datapath_only
 
-set_max_delay -from [get_pins {trigger/gem_data_out_inst/usrclk_rdy_cnt_reg*/C}]   -to [get_pins {trigger/gem_data_out_inst/synchronizer_wr_en/sync_gen.gen_ff[0].s_resync_reg[1]/D}] 5.0 -datapath_only
-set_max_delay -from [get_pins trigger/tx_link_reset_reg/C] -to [get_pins {trigger/gem_data_out_inst/synchronizer_reset/sync_gen.gen_ff[0].s_resync_reg[1]/D}] 5.0 -datapath_only
-
-set_max_delay -datapath_only
+#set_false_path -to [get_pins -hierarchical -filter {NAME =~ *_txfsmresetdone_r*/CLR}]
+#set_false_path -to [get_pins -hierarchical -filter {NAME =~ *_txfsmresetdone_r*/D}]

@@ -508,8 +508,8 @@ begin
         clock_160 => clk_160, -- 160 MHz  Logic Clock
 
         bxn_counter_i => bxn_counter_i,
-        bc0_i       => ttc_bx0_i,
-        resync_i    => ttc_resync,
+        bc0_i         => ttc_bx0_i,
+        resync_i      => ttc_resync,
 
         reset_i    => tx_link_reset,
 
