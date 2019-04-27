@@ -1,7 +1,7 @@
 ##############################################################
 #
 # Xilinx Core Generator version 14.7
-# Date: Fri Apr 12 01:40:55 2019
+# Date: Fri Apr 26 23:48:08 2019
 #
 ##############################################################
 #
@@ -236,7 +236,7 @@ CSET sata_burst_val=4
 CSET sata_idle_val=4
 CSET second_order_cdr_loop=false
 CSET show_realign_comma=true
-CSET sync_app=true
+CSET sync_app=false
 CSET termination_ctrl=00000
 CSET termination_imp=50
 CSET termination_ovrd=false
@@ -255,10 +255,10 @@ CSET tx_refclk_x0_y0=REFCLK0_Q0
 CSET tx_refclk_x0_y1=REFCLK0_Q0
 CSET tx_refclk_x0_y10=REFCLK0_Q2
 CSET tx_refclk_x0_y11=REFCLK0_Q2
-CSET tx_refclk_x0_y12=REFCLK0_Q3
-CSET tx_refclk_x0_y13=REFCLK0_Q3
-CSET tx_refclk_x0_y14=REFCLK0_Q3
-CSET tx_refclk_x0_y15=REFCLK0_Q3
+CSET tx_refclk_x0_y12=REFCLK1_Q3
+CSET tx_refclk_x0_y13=REFCLK1_Q3
+CSET tx_refclk_x0_y14=REFCLK1_Q3
+CSET tx_refclk_x0_y15=REFCLK1_Q3
 CSET tx_refclk_x0_y16=REFCLK0_Q4
 CSET tx_refclk_x0_y17=REFCLK0_Q4
 CSET tx_refclk_x0_y18=REFCLK0_Q4
@@ -343,7 +343,7 @@ CSET use_port_comwakedet=false
 CSET use_port_drp=false
 CSET use_port_enmcommaalign=false
 CSET use_port_enpcommaalign=false
-CSET use_port_gtxtest=false
+CSET use_port_gtxtest=true
 CSET use_port_loopback=false
 CSET use_port_phystatus=false
 CSET use_port_plllkdet=true
@@ -378,7 +378,7 @@ CSET use_port_txcomsas=false
 CSET use_port_txcomwake=false
 CSET use_port_txdetectrx=false
 CSET use_port_txelecidle=false
-CSET use_port_txenprbstst=false
+CSET use_port_txenprbstst=true
 CSET use_port_txinhibit=false
 CSET use_port_txkerr=false
 CSET use_port_txoutclk=true
@@ -386,7 +386,7 @@ CSET use_port_txpolarity=false
 CSET use_port_txpowerdown=false
 CSET use_port_txprbsforceerr=false
 CSET use_port_txrate=false
-CSET use_port_txreset=false
+CSET use_port_txreset=true
 CSET use_port_txrundisp=false
 CSET use_prbs_detector=false
 CSET use_resistor_cal_circuit=false
@@ -400,7 +400,7 @@ CSET use_turbo_mode=false
 CSET use_two_cb_sequences=false
 CSET use_two_cc_sequences=false
 CSET use_tx_oversampling=false
-CSET use_txbuffer=true
+CSET use_txbuffer=false
 CSET use_txpllrefclk=false
 CSET wideband_highpass_mix=Use_RXEQMIX_Port
 # END Parameters
@@ -408,4 +408,4 @@ CSET wideband_highpass_mix=Use_RXEQMIX_Port
 MISC pkg_timestamp=2011-04-08T05:24:23Z
 # END Extra information
 GENERATE
-# CRC: 2d46a0a3
+# CRC: cc4d8728

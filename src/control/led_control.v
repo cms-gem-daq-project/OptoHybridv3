@@ -1,6 +1,8 @@
 module led_control (
   input clock,
 
+  input mgts_ready,
+
   input mmcm_locked,
   input elink_mmcm_locked,
   input logic_mmcm_locked,
@@ -173,16 +175,16 @@ module led_control (
 // Logic LED Assignments
 //----------------------------------------------------------------------------------------------------------------------
 
-  assign led_logic [7:0]  = progress_bar;
+  assign led_logic [7:0] = progress_bar;
 
-  assign led_logic [15]   = eclk_led;
-  assign led_logic [14]   = clk_led;
-  assign led_logic [13]   = gbt_link_ready ? fader_led : 1'b0;
-  assign led_logic [12]   = gbt_flash;
+  assign led_logic [15] = eclk_led;
+  assign led_logic [14] = clk_led;
+  assign led_logic [13] = mgts_ready & clk_led;
+  assign led_logic [12] = gbt_link_ready & clk_led;
 
-  assign led_logic [11]   = l1a_flash;
-  assign led_logic [10]   = resync_flash;
-  assign led_logic [9]    = bc0_flash;
-  assign led_logic [8]    = vfat_reset_flash;
+  assign led_logic [11] = gbt_flash;
+  assign led_logic [10] = l1a_flash;
+  assign led_logic [9]  = resync_flash;
+  assign led_logic [8]  = bc0_flash;
 
 endmodule

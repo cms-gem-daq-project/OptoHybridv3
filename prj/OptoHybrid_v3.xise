@@ -40,11 +40,11 @@
     </file>
     <file xil_pn:name="../src/sbit_cluster_packer/source/first8of1536.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="17"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="17"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="18"/>
     </file>
     <file xil_pn:name="../src/sbit_cluster_packer/source/count_clusters.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="19"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="19"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="20"/>
     </file>
     <file xil_pn:name="../src/sbit_cluster_packer/source/x_oneshot.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="0"/>
@@ -222,7 +222,7 @@
     </file>
     <file xil_pn:name="../src/pkg/ipbus_pkg.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="20"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="20"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="21"/>
     </file>
     <file xil_pn:name="../src/pkg/registers.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="49"/>
@@ -250,7 +250,7 @@
     </file>
     <file xil_pn:name="../src/sbit_cluster_packer/source/lac.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="16"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="16"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="17"/>
     </file>
     <file xil_pn:name="../src/sbit_cluster_packer/source/encoder_mux.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="0"/>
@@ -333,7 +333,7 @@
     </file>
     <file xil_pn:name="../src/sbit_cluster_packer/source/find_cluster_primaries.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="18"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="18"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="19"/>
     </file>
     <file xil_pn:name="../src/trigger/active_vfats.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="33"/>
@@ -358,7 +358,7 @@
     </file>
     <file xil_pn:name="../src/ip_cores/gtx_wizard_4output_v6.xco" xil_pn:type="FILE_COREGEN">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="21"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="21"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="0"/>
     </file>
     <file xil_pn:name="../src/trigger/link/gem_data_out.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="48"/>
@@ -367,6 +367,10 @@
     <file xil_pn:name="../src/trigger/link/v6_gtx_wrapper.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="31"/>
       <association xil_pn:name="Implementation" xil_pn:seqID="31"/>
+    </file>
+    <file xil_pn:name="../src/trigger/link/gtx_wizard_4output_v6_tx_sync.vhd" xil_pn:type="FILE_VHDL">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="213"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="16"/>
     </file>
     <file xil_pn:name="../src/ip_cores/sem.xise" xil_pn:type="FILE_COREGENISE">
       <association xil_pn:name="Implementation" xil_pn:seqID="0"/>
@@ -531,7 +535,7 @@
     <property xil_pn:name="JTAG to System Monitor Connection" xil_pn:value="Enable" xil_pn:valueState="default"/>
     <property xil_pn:name="Keep Hierarchy" xil_pn:value="No" xil_pn:valueState="default"/>
     <property xil_pn:name="LUT Combining Map" xil_pn:value="Auto" xil_pn:valueState="non-default"/>
-    <property xil_pn:name="LUT Combining Xst" xil_pn:value="No" xil_pn:valueState="non-default"/>
+    <property xil_pn:name="LUT Combining Xst" xil_pn:value="Auto" xil_pn:valueState="default"/>
     <property xil_pn:name="Language" xil_pn:value="VHDL" xil_pn:valueState="default"/>
     <property xil_pn:name="Last Applied Goal" xil_pn:value="Optohybrid" xil_pn:valueState="non-default"/>
     <property xil_pn:name="Last Applied Strategy" xil_pn:value="Performance with IOB Packing;/media/psf/Dropbox/CMS/Firmware/OptoHybridv3/prj/Optohybrid strategy.xds" xil_pn:valueState="non-default"/>

@@ -3,7 +3,9 @@
 module   gem_data_out #(
   parameter FPGA_TYPE_IS_VIRTEX6 = 0,
   parameter FPGA_TYPE_IS_ARTIX7  = 0,
+  parameter ALLOW_TTC_CHARS      = 0,
   parameter FRAME_CTRL_TTC       = 1
+
 )
 (
   output [3:0]  trg_tx_n,
@@ -22,6 +24,8 @@ module   gem_data_out #(
   input clock_80,
   input clock_160,
 
+  output ready_o,
+
   input reset_i
 );
 
@@ -31,7 +35,6 @@ module   gem_data_out #(
 
   wire usrclk_160;
   wire reset;
-  wire pll_lock;
 
 //----------------------------------------------------------------------------------------------------------------------
 // Transmit data
@@ -39,13 +42,16 @@ module   gem_data_out #(
 
   wire [111:0] gem_data_sync;
 
-  wire mgt_reset;
+  wire [3:0] mgt_reset;
   wire mgt_reset_sync;
 
   reg [7:0] frame_sep;
 
   wire [3:0] tx_fsm_reset_done;
+  wire [3:0] pll_lock;
+  assign pll_lock_o = pll_lock;
   reg  ready;
+  assign ready_o = ready;
   wire ready_sync;
   wire rd_en;
 
@@ -70,21 +76,51 @@ module   gem_data_out #(
     tx_frame  <= (reset || ~ready_sync) ? 2'd0 : tx_frame + 1'b1;
   end
 
-  localparam MGT_RESET_CNT_MAX = 2**18-1;
-  localparam MGT_RESET_BITS    = $clog2 (MGT_RESET_CNT_MAX);
+  parameter STARTUP_RESET_CNT_MAX = 2**22-1;
+  parameter STARTUP_RESET_BITS    = $clog2 (STARTUP_RESET_CNT_MAX);
 
-  reg [MGT_RESET_BITS-1:0] mgt_reset_cnt = 0;
+  reg [STARTUP_RESET_BITS-1:0] startup_reset_cnt = 0;
 
   always @ (posedge clock_40) begin
     if (reset_i)
-      mgt_reset_cnt <= 0;
-    else if (mgt_reset_cnt < MGT_RESET_CNT_MAX)
-      mgt_reset_cnt <= mgt_reset_cnt + 1'b1;
+      startup_reset_cnt <= 0;
+    else if (startup_reset_cnt < STARTUP_RESET_CNT_MAX)
+      startup_reset_cnt <= startup_reset_cnt + 1'b1;
     else
-      mgt_reset_cnt <= mgt_reset_cnt;
+      startup_reset_cnt <= startup_reset_cnt;
   end
 
-  assign mgt_reset = (mgt_reset_cnt == (MGT_RESET_CNT_MAX-1));
+  parameter STABLE_CLOCK_PERIOD = 25;
+
+  parameter MGT_RESET_CNT0     = 4000   * 1000 / STABLE_CLOCK_PERIOD; // usec
+  parameter MGT_RESET_CNT1     = 8000   * 1000 / STABLE_CLOCK_PERIOD; // usec
+  parameter MGT_RESET_CNT2     = 12000  * 1000 / STABLE_CLOCK_PERIOD; // usec
+  parameter MGT_RESET_CNT3     = 14000  * 1000 / STABLE_CLOCK_PERIOD; // usec
+  parameter PLL_RESET_CNT      = 0      * 1000 / STABLE_CLOCK_PERIOD; // usec
+  parameter GTXTEST_RESET_CNT  = 16000  * 1000 / STABLE_CLOCK_PERIOD; // usec
+  parameter TXRESET_CNT        = 18000  * 1000 / STABLE_CLOCK_PERIOD; // usec
+  parameter MGT_REALIGN_CNT    = 0      * 1000 / STABLE_CLOCK_PERIOD; // usec
+
+  assign pll_reset    = (startup_reset_cnt <  PLL_RESET_CNT);
+  assign mgt_reset[0] = (startup_reset_cnt <  MGT_RESET_CNT0);
+  assign mgt_reset[1] = (startup_reset_cnt <  MGT_RESET_CNT1);
+  assign mgt_reset[2] = (startup_reset_cnt <  MGT_RESET_CNT2);
+  assign mgt_reset[3] = (startup_reset_cnt <  MGT_RESET_CNT3);
+  wire gtxtest_start  = (startup_reset_cnt == GTXTEST_RESET_CNT);
+  wire txreset        = (startup_reset_cnt == TXRESET_CNT);
+  wire mgt_realign    = (startup_reset_cnt == MGT_REALIGN_CNT);
+
+  reg [9:0] gtxtest_cnt=1023;
+  always @ (posedge clock_40) begin
+    if (gtxtest_start)
+      gtxtest_cnt <= 0;
+    else if (gtxtest_cnt < 1023)
+      gtxtest_cnt <= gtxtest_cnt + 1'b1;
+    else
+      gtxtest_cnt <= gtxtest_cnt;
+  end
+
+  wire gtxtest_reset = (gtxtest_cnt > 0 && gtxtest_cnt < 256) || (gtxtest_cnt > 511 && gtxtest_cnt < 768);
 
   genvar ilink;
   generate
@@ -94,7 +130,7 @@ module   gem_data_out #(
       always @(posedge usrclk_160) begin
 
         if (reset || ~ready_sync) begin
-          trg_tx_data[ilink]  <= 16'hFFDC;
+          trg_tx_data[ilink]  <= 16'hFFFC;
           trg_tx_isk[ilink]  <= 2'b01;
         end
         else begin
@@ -140,11 +176,11 @@ module   gem_data_out #(
   wire [1:0] frame_sep_cnt_switch = FRAME_CTRL_TTC ? bxn_counter_lsbs : frame_sep_cnt[3:2]; // take only the two MSBs because of divide by 4 40MHz <--> 160MHz conversion
 
   always @(*) begin
-    if (bc0)
+    if (bc0 && ALLOW_TTC_CHARS)
       frame_sep <= 8'h1C;
-    else if (resync)
+    else if (resync && ALLOW_TTC_CHARS)
       frame_sep <= 8'h3C;
-    else if (overflow)
+    else if (overflow && ALLOW_TTC_CHARS)
       frame_sep <= 8'hFC;
     else begin
       case (frame_sep_cnt_switch)
@@ -155,7 +191,6 @@ module   gem_data_out #(
       endcase
     end
   end
-
 
   generate
   if (FPGA_TYPE_IS_ARTIX7) begin
@@ -169,7 +204,7 @@ module   gem_data_out #(
 
       synchronizer synchronizer_reset      (.async_i (reset_i),   .clk_i (usrclk_160), .sync_o (reset));
       synchronizer synchronizer_ready_sync (.async_i (ready),     .clk_i (usrclk_160), .sync_o (ready_sync));
-      synchronizer synchronizer_mgtrst     (.async_i (mgt_reset), .clk_i (usrclk_160), .sync_o (mgt_reset_sync));
+      synchronizer synchronizer_mgtrst     (.async_i (mgt_reset[0]), .clk_i (usrclk_160), .sync_o (mgt_reset_sync));
 
       cluster_data_cdc
       cluster_data_cdc (
@@ -185,7 +220,7 @@ module   gem_data_out #(
 
       a7_gtp_wrapper a7_gtp_wrapper (
 
-        .soft_reset_tx_in          (mgt_reset),
+        .soft_reset_tx_in          (mgt_reset[0]),
 
         .pll_lock_out (pll_lock),
 
@@ -223,6 +258,7 @@ module   gem_data_out #(
       initial $display ("Generating optical links for Virtex-6");
 
       assign gem_data_sync    = gem_data;
+      assign ready_sync       = ready;
       assign reset            = reset_i;
       assign reset_sync       = reset;
       assign bc0              = bc0_i;
@@ -231,15 +267,14 @@ module   gem_data_out #(
       assign overflow         = overflow_i;
       assign usrclk_160       = clock_160;
 
-      always @(*)
-        ready <= ~reset;
+      always @(*) ready <= (&tx_fsm_reset_done) && (&pll_lock);
 
       v6_gtx_wrapper v6_gtx_wrapper (
         .refclk_n          (refclk_n),
         .refclk_p          (refclk_p),
         .clock_40          (clock_40),
         .clock_160         (clock_160),
-        .GTTX_RESET_IN     (mgt_reset),
+        .gtx_txoutclk      (),
         .TXN_OUT           (trg_tx_n),
         .TXP_OUT           (trg_tx_p),
         .GTX0_TXCHARISK_IN (trg_tx_isk[0]),
@@ -249,7 +284,33 @@ module   gem_data_out #(
         .GTX0_TXDATA_IN    (trg_tx_data[0]),
         .GTX1_TXDATA_IN    (trg_tx_data[1]),
         .GTX2_TXDATA_IN    (trg_tx_data[2]),
-        .GTX3_TXDATA_IN    (trg_tx_data[3])
+        .GTX3_TXDATA_IN    (trg_tx_data[3]),
+        .tx_resetdone_o    (tx_fsm_reset_done),
+        .pll_lock          (pll_lock),
+        .realign           (mgt_realign),
+        .plltxreset_in     (pll_reset),                     // This port resets the TX PLL of the GTX transceiver when driven High.
+                                                            // It affects the clock generated from the TX PMA. When this reset is
+                                                            // asserted or deasserted, TXRESET must also be asserted or deasserted.
+        .gttx_reset_in     (mgt_reset[3:0]),                // This port is driven High and then deasserted to start the full TX GTX
+                                                            // transceiver reset sequence. This sequence takes about 120 µs to
+                                                            // complete and systematically resets all subcomponents of the GTX
+                                                            // transceiver TX.
+                                                            // If the RX PLL is supplying the clock for the TX datapath,
+                                                            // GTXTXRESET and GTXRXRESET must be tied together. In addition,
+                                                            // the transmitter reference clock must also be supplied (see Reference Clock Selection, page 102)
+        .txenprbstst_in    (0),                             // 000: Standard operation mode (test pattern generation is OFF)
+                                                            // 001: PRBS-7
+                                                            // 010: PRBS-15
+                                                            // 011: PRBS-23
+                                                            // 100: PRBS-31
+                                                            // 101: PCI Express compliance pattern. Only works with 20-bit mode
+                                                            // 110: Square wave with 2 UI (alternating 0’s/1’s)
+                                                            // 111: Square wave with 16 UI or 20 UI period (based on data width)
+        .txreset_in (txreset),                              // PCS TX system reset. Resets the TX FIFO, 8B/10B encoder and other
+                                                            // transmitter registers. This reset is a subset of GTXTXRESET
+        .gtxtest_in ({11'b10000000000,gtxtest_reset,1'b0})  // GTXTEST[0]: Reserved. Tied to 0.
+                                                            // GTXTEST[1]: The default is 0. When this bit is set to 1, the TX output clock dividers are reset.
+                                                            // GTXTEST[12:2]: Reserved. Tied to 10000000000.
       );
 
   end

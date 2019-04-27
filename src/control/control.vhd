@@ -25,6 +25,7 @@ use work.registers.all;
 entity control is
 port(
 
+    mgts_ready : in std_logic;
 
     --== TTC ==--
 
@@ -164,6 +165,7 @@ architecture Behavioral of control is
 
     COMPONENT led_control
     PORT(
+        mgts_ready           : IN std_logic;
         clock                : IN std_logic;
         mmcm_locked          : IN std_logic;
         elink_mmcm_locked    : IN std_logic;
@@ -268,6 +270,8 @@ begin
     led_control_inst : led_control
     port map (
         clock         => clock_i,
+
+        mgts_ready    => mgts_ready,
 
         mmcm_locked       => mmcms_locked_i,
         elink_mmcm_locked => eprt_mmcm_locked_i,

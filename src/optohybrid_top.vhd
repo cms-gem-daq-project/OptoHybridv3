@@ -127,6 +127,8 @@ architecture Behavioral of optohybrid_top is
     signal gbt_link_error       : std_logic;
     signal gbt_request_received : std_logic;
 
+    signal mgts_ready       : std_logic;
+
     signal reset            : std_logic;
     signal cnt_snap         : std_logic;
 
@@ -367,6 +369,8 @@ begin
     control : entity work.control
     port map (
 
+        mgts_ready     => mgts_ready,
+
         --== TTC ==--
 
         clock_i                =>   clock,
@@ -448,6 +452,8 @@ begin
 
         ipb_mosi_i => ipb_mosi_slaves(IPB_SLAVE.TRIG),
         ipb_miso_o => ipb_miso_slaves(IPB_SLAVE.TRIG),
+
+        mgts_ready => mgts_ready,
 
         -- reset
         reset_i  => reset,
