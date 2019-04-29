@@ -53,6 +53,8 @@ architecture Behavioral of v6_gtx_wrapper is
     signal mgt_refclk0 : std_logic;
     signal mgt_refclk1 : std_logic;
 
+    signal mgt_refclk_i : std_logic_vector (1 downto 0);
+
     signal gtx_txoutclk_i : std_logic_vector(3 downto 0);
 
     -------- Transmit Ports - TX Elastic Buffer and Phase Alignment Ports ------
@@ -75,6 +77,8 @@ architecture Behavioral of v6_gtx_wrapper is
     signal gtx_tx_sync_done_i : std_logic_vector (3 downto 0);
     signal gtx_reset_txsync_c : std_logic_vector (3 downto 0);
 
+    signal tx_sync_reset  : std_logic_vector (3 downto 0);
+
     signal gtx_txresetdone_r  : std_logic_vector (3 downto 0);
     signal gtx_txresetdone_r2 : std_logic_vector (3 downto 0);
 
@@ -83,6 +87,7 @@ begin
     ----------------------------- The GTX Wrapper -----------------------------
 
     tx_resetdone_o <= gtx_txresetdone_r2;
+    mgt_refclk_i <= ('0' & mgt_refclk1);
 
     gtx_loop : for I in 0 to 3 generate begin
       gtx_wizard_4output_v6_gtx_i : entity work.gtx_wizard_4output_v6_gtx
@@ -121,7 +126,7 @@ begin
           TXPMASETPHASE_IN           =>      gtx_txpmasetphase_i(I),
           ----------------------- Transmit Ports - TX PLL Ports ----------------------
           GTXTXRESET_IN              =>      gttx_reset_in(I),
-          MGTREFCLKTX_IN             =>      ('0' & mgt_refclk1),
+          MGTREFCLKTX_IN             =>      mgt_refclk_i,
           PLLTXRESET_IN              =>      plltxreset_in,
           TXPLLLKDET_OUT             =>      pll_lock(I),
           TXRESETDONE_OUT            =>      gtx_txresetdone_i(I),
@@ -163,9 +168,13 @@ begin
           TXDLYALIGNRESET                 =>      gtx_txdlyalignreset_i(I),
           SYNC_DONE                       =>      gtx_tx_sync_done_i(I),
           USER_CLK                        =>      clock_160,
-          RESET                           =>      gtx_reset_txsync_c(I) or realign
+          RESET                           =>      tx_sync_reset(I)
       );
+
+      tx_sync_reset(I) <= gtx_reset_txsync_c(I) or realign;
+
     end generate;
+
 
     -----------------------Dedicated GTX Reference Clock Inputs ---------------
 

@@ -22,7 +22,7 @@
 
 \title{Optohybrid v3 Address Table}
 % START: ADDRESS_TABLE_VERSION :: DO NOT EDIT
-    \author{ Firmware Version 03.02.03.1C \\ 20190423}
+    \author{ Firmware Version 03.02.03.1C \\ 20190427}
 % END: ADDRESS_TABLE_VERSION :: DO NOT EDIT
 \begin{document}
 
@@ -466,7 +466,6 @@
     SBIT\_CNT\_PERSIST & \texttt{0x2030} & \texttt{[0:0]} & rw & \texttt{0x0} & 1=counters will persist until manually reset; \\ & & & & &                                 0=counters will automatically reset at CNT\_TIME \\\hline
     SBIT\_CNT\_TIME\_MAX & \texttt{0x2031} & \texttt{[31:0]} & rw & \texttt{0x2638E98} & Number of BX that the VFAT S-bit counters will count to before automatically resetting to zero \\\hline
     CLUSTER\_COUNT & \texttt{0x2032} & \texttt{[31:0]} & r & \texttt{} & VFAT Cluster Counter (chamber) \\\hline
-    CNT\_PULSE & \texttt{0x2033} & \texttt{[0:0]} & w & Pulsed & Pulses S-bit counters for testing \\\hline
     SBITS\_OVER\_64x0 & \texttt{0x2036} & \texttt{[15:0]} & r & \texttt{} & More than 64 * \$\{OVERFLOW\_IDX\} Sbits in a bx Counter \\\hline
     SBITS\_OVER\_64x1 & \texttt{0x2037} & \texttt{[15:0]} & r & \texttt{} & More than 64 * \$\{OVERFLOW\_IDX\} Sbits in a bx Counter \\\hline
     SBITS\_OVER\_64x2 & \texttt{0x2038} & \texttt{[15:0]} & r & \texttt{} & More than 64 * \$\{OVERFLOW\_IDX\} Sbits in a bx Counter \\\hline

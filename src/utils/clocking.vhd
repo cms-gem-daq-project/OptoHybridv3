@@ -44,11 +44,14 @@ port(
     gbt_clk320_o     : out std_logic; -- 320 MHz phase shiftable frame clock from GBT
 
     -- logic clocks
-    clk_1x_o        : out std_logic;
-    clk_2x_o        : out std_logic;
-    clk_4x_o        : out std_logic;
-    clk_5x_o        : out std_logic;
-    clk_4x_90_o     : out std_logic;
+    clk_1x_alwayson_o : out std_logic;
+    clk_4x_alwayson_o : out std_logic;
+
+    clk_1x_o          : out std_logic;
+    clk_2x_o          : out std_logic;
+    clk_4x_o          : out std_logic;
+    clk_5x_o          : out std_logic;
+    clk_4x_90_o       : out std_logic;
 
     delay_refclk_o       : out std_logic;
     delay_refclk_reset_o : out std_logic;
@@ -61,6 +64,8 @@ port(
     eprt_mmcm_reset_i   : in std_logic;
 
     mmcms_locked_o   : out std_logic;
+
+    clock_enable_i  : in std_logic;
 
     -- ipbus
 
@@ -113,8 +118,6 @@ begin
     logic_clocking : entity work.logic_clocking
     port map(
 
-        reset => dskw_mmcm_reset_i,
-
         clk_in1_p   => logic_clock_p,
         clk_in1_n   => logic_clock_n,
 
@@ -123,6 +126,15 @@ begin
         clk160_o    => clk_4x_o,
         clk160_90_o => clk_4x_90_o,
         clk200_o    => clk_5x,
+
+        clk40_o_ce     => clock_enable_i,
+        clk80_o_ce     => clock_enable_i,
+        clk160_o_ce    => clock_enable_i,
+        clk160_90_o_ce => clock_enable_i,
+        clk200_o_ce    => clock_enable_i,
+
+        clk40_alwayson_o     => clk_1x_alwayson_o,
+        clk160_alwayson_o     => clk_4x_alwayson_o,
 
         locked_o    => mmcm_locked(0)
     );
@@ -138,6 +150,12 @@ begin
         clk320_o     => gbt_clk320_o,
         clk160_0_o   => gbt_clk160_0,
         clk160_90_o   => gbt_clk160_90_o,
+
+        clk40_o_ce      => clock_enable_i,
+        clk80_o_ce      => clock_enable_i,
+        clk320_o_ce     => clock_enable_i,
+        clk160_0_o_ce   => clock_enable_i,
+        clk160_90_o_ce  => clock_enable_i,
 
         locked_o      => mmcm_locked(1)
     );

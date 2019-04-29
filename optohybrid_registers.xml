@@ -718,7 +718,7 @@
                 <node id="VFAT${VFAT_IDX}" address="0x0" permission="r"
                     mask="0xffffffff"
                     description="VFAT ${VFAT_IDX} Counter"
-                    fw_cnt_en_signal="active_vfats(${VFAT_IDX}) or cnt_pulse"
+                    fw_cnt_en_signal="active_vfats(${VFAT_IDX})"
                     fw_cnt_snap_signal="sbit_cnt_snap"
                     fw_cnt_reset_signal="cnt_reset_strobed"
                     fw_signal="cnt_vfat${VFAT_IDX}"
@@ -749,22 +749,17 @@
                 <node id="CLUSTER_COUNT" address="0x1b" permission="r"
                     mask="0xffffffff"
                     description="VFAT Cluster Counter (chamber)"
-                    fw_cnt_en_signal="valid_clusters_or or cnt_pulse"
+                    fw_cnt_en_signal="valid_clusters_or"
                     fw_cnt_snap_signal="sbit_cnt_snap"
                     fw_cnt_reset_signal="cnt_reset_strobed"
                     fw_signal="cnt_clusters"/>
-
-                <node id="CNT_PULSE" address="0x1c" permission="w"
-                    mask="0x1"
-                    description="Pulses S-bit counters for testing"
-                    fw_write_pulse_signal="cnt_pulse"/>
 
                 <!-- updated by update_vfat_counters.py-->
                 <!-- START: OVERFLOW_COUNTERS DO NOT EDIT -->
                 <node id="SBITS_OVER_64x${OVERFLOW_IDX}" address="0x1f" permission="r"
                     mask="0x0000ffff"
                     description="More than 64 * ${OVERFLOW_IDX} Sbits in a bx Counter"
-                    fw_cnt_en_signal="sbits_comparator_over_threshold(${OVERFLOW_IDX}) or cnt_pulse"
+                    fw_cnt_en_signal="sbits_comparator_over_threshold(${OVERFLOW_IDX})"
                     fw_cnt_snap_signal="sbit_cnt_snap"
                     fw_cnt_reset_signal="cnt_reset_strobed"
                     fw_signal="cnt_over_threshold${OVERFLOW_IDX}"

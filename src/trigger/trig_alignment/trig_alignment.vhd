@@ -159,18 +159,19 @@ begin
             g_PHASE_SEL_EXTERNAL => TRUE
         )
         port map (
-            rst          => tu_reset(ipin),
-            invert       => tu_invert (ipin),
-            rxd_p        => sbits_p(ipin),
-            rxd_n        => sbits_n(ipin),
-            clk1x_logic  => clk80_0,
-            clk2x_logic  => clk160_0,
-            clk2x_0      => clk160_0,
-            clk2x_90     => clk160_90,
-            clk2x_180    => clk160_180,
-            rxdata_o     => sbits_unaligned ((ipin+1)*8 - 1 downto ipin*8),
-            tap_delay_i  => trig_tap_delay(ipin),
-            phase_sel_in => vfat_phase_sel(ipin/8)
+            rst           => tu_reset(ipin),
+            invert        => tu_invert (ipin),
+            rxd_p         => sbits_p(ipin),
+            rxd_n         => sbits_n(ipin),
+            clk1x_logic   => clk80_0,
+            clk2x_logic   => clk160_0,
+            clk2x_0       => clk160_0,
+            clk2x_90      => clk160_90,
+            clk2x_180     => clk160_180,
+            rxdata_o      => sbits_unaligned ((ipin+1)*8 - 1 downto ipin*8),
+            tap_delay_i   => trig_tap_delay(ipin),
+            phase_sel_in  => vfat_phase_sel(ipin/8),
+            phase_sel_out => open
         );
 
     end generate;

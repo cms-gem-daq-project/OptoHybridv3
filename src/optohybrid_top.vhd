@@ -107,6 +107,8 @@ architecture Behavioral of optohybrid_top is
     signal gbt_clk160_180 : std_logic;
     signal gbt_clk320     : std_logic;
 
+    signal clk_1x_alwayson  : std_logic;
+    signal clk_4x_alwayson  : std_logic;
     signal clk_1x           : std_logic;
     signal clk_2x           : std_logic;
     signal clk_4x           : std_logic;
@@ -216,46 +218,50 @@ begin
     clocking : entity work.clocking
     port map(
 
-        logic_clock_p         => logic_clock_p, -- phase shiftable 40MHz ttc clocks
-        logic_clock_n         => logic_clock_n, --
+        logic_clock_p        => logic_clock_p, -- phase shiftable 40MHz ttc clocks
+        logic_clock_n        => logic_clock_n, --
 
-        elink_clock_p         => elink_clock_p, -- phase shiftable 40MHz ttc clocks
-        elink_clock_n         => elink_clock_n, --
+        elink_clock_p        => elink_clock_p, -- phase shiftable 40MHz ttc clocks
+        elink_clock_n        => elink_clock_n, --
 
-        ipb_mosi_i      => ipb_mosi_slaves (IPB_SLAVE.CLOCKING),
-        ipb_miso_o      => ipb_miso_slaves (IPB_SLAVE.CLOCKING),
-        ipb_reset_i     => reset,
+        ipb_mosi_i           => ipb_mosi_slaves (IPB_SLAVE.CLOCKING),
+        ipb_miso_o           => ipb_miso_slaves (IPB_SLAVE.CLOCKING),
+        ipb_reset_i          => reset,
 
-        cnt_snap => cnt_snap,
+        cnt_snap             => cnt_snap,
 
-        mmcms_locked_o     => mmcms_locked,
+        mmcms_locked_o       => mmcms_locked,
 
-        eprt_mmcm_reset_i => '0',
-        dskw_mmcm_reset_i => '0',
+        eprt_mmcm_reset_i    => '0',
+        dskw_mmcm_reset_i    => '0',
 
-        eprt_mmcm_locked_o => eprt_mmcm_locked,
-        dskw_mmcm_locked_o => logic_mmcm_locked,
+        eprt_mmcm_locked_o   => eprt_mmcm_locked,
+        dskw_mmcm_locked_o   => logic_mmcm_locked,
 
-        gbt_clk40_o      => gbt_clk40,      -- 40  MHz e-port aligned GBT clock
-        gbt_clk80_o      => gbt_clk80,      -- 80  MHz e-port aligned GBT clock
-        gbt_clk320_o     => gbt_clk320,     -- 320  MHz e-port aligned GBT clock
-        gbt_clk160_0_o   => gbt_clk160_0,   -- 160  MHz e-port aligned GBT clock
-        gbt_clk160_90_o  => gbt_clk160_90,  -- 160  MHz e-port aligned GBT clock
-        gbt_clk160_180_o => gbt_clk160_180, -- 160  MHz e-port aligned GBT clock
+        gbt_clk40_o          => gbt_clk40,      -- 40  MHz e-port aligned GBT clock
+        gbt_clk80_o          => gbt_clk80,      -- 80  MHz e-port aligned GBT clock
+        gbt_clk320_o         => gbt_clk320,     -- 320  MHz e-port aligned GBT clock
+        gbt_clk160_0_o       => gbt_clk160_0,   -- 160  MHz e-port aligned GBT clock
+        gbt_clk160_90_o      => gbt_clk160_90,  -- 160  MHz e-port aligned GBT clock
+        gbt_clk160_180_o     => gbt_clk160_180, -- 160  MHz e-port aligned GBT clock
 
-        clk_1x_o           => clk_1x, -- phase shiftable logic clocks
-        clk_2x_o           => clk_2x,
-        clk_4x_o           => clk_4x,
-        clk_5x_o           => clk_5x,
-        clk_4x_90_o        => clk_4x_90,
+        clock_enable_i       => mgts_ready,
+
+        clk_1x_o             => clk_1x, -- phase shiftable logic clocks
+        clk_2x_o             => clk_2x,
+        clk_4x_o             => clk_4x,
+        clk_1x_alwayson_o    => clk_1x_alwayson,
+        clk_4x_alwayson_o    => clk_4x_alwayson,
+        clk_5x_o             => clk_5x,
+        clk_4x_90_o          => clk_4x_90,
 
         delay_refclk_reset_o => delay_refclk_reset,
-        delay_refclk_o     => delay_refclk
+        delay_refclk_o       => delay_refclk
     );
 
     reset_ctl : entity work.reset
     port map (
-        clock_i        => clock,
+        clock_i        => clk_1x_alwayson,
         soft_reset     => soft_reset,
         mmcms_locked_i => mmcms_locked,
         gbt_rxready_i  => gbt_rxready(0),
@@ -472,6 +478,9 @@ begin
         clk_160    => clk_4x,
         clk_200    => clk_5x,
         clk_160_90 => clk_4x_90,
+
+        clk_40_mgt  => clk_1x_alwayson,
+        clk_160_mgt => clk_4x_alwayson,
 
         -- mgt pairs
         mgt_tx_p => mgt_tx_p_o,

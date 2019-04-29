@@ -39,6 +39,9 @@ port(
     logic_mmcm_lock_i  : in std_logic;
     logic_mmcm_reset_o : out std_logic;
 
+    clk_40_mgt        : in std_logic;
+    clk_160_mgt       : in std_logic;
+
     clk_40            : in std_logic;
     clk_80            : in std_logic;
     clk_160           : in std_logic;
@@ -114,8 +117,6 @@ architecture Behavioral of trigger is
 
     signal cluster_count   : std_logic_vector (10 downto 0);
 
-    signal cnt_en            : std_logic_vector (MXVFATS-1 downto 0);
-
     signal active_vfats : std_logic_vector (MXVFATS-1 downto 0);
 
     signal vfat_mask : std_logic_vector (MXVFATS-1 downto 0);
@@ -187,7 +188,6 @@ architecture Behavioral of trigger is
         resync_i      : IN std_logic;                       -- 1  bit bx0 flag
 
         clock_40  : IN std_logic;
-        clock_80  : IN std_logic;
         clock_160 : IN std_logic;
 
         ready_o : OUT std_logic;
@@ -284,20 +284,6 @@ begin
             tx_link_reset <= reset or reset_links;
         end if;
     end process;
-
-    --------------------------------------------------------------------------------------------------------------------
-    -- Cnt_en static expression
-    --------------------------------------------------------------------------------------------------------------------
-
-    cnt_en_loop : for I in 0 to (MXVFATS-1) generate
-    begin
-    process (clk_40)
-    begin
-        if (rising_edge(clk_40)) then
-            cnt_en(I) <= active_vfats(I) or cnt_pulse;
-        end if;
-    end process;
-    end generate;
 
     --------------------------------------------------------------------------------------------------------------------
     -- Outputs
@@ -471,9 +457,8 @@ begin
         refclk_p  => mgt_clk_p, -- 160 MHz Reference Clock Positive
         refclk_n  => mgt_clk_n, -- 160 MHz Reference Clock Negative
 
-        clock_40  => clk_40,  -- 40 MHz  Logic Clock
-        clock_80  => clk_80,  -- 80 MHz  Logic Clock
-        clock_160 => clk_160, -- 160 MHz  Logic Clock
+        clock_40  => clk_40_mgt,  -- 40 MHz  Logic Clock
+        clock_160 => clk_160_mgt, -- 160 MHz  Logic Clock
 
         bxn_counter_i => bxn_counter_i,
         bc0_i         => ttc_bx0_i,
@@ -570,79 +555,78 @@ begin
     regs_addresses(46)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"30";
     regs_addresses(47)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"31";
     regs_addresses(48)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"32";
-    regs_addresses(49)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"33";
-    regs_addresses(50)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"36";
-    regs_addresses(51)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"37";
-    regs_addresses(52)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"38";
-    regs_addresses(53)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"39";
-    regs_addresses(54)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"3a";
-    regs_addresses(55)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"3b";
-    regs_addresses(56)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"3c";
-    regs_addresses(57)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"3d";
-    regs_addresses(58)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"3e";
-    regs_addresses(59)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"3f";
-    regs_addresses(60)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"40";
-    regs_addresses(61)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"41";
-    regs_addresses(62)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"42";
-    regs_addresses(63)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"43";
-    regs_addresses(64)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"44";
-    regs_addresses(65)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"45";
-    regs_addresses(66)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"46";
-    regs_addresses(67)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"47";
-    regs_addresses(68)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"48";
-    regs_addresses(69)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"49";
-    regs_addresses(70)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"4a";
-    regs_addresses(71)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"4b";
-    regs_addresses(72)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"4c";
-    regs_addresses(73)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"4d";
-    regs_addresses(74)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"53";
-    regs_addresses(75)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"54";
-    regs_addresses(76)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"55";
-    regs_addresses(77)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"56";
-    regs_addresses(78)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"57";
-    regs_addresses(79)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"58";
-    regs_addresses(80)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"59";
-    regs_addresses(81)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"5a";
-    regs_addresses(82)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"5b";
-    regs_addresses(83)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"5c";
-    regs_addresses(84)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"5d";
-    regs_addresses(85)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"5e";
-    regs_addresses(86)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"5f";
-    regs_addresses(87)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"60";
-    regs_addresses(88)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"61";
-    regs_addresses(89)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"62";
-    regs_addresses(90)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"63";
-    regs_addresses(91)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"64";
-    regs_addresses(92)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"65";
-    regs_addresses(93)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"66";
-    regs_addresses(94)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"67";
-    regs_addresses(95)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"68";
-    regs_addresses(96)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"69";
-    regs_addresses(97)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"6a";
-    regs_addresses(98)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"6b";
-    regs_addresses(99)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"6c";
-    regs_addresses(100)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"6d";
-    regs_addresses(101)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"6e";
-    regs_addresses(102)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"6f";
-    regs_addresses(103)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"70";
-    regs_addresses(104)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"71";
-    regs_addresses(105)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"72";
-    regs_addresses(106)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"73";
-    regs_addresses(107)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"74";
-    regs_addresses(108)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"75";
-    regs_addresses(109)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"76";
-    regs_addresses(110)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"80";
-    regs_addresses(111)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"81";
-    regs_addresses(112)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"90";
-    regs_addresses(113)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"91";
-    regs_addresses(114)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"92";
-    regs_addresses(115)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"93";
-    regs_addresses(116)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"94";
-    regs_addresses(117)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"95";
-    regs_addresses(118)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"96";
-    regs_addresses(119)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"97";
-    regs_addresses(120)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"98";
-    regs_addresses(121)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"a0";
+    regs_addresses(49)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"36";
+    regs_addresses(50)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"37";
+    regs_addresses(51)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"38";
+    regs_addresses(52)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"39";
+    regs_addresses(53)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"3a";
+    regs_addresses(54)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"3b";
+    regs_addresses(55)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"3c";
+    regs_addresses(56)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"3d";
+    regs_addresses(57)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"3e";
+    regs_addresses(58)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"3f";
+    regs_addresses(59)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"40";
+    regs_addresses(60)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"41";
+    regs_addresses(61)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"42";
+    regs_addresses(62)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"43";
+    regs_addresses(63)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"44";
+    regs_addresses(64)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"45";
+    regs_addresses(65)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"46";
+    regs_addresses(66)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"47";
+    regs_addresses(67)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"48";
+    regs_addresses(68)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"49";
+    regs_addresses(69)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"4a";
+    regs_addresses(70)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"4b";
+    regs_addresses(71)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"4c";
+    regs_addresses(72)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"4d";
+    regs_addresses(73)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"53";
+    regs_addresses(74)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"54";
+    regs_addresses(75)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"55";
+    regs_addresses(76)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"56";
+    regs_addresses(77)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"57";
+    regs_addresses(78)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"58";
+    regs_addresses(79)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"59";
+    regs_addresses(80)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"5a";
+    regs_addresses(81)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"5b";
+    regs_addresses(82)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"5c";
+    regs_addresses(83)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"5d";
+    regs_addresses(84)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"5e";
+    regs_addresses(85)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"5f";
+    regs_addresses(86)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"60";
+    regs_addresses(87)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"61";
+    regs_addresses(88)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"62";
+    regs_addresses(89)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"63";
+    regs_addresses(90)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"64";
+    regs_addresses(91)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"65";
+    regs_addresses(92)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"66";
+    regs_addresses(93)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"67";
+    regs_addresses(94)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"68";
+    regs_addresses(95)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"69";
+    regs_addresses(96)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"6a";
+    regs_addresses(97)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"6b";
+    regs_addresses(98)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"6c";
+    regs_addresses(99)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"6d";
+    regs_addresses(100)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"6e";
+    regs_addresses(101)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"6f";
+    regs_addresses(102)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"70";
+    regs_addresses(103)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"71";
+    regs_addresses(104)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"72";
+    regs_addresses(105)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"73";
+    regs_addresses(106)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"74";
+    regs_addresses(107)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"75";
+    regs_addresses(108)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"76";
+    regs_addresses(109)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"80";
+    regs_addresses(110)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"81";
+    regs_addresses(111)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"90";
+    regs_addresses(112)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"91";
+    regs_addresses(113)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"92";
+    regs_addresses(114)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"93";
+    regs_addresses(115)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"94";
+    regs_addresses(116)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"95";
+    regs_addresses(117)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"96";
+    regs_addresses(118)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"97";
+    regs_addresses(119)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"98";
+    regs_addresses(120)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"a0";
 
     -- Connect read signals
     regs_read_arr(0)(REG_TRIG_CTRL_VFAT_MASK_MSB downto REG_TRIG_CTRL_VFAT_MASK_LSB) <= vfat_mask;
@@ -731,257 +715,257 @@ begin
     regs_read_arr(46)(REG_TRIG_CNT_SBIT_CNT_PERSIST_BIT) <= sbit_cnt_persist;
     regs_read_arr(47)(REG_TRIG_CNT_SBIT_CNT_TIME_MAX_MSB downto REG_TRIG_CNT_SBIT_CNT_TIME_MAX_LSB) <= sbit_cnt_time_max;
     regs_read_arr(48)(REG_TRIG_CNT_CLUSTER_COUNT_MSB downto REG_TRIG_CNT_CLUSTER_COUNT_LSB) <= cnt_clusters;
-    regs_read_arr(50)(REG_TRIG_CNT_SBITS_OVER_64x0_MSB downto REG_TRIG_CNT_SBITS_OVER_64x0_LSB) <= cnt_over_threshold0;
-    regs_read_arr(51)(REG_TRIG_CNT_SBITS_OVER_64x1_MSB downto REG_TRIG_CNT_SBITS_OVER_64x1_LSB) <= cnt_over_threshold1;
-    regs_read_arr(52)(REG_TRIG_CNT_SBITS_OVER_64x2_MSB downto REG_TRIG_CNT_SBITS_OVER_64x2_LSB) <= cnt_over_threshold2;
-    regs_read_arr(53)(REG_TRIG_CNT_SBITS_OVER_64x3_MSB downto REG_TRIG_CNT_SBITS_OVER_64x3_LSB) <= cnt_over_threshold3;
-    regs_read_arr(54)(REG_TRIG_CNT_SBITS_OVER_64x4_MSB downto REG_TRIG_CNT_SBITS_OVER_64x4_LSB) <= cnt_over_threshold4;
-    regs_read_arr(55)(REG_TRIG_CNT_SBITS_OVER_64x5_MSB downto REG_TRIG_CNT_SBITS_OVER_64x5_LSB) <= cnt_over_threshold5;
-    regs_read_arr(56)(REG_TRIG_CNT_SBITS_OVER_64x6_MSB downto REG_TRIG_CNT_SBITS_OVER_64x6_LSB) <= cnt_over_threshold6;
-    regs_read_arr(57)(REG_TRIG_CNT_SBITS_OVER_64x7_MSB downto REG_TRIG_CNT_SBITS_OVER_64x7_LSB) <= cnt_over_threshold7;
-    regs_read_arr(58)(REG_TRIG_CNT_SBITS_OVER_64x8_MSB downto REG_TRIG_CNT_SBITS_OVER_64x8_LSB) <= cnt_over_threshold8;
-    regs_read_arr(59)(REG_TRIG_CNT_SBITS_OVER_64x9_MSB downto REG_TRIG_CNT_SBITS_OVER_64x9_LSB) <= cnt_over_threshold9;
-    regs_read_arr(60)(REG_TRIG_CNT_SBITS_OVER_64x10_MSB downto REG_TRIG_CNT_SBITS_OVER_64x10_LSB) <= cnt_over_threshold10;
-    regs_read_arr(61)(REG_TRIG_CNT_SBITS_OVER_64x11_MSB downto REG_TRIG_CNT_SBITS_OVER_64x11_LSB) <= cnt_over_threshold11;
-    regs_read_arr(62)(REG_TRIG_CNT_SBITS_OVER_64x12_MSB downto REG_TRIG_CNT_SBITS_OVER_64x12_LSB) <= cnt_over_threshold12;
-    regs_read_arr(63)(REG_TRIG_CNT_SBITS_OVER_64x13_MSB downto REG_TRIG_CNT_SBITS_OVER_64x13_LSB) <= cnt_over_threshold13;
-    regs_read_arr(64)(REG_TRIG_CNT_SBITS_OVER_64x14_MSB downto REG_TRIG_CNT_SBITS_OVER_64x14_LSB) <= cnt_over_threshold14;
-    regs_read_arr(65)(REG_TRIG_CNT_SBITS_OVER_64x15_MSB downto REG_TRIG_CNT_SBITS_OVER_64x15_LSB) <= cnt_over_threshold15;
-    regs_read_arr(66)(REG_TRIG_CNT_SBITS_OVER_64x16_MSB downto REG_TRIG_CNT_SBITS_OVER_64x16_LSB) <= cnt_over_threshold16;
-    regs_read_arr(67)(REG_TRIG_CNT_SBITS_OVER_64x17_MSB downto REG_TRIG_CNT_SBITS_OVER_64x17_LSB) <= cnt_over_threshold17;
-    regs_read_arr(68)(REG_TRIG_CNT_SBITS_OVER_64x18_MSB downto REG_TRIG_CNT_SBITS_OVER_64x18_LSB) <= cnt_over_threshold18;
-    regs_read_arr(69)(REG_TRIG_CNT_SBITS_OVER_64x19_MSB downto REG_TRIG_CNT_SBITS_OVER_64x19_LSB) <= cnt_over_threshold19;
-    regs_read_arr(70)(REG_TRIG_CNT_SBITS_OVER_64x20_MSB downto REG_TRIG_CNT_SBITS_OVER_64x20_LSB) <= cnt_over_threshold20;
-    regs_read_arr(71)(REG_TRIG_CNT_SBITS_OVER_64x21_MSB downto REG_TRIG_CNT_SBITS_OVER_64x21_LSB) <= cnt_over_threshold21;
-    regs_read_arr(72)(REG_TRIG_CNT_SBITS_OVER_64x22_MSB downto REG_TRIG_CNT_SBITS_OVER_64x22_LSB) <= cnt_over_threshold22;
-    regs_read_arr(73)(REG_TRIG_CNT_SBITS_OVER_64x23_MSB downto REG_TRIG_CNT_SBITS_OVER_64x23_LSB) <= cnt_over_threshold23;
-    regs_read_arr(74)(REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT0_LSB) <= trig_tap_delay(0);
-    regs_read_arr(74)(REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT1_LSB) <= trig_tap_delay(1);
-    regs_read_arr(74)(REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT2_LSB) <= trig_tap_delay(2);
-    regs_read_arr(74)(REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT3_LSB) <= trig_tap_delay(3);
-    regs_read_arr(74)(REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT4_LSB) <= trig_tap_delay(4);
-    regs_read_arr(74)(REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT5_LSB) <= trig_tap_delay(5);
-    regs_read_arr(75)(REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT6_LSB) <= trig_tap_delay(6);
-    regs_read_arr(75)(REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT7_LSB) <= trig_tap_delay(7);
-    regs_read_arr(75)(REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT0_LSB) <= trig_tap_delay(8);
-    regs_read_arr(75)(REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT1_LSB) <= trig_tap_delay(9);
-    regs_read_arr(75)(REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT2_LSB) <= trig_tap_delay(10);
-    regs_read_arr(75)(REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT3_LSB) <= trig_tap_delay(11);
-    regs_read_arr(76)(REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT4_LSB) <= trig_tap_delay(12);
-    regs_read_arr(76)(REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT5_LSB) <= trig_tap_delay(13);
-    regs_read_arr(76)(REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT6_LSB) <= trig_tap_delay(14);
-    regs_read_arr(76)(REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT7_LSB) <= trig_tap_delay(15);
-    regs_read_arr(76)(REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT0_LSB) <= trig_tap_delay(16);
-    regs_read_arr(76)(REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT1_LSB) <= trig_tap_delay(17);
-    regs_read_arr(77)(REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT2_LSB) <= trig_tap_delay(18);
-    regs_read_arr(77)(REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT3_LSB) <= trig_tap_delay(19);
-    regs_read_arr(77)(REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT4_LSB) <= trig_tap_delay(20);
-    regs_read_arr(77)(REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT5_LSB) <= trig_tap_delay(21);
-    regs_read_arr(77)(REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT6_LSB) <= trig_tap_delay(22);
-    regs_read_arr(77)(REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT7_LSB) <= trig_tap_delay(23);
-    regs_read_arr(78)(REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT0_LSB) <= trig_tap_delay(24);
-    regs_read_arr(78)(REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT1_LSB) <= trig_tap_delay(25);
-    regs_read_arr(78)(REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT2_LSB) <= trig_tap_delay(26);
-    regs_read_arr(78)(REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT3_LSB) <= trig_tap_delay(27);
-    regs_read_arr(78)(REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT4_LSB) <= trig_tap_delay(28);
-    regs_read_arr(78)(REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT5_LSB) <= trig_tap_delay(29);
-    regs_read_arr(79)(REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT6_LSB) <= trig_tap_delay(30);
-    regs_read_arr(79)(REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT7_LSB) <= trig_tap_delay(31);
-    regs_read_arr(79)(REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT0_LSB) <= trig_tap_delay(32);
-    regs_read_arr(79)(REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT1_LSB) <= trig_tap_delay(33);
-    regs_read_arr(79)(REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT2_LSB) <= trig_tap_delay(34);
-    regs_read_arr(79)(REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT3_LSB) <= trig_tap_delay(35);
-    regs_read_arr(80)(REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT4_LSB) <= trig_tap_delay(36);
-    regs_read_arr(80)(REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT5_LSB) <= trig_tap_delay(37);
-    regs_read_arr(80)(REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT6_LSB) <= trig_tap_delay(38);
-    regs_read_arr(80)(REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT7_LSB) <= trig_tap_delay(39);
-    regs_read_arr(80)(REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT0_LSB) <= trig_tap_delay(40);
-    regs_read_arr(80)(REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT1_LSB) <= trig_tap_delay(41);
-    regs_read_arr(81)(REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT2_LSB) <= trig_tap_delay(42);
-    regs_read_arr(81)(REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT3_LSB) <= trig_tap_delay(43);
-    regs_read_arr(81)(REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT4_LSB) <= trig_tap_delay(44);
-    regs_read_arr(81)(REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT5_LSB) <= trig_tap_delay(45);
-    regs_read_arr(81)(REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT6_LSB) <= trig_tap_delay(46);
-    regs_read_arr(81)(REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT7_LSB) <= trig_tap_delay(47);
-    regs_read_arr(82)(REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT0_LSB) <= trig_tap_delay(48);
-    regs_read_arr(82)(REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT1_LSB) <= trig_tap_delay(49);
-    regs_read_arr(82)(REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT2_LSB) <= trig_tap_delay(50);
-    regs_read_arr(82)(REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT3_LSB) <= trig_tap_delay(51);
-    regs_read_arr(82)(REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT4_LSB) <= trig_tap_delay(52);
-    regs_read_arr(82)(REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT5_LSB) <= trig_tap_delay(53);
-    regs_read_arr(83)(REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT6_LSB) <= trig_tap_delay(54);
-    regs_read_arr(83)(REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT7_LSB) <= trig_tap_delay(55);
-    regs_read_arr(83)(REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT0_LSB) <= trig_tap_delay(56);
-    regs_read_arr(83)(REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT1_LSB) <= trig_tap_delay(57);
-    regs_read_arr(83)(REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT2_LSB) <= trig_tap_delay(58);
-    regs_read_arr(83)(REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT3_LSB) <= trig_tap_delay(59);
-    regs_read_arr(84)(REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT4_LSB) <= trig_tap_delay(60);
-    regs_read_arr(84)(REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT5_LSB) <= trig_tap_delay(61);
-    regs_read_arr(84)(REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT6_LSB) <= trig_tap_delay(62);
-    regs_read_arr(84)(REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT7_LSB) <= trig_tap_delay(63);
-    regs_read_arr(84)(REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT0_LSB) <= trig_tap_delay(64);
-    regs_read_arr(84)(REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT1_LSB) <= trig_tap_delay(65);
-    regs_read_arr(85)(REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT2_LSB) <= trig_tap_delay(66);
-    regs_read_arr(85)(REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT3_LSB) <= trig_tap_delay(67);
-    regs_read_arr(85)(REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT4_LSB) <= trig_tap_delay(68);
-    regs_read_arr(85)(REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT5_LSB) <= trig_tap_delay(69);
-    regs_read_arr(85)(REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT6_LSB) <= trig_tap_delay(70);
-    regs_read_arr(85)(REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT7_LSB) <= trig_tap_delay(71);
-    regs_read_arr(86)(REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT0_LSB) <= trig_tap_delay(72);
-    regs_read_arr(86)(REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT1_LSB) <= trig_tap_delay(73);
-    regs_read_arr(86)(REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT2_LSB) <= trig_tap_delay(74);
-    regs_read_arr(86)(REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT3_LSB) <= trig_tap_delay(75);
-    regs_read_arr(86)(REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT4_LSB) <= trig_tap_delay(76);
-    regs_read_arr(86)(REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT5_LSB) <= trig_tap_delay(77);
-    regs_read_arr(87)(REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT6_LSB) <= trig_tap_delay(78);
-    regs_read_arr(87)(REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT7_LSB) <= trig_tap_delay(79);
-    regs_read_arr(87)(REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT0_LSB) <= trig_tap_delay(80);
-    regs_read_arr(87)(REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT1_LSB) <= trig_tap_delay(81);
-    regs_read_arr(87)(REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT2_LSB) <= trig_tap_delay(82);
-    regs_read_arr(87)(REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT3_LSB) <= trig_tap_delay(83);
-    regs_read_arr(88)(REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT4_LSB) <= trig_tap_delay(84);
-    regs_read_arr(88)(REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT5_LSB) <= trig_tap_delay(85);
-    regs_read_arr(88)(REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT6_LSB) <= trig_tap_delay(86);
-    regs_read_arr(88)(REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT7_LSB) <= trig_tap_delay(87);
-    regs_read_arr(88)(REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT0_LSB) <= trig_tap_delay(88);
-    regs_read_arr(88)(REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT1_LSB) <= trig_tap_delay(89);
-    regs_read_arr(89)(REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT2_LSB) <= trig_tap_delay(90);
-    regs_read_arr(89)(REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT3_LSB) <= trig_tap_delay(91);
-    regs_read_arr(89)(REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT4_LSB) <= trig_tap_delay(92);
-    regs_read_arr(89)(REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT5_LSB) <= trig_tap_delay(93);
-    regs_read_arr(89)(REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT6_LSB) <= trig_tap_delay(94);
-    regs_read_arr(89)(REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT7_LSB) <= trig_tap_delay(95);
-    regs_read_arr(90)(REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT0_LSB) <= trig_tap_delay(96);
-    regs_read_arr(90)(REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT1_LSB) <= trig_tap_delay(97);
-    regs_read_arr(90)(REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT2_LSB) <= trig_tap_delay(98);
-    regs_read_arr(90)(REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT3_LSB) <= trig_tap_delay(99);
-    regs_read_arr(90)(REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT4_LSB) <= trig_tap_delay(100);
-    regs_read_arr(90)(REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT5_LSB) <= trig_tap_delay(101);
-    regs_read_arr(91)(REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT6_LSB) <= trig_tap_delay(102);
-    regs_read_arr(91)(REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT7_LSB) <= trig_tap_delay(103);
-    regs_read_arr(91)(REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT0_LSB) <= trig_tap_delay(104);
-    regs_read_arr(91)(REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT1_LSB) <= trig_tap_delay(105);
-    regs_read_arr(91)(REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT2_LSB) <= trig_tap_delay(106);
-    regs_read_arr(91)(REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT3_LSB) <= trig_tap_delay(107);
-    regs_read_arr(92)(REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT4_LSB) <= trig_tap_delay(108);
-    regs_read_arr(92)(REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT5_LSB) <= trig_tap_delay(109);
-    regs_read_arr(92)(REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT6_LSB) <= trig_tap_delay(110);
-    regs_read_arr(92)(REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT7_LSB) <= trig_tap_delay(111);
-    regs_read_arr(92)(REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT0_LSB) <= trig_tap_delay(112);
-    regs_read_arr(92)(REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT1_LSB) <= trig_tap_delay(113);
-    regs_read_arr(93)(REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT2_LSB) <= trig_tap_delay(114);
-    regs_read_arr(93)(REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT3_LSB) <= trig_tap_delay(115);
-    regs_read_arr(93)(REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT4_LSB) <= trig_tap_delay(116);
-    regs_read_arr(93)(REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT5_LSB) <= trig_tap_delay(117);
-    regs_read_arr(93)(REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT6_LSB) <= trig_tap_delay(118);
-    regs_read_arr(93)(REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT7_LSB) <= trig_tap_delay(119);
-    regs_read_arr(94)(REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT0_LSB) <= trig_tap_delay(120);
-    regs_read_arr(94)(REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT1_LSB) <= trig_tap_delay(121);
-    regs_read_arr(94)(REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT2_LSB) <= trig_tap_delay(122);
-    regs_read_arr(94)(REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT3_LSB) <= trig_tap_delay(123);
-    regs_read_arr(94)(REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT4_LSB) <= trig_tap_delay(124);
-    regs_read_arr(94)(REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT5_LSB) <= trig_tap_delay(125);
-    regs_read_arr(95)(REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT6_LSB) <= trig_tap_delay(126);
-    regs_read_arr(95)(REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT7_LSB) <= trig_tap_delay(127);
-    regs_read_arr(95)(REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT0_LSB) <= trig_tap_delay(128);
-    regs_read_arr(95)(REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT1_LSB) <= trig_tap_delay(129);
-    regs_read_arr(95)(REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT2_LSB) <= trig_tap_delay(130);
-    regs_read_arr(95)(REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT3_LSB) <= trig_tap_delay(131);
-    regs_read_arr(96)(REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT4_LSB) <= trig_tap_delay(132);
-    regs_read_arr(96)(REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT5_LSB) <= trig_tap_delay(133);
-    regs_read_arr(96)(REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT6_LSB) <= trig_tap_delay(134);
-    regs_read_arr(96)(REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT7_LSB) <= trig_tap_delay(135);
-    regs_read_arr(96)(REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT0_LSB) <= trig_tap_delay(136);
-    regs_read_arr(96)(REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT1_LSB) <= trig_tap_delay(137);
-    regs_read_arr(97)(REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT2_LSB) <= trig_tap_delay(138);
-    regs_read_arr(97)(REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT3_LSB) <= trig_tap_delay(139);
-    regs_read_arr(97)(REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT4_LSB) <= trig_tap_delay(140);
-    regs_read_arr(97)(REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT5_LSB) <= trig_tap_delay(141);
-    regs_read_arr(97)(REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT6_LSB) <= trig_tap_delay(142);
-    regs_read_arr(97)(REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT7_LSB) <= trig_tap_delay(143);
-    regs_read_arr(98)(REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT0_LSB) <= trig_tap_delay(144);
-    regs_read_arr(98)(REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT1_LSB) <= trig_tap_delay(145);
-    regs_read_arr(98)(REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT2_LSB) <= trig_tap_delay(146);
-    regs_read_arr(98)(REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT3_LSB) <= trig_tap_delay(147);
-    regs_read_arr(98)(REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT4_LSB) <= trig_tap_delay(148);
-    regs_read_arr(98)(REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT5_LSB) <= trig_tap_delay(149);
-    regs_read_arr(99)(REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT6_LSB) <= trig_tap_delay(150);
-    regs_read_arr(99)(REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT7_LSB) <= trig_tap_delay(151);
-    regs_read_arr(99)(REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT0_LSB) <= trig_tap_delay(152);
-    regs_read_arr(99)(REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT1_LSB) <= trig_tap_delay(153);
-    regs_read_arr(99)(REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT2_LSB) <= trig_tap_delay(154);
-    regs_read_arr(99)(REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT3_LSB) <= trig_tap_delay(155);
-    regs_read_arr(100)(REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT4_LSB) <= trig_tap_delay(156);
-    regs_read_arr(100)(REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT5_LSB) <= trig_tap_delay(157);
-    regs_read_arr(100)(REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT6_LSB) <= trig_tap_delay(158);
-    regs_read_arr(100)(REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT7_LSB) <= trig_tap_delay(159);
-    regs_read_arr(100)(REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT0_LSB) <= trig_tap_delay(160);
-    regs_read_arr(100)(REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT1_LSB) <= trig_tap_delay(161);
-    regs_read_arr(101)(REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT2_LSB) <= trig_tap_delay(162);
-    regs_read_arr(101)(REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT3_LSB) <= trig_tap_delay(163);
-    regs_read_arr(101)(REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT4_LSB) <= trig_tap_delay(164);
-    regs_read_arr(101)(REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT5_LSB) <= trig_tap_delay(165);
-    regs_read_arr(101)(REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT6_LSB) <= trig_tap_delay(166);
-    regs_read_arr(101)(REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT7_LSB) <= trig_tap_delay(167);
-    regs_read_arr(102)(REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT0_LSB) <= trig_tap_delay(168);
-    regs_read_arr(102)(REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT1_LSB) <= trig_tap_delay(169);
-    regs_read_arr(102)(REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT2_LSB) <= trig_tap_delay(170);
-    regs_read_arr(102)(REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT3_LSB) <= trig_tap_delay(171);
-    regs_read_arr(102)(REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT4_LSB) <= trig_tap_delay(172);
-    regs_read_arr(102)(REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT5_LSB) <= trig_tap_delay(173);
-    regs_read_arr(103)(REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT6_LSB) <= trig_tap_delay(174);
-    regs_read_arr(103)(REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT7_LSB) <= trig_tap_delay(175);
-    regs_read_arr(103)(REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT0_LSB) <= trig_tap_delay(176);
-    regs_read_arr(103)(REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT1_LSB) <= trig_tap_delay(177);
-    regs_read_arr(103)(REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT2_LSB) <= trig_tap_delay(178);
-    regs_read_arr(103)(REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT3_LSB) <= trig_tap_delay(179);
-    regs_read_arr(104)(REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT4_LSB) <= trig_tap_delay(180);
-    regs_read_arr(104)(REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT5_LSB) <= trig_tap_delay(181);
-    regs_read_arr(104)(REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT6_LSB) <= trig_tap_delay(182);
-    regs_read_arr(104)(REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT7_LSB) <= trig_tap_delay(183);
-    regs_read_arr(104)(REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT0_LSB) <= trig_tap_delay(184);
-    regs_read_arr(104)(REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT1_LSB) <= trig_tap_delay(185);
-    regs_read_arr(105)(REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT2_LSB) <= trig_tap_delay(186);
-    regs_read_arr(105)(REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT3_LSB) <= trig_tap_delay(187);
-    regs_read_arr(105)(REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT4_LSB) <= trig_tap_delay(188);
-    regs_read_arr(105)(REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT5_LSB) <= trig_tap_delay(189);
-    regs_read_arr(105)(REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT6_LSB) <= trig_tap_delay(190);
-    regs_read_arr(105)(REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT7_LSB) <= trig_tap_delay(191);
-    regs_read_arr(106)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT0_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT0_LSB) <= sot_tap_delay(0);
-    regs_read_arr(106)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT1_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT1_LSB) <= sot_tap_delay(1);
-    regs_read_arr(106)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT2_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT2_LSB) <= sot_tap_delay(2);
-    regs_read_arr(106)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT3_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT3_LSB) <= sot_tap_delay(3);
-    regs_read_arr(106)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT4_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT4_LSB) <= sot_tap_delay(4);
-    regs_read_arr(106)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT5_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT5_LSB) <= sot_tap_delay(5);
-    regs_read_arr(107)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT6_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT6_LSB) <= sot_tap_delay(6);
-    regs_read_arr(107)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT7_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT7_LSB) <= sot_tap_delay(7);
-    regs_read_arr(107)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT8_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT8_LSB) <= sot_tap_delay(8);
-    regs_read_arr(107)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT9_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT9_LSB) <= sot_tap_delay(9);
-    regs_read_arr(107)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT10_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT10_LSB) <= sot_tap_delay(10);
-    regs_read_arr(107)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT11_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT11_LSB) <= sot_tap_delay(11);
-    regs_read_arr(108)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT12_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT12_LSB) <= sot_tap_delay(12);
-    regs_read_arr(108)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT13_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT13_LSB) <= sot_tap_delay(13);
-    regs_read_arr(108)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT14_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT14_LSB) <= sot_tap_delay(14);
-    regs_read_arr(108)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT15_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT15_LSB) <= sot_tap_delay(15);
-    regs_read_arr(108)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT16_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT16_LSB) <= sot_tap_delay(16);
-    regs_read_arr(108)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT17_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT17_LSB) <= sot_tap_delay(17);
-    regs_read_arr(109)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT18_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT18_LSB) <= sot_tap_delay(18);
-    regs_read_arr(109)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT19_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT19_LSB) <= sot_tap_delay(19);
-    regs_read_arr(109)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT20_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT20_LSB) <= sot_tap_delay(20);
-    regs_read_arr(109)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT21_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT21_LSB) <= sot_tap_delay(21);
-    regs_read_arr(109)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT22_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT22_LSB) <= sot_tap_delay(22);
-    regs_read_arr(109)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT23_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT23_LSB) <= sot_tap_delay(23);
-    regs_read_arr(111)(REG_TRIG_LINKS_TX_PLL_LOCKED_MSB downto REG_TRIG_LINKS_TX_PLL_LOCKED_LSB) <= tx_pll_locked;
-    regs_read_arr(111)(REG_TRIG_LINKS_TX_RESET_DONE_MSB downto REG_TRIG_LINKS_TX_RESET_DONE_LSB) <= tx_reset_done;
-    regs_read_arr(113)(REG_TRIG_SBIT_MONITOR_CLUSTER0_MSB downto REG_TRIG_SBIT_MONITOR_CLUSTER0_LSB) <= '0' & frozen_cluster_0(13 downto 11) & '0' & frozen_cluster_0 (10 downto 0);
-    regs_read_arr(114)(REG_TRIG_SBIT_MONITOR_CLUSTER1_MSB downto REG_TRIG_SBIT_MONITOR_CLUSTER1_LSB) <= '0' & frozen_cluster_1(13 downto 11) & '0' & frozen_cluster_1 (10 downto 0);
-    regs_read_arr(115)(REG_TRIG_SBIT_MONITOR_CLUSTER2_MSB downto REG_TRIG_SBIT_MONITOR_CLUSTER2_LSB) <= '0' & frozen_cluster_2(13 downto 11) & '0' & frozen_cluster_2 (10 downto 0);
-    regs_read_arr(116)(REG_TRIG_SBIT_MONITOR_CLUSTER3_MSB downto REG_TRIG_SBIT_MONITOR_CLUSTER3_LSB) <= '0' & frozen_cluster_3(13 downto 11) & '0' & frozen_cluster_3 (10 downto 0);
-    regs_read_arr(117)(REG_TRIG_SBIT_MONITOR_CLUSTER4_MSB downto REG_TRIG_SBIT_MONITOR_CLUSTER4_LSB) <= '0' & frozen_cluster_4(13 downto 11) & '0' & frozen_cluster_4 (10 downto 0);
-    regs_read_arr(118)(REG_TRIG_SBIT_MONITOR_CLUSTER5_MSB downto REG_TRIG_SBIT_MONITOR_CLUSTER5_LSB) <= '0' & frozen_cluster_5(13 downto 11) & '0' & frozen_cluster_5 (10 downto 0);
-    regs_read_arr(119)(REG_TRIG_SBIT_MONITOR_CLUSTER6_MSB downto REG_TRIG_SBIT_MONITOR_CLUSTER6_LSB) <= '0' & frozen_cluster_6(13 downto 11) & '0' & frozen_cluster_6 (10 downto 0);
-    regs_read_arr(120)(REG_TRIG_SBIT_MONITOR_CLUSTER7_MSB downto REG_TRIG_SBIT_MONITOR_CLUSTER7_LSB) <= '0' & frozen_cluster_7(13 downto 11) & '0' & frozen_cluster_7 (10 downto 0);
-    regs_read_arr(121)(REG_TRIG_SBIT_MONITOR_L1A_DELAY_MSB downto REG_TRIG_SBIT_MONITOR_L1A_DELAY_LSB) <= sbitmon_l1a_delay;
+    regs_read_arr(49)(REG_TRIG_CNT_SBITS_OVER_64x0_MSB downto REG_TRIG_CNT_SBITS_OVER_64x0_LSB) <= cnt_over_threshold0;
+    regs_read_arr(50)(REG_TRIG_CNT_SBITS_OVER_64x1_MSB downto REG_TRIG_CNT_SBITS_OVER_64x1_LSB) <= cnt_over_threshold1;
+    regs_read_arr(51)(REG_TRIG_CNT_SBITS_OVER_64x2_MSB downto REG_TRIG_CNT_SBITS_OVER_64x2_LSB) <= cnt_over_threshold2;
+    regs_read_arr(52)(REG_TRIG_CNT_SBITS_OVER_64x3_MSB downto REG_TRIG_CNT_SBITS_OVER_64x3_LSB) <= cnt_over_threshold3;
+    regs_read_arr(53)(REG_TRIG_CNT_SBITS_OVER_64x4_MSB downto REG_TRIG_CNT_SBITS_OVER_64x4_LSB) <= cnt_over_threshold4;
+    regs_read_arr(54)(REG_TRIG_CNT_SBITS_OVER_64x5_MSB downto REG_TRIG_CNT_SBITS_OVER_64x5_LSB) <= cnt_over_threshold5;
+    regs_read_arr(55)(REG_TRIG_CNT_SBITS_OVER_64x6_MSB downto REG_TRIG_CNT_SBITS_OVER_64x6_LSB) <= cnt_over_threshold6;
+    regs_read_arr(56)(REG_TRIG_CNT_SBITS_OVER_64x7_MSB downto REG_TRIG_CNT_SBITS_OVER_64x7_LSB) <= cnt_over_threshold7;
+    regs_read_arr(57)(REG_TRIG_CNT_SBITS_OVER_64x8_MSB downto REG_TRIG_CNT_SBITS_OVER_64x8_LSB) <= cnt_over_threshold8;
+    regs_read_arr(58)(REG_TRIG_CNT_SBITS_OVER_64x9_MSB downto REG_TRIG_CNT_SBITS_OVER_64x9_LSB) <= cnt_over_threshold9;
+    regs_read_arr(59)(REG_TRIG_CNT_SBITS_OVER_64x10_MSB downto REG_TRIG_CNT_SBITS_OVER_64x10_LSB) <= cnt_over_threshold10;
+    regs_read_arr(60)(REG_TRIG_CNT_SBITS_OVER_64x11_MSB downto REG_TRIG_CNT_SBITS_OVER_64x11_LSB) <= cnt_over_threshold11;
+    regs_read_arr(61)(REG_TRIG_CNT_SBITS_OVER_64x12_MSB downto REG_TRIG_CNT_SBITS_OVER_64x12_LSB) <= cnt_over_threshold12;
+    regs_read_arr(62)(REG_TRIG_CNT_SBITS_OVER_64x13_MSB downto REG_TRIG_CNT_SBITS_OVER_64x13_LSB) <= cnt_over_threshold13;
+    regs_read_arr(63)(REG_TRIG_CNT_SBITS_OVER_64x14_MSB downto REG_TRIG_CNT_SBITS_OVER_64x14_LSB) <= cnt_over_threshold14;
+    regs_read_arr(64)(REG_TRIG_CNT_SBITS_OVER_64x15_MSB downto REG_TRIG_CNT_SBITS_OVER_64x15_LSB) <= cnt_over_threshold15;
+    regs_read_arr(65)(REG_TRIG_CNT_SBITS_OVER_64x16_MSB downto REG_TRIG_CNT_SBITS_OVER_64x16_LSB) <= cnt_over_threshold16;
+    regs_read_arr(66)(REG_TRIG_CNT_SBITS_OVER_64x17_MSB downto REG_TRIG_CNT_SBITS_OVER_64x17_LSB) <= cnt_over_threshold17;
+    regs_read_arr(67)(REG_TRIG_CNT_SBITS_OVER_64x18_MSB downto REG_TRIG_CNT_SBITS_OVER_64x18_LSB) <= cnt_over_threshold18;
+    regs_read_arr(68)(REG_TRIG_CNT_SBITS_OVER_64x19_MSB downto REG_TRIG_CNT_SBITS_OVER_64x19_LSB) <= cnt_over_threshold19;
+    regs_read_arr(69)(REG_TRIG_CNT_SBITS_OVER_64x20_MSB downto REG_TRIG_CNT_SBITS_OVER_64x20_LSB) <= cnt_over_threshold20;
+    regs_read_arr(70)(REG_TRIG_CNT_SBITS_OVER_64x21_MSB downto REG_TRIG_CNT_SBITS_OVER_64x21_LSB) <= cnt_over_threshold21;
+    regs_read_arr(71)(REG_TRIG_CNT_SBITS_OVER_64x22_MSB downto REG_TRIG_CNT_SBITS_OVER_64x22_LSB) <= cnt_over_threshold22;
+    regs_read_arr(72)(REG_TRIG_CNT_SBITS_OVER_64x23_MSB downto REG_TRIG_CNT_SBITS_OVER_64x23_LSB) <= cnt_over_threshold23;
+    regs_read_arr(73)(REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT0_LSB) <= trig_tap_delay(0);
+    regs_read_arr(73)(REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT1_LSB) <= trig_tap_delay(1);
+    regs_read_arr(73)(REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT2_LSB) <= trig_tap_delay(2);
+    regs_read_arr(73)(REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT3_LSB) <= trig_tap_delay(3);
+    regs_read_arr(73)(REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT4_LSB) <= trig_tap_delay(4);
+    regs_read_arr(73)(REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT5_LSB) <= trig_tap_delay(5);
+    regs_read_arr(74)(REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT6_LSB) <= trig_tap_delay(6);
+    regs_read_arr(74)(REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT7_LSB) <= trig_tap_delay(7);
+    regs_read_arr(74)(REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT0_LSB) <= trig_tap_delay(8);
+    regs_read_arr(74)(REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT1_LSB) <= trig_tap_delay(9);
+    regs_read_arr(74)(REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT2_LSB) <= trig_tap_delay(10);
+    regs_read_arr(74)(REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT3_LSB) <= trig_tap_delay(11);
+    regs_read_arr(75)(REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT4_LSB) <= trig_tap_delay(12);
+    regs_read_arr(75)(REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT5_LSB) <= trig_tap_delay(13);
+    regs_read_arr(75)(REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT6_LSB) <= trig_tap_delay(14);
+    regs_read_arr(75)(REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT7_LSB) <= trig_tap_delay(15);
+    regs_read_arr(75)(REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT0_LSB) <= trig_tap_delay(16);
+    regs_read_arr(75)(REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT1_LSB) <= trig_tap_delay(17);
+    regs_read_arr(76)(REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT2_LSB) <= trig_tap_delay(18);
+    regs_read_arr(76)(REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT3_LSB) <= trig_tap_delay(19);
+    regs_read_arr(76)(REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT4_LSB) <= trig_tap_delay(20);
+    regs_read_arr(76)(REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT5_LSB) <= trig_tap_delay(21);
+    regs_read_arr(76)(REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT6_LSB) <= trig_tap_delay(22);
+    regs_read_arr(76)(REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT7_LSB) <= trig_tap_delay(23);
+    regs_read_arr(77)(REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT0_LSB) <= trig_tap_delay(24);
+    regs_read_arr(77)(REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT1_LSB) <= trig_tap_delay(25);
+    regs_read_arr(77)(REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT2_LSB) <= trig_tap_delay(26);
+    regs_read_arr(77)(REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT3_LSB) <= trig_tap_delay(27);
+    regs_read_arr(77)(REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT4_LSB) <= trig_tap_delay(28);
+    regs_read_arr(77)(REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT5_LSB) <= trig_tap_delay(29);
+    regs_read_arr(78)(REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT6_LSB) <= trig_tap_delay(30);
+    regs_read_arr(78)(REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT7_LSB) <= trig_tap_delay(31);
+    regs_read_arr(78)(REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT0_LSB) <= trig_tap_delay(32);
+    regs_read_arr(78)(REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT1_LSB) <= trig_tap_delay(33);
+    regs_read_arr(78)(REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT2_LSB) <= trig_tap_delay(34);
+    regs_read_arr(78)(REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT3_LSB) <= trig_tap_delay(35);
+    regs_read_arr(79)(REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT4_LSB) <= trig_tap_delay(36);
+    regs_read_arr(79)(REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT5_LSB) <= trig_tap_delay(37);
+    regs_read_arr(79)(REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT6_LSB) <= trig_tap_delay(38);
+    regs_read_arr(79)(REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT7_LSB) <= trig_tap_delay(39);
+    regs_read_arr(79)(REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT0_LSB) <= trig_tap_delay(40);
+    regs_read_arr(79)(REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT1_LSB) <= trig_tap_delay(41);
+    regs_read_arr(80)(REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT2_LSB) <= trig_tap_delay(42);
+    regs_read_arr(80)(REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT3_LSB) <= trig_tap_delay(43);
+    regs_read_arr(80)(REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT4_LSB) <= trig_tap_delay(44);
+    regs_read_arr(80)(REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT5_LSB) <= trig_tap_delay(45);
+    regs_read_arr(80)(REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT6_LSB) <= trig_tap_delay(46);
+    regs_read_arr(80)(REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT7_LSB) <= trig_tap_delay(47);
+    regs_read_arr(81)(REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT0_LSB) <= trig_tap_delay(48);
+    regs_read_arr(81)(REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT1_LSB) <= trig_tap_delay(49);
+    regs_read_arr(81)(REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT2_LSB) <= trig_tap_delay(50);
+    regs_read_arr(81)(REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT3_LSB) <= trig_tap_delay(51);
+    regs_read_arr(81)(REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT4_LSB) <= trig_tap_delay(52);
+    regs_read_arr(81)(REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT5_LSB) <= trig_tap_delay(53);
+    regs_read_arr(82)(REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT6_LSB) <= trig_tap_delay(54);
+    regs_read_arr(82)(REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT7_LSB) <= trig_tap_delay(55);
+    regs_read_arr(82)(REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT0_LSB) <= trig_tap_delay(56);
+    regs_read_arr(82)(REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT1_LSB) <= trig_tap_delay(57);
+    regs_read_arr(82)(REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT2_LSB) <= trig_tap_delay(58);
+    regs_read_arr(82)(REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT3_LSB) <= trig_tap_delay(59);
+    regs_read_arr(83)(REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT4_LSB) <= trig_tap_delay(60);
+    regs_read_arr(83)(REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT5_LSB) <= trig_tap_delay(61);
+    regs_read_arr(83)(REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT6_LSB) <= trig_tap_delay(62);
+    regs_read_arr(83)(REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT7_LSB) <= trig_tap_delay(63);
+    regs_read_arr(83)(REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT0_LSB) <= trig_tap_delay(64);
+    regs_read_arr(83)(REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT1_LSB) <= trig_tap_delay(65);
+    regs_read_arr(84)(REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT2_LSB) <= trig_tap_delay(66);
+    regs_read_arr(84)(REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT3_LSB) <= trig_tap_delay(67);
+    regs_read_arr(84)(REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT4_LSB) <= trig_tap_delay(68);
+    regs_read_arr(84)(REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT5_LSB) <= trig_tap_delay(69);
+    regs_read_arr(84)(REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT6_LSB) <= trig_tap_delay(70);
+    regs_read_arr(84)(REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT7_LSB) <= trig_tap_delay(71);
+    regs_read_arr(85)(REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT0_LSB) <= trig_tap_delay(72);
+    regs_read_arr(85)(REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT1_LSB) <= trig_tap_delay(73);
+    regs_read_arr(85)(REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT2_LSB) <= trig_tap_delay(74);
+    regs_read_arr(85)(REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT3_LSB) <= trig_tap_delay(75);
+    regs_read_arr(85)(REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT4_LSB) <= trig_tap_delay(76);
+    regs_read_arr(85)(REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT5_LSB) <= trig_tap_delay(77);
+    regs_read_arr(86)(REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT6_LSB) <= trig_tap_delay(78);
+    regs_read_arr(86)(REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT7_LSB) <= trig_tap_delay(79);
+    regs_read_arr(86)(REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT0_LSB) <= trig_tap_delay(80);
+    regs_read_arr(86)(REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT1_LSB) <= trig_tap_delay(81);
+    regs_read_arr(86)(REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT2_LSB) <= trig_tap_delay(82);
+    regs_read_arr(86)(REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT3_LSB) <= trig_tap_delay(83);
+    regs_read_arr(87)(REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT4_LSB) <= trig_tap_delay(84);
+    regs_read_arr(87)(REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT5_LSB) <= trig_tap_delay(85);
+    regs_read_arr(87)(REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT6_LSB) <= trig_tap_delay(86);
+    regs_read_arr(87)(REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT7_LSB) <= trig_tap_delay(87);
+    regs_read_arr(87)(REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT0_LSB) <= trig_tap_delay(88);
+    regs_read_arr(87)(REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT1_LSB) <= trig_tap_delay(89);
+    regs_read_arr(88)(REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT2_LSB) <= trig_tap_delay(90);
+    regs_read_arr(88)(REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT3_LSB) <= trig_tap_delay(91);
+    regs_read_arr(88)(REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT4_LSB) <= trig_tap_delay(92);
+    regs_read_arr(88)(REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT5_LSB) <= trig_tap_delay(93);
+    regs_read_arr(88)(REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT6_LSB) <= trig_tap_delay(94);
+    regs_read_arr(88)(REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT7_LSB) <= trig_tap_delay(95);
+    regs_read_arr(89)(REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT0_LSB) <= trig_tap_delay(96);
+    regs_read_arr(89)(REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT1_LSB) <= trig_tap_delay(97);
+    regs_read_arr(89)(REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT2_LSB) <= trig_tap_delay(98);
+    regs_read_arr(89)(REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT3_LSB) <= trig_tap_delay(99);
+    regs_read_arr(89)(REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT4_LSB) <= trig_tap_delay(100);
+    regs_read_arr(89)(REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT5_LSB) <= trig_tap_delay(101);
+    regs_read_arr(90)(REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT6_LSB) <= trig_tap_delay(102);
+    regs_read_arr(90)(REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT7_LSB) <= trig_tap_delay(103);
+    regs_read_arr(90)(REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT0_LSB) <= trig_tap_delay(104);
+    regs_read_arr(90)(REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT1_LSB) <= trig_tap_delay(105);
+    regs_read_arr(90)(REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT2_LSB) <= trig_tap_delay(106);
+    regs_read_arr(90)(REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT3_LSB) <= trig_tap_delay(107);
+    regs_read_arr(91)(REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT4_LSB) <= trig_tap_delay(108);
+    regs_read_arr(91)(REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT5_LSB) <= trig_tap_delay(109);
+    regs_read_arr(91)(REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT6_LSB) <= trig_tap_delay(110);
+    regs_read_arr(91)(REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT7_LSB) <= trig_tap_delay(111);
+    regs_read_arr(91)(REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT0_LSB) <= trig_tap_delay(112);
+    regs_read_arr(91)(REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT1_LSB) <= trig_tap_delay(113);
+    regs_read_arr(92)(REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT2_LSB) <= trig_tap_delay(114);
+    regs_read_arr(92)(REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT3_LSB) <= trig_tap_delay(115);
+    regs_read_arr(92)(REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT4_LSB) <= trig_tap_delay(116);
+    regs_read_arr(92)(REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT5_LSB) <= trig_tap_delay(117);
+    regs_read_arr(92)(REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT6_LSB) <= trig_tap_delay(118);
+    regs_read_arr(92)(REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT7_LSB) <= trig_tap_delay(119);
+    regs_read_arr(93)(REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT0_LSB) <= trig_tap_delay(120);
+    regs_read_arr(93)(REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT1_LSB) <= trig_tap_delay(121);
+    regs_read_arr(93)(REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT2_LSB) <= trig_tap_delay(122);
+    regs_read_arr(93)(REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT3_LSB) <= trig_tap_delay(123);
+    regs_read_arr(93)(REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT4_LSB) <= trig_tap_delay(124);
+    regs_read_arr(93)(REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT5_LSB) <= trig_tap_delay(125);
+    regs_read_arr(94)(REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT6_LSB) <= trig_tap_delay(126);
+    regs_read_arr(94)(REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT7_LSB) <= trig_tap_delay(127);
+    regs_read_arr(94)(REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT0_LSB) <= trig_tap_delay(128);
+    regs_read_arr(94)(REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT1_LSB) <= trig_tap_delay(129);
+    regs_read_arr(94)(REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT2_LSB) <= trig_tap_delay(130);
+    regs_read_arr(94)(REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT3_LSB) <= trig_tap_delay(131);
+    regs_read_arr(95)(REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT4_LSB) <= trig_tap_delay(132);
+    regs_read_arr(95)(REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT5_LSB) <= trig_tap_delay(133);
+    regs_read_arr(95)(REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT6_LSB) <= trig_tap_delay(134);
+    regs_read_arr(95)(REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT7_LSB) <= trig_tap_delay(135);
+    regs_read_arr(95)(REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT0_LSB) <= trig_tap_delay(136);
+    regs_read_arr(95)(REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT1_LSB) <= trig_tap_delay(137);
+    regs_read_arr(96)(REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT2_LSB) <= trig_tap_delay(138);
+    regs_read_arr(96)(REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT3_LSB) <= trig_tap_delay(139);
+    regs_read_arr(96)(REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT4_LSB) <= trig_tap_delay(140);
+    regs_read_arr(96)(REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT5_LSB) <= trig_tap_delay(141);
+    regs_read_arr(96)(REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT6_LSB) <= trig_tap_delay(142);
+    regs_read_arr(96)(REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT7_LSB) <= trig_tap_delay(143);
+    regs_read_arr(97)(REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT0_LSB) <= trig_tap_delay(144);
+    regs_read_arr(97)(REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT1_LSB) <= trig_tap_delay(145);
+    regs_read_arr(97)(REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT2_LSB) <= trig_tap_delay(146);
+    regs_read_arr(97)(REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT3_LSB) <= trig_tap_delay(147);
+    regs_read_arr(97)(REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT4_LSB) <= trig_tap_delay(148);
+    regs_read_arr(97)(REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT5_LSB) <= trig_tap_delay(149);
+    regs_read_arr(98)(REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT6_LSB) <= trig_tap_delay(150);
+    regs_read_arr(98)(REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT7_LSB) <= trig_tap_delay(151);
+    regs_read_arr(98)(REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT0_LSB) <= trig_tap_delay(152);
+    regs_read_arr(98)(REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT1_LSB) <= trig_tap_delay(153);
+    regs_read_arr(98)(REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT2_LSB) <= trig_tap_delay(154);
+    regs_read_arr(98)(REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT3_LSB) <= trig_tap_delay(155);
+    regs_read_arr(99)(REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT4_LSB) <= trig_tap_delay(156);
+    regs_read_arr(99)(REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT5_LSB) <= trig_tap_delay(157);
+    regs_read_arr(99)(REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT6_LSB) <= trig_tap_delay(158);
+    regs_read_arr(99)(REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT7_LSB) <= trig_tap_delay(159);
+    regs_read_arr(99)(REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT0_LSB) <= trig_tap_delay(160);
+    regs_read_arr(99)(REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT1_LSB) <= trig_tap_delay(161);
+    regs_read_arr(100)(REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT2_LSB) <= trig_tap_delay(162);
+    regs_read_arr(100)(REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT3_LSB) <= trig_tap_delay(163);
+    regs_read_arr(100)(REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT4_LSB) <= trig_tap_delay(164);
+    regs_read_arr(100)(REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT5_LSB) <= trig_tap_delay(165);
+    regs_read_arr(100)(REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT6_LSB) <= trig_tap_delay(166);
+    regs_read_arr(100)(REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT7_LSB) <= trig_tap_delay(167);
+    regs_read_arr(101)(REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT0_LSB) <= trig_tap_delay(168);
+    regs_read_arr(101)(REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT1_LSB) <= trig_tap_delay(169);
+    regs_read_arr(101)(REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT2_LSB) <= trig_tap_delay(170);
+    regs_read_arr(101)(REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT3_LSB) <= trig_tap_delay(171);
+    regs_read_arr(101)(REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT4_LSB) <= trig_tap_delay(172);
+    regs_read_arr(101)(REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT5_LSB) <= trig_tap_delay(173);
+    regs_read_arr(102)(REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT6_LSB) <= trig_tap_delay(174);
+    regs_read_arr(102)(REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT7_LSB) <= trig_tap_delay(175);
+    regs_read_arr(102)(REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT0_LSB) <= trig_tap_delay(176);
+    regs_read_arr(102)(REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT1_LSB) <= trig_tap_delay(177);
+    regs_read_arr(102)(REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT2_LSB) <= trig_tap_delay(178);
+    regs_read_arr(102)(REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT3_LSB) <= trig_tap_delay(179);
+    regs_read_arr(103)(REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT4_LSB) <= trig_tap_delay(180);
+    regs_read_arr(103)(REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT5_LSB) <= trig_tap_delay(181);
+    regs_read_arr(103)(REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT6_LSB) <= trig_tap_delay(182);
+    regs_read_arr(103)(REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT7_LSB) <= trig_tap_delay(183);
+    regs_read_arr(103)(REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT0_LSB) <= trig_tap_delay(184);
+    regs_read_arr(103)(REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT1_LSB) <= trig_tap_delay(185);
+    regs_read_arr(104)(REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT2_LSB) <= trig_tap_delay(186);
+    regs_read_arr(104)(REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT3_LSB) <= trig_tap_delay(187);
+    regs_read_arr(104)(REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT4_LSB) <= trig_tap_delay(188);
+    regs_read_arr(104)(REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT5_LSB) <= trig_tap_delay(189);
+    regs_read_arr(104)(REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT6_LSB) <= trig_tap_delay(190);
+    regs_read_arr(104)(REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT7_LSB) <= trig_tap_delay(191);
+    regs_read_arr(105)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT0_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT0_LSB) <= sot_tap_delay(0);
+    regs_read_arr(105)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT1_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT1_LSB) <= sot_tap_delay(1);
+    regs_read_arr(105)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT2_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT2_LSB) <= sot_tap_delay(2);
+    regs_read_arr(105)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT3_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT3_LSB) <= sot_tap_delay(3);
+    regs_read_arr(105)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT4_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT4_LSB) <= sot_tap_delay(4);
+    regs_read_arr(105)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT5_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT5_LSB) <= sot_tap_delay(5);
+    regs_read_arr(106)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT6_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT6_LSB) <= sot_tap_delay(6);
+    regs_read_arr(106)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT7_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT7_LSB) <= sot_tap_delay(7);
+    regs_read_arr(106)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT8_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT8_LSB) <= sot_tap_delay(8);
+    regs_read_arr(106)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT9_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT9_LSB) <= sot_tap_delay(9);
+    regs_read_arr(106)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT10_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT10_LSB) <= sot_tap_delay(10);
+    regs_read_arr(106)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT11_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT11_LSB) <= sot_tap_delay(11);
+    regs_read_arr(107)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT12_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT12_LSB) <= sot_tap_delay(12);
+    regs_read_arr(107)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT13_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT13_LSB) <= sot_tap_delay(13);
+    regs_read_arr(107)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT14_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT14_LSB) <= sot_tap_delay(14);
+    regs_read_arr(107)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT15_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT15_LSB) <= sot_tap_delay(15);
+    regs_read_arr(107)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT16_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT16_LSB) <= sot_tap_delay(16);
+    regs_read_arr(107)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT17_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT17_LSB) <= sot_tap_delay(17);
+    regs_read_arr(108)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT18_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT18_LSB) <= sot_tap_delay(18);
+    regs_read_arr(108)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT19_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT19_LSB) <= sot_tap_delay(19);
+    regs_read_arr(108)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT20_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT20_LSB) <= sot_tap_delay(20);
+    regs_read_arr(108)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT21_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT21_LSB) <= sot_tap_delay(21);
+    regs_read_arr(108)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT22_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT22_LSB) <= sot_tap_delay(22);
+    regs_read_arr(108)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT23_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT23_LSB) <= sot_tap_delay(23);
+    regs_read_arr(110)(REG_TRIG_LINKS_TX_PLL_LOCKED_MSB downto REG_TRIG_LINKS_TX_PLL_LOCKED_LSB) <= tx_pll_locked;
+    regs_read_arr(110)(REG_TRIG_LINKS_TX_RESET_DONE_MSB downto REG_TRIG_LINKS_TX_RESET_DONE_LSB) <= tx_reset_done;
+    regs_read_arr(112)(REG_TRIG_SBIT_MONITOR_CLUSTER0_MSB downto REG_TRIG_SBIT_MONITOR_CLUSTER0_LSB) <= '0' & frozen_cluster_0(13 downto 11) & '0' & frozen_cluster_0 (10 downto 0);
+    regs_read_arr(113)(REG_TRIG_SBIT_MONITOR_CLUSTER1_MSB downto REG_TRIG_SBIT_MONITOR_CLUSTER1_LSB) <= '0' & frozen_cluster_1(13 downto 11) & '0' & frozen_cluster_1 (10 downto 0);
+    regs_read_arr(114)(REG_TRIG_SBIT_MONITOR_CLUSTER2_MSB downto REG_TRIG_SBIT_MONITOR_CLUSTER2_LSB) <= '0' & frozen_cluster_2(13 downto 11) & '0' & frozen_cluster_2 (10 downto 0);
+    regs_read_arr(115)(REG_TRIG_SBIT_MONITOR_CLUSTER3_MSB downto REG_TRIG_SBIT_MONITOR_CLUSTER3_LSB) <= '0' & frozen_cluster_3(13 downto 11) & '0' & frozen_cluster_3 (10 downto 0);
+    regs_read_arr(116)(REG_TRIG_SBIT_MONITOR_CLUSTER4_MSB downto REG_TRIG_SBIT_MONITOR_CLUSTER4_LSB) <= '0' & frozen_cluster_4(13 downto 11) & '0' & frozen_cluster_4 (10 downto 0);
+    regs_read_arr(117)(REG_TRIG_SBIT_MONITOR_CLUSTER5_MSB downto REG_TRIG_SBIT_MONITOR_CLUSTER5_LSB) <= '0' & frozen_cluster_5(13 downto 11) & '0' & frozen_cluster_5 (10 downto 0);
+    regs_read_arr(118)(REG_TRIG_SBIT_MONITOR_CLUSTER6_MSB downto REG_TRIG_SBIT_MONITOR_CLUSTER6_LSB) <= '0' & frozen_cluster_6(13 downto 11) & '0' & frozen_cluster_6 (10 downto 0);
+    regs_read_arr(119)(REG_TRIG_SBIT_MONITOR_CLUSTER7_MSB downto REG_TRIG_SBIT_MONITOR_CLUSTER7_LSB) <= '0' & frozen_cluster_7(13 downto 11) & '0' & frozen_cluster_7 (10 downto 0);
+    regs_read_arr(120)(REG_TRIG_SBIT_MONITOR_L1A_DELAY_MSB downto REG_TRIG_SBIT_MONITOR_L1A_DELAY_LSB) <= sbitmon_l1a_delay;
 
     -- Connect write signals
     vfat_mask <= regs_write_arr(0)(REG_TRIG_CTRL_VFAT_MASK_MSB downto REG_TRIG_CTRL_VFAT_MASK_LSB);
@@ -1039,228 +1023,227 @@ begin
     TU_MASK (191 downto 184) <= regs_write_arr(20)(REG_TRIG_CTRL_TU_MASK_VFAT23_TU_MASK_MSB downto REG_TRIG_CTRL_TU_MASK_VFAT23_TU_MASK_LSB);
     sbit_cnt_persist <= regs_write_arr(46)(REG_TRIG_CNT_SBIT_CNT_PERSIST_BIT);
     sbit_cnt_time_max <= regs_write_arr(47)(REG_TRIG_CNT_SBIT_CNT_TIME_MAX_MSB downto REG_TRIG_CNT_SBIT_CNT_TIME_MAX_LSB);
-    trig_tap_delay(0) <= regs_write_arr(74)(REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT0_LSB);
-    trig_tap_delay(1) <= regs_write_arr(74)(REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT1_LSB);
-    trig_tap_delay(2) <= regs_write_arr(74)(REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT2_LSB);
-    trig_tap_delay(3) <= regs_write_arr(74)(REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT3_LSB);
-    trig_tap_delay(4) <= regs_write_arr(74)(REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT4_LSB);
-    trig_tap_delay(5) <= regs_write_arr(74)(REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT5_LSB);
-    trig_tap_delay(6) <= regs_write_arr(75)(REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT6_LSB);
-    trig_tap_delay(7) <= regs_write_arr(75)(REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT7_LSB);
-    trig_tap_delay(8) <= regs_write_arr(75)(REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT0_LSB);
-    trig_tap_delay(9) <= regs_write_arr(75)(REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT1_LSB);
-    trig_tap_delay(10) <= regs_write_arr(75)(REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT2_LSB);
-    trig_tap_delay(11) <= regs_write_arr(75)(REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT3_LSB);
-    trig_tap_delay(12) <= regs_write_arr(76)(REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT4_LSB);
-    trig_tap_delay(13) <= regs_write_arr(76)(REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT5_LSB);
-    trig_tap_delay(14) <= regs_write_arr(76)(REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT6_LSB);
-    trig_tap_delay(15) <= regs_write_arr(76)(REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT7_LSB);
-    trig_tap_delay(16) <= regs_write_arr(76)(REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT0_LSB);
-    trig_tap_delay(17) <= regs_write_arr(76)(REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT1_LSB);
-    trig_tap_delay(18) <= regs_write_arr(77)(REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT2_LSB);
-    trig_tap_delay(19) <= regs_write_arr(77)(REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT3_LSB);
-    trig_tap_delay(20) <= regs_write_arr(77)(REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT4_LSB);
-    trig_tap_delay(21) <= regs_write_arr(77)(REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT5_LSB);
-    trig_tap_delay(22) <= regs_write_arr(77)(REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT6_LSB);
-    trig_tap_delay(23) <= regs_write_arr(77)(REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT7_LSB);
-    trig_tap_delay(24) <= regs_write_arr(78)(REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT0_LSB);
-    trig_tap_delay(25) <= regs_write_arr(78)(REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT1_LSB);
-    trig_tap_delay(26) <= regs_write_arr(78)(REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT2_LSB);
-    trig_tap_delay(27) <= regs_write_arr(78)(REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT3_LSB);
-    trig_tap_delay(28) <= regs_write_arr(78)(REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT4_LSB);
-    trig_tap_delay(29) <= regs_write_arr(78)(REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT5_LSB);
-    trig_tap_delay(30) <= regs_write_arr(79)(REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT6_LSB);
-    trig_tap_delay(31) <= regs_write_arr(79)(REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT7_LSB);
-    trig_tap_delay(32) <= regs_write_arr(79)(REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT0_LSB);
-    trig_tap_delay(33) <= regs_write_arr(79)(REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT1_LSB);
-    trig_tap_delay(34) <= regs_write_arr(79)(REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT2_LSB);
-    trig_tap_delay(35) <= regs_write_arr(79)(REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT3_LSB);
-    trig_tap_delay(36) <= regs_write_arr(80)(REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT4_LSB);
-    trig_tap_delay(37) <= regs_write_arr(80)(REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT5_LSB);
-    trig_tap_delay(38) <= regs_write_arr(80)(REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT6_LSB);
-    trig_tap_delay(39) <= regs_write_arr(80)(REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT7_LSB);
-    trig_tap_delay(40) <= regs_write_arr(80)(REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT0_LSB);
-    trig_tap_delay(41) <= regs_write_arr(80)(REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT1_LSB);
-    trig_tap_delay(42) <= regs_write_arr(81)(REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT2_LSB);
-    trig_tap_delay(43) <= regs_write_arr(81)(REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT3_LSB);
-    trig_tap_delay(44) <= regs_write_arr(81)(REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT4_LSB);
-    trig_tap_delay(45) <= regs_write_arr(81)(REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT5_LSB);
-    trig_tap_delay(46) <= regs_write_arr(81)(REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT6_LSB);
-    trig_tap_delay(47) <= regs_write_arr(81)(REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT7_LSB);
-    trig_tap_delay(48) <= regs_write_arr(82)(REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT0_LSB);
-    trig_tap_delay(49) <= regs_write_arr(82)(REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT1_LSB);
-    trig_tap_delay(50) <= regs_write_arr(82)(REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT2_LSB);
-    trig_tap_delay(51) <= regs_write_arr(82)(REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT3_LSB);
-    trig_tap_delay(52) <= regs_write_arr(82)(REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT4_LSB);
-    trig_tap_delay(53) <= regs_write_arr(82)(REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT5_LSB);
-    trig_tap_delay(54) <= regs_write_arr(83)(REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT6_LSB);
-    trig_tap_delay(55) <= regs_write_arr(83)(REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT7_LSB);
-    trig_tap_delay(56) <= regs_write_arr(83)(REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT0_LSB);
-    trig_tap_delay(57) <= regs_write_arr(83)(REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT1_LSB);
-    trig_tap_delay(58) <= regs_write_arr(83)(REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT2_LSB);
-    trig_tap_delay(59) <= regs_write_arr(83)(REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT3_LSB);
-    trig_tap_delay(60) <= regs_write_arr(84)(REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT4_LSB);
-    trig_tap_delay(61) <= regs_write_arr(84)(REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT5_LSB);
-    trig_tap_delay(62) <= regs_write_arr(84)(REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT6_LSB);
-    trig_tap_delay(63) <= regs_write_arr(84)(REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT7_LSB);
-    trig_tap_delay(64) <= regs_write_arr(84)(REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT0_LSB);
-    trig_tap_delay(65) <= regs_write_arr(84)(REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT1_LSB);
-    trig_tap_delay(66) <= regs_write_arr(85)(REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT2_LSB);
-    trig_tap_delay(67) <= regs_write_arr(85)(REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT3_LSB);
-    trig_tap_delay(68) <= regs_write_arr(85)(REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT4_LSB);
-    trig_tap_delay(69) <= regs_write_arr(85)(REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT5_LSB);
-    trig_tap_delay(70) <= regs_write_arr(85)(REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT6_LSB);
-    trig_tap_delay(71) <= regs_write_arr(85)(REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT7_LSB);
-    trig_tap_delay(72) <= regs_write_arr(86)(REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT0_LSB);
-    trig_tap_delay(73) <= regs_write_arr(86)(REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT1_LSB);
-    trig_tap_delay(74) <= regs_write_arr(86)(REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT2_LSB);
-    trig_tap_delay(75) <= regs_write_arr(86)(REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT3_LSB);
-    trig_tap_delay(76) <= regs_write_arr(86)(REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT4_LSB);
-    trig_tap_delay(77) <= regs_write_arr(86)(REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT5_LSB);
-    trig_tap_delay(78) <= regs_write_arr(87)(REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT6_LSB);
-    trig_tap_delay(79) <= regs_write_arr(87)(REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT7_LSB);
-    trig_tap_delay(80) <= regs_write_arr(87)(REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT0_LSB);
-    trig_tap_delay(81) <= regs_write_arr(87)(REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT1_LSB);
-    trig_tap_delay(82) <= regs_write_arr(87)(REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT2_LSB);
-    trig_tap_delay(83) <= regs_write_arr(87)(REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT3_LSB);
-    trig_tap_delay(84) <= regs_write_arr(88)(REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT4_LSB);
-    trig_tap_delay(85) <= regs_write_arr(88)(REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT5_LSB);
-    trig_tap_delay(86) <= regs_write_arr(88)(REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT6_LSB);
-    trig_tap_delay(87) <= regs_write_arr(88)(REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT7_LSB);
-    trig_tap_delay(88) <= regs_write_arr(88)(REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT0_LSB);
-    trig_tap_delay(89) <= regs_write_arr(88)(REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT1_LSB);
-    trig_tap_delay(90) <= regs_write_arr(89)(REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT2_LSB);
-    trig_tap_delay(91) <= regs_write_arr(89)(REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT3_LSB);
-    trig_tap_delay(92) <= regs_write_arr(89)(REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT4_LSB);
-    trig_tap_delay(93) <= regs_write_arr(89)(REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT5_LSB);
-    trig_tap_delay(94) <= regs_write_arr(89)(REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT6_LSB);
-    trig_tap_delay(95) <= regs_write_arr(89)(REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT7_LSB);
-    trig_tap_delay(96) <= regs_write_arr(90)(REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT0_LSB);
-    trig_tap_delay(97) <= regs_write_arr(90)(REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT1_LSB);
-    trig_tap_delay(98) <= regs_write_arr(90)(REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT2_LSB);
-    trig_tap_delay(99) <= regs_write_arr(90)(REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT3_LSB);
-    trig_tap_delay(100) <= regs_write_arr(90)(REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT4_LSB);
-    trig_tap_delay(101) <= regs_write_arr(90)(REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT5_LSB);
-    trig_tap_delay(102) <= regs_write_arr(91)(REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT6_LSB);
-    trig_tap_delay(103) <= regs_write_arr(91)(REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT7_LSB);
-    trig_tap_delay(104) <= regs_write_arr(91)(REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT0_LSB);
-    trig_tap_delay(105) <= regs_write_arr(91)(REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT1_LSB);
-    trig_tap_delay(106) <= regs_write_arr(91)(REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT2_LSB);
-    trig_tap_delay(107) <= regs_write_arr(91)(REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT3_LSB);
-    trig_tap_delay(108) <= regs_write_arr(92)(REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT4_LSB);
-    trig_tap_delay(109) <= regs_write_arr(92)(REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT5_LSB);
-    trig_tap_delay(110) <= regs_write_arr(92)(REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT6_LSB);
-    trig_tap_delay(111) <= regs_write_arr(92)(REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT7_LSB);
-    trig_tap_delay(112) <= regs_write_arr(92)(REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT0_LSB);
-    trig_tap_delay(113) <= regs_write_arr(92)(REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT1_LSB);
-    trig_tap_delay(114) <= regs_write_arr(93)(REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT2_LSB);
-    trig_tap_delay(115) <= regs_write_arr(93)(REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT3_LSB);
-    trig_tap_delay(116) <= regs_write_arr(93)(REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT4_LSB);
-    trig_tap_delay(117) <= regs_write_arr(93)(REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT5_LSB);
-    trig_tap_delay(118) <= regs_write_arr(93)(REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT6_LSB);
-    trig_tap_delay(119) <= regs_write_arr(93)(REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT7_LSB);
-    trig_tap_delay(120) <= regs_write_arr(94)(REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT0_LSB);
-    trig_tap_delay(121) <= regs_write_arr(94)(REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT1_LSB);
-    trig_tap_delay(122) <= regs_write_arr(94)(REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT2_LSB);
-    trig_tap_delay(123) <= regs_write_arr(94)(REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT3_LSB);
-    trig_tap_delay(124) <= regs_write_arr(94)(REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT4_LSB);
-    trig_tap_delay(125) <= regs_write_arr(94)(REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT5_LSB);
-    trig_tap_delay(126) <= regs_write_arr(95)(REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT6_LSB);
-    trig_tap_delay(127) <= regs_write_arr(95)(REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT7_LSB);
-    trig_tap_delay(128) <= regs_write_arr(95)(REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT0_LSB);
-    trig_tap_delay(129) <= regs_write_arr(95)(REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT1_LSB);
-    trig_tap_delay(130) <= regs_write_arr(95)(REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT2_LSB);
-    trig_tap_delay(131) <= regs_write_arr(95)(REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT3_LSB);
-    trig_tap_delay(132) <= regs_write_arr(96)(REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT4_LSB);
-    trig_tap_delay(133) <= regs_write_arr(96)(REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT5_LSB);
-    trig_tap_delay(134) <= regs_write_arr(96)(REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT6_LSB);
-    trig_tap_delay(135) <= regs_write_arr(96)(REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT7_LSB);
-    trig_tap_delay(136) <= regs_write_arr(96)(REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT0_LSB);
-    trig_tap_delay(137) <= regs_write_arr(96)(REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT1_LSB);
-    trig_tap_delay(138) <= regs_write_arr(97)(REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT2_LSB);
-    trig_tap_delay(139) <= regs_write_arr(97)(REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT3_LSB);
-    trig_tap_delay(140) <= regs_write_arr(97)(REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT4_LSB);
-    trig_tap_delay(141) <= regs_write_arr(97)(REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT5_LSB);
-    trig_tap_delay(142) <= regs_write_arr(97)(REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT6_LSB);
-    trig_tap_delay(143) <= regs_write_arr(97)(REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT7_LSB);
-    trig_tap_delay(144) <= regs_write_arr(98)(REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT0_LSB);
-    trig_tap_delay(145) <= regs_write_arr(98)(REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT1_LSB);
-    trig_tap_delay(146) <= regs_write_arr(98)(REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT2_LSB);
-    trig_tap_delay(147) <= regs_write_arr(98)(REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT3_LSB);
-    trig_tap_delay(148) <= regs_write_arr(98)(REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT4_LSB);
-    trig_tap_delay(149) <= regs_write_arr(98)(REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT5_LSB);
-    trig_tap_delay(150) <= regs_write_arr(99)(REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT6_LSB);
-    trig_tap_delay(151) <= regs_write_arr(99)(REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT7_LSB);
-    trig_tap_delay(152) <= regs_write_arr(99)(REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT0_LSB);
-    trig_tap_delay(153) <= regs_write_arr(99)(REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT1_LSB);
-    trig_tap_delay(154) <= regs_write_arr(99)(REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT2_LSB);
-    trig_tap_delay(155) <= regs_write_arr(99)(REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT3_LSB);
-    trig_tap_delay(156) <= regs_write_arr(100)(REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT4_LSB);
-    trig_tap_delay(157) <= regs_write_arr(100)(REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT5_LSB);
-    trig_tap_delay(158) <= regs_write_arr(100)(REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT6_LSB);
-    trig_tap_delay(159) <= regs_write_arr(100)(REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT7_LSB);
-    trig_tap_delay(160) <= regs_write_arr(100)(REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT0_LSB);
-    trig_tap_delay(161) <= regs_write_arr(100)(REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT1_LSB);
-    trig_tap_delay(162) <= regs_write_arr(101)(REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT2_LSB);
-    trig_tap_delay(163) <= regs_write_arr(101)(REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT3_LSB);
-    trig_tap_delay(164) <= regs_write_arr(101)(REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT4_LSB);
-    trig_tap_delay(165) <= regs_write_arr(101)(REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT5_LSB);
-    trig_tap_delay(166) <= regs_write_arr(101)(REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT6_LSB);
-    trig_tap_delay(167) <= regs_write_arr(101)(REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT7_LSB);
-    trig_tap_delay(168) <= regs_write_arr(102)(REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT0_LSB);
-    trig_tap_delay(169) <= regs_write_arr(102)(REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT1_LSB);
-    trig_tap_delay(170) <= regs_write_arr(102)(REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT2_LSB);
-    trig_tap_delay(171) <= regs_write_arr(102)(REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT3_LSB);
-    trig_tap_delay(172) <= regs_write_arr(102)(REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT4_LSB);
-    trig_tap_delay(173) <= regs_write_arr(102)(REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT5_LSB);
-    trig_tap_delay(174) <= regs_write_arr(103)(REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT6_LSB);
-    trig_tap_delay(175) <= regs_write_arr(103)(REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT7_LSB);
-    trig_tap_delay(176) <= regs_write_arr(103)(REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT0_LSB);
-    trig_tap_delay(177) <= regs_write_arr(103)(REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT1_LSB);
-    trig_tap_delay(178) <= regs_write_arr(103)(REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT2_LSB);
-    trig_tap_delay(179) <= regs_write_arr(103)(REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT3_LSB);
-    trig_tap_delay(180) <= regs_write_arr(104)(REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT4_LSB);
-    trig_tap_delay(181) <= regs_write_arr(104)(REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT5_LSB);
-    trig_tap_delay(182) <= regs_write_arr(104)(REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT6_LSB);
-    trig_tap_delay(183) <= regs_write_arr(104)(REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT7_LSB);
-    trig_tap_delay(184) <= regs_write_arr(104)(REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT0_LSB);
-    trig_tap_delay(185) <= regs_write_arr(104)(REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT1_LSB);
-    trig_tap_delay(186) <= regs_write_arr(105)(REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT2_LSB);
-    trig_tap_delay(187) <= regs_write_arr(105)(REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT3_LSB);
-    trig_tap_delay(188) <= regs_write_arr(105)(REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT4_LSB);
-    trig_tap_delay(189) <= regs_write_arr(105)(REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT5_LSB);
-    trig_tap_delay(190) <= regs_write_arr(105)(REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT6_LSB);
-    trig_tap_delay(191) <= regs_write_arr(105)(REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT7_LSB);
-    sot_tap_delay(0) <= regs_write_arr(106)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT0_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT0_LSB);
-    sot_tap_delay(1) <= regs_write_arr(106)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT1_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT1_LSB);
-    sot_tap_delay(2) <= regs_write_arr(106)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT2_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT2_LSB);
-    sot_tap_delay(3) <= regs_write_arr(106)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT3_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT3_LSB);
-    sot_tap_delay(4) <= regs_write_arr(106)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT4_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT4_LSB);
-    sot_tap_delay(5) <= regs_write_arr(106)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT5_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT5_LSB);
-    sot_tap_delay(6) <= regs_write_arr(107)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT6_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT6_LSB);
-    sot_tap_delay(7) <= regs_write_arr(107)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT7_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT7_LSB);
-    sot_tap_delay(8) <= regs_write_arr(107)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT8_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT8_LSB);
-    sot_tap_delay(9) <= regs_write_arr(107)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT9_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT9_LSB);
-    sot_tap_delay(10) <= regs_write_arr(107)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT10_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT10_LSB);
-    sot_tap_delay(11) <= regs_write_arr(107)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT11_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT11_LSB);
-    sot_tap_delay(12) <= regs_write_arr(108)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT12_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT12_LSB);
-    sot_tap_delay(13) <= regs_write_arr(108)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT13_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT13_LSB);
-    sot_tap_delay(14) <= regs_write_arr(108)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT14_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT14_LSB);
-    sot_tap_delay(15) <= regs_write_arr(108)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT15_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT15_LSB);
-    sot_tap_delay(16) <= regs_write_arr(108)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT16_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT16_LSB);
-    sot_tap_delay(17) <= regs_write_arr(108)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT17_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT17_LSB);
-    sot_tap_delay(18) <= regs_write_arr(109)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT18_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT18_LSB);
-    sot_tap_delay(19) <= regs_write_arr(109)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT19_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT19_LSB);
-    sot_tap_delay(20) <= regs_write_arr(109)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT20_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT20_LSB);
-    sot_tap_delay(21) <= regs_write_arr(109)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT21_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT21_LSB);
-    sot_tap_delay(22) <= regs_write_arr(109)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT22_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT22_LSB);
-    sot_tap_delay(23) <= regs_write_arr(109)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT23_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT23_LSB);
+    trig_tap_delay(0) <= regs_write_arr(73)(REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT0_LSB);
+    trig_tap_delay(1) <= regs_write_arr(73)(REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT1_LSB);
+    trig_tap_delay(2) <= regs_write_arr(73)(REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT2_LSB);
+    trig_tap_delay(3) <= regs_write_arr(73)(REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT3_LSB);
+    trig_tap_delay(4) <= regs_write_arr(73)(REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT4_LSB);
+    trig_tap_delay(5) <= regs_write_arr(73)(REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT5_LSB);
+    trig_tap_delay(6) <= regs_write_arr(74)(REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT6_LSB);
+    trig_tap_delay(7) <= regs_write_arr(74)(REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT7_LSB);
+    trig_tap_delay(8) <= regs_write_arr(74)(REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT0_LSB);
+    trig_tap_delay(9) <= regs_write_arr(74)(REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT1_LSB);
+    trig_tap_delay(10) <= regs_write_arr(74)(REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT2_LSB);
+    trig_tap_delay(11) <= regs_write_arr(74)(REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT3_LSB);
+    trig_tap_delay(12) <= regs_write_arr(75)(REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT4_LSB);
+    trig_tap_delay(13) <= regs_write_arr(75)(REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT5_LSB);
+    trig_tap_delay(14) <= regs_write_arr(75)(REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT6_LSB);
+    trig_tap_delay(15) <= regs_write_arr(75)(REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT7_LSB);
+    trig_tap_delay(16) <= regs_write_arr(75)(REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT0_LSB);
+    trig_tap_delay(17) <= regs_write_arr(75)(REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT1_LSB);
+    trig_tap_delay(18) <= regs_write_arr(76)(REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT2_LSB);
+    trig_tap_delay(19) <= regs_write_arr(76)(REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT3_LSB);
+    trig_tap_delay(20) <= regs_write_arr(76)(REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT4_LSB);
+    trig_tap_delay(21) <= regs_write_arr(76)(REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT5_LSB);
+    trig_tap_delay(22) <= regs_write_arr(76)(REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT6_LSB);
+    trig_tap_delay(23) <= regs_write_arr(76)(REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT7_LSB);
+    trig_tap_delay(24) <= regs_write_arr(77)(REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT0_LSB);
+    trig_tap_delay(25) <= regs_write_arr(77)(REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT1_LSB);
+    trig_tap_delay(26) <= regs_write_arr(77)(REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT2_LSB);
+    trig_tap_delay(27) <= regs_write_arr(77)(REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT3_LSB);
+    trig_tap_delay(28) <= regs_write_arr(77)(REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT4_LSB);
+    trig_tap_delay(29) <= regs_write_arr(77)(REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT5_LSB);
+    trig_tap_delay(30) <= regs_write_arr(78)(REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT6_LSB);
+    trig_tap_delay(31) <= regs_write_arr(78)(REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT7_LSB);
+    trig_tap_delay(32) <= regs_write_arr(78)(REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT0_LSB);
+    trig_tap_delay(33) <= regs_write_arr(78)(REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT1_LSB);
+    trig_tap_delay(34) <= regs_write_arr(78)(REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT2_LSB);
+    trig_tap_delay(35) <= regs_write_arr(78)(REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT3_LSB);
+    trig_tap_delay(36) <= regs_write_arr(79)(REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT4_LSB);
+    trig_tap_delay(37) <= regs_write_arr(79)(REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT5_LSB);
+    trig_tap_delay(38) <= regs_write_arr(79)(REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT6_LSB);
+    trig_tap_delay(39) <= regs_write_arr(79)(REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT7_LSB);
+    trig_tap_delay(40) <= regs_write_arr(79)(REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT0_LSB);
+    trig_tap_delay(41) <= regs_write_arr(79)(REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT1_LSB);
+    trig_tap_delay(42) <= regs_write_arr(80)(REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT2_LSB);
+    trig_tap_delay(43) <= regs_write_arr(80)(REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT3_LSB);
+    trig_tap_delay(44) <= regs_write_arr(80)(REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT4_LSB);
+    trig_tap_delay(45) <= regs_write_arr(80)(REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT5_LSB);
+    trig_tap_delay(46) <= regs_write_arr(80)(REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT6_LSB);
+    trig_tap_delay(47) <= regs_write_arr(80)(REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT7_LSB);
+    trig_tap_delay(48) <= regs_write_arr(81)(REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT0_LSB);
+    trig_tap_delay(49) <= regs_write_arr(81)(REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT1_LSB);
+    trig_tap_delay(50) <= regs_write_arr(81)(REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT2_LSB);
+    trig_tap_delay(51) <= regs_write_arr(81)(REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT3_LSB);
+    trig_tap_delay(52) <= regs_write_arr(81)(REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT4_LSB);
+    trig_tap_delay(53) <= regs_write_arr(81)(REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT5_LSB);
+    trig_tap_delay(54) <= regs_write_arr(82)(REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT6_LSB);
+    trig_tap_delay(55) <= regs_write_arr(82)(REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT7_LSB);
+    trig_tap_delay(56) <= regs_write_arr(82)(REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT0_LSB);
+    trig_tap_delay(57) <= regs_write_arr(82)(REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT1_LSB);
+    trig_tap_delay(58) <= regs_write_arr(82)(REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT2_LSB);
+    trig_tap_delay(59) <= regs_write_arr(82)(REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT3_LSB);
+    trig_tap_delay(60) <= regs_write_arr(83)(REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT4_LSB);
+    trig_tap_delay(61) <= regs_write_arr(83)(REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT5_LSB);
+    trig_tap_delay(62) <= regs_write_arr(83)(REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT6_LSB);
+    trig_tap_delay(63) <= regs_write_arr(83)(REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT7_LSB);
+    trig_tap_delay(64) <= regs_write_arr(83)(REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT0_LSB);
+    trig_tap_delay(65) <= regs_write_arr(83)(REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT1_LSB);
+    trig_tap_delay(66) <= regs_write_arr(84)(REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT2_LSB);
+    trig_tap_delay(67) <= regs_write_arr(84)(REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT3_LSB);
+    trig_tap_delay(68) <= regs_write_arr(84)(REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT4_LSB);
+    trig_tap_delay(69) <= regs_write_arr(84)(REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT5_LSB);
+    trig_tap_delay(70) <= regs_write_arr(84)(REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT6_LSB);
+    trig_tap_delay(71) <= regs_write_arr(84)(REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT7_LSB);
+    trig_tap_delay(72) <= regs_write_arr(85)(REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT0_LSB);
+    trig_tap_delay(73) <= regs_write_arr(85)(REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT1_LSB);
+    trig_tap_delay(74) <= regs_write_arr(85)(REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT2_LSB);
+    trig_tap_delay(75) <= regs_write_arr(85)(REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT3_LSB);
+    trig_tap_delay(76) <= regs_write_arr(85)(REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT4_LSB);
+    trig_tap_delay(77) <= regs_write_arr(85)(REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT5_LSB);
+    trig_tap_delay(78) <= regs_write_arr(86)(REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT6_LSB);
+    trig_tap_delay(79) <= regs_write_arr(86)(REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT7_LSB);
+    trig_tap_delay(80) <= regs_write_arr(86)(REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT0_LSB);
+    trig_tap_delay(81) <= regs_write_arr(86)(REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT1_LSB);
+    trig_tap_delay(82) <= regs_write_arr(86)(REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT2_LSB);
+    trig_tap_delay(83) <= regs_write_arr(86)(REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT3_LSB);
+    trig_tap_delay(84) <= regs_write_arr(87)(REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT4_LSB);
+    trig_tap_delay(85) <= regs_write_arr(87)(REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT5_LSB);
+    trig_tap_delay(86) <= regs_write_arr(87)(REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT6_LSB);
+    trig_tap_delay(87) <= regs_write_arr(87)(REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT7_LSB);
+    trig_tap_delay(88) <= regs_write_arr(87)(REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT0_LSB);
+    trig_tap_delay(89) <= regs_write_arr(87)(REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT1_LSB);
+    trig_tap_delay(90) <= regs_write_arr(88)(REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT2_LSB);
+    trig_tap_delay(91) <= regs_write_arr(88)(REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT3_LSB);
+    trig_tap_delay(92) <= regs_write_arr(88)(REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT4_LSB);
+    trig_tap_delay(93) <= regs_write_arr(88)(REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT5_LSB);
+    trig_tap_delay(94) <= regs_write_arr(88)(REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT6_LSB);
+    trig_tap_delay(95) <= regs_write_arr(88)(REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT7_LSB);
+    trig_tap_delay(96) <= regs_write_arr(89)(REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT0_LSB);
+    trig_tap_delay(97) <= regs_write_arr(89)(REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT1_LSB);
+    trig_tap_delay(98) <= regs_write_arr(89)(REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT2_LSB);
+    trig_tap_delay(99) <= regs_write_arr(89)(REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT3_LSB);
+    trig_tap_delay(100) <= regs_write_arr(89)(REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT4_LSB);
+    trig_tap_delay(101) <= regs_write_arr(89)(REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT5_LSB);
+    trig_tap_delay(102) <= regs_write_arr(90)(REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT6_LSB);
+    trig_tap_delay(103) <= regs_write_arr(90)(REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT7_LSB);
+    trig_tap_delay(104) <= regs_write_arr(90)(REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT0_LSB);
+    trig_tap_delay(105) <= regs_write_arr(90)(REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT1_LSB);
+    trig_tap_delay(106) <= regs_write_arr(90)(REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT2_LSB);
+    trig_tap_delay(107) <= regs_write_arr(90)(REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT3_LSB);
+    trig_tap_delay(108) <= regs_write_arr(91)(REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT4_LSB);
+    trig_tap_delay(109) <= regs_write_arr(91)(REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT5_LSB);
+    trig_tap_delay(110) <= regs_write_arr(91)(REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT6_LSB);
+    trig_tap_delay(111) <= regs_write_arr(91)(REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT7_LSB);
+    trig_tap_delay(112) <= regs_write_arr(91)(REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT0_LSB);
+    trig_tap_delay(113) <= regs_write_arr(91)(REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT1_LSB);
+    trig_tap_delay(114) <= regs_write_arr(92)(REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT2_LSB);
+    trig_tap_delay(115) <= regs_write_arr(92)(REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT3_LSB);
+    trig_tap_delay(116) <= regs_write_arr(92)(REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT4_LSB);
+    trig_tap_delay(117) <= regs_write_arr(92)(REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT5_LSB);
+    trig_tap_delay(118) <= regs_write_arr(92)(REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT6_LSB);
+    trig_tap_delay(119) <= regs_write_arr(92)(REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT7_LSB);
+    trig_tap_delay(120) <= regs_write_arr(93)(REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT0_LSB);
+    trig_tap_delay(121) <= regs_write_arr(93)(REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT1_LSB);
+    trig_tap_delay(122) <= regs_write_arr(93)(REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT2_LSB);
+    trig_tap_delay(123) <= regs_write_arr(93)(REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT3_LSB);
+    trig_tap_delay(124) <= regs_write_arr(93)(REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT4_LSB);
+    trig_tap_delay(125) <= regs_write_arr(93)(REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT5_LSB);
+    trig_tap_delay(126) <= regs_write_arr(94)(REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT6_LSB);
+    trig_tap_delay(127) <= regs_write_arr(94)(REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT7_LSB);
+    trig_tap_delay(128) <= regs_write_arr(94)(REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT0_LSB);
+    trig_tap_delay(129) <= regs_write_arr(94)(REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT1_LSB);
+    trig_tap_delay(130) <= regs_write_arr(94)(REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT2_LSB);
+    trig_tap_delay(131) <= regs_write_arr(94)(REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT3_LSB);
+    trig_tap_delay(132) <= regs_write_arr(95)(REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT4_LSB);
+    trig_tap_delay(133) <= regs_write_arr(95)(REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT5_LSB);
+    trig_tap_delay(134) <= regs_write_arr(95)(REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT6_LSB);
+    trig_tap_delay(135) <= regs_write_arr(95)(REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT7_LSB);
+    trig_tap_delay(136) <= regs_write_arr(95)(REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT0_LSB);
+    trig_tap_delay(137) <= regs_write_arr(95)(REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT1_LSB);
+    trig_tap_delay(138) <= regs_write_arr(96)(REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT2_LSB);
+    trig_tap_delay(139) <= regs_write_arr(96)(REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT3_LSB);
+    trig_tap_delay(140) <= regs_write_arr(96)(REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT4_LSB);
+    trig_tap_delay(141) <= regs_write_arr(96)(REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT5_LSB);
+    trig_tap_delay(142) <= regs_write_arr(96)(REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT6_LSB);
+    trig_tap_delay(143) <= regs_write_arr(96)(REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT7_LSB);
+    trig_tap_delay(144) <= regs_write_arr(97)(REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT0_LSB);
+    trig_tap_delay(145) <= regs_write_arr(97)(REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT1_LSB);
+    trig_tap_delay(146) <= regs_write_arr(97)(REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT2_LSB);
+    trig_tap_delay(147) <= regs_write_arr(97)(REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT3_LSB);
+    trig_tap_delay(148) <= regs_write_arr(97)(REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT4_LSB);
+    trig_tap_delay(149) <= regs_write_arr(97)(REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT5_LSB);
+    trig_tap_delay(150) <= regs_write_arr(98)(REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT6_LSB);
+    trig_tap_delay(151) <= regs_write_arr(98)(REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT7_LSB);
+    trig_tap_delay(152) <= regs_write_arr(98)(REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT0_LSB);
+    trig_tap_delay(153) <= regs_write_arr(98)(REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT1_LSB);
+    trig_tap_delay(154) <= regs_write_arr(98)(REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT2_LSB);
+    trig_tap_delay(155) <= regs_write_arr(98)(REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT3_LSB);
+    trig_tap_delay(156) <= regs_write_arr(99)(REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT4_LSB);
+    trig_tap_delay(157) <= regs_write_arr(99)(REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT5_LSB);
+    trig_tap_delay(158) <= regs_write_arr(99)(REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT6_LSB);
+    trig_tap_delay(159) <= regs_write_arr(99)(REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT7_LSB);
+    trig_tap_delay(160) <= regs_write_arr(99)(REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT0_LSB);
+    trig_tap_delay(161) <= regs_write_arr(99)(REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT1_LSB);
+    trig_tap_delay(162) <= regs_write_arr(100)(REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT2_LSB);
+    trig_tap_delay(163) <= regs_write_arr(100)(REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT3_LSB);
+    trig_tap_delay(164) <= regs_write_arr(100)(REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT4_LSB);
+    trig_tap_delay(165) <= regs_write_arr(100)(REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT5_LSB);
+    trig_tap_delay(166) <= regs_write_arr(100)(REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT6_LSB);
+    trig_tap_delay(167) <= regs_write_arr(100)(REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT7_LSB);
+    trig_tap_delay(168) <= regs_write_arr(101)(REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT0_LSB);
+    trig_tap_delay(169) <= regs_write_arr(101)(REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT1_LSB);
+    trig_tap_delay(170) <= regs_write_arr(101)(REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT2_LSB);
+    trig_tap_delay(171) <= regs_write_arr(101)(REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT3_LSB);
+    trig_tap_delay(172) <= regs_write_arr(101)(REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT4_LSB);
+    trig_tap_delay(173) <= regs_write_arr(101)(REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT5_LSB);
+    trig_tap_delay(174) <= regs_write_arr(102)(REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT6_LSB);
+    trig_tap_delay(175) <= regs_write_arr(102)(REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT7_LSB);
+    trig_tap_delay(176) <= regs_write_arr(102)(REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT0_LSB);
+    trig_tap_delay(177) <= regs_write_arr(102)(REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT1_LSB);
+    trig_tap_delay(178) <= regs_write_arr(102)(REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT2_LSB);
+    trig_tap_delay(179) <= regs_write_arr(102)(REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT3_LSB);
+    trig_tap_delay(180) <= regs_write_arr(103)(REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT4_LSB);
+    trig_tap_delay(181) <= regs_write_arr(103)(REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT5_LSB);
+    trig_tap_delay(182) <= regs_write_arr(103)(REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT6_LSB);
+    trig_tap_delay(183) <= regs_write_arr(103)(REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT7_LSB);
+    trig_tap_delay(184) <= regs_write_arr(103)(REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT0_LSB);
+    trig_tap_delay(185) <= regs_write_arr(103)(REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT1_LSB);
+    trig_tap_delay(186) <= regs_write_arr(104)(REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT2_LSB);
+    trig_tap_delay(187) <= regs_write_arr(104)(REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT3_LSB);
+    trig_tap_delay(188) <= regs_write_arr(104)(REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT4_LSB);
+    trig_tap_delay(189) <= regs_write_arr(104)(REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT5_LSB);
+    trig_tap_delay(190) <= regs_write_arr(104)(REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT6_LSB);
+    trig_tap_delay(191) <= regs_write_arr(104)(REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT7_LSB);
+    sot_tap_delay(0) <= regs_write_arr(105)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT0_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT0_LSB);
+    sot_tap_delay(1) <= regs_write_arr(105)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT1_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT1_LSB);
+    sot_tap_delay(2) <= regs_write_arr(105)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT2_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT2_LSB);
+    sot_tap_delay(3) <= regs_write_arr(105)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT3_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT3_LSB);
+    sot_tap_delay(4) <= regs_write_arr(105)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT4_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT4_LSB);
+    sot_tap_delay(5) <= regs_write_arr(105)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT5_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT5_LSB);
+    sot_tap_delay(6) <= regs_write_arr(106)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT6_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT6_LSB);
+    sot_tap_delay(7) <= regs_write_arr(106)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT7_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT7_LSB);
+    sot_tap_delay(8) <= regs_write_arr(106)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT8_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT8_LSB);
+    sot_tap_delay(9) <= regs_write_arr(106)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT9_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT9_LSB);
+    sot_tap_delay(10) <= regs_write_arr(106)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT10_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT10_LSB);
+    sot_tap_delay(11) <= regs_write_arr(106)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT11_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT11_LSB);
+    sot_tap_delay(12) <= regs_write_arr(107)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT12_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT12_LSB);
+    sot_tap_delay(13) <= regs_write_arr(107)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT13_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT13_LSB);
+    sot_tap_delay(14) <= regs_write_arr(107)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT14_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT14_LSB);
+    sot_tap_delay(15) <= regs_write_arr(107)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT15_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT15_LSB);
+    sot_tap_delay(16) <= regs_write_arr(107)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT16_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT16_LSB);
+    sot_tap_delay(17) <= regs_write_arr(107)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT17_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT17_LSB);
+    sot_tap_delay(18) <= regs_write_arr(108)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT18_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT18_LSB);
+    sot_tap_delay(19) <= regs_write_arr(108)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT19_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT19_LSB);
+    sot_tap_delay(20) <= regs_write_arr(108)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT20_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT20_LSB);
+    sot_tap_delay(21) <= regs_write_arr(108)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT21_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT21_LSB);
+    sot_tap_delay(22) <= regs_write_arr(108)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT22_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT22_LSB);
+    sot_tap_delay(23) <= regs_write_arr(108)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT23_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT23_LSB);
 
     -- Connect write pulse signals
     reset_counters <= regs_write_pulse_arr(45);
-    cnt_pulse <= regs_write_pulse_arr(49);
-    reset_links <= regs_write_pulse_arr(110);
-    reset_monitor <= regs_write_pulse_arr(112);
+    reset_links <= regs_write_pulse_arr(109);
+    reset_monitor <= regs_write_pulse_arr(111);
 
     -- Connect write done signals
 
@@ -1288,7 +1271,7 @@ begin
     port map (
         ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
-        en_i      => active_vfats(0) or cnt_pulse,
+        en_i      => active_vfats(0),
         snap_i    => sbit_cnt_snap,
         count_o   => cnt_vfat0
     );
@@ -1301,7 +1284,7 @@ begin
     port map (
         ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
-        en_i      => active_vfats(1) or cnt_pulse,
+        en_i      => active_vfats(1),
         snap_i    => sbit_cnt_snap,
         count_o   => cnt_vfat1
     );
@@ -1314,7 +1297,7 @@ begin
     port map (
         ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
-        en_i      => active_vfats(2) or cnt_pulse,
+        en_i      => active_vfats(2),
         snap_i    => sbit_cnt_snap,
         count_o   => cnt_vfat2
     );
@@ -1327,7 +1310,7 @@ begin
     port map (
         ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
-        en_i      => active_vfats(3) or cnt_pulse,
+        en_i      => active_vfats(3),
         snap_i    => sbit_cnt_snap,
         count_o   => cnt_vfat3
     );
@@ -1340,7 +1323,7 @@ begin
     port map (
         ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
-        en_i      => active_vfats(4) or cnt_pulse,
+        en_i      => active_vfats(4),
         snap_i    => sbit_cnt_snap,
         count_o   => cnt_vfat4
     );
@@ -1353,7 +1336,7 @@ begin
     port map (
         ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
-        en_i      => active_vfats(5) or cnt_pulse,
+        en_i      => active_vfats(5),
         snap_i    => sbit_cnt_snap,
         count_o   => cnt_vfat5
     );
@@ -1366,7 +1349,7 @@ begin
     port map (
         ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
-        en_i      => active_vfats(6) or cnt_pulse,
+        en_i      => active_vfats(6),
         snap_i    => sbit_cnt_snap,
         count_o   => cnt_vfat6
     );
@@ -1379,7 +1362,7 @@ begin
     port map (
         ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
-        en_i      => active_vfats(7) or cnt_pulse,
+        en_i      => active_vfats(7),
         snap_i    => sbit_cnt_snap,
         count_o   => cnt_vfat7
     );
@@ -1392,7 +1375,7 @@ begin
     port map (
         ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
-        en_i      => active_vfats(8) or cnt_pulse,
+        en_i      => active_vfats(8),
         snap_i    => sbit_cnt_snap,
         count_o   => cnt_vfat8
     );
@@ -1405,7 +1388,7 @@ begin
     port map (
         ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
-        en_i      => active_vfats(9) or cnt_pulse,
+        en_i      => active_vfats(9),
         snap_i    => sbit_cnt_snap,
         count_o   => cnt_vfat9
     );
@@ -1418,7 +1401,7 @@ begin
     port map (
         ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
-        en_i      => active_vfats(10) or cnt_pulse,
+        en_i      => active_vfats(10),
         snap_i    => sbit_cnt_snap,
         count_o   => cnt_vfat10
     );
@@ -1431,7 +1414,7 @@ begin
     port map (
         ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
-        en_i      => active_vfats(11) or cnt_pulse,
+        en_i      => active_vfats(11),
         snap_i    => sbit_cnt_snap,
         count_o   => cnt_vfat11
     );
@@ -1444,7 +1427,7 @@ begin
     port map (
         ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
-        en_i      => active_vfats(12) or cnt_pulse,
+        en_i      => active_vfats(12),
         snap_i    => sbit_cnt_snap,
         count_o   => cnt_vfat12
     );
@@ -1457,7 +1440,7 @@ begin
     port map (
         ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
-        en_i      => active_vfats(13) or cnt_pulse,
+        en_i      => active_vfats(13),
         snap_i    => sbit_cnt_snap,
         count_o   => cnt_vfat13
     );
@@ -1470,7 +1453,7 @@ begin
     port map (
         ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
-        en_i      => active_vfats(14) or cnt_pulse,
+        en_i      => active_vfats(14),
         snap_i    => sbit_cnt_snap,
         count_o   => cnt_vfat14
     );
@@ -1483,7 +1466,7 @@ begin
     port map (
         ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
-        en_i      => active_vfats(15) or cnt_pulse,
+        en_i      => active_vfats(15),
         snap_i    => sbit_cnt_snap,
         count_o   => cnt_vfat15
     );
@@ -1496,7 +1479,7 @@ begin
     port map (
         ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
-        en_i      => active_vfats(16) or cnt_pulse,
+        en_i      => active_vfats(16),
         snap_i    => sbit_cnt_snap,
         count_o   => cnt_vfat16
     );
@@ -1509,7 +1492,7 @@ begin
     port map (
         ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
-        en_i      => active_vfats(17) or cnt_pulse,
+        en_i      => active_vfats(17),
         snap_i    => sbit_cnt_snap,
         count_o   => cnt_vfat17
     );
@@ -1522,7 +1505,7 @@ begin
     port map (
         ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
-        en_i      => active_vfats(18) or cnt_pulse,
+        en_i      => active_vfats(18),
         snap_i    => sbit_cnt_snap,
         count_o   => cnt_vfat18
     );
@@ -1535,7 +1518,7 @@ begin
     port map (
         ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
-        en_i      => active_vfats(19) or cnt_pulse,
+        en_i      => active_vfats(19),
         snap_i    => sbit_cnt_snap,
         count_o   => cnt_vfat19
     );
@@ -1548,7 +1531,7 @@ begin
     port map (
         ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
-        en_i      => active_vfats(20) or cnt_pulse,
+        en_i      => active_vfats(20),
         snap_i    => sbit_cnt_snap,
         count_o   => cnt_vfat20
     );
@@ -1561,7 +1544,7 @@ begin
     port map (
         ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
-        en_i      => active_vfats(21) or cnt_pulse,
+        en_i      => active_vfats(21),
         snap_i    => sbit_cnt_snap,
         count_o   => cnt_vfat21
     );
@@ -1574,7 +1557,7 @@ begin
     port map (
         ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
-        en_i      => active_vfats(22) or cnt_pulse,
+        en_i      => active_vfats(22),
         snap_i    => sbit_cnt_snap,
         count_o   => cnt_vfat22
     );
@@ -1587,7 +1570,7 @@ begin
     port map (
         ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
-        en_i      => active_vfats(23) or cnt_pulse,
+        en_i      => active_vfats(23),
         snap_i    => sbit_cnt_snap,
         count_o   => cnt_vfat23
     );
@@ -1600,7 +1583,7 @@ begin
     port map (
         ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
-        en_i      => valid_clusters_or or cnt_pulse,
+        en_i      => valid_clusters_or,
         snap_i    => sbit_cnt_snap,
         count_o   => cnt_clusters
     );
@@ -1613,7 +1596,7 @@ begin
     port map (
         ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
-        en_i      => sbits_comparator_over_threshold(0) or cnt_pulse,
+        en_i      => sbits_comparator_over_threshold(0),
         snap_i    => sbit_cnt_snap,
         count_o   => cnt_over_threshold0
     );
@@ -1626,7 +1609,7 @@ begin
     port map (
         ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
-        en_i      => sbits_comparator_over_threshold(1) or cnt_pulse,
+        en_i      => sbits_comparator_over_threshold(1),
         snap_i    => sbit_cnt_snap,
         count_o   => cnt_over_threshold1
     );
@@ -1639,7 +1622,7 @@ begin
     port map (
         ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
-        en_i      => sbits_comparator_over_threshold(2) or cnt_pulse,
+        en_i      => sbits_comparator_over_threshold(2),
         snap_i    => sbit_cnt_snap,
         count_o   => cnt_over_threshold2
     );
@@ -1652,7 +1635,7 @@ begin
     port map (
         ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
-        en_i      => sbits_comparator_over_threshold(3) or cnt_pulse,
+        en_i      => sbits_comparator_over_threshold(3),
         snap_i    => sbit_cnt_snap,
         count_o   => cnt_over_threshold3
     );
@@ -1665,7 +1648,7 @@ begin
     port map (
         ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
-        en_i      => sbits_comparator_over_threshold(4) or cnt_pulse,
+        en_i      => sbits_comparator_over_threshold(4),
         snap_i    => sbit_cnt_snap,
         count_o   => cnt_over_threshold4
     );
@@ -1678,7 +1661,7 @@ begin
     port map (
         ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
-        en_i      => sbits_comparator_over_threshold(5) or cnt_pulse,
+        en_i      => sbits_comparator_over_threshold(5),
         snap_i    => sbit_cnt_snap,
         count_o   => cnt_over_threshold5
     );
@@ -1691,7 +1674,7 @@ begin
     port map (
         ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
-        en_i      => sbits_comparator_over_threshold(6) or cnt_pulse,
+        en_i      => sbits_comparator_over_threshold(6),
         snap_i    => sbit_cnt_snap,
         count_o   => cnt_over_threshold6
     );
@@ -1704,7 +1687,7 @@ begin
     port map (
         ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
-        en_i      => sbits_comparator_over_threshold(7) or cnt_pulse,
+        en_i      => sbits_comparator_over_threshold(7),
         snap_i    => sbit_cnt_snap,
         count_o   => cnt_over_threshold7
     );
@@ -1717,7 +1700,7 @@ begin
     port map (
         ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
-        en_i      => sbits_comparator_over_threshold(8) or cnt_pulse,
+        en_i      => sbits_comparator_over_threshold(8),
         snap_i    => sbit_cnt_snap,
         count_o   => cnt_over_threshold8
     );
@@ -1730,7 +1713,7 @@ begin
     port map (
         ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
-        en_i      => sbits_comparator_over_threshold(9) or cnt_pulse,
+        en_i      => sbits_comparator_over_threshold(9),
         snap_i    => sbit_cnt_snap,
         count_o   => cnt_over_threshold9
     );
@@ -1743,7 +1726,7 @@ begin
     port map (
         ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
-        en_i      => sbits_comparator_over_threshold(10) or cnt_pulse,
+        en_i      => sbits_comparator_over_threshold(10),
         snap_i    => sbit_cnt_snap,
         count_o   => cnt_over_threshold10
     );
@@ -1756,7 +1739,7 @@ begin
     port map (
         ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
-        en_i      => sbits_comparator_over_threshold(11) or cnt_pulse,
+        en_i      => sbits_comparator_over_threshold(11),
         snap_i    => sbit_cnt_snap,
         count_o   => cnt_over_threshold11
     );
@@ -1769,7 +1752,7 @@ begin
     port map (
         ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
-        en_i      => sbits_comparator_over_threshold(12) or cnt_pulse,
+        en_i      => sbits_comparator_over_threshold(12),
         snap_i    => sbit_cnt_snap,
         count_o   => cnt_over_threshold12
     );
@@ -1782,7 +1765,7 @@ begin
     port map (
         ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
-        en_i      => sbits_comparator_over_threshold(13) or cnt_pulse,
+        en_i      => sbits_comparator_over_threshold(13),
         snap_i    => sbit_cnt_snap,
         count_o   => cnt_over_threshold13
     );
@@ -1795,7 +1778,7 @@ begin
     port map (
         ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
-        en_i      => sbits_comparator_over_threshold(14) or cnt_pulse,
+        en_i      => sbits_comparator_over_threshold(14),
         snap_i    => sbit_cnt_snap,
         count_o   => cnt_over_threshold14
     );
@@ -1808,7 +1791,7 @@ begin
     port map (
         ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
-        en_i      => sbits_comparator_over_threshold(15) or cnt_pulse,
+        en_i      => sbits_comparator_over_threshold(15),
         snap_i    => sbit_cnt_snap,
         count_o   => cnt_over_threshold15
     );
@@ -1821,7 +1804,7 @@ begin
     port map (
         ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
-        en_i      => sbits_comparator_over_threshold(16) or cnt_pulse,
+        en_i      => sbits_comparator_over_threshold(16),
         snap_i    => sbit_cnt_snap,
         count_o   => cnt_over_threshold16
     );
@@ -1834,7 +1817,7 @@ begin
     port map (
         ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
-        en_i      => sbits_comparator_over_threshold(17) or cnt_pulse,
+        en_i      => sbits_comparator_over_threshold(17),
         snap_i    => sbit_cnt_snap,
         count_o   => cnt_over_threshold17
     );
@@ -1847,7 +1830,7 @@ begin
     port map (
         ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
-        en_i      => sbits_comparator_over_threshold(18) or cnt_pulse,
+        en_i      => sbits_comparator_over_threshold(18),
         snap_i    => sbit_cnt_snap,
         count_o   => cnt_over_threshold18
     );
@@ -1860,7 +1843,7 @@ begin
     port map (
         ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
-        en_i      => sbits_comparator_over_threshold(19) or cnt_pulse,
+        en_i      => sbits_comparator_over_threshold(19),
         snap_i    => sbit_cnt_snap,
         count_o   => cnt_over_threshold19
     );
@@ -1873,7 +1856,7 @@ begin
     port map (
         ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
-        en_i      => sbits_comparator_over_threshold(20) or cnt_pulse,
+        en_i      => sbits_comparator_over_threshold(20),
         snap_i    => sbit_cnt_snap,
         count_o   => cnt_over_threshold20
     );
@@ -1886,7 +1869,7 @@ begin
     port map (
         ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
-        en_i      => sbits_comparator_over_threshold(21) or cnt_pulse,
+        en_i      => sbits_comparator_over_threshold(21),
         snap_i    => sbit_cnt_snap,
         count_o   => cnt_over_threshold21
     );
@@ -1899,7 +1882,7 @@ begin
     port map (
         ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
-        en_i      => sbits_comparator_over_threshold(22) or cnt_pulse,
+        en_i      => sbits_comparator_over_threshold(22),
         snap_i    => sbit_cnt_snap,
         count_o   => cnt_over_threshold22
     );
@@ -1912,7 +1895,7 @@ begin
     port map (
         ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
-        en_i      => sbits_comparator_over_threshold(23) or cnt_pulse,
+        en_i      => sbits_comparator_over_threshold(23),
         snap_i    => sbit_cnt_snap,
         count_o   => cnt_over_threshold23
     );
@@ -1978,222 +1961,222 @@ begin
     regs_defaults(20)(REG_TRIG_CTRL_TU_MASK_VFAT23_TU_MASK_MSB downto REG_TRIG_CTRL_TU_MASK_VFAT23_TU_MASK_LSB) <= REG_TRIG_CTRL_TU_MASK_VFAT23_TU_MASK_DEFAULT;
     regs_defaults(46)(REG_TRIG_CNT_SBIT_CNT_PERSIST_BIT) <= REG_TRIG_CNT_SBIT_CNT_PERSIST_DEFAULT;
     regs_defaults(47)(REG_TRIG_CNT_SBIT_CNT_TIME_MAX_MSB downto REG_TRIG_CNT_SBIT_CNT_TIME_MAX_LSB) <= REG_TRIG_CNT_SBIT_CNT_TIME_MAX_DEFAULT;
-    regs_defaults(74)(REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT0_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT0_DEFAULT;
-    regs_defaults(74)(REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT1_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT1_DEFAULT;
-    regs_defaults(74)(REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT2_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT2_DEFAULT;
-    regs_defaults(74)(REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT3_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT3_DEFAULT;
-    regs_defaults(74)(REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT4_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT4_DEFAULT;
-    regs_defaults(74)(REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT5_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT5_DEFAULT;
-    regs_defaults(75)(REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT6_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT6_DEFAULT;
-    regs_defaults(75)(REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT7_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT7_DEFAULT;
-    regs_defaults(75)(REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT0_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT0_DEFAULT;
-    regs_defaults(75)(REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT1_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT1_DEFAULT;
-    regs_defaults(75)(REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT2_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT2_DEFAULT;
-    regs_defaults(75)(REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT3_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT3_DEFAULT;
-    regs_defaults(76)(REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT4_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT4_DEFAULT;
-    regs_defaults(76)(REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT5_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT5_DEFAULT;
-    regs_defaults(76)(REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT6_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT6_DEFAULT;
-    regs_defaults(76)(REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT7_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT7_DEFAULT;
-    regs_defaults(76)(REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT0_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT0_DEFAULT;
-    regs_defaults(76)(REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT1_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT1_DEFAULT;
-    regs_defaults(77)(REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT2_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT2_DEFAULT;
-    regs_defaults(77)(REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT3_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT3_DEFAULT;
-    regs_defaults(77)(REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT4_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT4_DEFAULT;
-    regs_defaults(77)(REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT5_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT5_DEFAULT;
-    regs_defaults(77)(REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT6_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT6_DEFAULT;
-    regs_defaults(77)(REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT7_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT7_DEFAULT;
-    regs_defaults(78)(REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT0_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT0_DEFAULT;
-    regs_defaults(78)(REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT1_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT1_DEFAULT;
-    regs_defaults(78)(REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT2_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT2_DEFAULT;
-    regs_defaults(78)(REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT3_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT3_DEFAULT;
-    regs_defaults(78)(REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT4_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT4_DEFAULT;
-    regs_defaults(78)(REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT5_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT5_DEFAULT;
-    regs_defaults(79)(REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT6_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT6_DEFAULT;
-    regs_defaults(79)(REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT7_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT7_DEFAULT;
-    regs_defaults(79)(REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT0_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT0_DEFAULT;
-    regs_defaults(79)(REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT1_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT1_DEFAULT;
-    regs_defaults(79)(REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT2_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT2_DEFAULT;
-    regs_defaults(79)(REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT3_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT3_DEFAULT;
-    regs_defaults(80)(REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT4_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT4_DEFAULT;
-    regs_defaults(80)(REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT5_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT5_DEFAULT;
-    regs_defaults(80)(REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT6_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT6_DEFAULT;
-    regs_defaults(80)(REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT7_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT7_DEFAULT;
-    regs_defaults(80)(REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT0_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT0_DEFAULT;
-    regs_defaults(80)(REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT1_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT1_DEFAULT;
-    regs_defaults(81)(REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT2_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT2_DEFAULT;
-    regs_defaults(81)(REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT3_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT3_DEFAULT;
-    regs_defaults(81)(REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT4_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT4_DEFAULT;
-    regs_defaults(81)(REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT5_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT5_DEFAULT;
-    regs_defaults(81)(REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT6_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT6_DEFAULT;
-    regs_defaults(81)(REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT7_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT7_DEFAULT;
-    regs_defaults(82)(REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT0_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT0_DEFAULT;
-    regs_defaults(82)(REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT1_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT1_DEFAULT;
-    regs_defaults(82)(REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT2_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT2_DEFAULT;
-    regs_defaults(82)(REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT3_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT3_DEFAULT;
-    regs_defaults(82)(REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT4_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT4_DEFAULT;
-    regs_defaults(82)(REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT5_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT5_DEFAULT;
-    regs_defaults(83)(REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT6_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT6_DEFAULT;
-    regs_defaults(83)(REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT7_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT7_DEFAULT;
-    regs_defaults(83)(REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT0_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT0_DEFAULT;
-    regs_defaults(83)(REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT1_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT1_DEFAULT;
-    regs_defaults(83)(REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT2_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT2_DEFAULT;
-    regs_defaults(83)(REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT3_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT3_DEFAULT;
-    regs_defaults(84)(REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT4_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT4_DEFAULT;
-    regs_defaults(84)(REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT5_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT5_DEFAULT;
-    regs_defaults(84)(REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT6_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT6_DEFAULT;
-    regs_defaults(84)(REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT7_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT7_DEFAULT;
-    regs_defaults(84)(REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT0_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT0_DEFAULT;
-    regs_defaults(84)(REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT1_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT1_DEFAULT;
-    regs_defaults(85)(REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT2_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT2_DEFAULT;
-    regs_defaults(85)(REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT3_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT3_DEFAULT;
-    regs_defaults(85)(REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT4_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT4_DEFAULT;
-    regs_defaults(85)(REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT5_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT5_DEFAULT;
-    regs_defaults(85)(REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT6_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT6_DEFAULT;
-    regs_defaults(85)(REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT7_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT7_DEFAULT;
-    regs_defaults(86)(REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT0_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT0_DEFAULT;
-    regs_defaults(86)(REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT1_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT1_DEFAULT;
-    regs_defaults(86)(REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT2_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT2_DEFAULT;
-    regs_defaults(86)(REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT3_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT3_DEFAULT;
-    regs_defaults(86)(REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT4_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT4_DEFAULT;
-    regs_defaults(86)(REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT5_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT5_DEFAULT;
-    regs_defaults(87)(REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT6_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT6_DEFAULT;
-    regs_defaults(87)(REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT7_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT7_DEFAULT;
-    regs_defaults(87)(REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT0_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT0_DEFAULT;
-    regs_defaults(87)(REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT1_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT1_DEFAULT;
-    regs_defaults(87)(REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT2_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT2_DEFAULT;
-    regs_defaults(87)(REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT3_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT3_DEFAULT;
-    regs_defaults(88)(REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT4_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT4_DEFAULT;
-    regs_defaults(88)(REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT5_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT5_DEFAULT;
-    regs_defaults(88)(REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT6_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT6_DEFAULT;
-    regs_defaults(88)(REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT7_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT7_DEFAULT;
-    regs_defaults(88)(REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT0_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT0_DEFAULT;
-    regs_defaults(88)(REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT1_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT1_DEFAULT;
-    regs_defaults(89)(REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT2_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT2_DEFAULT;
-    regs_defaults(89)(REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT3_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT3_DEFAULT;
-    regs_defaults(89)(REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT4_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT4_DEFAULT;
-    regs_defaults(89)(REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT5_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT5_DEFAULT;
-    regs_defaults(89)(REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT6_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT6_DEFAULT;
-    regs_defaults(89)(REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT7_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT7_DEFAULT;
-    regs_defaults(90)(REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT0_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT0_DEFAULT;
-    regs_defaults(90)(REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT1_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT1_DEFAULT;
-    regs_defaults(90)(REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT2_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT2_DEFAULT;
-    regs_defaults(90)(REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT3_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT3_DEFAULT;
-    regs_defaults(90)(REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT4_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT4_DEFAULT;
-    regs_defaults(90)(REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT5_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT5_DEFAULT;
-    regs_defaults(91)(REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT6_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT6_DEFAULT;
-    regs_defaults(91)(REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT7_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT7_DEFAULT;
-    regs_defaults(91)(REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT0_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT0_DEFAULT;
-    regs_defaults(91)(REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT1_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT1_DEFAULT;
-    regs_defaults(91)(REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT2_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT2_DEFAULT;
-    regs_defaults(91)(REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT3_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT3_DEFAULT;
-    regs_defaults(92)(REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT4_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT4_DEFAULT;
-    regs_defaults(92)(REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT5_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT5_DEFAULT;
-    regs_defaults(92)(REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT6_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT6_DEFAULT;
-    regs_defaults(92)(REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT7_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT7_DEFAULT;
-    regs_defaults(92)(REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT0_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT0_DEFAULT;
-    regs_defaults(92)(REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT1_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT1_DEFAULT;
-    regs_defaults(93)(REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT2_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT2_DEFAULT;
-    regs_defaults(93)(REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT3_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT3_DEFAULT;
-    regs_defaults(93)(REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT4_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT4_DEFAULT;
-    regs_defaults(93)(REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT5_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT5_DEFAULT;
-    regs_defaults(93)(REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT6_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT6_DEFAULT;
-    regs_defaults(93)(REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT7_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT7_DEFAULT;
-    regs_defaults(94)(REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT0_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT0_DEFAULT;
-    regs_defaults(94)(REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT1_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT1_DEFAULT;
-    regs_defaults(94)(REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT2_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT2_DEFAULT;
-    regs_defaults(94)(REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT3_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT3_DEFAULT;
-    regs_defaults(94)(REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT4_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT4_DEFAULT;
-    regs_defaults(94)(REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT5_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT5_DEFAULT;
-    regs_defaults(95)(REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT6_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT6_DEFAULT;
-    regs_defaults(95)(REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT7_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT7_DEFAULT;
-    regs_defaults(95)(REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT0_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT0_DEFAULT;
-    regs_defaults(95)(REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT1_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT1_DEFAULT;
-    regs_defaults(95)(REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT2_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT2_DEFAULT;
-    regs_defaults(95)(REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT3_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT3_DEFAULT;
-    regs_defaults(96)(REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT4_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT4_DEFAULT;
-    regs_defaults(96)(REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT5_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT5_DEFAULT;
-    regs_defaults(96)(REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT6_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT6_DEFAULT;
-    regs_defaults(96)(REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT7_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT7_DEFAULT;
-    regs_defaults(96)(REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT0_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT0_DEFAULT;
-    regs_defaults(96)(REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT1_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT1_DEFAULT;
-    regs_defaults(97)(REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT2_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT2_DEFAULT;
-    regs_defaults(97)(REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT3_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT3_DEFAULT;
-    regs_defaults(97)(REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT4_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT4_DEFAULT;
-    regs_defaults(97)(REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT5_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT5_DEFAULT;
-    regs_defaults(97)(REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT6_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT6_DEFAULT;
-    regs_defaults(97)(REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT7_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT7_DEFAULT;
-    regs_defaults(98)(REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT0_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT0_DEFAULT;
-    regs_defaults(98)(REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT1_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT1_DEFAULT;
-    regs_defaults(98)(REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT2_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT2_DEFAULT;
-    regs_defaults(98)(REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT3_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT3_DEFAULT;
-    regs_defaults(98)(REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT4_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT4_DEFAULT;
-    regs_defaults(98)(REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT5_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT5_DEFAULT;
-    regs_defaults(99)(REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT6_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT6_DEFAULT;
-    regs_defaults(99)(REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT7_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT7_DEFAULT;
-    regs_defaults(99)(REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT0_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT0_DEFAULT;
-    regs_defaults(99)(REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT1_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT1_DEFAULT;
-    regs_defaults(99)(REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT2_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT2_DEFAULT;
-    regs_defaults(99)(REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT3_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT3_DEFAULT;
-    regs_defaults(100)(REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT4_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT4_DEFAULT;
-    regs_defaults(100)(REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT5_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT5_DEFAULT;
-    regs_defaults(100)(REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT6_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT6_DEFAULT;
-    regs_defaults(100)(REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT7_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT7_DEFAULT;
-    regs_defaults(100)(REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT0_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT0_DEFAULT;
-    regs_defaults(100)(REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT1_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT1_DEFAULT;
-    regs_defaults(101)(REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT2_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT2_DEFAULT;
-    regs_defaults(101)(REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT3_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT3_DEFAULT;
-    regs_defaults(101)(REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT4_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT4_DEFAULT;
-    regs_defaults(101)(REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT5_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT5_DEFAULT;
-    regs_defaults(101)(REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT6_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT6_DEFAULT;
-    regs_defaults(101)(REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT7_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT7_DEFAULT;
-    regs_defaults(102)(REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT0_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT0_DEFAULT;
-    regs_defaults(102)(REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT1_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT1_DEFAULT;
-    regs_defaults(102)(REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT2_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT2_DEFAULT;
-    regs_defaults(102)(REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT3_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT3_DEFAULT;
-    regs_defaults(102)(REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT4_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT4_DEFAULT;
-    regs_defaults(102)(REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT5_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT5_DEFAULT;
-    regs_defaults(103)(REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT6_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT6_DEFAULT;
-    regs_defaults(103)(REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT7_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT7_DEFAULT;
-    regs_defaults(103)(REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT0_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT0_DEFAULT;
-    regs_defaults(103)(REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT1_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT1_DEFAULT;
-    regs_defaults(103)(REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT2_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT2_DEFAULT;
-    regs_defaults(103)(REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT3_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT3_DEFAULT;
-    regs_defaults(104)(REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT4_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT4_DEFAULT;
-    regs_defaults(104)(REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT5_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT5_DEFAULT;
-    regs_defaults(104)(REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT6_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT6_DEFAULT;
-    regs_defaults(104)(REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT7_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT7_DEFAULT;
-    regs_defaults(104)(REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT0_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT0_DEFAULT;
-    regs_defaults(104)(REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT1_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT1_DEFAULT;
-    regs_defaults(105)(REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT2_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT2_DEFAULT;
-    regs_defaults(105)(REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT3_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT3_DEFAULT;
-    regs_defaults(105)(REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT4_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT4_DEFAULT;
-    regs_defaults(105)(REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT5_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT5_DEFAULT;
-    regs_defaults(105)(REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT6_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT6_DEFAULT;
-    regs_defaults(105)(REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT7_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT7_DEFAULT;
-    regs_defaults(106)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT0_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT0_LSB) <= REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT0_DEFAULT;
-    regs_defaults(106)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT1_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT1_LSB) <= REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT1_DEFAULT;
-    regs_defaults(106)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT2_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT2_LSB) <= REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT2_DEFAULT;
-    regs_defaults(106)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT3_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT3_LSB) <= REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT3_DEFAULT;
-    regs_defaults(106)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT4_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT4_LSB) <= REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT4_DEFAULT;
-    regs_defaults(106)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT5_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT5_LSB) <= REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT5_DEFAULT;
-    regs_defaults(107)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT6_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT6_LSB) <= REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT6_DEFAULT;
-    regs_defaults(107)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT7_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT7_LSB) <= REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT7_DEFAULT;
-    regs_defaults(107)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT8_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT8_LSB) <= REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT8_DEFAULT;
-    regs_defaults(107)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT9_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT9_LSB) <= REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT9_DEFAULT;
-    regs_defaults(107)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT10_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT10_LSB) <= REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT10_DEFAULT;
-    regs_defaults(107)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT11_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT11_LSB) <= REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT11_DEFAULT;
-    regs_defaults(108)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT12_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT12_LSB) <= REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT12_DEFAULT;
-    regs_defaults(108)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT13_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT13_LSB) <= REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT13_DEFAULT;
-    regs_defaults(108)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT14_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT14_LSB) <= REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT14_DEFAULT;
-    regs_defaults(108)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT15_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT15_LSB) <= REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT15_DEFAULT;
-    regs_defaults(108)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT16_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT16_LSB) <= REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT16_DEFAULT;
-    regs_defaults(108)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT17_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT17_LSB) <= REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT17_DEFAULT;
-    regs_defaults(109)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT18_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT18_LSB) <= REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT18_DEFAULT;
-    regs_defaults(109)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT19_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT19_LSB) <= REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT19_DEFAULT;
-    regs_defaults(109)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT20_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT20_LSB) <= REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT20_DEFAULT;
-    regs_defaults(109)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT21_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT21_LSB) <= REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT21_DEFAULT;
-    regs_defaults(109)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT22_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT22_LSB) <= REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT22_DEFAULT;
-    regs_defaults(109)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT23_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT23_LSB) <= REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT23_DEFAULT;
+    regs_defaults(73)(REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT0_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT0_DEFAULT;
+    regs_defaults(73)(REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT1_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT1_DEFAULT;
+    regs_defaults(73)(REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT2_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT2_DEFAULT;
+    regs_defaults(73)(REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT3_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT3_DEFAULT;
+    regs_defaults(73)(REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT4_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT4_DEFAULT;
+    regs_defaults(73)(REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT5_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT5_DEFAULT;
+    regs_defaults(74)(REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT6_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT6_DEFAULT;
+    regs_defaults(74)(REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT7_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT0_BIT7_DEFAULT;
+    regs_defaults(74)(REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT0_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT0_DEFAULT;
+    regs_defaults(74)(REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT1_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT1_DEFAULT;
+    regs_defaults(74)(REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT2_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT2_DEFAULT;
+    regs_defaults(74)(REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT3_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT3_DEFAULT;
+    regs_defaults(75)(REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT4_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT4_DEFAULT;
+    regs_defaults(75)(REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT5_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT5_DEFAULT;
+    regs_defaults(75)(REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT6_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT6_DEFAULT;
+    regs_defaults(75)(REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT7_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT1_BIT7_DEFAULT;
+    regs_defaults(75)(REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT0_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT0_DEFAULT;
+    regs_defaults(75)(REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT1_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT1_DEFAULT;
+    regs_defaults(76)(REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT2_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT2_DEFAULT;
+    regs_defaults(76)(REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT3_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT3_DEFAULT;
+    regs_defaults(76)(REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT4_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT4_DEFAULT;
+    regs_defaults(76)(REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT5_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT5_DEFAULT;
+    regs_defaults(76)(REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT6_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT6_DEFAULT;
+    regs_defaults(76)(REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT7_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT2_BIT7_DEFAULT;
+    regs_defaults(77)(REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT0_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT0_DEFAULT;
+    regs_defaults(77)(REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT1_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT1_DEFAULT;
+    regs_defaults(77)(REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT2_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT2_DEFAULT;
+    regs_defaults(77)(REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT3_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT3_DEFAULT;
+    regs_defaults(77)(REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT4_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT4_DEFAULT;
+    regs_defaults(77)(REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT5_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT5_DEFAULT;
+    regs_defaults(78)(REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT6_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT6_DEFAULT;
+    regs_defaults(78)(REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT7_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT3_BIT7_DEFAULT;
+    regs_defaults(78)(REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT0_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT0_DEFAULT;
+    regs_defaults(78)(REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT1_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT1_DEFAULT;
+    regs_defaults(78)(REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT2_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT2_DEFAULT;
+    regs_defaults(78)(REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT3_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT3_DEFAULT;
+    regs_defaults(79)(REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT4_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT4_DEFAULT;
+    regs_defaults(79)(REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT5_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT5_DEFAULT;
+    regs_defaults(79)(REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT6_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT6_DEFAULT;
+    regs_defaults(79)(REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT7_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT4_BIT7_DEFAULT;
+    regs_defaults(79)(REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT0_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT0_DEFAULT;
+    regs_defaults(79)(REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT1_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT1_DEFAULT;
+    regs_defaults(80)(REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT2_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT2_DEFAULT;
+    regs_defaults(80)(REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT3_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT3_DEFAULT;
+    regs_defaults(80)(REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT4_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT4_DEFAULT;
+    regs_defaults(80)(REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT5_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT5_DEFAULT;
+    regs_defaults(80)(REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT6_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT6_DEFAULT;
+    regs_defaults(80)(REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT7_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT5_BIT7_DEFAULT;
+    regs_defaults(81)(REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT0_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT0_DEFAULT;
+    regs_defaults(81)(REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT1_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT1_DEFAULT;
+    regs_defaults(81)(REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT2_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT2_DEFAULT;
+    regs_defaults(81)(REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT3_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT3_DEFAULT;
+    regs_defaults(81)(REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT4_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT4_DEFAULT;
+    regs_defaults(81)(REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT5_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT5_DEFAULT;
+    regs_defaults(82)(REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT6_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT6_DEFAULT;
+    regs_defaults(82)(REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT7_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT6_BIT7_DEFAULT;
+    regs_defaults(82)(REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT0_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT0_DEFAULT;
+    regs_defaults(82)(REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT1_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT1_DEFAULT;
+    regs_defaults(82)(REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT2_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT2_DEFAULT;
+    regs_defaults(82)(REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT3_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT3_DEFAULT;
+    regs_defaults(83)(REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT4_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT4_DEFAULT;
+    regs_defaults(83)(REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT5_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT5_DEFAULT;
+    regs_defaults(83)(REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT6_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT6_DEFAULT;
+    regs_defaults(83)(REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT7_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT7_BIT7_DEFAULT;
+    regs_defaults(83)(REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT0_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT0_DEFAULT;
+    regs_defaults(83)(REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT1_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT1_DEFAULT;
+    regs_defaults(84)(REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT2_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT2_DEFAULT;
+    regs_defaults(84)(REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT3_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT3_DEFAULT;
+    regs_defaults(84)(REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT4_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT4_DEFAULT;
+    regs_defaults(84)(REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT5_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT5_DEFAULT;
+    regs_defaults(84)(REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT6_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT6_DEFAULT;
+    regs_defaults(84)(REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT7_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT8_BIT7_DEFAULT;
+    regs_defaults(85)(REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT0_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT0_DEFAULT;
+    regs_defaults(85)(REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT1_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT1_DEFAULT;
+    regs_defaults(85)(REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT2_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT2_DEFAULT;
+    regs_defaults(85)(REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT3_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT3_DEFAULT;
+    regs_defaults(85)(REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT4_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT4_DEFAULT;
+    regs_defaults(85)(REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT5_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT5_DEFAULT;
+    regs_defaults(86)(REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT6_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT6_DEFAULT;
+    regs_defaults(86)(REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT7_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT9_BIT7_DEFAULT;
+    regs_defaults(86)(REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT0_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT0_DEFAULT;
+    regs_defaults(86)(REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT1_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT1_DEFAULT;
+    regs_defaults(86)(REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT2_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT2_DEFAULT;
+    regs_defaults(86)(REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT3_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT3_DEFAULT;
+    regs_defaults(87)(REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT4_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT4_DEFAULT;
+    regs_defaults(87)(REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT5_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT5_DEFAULT;
+    regs_defaults(87)(REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT6_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT6_DEFAULT;
+    regs_defaults(87)(REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT7_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT10_BIT7_DEFAULT;
+    regs_defaults(87)(REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT0_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT0_DEFAULT;
+    regs_defaults(87)(REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT1_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT1_DEFAULT;
+    regs_defaults(88)(REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT2_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT2_DEFAULT;
+    regs_defaults(88)(REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT3_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT3_DEFAULT;
+    regs_defaults(88)(REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT4_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT4_DEFAULT;
+    regs_defaults(88)(REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT5_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT5_DEFAULT;
+    regs_defaults(88)(REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT6_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT6_DEFAULT;
+    regs_defaults(88)(REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT7_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT11_BIT7_DEFAULT;
+    regs_defaults(89)(REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT0_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT0_DEFAULT;
+    regs_defaults(89)(REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT1_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT1_DEFAULT;
+    regs_defaults(89)(REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT2_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT2_DEFAULT;
+    regs_defaults(89)(REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT3_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT3_DEFAULT;
+    regs_defaults(89)(REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT4_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT4_DEFAULT;
+    regs_defaults(89)(REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT5_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT5_DEFAULT;
+    regs_defaults(90)(REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT6_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT6_DEFAULT;
+    regs_defaults(90)(REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT7_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT12_BIT7_DEFAULT;
+    regs_defaults(90)(REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT0_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT0_DEFAULT;
+    regs_defaults(90)(REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT1_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT1_DEFAULT;
+    regs_defaults(90)(REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT2_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT2_DEFAULT;
+    regs_defaults(90)(REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT3_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT3_DEFAULT;
+    regs_defaults(91)(REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT4_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT4_DEFAULT;
+    regs_defaults(91)(REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT5_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT5_DEFAULT;
+    regs_defaults(91)(REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT6_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT6_DEFAULT;
+    regs_defaults(91)(REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT7_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT13_BIT7_DEFAULT;
+    regs_defaults(91)(REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT0_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT0_DEFAULT;
+    regs_defaults(91)(REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT1_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT1_DEFAULT;
+    regs_defaults(92)(REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT2_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT2_DEFAULT;
+    regs_defaults(92)(REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT3_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT3_DEFAULT;
+    regs_defaults(92)(REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT4_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT4_DEFAULT;
+    regs_defaults(92)(REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT5_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT5_DEFAULT;
+    regs_defaults(92)(REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT6_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT6_DEFAULT;
+    regs_defaults(92)(REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT7_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT14_BIT7_DEFAULT;
+    regs_defaults(93)(REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT0_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT0_DEFAULT;
+    regs_defaults(93)(REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT1_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT1_DEFAULT;
+    regs_defaults(93)(REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT2_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT2_DEFAULT;
+    regs_defaults(93)(REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT3_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT3_DEFAULT;
+    regs_defaults(93)(REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT4_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT4_DEFAULT;
+    regs_defaults(93)(REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT5_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT5_DEFAULT;
+    regs_defaults(94)(REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT6_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT6_DEFAULT;
+    regs_defaults(94)(REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT7_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT15_BIT7_DEFAULT;
+    regs_defaults(94)(REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT0_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT0_DEFAULT;
+    regs_defaults(94)(REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT1_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT1_DEFAULT;
+    regs_defaults(94)(REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT2_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT2_DEFAULT;
+    regs_defaults(94)(REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT3_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT3_DEFAULT;
+    regs_defaults(95)(REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT4_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT4_DEFAULT;
+    regs_defaults(95)(REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT5_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT5_DEFAULT;
+    regs_defaults(95)(REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT6_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT6_DEFAULT;
+    regs_defaults(95)(REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT7_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT16_BIT7_DEFAULT;
+    regs_defaults(95)(REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT0_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT0_DEFAULT;
+    regs_defaults(95)(REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT1_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT1_DEFAULT;
+    regs_defaults(96)(REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT2_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT2_DEFAULT;
+    regs_defaults(96)(REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT3_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT3_DEFAULT;
+    regs_defaults(96)(REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT4_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT4_DEFAULT;
+    regs_defaults(96)(REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT5_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT5_DEFAULT;
+    regs_defaults(96)(REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT6_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT6_DEFAULT;
+    regs_defaults(96)(REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT7_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT17_BIT7_DEFAULT;
+    regs_defaults(97)(REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT0_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT0_DEFAULT;
+    regs_defaults(97)(REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT1_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT1_DEFAULT;
+    regs_defaults(97)(REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT2_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT2_DEFAULT;
+    regs_defaults(97)(REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT3_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT3_DEFAULT;
+    regs_defaults(97)(REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT4_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT4_DEFAULT;
+    regs_defaults(97)(REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT5_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT5_DEFAULT;
+    regs_defaults(98)(REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT6_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT6_DEFAULT;
+    regs_defaults(98)(REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT7_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT18_BIT7_DEFAULT;
+    regs_defaults(98)(REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT0_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT0_DEFAULT;
+    regs_defaults(98)(REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT1_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT1_DEFAULT;
+    regs_defaults(98)(REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT2_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT2_DEFAULT;
+    regs_defaults(98)(REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT3_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT3_DEFAULT;
+    regs_defaults(99)(REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT4_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT4_DEFAULT;
+    regs_defaults(99)(REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT5_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT5_DEFAULT;
+    regs_defaults(99)(REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT6_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT6_DEFAULT;
+    regs_defaults(99)(REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT7_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT19_BIT7_DEFAULT;
+    regs_defaults(99)(REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT0_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT0_DEFAULT;
+    regs_defaults(99)(REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT1_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT1_DEFAULT;
+    regs_defaults(100)(REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT2_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT2_DEFAULT;
+    regs_defaults(100)(REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT3_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT3_DEFAULT;
+    regs_defaults(100)(REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT4_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT4_DEFAULT;
+    regs_defaults(100)(REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT5_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT5_DEFAULT;
+    regs_defaults(100)(REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT6_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT6_DEFAULT;
+    regs_defaults(100)(REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT7_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT20_BIT7_DEFAULT;
+    regs_defaults(101)(REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT0_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT0_DEFAULT;
+    regs_defaults(101)(REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT1_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT1_DEFAULT;
+    regs_defaults(101)(REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT2_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT2_DEFAULT;
+    regs_defaults(101)(REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT3_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT3_DEFAULT;
+    regs_defaults(101)(REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT4_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT4_DEFAULT;
+    regs_defaults(101)(REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT5_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT5_DEFAULT;
+    regs_defaults(102)(REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT6_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT6_DEFAULT;
+    regs_defaults(102)(REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT7_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT21_BIT7_DEFAULT;
+    regs_defaults(102)(REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT0_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT0_DEFAULT;
+    regs_defaults(102)(REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT1_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT1_DEFAULT;
+    regs_defaults(102)(REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT2_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT2_DEFAULT;
+    regs_defaults(102)(REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT3_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT3_DEFAULT;
+    regs_defaults(103)(REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT4_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT4_DEFAULT;
+    regs_defaults(103)(REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT5_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT5_DEFAULT;
+    regs_defaults(103)(REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT6_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT6_DEFAULT;
+    regs_defaults(103)(REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT7_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT22_BIT7_DEFAULT;
+    regs_defaults(103)(REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT0_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT0_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT0_DEFAULT;
+    regs_defaults(103)(REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT1_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT1_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT1_DEFAULT;
+    regs_defaults(104)(REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT2_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT2_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT2_DEFAULT;
+    regs_defaults(104)(REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT3_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT3_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT3_DEFAULT;
+    regs_defaults(104)(REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT4_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT4_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT4_DEFAULT;
+    regs_defaults(104)(REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT5_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT5_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT5_DEFAULT;
+    regs_defaults(104)(REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT6_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT6_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT6_DEFAULT;
+    regs_defaults(104)(REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT7_MSB downto REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT7_LSB) <= REG_TRIG_TIMING_TAP_DELAY_VFAT23_BIT7_DEFAULT;
+    regs_defaults(105)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT0_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT0_LSB) <= REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT0_DEFAULT;
+    regs_defaults(105)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT1_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT1_LSB) <= REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT1_DEFAULT;
+    regs_defaults(105)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT2_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT2_LSB) <= REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT2_DEFAULT;
+    regs_defaults(105)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT3_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT3_LSB) <= REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT3_DEFAULT;
+    regs_defaults(105)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT4_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT4_LSB) <= REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT4_DEFAULT;
+    regs_defaults(105)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT5_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT5_LSB) <= REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT5_DEFAULT;
+    regs_defaults(106)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT6_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT6_LSB) <= REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT6_DEFAULT;
+    regs_defaults(106)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT7_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT7_LSB) <= REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT7_DEFAULT;
+    regs_defaults(106)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT8_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT8_LSB) <= REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT8_DEFAULT;
+    regs_defaults(106)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT9_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT9_LSB) <= REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT9_DEFAULT;
+    regs_defaults(106)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT10_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT10_LSB) <= REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT10_DEFAULT;
+    regs_defaults(106)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT11_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT11_LSB) <= REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT11_DEFAULT;
+    regs_defaults(107)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT12_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT12_LSB) <= REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT12_DEFAULT;
+    regs_defaults(107)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT13_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT13_LSB) <= REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT13_DEFAULT;
+    regs_defaults(107)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT14_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT14_LSB) <= REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT14_DEFAULT;
+    regs_defaults(107)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT15_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT15_LSB) <= REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT15_DEFAULT;
+    regs_defaults(107)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT16_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT16_LSB) <= REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT16_DEFAULT;
+    regs_defaults(107)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT17_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT17_LSB) <= REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT17_DEFAULT;
+    regs_defaults(108)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT18_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT18_LSB) <= REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT18_DEFAULT;
+    regs_defaults(108)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT19_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT19_LSB) <= REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT19_DEFAULT;
+    regs_defaults(108)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT20_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT20_LSB) <= REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT20_DEFAULT;
+    regs_defaults(108)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT21_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT21_LSB) <= REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT21_DEFAULT;
+    regs_defaults(108)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT22_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT22_LSB) <= REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT22_DEFAULT;
+    regs_defaults(108)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT23_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT23_LSB) <= REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT23_DEFAULT;
 
     -- Define writable regs
     regs_writable_arr(0) <= '1';
@@ -2214,6 +2197,7 @@ begin
     regs_writable_arr(20) <= '1';
     regs_writable_arr(46) <= '1';
     regs_writable_arr(47) <= '1';
+    regs_writable_arr(73) <= '1';
     regs_writable_arr(74) <= '1';
     regs_writable_arr(75) <= '1';
     regs_writable_arr(76) <= '1';
@@ -2249,7 +2233,6 @@ begin
     regs_writable_arr(106) <= '1';
     regs_writable_arr(107) <= '1';
     regs_writable_arr(108) <= '1';
-    regs_writable_arr(109) <= '1';
 
     --==== Registers end ============================================================================
 

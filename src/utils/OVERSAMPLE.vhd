@@ -155,7 +155,7 @@ begin
           phase_sel_in  => phase_sel_in,  --
           phase_sel_out => phase_sel_out, --
           o             => rxdata,        -- 8-bit deserialized data
-          vo            => rxce           --
+          vo            => rxce           -- rx valid
   );
 
   rxdata_inv <= rxdata when invert='0' else not rxdata;

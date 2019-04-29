@@ -21,7 +21,6 @@ module   gem_data_out #(
   input             resync_i,      // 1  bit resync flag
 
   input clock_40,
-  input clock_80,
   input clock_160,
 
   output ready_o,
@@ -100,6 +99,7 @@ module   gem_data_out #(
   parameter GTXTEST_RESET_CNT  = 16000  * 1000 / STABLE_CLOCK_PERIOD; // usec
   parameter TXRESET_CNT        = 18000  * 1000 / STABLE_CLOCK_PERIOD; // usec
   parameter MGT_REALIGN_CNT    = 0      * 1000 / STABLE_CLOCK_PERIOD; // usec
+  parameter DONE_CNT           = 20000  * 1000 / STABLE_CLOCK_PERIOD; // usec
 
   assign pll_reset    = (startup_reset_cnt <  PLL_RESET_CNT);
   assign mgt_reset[0] = (startup_reset_cnt <  MGT_RESET_CNT0);
@@ -109,6 +109,8 @@ module   gem_data_out #(
   wire gtxtest_start  = (startup_reset_cnt == GTXTEST_RESET_CNT);
   wire txreset        = (startup_reset_cnt == TXRESET_CNT);
   wire mgt_realign    = (startup_reset_cnt == MGT_REALIGN_CNT);
+
+  wire startup_done   = (startup_reset_cnt >  DONE_CNT);
 
   reg [9:0] gtxtest_cnt=1023;
   always @ (posedge clock_40) begin
@@ -199,7 +201,7 @@ module   gem_data_out #(
 
 
       always @(posedge clock_160) begin
-        ready <= &tx_fsm_reset_done;
+        ready <= &tx_fsm_reset_done && startup_done;
       end
 
       synchronizer synchronizer_reset      (.async_i (reset_i),   .clk_i (usrclk_160), .sync_o (reset));
@@ -267,7 +269,7 @@ module   gem_data_out #(
       assign overflow         = overflow_i;
       assign usrclk_160       = clock_160;
 
-      always @(*) ready <= (&tx_fsm_reset_done) && (&pll_lock);
+      always @(*) ready <= (&tx_fsm_reset_done) && (&pll_lock) && startup_done;
 
       v6_gtx_wrapper v6_gtx_wrapper (
         .refclk_n          (refclk_n),
@@ -298,7 +300,7 @@ module   gem_data_out #(
                                                             // If the RX PLL is supplying the clock for the TX datapath,
                                                             // GTXTXRESET and GTXRXRESET must be tied together. In addition,
                                                             // the transmitter reference clock must also be supplied (see Reference Clock Selection, page 102)
-        .txenprbstst_in    (0),                             // 000: Standard operation mode (test pattern generation is OFF)
+        .txenprbstst_in    (3'b000),                        // 000: Standard operation mode (test pattern generation is OFF)
                                                             // 001: PRBS-7
                                                             // 010: PRBS-15
                                                             // 011: PRBS-23

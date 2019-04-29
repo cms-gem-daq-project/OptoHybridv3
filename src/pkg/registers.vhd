@@ -258,7 +258,7 @@ package registers is
     -- Connects to the trigger control module
     --============================================================================
 
-    constant REG_TRIG_NUM_REGS : integer := 122;
+    constant REG_TRIG_NUM_REGS : integer := 121;
     constant REG_TRIG_ADDRESS_MSB : integer := 7;
     constant REG_TRIG_ADDRESS_LSB : integer := 0;
     constant REG_TRIG_CTRL_VFAT_MASK_ADDR    : std_logic_vector(7 downto 0) := x"00";
@@ -661,9 +661,6 @@ package registers is
     constant REG_TRIG_CNT_CLUSTER_COUNT_ADDR    : std_logic_vector(7 downto 0) := x"32";
     constant REG_TRIG_CNT_CLUSTER_COUNT_MSB    : integer := 31;
     constant REG_TRIG_CNT_CLUSTER_COUNT_LSB     : integer := 0;
-
-    constant REG_TRIG_CNT_CNT_PULSE_ADDR    : std_logic_vector(7 downto 0) := x"33";
-    constant REG_TRIG_CNT_CNT_PULSE_BIT    : integer := 0;
 
     constant REG_TRIG_CNT_SBITS_OVER_64x0_ADDR    : std_logic_vector(7 downto 0) := x"36";
     constant REG_TRIG_CNT_SBITS_OVER_64x0_MSB    : integer := 15;
