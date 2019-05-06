@@ -32,7 +32,7 @@
                 \\ XX indicates the firmware major version
                 \\ YY indicates the firmware minor version
                 \\ ZZ indicates the firmware patch
-                \\ AA indicates the hardware generation (0C = v3C short, 1C = v3C long)
+                \\ AA indicates the hardware generation (0C = GE1/1 v3C short, 1C = GE1/1 v3C long, 2A = GE2/1 v1)
                 ">
                 <node id="MAJOR" address="0x0" permission="r"
                     mask="0xff"
@@ -374,8 +374,8 @@
         description="Connects to the trigger control module"
         fw_is_module="true"
         fw_module_file="../src/trigger/trigger.vhd"
-        fw_user_clock_signal="clk_40"
-        fw_bus_clock_signal="clk_40"
+        fw_user_clock_signal="clk_40_mgt"
+        fw_bus_clock_signal="clk_40_mgt"
         fw_bus_reset_signal="ipb_reset"
         fw_master_bus_signal="ipb_mosi_i"
         fw_slave_bus_signal="ipb_miso_o"
@@ -711,21 +711,21 @@
                 </node> <!--TU_MASK-->
             </node> <!--CTRL-->
 
-            <node id="CNT" address="0x17" description = "S-BIT Counters \\  Set CNT_PERSIST to 1 to accumulate. Otherwise the counters will automatically reset after a programmable time. By default this time is 1 second, making these counters a rate counter in Hertz">
+            <node id="CNT" address="0x17" description = "S-BIT Counters \\  Set CNT_PERSIST to 1 to accumulate. Otherwise the counters will automatically reset after a programmable time (default is 1 second). By default this time is 1 second, making these counters a rate counter in Hertz">
 
                 <!-- updated by update_vfat_counters.py-->
                 <!-- START: VFAT_COUNTERS DO NOT EDIT -->
-                <node id="VFAT${VFAT_IDX}" address="0x0" permission="r"
+                <node id="VFAT${VFAT_CNT_IDX}" address="0x0" permission="r"
                     mask="0xffffffff"
-                    description="VFAT ${VFAT_IDX} Counter"
-                    fw_cnt_en_signal="active_vfats(${VFAT_IDX})"
+                    description="VFAT ${VFAT_CNT_IDX} Counter"
+                    fw_cnt_en_signal="active_vfats(${VFAT_CNT_IDX})"
                     fw_cnt_snap_signal="sbit_cnt_snap"
                     fw_cnt_reset_signal="cnt_reset_strobed"
-                    fw_signal="cnt_vfat${VFAT_IDX}"
+                    fw_signal="cnt_vfat${VFAT_CNT_IDX}"
                     generate="true"
                     generate_size="24"
                     generate_address_step="0x1"
-                    generate_idx_var="VFAT_IDX"/>
+                    generate_idx_var="VFAT_CNT_IDX"/>
                 <!-- END: VFAT_COUNTERS DO NOT EDIT -->
 
                 <node id="RESET" address="0x18" permission="w"
@@ -1874,6 +1874,56 @@
                     mask="0x000000f0"
                     description="Transmit Resets are Done"
                     fw_signal="tx_reset_done"/>
+                <node id="TX_PRBS_MODE" address="0x1" permission="rw"
+                    mask="0x00000700"
+                    description="000: Standard \n 001: PRBS-7 \n 010: PRBS-15 \n 011: PRBS-23 \n 100: PRBS-31"
+                    fw_default="0x0"
+                    fw_signal="tx_prbs_mode"/>
+                <node id="TX_PLL_RESET" address="0x1" permission="rw"
+                    mask="0x00000800"
+                    description="This port resets the TX PLL of the GTX transceiver when driven High. It affects the clock generated from the TX PMA. When this reset is asserted or deasserted, TXRESET must also be asserted or deasserted."
+                    fw_default="0x0"
+                    fw_signal="pll_reset"/>
+                <node id="MGT_RESET" address="0x1" permission="rw"
+                    mask="0x0000f000"
+                    description="Asserts the MGT reset (GTXTXRESET). This sequence takes about 120 us to complete and systematically resets all subcomponents of the GTX transceiver TX. "
+                    fw_default="0x0"
+                    fw_signal="mgt_reset"/>
+                <node id="GTXTEST_START" address="0x1" permission="rw"
+                    mask="0x00010000"
+                    description="Initiates a double reset of the TX output clock dividers"
+                    fw_default="0x0"
+                    fw_signal="gtxtest_start"/>
+                <node id="TXRESET" address="0x1" permission="rw"
+                    mask="0x00020000"
+                    description="PCS TX system reset. Resets the TX FIFO, 8B/10B encoder and other transmitter registers. This reset is a subset of GTXTXRESET."
+                    fw_default="0x0"
+                    fw_signal="txreset"/>
+                <node id="MGT_REALIGN" address="0x1" permission="rw"
+                    mask="0x00040000"
+                    description="Resets the TX_SYNC module to realign the buf_bypass alignment FSM"
+                    fw_default="0x0"
+                    fw_signal="mgt_realign"/>
+                <node id="TXPOWERDOWN" address="0x1" permission="rw"
+                    mask="0x00080000"
+                    fw_default="0x0"
+                    description="Set the MGT tx into powerdown. The type of powerdown is controlled by TXPOWERDOWN_MODE"
+                    fw_signal="txpowerdown"/>
+                <node id="TXPOWERDOWN_MODE" address="0x1" permission="rw"
+                    mask="0x00300000"
+                    description="00: P0 (normal operation) \n 01: P0s (low recovery time power down) \n 10: P1 (longer recovery time \n Receiver Detection still on) \n 11: P2 (lowest power state)"
+                    fw_default="0x1"
+                    fw_signal="txpowerdown_mode"/>
+                <node id="TXPLLPOWERDOWN" address="0x1" permission="rw"
+                    mask="0x00400000"
+                    description="Input to power down the TX PLL."
+                    fw_default="0x0"
+                    fw_signal="txpllpowerdown"/>
+                <node id="FORCE_NOT_READY" address="0x1" permission="rw"
+                    mask="0x00800000"
+                    description="Set high to force MGTs not ready and gate the clocks for and reset the rest of the FPGA logic"
+                    fw_default="0x0"
+                    fw_signal="force_mgts_not_ready"/>
 
             </node> <!--Links-->
 

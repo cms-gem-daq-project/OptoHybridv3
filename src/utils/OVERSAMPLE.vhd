@@ -12,19 +12,21 @@ generic (
   g_NUM_TAPS_45        : integer := 10
 );
 port(
-  invert        : in std_logic := '0';
-  rxd_p         : in std_logic;
-  rxd_n         : in std_logic;
-  clk1x_logic   : in std_logic;
-  clk2x_logic   : in std_logic;
-  clk2x_0       : in std_logic;
-  clk2x_90      : in std_logic;
-  clk2x_180     : in std_logic;
-  rst           : in std_logic;
-  tap_delay_i   : in std_logic_vector (4 downto 0) := "00000";
-  phase_sel_in  : in std_logic_vector (1 downto 0) := "00";
-  phase_sel_out : out std_logic_vector (1 downto 0);
-  rxdata_o      : out std_logic_vector (g_BIT_WIDTH-1 downto 0)
+  invert         :  in std_logic := '0';
+  rxd_p          :  in std_logic;
+  rxd_n          :  in std_logic;
+  clk1x_logic    :  in std_logic;
+  clk2x_logic    :  in std_logic;
+  clk2x_0        :  in std_logic;
+  clk2x_90       :  in std_logic;
+  clk2x_180      :  in std_logic;
+  rst            :  in std_logic;
+  tap_delay_i    :  in  std_logic_vector (4 downto 0) := "00000";
+  phase_sel_in   :  in  std_logic_vector (1 downto 0) := "00";
+  phase_sel_out  :  out std_logic_vector (1 downto 0);
+  e4_in          :  in  std_logic_vector (3 downto 0) := "0000";
+  e4_out         :  out std_logic_vector (3 downto 0);
+  rxdata_o       :  out std_logic_vector (g_BIT_WIDTH-1 downto 0)
 );
 end oversample;
 
@@ -154,6 +156,8 @@ begin
           clk2x         => clk2x_logic,   --
           phase_sel_in  => phase_sel_in,  --
           phase_sel_out => phase_sel_out, --
+          e4_in         => e4_in,  --
+          e4_out        => e4_out, --
           o             => rxdata,        -- 8-bit deserialized data
           vo            => rxce           -- rx valid
   );

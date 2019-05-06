@@ -4,6 +4,7 @@ module   gem_data_out #(
   parameter FPGA_TYPE_IS_VIRTEX6 = 0,
   parameter FPGA_TYPE_IS_ARTIX7  = 0,
   parameter ALLOW_TTC_CHARS      = 0,
+  parameter ALLOW_RETRY          = 0,
   parameter FRAME_CTRL_TTC       = 1
 
 )
@@ -14,16 +15,33 @@ module   gem_data_out #(
   input [1:0]  refclk_n,
   input [1:0]  refclk_p,
 
+  input [2:0]       tx_prbs_mode,
+
   input [56*2-1:0]  gem_data,      // 56 bit gem data
   input             overflow_i,    // 1 bit gem has more than 8 clusters
   input [11:0]      bxn_counter_i, // 12 bit bxn counter
   input             bc0_i,         // 1  bit bx0 flag
   input             resync_i,      // 1  bit resync flag
 
+  input pll_reset_i,
+  input [3:0] mgt_reset_i,
+  input gtxtest_start_i,
+  input txreset_i,
+  input mgt_realign_i,
+  input txpowerdown_i,
+  input [1:0] txpowerdown_mode_i,
+  input txpllpowerdown_i,
+
   input clock_40,
   input clock_160,
 
   output ready_o,
+
+  output pll_lock_o,
+
+  output txfsm_done_o,
+
+  input force_not_ready,
 
   input reset_i
 );
@@ -47,10 +65,11 @@ module   gem_data_out #(
   reg [7:0] frame_sep;
 
   wire [3:0] tx_fsm_reset_done;
+  wire [3:0] tx_sync_done;
+  assign txfsm_done_o = &tx_fsm_reset_done;
   wire [3:0] pll_lock;
-  assign pll_lock_o = pll_lock;
+  assign pll_lock_o = &pll_lock;
   reg  ready;
-  assign ready_o = ready;
   wire ready_sync;
   wire rd_en;
 
@@ -61,8 +80,8 @@ module   gem_data_out #(
 
   reg [1:0] tx_frame=0;
 
-  reg [15:0] trg_tx_data [3:0] ;
-  reg [1:0]  trg_tx_isk  [3:0];
+(* keep="true", max_fanout = "4" *)  reg [15:0] trg_tx_data [3:0] ;
+(* keep="true", max_fanout = "4" *)  reg [1:0]  trg_tx_isk   [3:0];
 
   wire [55:0] gem_link_data [3:0];
 
@@ -75,13 +94,42 @@ module   gem_data_out #(
     tx_frame  <= (reset || ~ready_sync) ? 2'd0 : tx_frame + 1'b1;
   end
 
+  //--------------------------------------------------------------------------------------------------------------------
+  // Ready Timer
+  //--------------------------------------------------------------------------------------------------------------------
+
+  parameter READY_CNT_MAX = 2**18-1;
+  parameter READY_BITS    = $clog2 (READY_CNT_MAX);
+  reg [READY_BITS-1:0] ready_cnt = 0;
+
+  always @ (posedge clock_40) begin
+    if (~ready || force_not_ready)
+      ready_cnt <= 0;
+    else if (ready_cnt < READY_CNT_MAX)
+      ready_cnt <= ready_cnt + 1'b1;
+    else
+      ready_cnt <= ready_cnt;
+  end
+
+  assign ready_o = (ready_cnt == READY_CNT_MAX);
+
+  //--------------------------------------------------------------------------------------------------------------------
+  // Retry
+  //--------------------------------------------------------------------------------------------------------------------
+
+  wire retry = (ALLOW_RETRY && startup_done && !ready);
+
+  //--------------------------------------------------------------------------------------------------------------------
+  // Startup
+  //--------------------------------------------------------------------------------------------------------------------
+
   parameter STARTUP_RESET_CNT_MAX = 2**22-1;
   parameter STARTUP_RESET_BITS    = $clog2 (STARTUP_RESET_CNT_MAX);
 
   reg [STARTUP_RESET_BITS-1:0] startup_reset_cnt = 0;
 
   always @ (posedge clock_40) begin
-    if (reset_i)
+    if (reset_i || retry)
       startup_reset_cnt <= 0;
     else if (startup_reset_cnt < STARTUP_RESET_CNT_MAX)
       startup_reset_cnt <= startup_reset_cnt + 1'b1;
@@ -89,28 +137,35 @@ module   gem_data_out #(
       startup_reset_cnt <= startup_reset_cnt;
   end
 
+
   parameter STABLE_CLOCK_PERIOD = 25;
 
-  parameter MGT_RESET_CNT0     = 4000   * 1000 / STABLE_CLOCK_PERIOD; // usec
-  parameter MGT_RESET_CNT1     = 8000   * 1000 / STABLE_CLOCK_PERIOD; // usec
-  parameter MGT_RESET_CNT2     = 12000  * 1000 / STABLE_CLOCK_PERIOD; // usec
-  parameter MGT_RESET_CNT3     = 14000  * 1000 / STABLE_CLOCK_PERIOD; // usec
-  parameter PLL_RESET_CNT      = 0      * 1000 / STABLE_CLOCK_PERIOD; // usec
-  parameter GTXTEST_RESET_CNT  = 16000  * 1000 / STABLE_CLOCK_PERIOD; // usec
-  parameter TXRESET_CNT        = 18000  * 1000 / STABLE_CLOCK_PERIOD; // usec
-  parameter MGT_REALIGN_CNT    = 0      * 1000 / STABLE_CLOCK_PERIOD; // usec
-  parameter DONE_CNT           = 20000  * 1000 / STABLE_CLOCK_PERIOD; // usec
+  parameter MGT_RESET_CNT0    = 4000   * 1000 / STABLE_CLOCK_PERIOD; // usec
+  parameter MGT_RESET_CNT1    = 8000   * 1000 / STABLE_CLOCK_PERIOD; // usec
+  parameter MGT_RESET_CNT2    = 12000  * 1000 / STABLE_CLOCK_PERIOD; // usec
+  parameter MGT_RESET_CNT3    = 14000  * 1000 / STABLE_CLOCK_PERIOD; // usec
+  parameter PLL_RESET_CNT     = 0      * 1000 / STABLE_CLOCK_PERIOD; // usec
+  parameter PLL_POWERDOWN_CNT = 0      * 1000 / STABLE_CLOCK_PERIOD; // usec
+  parameter TXPOWERDOWN_CNT   = 0      * 1000 / STABLE_CLOCK_PERIOD; // usec
+  parameter GTXTEST_RESET_CNT = 16000  * 1000 / STABLE_CLOCK_PERIOD; // usec
+  parameter TXRESET_CNT       = 18000  * 1000 / STABLE_CLOCK_PERIOD; // usec
+  parameter MGT_REALIGN_CNT   = 0      * 1000 / STABLE_CLOCK_PERIOD; // usec
+  parameter DONE_CNT          = 30000  * 1000 / STABLE_CLOCK_PERIOD; // usec
 
-  assign pll_reset    = (startup_reset_cnt <  PLL_RESET_CNT);
-  assign mgt_reset[0] = (startup_reset_cnt <  MGT_RESET_CNT0);
-  assign mgt_reset[1] = (startup_reset_cnt <  MGT_RESET_CNT1);
-  assign mgt_reset[2] = (startup_reset_cnt <  MGT_RESET_CNT2);
-  assign mgt_reset[3] = (startup_reset_cnt <  MGT_RESET_CNT3);
-  wire gtxtest_start  = (startup_reset_cnt == GTXTEST_RESET_CNT);
-  wire txreset        = (startup_reset_cnt == TXRESET_CNT);
-  wire mgt_realign    = (startup_reset_cnt == MGT_REALIGN_CNT);
+  assign pll_reset    = pll_reset_i      || (startup_reset_cnt <  PLL_RESET_CNT);
+  assign mgt_reset[0] = mgt_reset_i[0]   || (startup_reset_cnt <  MGT_RESET_CNT0);
+  assign mgt_reset[1] = mgt_reset_i[1]   || (startup_reset_cnt <  MGT_RESET_CNT1);
+  assign mgt_reset[2] = mgt_reset_i[2]   || (startup_reset_cnt <  MGT_RESET_CNT2);
+  assign mgt_reset[3] = mgt_reset_i[3]   || (startup_reset_cnt <  MGT_RESET_CNT3);
+  wire gtxtest_start  = gtxtest_start_i  || (startup_reset_cnt == GTXTEST_RESET_CNT);
+  wire txreset        = txreset_i        || (startup_reset_cnt == TXRESET_CNT);
+  wire mgt_realign    = mgt_realign_i    || (startup_reset_cnt == MGT_REALIGN_CNT);
+  wire txpowerdown    = txpowerdown_i    || (startup_reset_cnt <  TXPOWERDOWN_CNT);
+  wire txpllpowerdown = txpllpowerdown_i || (startup_reset_cnt <  PLL_POWERDOWN_CNT);
 
-  wire startup_done   = (startup_reset_cnt >  DONE_CNT);
+  wire [1:0] txpowerdown_mode = {2{txpowerdown}} & txpowerdown_mode_i;
+
+  assign startup_done   = (startup_reset_cnt >  DONE_CNT);
 
   reg [9:0] gtxtest_cnt=1023;
   always @ (posedge clock_40) begin
@@ -133,25 +188,25 @@ module   gem_data_out #(
 
         if (reset || ~ready_sync) begin
           trg_tx_data[ilink]  <= 16'hFFFC;
-          trg_tx_isk[ilink]  <= 2'b01;
+          trg_tx_isk [ilink]  <= 2'b01;
         end
         else begin
           case (tx_frame)
             2'd0: begin
                   trg_tx_data[ilink] <= {gem_link_data[ilink][7:0] , frame_sep[7:0]};
-                  trg_tx_isk[ilink]  <= 2'b01;
+                  trg_tx_isk [ilink] <= 2'b01;
             end
             2'd1: begin
                   trg_tx_data[ilink] <= {gem_link_data[ilink][23:8]};
-                  trg_tx_isk[ilink]  <= 2'b00;
+                  trg_tx_isk [ilink] <= 2'b00;
             end
             2'd2: begin
                   trg_tx_data[ilink] <= {gem_link_data[ilink][39:24]};
-                  trg_tx_isk[ilink]  <= 2'b00;
+                  trg_tx_isk [ilink] <= 2'b00;
             end
             2'd3: begin
                   trg_tx_data[ilink] <= {gem_link_data[ilink][55:40]};
-                  trg_tx_isk[ilink]  <= 2'b00;
+                  trg_tx_isk [ilink] <= 2'b00;
             end
           endcase
         end
@@ -201,7 +256,8 @@ module   gem_data_out #(
 
 
       always @(posedge clock_160) begin
-        ready <= &tx_fsm_reset_done && startup_done;
+        ready <= &tx_fsm_reset_done;
+      //ready <= &tx_fsm_reset_done && startup_done;
       end
 
       synchronizer synchronizer_reset      (.async_i (reset_i),   .clk_i (usrclk_160), .sync_o (reset));
@@ -234,10 +290,10 @@ module   gem_data_out #(
 
         .sysclk_in                 (clock_40),
 
-        .gt0_txcharisk_i           (trg_tx_isk[0]),
-        .gt1_txcharisk_i           (trg_tx_isk[1]),
-        .gt2_txcharisk_i           (trg_tx_isk[2]),
-        .gt3_txcharisk_i           (trg_tx_isk[3]),
+        .gt0_txcharisk_i           (trg_tx_isk [0]),
+        .gt1_txcharisk_i           (trg_tx_isk [1]),
+        .gt2_txcharisk_i           (trg_tx_isk [2]),
+        .gt3_txcharisk_i           (trg_tx_isk [3]),
 
         .gt0_txdata_i              (trg_tx_data[0]),
         .gt1_txdata_i              (trg_tx_data[1]),
@@ -269,12 +325,13 @@ module   gem_data_out #(
       assign overflow         = overflow_i;
       assign usrclk_160       = clock_160;
 
-      always @(*) ready <= (&tx_fsm_reset_done) && (&pll_lock) && startup_done;
+      assign pll_lock_o = &pll_lock;
+
+      always @(*) ready <= (&tx_sync_done) && (&tx_fsm_reset_done) && (&pll_lock);
 
       v6_gtx_wrapper v6_gtx_wrapper (
         .refclk_n          (refclk_n),
         .refclk_p          (refclk_p),
-        .clock_40          (clock_40),
         .clock_160         (clock_160),
         .gtx_txoutclk      (),
         .TXN_OUT           (trg_tx_n),
@@ -288,6 +345,7 @@ module   gem_data_out #(
         .GTX2_TXDATA_IN    (trg_tx_data[2]),
         .GTX3_TXDATA_IN    (trg_tx_data[3]),
         .tx_resetdone_o    (tx_fsm_reset_done),
+        .gtx_tx_sync_done  (tx_sync_done),
         .pll_lock          (pll_lock),
         .realign           (mgt_realign),
         .plltxreset_in     (pll_reset),                     // This port resets the TX PLL of the GTX transceiver when driven High.
@@ -300,7 +358,7 @@ module   gem_data_out #(
                                                             // If the RX PLL is supplying the clock for the TX datapath,
                                                             // GTXTXRESET and GTXRXRESET must be tied together. In addition,
                                                             // the transmitter reference clock must also be supplied (see Reference Clock Selection, page 102)
-        .txenprbstst_in    (3'b000),                        // 000: Standard operation mode (test pattern generation is OFF)
+        .txenprbstst_in    (tx_prbs_mode),                  // 000: Standard operation mode (test pattern generation is OFF)
                                                             // 001: PRBS-7
                                                             // 010: PRBS-15
                                                             // 011: PRBS-23
@@ -310,6 +368,11 @@ module   gem_data_out #(
                                                             // 111: Square wave with 16 UI or 20 UI period (based on data width)
         .txreset_in (txreset),                              // PCS TX system reset. Resets the TX FIFO, 8B/10B encoder and other
                                                             // transmitter registers. This reset is a subset of GTXTXRESET
+        .txpowerdown (txpowerdown_mode),                    // 00: P0 (normal operation)
+                                                            // 01: P0s (low recovery time power down)
+                                                            // 10: P1 (longer recovery time; Receiver Detection still on)
+                                                            // 11: P2 (lowest power state)
+        .txpllpowerdown (txpllpowerdown),
         .gtxtest_in ({11'b10000000000,gtxtest_reset,1'b0})  // GTXTEST[0]: Reserved. Tied to 0.
                                                             // GTXTEST[1]: The default is 0. When this bit is set to 1, the TX output clock dividers are reset.
                                                             // GTXTEST[12:2]: Reserved. Tied to 10000000000.

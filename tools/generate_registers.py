@@ -511,7 +511,7 @@ def writeDocFile (modules, filename):
     def write_parent_name_latex (f, parent_name):
         padding = "    "
         f.write('%s\\noindent\n' % (padding))
-        f.write('%s\\textcolor{parentcolor}{\\textbf{%s}}\n' % (padding, latexify(parent_name)))
+        f.write('%s\\subsection*{\\textcolor{parentcolor}{\\textbf{%s}}}\n' % (padding, latexify(parent_name)))
         f.write ('\n')
 
     def write_parent_description_latex (f, parent_description):
@@ -592,9 +592,12 @@ def writeDocFile (modules, filename):
                 # allow other loops to unroll...
 
                 is_first_in_loop = 1
+                reg_unrolling_is_supressed = 0
                 for varKey in reg.genvars.keys():
-                    if (varKey == "GBT_IDX" or varKey == "OH_IDX" or varKey == "VFAT_IDX" or varKey == "CHANNEL_IDX") and reg.genvars[varKey] > 0:
-                        is_first_in_loop = 0
+                    if (varKey == "GBT_IDX" or varKey == "OH_IDX" or varKey == "VFAT_IDX" or varKey == "CHANNEL_IDX"):
+                        reg_unrolling_is_supressed = 1
+                        if (reg.genvars[varKey] > 0):
+                            is_first_in_loop = 0
 
                 if (is_first_in_loop == 0):
                     continue
@@ -662,8 +665,14 @@ def writeDocFile (modules, filename):
                 if (reg.write_pulse_signal!=None):
                     reg_default = "Pulsed"
 
+                description=""
+                if (reg_unrolling_is_supressed ):
+                    description=substituteVars(reg.description_raw,vars)
+                else:
+                    description=reg.description
+
                 # write register entry
-                write_reg_entry_latex (f, endpoint_name, address, reg.msb, reg.lsb, reg.permission, reg_default, substituteVars(reg.description_raw,vars))
+                write_reg_entry_latex (f, endpoint_name, address, reg.msb, reg.lsb, reg.permission, reg_default, description)
 
             # end of table
 

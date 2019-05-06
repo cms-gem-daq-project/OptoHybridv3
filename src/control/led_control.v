@@ -2,6 +2,8 @@ module led_control (
   input clock,
 
   input mgts_ready,
+  input txfsm_done,
+  input pll_lock,
 
   input mmcm_locked,
   input elink_mmcm_locked,

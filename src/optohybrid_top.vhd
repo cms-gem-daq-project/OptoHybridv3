@@ -9,6 +9,10 @@
 -- 2017/07/25 -- Restructure top level module to improve organization
 -- 2018/04/18 -- Mods for for OH lite compatibility
 ----------------------------------------------------------------------------------
+-- TODO: Replace redundant gbt rx clocks with standard logic clocks, keep only tx
+--       clock on its own mmcm
+--       Remove obsolete CDC circuit
+-- TODO: Replace GBT tx 320MHz with 160MHz ddr ?
 
 library ieee;
 use ieee.std_logic_1164.all;
@@ -130,8 +134,11 @@ architecture Behavioral of optohybrid_top is
     signal gbt_request_received : std_logic;
 
     signal mgts_ready       : std_logic;
+    signal pll_lock         : std_logic;
+    signal txfsm_done       : std_logic;
 
     signal reset            : std_logic;
+    signal core_reset       : std_logic;
     signal cnt_snap         : std_logic;
 
     signal ctrl_reset_vfats       : std_logic_vector (11 downto 0);
@@ -267,6 +274,7 @@ begin
         gbt_rxready_i  => gbt_rxready(0),
         gbt_rxvalid_i  => gbt_rxvalid(0),
         gbt_txready_i  => gbt_txready(0),
+        core_reset_o   => core_reset,
         reset_o        => reset
     );
 
@@ -278,7 +286,7 @@ begin
     port map(
 
         -- reset
-        reset_i => reset,
+        reset_i => core_reset,
 
         -- GBT
 
@@ -337,8 +345,8 @@ begin
 
     ipb_switch_inst : entity work.ipb_switch
     port map(
-        clock_i => clock,
-        reset_i => reset,
+        clock_i => clk_1x_alwayson,
+        reset_i => core_reset,
 
         -- connect to master
         mosi_masters => ipb_mosi_masters,
@@ -376,12 +384,16 @@ begin
     port map (
 
         mgts_ready     => mgts_ready,
+        pll_lock   =>pll_lock,
+        txfsm_done   => txfsm_done,
 
         --== TTC ==--
 
-        clock_i                =>   clock,
+        clock_i                =>   clk_1x_alwayson,
         gbt_clock_i            =>   gbt_clk40,
-        reset_i                =>   reset,
+        reset_i                =>   core_reset,
+
+        clk_1x_alwayson_i      =>   clk_1x_alwayson,
 
         ttc_l1a                =>   ttc_l1a,
         ttc_bc0                =>   ttc_bc0,
@@ -460,9 +472,12 @@ begin
         ipb_miso_o => ipb_miso_slaves(IPB_SLAVE.TRIG),
 
         mgts_ready => mgts_ready,
+        pll_lock_o =>pll_lock,
+        txfsm_done_o => txfsm_done,
 
         -- reset
         reset_i  => reset,
+        core_reset_i  => core_reset,
         cnt_snap => cnt_snap,
         ttc_resync => ttc_resync,
 

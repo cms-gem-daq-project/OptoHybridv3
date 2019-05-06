@@ -26,12 +26,15 @@ entity control is
 port(
 
     mgts_ready : in std_logic;
+    pll_lock   : in std_logic;
+    txfsm_done : in std_logic;
 
     --== TTC ==--
 
-    clock_i     : in std_logic;
-    gbt_clock_i : in std_logic;
-    reset_i     : in std_logic;
+    clock_i            : in std_logic;
+    clk_1x_alwayson_i  : in std_logic;
+    gbt_clock_i        : in std_logic;
+    reset_i            : in std_logic;
 
     ttc_l1a    : in std_logic;
     ttc_bc0    : in std_logic;
@@ -166,6 +169,8 @@ architecture Behavioral of control is
     COMPONENT led_control
     PORT(
         mgts_ready           : IN std_logic;
+        txfsm_done           : IN std_logic;
+        pll_lock             : IN std_logic;
         clock                : IN std_logic;
         mmcm_locked          : IN std_logic;
         elink_mmcm_locked    : IN std_logic;
@@ -269,9 +274,13 @@ begin
 
     led_control_inst : led_control
     port map (
-        clock         => clock_i,
+        clock         => clk_1x_alwayson_i,
 
         mgts_ready    => mgts_ready,
+
+        pll_lock      => pll_lock,
+
+        txfsm_done    => txfsm_done,
 
         mmcm_locked       => mmcms_locked_i,
         elink_mmcm_locked => eprt_mmcm_locked_i,

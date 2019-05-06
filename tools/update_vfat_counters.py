@@ -62,17 +62,17 @@ def write_vfat_counters (file_handle):
 
     padding = "                " #spaces for indentation
 
-    f.write('%s<node id="VFAT${VFAT_IDX}" address="0x0" permission="r"\n'       % (padding) )
+    f.write('%s<node id="VFAT${VFAT_CNT_IDX}" address="0x0" permission="r"\n'       % (padding) )
     f.write('%s    mask="0xffffffff"\n'                                         % (padding) )
-    f.write('%s    description="VFAT ${VFAT_IDX} Counter"\n'                    % (padding) )
-    f.write('%s    fw_cnt_en_signal="active_vfats(${VFAT_IDX})"\n'              % (padding) )
+    f.write('%s    description="VFAT ${VFAT_CNT_IDX} Counter"\n'                    % (padding) )
+    f.write('%s    fw_cnt_en_signal="active_vfats(${VFAT_CNT_IDX})"\n'              % (padding) )
     f.write('%s    fw_cnt_snap_signal="sbit_cnt_snap"\n'                        % (padding) )
     f.write('%s    fw_cnt_reset_signal="cnt_reset_strobed"\n'                   % (padding) )
-    f.write('%s    fw_signal="cnt_vfat${VFAT_IDX}"\n'                           % (padding) )
+    f.write('%s    fw_signal="cnt_vfat${VFAT_CNT_IDX}"\n'                           % (padding) )
     f.write('%s    generate="true"\n'                                           % (padding) )
     f.write('%s    generate_size="%d"\n'                                        % (padding,num_vfats))
     f.write('%s    generate_address_step="0x1"\n'                               % (padding) )
-    f.write('%s    generate_idx_var="VFAT_IDX"/>\n'                             % (padding) )
+    f.write('%s    generate_idx_var="VFAT_CNT_IDX"/>\n'                             % (padding) )
 
 def write_vfat_mask (file_handle):
 

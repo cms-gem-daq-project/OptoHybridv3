@@ -5,6 +5,7 @@
 -- 2017/07/21 -- Initial port to version 3 electronics
 -- 2017/07/22 -- Additional MMCM added to monitor and dejitter the eport clock
 -- 2017/08/09 -- 200MHz iodelay refclk added to primary MMCM
+-- 2019/05/02 -- Added BUFGCE outputs to disable clocks during MGT init
 ----------------------------------------------------------------------------------
 
 library ieee;

@@ -23,6 +23,7 @@ module reset (
   input gbt_rxvalid_i,
   input gbt_txready_i,
 
+  output core_reset_o,
   output reset_o
 );
 

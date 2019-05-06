@@ -4,6 +4,9 @@ use ieee.numeric_std.all;
 library UNISIM;
 use UNISIM.VCOMPONENTS.ALL;
 
+library work;
+use work.types_pkg.all;
+
 --***********************************Entity Declaration************************
 
 entity v6_gtx_wrapper is port (
@@ -12,7 +15,6 @@ entity v6_gtx_wrapper is port (
     refclk_p          : in   std_logic_vector (1 downto 0);
     refclk_n          : in   std_logic_vector (1 downto 0);
 
-    clock_40          : in   std_logic;
     clock_160         : in   std_logic;
 
     gttx_reset_in     : in   std_logic_vector(3 downto 0);
@@ -36,9 +38,14 @@ entity v6_gtx_wrapper is port (
     txenprbstst_in    : in   std_logic_vector (2 downto 0);
     txreset_in        : in   std_logic;
 
+    txpowerdown    : in std_logic_vector (1 downto 0);
+    txpllpowerdown : in std_logic;
+
     realign           : in   std_logic;
 
     gtxtest_in        : in   std_logic_vector (12 downto 0);
+
+    gtx_tx_sync_done : out std_logic_vector (3 downto 0);
 
     tx_resetdone_o : out std_logic_vector (3 downto 0)
 
@@ -74,7 +81,6 @@ architecture Behavioral of v6_gtx_wrapper is
 
     ------------------------- Sync Module Signals -----------------------------
 
-    signal gtx_tx_sync_done_i : std_logic_vector (3 downto 0);
     signal gtx_reset_txsync_c : std_logic_vector (3 downto 0);
 
     signal tx_sync_reset  : std_logic_vector (3 downto 0);
@@ -82,7 +88,21 @@ architecture Behavioral of v6_gtx_wrapper is
     signal gtx_txresetdone_r  : std_logic_vector (3 downto 0);
     signal gtx_txresetdone_r2 : std_logic_vector (3 downto 0);
 
+    signal GTX_TXCHARISK_IN : t_std2_array (3 downto 0);
+
+    signal GTX_TXDATA_IN : t_std16_array (3 downto 0);
+
 begin
+
+    GTX_TXCHARISK_IN(0) <= GTX0_TXCHARISK_IN;
+    GTX_TXCHARISK_IN(1) <= GTX1_TXCHARISK_IN;
+    GTX_TXCHARISK_IN(2) <= GTX2_TXCHARISK_IN;
+    GTX_TXCHARISK_IN(3) <= GTX3_TXCHARISK_IN;
+
+    GTX_TXDATA_IN(0) <= GTX0_TXDATA_IN;
+    GTX_TXDATA_IN(1) <= GTX1_TXDATA_IN;
+    GTX_TXDATA_IN(2) <= GTX2_TXDATA_IN;
+    GTX_TXDATA_IN(3) <= GTX3_TXDATA_IN;
 
     ----------------------------- The GTX Wrapper -----------------------------
 
@@ -90,7 +110,7 @@ begin
     mgt_refclk_i <= ('0' & mgt_refclk1);
 
     gtx_loop : for I in 0 to 3 generate begin
-      gtx_wizard_4output_v6_gtx_i : entity work.gtx_wizard_4output_v6_gtx
+      gtx_wizard_4output_v6_gtx_i : entity work.gtx_wizard_4output_v6_gtx_manual
       generic map (
         GTX_TX_CLK_SOURCE            => "TXPLL",
         GTX_POWER_SAVE               => "0000110000",
@@ -102,11 +122,11 @@ begin
           RXN_IN                     =>      '0',
           RXP_IN                     =>      '1',
           ---------------- Transmit Ports - 8b10b Encoder Control Ports --------------
-          TXCHARISK_IN               =>      GTX0_TXCHARISK_IN,
+          TXCHARISK_IN               =>      GTX_TXCHARISK_IN(I),
           ------------------------- Transmit Ports - GTX Ports -----------------------
           GTXTEST_IN                 =>      gtxtest_in,
           ------------------ Transmit Ports - TX Data Path interface -----------------
-          TXDATA_IN                  =>      GTX0_TXDATA_IN,
+          TXDATA_IN                  =>      GTX_TXDATA_IN(I),
           TXOUTCLK_OUT               =>      gtx_txoutclk_i(I),
           TXRESET_IN                 =>      txreset_in,
           TXUSRCLK2_IN               =>      clock_160,
@@ -131,7 +151,10 @@ begin
           TXPLLLKDET_OUT             =>      pll_lock(I),
           TXRESETDONE_OUT            =>      gtx_txresetdone_i(I),
           --------------------- Transmit Ports - TX PRBS Generator -------------------
-          TXENPRBSTST_IN             =>     txenprbstst_in
+          TXENPRBSTST_IN             =>     txenprbstst_in,
+            -- resets
+          TXPOWERDOWN             => TXPOWERDOWN,
+          TXPLLPOWERDOWN          => TXPLLPOWERDOWN
       );
     end generate;
 
@@ -166,7 +189,7 @@ begin
           TXPMASETPHASE                   =>      gtx_txpmasetphase_i(I),
           TXDLYALIGNDISABLE               =>      gtx_txdlyaligndisable_i(I),
           TXDLYALIGNRESET                 =>      gtx_txdlyalignreset_i(I),
-          SYNC_DONE                       =>      gtx_tx_sync_done_i(I),
+          SYNC_DONE                       =>      gtx_tx_sync_done(I),
           USER_CLK                        =>      clock_160,
           RESET                           =>      tx_sync_reset(I)
       );

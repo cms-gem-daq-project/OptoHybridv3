@@ -49,12 +49,15 @@ port(
     clk_160_90        : in std_logic;
 
     reset_i           : in std_logic;
+    core_reset_i           : in std_logic;
     ttc_resync        : in std_logic;
 
     mgt_tx_p          : out std_logic_vector(3 downto 0);
     mgt_tx_n          : out std_logic_vector(3 downto 0);
 
     mgts_ready        : out std_logic;
+    pll_lock_o        : out std_logic;
+    txfsm_done_o      : out std_logic;
 
     -- ttc
 
@@ -130,6 +133,17 @@ architecture Behavioral of trigger is
 
     signal aligned_count_to_ready : std_logic_vector (11 downto 0);
 
+    signal tx_prbs_mode : std_logic_vector (2 downto 0);
+
+    signal pll_reset        : std_logic;
+    signal mgt_reset        : std_logic_vector(3 downto 0);
+    signal gtxtest_start    : std_logic;
+    signal txreset          : std_logic;
+    signal mgt_realign      : std_logic;
+    signal txpowerdown      : std_logic;
+    signal txpowerdown_mode : std_logic_vector (1 downto 0);
+    signal txpllpowerdown   : std_logic;
+
     signal reset     : std_logic;
     signal reset_monitor     : std_logic;
     signal ipb_reset : std_logic;
@@ -166,6 +180,7 @@ architecture Behavioral of trigger is
     signal cnt_reset            : std_logic;
     signal cnt_reset_strobed    : std_logic;
     signal tx_link_reset        : std_logic;
+    signal force_mgts_not_ready : std_logic;
     signal tx_reset_done        : std_logic_vector(3 downto 0);
     signal tx_pll_locked        : std_logic_vector(3 downto 0);
 
@@ -181,16 +196,30 @@ architecture Behavioral of trigger is
         refclk_n: IN std_logic_vector (1 downto 0);
         refclk_p: IN std_logic_vector (1 downto 0);
 
-        gem_data      : IN std_logic_vector (111 downto 0); -- 56 bit gem data
-        overflow_i    : IN std_logic;                       -- 1 bit gem has more than 8 clusters
-        bxn_counter_i : IN std_logic_vector (11 downto 0);  -- 12 bit bxn counter
-        bc0_i         : IN std_logic;                       -- 1  bit bx0 flag
-        resync_i      : IN std_logic;                       -- 1  bit bx0 flag
+        tx_prbs_mode : IN std_logic_vector (2 downto 0);
+
+        gem_data           : IN std_logic_vector (111 downto 0); -- 56 bit gem data
+        overflow_i         : IN std_logic;                       -- 1 bit gem has more than 8 clusters
+        bxn_counter_i      : IN std_logic_vector (11 downto 0);  -- 12 bit bxn counter
+        bc0_i              : IN std_logic;                       -- 1  bit bx0 flag
+        resync_i           : IN std_logic;                       -- 1  bit bx0 flag
+
+        force_not_ready    : IN std_logic;
+        pll_reset_i        : IN std_logic;
+        mgt_reset_i        : IN std_logic_vector(3 downto 0);
+        gtxtest_start_i    : IN std_logic;
+        txreset_i          : IN std_logic;
+        mgt_realign_i      : IN std_logic;
+        txpowerdown_i      : IN std_logic;
+        txpowerdown_mode_i : IN std_logic_vector (1 downto 0);
+        txpllpowerdown_i   : IN std_logic;
 
         clock_40  : IN std_logic;
         clock_160 : IN std_logic;
 
-        ready_o : OUT std_logic;
+        ready_o      : OUT std_logic;
+        pll_lock_o   : OUT std_logic;
+        txfsm_done_o : OUT std_logic;
 
         reset_i : IN std_logic
     );
@@ -268,7 +297,7 @@ begin
     process (clk_40) begin
         if (rising_edge(clk_40)) then
             reset     <= reset_i;
-            ipb_reset <= reset;
+            ipb_reset <= core_reset_i;
         end if;
     end process;
 
@@ -279,9 +308,9 @@ begin
         end if;
     end process;
 
-    process (clk_40) begin
-        if (rising_edge(clk_40)) then
-            tx_link_reset <= reset or reset_links;
+    process (clk_40_mgt) begin
+        if (rising_edge(clk_40_mgt)) then
+            tx_link_reset <= core_reset_i or reset_links;
         end if;
     end process;
 
@@ -464,9 +493,24 @@ begin
         bc0_i         => ttc_bx0_i,
         resync_i      => ttc_resync,
 
-        reset_i       => '0',
+        reset_i       => tx_link_reset ,
 
-        ready_o =>  mgts_ready,
+        force_not_ready => force_mgts_not_ready,
+
+        ready_o      => mgts_ready,
+        pll_lock_o   => pll_lock_o,
+        txfsm_done_o => txfsm_done_o,
+        tx_prbs_mode => tx_prbs_mode,
+
+
+        pll_reset_i        => pll_reset,
+        mgt_reset_i        => mgt_reset,
+        gtxtest_start_i    => gtxtest_start,
+        txreset_i          => txreset,
+        mgt_realign_i      => mgt_realign,
+        txpowerdown_i      => txpowerdown,
+        txpowerdown_mode_i => txpowerdown_mode,
+        txpllpowerdown_i   => txpllpowerdown,
 
         trg_tx_p   => mgt_tx_p (3 downto 0),
         trg_tx_n   => mgt_tx_n (3 downto 0),
@@ -490,10 +534,10 @@ begin
        )
        port map(
            ipb_reset_i            => ipb_reset,
-           ipb_clk_i              => clk_40,
+           ipb_clk_i              => clk_40_mgt,
            ipb_mosi_i             => ipb_mosi_i,
            ipb_miso_o             => ipb_miso_o,
-           usr_clk_i              => clk_40,
+           usr_clk_i              => clk_40_mgt,
            regs_read_arr_i        => regs_read_arr,
            regs_write_arr_o       => regs_write_arr,
            read_pulse_arr_o       => regs_read_pulse_arr,
@@ -957,6 +1001,16 @@ begin
     regs_read_arr(108)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT23_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT23_LSB) <= sot_tap_delay(23);
     regs_read_arr(110)(REG_TRIG_LINKS_TX_PLL_LOCKED_MSB downto REG_TRIG_LINKS_TX_PLL_LOCKED_LSB) <= tx_pll_locked;
     regs_read_arr(110)(REG_TRIG_LINKS_TX_RESET_DONE_MSB downto REG_TRIG_LINKS_TX_RESET_DONE_LSB) <= tx_reset_done;
+    regs_read_arr(110)(REG_TRIG_LINKS_TX_PRBS_MODE_MSB downto REG_TRIG_LINKS_TX_PRBS_MODE_LSB) <= tx_prbs_mode;
+    regs_read_arr(110)(REG_TRIG_LINKS_TX_PLL_RESET_BIT) <= pll_reset;
+    regs_read_arr(110)(REG_TRIG_LINKS_MGT_RESET_MSB downto REG_TRIG_LINKS_MGT_RESET_LSB) <= mgt_reset;
+    regs_read_arr(110)(REG_TRIG_LINKS_GTXTEST_START_BIT) <= gtxtest_start;
+    regs_read_arr(110)(REG_TRIG_LINKS_TXRESET_BIT) <= txreset;
+    regs_read_arr(110)(REG_TRIG_LINKS_MGT_REALIGN_BIT) <= mgt_realign;
+    regs_read_arr(110)(REG_TRIG_LINKS_TXPOWERDOWN_BIT) <= txpowerdown;
+    regs_read_arr(110)(REG_TRIG_LINKS_TXPOWERDOWN_MODE_MSB downto REG_TRIG_LINKS_TXPOWERDOWN_MODE_LSB) <= txpowerdown_mode;
+    regs_read_arr(110)(REG_TRIG_LINKS_TXPLLPOWERDOWN_BIT) <= txpllpowerdown;
+    regs_read_arr(110)(REG_TRIG_LINKS_FORCE_NOT_READY_BIT) <= force_mgts_not_ready;
     regs_read_arr(112)(REG_TRIG_SBIT_MONITOR_CLUSTER0_MSB downto REG_TRIG_SBIT_MONITOR_CLUSTER0_LSB) <= '0' & frozen_cluster_0(13 downto 11) & '0' & frozen_cluster_0 (10 downto 0);
     regs_read_arr(113)(REG_TRIG_SBIT_MONITOR_CLUSTER1_MSB downto REG_TRIG_SBIT_MONITOR_CLUSTER1_LSB) <= '0' & frozen_cluster_1(13 downto 11) & '0' & frozen_cluster_1 (10 downto 0);
     regs_read_arr(114)(REG_TRIG_SBIT_MONITOR_CLUSTER2_MSB downto REG_TRIG_SBIT_MONITOR_CLUSTER2_LSB) <= '0' & frozen_cluster_2(13 downto 11) & '0' & frozen_cluster_2 (10 downto 0);
@@ -1239,6 +1293,16 @@ begin
     sot_tap_delay(21) <= regs_write_arr(108)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT21_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT21_LSB);
     sot_tap_delay(22) <= regs_write_arr(108)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT22_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT22_LSB);
     sot_tap_delay(23) <= regs_write_arr(108)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT23_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT23_LSB);
+    tx_prbs_mode <= regs_write_arr(110)(REG_TRIG_LINKS_TX_PRBS_MODE_MSB downto REG_TRIG_LINKS_TX_PRBS_MODE_LSB);
+    pll_reset <= regs_write_arr(110)(REG_TRIG_LINKS_TX_PLL_RESET_BIT);
+    mgt_reset <= regs_write_arr(110)(REG_TRIG_LINKS_MGT_RESET_MSB downto REG_TRIG_LINKS_MGT_RESET_LSB);
+    gtxtest_start <= regs_write_arr(110)(REG_TRIG_LINKS_GTXTEST_START_BIT);
+    txreset <= regs_write_arr(110)(REG_TRIG_LINKS_TXRESET_BIT);
+    mgt_realign <= regs_write_arr(110)(REG_TRIG_LINKS_MGT_REALIGN_BIT);
+    txpowerdown <= regs_write_arr(110)(REG_TRIG_LINKS_TXPOWERDOWN_BIT);
+    txpowerdown_mode <= regs_write_arr(110)(REG_TRIG_LINKS_TXPOWERDOWN_MODE_MSB downto REG_TRIG_LINKS_TXPOWERDOWN_MODE_LSB);
+    txpllpowerdown <= regs_write_arr(110)(REG_TRIG_LINKS_TXPLLPOWERDOWN_BIT);
+    force_mgts_not_ready <= regs_write_arr(110)(REG_TRIG_LINKS_FORCE_NOT_READY_BIT);
 
     -- Connect write pulse signals
     reset_counters <= regs_write_pulse_arr(45);
@@ -1256,7 +1320,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clk_40,
+        ref_clk_i => clk_40_mgt,
         reset_i   => cnt_reset,
         en_i      => sbit_overflow,
         snap_i    => cnt_snap,
@@ -1269,7 +1333,7 @@ begin
         g_COUNTER_WIDTH  => 32
     )
     port map (
-        ref_clk_i => clk_40,
+        ref_clk_i => clk_40_mgt,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(0),
         snap_i    => sbit_cnt_snap,
@@ -1282,7 +1346,7 @@ begin
         g_COUNTER_WIDTH  => 32
     )
     port map (
-        ref_clk_i => clk_40,
+        ref_clk_i => clk_40_mgt,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(1),
         snap_i    => sbit_cnt_snap,
@@ -1295,7 +1359,7 @@ begin
         g_COUNTER_WIDTH  => 32
     )
     port map (
-        ref_clk_i => clk_40,
+        ref_clk_i => clk_40_mgt,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(2),
         snap_i    => sbit_cnt_snap,
@@ -1308,7 +1372,7 @@ begin
         g_COUNTER_WIDTH  => 32
     )
     port map (
-        ref_clk_i => clk_40,
+        ref_clk_i => clk_40_mgt,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(3),
         snap_i    => sbit_cnt_snap,
@@ -1321,7 +1385,7 @@ begin
         g_COUNTER_WIDTH  => 32
     )
     port map (
-        ref_clk_i => clk_40,
+        ref_clk_i => clk_40_mgt,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(4),
         snap_i    => sbit_cnt_snap,
@@ -1334,7 +1398,7 @@ begin
         g_COUNTER_WIDTH  => 32
     )
     port map (
-        ref_clk_i => clk_40,
+        ref_clk_i => clk_40_mgt,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(5),
         snap_i    => sbit_cnt_snap,
@@ -1347,7 +1411,7 @@ begin
         g_COUNTER_WIDTH  => 32
     )
     port map (
-        ref_clk_i => clk_40,
+        ref_clk_i => clk_40_mgt,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(6),
         snap_i    => sbit_cnt_snap,
@@ -1360,7 +1424,7 @@ begin
         g_COUNTER_WIDTH  => 32
     )
     port map (
-        ref_clk_i => clk_40,
+        ref_clk_i => clk_40_mgt,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(7),
         snap_i    => sbit_cnt_snap,
@@ -1373,7 +1437,7 @@ begin
         g_COUNTER_WIDTH  => 32
     )
     port map (
-        ref_clk_i => clk_40,
+        ref_clk_i => clk_40_mgt,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(8),
         snap_i    => sbit_cnt_snap,
@@ -1386,7 +1450,7 @@ begin
         g_COUNTER_WIDTH  => 32
     )
     port map (
-        ref_clk_i => clk_40,
+        ref_clk_i => clk_40_mgt,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(9),
         snap_i    => sbit_cnt_snap,
@@ -1399,7 +1463,7 @@ begin
         g_COUNTER_WIDTH  => 32
     )
     port map (
-        ref_clk_i => clk_40,
+        ref_clk_i => clk_40_mgt,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(10),
         snap_i    => sbit_cnt_snap,
@@ -1412,7 +1476,7 @@ begin
         g_COUNTER_WIDTH  => 32
     )
     port map (
-        ref_clk_i => clk_40,
+        ref_clk_i => clk_40_mgt,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(11),
         snap_i    => sbit_cnt_snap,
@@ -1425,7 +1489,7 @@ begin
         g_COUNTER_WIDTH  => 32
     )
     port map (
-        ref_clk_i => clk_40,
+        ref_clk_i => clk_40_mgt,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(12),
         snap_i    => sbit_cnt_snap,
@@ -1438,7 +1502,7 @@ begin
         g_COUNTER_WIDTH  => 32
     )
     port map (
-        ref_clk_i => clk_40,
+        ref_clk_i => clk_40_mgt,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(13),
         snap_i    => sbit_cnt_snap,
@@ -1451,7 +1515,7 @@ begin
         g_COUNTER_WIDTH  => 32
     )
     port map (
-        ref_clk_i => clk_40,
+        ref_clk_i => clk_40_mgt,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(14),
         snap_i    => sbit_cnt_snap,
@@ -1464,7 +1528,7 @@ begin
         g_COUNTER_WIDTH  => 32
     )
     port map (
-        ref_clk_i => clk_40,
+        ref_clk_i => clk_40_mgt,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(15),
         snap_i    => sbit_cnt_snap,
@@ -1477,7 +1541,7 @@ begin
         g_COUNTER_WIDTH  => 32
     )
     port map (
-        ref_clk_i => clk_40,
+        ref_clk_i => clk_40_mgt,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(16),
         snap_i    => sbit_cnt_snap,
@@ -1490,7 +1554,7 @@ begin
         g_COUNTER_WIDTH  => 32
     )
     port map (
-        ref_clk_i => clk_40,
+        ref_clk_i => clk_40_mgt,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(17),
         snap_i    => sbit_cnt_snap,
@@ -1503,7 +1567,7 @@ begin
         g_COUNTER_WIDTH  => 32
     )
     port map (
-        ref_clk_i => clk_40,
+        ref_clk_i => clk_40_mgt,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(18),
         snap_i    => sbit_cnt_snap,
@@ -1516,7 +1580,7 @@ begin
         g_COUNTER_WIDTH  => 32
     )
     port map (
-        ref_clk_i => clk_40,
+        ref_clk_i => clk_40_mgt,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(19),
         snap_i    => sbit_cnt_snap,
@@ -1529,7 +1593,7 @@ begin
         g_COUNTER_WIDTH  => 32
     )
     port map (
-        ref_clk_i => clk_40,
+        ref_clk_i => clk_40_mgt,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(20),
         snap_i    => sbit_cnt_snap,
@@ -1542,7 +1606,7 @@ begin
         g_COUNTER_WIDTH  => 32
     )
     port map (
-        ref_clk_i => clk_40,
+        ref_clk_i => clk_40_mgt,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(21),
         snap_i    => sbit_cnt_snap,
@@ -1555,7 +1619,7 @@ begin
         g_COUNTER_WIDTH  => 32
     )
     port map (
-        ref_clk_i => clk_40,
+        ref_clk_i => clk_40_mgt,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(22),
         snap_i    => sbit_cnt_snap,
@@ -1568,7 +1632,7 @@ begin
         g_COUNTER_WIDTH  => 32
     )
     port map (
-        ref_clk_i => clk_40,
+        ref_clk_i => clk_40_mgt,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(23),
         snap_i    => sbit_cnt_snap,
@@ -1581,7 +1645,7 @@ begin
         g_COUNTER_WIDTH  => 32
     )
     port map (
-        ref_clk_i => clk_40,
+        ref_clk_i => clk_40_mgt,
         reset_i   => cnt_reset_strobed,
         en_i      => valid_clusters_or,
         snap_i    => sbit_cnt_snap,
@@ -1594,7 +1658,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clk_40,
+        ref_clk_i => clk_40_mgt,
         reset_i   => cnt_reset_strobed,
         en_i      => sbits_comparator_over_threshold(0),
         snap_i    => sbit_cnt_snap,
@@ -1607,7 +1671,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clk_40,
+        ref_clk_i => clk_40_mgt,
         reset_i   => cnt_reset_strobed,
         en_i      => sbits_comparator_over_threshold(1),
         snap_i    => sbit_cnt_snap,
@@ -1620,7 +1684,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clk_40,
+        ref_clk_i => clk_40_mgt,
         reset_i   => cnt_reset_strobed,
         en_i      => sbits_comparator_over_threshold(2),
         snap_i    => sbit_cnt_snap,
@@ -1633,7 +1697,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clk_40,
+        ref_clk_i => clk_40_mgt,
         reset_i   => cnt_reset_strobed,
         en_i      => sbits_comparator_over_threshold(3),
         snap_i    => sbit_cnt_snap,
@@ -1646,7 +1710,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clk_40,
+        ref_clk_i => clk_40_mgt,
         reset_i   => cnt_reset_strobed,
         en_i      => sbits_comparator_over_threshold(4),
         snap_i    => sbit_cnt_snap,
@@ -1659,7 +1723,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clk_40,
+        ref_clk_i => clk_40_mgt,
         reset_i   => cnt_reset_strobed,
         en_i      => sbits_comparator_over_threshold(5),
         snap_i    => sbit_cnt_snap,
@@ -1672,7 +1736,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clk_40,
+        ref_clk_i => clk_40_mgt,
         reset_i   => cnt_reset_strobed,
         en_i      => sbits_comparator_over_threshold(6),
         snap_i    => sbit_cnt_snap,
@@ -1685,7 +1749,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clk_40,
+        ref_clk_i => clk_40_mgt,
         reset_i   => cnt_reset_strobed,
         en_i      => sbits_comparator_over_threshold(7),
         snap_i    => sbit_cnt_snap,
@@ -1698,7 +1762,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clk_40,
+        ref_clk_i => clk_40_mgt,
         reset_i   => cnt_reset_strobed,
         en_i      => sbits_comparator_over_threshold(8),
         snap_i    => sbit_cnt_snap,
@@ -1711,7 +1775,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clk_40,
+        ref_clk_i => clk_40_mgt,
         reset_i   => cnt_reset_strobed,
         en_i      => sbits_comparator_over_threshold(9),
         snap_i    => sbit_cnt_snap,
@@ -1724,7 +1788,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clk_40,
+        ref_clk_i => clk_40_mgt,
         reset_i   => cnt_reset_strobed,
         en_i      => sbits_comparator_over_threshold(10),
         snap_i    => sbit_cnt_snap,
@@ -1737,7 +1801,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clk_40,
+        ref_clk_i => clk_40_mgt,
         reset_i   => cnt_reset_strobed,
         en_i      => sbits_comparator_over_threshold(11),
         snap_i    => sbit_cnt_snap,
@@ -1750,7 +1814,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clk_40,
+        ref_clk_i => clk_40_mgt,
         reset_i   => cnt_reset_strobed,
         en_i      => sbits_comparator_over_threshold(12),
         snap_i    => sbit_cnt_snap,
@@ -1763,7 +1827,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clk_40,
+        ref_clk_i => clk_40_mgt,
         reset_i   => cnt_reset_strobed,
         en_i      => sbits_comparator_over_threshold(13),
         snap_i    => sbit_cnt_snap,
@@ -1776,7 +1840,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clk_40,
+        ref_clk_i => clk_40_mgt,
         reset_i   => cnt_reset_strobed,
         en_i      => sbits_comparator_over_threshold(14),
         snap_i    => sbit_cnt_snap,
@@ -1789,7 +1853,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clk_40,
+        ref_clk_i => clk_40_mgt,
         reset_i   => cnt_reset_strobed,
         en_i      => sbits_comparator_over_threshold(15),
         snap_i    => sbit_cnt_snap,
@@ -1802,7 +1866,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clk_40,
+        ref_clk_i => clk_40_mgt,
         reset_i   => cnt_reset_strobed,
         en_i      => sbits_comparator_over_threshold(16),
         snap_i    => sbit_cnt_snap,
@@ -1815,7 +1879,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clk_40,
+        ref_clk_i => clk_40_mgt,
         reset_i   => cnt_reset_strobed,
         en_i      => sbits_comparator_over_threshold(17),
         snap_i    => sbit_cnt_snap,
@@ -1828,7 +1892,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clk_40,
+        ref_clk_i => clk_40_mgt,
         reset_i   => cnt_reset_strobed,
         en_i      => sbits_comparator_over_threshold(18),
         snap_i    => sbit_cnt_snap,
@@ -1841,7 +1905,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clk_40,
+        ref_clk_i => clk_40_mgt,
         reset_i   => cnt_reset_strobed,
         en_i      => sbits_comparator_over_threshold(19),
         snap_i    => sbit_cnt_snap,
@@ -1854,7 +1918,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clk_40,
+        ref_clk_i => clk_40_mgt,
         reset_i   => cnt_reset_strobed,
         en_i      => sbits_comparator_over_threshold(20),
         snap_i    => sbit_cnt_snap,
@@ -1867,7 +1931,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clk_40,
+        ref_clk_i => clk_40_mgt,
         reset_i   => cnt_reset_strobed,
         en_i      => sbits_comparator_over_threshold(21),
         snap_i    => sbit_cnt_snap,
@@ -1880,7 +1944,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clk_40,
+        ref_clk_i => clk_40_mgt,
         reset_i   => cnt_reset_strobed,
         en_i      => sbits_comparator_over_threshold(22),
         snap_i    => sbit_cnt_snap,
@@ -1893,7 +1957,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clk_40,
+        ref_clk_i => clk_40_mgt,
         reset_i   => cnt_reset_strobed,
         en_i      => sbits_comparator_over_threshold(23),
         snap_i    => sbit_cnt_snap,
@@ -2177,6 +2241,16 @@ begin
     regs_defaults(108)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT21_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT21_LSB) <= REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT21_DEFAULT;
     regs_defaults(108)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT22_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT22_LSB) <= REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT22_DEFAULT;
     regs_defaults(108)(REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT23_MSB downto REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT23_LSB) <= REG_TRIG_TIMING_SOT_TAP_DELAY_VFAT23_DEFAULT;
+    regs_defaults(110)(REG_TRIG_LINKS_TX_PRBS_MODE_MSB downto REG_TRIG_LINKS_TX_PRBS_MODE_LSB) <= REG_TRIG_LINKS_TX_PRBS_MODE_DEFAULT;
+    regs_defaults(110)(REG_TRIG_LINKS_TX_PLL_RESET_BIT) <= REG_TRIG_LINKS_TX_PLL_RESET_DEFAULT;
+    regs_defaults(110)(REG_TRIG_LINKS_MGT_RESET_MSB downto REG_TRIG_LINKS_MGT_RESET_LSB) <= REG_TRIG_LINKS_MGT_RESET_DEFAULT;
+    regs_defaults(110)(REG_TRIG_LINKS_GTXTEST_START_BIT) <= REG_TRIG_LINKS_GTXTEST_START_DEFAULT;
+    regs_defaults(110)(REG_TRIG_LINKS_TXRESET_BIT) <= REG_TRIG_LINKS_TXRESET_DEFAULT;
+    regs_defaults(110)(REG_TRIG_LINKS_MGT_REALIGN_BIT) <= REG_TRIG_LINKS_MGT_REALIGN_DEFAULT;
+    regs_defaults(110)(REG_TRIG_LINKS_TXPOWERDOWN_BIT) <= REG_TRIG_LINKS_TXPOWERDOWN_DEFAULT;
+    regs_defaults(110)(REG_TRIG_LINKS_TXPOWERDOWN_MODE_MSB downto REG_TRIG_LINKS_TXPOWERDOWN_MODE_LSB) <= REG_TRIG_LINKS_TXPOWERDOWN_MODE_DEFAULT;
+    regs_defaults(110)(REG_TRIG_LINKS_TXPLLPOWERDOWN_BIT) <= REG_TRIG_LINKS_TXPLLPOWERDOWN_DEFAULT;
+    regs_defaults(110)(REG_TRIG_LINKS_FORCE_NOT_READY_BIT) <= REG_TRIG_LINKS_FORCE_NOT_READY_DEFAULT;
 
     -- Define writable regs
     regs_writable_arr(0) <= '1';
@@ -2233,6 +2307,7 @@ begin
     regs_writable_arr(106) <= '1';
     regs_writable_arr(107) <= '1';
     regs_writable_arr(108) <= '1';
+    regs_writable_arr(110) <= '1';
 
     --==== Registers end ============================================================================
 

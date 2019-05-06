@@ -27,20 +27,20 @@ def write_xml_invert_map (file_handle):
     sot_default = 0
     base_address = 0x0
 
-    for j in range (num_vfats,0,-1):
+    for j in reversed(range (num_vfats)):
 
         vfat = 0
         if (USE_INVERTED_NUMBERING):
-            vfat = (num_vfats-j)+1
+            vfat = (num_vfats-j-1)
         else:
             vfat = j
 
-        if (sot_polarity_swap(int(vfat), oh_version, gem_version)):
+        if (sot_polarity_swap(vfat, oh_version, gem_version)):
             swap = 1
         else:
             swap = 0
 
-        sot_default = sot_default | (swap << (j-1))
+        sot_default = sot_default | (swap <<j)
 
     sot_mask="0x00000"
     if (num_vfats==12):
@@ -68,7 +68,7 @@ def write_xml_invert_map (file_handle):
         sbit       = -1
 
         if (USE_INVERTED_NUMBERING):
-            geb_slot = (num_vfats-vfat)
+            geb_slot = (num_vfats-vfat-1)
         else:
             geb_slot = vfat
 

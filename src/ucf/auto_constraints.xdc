@@ -18,9 +18,9 @@ resize_pblock [get_pblocks pblock_ipb_switch_inst] -add {SLICE_X22Y152:SLICE_X41
 create_pblock pblock_adc_inst
 add_cells_to_pblock [get_pblocks pblock_adc_inst] [get_cells -quiet [list adc_inst]]
 resize_pblock [get_pblocks pblock_adc_inst] -add {SLICE_X40Y180:SLICE_X47Y199}
-create_pblock pblock_clocking
-add_cells_to_pblock [get_pblocks pblock_clocking] [get_cells -quiet [list clocking]]
-resize_pblock [get_pblocks pblock_clocking] -add {SLICE_X24Y188:SLICE_X33Y199}
+#create_pblock pblock_clocking
+#add_cells_to_pblock [get_pblocks pblock_clocking] [get_cells -quiet [list clocking]]
+#resize_pblock [get_pblocks pblock_clocking] -add {SLICE_X24Y188:SLICE_X33Y199}
 create_pblock pblock_reset_ctl
 add_cells_to_pblock [get_pblocks pblock_reset_ctl] [get_cells -quiet [list reset_ctl]]
 resize_pblock [get_pblocks pblock_reset_ctl] -add {SLICE_X42Y159:SLICE_X47Y169}
