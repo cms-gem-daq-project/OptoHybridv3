@@ -23,7 +23,8 @@ use work.registers.all;
 
 entity clocking is
 generic(
-    g_ERROR_COUNT_MAX : integer := 4
+    g_ERROR_COUNT_MAX : integer := 5;
+    g_DONT_USE_CLOCK_GATING : std_logic := '0'
 );
 port(
 
@@ -108,7 +109,7 @@ architecture Behavioral of clocking is
 
 begin
 
-    clk_1x_o <= clock;
+    clk_1x_o          <= clock;
 
     mmcm_unlocked <= not mmcm_locked;
 
@@ -146,17 +147,18 @@ begin
         clk_in1_p    => elink_clock_p,
         clk_in1_n    => elink_clock_n,
 
-        clk40_o      => gbt_clk40_o,
-        clk80_o      => gbt_clk80_o,
-        clk320_o     => gbt_clk320_o,
-        clk160_0_o   => gbt_clk160_0,
-        clk160_90_o   => gbt_clk160_90_o,
+        clk40_o          => gbt_clk40_o,
+        clk80_o          => gbt_clk80_o,
+        clk320_o         => gbt_clk320_o,
+        clk160_0_o       => gbt_clk160_0,
+        clk160_90_o      => gbt_clk160_90_o,
+        clk40_alwayson_o => open,
 
-        clk40_o_ce      => clock_enable_i,
-        clk80_o_ce      => clock_enable_i,
-        clk320_o_ce     => clock_enable_i,
-        clk160_0_o_ce   => clock_enable_i,
-        clk160_90_o_ce  => clock_enable_i,
+        clk40_o_ce      => '1' or clock_enable_i,
+        clk80_o_ce      => '1' or clock_enable_i,
+        clk320_o_ce     => '1' or clock_enable_i,
+        clk160_0_o_ce   => '1' or clock_enable_i,
+        clk160_90_o_ce  => '1' or clock_enable_i,
 
         locked_o      => mmcm_locked(1)
     );

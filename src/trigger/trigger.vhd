@@ -48,9 +48,9 @@ port(
     clk_200           : in std_logic;
     clk_160_90        : in std_logic;
 
-    reset_i           : in std_logic;
-    core_reset_i           : in std_logic;
-    ttc_resync        : in std_logic;
+    trigger_reset_i : in std_logic;
+    core_reset_i    : in std_logic;
+    ttc_resync      : in std_logic;
 
     mgt_tx_p          : out std_logic_vector(3 downto 0);
     mgt_tx_n          : out std_logic_vector(3 downto 0);
@@ -144,12 +144,12 @@ architecture Behavioral of trigger is
     signal txpowerdown_mode : std_logic_vector (1 downto 0);
     signal txpllpowerdown   : std_logic;
 
-    signal reset     : std_logic;
+    signal trigger_reset     : std_logic;
     signal reset_monitor     : std_logic;
     signal ipb_reset : std_logic;
 
     attribute EQUIVALENT_REGISTER_REMOVAL : string;
-    attribute EQUIVALENT_REGISTER_REMOVAL of reset : signal is "NO";
+    attribute EQUIVALENT_REGISTER_REMOVAL of trigger_reset : signal is "NO";
     attribute EQUIVALENT_REGISTER_REMOVAL of ipb_reset : signal is "NO";
 
     signal sot_is_aligned      : std_logic_vector (MXVFATS-1 downto 0);
@@ -296,21 +296,21 @@ begin
 
     process (clk_40) begin
         if (rising_edge(clk_40)) then
-            reset     <= reset_i;
+            trigger_reset     <= trigger_reset_i;
             ipb_reset <= core_reset_i;
         end if;
     end process;
 
     process (clk_40) begin
         if (rising_edge(clk_40)) then
-            cnt_reset         <= reset or ttc_resync or reset_counters;
-            cnt_reset_strobed <= reset or ttc_resync or reset_counters or (sbit_timer_reset and not sbit_cnt_persist);
+            cnt_reset         <= trigger_reset or ttc_resync or reset_counters;
+            cnt_reset_strobed <= trigger_reset or ttc_resync or reset_counters or (sbit_timer_reset and not sbit_cnt_persist);
         end if;
     end process;
 
     process (clk_40_mgt) begin
         if (rising_edge(clk_40_mgt)) then
-            tx_link_reset <= core_reset_i or reset_links;
+            tx_link_reset <= reset_links;
         end if;
     end process;
 
@@ -331,7 +331,7 @@ begin
 
             sbit_cnt_snap <= (sbit_timer_snap or sbit_cnt_persist);
 
-            if (reset = '1') then
+            if (trigger_reset = '1') then
                 sbit_time_counter <= (others => '0');
                 sbit_timer_reset <= '1';
                 sbit_timer_snap  <= '1';
@@ -397,7 +397,7 @@ begin
 
         aligned_count_to_ready   => aligned_count_to_ready,
 
-        reset_i                 => reset,
+        reset_i                 => trigger_reset,
 
         sbits_p                  => vfat_sbits_p,
         sbits_n                  => vfat_sbits_n,
@@ -434,7 +434,7 @@ begin
         g_NUM_OF_OHs => 1
     )
     port map (
-        reset_i          => (reset or reset_monitor),
+        reset_i          => (trigger_reset or reset_monitor),
         ttc_clk_i        => clk_40,
         l1a_i            => ttc_l1a_i,
         sbit_cluster_0   => sbit_clusters(0),

@@ -45,6 +45,9 @@ module reset (
       soft_reset_delay <= soft_reset_delay - 1'b1;
   end
 
+  //--------------------------------------------------------------------------------------------------------------------
+  // Hold (Long) Reset
+  //--------------------------------------------------------------------------------------------------------------------
 
   parameter HOLD_RESET_CNT_MAX = 2**22-1;
   parameter HOLD_RESET_BITS    = $clog2 (HOLD_RESET_CNT_MAX);
@@ -61,5 +64,25 @@ module reset (
   end
 
   assign reset_o = (hold_reset_cnt < HOLD_RESET_CNT_MAX);
+
+  //--------------------------------------------------------------------------------------------------------------------
+  // Startup (Short) Reset
+  //--------------------------------------------------------------------------------------------------------------------
+
+  parameter STARTUP_RESET_CNT_MAX = 2**5-1;
+  parameter STARTUP_RESET_BITS    = $clog2 (STARTUP_RESET_CNT_MAX);
+
+  reg [STARTUP_RESET_BITS-1:0] startup_reset_cnt = 0;
+
+  always @ (posedge clock_i) begin
+    if (~(mmcms_locked_i && gbt_rxready_i && gbt_rxvalid_i && gbt_txready_i))
+      startup_reset_cnt <= 0;
+    else if (startup_reset_cnt < STARTUP_RESET_CNT_MAX)
+      startup_reset_cnt <= startup_reset_cnt + 1'b1;
+    else
+      startup_reset_cnt <= startup_reset_cnt;
+  end
+
+  assign core_reset_o = (hold_reset_cnt < STARTUP_RESET_CNT_MAX);
 
 endmodule

@@ -102,8 +102,6 @@ architecture Behavioral of optohybrid_top is
     signal logic_mmcm_reset : std_logic;
     signal eprt_mmcm_locked : std_logic;
 
-    signal clock            : std_logic;
-
     signal gbt_clk40      : std_logic;
     signal gbt_clk80      : std_logic;
     signal gbt_clk160_0   : std_logic;
@@ -137,7 +135,7 @@ architecture Behavioral of optohybrid_top is
     signal pll_lock         : std_logic;
     signal txfsm_done       : std_logic;
 
-    signal reset            : std_logic;
+    signal trigger_reset            : std_logic;
     signal core_reset       : std_logic;
     signal cnt_snap         : std_logic;
 
@@ -186,7 +184,6 @@ begin
 
     -- internal wiring
 
-    clock  <= clk_1x;
     gbt_request_received <= ipb_mosi_gbt.ipb_strobe;
 
 
@@ -194,12 +191,7 @@ begin
     --== Common  ==--
     --=============--
 
-    process(clock)
-    begin
-    if (rising_edge(clock)) then
-            led_o (MXLED-1 downto 0) <= led (MXLED-1 downto 0);
-    end if;
-    end process;
+    led_o (MXLED-1 downto 0) <= led (MXLED-1 downto 0);
 
     gbt_rxready   <= gbt_rxready_i;
     gbt_rxvalid   <= gbt_rxvalid_i;
@@ -209,9 +201,9 @@ begin
     --===========--
     --== GE11  ==--
     --===========--
-    process(clock)
+    process(clk_1x_alwayson)
     begin
-    if (rising_edge(clock)) then
+    if (rising_edge(clk_1x_alwayson)) then
         ext_reset_o  <= ctrl_reset_vfats;
         ext_sbits_o  <= ext_sbits;
     end if;
@@ -233,7 +225,7 @@ begin
 
         ipb_mosi_i           => ipb_mosi_slaves (IPB_SLAVE.CLOCKING),
         ipb_miso_o           => ipb_miso_slaves (IPB_SLAVE.CLOCKING),
-        ipb_reset_i          => reset,
+        ipb_reset_i          => core_reset,
 
         cnt_snap             => cnt_snap,
 
@@ -252,7 +244,7 @@ begin
         gbt_clk160_90_o      => gbt_clk160_90,  -- 160  MHz e-port aligned GBT clock
         gbt_clk160_180_o     => gbt_clk160_180, -- 160  MHz e-port aligned GBT clock
 
-        clock_enable_i       => mgts_ready,
+        clock_enable_i       => '0', -- mgts_ready,
 
         clk_1x_o             => clk_1x, -- phase shiftable logic clocks
         clk_2x_o             => clk_2x,
@@ -269,13 +261,13 @@ begin
     reset_ctl : entity work.reset
     port map (
         clock_i        => clk_1x_alwayson,
-        soft_reset     => soft_reset,
+        soft_reset     => soft_reset or (not mgts_ready),
         mmcms_locked_i => mmcms_locked,
         gbt_rxready_i  => gbt_rxready(0),
         gbt_rxvalid_i  => gbt_rxvalid(0),
         gbt_txready_i  => gbt_txready(0),
         core_reset_o   => core_reset,
-        reset_o        => reset
+        reset_o        => trigger_reset
     );
 
     --=========--
@@ -303,7 +295,7 @@ begin
         gbt_clk160_180 => gbt_clk160_180, --
         gbt_clk320     => gbt_clk320,    -- 320 MHz phase shiftable frame clock from GBT
 
-        clock_i => clock,         -- 320 MHz sampling clock
+        clock_i => clk_1x_alwayson, -- 320 MHz sampling clock
 
         -- elinks
         elink_i_p  =>  elink_i_p,
@@ -323,7 +315,7 @@ begin
 
         ipb_mosi_i      => ipb_mosi_slaves (IPB_SLAVE.GBT),
         ipb_miso_o      => ipb_miso_slaves (IPB_SLAVE.GBT),
-        ipb_reset_i     => reset,
+        ipb_reset_i     => core_reset,
 
         cnt_snap => cnt_snap,
 
@@ -362,15 +354,15 @@ begin
     --====================--
 
     adc_inst : entity work.adc port map(
-        clock_i         => clock,
-        reset_i         => reset,
+        clock_i         => clk_1x_alwayson,
+        reset_i         => core_reset,
 
         cnt_snap => cnt_snap,
 
         ipb_mosi_i      => ipb_mosi_slaves (IPB_SLAVE.ADC),
         ipb_miso_o      => ipb_miso_slaves (IPB_SLAVE.ADC),
-        ipb_reset_i     => reset,
-        ipb_clk_i       => clock,
+        ipb_reset_i     => core_reset,
+        ipb_clk_i       => clk_1x_alwayson,
 
         adc_vp          => adc_vp,
         adc_vn          => adc_vn
@@ -383,8 +375,8 @@ begin
     control : entity work.control
     port map (
 
-        mgts_ready     => mgts_ready,
-        pll_lock   =>pll_lock,
+        mgts_ready   => mgts_ready,
+        pll_lock     => pll_lock,
         txfsm_done   => txfsm_done,
 
         --== TTC ==--
@@ -471,15 +463,15 @@ begin
         ipb_mosi_i => ipb_mosi_slaves(IPB_SLAVE.TRIG),
         ipb_miso_o => ipb_miso_slaves(IPB_SLAVE.TRIG),
 
-        mgts_ready => mgts_ready,
-        pll_lock_o =>pll_lock,
+        mgts_ready   => mgts_ready,
+        pll_lock_o   => pll_lock,
         txfsm_done_o => txfsm_done,
 
         -- reset
-        reset_i  => reset,
-        core_reset_i  => core_reset,
-        cnt_snap => cnt_snap,
-        ttc_resync => ttc_resync,
+        trigger_reset_i => trigger_reset,
+        core_reset_i    => core_reset,
+        cnt_snap        => cnt_snap,
+        ttc_resync      => ttc_resync,
 
         -- clocks
         mgt_clk_p => mgt_clk_p_i,
