@@ -39,14 +39,14 @@ port(
     logic_mmcm_lock_i  : in std_logic;
     logic_mmcm_reset_o : out std_logic;
 
-    clk_40_mgt        : in std_logic;
-    clk_160_mgt       : in std_logic;
-
     clk_40            : in std_logic;
-    clk_80            : in std_logic;
     clk_160           : in std_logic;
-    clk_200           : in std_logic;
-    clk_160_90        : in std_logic;
+
+    clk_40_sbit       : in std_logic;
+    clk_80_sbit       : in std_logic;
+    clk_160_sbit      : in std_logic;
+    clk_200_sbit      : in std_logic;
+    clk_160_90_sbit   : in std_logic;
 
     trigger_reset_i : in std_logic;
     core_reset_i    : in std_logic;
@@ -296,7 +296,7 @@ begin
 
     process (clk_40) begin
         if (rising_edge(clk_40)) then
-            trigger_reset     <= trigger_reset_i;
+            trigger_reset <= trigger_reset_i;
             ipb_reset <= core_reset_i;
         end if;
     end process;
@@ -308,8 +308,8 @@ begin
         end if;
     end process;
 
-    process (clk_40_mgt) begin
-        if (rising_edge(clk_40_mgt)) then
+    process (clk_40) begin
+        if (rising_edge(clk_40)) then
             tx_link_reset <= reset_links;
         end if;
     end process;
@@ -326,8 +326,8 @@ begin
     -- Counter Snap
     --------------------------------------------------------------------------------------------------------------------
 
-    process (clk_40) begin
-        if (rising_edge(clk_40)) then
+    process (clk_40_sbit) begin
+        if (rising_edge(clk_40_sbit)) then
 
             sbit_cnt_snap <= (sbit_timer_snap or sbit_cnt_persist);
 
@@ -354,8 +354,8 @@ begin
     -- S-bit overflow comparator
     --------------------------------------------------------------------------------------------------------------------
 
-    process (clk_40) begin
-        if (rising_edge(clk_40)) then
+    process (clk_40_sbit) begin
+        if (rising_edge(clk_40_sbit)) then
 
             if (unsigned(cluster_count) > 0)  then sbits_comparator_over_threshold(0) <= '1';
             else sbits_comparator_over_threshold(0) <= '0';
@@ -366,8 +366,8 @@ begin
     clusters_over_threshold_loop : for I in 1 to (MXVFATS-1) generate
     begin
 
-    process (clk_40) begin
-        if (rising_edge(clk_40)) then
+    process (clk_40_sbit) begin
+        if (rising_edge(clk_40_sbit)) then
                 if (unsigned(cluster_count) > 63*I)  then sbits_comparator_over_threshold(I) <= '1';
                 else sbits_comparator_over_threshold(I) <= '0';
                 end if;
@@ -385,11 +385,11 @@ begin
 
         trig_stop_i             => trig_stop_i,
 
-        clk40_i                 => clk_40,
-        clk80_i                 => clk_80,
-        clk160_i                => clk_160,
-        clk160_90_i             => clk_160_90,
-        clk200_i                => clk_200,
+        clk40_i                 => clk_40_sbit,
+        clk80_i                 => clk_80_sbit,
+        clk160_i                => clk_160_sbit,
+        clk160_90_i             => clk_160_90_sbit,
+        clk200_i                => clk_200_sbit,
 
         sbits_mux_sel_i         => sbits_mux_sel,
         sbits_mux_o             => sbits_mux,
@@ -435,7 +435,7 @@ begin
     )
     port map (
         reset_i          => (trigger_reset or reset_monitor),
-        ttc_clk_i        => clk_40,
+        ttc_clk_i        => clk_40_sbit,
         l1a_i            => ttc_l1a_i,
         sbit_cluster_0   => sbit_clusters(0),
         sbit_cluster_1   => sbit_clusters(1),
@@ -486,8 +486,8 @@ begin
         refclk_p  => mgt_clk_p, -- 160 MHz Reference Clock Positive
         refclk_n  => mgt_clk_n, -- 160 MHz Reference Clock Negative
 
-        clock_40  => clk_40_mgt,  -- 40 MHz  Logic Clock
-        clock_160 => clk_160_mgt, -- 160 MHz  Logic Clock
+        clock_40  => clk_40,  -- 40 MHz  Logic Clock
+        clock_160 => clk_160, -- 160 MHz  Logic Clock
 
         bxn_counter_i => bxn_counter_i,
         bc0_i         => ttc_bx0_i,
@@ -534,10 +534,10 @@ begin
        )
        port map(
            ipb_reset_i            => ipb_reset,
-           ipb_clk_i              => clk_40_mgt,
+           ipb_clk_i              => clk_40,
            ipb_mosi_i             => ipb_mosi_i,
            ipb_miso_o             => ipb_miso_o,
-           usr_clk_i              => clk_40_mgt,
+           usr_clk_i              => clk_40,
            regs_read_arr_i        => regs_read_arr,
            regs_write_arr_o       => regs_write_arr,
            read_pulse_arr_o       => regs_read_pulse_arr,
@@ -1320,7 +1320,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clk_40_mgt,
+        ref_clk_i => clk_40,
         reset_i   => cnt_reset,
         en_i      => sbit_overflow,
         snap_i    => cnt_snap,
@@ -1333,7 +1333,7 @@ begin
         g_COUNTER_WIDTH  => 32
     )
     port map (
-        ref_clk_i => clk_40_mgt,
+        ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(0),
         snap_i    => sbit_cnt_snap,
@@ -1346,7 +1346,7 @@ begin
         g_COUNTER_WIDTH  => 32
     )
     port map (
-        ref_clk_i => clk_40_mgt,
+        ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(1),
         snap_i    => sbit_cnt_snap,
@@ -1359,7 +1359,7 @@ begin
         g_COUNTER_WIDTH  => 32
     )
     port map (
-        ref_clk_i => clk_40_mgt,
+        ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(2),
         snap_i    => sbit_cnt_snap,
@@ -1372,7 +1372,7 @@ begin
         g_COUNTER_WIDTH  => 32
     )
     port map (
-        ref_clk_i => clk_40_mgt,
+        ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(3),
         snap_i    => sbit_cnt_snap,
@@ -1385,7 +1385,7 @@ begin
         g_COUNTER_WIDTH  => 32
     )
     port map (
-        ref_clk_i => clk_40_mgt,
+        ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(4),
         snap_i    => sbit_cnt_snap,
@@ -1398,7 +1398,7 @@ begin
         g_COUNTER_WIDTH  => 32
     )
     port map (
-        ref_clk_i => clk_40_mgt,
+        ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(5),
         snap_i    => sbit_cnt_snap,
@@ -1411,7 +1411,7 @@ begin
         g_COUNTER_WIDTH  => 32
     )
     port map (
-        ref_clk_i => clk_40_mgt,
+        ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(6),
         snap_i    => sbit_cnt_snap,
@@ -1424,7 +1424,7 @@ begin
         g_COUNTER_WIDTH  => 32
     )
     port map (
-        ref_clk_i => clk_40_mgt,
+        ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(7),
         snap_i    => sbit_cnt_snap,
@@ -1437,7 +1437,7 @@ begin
         g_COUNTER_WIDTH  => 32
     )
     port map (
-        ref_clk_i => clk_40_mgt,
+        ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(8),
         snap_i    => sbit_cnt_snap,
@@ -1450,7 +1450,7 @@ begin
         g_COUNTER_WIDTH  => 32
     )
     port map (
-        ref_clk_i => clk_40_mgt,
+        ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(9),
         snap_i    => sbit_cnt_snap,
@@ -1463,7 +1463,7 @@ begin
         g_COUNTER_WIDTH  => 32
     )
     port map (
-        ref_clk_i => clk_40_mgt,
+        ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(10),
         snap_i    => sbit_cnt_snap,
@@ -1476,7 +1476,7 @@ begin
         g_COUNTER_WIDTH  => 32
     )
     port map (
-        ref_clk_i => clk_40_mgt,
+        ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(11),
         snap_i    => sbit_cnt_snap,
@@ -1489,7 +1489,7 @@ begin
         g_COUNTER_WIDTH  => 32
     )
     port map (
-        ref_clk_i => clk_40_mgt,
+        ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(12),
         snap_i    => sbit_cnt_snap,
@@ -1502,7 +1502,7 @@ begin
         g_COUNTER_WIDTH  => 32
     )
     port map (
-        ref_clk_i => clk_40_mgt,
+        ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(13),
         snap_i    => sbit_cnt_snap,
@@ -1515,7 +1515,7 @@ begin
         g_COUNTER_WIDTH  => 32
     )
     port map (
-        ref_clk_i => clk_40_mgt,
+        ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(14),
         snap_i    => sbit_cnt_snap,
@@ -1528,7 +1528,7 @@ begin
         g_COUNTER_WIDTH  => 32
     )
     port map (
-        ref_clk_i => clk_40_mgt,
+        ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(15),
         snap_i    => sbit_cnt_snap,
@@ -1541,7 +1541,7 @@ begin
         g_COUNTER_WIDTH  => 32
     )
     port map (
-        ref_clk_i => clk_40_mgt,
+        ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(16),
         snap_i    => sbit_cnt_snap,
@@ -1554,7 +1554,7 @@ begin
         g_COUNTER_WIDTH  => 32
     )
     port map (
-        ref_clk_i => clk_40_mgt,
+        ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(17),
         snap_i    => sbit_cnt_snap,
@@ -1567,7 +1567,7 @@ begin
         g_COUNTER_WIDTH  => 32
     )
     port map (
-        ref_clk_i => clk_40_mgt,
+        ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(18),
         snap_i    => sbit_cnt_snap,
@@ -1580,7 +1580,7 @@ begin
         g_COUNTER_WIDTH  => 32
     )
     port map (
-        ref_clk_i => clk_40_mgt,
+        ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(19),
         snap_i    => sbit_cnt_snap,
@@ -1593,7 +1593,7 @@ begin
         g_COUNTER_WIDTH  => 32
     )
     port map (
-        ref_clk_i => clk_40_mgt,
+        ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(20),
         snap_i    => sbit_cnt_snap,
@@ -1606,7 +1606,7 @@ begin
         g_COUNTER_WIDTH  => 32
     )
     port map (
-        ref_clk_i => clk_40_mgt,
+        ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(21),
         snap_i    => sbit_cnt_snap,
@@ -1619,7 +1619,7 @@ begin
         g_COUNTER_WIDTH  => 32
     )
     port map (
-        ref_clk_i => clk_40_mgt,
+        ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(22),
         snap_i    => sbit_cnt_snap,
@@ -1632,7 +1632,7 @@ begin
         g_COUNTER_WIDTH  => 32
     )
     port map (
-        ref_clk_i => clk_40_mgt,
+        ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
         en_i      => active_vfats(23),
         snap_i    => sbit_cnt_snap,
@@ -1645,7 +1645,7 @@ begin
         g_COUNTER_WIDTH  => 32
     )
     port map (
-        ref_clk_i => clk_40_mgt,
+        ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
         en_i      => valid_clusters_or,
         snap_i    => sbit_cnt_snap,
@@ -1658,7 +1658,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clk_40_mgt,
+        ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
         en_i      => sbits_comparator_over_threshold(0),
         snap_i    => sbit_cnt_snap,
@@ -1671,7 +1671,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clk_40_mgt,
+        ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
         en_i      => sbits_comparator_over_threshold(1),
         snap_i    => sbit_cnt_snap,
@@ -1684,7 +1684,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clk_40_mgt,
+        ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
         en_i      => sbits_comparator_over_threshold(2),
         snap_i    => sbit_cnt_snap,
@@ -1697,7 +1697,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clk_40_mgt,
+        ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
         en_i      => sbits_comparator_over_threshold(3),
         snap_i    => sbit_cnt_snap,
@@ -1710,7 +1710,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clk_40_mgt,
+        ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
         en_i      => sbits_comparator_over_threshold(4),
         snap_i    => sbit_cnt_snap,
@@ -1723,7 +1723,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clk_40_mgt,
+        ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
         en_i      => sbits_comparator_over_threshold(5),
         snap_i    => sbit_cnt_snap,
@@ -1736,7 +1736,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clk_40_mgt,
+        ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
         en_i      => sbits_comparator_over_threshold(6),
         snap_i    => sbit_cnt_snap,
@@ -1749,7 +1749,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clk_40_mgt,
+        ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
         en_i      => sbits_comparator_over_threshold(7),
         snap_i    => sbit_cnt_snap,
@@ -1762,7 +1762,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clk_40_mgt,
+        ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
         en_i      => sbits_comparator_over_threshold(8),
         snap_i    => sbit_cnt_snap,
@@ -1775,7 +1775,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clk_40_mgt,
+        ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
         en_i      => sbits_comparator_over_threshold(9),
         snap_i    => sbit_cnt_snap,
@@ -1788,7 +1788,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clk_40_mgt,
+        ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
         en_i      => sbits_comparator_over_threshold(10),
         snap_i    => sbit_cnt_snap,
@@ -1801,7 +1801,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clk_40_mgt,
+        ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
         en_i      => sbits_comparator_over_threshold(11),
         snap_i    => sbit_cnt_snap,
@@ -1814,7 +1814,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clk_40_mgt,
+        ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
         en_i      => sbits_comparator_over_threshold(12),
         snap_i    => sbit_cnt_snap,
@@ -1827,7 +1827,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clk_40_mgt,
+        ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
         en_i      => sbits_comparator_over_threshold(13),
         snap_i    => sbit_cnt_snap,
@@ -1840,7 +1840,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clk_40_mgt,
+        ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
         en_i      => sbits_comparator_over_threshold(14),
         snap_i    => sbit_cnt_snap,
@@ -1853,7 +1853,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clk_40_mgt,
+        ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
         en_i      => sbits_comparator_over_threshold(15),
         snap_i    => sbit_cnt_snap,
@@ -1866,7 +1866,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clk_40_mgt,
+        ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
         en_i      => sbits_comparator_over_threshold(16),
         snap_i    => sbit_cnt_snap,
@@ -1879,7 +1879,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clk_40_mgt,
+        ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
         en_i      => sbits_comparator_over_threshold(17),
         snap_i    => sbit_cnt_snap,
@@ -1892,7 +1892,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clk_40_mgt,
+        ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
         en_i      => sbits_comparator_over_threshold(18),
         snap_i    => sbit_cnt_snap,
@@ -1905,7 +1905,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clk_40_mgt,
+        ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
         en_i      => sbits_comparator_over_threshold(19),
         snap_i    => sbit_cnt_snap,
@@ -1918,7 +1918,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clk_40_mgt,
+        ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
         en_i      => sbits_comparator_over_threshold(20),
         snap_i    => sbit_cnt_snap,
@@ -1931,7 +1931,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clk_40_mgt,
+        ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
         en_i      => sbits_comparator_over_threshold(21),
         snap_i    => sbit_cnt_snap,
@@ -1944,7 +1944,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clk_40_mgt,
+        ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
         en_i      => sbits_comparator_over_threshold(22),
         snap_i    => sbit_cnt_snap,
@@ -1957,7 +1957,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clk_40_mgt,
+        ref_clk_i => clk_40,
         reset_i   => cnt_reset_strobed,
         en_i      => sbits_comparator_over_threshold(23),
         snap_i    => sbit_cnt_snap,

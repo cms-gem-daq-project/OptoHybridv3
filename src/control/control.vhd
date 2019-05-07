@@ -32,7 +32,6 @@ port(
     --== TTC ==--
 
     clock_i            : in std_logic;
-    clk_1x_alwayson_i  : in std_logic;
     gbt_clock_i        : in std_logic;
     reset_i            : in std_logic;
 
@@ -274,7 +273,7 @@ begin
 
     led_control_inst : led_control
     port map (
-        clock         => clk_1x_alwayson_i,
+        clock         => clock_i,
 
         mgts_ready    => mgts_ready,
 

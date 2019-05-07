@@ -109,13 +109,13 @@ architecture Behavioral of optohybrid_top is
     signal gbt_clk160_180 : std_logic;
     signal gbt_clk320     : std_logic;
 
-    signal clk_1x_alwayson  : std_logic;
-    signal clk_4x_alwayson  : std_logic;
-    signal clk_1x           : std_logic;
-    signal clk_2x           : std_logic;
-    signal clk_4x           : std_logic;
-    signal clk_5x           : std_logic;
-    signal clk_4x_90        : std_logic;
+    signal clk_1x  : std_logic;
+    signal clk_4x  : std_logic;
+    signal clk_1x_trigger           : std_logic;
+    signal clk_2x_trigger           : std_logic;
+    signal clk_4x_trigger           : std_logic;
+    signal clk_5x_trigger           : std_logic;
+    signal clk_4x_90_trigger        : std_logic;
 
     signal delay_refclk     : std_logic;
     signal delay_refclk_reset : std_logic;
@@ -201,13 +201,8 @@ begin
     --===========--
     --== GE11  ==--
     --===========--
-    process(clk_1x_alwayson)
-    begin
-    if (rising_edge(clk_1x_alwayson)) then
-        ext_reset_o  <= ctrl_reset_vfats;
-        ext_sbits_o  <= ext_sbits;
-    end if;
-    end process;
+    ext_reset_o  <= ctrl_reset_vfats;
+    ext_sbits_o  <= ext_sbits;
     -- END: Station Specific IO DO NOT EDIT --
 
     --==============--
@@ -244,15 +239,15 @@ begin
         gbt_clk160_90_o      => gbt_clk160_90,  -- 160  MHz e-port aligned GBT clock
         gbt_clk160_180_o     => gbt_clk160_180, -- 160  MHz e-port aligned GBT clock
 
-        clock_enable_i       => '0', -- mgts_ready,
+        clock_enable_i       => mgts_ready,
 
-        clk_1x_o             => clk_1x, -- phase shiftable logic clocks
-        clk_2x_o             => clk_2x,
-        clk_4x_o             => clk_4x,
-        clk_1x_alwayson_o    => clk_1x_alwayson,
-        clk_4x_alwayson_o    => clk_4x_alwayson,
-        clk_5x_o             => clk_5x,
-        clk_4x_90_o          => clk_4x_90,
+        clk_1x_o             => clk_1x_trigger, -- phase shiftable logic clocks
+        clk_2x_o             => clk_2x_trigger,
+        clk_4x_o             => clk_4x_trigger,
+        clk_1x_alwayson_o    => clk_1x,
+        clk_4x_alwayson_o    => clk_4x,
+        clk_5x_o             => clk_5x_trigger,
+        clk_4x_90_o          => clk_4x_90_trigger,
 
         delay_refclk_reset_o => delay_refclk_reset,
         delay_refclk_o       => delay_refclk
@@ -260,7 +255,7 @@ begin
 
     reset_ctl : entity work.reset
     port map (
-        clock_i        => clk_1x_alwayson,
+        clock_i        => clk_1x,
         soft_reset     => soft_reset or (not mgts_ready),
         mmcms_locked_i => mmcms_locked,
         gbt_rxready_i  => gbt_rxready(0),
@@ -295,7 +290,7 @@ begin
         gbt_clk160_180 => gbt_clk160_180, --
         gbt_clk320     => gbt_clk320,    -- 320 MHz phase shiftable frame clock from GBT
 
-        clock_i => clk_1x_alwayson, -- 320 MHz sampling clock
+        clock_i => clk_1x, -- 320 MHz sampling clock
 
         -- elinks
         elink_i_p  =>  elink_i_p,
@@ -337,7 +332,7 @@ begin
 
     ipb_switch_inst : entity work.ipb_switch
     port map(
-        clock_i => clk_1x_alwayson,
+        clock_i => clk_1x,
         reset_i => core_reset,
 
         -- connect to master
@@ -354,7 +349,7 @@ begin
     --====================--
 
     adc_inst : entity work.adc port map(
-        clock_i         => clk_1x_alwayson,
+        clock_i         => clk_1x,
         reset_i         => core_reset,
 
         cnt_snap => cnt_snap,
@@ -362,7 +357,7 @@ begin
         ipb_mosi_i      => ipb_mosi_slaves (IPB_SLAVE.ADC),
         ipb_miso_o      => ipb_miso_slaves (IPB_SLAVE.ADC),
         ipb_reset_i     => core_reset,
-        ipb_clk_i       => clk_1x_alwayson,
+        ipb_clk_i       => clk_1x,
 
         adc_vp          => adc_vp,
         adc_vn          => adc_vn
@@ -381,11 +376,9 @@ begin
 
         --== TTC ==--
 
-        clock_i                =>   clk_1x_alwayson,
+        clock_i                =>   clk_1x,
         gbt_clock_i            =>   gbt_clk40,
         reset_i                =>   core_reset,
-
-        clk_1x_alwayson_i      =>   clk_1x_alwayson,
 
         ttc_l1a                =>   ttc_l1a,
         ttc_bc0                =>   ttc_bc0,
@@ -480,14 +473,14 @@ begin
         logic_mmcm_lock_i => logic_mmcm_locked,
         logic_mmcm_reset_o => logic_mmcm_reset,
 
-        clk_40     => clk_1x,
-        clk_80     => clk_2x,
-        clk_160    => clk_4x,
-        clk_200    => clk_5x,
-        clk_160_90 => clk_4x_90,
+        clk_40_sbit     => clk_1x_trigger,
+        clk_80_sbit     => clk_2x_trigger,
+        clk_160_sbit    => clk_4x_trigger,
+        clk_200_sbit    => clk_5x_trigger,
+        clk_160_90_sbit => clk_4x_90_trigger,
 
-        clk_40_mgt  => clk_1x_alwayson,
-        clk_160_mgt => clk_4x_alwayson,
+        clk_40      => clk_1x,
+        clk_160     => clk_4x,
 
         -- mgt pairs
         mgt_tx_p => mgt_tx_p_o,
