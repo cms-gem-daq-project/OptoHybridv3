@@ -9,6 +9,10 @@
 -- 2017/07/25 -- Restructure top level module to improve organization
 -- 2018/04/18 -- Mods for for OH lite compatibility
 ----------------------------------------------------------------------------------
+-- TODO: Replace redundant gbt rx clocks with standard logic clocks, keep only tx
+--       clock on its own mmcm
+--       Remove obsolete CDC circuit
+-- TODO: Replace GBT tx 320MHz with 160MHz ddr ?
 
 library ieee;
 use ieee.std_logic_1164.all;
@@ -66,8 +70,8 @@ port(
 
     --== GTX ==--
 
-    mgt_clk_p_i : in std_logic;
-    mgt_clk_n_i : in std_logic;
+    mgt_clk_p_i : in std_logic_vector (1 downto 0);
+    mgt_clk_n_i : in std_logic_vector (1 downto 0);
 
     mgt_tx_p_o : out std_logic_vector(3 downto 0);
     mgt_tx_n_o : out std_logic_vector(3 downto 0);
@@ -98,8 +102,6 @@ architecture Behavioral of optohybrid_top is
     signal logic_mmcm_reset : std_logic;
     signal eprt_mmcm_locked : std_logic;
 
-    signal clock            : std_logic;
-
     signal gbt_clk40      : std_logic;
     signal gbt_clk80      : std_logic;
     signal gbt_clk160_0   : std_logic;
@@ -107,11 +109,13 @@ architecture Behavioral of optohybrid_top is
     signal gbt_clk160_180 : std_logic;
     signal gbt_clk320     : std_logic;
 
-    signal clk_1x           : std_logic;
-    signal clk_2x           : std_logic;
-    signal clk_4x           : std_logic;
-    signal clk_5x           : std_logic;
-    signal clk_4x_90        : std_logic;
+    signal clk_1x  : std_logic;
+    signal clk_4x  : std_logic;
+    signal clk_1x_trigger           : std_logic;
+    signal clk_2x_trigger           : std_logic;
+    signal clk_4x_trigger           : std_logic;
+    signal clk_5x_trigger           : std_logic;
+    signal clk_4x_90_trigger        : std_logic;
 
     signal delay_refclk     : std_logic;
     signal delay_refclk_reset : std_logic;
@@ -127,7 +131,12 @@ architecture Behavioral of optohybrid_top is
     signal gbt_link_error       : std_logic;
     signal gbt_request_received : std_logic;
 
-    signal reset            : std_logic;
+    signal mgts_ready       : std_logic;
+    signal pll_lock         : std_logic;
+    signal txfsm_done       : std_logic;
+
+    signal trigger_reset            : std_logic;
+    signal core_reset       : std_logic;
     signal cnt_snap         : std_logic;
 
     signal ctrl_reset_vfats       : std_logic_vector (11 downto 0);
@@ -175,7 +184,6 @@ begin
 
     -- internal wiring
 
-    clock  <= clk_1x;
     gbt_request_received <= ipb_mosi_gbt.ipb_strobe;
 
 
@@ -183,12 +191,7 @@ begin
     --== Common  ==--
     --=============--
 
-    process(clock)
-    begin
-    if (rising_edge(clock)) then
-            led_o (MXLED-1 downto 0) <= led (MXLED-1 downto 0);
-    end if;
-    end process;
+    led_o (MXLED-1 downto 0) <= led (MXLED-1 downto 0);
 
     gbt_rxready   <= gbt_rxready_i;
     gbt_rxvalid   <= gbt_rxvalid_i;
@@ -198,13 +201,8 @@ begin
     --===========--
     --== GE11  ==--
     --===========--
-    process(clock)
-    begin
-    if (rising_edge(clock)) then
-        ext_reset_o  <= ctrl_reset_vfats;
-        ext_sbits_o  <= ext_sbits;
-    end if;
-    end process;
+    ext_reset_o  <= ctrl_reset_vfats;
+    ext_sbits_o  <= ext_sbits;
     -- END: Station Specific IO DO NOT EDIT --
 
     --==============--
@@ -214,52 +212,57 @@ begin
     clocking : entity work.clocking
     port map(
 
-        logic_clock_p         => logic_clock_p, -- phase shiftable 40MHz ttc clocks
-        logic_clock_n         => logic_clock_n, --
+        logic_clock_p        => logic_clock_p, -- phase shiftable 40MHz ttc clocks
+        logic_clock_n        => logic_clock_n, --
 
-        elink_clock_p         => elink_clock_p, -- phase shiftable 40MHz ttc clocks
-        elink_clock_n         => elink_clock_n, --
+        elink_clock_p        => elink_clock_p, -- phase shiftable 40MHz ttc clocks
+        elink_clock_n        => elink_clock_n, --
 
-        ipb_mosi_i      => ipb_mosi_slaves (IPB_SLAVE.CLOCKING),
-        ipb_miso_o      => ipb_miso_slaves (IPB_SLAVE.CLOCKING),
-        ipb_reset_i     => reset,
+        ipb_mosi_i           => ipb_mosi_slaves (IPB_SLAVE.CLOCKING),
+        ipb_miso_o           => ipb_miso_slaves (IPB_SLAVE.CLOCKING),
+        ipb_reset_i          => core_reset,
 
-        cnt_snap => cnt_snap,
+        cnt_snap             => cnt_snap,
 
-        mmcms_locked_o     => mmcms_locked,
+        mmcms_locked_o       => mmcms_locked,
 
-        eprt_mmcm_reset_i => '0',
-        dskw_mmcm_reset_i => '0',
+        eprt_mmcm_reset_i    => '0',
+        dskw_mmcm_reset_i    => '0',
 
-        eprt_mmcm_locked_o => eprt_mmcm_locked,
-        dskw_mmcm_locked_o => logic_mmcm_locked,
+        eprt_mmcm_locked_o   => eprt_mmcm_locked,
+        dskw_mmcm_locked_o   => logic_mmcm_locked,
 
-        gbt_clk40_o      => gbt_clk40,      -- 40  MHz e-port aligned GBT clock
-        gbt_clk80_o      => gbt_clk80,      -- 80  MHz e-port aligned GBT clock
-        gbt_clk320_o     => gbt_clk320,     -- 320  MHz e-port aligned GBT clock
-        gbt_clk160_0_o   => gbt_clk160_0,   -- 160  MHz e-port aligned GBT clock
-        gbt_clk160_90_o  => gbt_clk160_90,  -- 160  MHz e-port aligned GBT clock
-        gbt_clk160_180_o => gbt_clk160_180, -- 160  MHz e-port aligned GBT clock
+        gbt_clk40_o          => gbt_clk40,      -- 40  MHz e-port aligned GBT clock
+        gbt_clk80_o          => gbt_clk80,      -- 80  MHz e-port aligned GBT clock
+        gbt_clk320_o         => gbt_clk320,     -- 320  MHz e-port aligned GBT clock
+        gbt_clk160_0_o       => gbt_clk160_0,   -- 160  MHz e-port aligned GBT clock
+        gbt_clk160_90_o      => gbt_clk160_90,  -- 160  MHz e-port aligned GBT clock
+        gbt_clk160_180_o     => gbt_clk160_180, -- 160  MHz e-port aligned GBT clock
 
-        clk_1x_o           => clk_1x, -- phase shiftable logic clocks
-        clk_2x_o           => clk_2x,
-        clk_4x_o           => clk_4x,
-        clk_5x_o           => clk_5x,
-        clk_4x_90_o        => clk_4x_90,
+        clock_enable_i       => mgts_ready,
+
+        clk_1x_o             => clk_1x_trigger, -- phase shiftable logic clocks
+        clk_2x_o             => clk_2x_trigger,
+        clk_4x_o             => clk_4x_trigger,
+        clk_1x_alwayson_o    => clk_1x,
+        clk_4x_alwayson_o    => clk_4x,
+        clk_5x_o             => clk_5x_trigger,
+        clk_4x_90_o          => clk_4x_90_trigger,
 
         delay_refclk_reset_o => delay_refclk_reset,
-        delay_refclk_o     => delay_refclk
+        delay_refclk_o       => delay_refclk
     );
 
     reset_ctl : entity work.reset
     port map (
-        clock_i        => clock,
-        soft_reset     => soft_reset,
+        clock_i        => clk_1x,
+        soft_reset     => soft_reset or (not mgts_ready),
         mmcms_locked_i => mmcms_locked,
         gbt_rxready_i  => gbt_rxready(0),
         gbt_rxvalid_i  => gbt_rxvalid(0),
         gbt_txready_i  => gbt_txready(0),
-        reset_o        => reset
+        core_reset_o   => core_reset,
+        reset_o        => trigger_reset
     );
 
     --=========--
@@ -270,7 +273,7 @@ begin
     port map(
 
         -- reset
-        reset_i => reset,
+        reset_i => core_reset,
 
         -- GBT
 
@@ -287,7 +290,7 @@ begin
         gbt_clk160_180 => gbt_clk160_180, --
         gbt_clk320     => gbt_clk320,    -- 320 MHz phase shiftable frame clock from GBT
 
-        clock_i => clock,         -- 320 MHz sampling clock
+        clock_i => clk_1x, -- 320 MHz sampling clock
 
         -- elinks
         elink_i_p  =>  elink_i_p,
@@ -307,7 +310,7 @@ begin
 
         ipb_mosi_i      => ipb_mosi_slaves (IPB_SLAVE.GBT),
         ipb_miso_o      => ipb_miso_slaves (IPB_SLAVE.GBT),
-        ipb_reset_i     => reset,
+        ipb_reset_i     => core_reset,
 
         cnt_snap => cnt_snap,
 
@@ -329,8 +332,8 @@ begin
 
     ipb_switch_inst : entity work.ipb_switch
     port map(
-        clock_i => clock,
-        reset_i => reset,
+        clock_i => clk_1x,
+        reset_i => core_reset,
 
         -- connect to master
         mosi_masters => ipb_mosi_masters,
@@ -346,15 +349,15 @@ begin
     --====================--
 
     adc_inst : entity work.adc port map(
-        clock_i         => clock,
-        reset_i         => reset,
+        clock_i         => clk_1x,
+        reset_i         => core_reset,
 
         cnt_snap => cnt_snap,
 
         ipb_mosi_i      => ipb_mosi_slaves (IPB_SLAVE.ADC),
         ipb_miso_o      => ipb_miso_slaves (IPB_SLAVE.ADC),
-        ipb_reset_i     => reset,
-        ipb_clk_i       => clock,
+        ipb_reset_i     => core_reset,
+        ipb_clk_i       => clk_1x,
 
         adc_vp          => adc_vp,
         adc_vn          => adc_vn
@@ -367,11 +370,15 @@ begin
     control : entity work.control
     port map (
 
+        mgts_ready   => mgts_ready,
+        pll_lock     => pll_lock,
+        txfsm_done   => txfsm_done,
+
         --== TTC ==--
 
-        clock_i                =>   clock,
+        clock_i                =>   clk_1x,
         gbt_clock_i            =>   gbt_clk40,
-        reset_i                =>   reset,
+        reset_i                =>   core_reset,
 
         ttc_l1a                =>   ttc_l1a,
         ttc_bc0                =>   ttc_bc0,
@@ -449,10 +456,15 @@ begin
         ipb_mosi_i => ipb_mosi_slaves(IPB_SLAVE.TRIG),
         ipb_miso_o => ipb_miso_slaves(IPB_SLAVE.TRIG),
 
+        mgts_ready   => mgts_ready,
+        pll_lock_o   => pll_lock,
+        txfsm_done_o => txfsm_done,
+
         -- reset
-        reset_i  => reset,
-        cnt_snap => cnt_snap,
-        ttc_resync => ttc_resync,
+        trigger_reset_i => trigger_reset,
+        core_reset_i    => core_reset,
+        cnt_snap        => cnt_snap,
+        ttc_resync      => ttc_resync,
 
         -- clocks
         mgt_clk_p => mgt_clk_p_i,
@@ -461,11 +473,14 @@ begin
         logic_mmcm_lock_i => logic_mmcm_locked,
         logic_mmcm_reset_o => logic_mmcm_reset,
 
-        clk_40     => clk_1x,
-        clk_80     => clk_2x,
-        clk_160    => clk_4x,
-        clk_200    => clk_5x,
-        clk_160_90 => clk_4x_90,
+        clk_40_sbit     => clk_1x_trigger,
+        clk_80_sbit     => clk_2x_trigger,
+        clk_160_sbit    => clk_4x_trigger,
+        clk_200_sbit    => clk_5x_trigger,
+        clk_160_90_sbit => clk_4x_90_trigger,
+
+        clk_40      => clk_1x,
+        clk_160     => clk_4x,
 
         -- mgt pairs
         mgt_tx_p => mgt_tx_p_o,

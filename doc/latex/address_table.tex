@@ -14,6 +14,7 @@
 \renewcommand{\contentsname}{Modules}
 
 \usepackage{hyperref}
+\setcounter{tocdepth}{3}
 \hypersetup{
     colorlinks=true, %set true if you want colored links
     linktoc=all,     %set to all if you want both sections and subsections linked
@@ -22,7 +23,7 @@
 
 \title{Optohybrid v3 Address Table}
 % START: ADDRESS_TABLE_VERSION :: DO NOT EDIT
-    \author{ Firmware Version 03.02.02.1C \\ 20190325}
+    \author{\textbf{GE1/1 Long} \\  \\ v03.02.03.1C \\ 20190508}
 % END: ADDRESS_TABLE_VERSION :: DO NOT EDIT
 \begin{document}
 
@@ -38,7 +39,7 @@
 
     \renewcommand{\arraystretch}{1.3}
     \noindent
-    \textcolor{parentcolor}{\textbf{FPGA.CONTROL.LOOPBACK}}
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.CONTROL.LOOPBACK}}}
 
     \vspace{4mm}
     \noindent
@@ -56,7 +57,7 @@
 
 
     \noindent
-    \textcolor{parentcolor}{\textbf{FPGA.CONTROL.RELEASE}}
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.CONTROL.RELEASE}}}
 
     \vspace{4mm}
     \noindent
@@ -74,11 +75,11 @@
 
 
     \noindent
-    \textcolor{parentcolor}{\textbf{FPGA.CONTROL.RELEASE.VERSION}}
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.CONTROL.RELEASE.VERSION}}}
 
     \vspace{4mm}
     \noindent
-    Optohybrid Release Version (XX.YY.ZZ.AA)                 \\\\ XX indicates the firmware major version                 \\\\ YY indicates the firmware minor version                 \\\\ ZZ indicates the firmware patch                 \\\\ AA indicates the hardware generation (0C = v3C short, 1C = v3C long)                 
+    Optohybrid Release Version (XX.YY.ZZ.AA)                 \\\\ XX indicates the firmware major version                 \\\\ YY indicates the firmware minor version                 \\\\ ZZ indicates the firmware patch                 \\\\ AA indicates the hardware generation (0C = GE1/1 v3C short, 1C = GE1/1 v3C long, 2A = GE2/1 v1)                 
     \noindent
 
     \keepXColumns
@@ -95,7 +96,7 @@
 
 
     \noindent
-    \textcolor{parentcolor}{\textbf{FPGA.CONTROL.SEM}}
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.CONTROL.SEM}}}
 
     \vspace{4mm}
     \noindent
@@ -114,7 +115,7 @@
 
 
     \noindent
-    \textcolor{parentcolor}{\textbf{FPGA.CONTROL.VFAT}}
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.CONTROL.VFAT}}}
 
     \vspace{4mm}
     \noindent
@@ -132,7 +133,7 @@
 
 
     \noindent
-    \textcolor{parentcolor}{\textbf{FPGA.CONTROL.FMM}}
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.CONTROL.FMM}}}
 
     \vspace{4mm}
     \noindent
@@ -151,7 +152,7 @@
 
 
     \noindent
-    \textcolor{parentcolor}{\textbf{FPGA.CONTROL.TTC}}
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.CONTROL.TTC}}}
 
     \vspace{4mm}
     \noindent
@@ -177,7 +178,7 @@
 
 
     \noindent
-    \textcolor{parentcolor}{\textbf{FPGA.CONTROL.SBITS}}
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.CONTROL.SBITS}}}
 
     \vspace{4mm}
     \noindent
@@ -195,7 +196,7 @@
 
 
     \noindent
-    \textcolor{parentcolor}{\textbf{FPGA.CONTROL.HDMI}}
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.CONTROL.HDMI}}}
 
     \vspace{4mm}
     \noindent
@@ -228,7 +229,7 @@
 
 
     \noindent
-    \textcolor{parentcolor}{\textbf{FPGA.CONTROL.CNT\_SNAP}}
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.CONTROL.CNT\_SNAP}}}
 
     \vspace{4mm}
     \noindent
@@ -247,7 +248,7 @@
 
 
     \noindent
-    \textcolor{parentcolor}{\textbf{FPGA.CONTROL}}
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.CONTROL}}}
 
     \vspace{4mm}
     \noindent
@@ -265,7 +266,7 @@
 
 
     \noindent
-    \textcolor{parentcolor}{\textbf{FPGA.CONTROL.DNA}}
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.CONTROL.DNA}}}
 
     \vspace{4mm}
     \noindent
@@ -291,7 +292,7 @@
 
     \renewcommand{\arraystretch}{1.3}
     \noindent
-    \textcolor{parentcolor}{\textbf{FPGA.ADC.CTRL}}
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.ADC.CTRL}}}
 
     \keepXColumns
     \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
@@ -322,7 +323,7 @@
 
     \renewcommand{\arraystretch}{1.3}
     \noindent
-    \textcolor{parentcolor}{\textbf{FPGA.TRIG.CTRL}}
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.TRIG.CTRL}}}
 
     \vspace{4mm}
     \noindent
@@ -338,7 +339,7 @@
     SBIT\_DEADTIME & \texttt{0x2000} & \texttt{[27:24]} & rw & \texttt{0x7} & Set programmable oneshot deadtime which applies to retriggers on individual VFAT channels \\\hline
     ACTIVE\_VFATS & \texttt{0x2001} & \texttt{[23:0]} & r & \texttt{} & 24 bit list of VFATs with hits in this BX \\\hline
     CNT\_OVERFLOW & \texttt{0x2002} & \texttt{[15:0]} & r & \texttt{} & Overflow Counter (more than 8 clusters in a bx) \\\hline
-    ALIGNED\_COUNT\_TO\_READY & \texttt{0x2002} & \texttt{[27:16]} & rw & \texttt{0xFFF} & Number of link consecutive good frames required before the transmission unit is marked as good and S-bits can be produced \\\hline
+    ALIGNED\_COUNT\_TO\_READY & \texttt{0x2002} & \texttt{[27:16]} & rw & \texttt{0x1FF} & Number of link consecutive good frames required before the transmission unit is marked as good and S-bits can be produced \\\hline
     SBIT\_SOT\_READY & \texttt{0x2003} & \texttt{[23:0]} & r & \texttt{} & 24 bit list of VFATs with stable Start-of-frame pulses (in sync for a number of clock cycles) \\\hline
     SBIT\_SOT\_UNSTABLE & \texttt{0x2004} & \texttt{[23:0]} & r & \texttt{} & 24 bit list of VFATs with unstable Start-of-frame pulses (became misaligned after already achieving lock) \\\hline
     \end{tabularx}
@@ -346,7 +347,7 @@
 
 
     \noindent
-    \textcolor{parentcolor}{\textbf{FPGA.TRIG.CTRL.INVERT}}
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.TRIG.CTRL.INVERT}}}
 
     \vspace{4mm}
     \noindent
@@ -388,7 +389,7 @@
 
 
     \noindent
-    \textcolor{parentcolor}{\textbf{FPGA.TRIG.CTRL.SBITS\_MUX}}
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.TRIG.CTRL.SBITS\_MUX}}}
 
     \vspace{4mm}
     \noindent
@@ -408,7 +409,7 @@
 
 
     \noindent
-    \textcolor{parentcolor}{\textbf{FPGA.TRIG.CTRL.TU\_MASK}}
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.TRIG.CTRL.TU\_MASK}}}
 
     \vspace{4mm}
     \noindent
@@ -449,11 +450,11 @@
 
 
     \noindent
-    \textcolor{parentcolor}{\textbf{FPGA.TRIG.CNT}}
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.TRIG.CNT}}}
 
     \vspace{4mm}
     \noindent
-    S-BIT Counters \\\\  Set CNT\_PERSIST to 1 to accumulate. Otherwise the counters will automatically reset after a programmable time. By default this time is 1 second, making these counters a rate counter in Hertz
+    S-BIT Counters \\\\  Set CNT\_PERSIST to 1 to accumulate. Otherwise the counters will automatically reset after a programmable time (default is 1 second). By default this time is 1 second, making these counters a rate counter in Hertz
     \noindent
 
     \keepXColumns
@@ -461,42 +462,64 @@
     \hline
     \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
     \nopagebreak
-    VFAT0 & \texttt{0x2017} & \texttt{[31:0]} & r & \texttt{} & VFAT \{Y\} Counter \\\hline
+    VFAT0 & \texttt{0x2017} & \texttt{[31:0]} & r & \texttt{} & VFAT 0 Counter \\\hline
+    VFAT1 & \texttt{0x2018} & \texttt{[31:0]} & r & \texttt{} & VFAT 1 Counter \\\hline
+    VFAT2 & \texttt{0x2019} & \texttt{[31:0]} & r & \texttt{} & VFAT 2 Counter \\\hline
+    VFAT3 & \texttt{0x201a} & \texttt{[31:0]} & r & \texttt{} & VFAT 3 Counter \\\hline
+    VFAT4 & \texttt{0x201b} & \texttt{[31:0]} & r & \texttt{} & VFAT 4 Counter \\\hline
+    VFAT5 & \texttt{0x201c} & \texttt{[31:0]} & r & \texttt{} & VFAT 5 Counter \\\hline
+    VFAT6 & \texttt{0x201d} & \texttt{[31:0]} & r & \texttt{} & VFAT 6 Counter \\\hline
+    VFAT7 & \texttt{0x201e} & \texttt{[31:0]} & r & \texttt{} & VFAT 7 Counter \\\hline
+    VFAT8 & \texttt{0x201f} & \texttt{[31:0]} & r & \texttt{} & VFAT 8 Counter \\\hline
+    VFAT9 & \texttt{0x2020} & \texttt{[31:0]} & r & \texttt{} & VFAT 9 Counter \\\hline
+    VFAT10 & \texttt{0x2021} & \texttt{[31:0]} & r & \texttt{} & VFAT 10 Counter \\\hline
+    VFAT11 & \texttt{0x2022} & \texttt{[31:0]} & r & \texttt{} & VFAT 11 Counter \\\hline
+    VFAT12 & \texttt{0x2023} & \texttt{[31:0]} & r & \texttt{} & VFAT 12 Counter \\\hline
+    VFAT13 & \texttt{0x2024} & \texttt{[31:0]} & r & \texttt{} & VFAT 13 Counter \\\hline
+    VFAT14 & \texttt{0x2025} & \texttt{[31:0]} & r & \texttt{} & VFAT 14 Counter \\\hline
+    VFAT15 & \texttt{0x2026} & \texttt{[31:0]} & r & \texttt{} & VFAT 15 Counter \\\hline
+    VFAT16 & \texttt{0x2027} & \texttt{[31:0]} & r & \texttt{} & VFAT 16 Counter \\\hline
+    VFAT17 & \texttt{0x2028} & \texttt{[31:0]} & r & \texttt{} & VFAT 17 Counter \\\hline
+    VFAT18 & \texttt{0x2029} & \texttt{[31:0]} & r & \texttt{} & VFAT 18 Counter \\\hline
+    VFAT19 & \texttt{0x202a} & \texttt{[31:0]} & r & \texttt{} & VFAT 19 Counter \\\hline
+    VFAT20 & \texttt{0x202b} & \texttt{[31:0]} & r & \texttt{} & VFAT 20 Counter \\\hline
+    VFAT21 & \texttt{0x202c} & \texttt{[31:0]} & r & \texttt{} & VFAT 21 Counter \\\hline
+    VFAT22 & \texttt{0x202d} & \texttt{[31:0]} & r & \texttt{} & VFAT 22 Counter \\\hline
+    VFAT23 & \texttt{0x202e} & \texttt{[31:0]} & r & \texttt{} & VFAT 23 Counter \\\hline
     RESET & \texttt{0x202f} & \texttt{[0:0]} & w & Pulsed & Reset S-bit counters \\\hline
     SBIT\_CNT\_PERSIST & \texttt{0x2030} & \texttt{[0:0]} & rw & \texttt{0x0} & 1=counters will persist until manually reset; \\ & & & & &                                 0=counters will automatically reset at CNT\_TIME \\\hline
     SBIT\_CNT\_TIME\_MAX & \texttt{0x2031} & \texttt{[31:0]} & rw & \texttt{0x2638E98} & Number of BX that the VFAT S-bit counters will count to before automatically resetting to zero \\\hline
     CLUSTER\_COUNT & \texttt{0x2032} & \texttt{[31:0]} & r & \texttt{} & VFAT Cluster Counter (chamber) \\\hline
-    CNT\_PULSE & \texttt{0x2033} & \texttt{[0:0]} & w & Pulsed & Pulses S-bit counters for testing \\\hline
-    SBITS\_OVER\_64x0 & \texttt{0x2036} & \texttt{[15:0]} & r & \texttt{} & More than 64 * \$\{OVERFLOW\_IDX\} Sbits in a bx Counter \\\hline
-    SBITS\_OVER\_64x1 & \texttt{0x2037} & \texttt{[15:0]} & r & \texttt{} & More than 64 * \$\{OVERFLOW\_IDX\} Sbits in a bx Counter \\\hline
-    SBITS\_OVER\_64x2 & \texttt{0x2038} & \texttt{[15:0]} & r & \texttt{} & More than 64 * \$\{OVERFLOW\_IDX\} Sbits in a bx Counter \\\hline
-    SBITS\_OVER\_64x3 & \texttt{0x2039} & \texttt{[15:0]} & r & \texttt{} & More than 64 * \$\{OVERFLOW\_IDX\} Sbits in a bx Counter \\\hline
-    SBITS\_OVER\_64x4 & \texttt{0x203a} & \texttt{[15:0]} & r & \texttt{} & More than 64 * \$\{OVERFLOW\_IDX\} Sbits in a bx Counter \\\hline
-    SBITS\_OVER\_64x5 & \texttt{0x203b} & \texttt{[15:0]} & r & \texttt{} & More than 64 * \$\{OVERFLOW\_IDX\} Sbits in a bx Counter \\\hline
-    SBITS\_OVER\_64x6 & \texttt{0x203c} & \texttt{[15:0]} & r & \texttt{} & More than 64 * \$\{OVERFLOW\_IDX\} Sbits in a bx Counter \\\hline
-    SBITS\_OVER\_64x7 & \texttt{0x203d} & \texttt{[15:0]} & r & \texttt{} & More than 64 * \$\{OVERFLOW\_IDX\} Sbits in a bx Counter \\\hline
-    SBITS\_OVER\_64x8 & \texttt{0x203e} & \texttt{[15:0]} & r & \texttt{} & More than 64 * \$\{OVERFLOW\_IDX\} Sbits in a bx Counter \\\hline
-    SBITS\_OVER\_64x9 & \texttt{0x203f} & \texttt{[15:0]} & r & \texttt{} & More than 64 * \$\{OVERFLOW\_IDX\} Sbits in a bx Counter \\\hline
-    SBITS\_OVER\_64x10 & \texttt{0x2040} & \texttt{[15:0]} & r & \texttt{} & More than 64 * \$\{OVERFLOW\_IDX\} Sbits in a bx Counter \\\hline
-    SBITS\_OVER\_64x11 & \texttt{0x2041} & \texttt{[15:0]} & r & \texttt{} & More than 64 * \$\{OVERFLOW\_IDX\} Sbits in a bx Counter \\\hline
-    SBITS\_OVER\_64x12 & \texttt{0x2042} & \texttt{[15:0]} & r & \texttt{} & More than 64 * \$\{OVERFLOW\_IDX\} Sbits in a bx Counter \\\hline
-    SBITS\_OVER\_64x13 & \texttt{0x2043} & \texttt{[15:0]} & r & \texttt{} & More than 64 * \$\{OVERFLOW\_IDX\} Sbits in a bx Counter \\\hline
-    SBITS\_OVER\_64x14 & \texttt{0x2044} & \texttt{[15:0]} & r & \texttt{} & More than 64 * \$\{OVERFLOW\_IDX\} Sbits in a bx Counter \\\hline
-    SBITS\_OVER\_64x15 & \texttt{0x2045} & \texttt{[15:0]} & r & \texttt{} & More than 64 * \$\{OVERFLOW\_IDX\} Sbits in a bx Counter \\\hline
-    SBITS\_OVER\_64x16 & \texttt{0x2046} & \texttt{[15:0]} & r & \texttt{} & More than 64 * \$\{OVERFLOW\_IDX\} Sbits in a bx Counter \\\hline
-    SBITS\_OVER\_64x17 & \texttt{0x2047} & \texttt{[15:0]} & r & \texttt{} & More than 64 * \$\{OVERFLOW\_IDX\} Sbits in a bx Counter \\\hline
-    SBITS\_OVER\_64x18 & \texttt{0x2048} & \texttt{[15:0]} & r & \texttt{} & More than 64 * \$\{OVERFLOW\_IDX\} Sbits in a bx Counter \\\hline
-    SBITS\_OVER\_64x19 & \texttt{0x2049} & \texttt{[15:0]} & r & \texttt{} & More than 64 * \$\{OVERFLOW\_IDX\} Sbits in a bx Counter \\\hline
-    SBITS\_OVER\_64x20 & \texttt{0x204a} & \texttt{[15:0]} & r & \texttt{} & More than 64 * \$\{OVERFLOW\_IDX\} Sbits in a bx Counter \\\hline
-    SBITS\_OVER\_64x21 & \texttt{0x204b} & \texttt{[15:0]} & r & \texttt{} & More than 64 * \$\{OVERFLOW\_IDX\} Sbits in a bx Counter \\\hline
-    SBITS\_OVER\_64x22 & \texttt{0x204c} & \texttt{[15:0]} & r & \texttt{} & More than 64 * \$\{OVERFLOW\_IDX\} Sbits in a bx Counter \\\hline
-    SBITS\_OVER\_64x23 & \texttt{0x204d} & \texttt{[15:0]} & r & \texttt{} & More than 64 * \$\{OVERFLOW\_IDX\} Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x0 & \texttt{0x2036} & \texttt{[15:0]} & r & \texttt{} & More than 64 * 0 Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x1 & \texttt{0x2037} & \texttt{[15:0]} & r & \texttt{} & More than 64 * 1 Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x2 & \texttt{0x2038} & \texttt{[15:0]} & r & \texttt{} & More than 64 * 2 Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x3 & \texttt{0x2039} & \texttt{[15:0]} & r & \texttt{} & More than 64 * 3 Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x4 & \texttt{0x203a} & \texttt{[15:0]} & r & \texttt{} & More than 64 * 4 Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x5 & \texttt{0x203b} & \texttt{[15:0]} & r & \texttt{} & More than 64 * 5 Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x6 & \texttt{0x203c} & \texttt{[15:0]} & r & \texttt{} & More than 64 * 6 Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x7 & \texttt{0x203d} & \texttt{[15:0]} & r & \texttt{} & More than 64 * 7 Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x8 & \texttt{0x203e} & \texttt{[15:0]} & r & \texttt{} & More than 64 * 8 Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x9 & \texttt{0x203f} & \texttt{[15:0]} & r & \texttt{} & More than 64 * 9 Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x10 & \texttt{0x2040} & \texttt{[15:0]} & r & \texttt{} & More than 64 * 10 Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x11 & \texttt{0x2041} & \texttt{[15:0]} & r & \texttt{} & More than 64 * 11 Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x12 & \texttt{0x2042} & \texttt{[15:0]} & r & \texttt{} & More than 64 * 12 Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x13 & \texttt{0x2043} & \texttt{[15:0]} & r & \texttt{} & More than 64 * 13 Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x14 & \texttt{0x2044} & \texttt{[15:0]} & r & \texttt{} & More than 64 * 14 Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x15 & \texttt{0x2045} & \texttt{[15:0]} & r & \texttt{} & More than 64 * 15 Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x16 & \texttt{0x2046} & \texttt{[15:0]} & r & \texttt{} & More than 64 * 16 Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x17 & \texttt{0x2047} & \texttt{[15:0]} & r & \texttt{} & More than 64 * 17 Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x18 & \texttt{0x2048} & \texttt{[15:0]} & r & \texttt{} & More than 64 * 18 Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x19 & \texttt{0x2049} & \texttt{[15:0]} & r & \texttt{} & More than 64 * 19 Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x20 & \texttt{0x204a} & \texttt{[15:0]} & r & \texttt{} & More than 64 * 20 Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x21 & \texttt{0x204b} & \texttt{[15:0]} & r & \texttt{} & More than 64 * 21 Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x22 & \texttt{0x204c} & \texttt{[15:0]} & r & \texttt{} & More than 64 * 22 Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x23 & \texttt{0x204d} & \texttt{[15:0]} & r & \texttt{} & More than 64 * 23 Sbits in a bx Counter \\\hline
     \end{tabularx}
     \vspace{5mm}
 
 
     \noindent
-    \textcolor{parentcolor}{\textbf{FPGA.TRIG.TIMING}}
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.TRIG.TIMING}}}
 
     \vspace{4mm}
     \noindent
@@ -729,7 +752,7 @@
 
 
     \noindent
-    \textcolor{parentcolor}{\textbf{FPGA.TRIG.LINKS}}
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.TRIG.LINKS}}}
 
     \vspace{4mm}
     \noindent
@@ -742,14 +765,24 @@
     \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
     \nopagebreak
     RESET & \texttt{0x2080} & \texttt{[0:0]} & w & Pulsed & Reset trigger links \\\hline
-    TX\_PLL\_LOCKED & \texttt{0x2081} & \texttt{[3:0]} & r & \texttt{} & Transmit PLLs are Locked \\\hline
-    TX\_RESET\_DONE & \texttt{0x2081} & \texttt{[7:4]} & r & \texttt{} & Transmit Resets are Done \\\hline
+    TX\_PLL\_LOCKED & \texttt{0x2081} & \texttt{[0:0]} & r & \texttt{} & Transmit PLLs are Locked \\\hline
+    TX\_RESET\_DONE & \texttt{0x2081} & \texttt{[4:4]} & r & \texttt{} & Transmit Resets are Done \\\hline
+    TX\_PRBS\_MODE & \texttt{0x2081} & \texttt{[10:8]} & rw & \texttt{0x0} & 000: Standard \\ & & & & & 001: PRBS-7 \\ & & & & & 010: PRBS-15 \\ & & & & & 011: PRBS-23 \\ & & & & & 100: PRBS-31 \\\hline
+    TX\_PLL\_RESET & \texttt{0x2081} & \texttt{[11:11]} & rw & \texttt{0x0} & This port resets the TX PLL of the GTX transceiver when driven High. It affects the clock generated from the TX PMA. When this reset is asserted or deasserted, TXRESET must also be asserted or deasserted. \\\hline
+    MGT\_RESET & \texttt{0x2081} & \texttt{[15:12]} & rw & \texttt{0x0} & Asserts the MGT reset (GTXTXRESET). This sequence takes about 120 us to complete and systematically resets all subcomponents of the GTX transceiver TX.  \\\hline
+    GTXTEST\_START & \texttt{0x2081} & \texttt{[16:16]} & rw & \texttt{0x0} & Initiates a double reset of the TX output clock dividers \\\hline
+    TXRESET & \texttt{0x2081} & \texttt{[17:17]} & rw & \texttt{0x0} & PCS TX system reset. Resets the TX FIFO, 8B/10B encoder and other transmitter registers. This reset is a subset of GTXTXRESET. \\\hline
+    MGT\_REALIGN & \texttt{0x2081} & \texttt{[18:18]} & rw & \texttt{0x0} & Resets the TX\_SYNC module to realign the buf\_bypass alignment FSM \\\hline
+    TXPOWERDOWN & \texttt{0x2081} & \texttt{[19:19]} & rw & \texttt{0x0} & Set the MGT tx into powerdown. The type of powerdown is controlled by TXPOWERDOWN\_MODE \\\hline
+    TXPOWERDOWN\_MODE & \texttt{0x2081} & \texttt{[21:20]} & rw & \texttt{0x1} & 00: P0 (normal operation) \\ & & & & & 01: P0s (low recovery time power down) \\ & & & & & 10: P1 (longer recovery time \\ & & & & & Receiver Detection still on) \\ & & & & & 11: P2 (lowest power state) \\\hline
+    TXPLLPOWERDOWN & \texttt{0x2081} & \texttt{[22:22]} & rw & \texttt{0x0} & Input to power down the TX PLL. \\\hline
+    FORCE\_NOT\_READY & \texttt{0x2081} & \texttt{[23:23]} & rw & \texttt{0x0} & Set high to force MGTs not ready and gate the clocks for and reset the rest of the FPGA logic \\\hline
     \end{tabularx}
     \vspace{5mm}
 
 
     \noindent
-    \textcolor{parentcolor}{\textbf{FPGA.TRIG.SBIT\_MONITOR}}
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.TRIG.SBIT\_MONITOR}}}
 
     \vspace{4mm}
     \noindent
@@ -762,14 +795,14 @@
     \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
     \nopagebreak
     RESET & \texttt{0x2090} & \texttt{[31:0]} & w & Pulsed & Reset the sbit monitor module and re-arm for triggering \\\hline
-    CLUSTER0 & \texttt{0x2091} & \texttt{[15:0]} & r & \texttt{} & Last cluster \$\{CLUSTER\_IDX\} \\\hline
-    CLUSTER1 & \texttt{0x2092} & \texttt{[15:0]} & r & \texttt{} & Last cluster \$\{CLUSTER\_IDX\} \\\hline
-    CLUSTER2 & \texttt{0x2093} & \texttt{[15:0]} & r & \texttt{} & Last cluster \$\{CLUSTER\_IDX\} \\\hline
-    CLUSTER3 & \texttt{0x2094} & \texttt{[15:0]} & r & \texttt{} & Last cluster \$\{CLUSTER\_IDX\} \\\hline
-    CLUSTER4 & \texttt{0x2095} & \texttt{[15:0]} & r & \texttt{} & Last cluster \$\{CLUSTER\_IDX\} \\\hline
-    CLUSTER5 & \texttt{0x2096} & \texttt{[15:0]} & r & \texttt{} & Last cluster \$\{CLUSTER\_IDX\} \\\hline
-    CLUSTER6 & \texttt{0x2097} & \texttt{[15:0]} & r & \texttt{} & Last cluster \$\{CLUSTER\_IDX\} \\\hline
-    CLUSTER7 & \texttt{0x2098} & \texttt{[15:0]} & r & \texttt{} & Last cluster \$\{CLUSTER\_IDX\} \\\hline
+    CLUSTER0 & \texttt{0x2091} & \texttt{[15:0]} & r & \texttt{} & Last cluster 0 \\\hline
+    CLUSTER1 & \texttt{0x2092} & \texttt{[15:0]} & r & \texttt{} & Last cluster 1 \\\hline
+    CLUSTER2 & \texttt{0x2093} & \texttt{[15:0]} & r & \texttt{} & Last cluster 2 \\\hline
+    CLUSTER3 & \texttt{0x2094} & \texttt{[15:0]} & r & \texttt{} & Last cluster 3 \\\hline
+    CLUSTER4 & \texttt{0x2095} & \texttt{[15:0]} & r & \texttt{} & Last cluster 4 \\\hline
+    CLUSTER5 & \texttt{0x2096} & \texttt{[15:0]} & r & \texttt{} & Last cluster 5 \\\hline
+    CLUSTER6 & \texttt{0x2097} & \texttt{[15:0]} & r & \texttt{} & Last cluster 6 \\\hline
+    CLUSTER7 & \texttt{0x2098} & \texttt{[15:0]} & r & \texttt{} & Last cluster 7 \\\hline
     L1A\_DELAY & \texttt{0x20a0} & \texttt{[31:0]} & r & \texttt{} & Number of BX between this sbit and the subsequent L1A \\\hline
     \end{tabularx}
     \vspace{5mm}
@@ -783,7 +816,7 @@
 
     \renewcommand{\arraystretch}{1.3}
     \noindent
-    \textcolor{parentcolor}{\textbf{FPGA.CLOCKING}}
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.CLOCKING}}}
 
     \vspace{4mm}
     \noindent
@@ -811,7 +844,7 @@
 
     \renewcommand{\arraystretch}{1.3}
     \noindent
-    \textcolor{parentcolor}{\textbf{FPGA.GBT.TX}}
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.GBT.TX}}}
 
     \vspace{4mm}
     \noindent
@@ -831,7 +864,7 @@
 
 
     \noindent
-    \textcolor{parentcolor}{\textbf{FPGA.GBT.RX}}
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.GBT.RX}}}
 
     \vspace{4mm}
     \noindent
@@ -852,7 +885,7 @@
 
 
     \noindent
-    \textcolor{parentcolor}{\textbf{FPGA.GBT.TTC}}
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.GBT.TTC}}}
 
     \vspace{4mm}
     \noindent

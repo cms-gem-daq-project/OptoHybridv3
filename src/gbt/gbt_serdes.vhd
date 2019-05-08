@@ -193,16 +193,23 @@ architecture Behavioral of gbt_serdes is
     --================--
 
     gbt_oversample : entity work.oversample
+    generic map (
+        g_PHASE_SEL_EXTERNAL => FALSE
+    )
     port map (
-        rst         => '0',
-        rxd_p       => elink_i_p,
-        rxd_n       => elink_i_n,
-        clk1x_logic => gbt_clk80,
-        clk2x_logic => gbt_clk160_0,
-        clk2x_0     => gbt_clk160_0,
-        clk2x_90    => gbt_clk160_90,
-        clk2x_180   => gbt_clk160_180,
-        rxdata_o    => from_gbt_raw
+        rst           => '0',
+        invert        => '0',
+        rxd_p         => elink_i_p,
+        rxd_n         => elink_i_n,
+        clk1x_logic   => gbt_clk80,
+        clk2x_logic   => gbt_clk160_0,
+        clk2x_0       => gbt_clk160_0,
+        clk2x_90      => gbt_clk160_90,
+        clk2x_180     => gbt_clk160_180,
+        rxdata_o      => from_gbt_raw,
+        tap_delay_i   => (others => '0'),
+        phase_sel_in  => (others => '0'),
+        phase_sel_out => open
     );
 
     --------------------------------------------------------------------------------------------------------------------
@@ -262,6 +269,8 @@ architecture Behavioral of gbt_serdes is
         din    => from_gbt,
         wr_en  => '1',
         rd_en  => '1',
+        -- wr_en  => not reset,
+        -- rd_en  => not reset,
         dout   => data_o,
         full   => open,
         empty  => open
@@ -288,6 +297,8 @@ architecture Behavioral of gbt_serdes is
         wr_clk => clock,
         rd_clk => gbt_clk40,
         din    => to_gbt,
+        -- wr_en  => not reset,
+        -- rd_en  => not reset,
         wr_en  => '1',
         rd_en  => '1',
         dout   => to_gbt_sync,
@@ -304,12 +315,12 @@ architecture Behavioral of gbt_serdes is
 
     i_to_gbt_ser : to_gbt_ser
     port map(
-        -- POLARITY SWAP ON ELINK #1
+        -- POLARITY SWAP ON ELINK #1 FOR VIRTEX-6
         data_out_from_device    => ("not"(to_gbt_sync)),
         data_out_to_pins_p(0)   => elink_o_p,
         data_out_to_pins_n(0)   => elink_o_n,
-        clk_in                  => gbt_clk320  ,
-        clk_div_in              => gbt_clk40  ,
+        clk_in                  => gbt_clk320,
+        clk_div_in              => gbt_clk40,
         io_reset                => oserdes_reset,
 
         DELAY_RESET             => '1',

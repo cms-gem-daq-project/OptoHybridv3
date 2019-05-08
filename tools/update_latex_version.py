@@ -15,13 +15,24 @@ def write_latex_version (file_handle):
 
     f = file_handle
 
+    chamber_type = ""
+
+    if (gem_version=="ge21"):
+        chamber_type = "GE2/1"
+    elif (gem_version=="ge11"):
+        if (geb_length=="long"):
+            chamber_type = "GE1/1 Long"
+        if (geb_length=="short"):
+            chamber_type = "GE1/1 Short"
+
+
     ################################################################################
     # Trigger Units
     ################################################################################
 
     padding = "    " #spaces for indentation
 
-    f.write ('%s\\author{ Firmware Version %s.%s.%s.%s \\\\ %04d%02d%02d}\n' % (padding, firmware_version_major, firmware_version_minor, firmware_release_version, release_hardware, firmware_year, firmware_month, firmware_day))
+    f.write ('%s\\author{\\textbf{%s} \\\\  \\\\ v%s.%s.%s.%s \\\\ %04d%02d%02d}\n' % (padding, chamber_type, firmware_version_major, firmware_version_minor, firmware_release_version, release_hardware, firmware_year, firmware_month, firmware_day))
 
 if __name__ == '__main__':
     main()

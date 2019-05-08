@@ -129,9 +129,9 @@ begin
                 resync_o <= '0';
                 bc0_o    <= '0';
             else
-                l1a_o         <= l1a;
-                resync_o      <= resync;
-                bc0_o         <= bc0;
+                l1a_o         <= ready and l1a;
+                resync_o      <= ready and resync;
+                bc0_o         <= ready and bc0;
             end if;
         end if;
     end process;

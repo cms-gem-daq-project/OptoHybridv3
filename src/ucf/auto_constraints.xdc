@@ -18,9 +18,9 @@ resize_pblock [get_pblocks pblock_ipb_switch_inst] -add {SLICE_X22Y152:SLICE_X41
 create_pblock pblock_adc_inst
 add_cells_to_pblock [get_pblocks pblock_adc_inst] [get_cells -quiet [list adc_inst]]
 resize_pblock [get_pblocks pblock_adc_inst] -add {SLICE_X40Y180:SLICE_X47Y199}
-create_pblock pblock_clocking
-add_cells_to_pblock [get_pblocks pblock_clocking] [get_cells -quiet [list clocking]]
-resize_pblock [get_pblocks pblock_clocking] -add {SLICE_X24Y188:SLICE_X33Y199}
+#create_pblock pblock_clocking
+#add_cells_to_pblock [get_pblocks pblock_clocking] [get_cells -quiet [list clocking]]
+#resize_pblock [get_pblocks pblock_clocking] -add {SLICE_X24Y188:SLICE_X33Y199}
 create_pblock pblock_reset_ctl
 add_cells_to_pblock [get_pblocks pblock_reset_ctl] [get_cells -quiet [list reset_ctl]]
 resize_pblock [get_pblocks pblock_reset_ctl] -add {SLICE_X42Y159:SLICE_X47Y169}
@@ -33,7 +33,7 @@ resize_pblock [get_pblocks pblock_cluster_packer] -add {SLICE_X0Y0:SLICE_X89Y74}
 resize_pblock [get_pblocks pblock_cluster_packer] -add {DSP48_X0Y0:DSP48_X2Y29}
 resize_pblock [get_pblocks pblock_cluster_packer] -add {RAMB18_X0Y0:RAMB18_X3Y29}
 resize_pblock [get_pblocks pblock_cluster_packer] -add {RAMB36_X0Y0:RAMB36_X3Y14}
-remove_cells_from_pblock [get_pblocks pblock_trigger] [get_cells -hierarchical -filter { NAME =~  "trigger/trigger_links*" }]
+remove_cells_from_pblock [get_pblocks pblock_trigger] [get_cells -hierarchical -filter { NAME =~  "trigger/gem_data_out*" }]
 
 
 set_property C_CLK_INPUT_FREQ_HZ 300000000 [get_debug_cores dbg_hub]

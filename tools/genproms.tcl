@@ -312,6 +312,6 @@ if { $FIRMWARE_IS_GE21 == 0 } {
     file copy -force $bit_filename   ${releasedir}/${shortname}_${releasecode}.bit
 } else {
     file copy -force $bit_filename_vivado   ${releasedir}/${shortname}_${releasecode}.bit
-    file copy -force $ltx_filename          ${releasedir}/${shortname}_${releasecode}.ltx
+    #file copy -force $ltx_filename          ${releasedir}/${shortname}_${releasecode}.ltx
 
 }

@@ -91,25 +91,15 @@ def write_oh_io (file_handle):
         f.write('%s--== GE21  ==--\n' % padding)
         f.write('%s--===========--\n' % padding)
 
-        f.write('%sprocess(clock)\n' % padding)
-        f.write('%sbegin\n' % padding)
-        f.write('%sif (rising_edge(clock)) then\n' % padding)
-        f.write('%s    gbt_txvalid_o <= "11";\n' % padding)
-        f.write('%s    vtrx_mabs    <= vtrx_mabs_i;\n' % padding)
-        f.write('%send if;\n' % padding)
-        f.write('%send process;\n' % padding)
+        f.write('%sgbt_txvalid_o <= "11";\n' % padding)
+        f.write('%svtrx_mabs    <= vtrx_mabs_i;\n' % padding)
     elif (gem_version=="ge11"):
         f.write('%s--===========--\n' % padding)
         f.write('%s--== GE11  ==--\n' % padding)
         f.write('%s--===========--\n' % padding)
 
-        f.write('%sprocess(clock)\n' % padding)
-        f.write('%sbegin\n' % padding)
-        f.write('%sif (rising_edge(clock)) then\n' % padding)
-        f.write('%s    ext_reset_o  <= ctrl_reset_vfats;\n' % padding)
-        f.write('%s    ext_sbits_o  <= ext_sbits;\n' % padding)
-        f.write('%send if;\n' % padding)
-        f.write('%send process;\n' % padding)
+        f.write('%sext_reset_o  <= ctrl_reset_vfats;\n' % padding)
+        f.write('%sext_sbits_o  <= ext_sbits;\n' % padding)
     else:
         print "invalid GEM station"
         return sys.exit(1)

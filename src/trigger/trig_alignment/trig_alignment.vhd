@@ -67,6 +67,7 @@ architecture Behavioral of trig_alignment is
     signal reset              : std_logic := '0';
     signal start_of_frame_8b  : t_std8_array (MXVFATS-1 downto 0);
     signal vfat_phase_sel     : t_std2_array (MXVFATS-1 downto 0);
+    signal vfat_e4            : t_std4_array (MXVFATS-1 downto 0);
     signal sbits_unaligned    : std_logic_vector (( MXSBITS_CHAMBER - 1) downto 0);
     signal sot_invert         : std_logic_vector (MXVFATS-1 downto 0);
     signal tu_invert          : std_logic_vector (MXVFATS*8-1 downto 0);
@@ -136,6 +137,8 @@ begin
             clk2x_180     => clk160_180,
             rxdata_o      => start_of_frame_8b(ivfat),
             tap_delay_i   => sot_tap_delay(ivfat),
+            e4_in         => (others => '0'),
+            e4_out        => vfat_e4(ivfat),
             phase_sel_in  => (others => '0'),
             phase_sel_out => vfat_phase_sel(ivfat)
         );
@@ -159,18 +162,21 @@ begin
             g_PHASE_SEL_EXTERNAL => TRUE
         )
         port map (
-            rst          => tu_reset(ipin),
-            invert       => tu_invert (ipin),
-            rxd_p        => sbits_p(ipin),
-            rxd_n        => sbits_n(ipin),
-            clk1x_logic  => clk80_0,
-            clk2x_logic  => clk160_0,
-            clk2x_0      => clk160_0,
-            clk2x_90     => clk160_90,
-            clk2x_180    => clk160_180,
-            rxdata_o     => sbits_unaligned ((ipin+1)*8 - 1 downto ipin*8),
-            tap_delay_i  => trig_tap_delay(ipin),
-            phase_sel_in => vfat_phase_sel(ipin/8)
+            rst           => tu_reset(ipin),
+            invert        => tu_invert (ipin),
+            rxd_p         => sbits_p(ipin),
+            rxd_n         => sbits_n(ipin),
+            clk1x_logic   => clk80_0,
+            clk2x_logic   => clk160_0,
+            clk2x_0       => clk160_0,
+            clk2x_90      => clk160_90,
+            clk2x_180     => clk160_180,
+            rxdata_o      => sbits_unaligned ((ipin+1)*8 - 1 downto ipin*8),
+            tap_delay_i   => trig_tap_delay(ipin),
+            e4_in         => vfat_e4(ipin/8),
+            e4_out        => open,
+            phase_sel_in  => vfat_phase_sel(ipin/8),
+            phase_sel_out => open
         );
 
     end generate;

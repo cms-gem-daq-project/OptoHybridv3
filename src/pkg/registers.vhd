@@ -258,7 +258,7 @@ package registers is
     -- Connects to the trigger control module
     --============================================================================
 
-    constant REG_TRIG_NUM_REGS : integer := 122;
+    constant REG_TRIG_NUM_REGS : integer := 121;
     constant REG_TRIG_ADDRESS_MSB : integer := 7;
     constant REG_TRIG_ADDRESS_LSB : integer := 0;
     constant REG_TRIG_CTRL_VFAT_MASK_ADDR    : std_logic_vector(7 downto 0) := x"00";
@@ -282,7 +282,7 @@ package registers is
     constant REG_TRIG_CTRL_ALIGNED_COUNT_TO_READY_ADDR    : std_logic_vector(7 downto 0) := x"02";
     constant REG_TRIG_CTRL_ALIGNED_COUNT_TO_READY_MSB    : integer := 27;
     constant REG_TRIG_CTRL_ALIGNED_COUNT_TO_READY_LSB     : integer := 16;
-    constant REG_TRIG_CTRL_ALIGNED_COUNT_TO_READY_DEFAULT : std_logic_vector(27 downto 16) := x"fff";
+    constant REG_TRIG_CTRL_ALIGNED_COUNT_TO_READY_DEFAULT : std_logic_vector(27 downto 16) := x"1ff";
 
     constant REG_TRIG_CTRL_SBIT_SOT_READY_ADDR    : std_logic_vector(7 downto 0) := x"03";
     constant REG_TRIG_CTRL_SBIT_SOT_READY_MSB    : integer := 23;
@@ -661,9 +661,6 @@ package registers is
     constant REG_TRIG_CNT_CLUSTER_COUNT_ADDR    : std_logic_vector(7 downto 0) := x"32";
     constant REG_TRIG_CNT_CLUSTER_COUNT_MSB    : integer := 31;
     constant REG_TRIG_CNT_CLUSTER_COUNT_LSB     : integer := 0;
-
-    constant REG_TRIG_CNT_CNT_PULSE_ADDR    : std_logic_vector(7 downto 0) := x"33";
-    constant REG_TRIG_CNT_CNT_PULSE_BIT    : integer := 0;
 
     constant REG_TRIG_CNT_SBITS_OVER_64x0_ADDR    : std_logic_vector(7 downto 0) := x"36";
     constant REG_TRIG_CNT_SBITS_OVER_64x0_MSB    : integer := 15;
@@ -1845,12 +1842,53 @@ package registers is
     constant REG_TRIG_LINKS_RESET_BIT    : integer := 0;
 
     constant REG_TRIG_LINKS_TX_PLL_LOCKED_ADDR    : std_logic_vector(7 downto 0) := x"81";
-    constant REG_TRIG_LINKS_TX_PLL_LOCKED_MSB    : integer := 3;
-    constant REG_TRIG_LINKS_TX_PLL_LOCKED_LSB     : integer := 0;
+    constant REG_TRIG_LINKS_TX_PLL_LOCKED_BIT    : integer := 0;
 
     constant REG_TRIG_LINKS_TX_RESET_DONE_ADDR    : std_logic_vector(7 downto 0) := x"81";
-    constant REG_TRIG_LINKS_TX_RESET_DONE_MSB    : integer := 7;
-    constant REG_TRIG_LINKS_TX_RESET_DONE_LSB     : integer := 4;
+    constant REG_TRIG_LINKS_TX_RESET_DONE_BIT    : integer := 4;
+
+    constant REG_TRIG_LINKS_TX_PRBS_MODE_ADDR    : std_logic_vector(7 downto 0) := x"81";
+    constant REG_TRIG_LINKS_TX_PRBS_MODE_MSB    : integer := 10;
+    constant REG_TRIG_LINKS_TX_PRBS_MODE_LSB     : integer := 8;
+    constant REG_TRIG_LINKS_TX_PRBS_MODE_DEFAULT : std_logic_vector(10 downto 8) := "000";
+
+    constant REG_TRIG_LINKS_TX_PLL_RESET_ADDR    : std_logic_vector(7 downto 0) := x"81";
+    constant REG_TRIG_LINKS_TX_PLL_RESET_BIT    : integer := 11;
+    constant REG_TRIG_LINKS_TX_PLL_RESET_DEFAULT : std_logic := '0';
+
+    constant REG_TRIG_LINKS_MGT_RESET_ADDR    : std_logic_vector(7 downto 0) := x"81";
+    constant REG_TRIG_LINKS_MGT_RESET_MSB    : integer := 15;
+    constant REG_TRIG_LINKS_MGT_RESET_LSB     : integer := 12;
+    constant REG_TRIG_LINKS_MGT_RESET_DEFAULT : std_logic_vector(15 downto 12) := x"0";
+
+    constant REG_TRIG_LINKS_GTXTEST_START_ADDR    : std_logic_vector(7 downto 0) := x"81";
+    constant REG_TRIG_LINKS_GTXTEST_START_BIT    : integer := 16;
+    constant REG_TRIG_LINKS_GTXTEST_START_DEFAULT : std_logic := '0';
+
+    constant REG_TRIG_LINKS_TXRESET_ADDR    : std_logic_vector(7 downto 0) := x"81";
+    constant REG_TRIG_LINKS_TXRESET_BIT    : integer := 17;
+    constant REG_TRIG_LINKS_TXRESET_DEFAULT : std_logic := '0';
+
+    constant REG_TRIG_LINKS_MGT_REALIGN_ADDR    : std_logic_vector(7 downto 0) := x"81";
+    constant REG_TRIG_LINKS_MGT_REALIGN_BIT    : integer := 18;
+    constant REG_TRIG_LINKS_MGT_REALIGN_DEFAULT : std_logic := '0';
+
+    constant REG_TRIG_LINKS_TXPOWERDOWN_ADDR    : std_logic_vector(7 downto 0) := x"81";
+    constant REG_TRIG_LINKS_TXPOWERDOWN_BIT    : integer := 19;
+    constant REG_TRIG_LINKS_TXPOWERDOWN_DEFAULT : std_logic := '0';
+
+    constant REG_TRIG_LINKS_TXPOWERDOWN_MODE_ADDR    : std_logic_vector(7 downto 0) := x"81";
+    constant REG_TRIG_LINKS_TXPOWERDOWN_MODE_MSB    : integer := 21;
+    constant REG_TRIG_LINKS_TXPOWERDOWN_MODE_LSB     : integer := 20;
+    constant REG_TRIG_LINKS_TXPOWERDOWN_MODE_DEFAULT : std_logic_vector(21 downto 20) := "01";
+
+    constant REG_TRIG_LINKS_TXPLLPOWERDOWN_ADDR    : std_logic_vector(7 downto 0) := x"81";
+    constant REG_TRIG_LINKS_TXPLLPOWERDOWN_BIT    : integer := 22;
+    constant REG_TRIG_LINKS_TXPLLPOWERDOWN_DEFAULT : std_logic := '0';
+
+    constant REG_TRIG_LINKS_FORCE_NOT_READY_ADDR    : std_logic_vector(7 downto 0) := x"81";
+    constant REG_TRIG_LINKS_FORCE_NOT_READY_BIT    : integer := 23;
+    constant REG_TRIG_LINKS_FORCE_NOT_READY_DEFAULT : std_logic := '0';
 
     constant REG_TRIG_SBIT_MONITOR_RESET_ADDR    : std_logic_vector(7 downto 0) := x"90";
     constant REG_TRIG_SBIT_MONITOR_RESET_MSB    : integer := 31;

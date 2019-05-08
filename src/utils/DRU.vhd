@@ -12,6 +12,8 @@ port(
   i     : in  std_logic_vector(7 downto 0); -- 8-bit input, the even bits are inverted!
   o     : out std_logic_vector(7 downto 0); -- 8-bit recovered output
 
+  e4_out        : out std_logic_vector (3 downto 0);
+  e4_in         : in  std_logic_vector (3 downto 0);
   phase_sel_in  : in std_logic_vector (1 downto 0);
   phase_sel_out : out std_logic_vector (1 downto 0);
 
@@ -114,7 +116,10 @@ begin
       end if;
     end process;
 
+    e4_out <= e4;
+
   end generate INTERNAL;
+
 
   --==============--
   --== External ==--
@@ -122,7 +127,8 @@ begin
 
   EXTERNAL : if (g_PHASE_SEL_EXTERNAL) generate
 
-  e4 <= "0000";
+  e4 <= e4_in;
+  e4_out <= "0000";
   phase_sel_state <= phase_sel_in;
 
   end generate EXTERNAL;
