@@ -119,12 +119,14 @@ def main():
                         #print ("\tInverted cluster rate = %d" % (rate_inverted))
 
                         if (rate_inverted == 0 and rate_base > 0):
-                            print ("BAD: Inversion on VFAT%i S-bit pair #%i, rate=%x, rate_inverted=%x" % (vfatSelect, ibit, rate_base, rate_inverted))
+                            print ("BAD : Inversion on VFAT%i S-bit pair #%i, rate=%x, rate_inverted=%x" % (vfatSelect, ibit, rate_base, rate_inverted))
                             invert_mask = invert_mask ^ (0x1 << ibit)
                         elif (rate_base==0 and rate_inverted > 0):
-                            print ("OK : Correct polarity   on VFAT%i S-bit pair #%i, rate=%x, rate_inverted=%x" % (vfatSelect, ibit, rate_base, rate_inverted))
+                            print ("OK  : Correct polarity   on VFAT%i S-bit pair #%i, rate=%x, rate_inverted=%x" % (vfatSelect, ibit, rate_base, rate_inverted))
+                        elif (rate_inverted > 1000*rate_base):
+                            print ("WARN: Correct polarity   on VFAT%i S-bit pair #%i, rate=%x, rate_inverted=%x (non-zero base rate noted)" % (vfatSelect, ibit, rate_base, rate_inverted))
                         else:
-                            print ("Ambiguous polarity   on VFAT%i S-bit pair #%i, rate=%x, rate_inverted=%x" % (vfatSelect, ibit, rate_base, rate_inverted))
+                            print ("WARN: Ambiguous polarity   on VFAT%i S-bit pair #%i, rate=%x, rate_inverted=%x" % (vfatSelect, ibit, rate_base, rate_inverted))
 
                         writeReg(getNode("GEM_AMC.OH.OH%i.FPGA.TRIG.CTRL.INVERT.VFAT%i_TU_INVERT" % (ohSelect, vfatSelect)), original_invert) # new
 

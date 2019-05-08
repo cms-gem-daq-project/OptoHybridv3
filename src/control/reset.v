@@ -63,7 +63,11 @@ module reset (
       hold_reset_cnt <= hold_reset_cnt;
   end
 
+  `ifdef XILINX_ISIM
+  assign reset_o = core_reset_o;
+  `else
   assign reset_o = (hold_reset_cnt < HOLD_RESET_CNT_MAX);
+  `endif
 
   //--------------------------------------------------------------------------------------------------------------------
   // Startup (Short) Reset

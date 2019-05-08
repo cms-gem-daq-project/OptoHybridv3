@@ -23,7 +23,7 @@
 
 \title{Optohybrid v3 Address Table}
 % START: ADDRESS_TABLE_VERSION :: DO NOT EDIT
-    \author{\textbf{GE1/1 Long} \\  \\ v03.02.03.1C \\ 20190507}
+    \author{\textbf{GE1/1 Long} \\  \\ v03.02.03.1C \\ 20190508}
 % END: ADDRESS_TABLE_VERSION :: DO NOT EDIT
 \begin{document}
 
@@ -765,8 +765,8 @@
     \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
     \nopagebreak
     RESET & \texttt{0x2080} & \texttt{[0:0]} & w & Pulsed & Reset trigger links \\\hline
-    TX\_PLL\_LOCKED & \texttt{0x2081} & \texttt{[3:0]} & r & \texttt{} & Transmit PLLs are Locked \\\hline
-    TX\_RESET\_DONE & \texttt{0x2081} & \texttt{[7:4]} & r & \texttt{} & Transmit Resets are Done \\\hline
+    TX\_PLL\_LOCKED & \texttt{0x2081} & \texttt{[0:0]} & r & \texttt{} & Transmit PLLs are Locked \\\hline
+    TX\_RESET\_DONE & \texttt{0x2081} & \texttt{[4:4]} & r & \texttt{} & Transmit Resets are Done \\\hline
     TX\_PRBS\_MODE & \texttt{0x2081} & \texttt{[10:8]} & rw & \texttt{0x0} & 000: Standard \\ & & & & & 001: PRBS-7 \\ & & & & & 010: PRBS-15 \\ & & & & & 011: PRBS-23 \\ & & & & & 100: PRBS-31 \\\hline
     TX\_PLL\_RESET & \texttt{0x2081} & \texttt{[11:11]} & rw & \texttt{0x0} & This port resets the TX PLL of the GTX transceiver when driven High. It affects the clock generated from the TX PMA. When this reset is asserted or deasserted, TXRESET must also be asserted or deasserted. \\\hline
     MGT\_RESET & \texttt{0x2081} & \texttt{[15:12]} & rw & \texttt{0x0} & Asserts the MGT reset (GTXTXRESET). This sequence takes about 120 us to complete and systematically resets all subcomponents of the GTX transceiver TX.  \\\hline

@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 
 from rw_reg import *
 from time import *
@@ -13,7 +12,7 @@ ADDR_JTAG_TMS = None
 ADDR_JTAG_TDO = None
 ADDR_JTAG_TDI = None
 
-SCAN_RANGE = 18
+SCAN_RANGE = 17
 
 class Colors:
     WHITE   = '\033[97m'
@@ -144,12 +143,13 @@ def main():
     parseXML()
     initJtagRegAddrs()
 
-    addrSbitMonReset = getNode('GEM_AMC.TRIGGER.SBIT_MONITOR.RESET')
     writeReg(getNode("GEM_AMC.TRIGGER.SBIT_MONITOR.OH_SELECT"), ohN)
 
     ##################
     # hard reset
     ##################
+
+    tap_dly_initial = [0,0,0,0,0,0,0,0]
 
     for vfatN in range (vfatNMin, vfatNMax+1):
 
@@ -165,20 +165,23 @@ def main():
         writeReg(getNode('GEM_AMC.SLOW_CONTROL.SCA.CTRL.TTC_HARD_RESET_EN'), 0x0)
         writeReg(getNode('GEM_AMC.SLOW_CONTROL.SCA.ADC_MONITORING.MONITORING_OFF'), 0xffffffff)
 
-        gpio_dir = 0xff0fe0
-        gpio_default_out = 0x60
-        gpio_hr_out = 0xff0fe0
-
         ohList=[ohN]
 
-        sendScaCommand(ohList, 0x2, 0x20, 0x4, gpio_dir, False)
-        sleep(0.1)
+        ge21 = 0
+        if (ge21):
+            gpio_dir = 0xff0fe0
+            gpio_default_out = 0x60
+            gpio_hr_out = 0xff0fe0
 
-        sendScaCommand(ohList, 0x2, 0x10, 0x4, gpio_hr_out, False)
-        sleep(0.01)
 
-        sendScaCommand(ohList, 0x2, 0x10, 0x4, gpio_default_out, False)
-        sleep(0.01)
+            sendScaCommand(ohList, 0x2, 0x20, 0x4, gpio_dir, False)
+            sleep(0.1)
+
+            sendScaCommand(ohList, 0x2, 0x10, 0x4, gpio_hr_out, False)
+            sleep(0.01)
+
+            sendScaCommand(ohList, 0x2, 0x10, 0x4, gpio_default_out, False)
+            sleep(0.01)
 
         writeReg(getNode('GEM_AMC.TTC.GENERATOR.SINGLE_HARD_RESET'), 0x1)
         sleep(0.15)
@@ -197,8 +200,11 @@ def main():
 
         writeReg(getNode("GEM_AMC.OH.OH%i.FPGA.TRIG.CTRL.ALIGNED_COUNT_TO_READY" % ohN), 0xfff)
 
-        sot_reg          = getNode('GEM_AMC.OH.OH%d.FPGA.TRIG.TIMING.SOT_TAP_DELAY_VFAT%s' % (ohN, vfatN))
-        sot_dly_original = parseInt(readReg(sot_reg))
+        sot_dly_reg     = getNode('GEM_AMC.OH.OH%d.FPGA.TRIG.TIMING.SOT_TAP_DELAY_VFAT%s' % (ohN, vfatN))
+        sot_dly_initial = parseInt(readReg(sot_dly_reg))
+
+        sc_only_reg = getNode("GEM_AMC.GEM_SYSTEM.VFAT3.SC_ONLY_MODE")
+
 
         for sot_dly in range(2):
 
@@ -208,7 +214,7 @@ def main():
             else:
                 dly_offset = 0
 
-            writeReg(sot_reg, dly_offset)
+            writeReg(sot_dly_reg, dly_offset)
             sot_rdy = parseInt(readReg(getNode("GEM_AMC.OH.OH%i.FPGA.TRIG.CTRL.SBIT_SOT_READY" % ohN)))
             sleep (0.1)
             if (not (sot_rdy >> vfatN)&0x1):
@@ -218,11 +224,14 @@ def main():
             for ibit in range(8):
 
                 #   Set the SoT delay to 0 (min)
-                tap_dly_reg      = getNode('GEM_AMC.OH.OH%d.FPGA.TRIG.TIMING.TAP_DELAY_VFAT%i_BIT%i' % (ohN, vfatN, ibit))
-                tap_dly_original = parseInt(readReg(tap_dly_reg))
+                tap_dly_reg           = getNode('GEM_AMC.OH.OH%d.FPGA.TRIG.TIMING.TAP_DELAY_VFAT%i_BIT%i' % (ohN, vfatN, ibit))
+                tap_dly_initial[ibit] = parseInt(readReg(tap_dly_reg))
 
+
+                #sbit_monitor_cluster_reg = getNode('GEM_AMC.OH.OH0.FPGA.TRIG.SBIT_MONITOR.CLUSTER0')
+                #sbit_monitor_reset_reg   = getNode('GEM_AMC.OH.OH0.FPGA.TRIG.SBIT_MONITOR.RESET')
                 sbit_monitor_cluster_reg = getNode('GEM_AMC.TRIGGER.SBIT_MONITOR.CLUSTER0')
-                sbit_monitor_reset_reg   = getNode('GEM_AMC.TRIGGER.SBIT_MONITOR.RESET')
+                sbit_monitor_reset_reg   = getNode('GEM_AMC.TRIGGER.SBIT_MONITOR.RESET').real_address
 
 
                 writeReg(getNode("GEM_AMC.OH.OH%i.FPGA.TRIG.CTRL.TU_MASK.VFAT%i_TU_MASK" % (ohN, vfatN)), 0xff ^ (1 << (ibit)))
@@ -240,16 +249,16 @@ def main():
                             strip = trigger_channel*2+strip_odd
 
 
-                            writeReg(getNode("GEM_AMC.GEM_SYSTEM.VFAT3.SC_ONLY_MODE"), 1)
+                            writeReg(sc_only_reg, 1)
                             writeReg(getNode("GEM_AMC.OH.OH%i.GEB.VFAT%i.VFAT_CHANNELS.CHANNEL%i"%(ohN,vfatN,strip)), 0x8000) # enable calpulse and unmask
-                            writeReg(getNode("GEM_AMC.GEM_SYSTEM.VFAT3.SC_ONLY_MODE"), 0)
+                            writeReg(sc_only_reg, 0)
 
 
                             for ipulse in range(1):
 
                                 sleep(0.0001)
 
-                                writeReg(addrSbitMonReset, 1)
+                                wReg(sbit_monitor_reset_reg, 1)
 
                                 sleep(0.0001)
 
@@ -272,11 +281,13 @@ def main():
                                 else:
                                     if (verbose): print ("FAIL: no cluster found");
 
-                            writeReg(getNode("GEM_AMC.GEM_SYSTEM.VFAT3.SC_ONLY_MODE"), 1)
+                            writeReg(sc_only_reg, 1)
                             writeReg(getNode("GEM_AMC.OH.OH%i.GEB.VFAT%i.VFAT_CHANNELS.CHANNEL%i"%(ohN,vfatN,strip)), 0x4000) # disable calpulse and mask
-                            writeReg(getNode("GEM_AMC.GEM_SYSTEM.VFAT3.SC_ONLY_MODE"), 0)
+                            writeReg(sc_only_reg, 0)
 
-            writeReg(tap_dly_reg, tap_dly_original);
+                writeReg(tap_dly_reg, tap_dly_initial[ibit]);
+
+            writeReg(sot_dly_reg, sot_dly_initial);
 
         ngood_center = [0 for i in range (8)]
         ngood_width  = [0 for i in range (8)]
@@ -339,10 +350,18 @@ def main():
 
             line = ("Sbit%i: " % ibit)
 
+            initial = SCAN_RANGE - sot_dly_initial + tap_dly_initial[ibit]
+
             for dly in range (2*SCAN_RANGE+1):
                 if (err_matrix[ibit][dly]==0):
+                    #if (dly == ngood_center[ibit] and initial == ngood_center[ibit]):
+                    #    line = line + Colors.GREEN + "= "
                     if (dly == ngood_center[ibit]):
                         line = line + Colors.GREEN + "| "
+                    elif (dly == initial and initial < ngood_center[ibit]):
+                        line = line + Colors.GREEN + "> "
+                    elif (dly == initial and initial > ngood_center[ibit]):
+                        line = line + Colors.GREEN + "< "
                     else:
                         line = line + Colors.GREEN + "- "
                 else:
@@ -359,9 +378,9 @@ def main():
 
         best_sot_tap_delay = 99
         if (min_center - SCAN_RANGE < 0):
-            best_sot_tap_delay = -1 * (min_center-SCAN_RANGE)
+            best_sot_tap_delay = SCAN_RANGE-min_center
         else:
-            best_sot_tap_delay = min_center
+            best_sot_tap_delay = min_center-SCAN_RANGE
 
         print ("sot :           best_dly=% 2d" % ( best_sot_tap_delay))
         for ibit in range(8):

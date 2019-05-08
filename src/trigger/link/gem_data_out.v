@@ -140,17 +140,23 @@ module   gem_data_out #(
 
   parameter STABLE_CLOCK_PERIOD = 25;
 
-  parameter MGT_RESET_CNT0    = 4000   * 1000 / STABLE_CLOCK_PERIOD; // usec
-  parameter MGT_RESET_CNT1    = 8000   * 1000 / STABLE_CLOCK_PERIOD; // usec
-  parameter MGT_RESET_CNT2    = 12000  * 1000 / STABLE_CLOCK_PERIOD; // usec
-  parameter MGT_RESET_CNT3    = 14000  * 1000 / STABLE_CLOCK_PERIOD; // usec
-  parameter PLL_RESET_CNT     = 0      * 1000 / STABLE_CLOCK_PERIOD; // usec
-  parameter PLL_POWERDOWN_CNT = 0      * 1000 / STABLE_CLOCK_PERIOD; // usec
-  parameter TXPOWERDOWN_CNT   = 0      * 1000 / STABLE_CLOCK_PERIOD; // usec
-  parameter GTXTEST_RESET_CNT = 16000  * 1000 / STABLE_CLOCK_PERIOD; // usec
-  parameter TXRESET_CNT       = 18000  * 1000 / STABLE_CLOCK_PERIOD; // usec
-  parameter MGT_REALIGN_CNT   = 0      * 1000 / STABLE_CLOCK_PERIOD; // usec
-  parameter DONE_CNT          = 30000  * 1000 / STABLE_CLOCK_PERIOD; // usec
+  `ifdef XILINX_ISIM
+    parameter DONT_SUPRESS_STARTUP=0;
+  `else
+    parameter DONT_SUPRESS_STARTUP=1;
+  `endif
+
+  parameter MGT_RESET_CNT0    = DONT_SUPRESS_STARTUP * 4000   * 1000 / STABLE_CLOCK_PERIOD; // usec
+  parameter MGT_RESET_CNT1    = DONT_SUPRESS_STARTUP * 8000   * 1000 / STABLE_CLOCK_PERIOD; // usec
+  parameter MGT_RESET_CNT2    = DONT_SUPRESS_STARTUP * 12000  * 1000 / STABLE_CLOCK_PERIOD; // usec
+  parameter MGT_RESET_CNT3    = DONT_SUPRESS_STARTUP * 14000  * 1000 / STABLE_CLOCK_PERIOD; // usec
+  parameter PLL_RESET_CNT     = DONT_SUPRESS_STARTUP * 0      * 1000 / STABLE_CLOCK_PERIOD; // usec
+  parameter PLL_POWERDOWN_CNT = DONT_SUPRESS_STARTUP * 0      * 1000 / STABLE_CLOCK_PERIOD; // usec
+  parameter TXPOWERDOWN_CNT   = DONT_SUPRESS_STARTUP * 0      * 1000 / STABLE_CLOCK_PERIOD; // usec
+  parameter GTXTEST_RESET_CNT = DONT_SUPRESS_STARTUP * 16000  * 1000 / STABLE_CLOCK_PERIOD; // usec
+  parameter TXRESET_CNT       = DONT_SUPRESS_STARTUP * 18000  * 1000 / STABLE_CLOCK_PERIOD; // usec
+  parameter MGT_REALIGN_CNT   = DONT_SUPRESS_STARTUP * 0      * 1000 / STABLE_CLOCK_PERIOD; // usec
+  parameter DONE_CNT          = DONT_SUPRESS_STARTUP * 30000  * 1000 / STABLE_CLOCK_PERIOD; // usec
 
   assign pll_reset    = pll_reset_i      || (startup_reset_cnt <  PLL_RESET_CNT);
   assign mgt_reset[0] = mgt_reset_i[0]   || (startup_reset_cnt <  MGT_RESET_CNT0);

@@ -29,20 +29,22 @@ class Colors:
 
 def main():
 
-    iter = 40000000
+    iter = 4000000
 
     parseXML()
 
-    loopback_reg = getNode('GEM_AMC.OH.OH0.FPGA.CONTROL.LOOPBACK.DATA').real_address
+    loopback_reg = getNode('GEM_AMC.OH.OH1.FPGA.CONTROL.LOOPBACK.DATA').real_address
     ipass = 0
     ifail = 0
     tot ="{:,}".format(iter)
+
+    write = random.getrandbits(32)
+    wReg (loopback_reg, write)
+
     for i in range (iter):
         if (i%10000==0):
             icyc ="{:,}".format(i)
             print "Cycle %s out of %s... accumulated %f Mb of good data with %i failures" % (icyc, tot, ipass*32/1000000., ifail)
-        write = random.getrandbits(32)
-        wReg (loopback_reg, write)
         read = rReg (loopback_reg)
         passfail = ""
         if (write != read):

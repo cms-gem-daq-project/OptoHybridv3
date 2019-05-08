@@ -269,6 +269,8 @@ architecture Behavioral of gbt_serdes is
         din    => from_gbt,
         wr_en  => '1',
         rd_en  => '1',
+        -- wr_en  => not reset,
+        -- rd_en  => not reset,
         dout   => data_o,
         full   => open,
         empty  => open
@@ -295,6 +297,8 @@ architecture Behavioral of gbt_serdes is
         wr_clk => clock,
         rd_clk => gbt_clk40,
         din    => to_gbt,
+        -- wr_en  => not reset,
+        -- rd_en  => not reset,
         wr_en  => '1',
         rd_en  => '1',
         dout   => to_gbt_sync,

@@ -1842,12 +1842,10 @@ package registers is
     constant REG_TRIG_LINKS_RESET_BIT    : integer := 0;
 
     constant REG_TRIG_LINKS_TX_PLL_LOCKED_ADDR    : std_logic_vector(7 downto 0) := x"81";
-    constant REG_TRIG_LINKS_TX_PLL_LOCKED_MSB    : integer := 3;
-    constant REG_TRIG_LINKS_TX_PLL_LOCKED_LSB     : integer := 0;
+    constant REG_TRIG_LINKS_TX_PLL_LOCKED_BIT    : integer := 0;
 
     constant REG_TRIG_LINKS_TX_RESET_DONE_ADDR    : std_logic_vector(7 downto 0) := x"81";
-    constant REG_TRIG_LINKS_TX_RESET_DONE_MSB    : integer := 7;
-    constant REG_TRIG_LINKS_TX_RESET_DONE_LSB     : integer := 4;
+    constant REG_TRIG_LINKS_TX_RESET_DONE_BIT    : integer := 4;
 
     constant REG_TRIG_LINKS_TX_PRBS_MODE_ADDR    : std_logic_vector(7 downto 0) := x"81";
     constant REG_TRIG_LINKS_TX_PRBS_MODE_MSB    : integer := 10;

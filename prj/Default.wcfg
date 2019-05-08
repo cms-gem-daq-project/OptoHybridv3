@@ -30,1125 +30,640 @@
          </top_modules>
       </db_ref>
    </db_ref_list>
-   <WVObjectSize size="274" />
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/reset_ctl/soft_reset" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">soft_reset</obj_property>
-      <obj_property name="ObjectShortName">soft_reset</obj_property>
+   <WVObjectSize size="154" />
+   <wvobject fp_name="/optohybrid_top_tb/tu_p" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">tu_p[191:0]</obj_property>
+      <obj_property name="ObjectShortName">tu_p[191:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/soft_reset_o" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">soft_reset_o</obj_property>
-      <obj_property name="ObjectShortName">soft_reset_o</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/gem_data_out_inst/v6_gtx_wrapper/refclk_p" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">refclk_p</obj_property>
+      <obj_property name="ObjectShortName">refclk_p</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/reset_i" type="logic" db_ref_id="1">
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/gem_data_out_inst/v6_gtx_wrapper/refclk_n" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">refclk_n</obj_property>
+      <obj_property name="ObjectShortName">refclk_n</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/gem_data_out_inst/v6_gtx_wrapper/clock_40" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">clock_40</obj_property>
+      <obj_property name="ObjectShortName">clock_40</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/gem_data_out_inst/v6_gtx_wrapper/clock_160" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">clock_160</obj_property>
+      <obj_property name="ObjectShortName">clock_160</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/gem_data_out_inst/v6_gtx_wrapper/gttx_reset_in" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">gttx_reset_in</obj_property>
+      <obj_property name="ObjectShortName">gttx_reset_in</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/gem_data_out_inst/v6_gtx_wrapper/txn_out" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">txn_out[3:0]</obj_property>
+      <obj_property name="ObjectShortName">txn_out[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/gem_data_out_inst/v6_gtx_wrapper/txp_out" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">txp_out[3:0]</obj_property>
+      <obj_property name="ObjectShortName">txp_out[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/gem_data_out_inst/v6_gtx_wrapper/gtx0_txcharisk_in" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">gtx0_txcharisk_in[1:0]</obj_property>
+      <obj_property name="ObjectShortName">gtx0_txcharisk_in[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/gem_data_out_inst/v6_gtx_wrapper/gtx1_txcharisk_in" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">gtx1_txcharisk_in[1:0]</obj_property>
+      <obj_property name="ObjectShortName">gtx1_txcharisk_in[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/gem_data_out_inst/v6_gtx_wrapper/gtx2_txcharisk_in" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">gtx2_txcharisk_in[1:0]</obj_property>
+      <obj_property name="ObjectShortName">gtx2_txcharisk_in[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/gem_data_out_inst/v6_gtx_wrapper/gtx3_txcharisk_in" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">gtx3_txcharisk_in[1:0]</obj_property>
+      <obj_property name="ObjectShortName">gtx3_txcharisk_in[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/gem_data_out_inst/v6_gtx_wrapper/gtx0_txdata_in" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">gtx0_txdata_in[15:0]</obj_property>
+      <obj_property name="ObjectShortName">gtx0_txdata_in[15:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/gem_data_out_inst/v6_gtx_wrapper/gtx1_txdata_in" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">gtx1_txdata_in[15:0]</obj_property>
+      <obj_property name="ObjectShortName">gtx1_txdata_in[15:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/gem_data_out_inst/v6_gtx_wrapper/gtx2_txdata_in" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">gtx2_txdata_in[15:0]</obj_property>
+      <obj_property name="ObjectShortName">gtx2_txdata_in[15:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/gem_data_out_inst/v6_gtx_wrapper/gtx3_txdata_in" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">gtx3_txdata_in[15:0]</obj_property>
+      <obj_property name="ObjectShortName">gtx3_txdata_in[15:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/gem_data_out_inst/v6_gtx_wrapper/mgt_refclk" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">mgt_refclk</obj_property>
+      <obj_property name="ObjectShortName">mgt_refclk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/oh_full_gen/cluster_packer_inst/cluster0" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">cluster0[13:0]</obj_property>
+      <obj_property name="ObjectShortName">cluster0[13:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/oh_full_gen/cluster_packer_inst/cluster1" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">cluster1[13:0]</obj_property>
+      <obj_property name="ObjectShortName">cluster1[13:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/oh_full_gen/cluster_packer_inst/cluster2" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">cluster2[13:0]</obj_property>
+      <obj_property name="ObjectShortName">cluster2[13:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/oh_full_gen/cluster_packer_inst/cluster3" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">cluster3[13:0]</obj_property>
+      <obj_property name="ObjectShortName">cluster3[13:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/oh_full_gen/cluster_packer_inst/cluster4" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">cluster4[13:0]</obj_property>
+      <obj_property name="ObjectShortName">cluster4[13:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/oh_full_gen/cluster_packer_inst/cluster5" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">cluster5[13:0]</obj_property>
+      <obj_property name="ObjectShortName">cluster5[13:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/oh_full_gen/cluster_packer_inst/cluster6" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">cluster6[13:0]</obj_property>
+      <obj_property name="ObjectShortName">cluster6[13:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/oh_full_gen/cluster_packer_inst/cluster7" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">cluster7[13:0]</obj_property>
+      <obj_property name="ObjectShortName">cluster7[13:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/oh_full_gen/cluster_packer_inst/cluster_count" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">cluster_count[10:0]</obj_property>
+      <obj_property name="ObjectShortName">cluster_count[10:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/oh_full_gen/cluster_packer_inst/vpfs" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">vpfs[1535:0]</obj_property>
+      <obj_property name="ObjectShortName">vpfs[1535:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/oh_full_gen/cluster_packer_inst/cluster_clock" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">cluster_clock</obj_property>
+      <obj_property name="ObjectShortName">cluster_clock</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/oh_full_gen/cluster_packer_inst/u_count_clusters/clock4x" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">clock4x</obj_property>
+      <obj_property name="ObjectShortName">clock4x</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/oh_full_gen/cluster_packer_inst/u_count_clusters/vpfs_i" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">vpfs_i[1535:0]</obj_property>
+      <obj_property name="ObjectShortName">vpfs_i[1535:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/oh_full_gen/cluster_packer_inst/u_count_clusters/vpfs" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">vpfs[1535:0]</obj_property>
+      <obj_property name="ObjectShortName">vpfs[1535:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/oh_full_gen/cluster_packer_inst/u_count_clusters/cnt_o" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">cnt_o[10:0]</obj_property>
+      <obj_property name="ObjectShortName">cnt_o[10:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/oh_full_gen/cluster_packer_inst/u_count_clusters/overflow_o" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">overflow_o</obj_property>
+      <obj_property name="ObjectShortName">overflow_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/oh_full_gen/cluster_packer_inst/u_count_clusters/cnt_s1" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">cnt_s1[255:0,2:0]</obj_property>
+      <obj_property name="ObjectShortName">cnt_s1[255:0,2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/oh_full_gen/cluster_packer_inst/u_count_clusters/cnt_s2" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">cnt_s2[127:0,3:0]</obj_property>
+      <obj_property name="ObjectShortName">cnt_s2[127:0,3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/oh_full_gen/cluster_packer_inst/u_count_clusters/cnt_s3" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">cnt_s3[63:0,4:0]</obj_property>
+      <obj_property name="ObjectShortName">cnt_s3[63:0,4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/oh_full_gen/cluster_packer_inst/u_count_clusters/cnt_s4" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">cnt_s4[31:0,5:0]</obj_property>
+      <obj_property name="ObjectShortName">cnt_s4[31:0,5:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/oh_full_gen/cluster_packer_inst/u_count_clusters/cnt_s5" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">cnt_s5[15:0,6:0]</obj_property>
+      <obj_property name="ObjectShortName">cnt_s5[15:0,6:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/oh_full_gen/cluster_packer_inst/u_count_clusters/cnt_s6" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">cnt_s6[7:0,8:0]</obj_property>
+      <obj_property name="ObjectShortName">cnt_s6[7:0,8:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/oh_full_gen/cluster_packer_inst/u_count_clusters/cnt_s7" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">cnt_s7[1:0,9:0]</obj_property>
+      <obj_property name="ObjectShortName">cnt_s7[1:0,9:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/oh_full_gen/cluster_packer_inst/u_count_clusters/cnt" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">cnt[10:0]</obj_property>
+      <obj_property name="ObjectShortName">cnt[10:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/oh_full_gen/cluster_packer_inst/vfat0" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">vfat0[63:0]</obj_property>
+      <obj_property name="ObjectShortName">vfat0[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/oh_full_gen/cluster_packer_inst/vfat1" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">vfat1[63:0]</obj_property>
+      <obj_property name="ObjectShortName">vfat1[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/oh_full_gen/cluster_packer_inst/vfat2" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">vfat2[63:0]</obj_property>
+      <obj_property name="ObjectShortName">vfat2[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/oh_full_gen/cluster_packer_inst/vfat3" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">vfat3[63:0]</obj_property>
+      <obj_property name="ObjectShortName">vfat3[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/oh_full_gen/cluster_packer_inst/vfat4" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">vfat4[63:0]</obj_property>
+      <obj_property name="ObjectShortName">vfat4[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/oh_full_gen/cluster_packer_inst/vfat5" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">vfat5[63:0]</obj_property>
+      <obj_property name="ObjectShortName">vfat5[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/oh_full_gen/cluster_packer_inst/vfat6" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">vfat6[63:0]</obj_property>
+      <obj_property name="ObjectShortName">vfat6[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/oh_full_gen/cluster_packer_inst/vfat7" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">vfat7[63:0]</obj_property>
+      <obj_property name="ObjectShortName">vfat7[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/oh_full_gen/cluster_packer_inst/vfat8" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">vfat8[63:0]</obj_property>
+      <obj_property name="ObjectShortName">vfat8[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/oh_full_gen/cluster_packer_inst/vfat9" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">vfat9[63:0]</obj_property>
+      <obj_property name="ObjectShortName">vfat9[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/oh_full_gen/cluster_packer_inst/vfat10" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">vfat10[63:0]</obj_property>
+      <obj_property name="ObjectShortName">vfat10[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/oh_full_gen/cluster_packer_inst/vfat11" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">vfat11[63:0]</obj_property>
+      <obj_property name="ObjectShortName">vfat11[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/oh_full_gen/cluster_packer_inst/vfat12" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">vfat12[63:0]</obj_property>
+      <obj_property name="ObjectShortName">vfat12[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/oh_full_gen/cluster_packer_inst/vfat13" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">vfat13[63:0]</obj_property>
+      <obj_property name="ObjectShortName">vfat13[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/oh_full_gen/cluster_packer_inst/vfat14" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">vfat14[63:0]</obj_property>
+      <obj_property name="ObjectShortName">vfat14[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/oh_full_gen/cluster_packer_inst/vfat15" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">vfat15[63:0]</obj_property>
+      <obj_property name="ObjectShortName">vfat15[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/oh_full_gen/cluster_packer_inst/vfat16" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">vfat16[63:0]</obj_property>
+      <obj_property name="ObjectShortName">vfat16[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/oh_full_gen/cluster_packer_inst/vfat17" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">vfat17[63:0]</obj_property>
+      <obj_property name="ObjectShortName">vfat17[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/oh_full_gen/cluster_packer_inst/vfat18" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">vfat18[63:0]</obj_property>
+      <obj_property name="ObjectShortName">vfat18[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/oh_full_gen/cluster_packer_inst/vfat19" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">vfat19[63:0]</obj_property>
+      <obj_property name="ObjectShortName">vfat19[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/oh_full_gen/cluster_packer_inst/vfat20" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">vfat20[63:0]</obj_property>
+      <obj_property name="ObjectShortName">vfat20[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/oh_full_gen/cluster_packer_inst/vfat21" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">vfat21[63:0]</obj_property>
+      <obj_property name="ObjectShortName">vfat21[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/oh_full_gen/cluster_packer_inst/vfat22" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">vfat22[63:0]</obj_property>
+      <obj_property name="ObjectShortName">vfat22[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/oh_full_gen/cluster_packer_inst/vfat23" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">vfat23[63:0]</obj_property>
+      <obj_property name="ObjectShortName">vfat23[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/active_vfats_inst/active_vfats_o" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">active_vfats_o[23:0]</obj_property>
+      <obj_property name="ObjectShortName">active_vfats_o[23:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="divider245" type="divider">
+      <obj_property name="label">sot</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="BkColor">128 128 255</obj_property>
+      <obj_property name="TextColor">230 230 230</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/\sot_loop(0)\/ivfat" type="other" db_ref_id="1">
+      <obj_property name="ElementShortName">ivfat</obj_property>
+      <obj_property name="ObjectShortName">ivfat</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/sbits_p" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">sbits_p[191:0]</obj_property>
+      <obj_property name="ObjectShortName">sbits_p[191:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/sbits_n" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">sbits_n[191:0]</obj_property>
+      <obj_property name="ObjectShortName">sbits_n[191:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/reset_i" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">reset_i</obj_property>
       <obj_property name="ObjectShortName">reset_i</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/clock" type="logic" db_ref_id="1">
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/sot_invert_i" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">sot_invert_i[23:0]</obj_property>
+      <obj_property name="ObjectShortName">sot_invert_i[23:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/tu_invert_i" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">tu_invert_i[191:0]</obj_property>
+      <obj_property name="ObjectShortName">tu_invert_i[191:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/vfat_mask_i" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">vfat_mask_i[23:0]</obj_property>
+      <obj_property name="ObjectShortName">vfat_mask_i[23:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/tu_mask_i" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">tu_mask_i[191:0]</obj_property>
+      <obj_property name="ObjectShortName">tu_mask_i[191:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/start_of_frame_p" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">start_of_frame_p[23:0]</obj_property>
+      <obj_property name="ObjectShortName">start_of_frame_p[23:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/start_of_frame_n" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">start_of_frame_n[23:0]</obj_property>
+      <obj_property name="ObjectShortName">start_of_frame_n[23:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/sot_tap_delay" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">sot_tap_delay[23:0]</obj_property>
+      <obj_property name="ObjectShortName">sot_tap_delay[23:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/trig_tap_delay" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">trig_tap_delay[191:0]</obj_property>
+      <obj_property name="ObjectShortName">trig_tap_delay[191:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/sot_is_aligned" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">sot_is_aligned[23:0]</obj_property>
+      <obj_property name="ObjectShortName">sot_is_aligned[23:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/sot_unstable" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">sot_unstable[23:0]</obj_property>
+      <obj_property name="ObjectShortName">sot_unstable[23:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/aligned_count_to_ready" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">aligned_count_to_ready[11:0]</obj_property>
+      <obj_property name="ObjectShortName">aligned_count_to_ready[11:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/clock" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">clock</obj_property>
       <obj_property name="ObjectShortName">clock</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/reset_ctl/soft_reset" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">soft_reset</obj_property>
-      <obj_property name="ObjectShortName">soft_reset</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/clk80_0" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">clk80_0</obj_property>
+      <obj_property name="ObjectShortName">clk80_0</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/data_i" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">data_i[7:0]</obj_property>
-      <obj_property name="ObjectShortName">data_i[7:0]</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/clk160_0" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">clk160_0</obj_property>
+      <obj_property name="ObjectShortName">clk160_0</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/data_o" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">data_o[7:0]</obj_property>
-      <obj_property name="ObjectShortName">data_o[7:0]</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/clk160_90" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">clk160_90</obj_property>
+      <obj_property name="ObjectShortName">clk160_90</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/ipb_mosi_o" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">ipb_mosi_o</obj_property>
-      <obj_property name="ObjectShortName">ipb_mosi_o</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/clk160_180" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">clk160_180</obj_property>
+      <obj_property name="ObjectShortName">clk160_180</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/ipb_miso_i" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">ipb_miso_i</obj_property>
-      <obj_property name="ObjectShortName">ipb_miso_i</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/sbits" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">sbits[1535:0]</obj_property>
+      <obj_property name="ObjectShortName">sbits[1535:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/l1a_o" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">l1a_o</obj_property>
-      <obj_property name="ObjectShortName">l1a_o</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/bc0_o" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">bc0_o</obj_property>
-      <obj_property name="ObjectShortName">bc0_o</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/resync_o" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">resync_o</obj_property>
-      <obj_property name="ObjectShortName">resync_o</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/ready_o" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">ready_o</obj_property>
-      <obj_property name="ObjectShortName">ready_o</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/error_o" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">error_o</obj_property>
-      <obj_property name="ObjectShortName">error_o</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/unstable_o" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">unstable_o</obj_property>
-      <obj_property name="ObjectShortName">unstable_o</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/ready" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">ready</obj_property>
-      <obj_property name="ObjectShortName">ready</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/rx_unstable" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">rx_unstable</obj_property>
-      <obj_property name="ObjectShortName">rx_unstable</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/rx_error" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">rx_error</obj_property>
-      <obj_property name="ObjectShortName">rx_error</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/gbt_rx_req" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">gbt_rx_req</obj_property>
-      <obj_property name="ObjectShortName">gbt_rx_req</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/gbt_rx_data" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">gbt_rx_data[48:0]</obj_property>
-      <obj_property name="ObjectShortName">gbt_rx_data[48:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/gbt_rx_req_reg" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">gbt_rx_req_reg</obj_property>
-      <obj_property name="ObjectShortName">gbt_rx_req_reg</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/gbt_rx_data_reg" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">gbt_rx_data_reg[48:0]</obj_property>
-      <obj_property name="ObjectShortName">gbt_rx_data_reg[48:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/oh_tx_req" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">oh_tx_req</obj_property>
-      <obj_property name="ObjectShortName">oh_tx_req</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/oh_tx_valid" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">oh_tx_valid</obj_property>
-      <obj_property name="ObjectShortName">oh_tx_valid</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/oh_tx_data" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">oh_tx_data[31:0]</obj_property>
-      <obj_property name="ObjectShortName">oh_tx_data[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/reset" type="logic" db_ref_id="1">
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/reset" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">reset</obj_property>
       <obj_property name="ObjectShortName">reset</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/clock" type="logic" db_ref_id="1">
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/start_of_frame_8b" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">start_of_frame_8b[23:0]</obj_property>
+      <obj_property name="ObjectShortName">start_of_frame_8b[23:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/vfat_phase_sel" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">vfat_phase_sel[23:0]</obj_property>
+      <obj_property name="ObjectShortName">vfat_phase_sel[23:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/sbits_unaligned" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">sbits_unaligned[1535:0]</obj_property>
+      <obj_property name="ObjectShortName">sbits_unaligned[1535:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/sot_invert" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">sot_invert[23:0]</obj_property>
+      <obj_property name="ObjectShortName">sot_invert[23:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/tu_invert" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">tu_invert[191:0]</obj_property>
+      <obj_property name="ObjectShortName">tu_invert[191:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/vfat_mask" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">vfat_mask[23:0]</obj_property>
+      <obj_property name="ObjectShortName">vfat_mask[23:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/tu_mask" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">tu_mask[191:0]</obj_property>
+      <obj_property name="ObjectShortName">tu_mask[191:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/sot_is_aligned_int" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">sot_is_aligned_int[23:0]</obj_property>
+      <obj_property name="ObjectShortName">sot_is_aligned_int[23:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/sot_reset" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">sot_reset[23:0]</obj_property>
+      <obj_property name="ObjectShortName">sot_reset[23:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/tu_reset" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">tu_reset[191:0]</obj_property>
+      <obj_property name="ObjectShortName">tu_reset[191:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="divider278" type="divider">
+      <obj_property name="label">trig</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="BkColor">128 128 255</obj_property>
+      <obj_property name="TextColor">230 230 230</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/\trig_loop(0)\/ipin" type="other" db_ref_id="1">
+      <obj_property name="ElementShortName">ipin</obj_property>
+      <obj_property name="ObjectShortName">ipin</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/sbits_p" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">sbits_p[191:0]</obj_property>
+      <obj_property name="ObjectShortName">sbits_p[191:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/sbits_n" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">sbits_n[191:0]</obj_property>
+      <obj_property name="ObjectShortName">sbits_n[191:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/reset_i" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">reset_i</obj_property>
+      <obj_property name="ObjectShortName">reset_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/sot_invert_i" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">sot_invert_i[23:0]</obj_property>
+      <obj_property name="ObjectShortName">sot_invert_i[23:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/tu_invert_i" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">tu_invert_i[191:0]</obj_property>
+      <obj_property name="ObjectShortName">tu_invert_i[191:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/vfat_mask_i" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">vfat_mask_i[23:0]</obj_property>
+      <obj_property name="ObjectShortName">vfat_mask_i[23:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/tu_mask_i" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">tu_mask_i[191:0]</obj_property>
+      <obj_property name="ObjectShortName">tu_mask_i[191:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/regs_defaults" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">regs_defaults[121:0]</obj_property>
+      <obj_property name="ObjectShortName">regs_defaults[121:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/start_of_frame_p" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">start_of_frame_p[23:0]</obj_property>
+      <obj_property name="ObjectShortName">start_of_frame_p[23:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/start_of_frame_n" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">start_of_frame_n[23:0]</obj_property>
+      <obj_property name="ObjectShortName">start_of_frame_n[23:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/sot_tap_delay" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">sot_tap_delay[23:0]</obj_property>
+      <obj_property name="ObjectShortName">sot_tap_delay[23:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/trig_tap_delay" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">trig_tap_delay[191:0]</obj_property>
+      <obj_property name="ObjectShortName">trig_tap_delay[191:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/sot_is_aligned" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">sot_is_aligned[23:0]</obj_property>
+      <obj_property name="ObjectShortName">sot_is_aligned[23:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/sot_unstable" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">sot_unstable[23:0]</obj_property>
+      <obj_property name="ObjectShortName">sot_unstable[23:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/aligned_count_to_ready" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">aligned_count_to_ready[11:0]</obj_property>
+      <obj_property name="ObjectShortName">aligned_count_to_ready[11:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/clock" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">clock</obj_property>
       <obj_property name="ObjectShortName">clock</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/mmcm_locked" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">mmcm_locked</obj_property>
-      <obj_property name="ObjectShortName">mmcm_locked</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/clk80_0" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">clk80_0</obj_property>
+      <obj_property name="ObjectShortName">clk80_0</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/gbt_eclk" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">gbt_eclk</obj_property>
-      <obj_property name="ObjectShortName">gbt_eclk</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/clk160_0" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">clk160_0</obj_property>
+      <obj_property name="ObjectShortName">clk160_0</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/ttc_l1a" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">ttc_l1a</obj_property>
-      <obj_property name="ObjectShortName">ttc_l1a</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/clk160_90" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">clk160_90</obj_property>
+      <obj_property name="ObjectShortName">clk160_90</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/ttc_bc0" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">ttc_bc0</obj_property>
-      <obj_property name="ObjectShortName">ttc_bc0</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/clk160_180" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">clk160_180</obj_property>
+      <obj_property name="ObjectShortName">clk160_180</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/ttc_resync" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">ttc_resync</obj_property>
-      <obj_property name="ObjectShortName">ttc_resync</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/sbits" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">sbits[1535:0]</obj_property>
+      <obj_property name="ObjectShortName">sbits[1535:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/vfat_reset" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">vfat_reset</obj_property>
-      <obj_property name="ObjectShortName">vfat_reset</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/gbt_rxready" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">gbt_rxready</obj_property>
-      <obj_property name="ObjectShortName">gbt_rxready</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/gbt_rxvalid" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">gbt_rxvalid</obj_property>
-      <obj_property name="ObjectShortName">gbt_rxvalid</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/gbt_link_ready" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">gbt_link_ready</obj_property>
-      <obj_property name="ObjectShortName">gbt_link_ready</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/gbt_request_received" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">gbt_request_received</obj_property>
-      <obj_property name="ObjectShortName">gbt_request_received</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/reset" type="logic" db_ref_id="1">
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/reset" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">reset</obj_property>
       <obj_property name="ObjectShortName">reset</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/cluster_count_i" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">cluster_count_i[7:0]</obj_property>
-      <obj_property name="ObjectShortName">cluster_count_i[7:0]</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/start_of_frame_8b" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">start_of_frame_8b[23:0]</obj_property>
+      <obj_property name="ObjectShortName">start_of_frame_8b[23:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/cluster_rate" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">cluster_rate[31:0]</obj_property>
-      <obj_property name="ObjectShortName">cluster_rate[31:0]</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/vfat_phase_sel" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">vfat_phase_sel[23:0]</obj_property>
+      <obj_property name="ObjectShortName">vfat_phase_sel[23:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/cylon_mode" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">cylon_mode</obj_property>
-      <obj_property name="ObjectShortName">cylon_mode</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/sbits_unaligned" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">sbits_unaligned[1535:0]</obj_property>
+      <obj_property name="ObjectShortName">sbits_unaligned[1535:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/led_cylon" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">led_cylon[15:0]</obj_property>
-      <obj_property name="ObjectShortName">led_cylon[15:0]</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/sot_invert" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">sot_invert[23:0]</obj_property>
+      <obj_property name="ObjectShortName">sot_invert[23:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/led_logic" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">led_logic[15:0]</obj_property>
-      <obj_property name="ObjectShortName">led_logic[15:0]</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/tu_invert" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">tu_invert[191:0]</obj_property>
+      <obj_property name="ObjectShortName">tu_invert[191:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/led_err" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">led_err[15:0]</obj_property>
-      <obj_property name="ObjectShortName">led_err[15:0]</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/vfat_mask" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">vfat_mask[23:0]</obj_property>
+      <obj_property name="ObjectShortName">vfat_mask[23:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/fader_led" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">fader_led</obj_property>
-      <obj_property name="ObjectShortName">fader_led</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/tu_mask" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">tu_mask[191:0]</obj_property>
+      <obj_property name="ObjectShortName">tu_mask[191:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/clk" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">clk</obj_property>
-      <obj_property name="ObjectShortName">clk</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/sot_is_aligned_int" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">sot_is_aligned_int[23:0]</obj_property>
+      <obj_property name="ObjectShortName">sot_is_aligned_int[23:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/eclk" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">eclk</obj_property>
-      <obj_property name="ObjectShortName">eclk</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/sot_reset" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">sot_reset[23:0]</obj_property>
+      <obj_property name="ObjectShortName">sot_reset[23:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/progress_bar" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">progress_bar[7:0]</obj_property>
-      <obj_property name="ObjectShortName">progress_bar[7:0]</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/tu_reset" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">tu_reset[191:0]</obj_property>
+      <obj_property name="ObjectShortName">tu_reset[191:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/gbt_flash" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">gbt_flash</obj_property>
-      <obj_property name="ObjectShortName">gbt_flash</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/bc0_flash" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">bc0_flash</obj_property>
-      <obj_property name="ObjectShortName">bc0_flash</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/resync_flash" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">resync_flash</obj_property>
-      <obj_property name="ObjectShortName">resync_flash</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/l1a_flash" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">l1a_flash</obj_property>
-      <obj_property name="ObjectShortName">l1a_flash</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/vfat_reset_flash" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">vfat_reset_flash</obj_property>
-      <obj_property name="ObjectShortName">vfat_reset_flash</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/async_clock" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">async_clock</obj_property>
-      <obj_property name="ObjectShortName">async_clock</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/led_out" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">led_out[15:0]</obj_property>
-      <obj_property name="ObjectShortName">led_out[15:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/clk_cnt" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">clk_cnt[20:0]</obj_property>
-      <obj_property name="ObjectShortName">clk_cnt[20:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/clk_led" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">clk_led</obj_property>
-      <obj_property name="ObjectShortName">clk_led</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/eclk_cnt" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">eclk_cnt[20:0]</obj_property>
-      <obj_property name="ObjectShortName">eclk_cnt[20:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/eclk_led" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">eclk_led</obj_property>
-      <obj_property name="ObjectShortName">eclk_led</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/cluster_count" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">cluster_count[7:0]</obj_property>
-      <obj_property name="ObjectShortName">cluster_count[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/first_sbit_seen" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">first_sbit_seen</obj_property>
-      <obj_property name="ObjectShortName">first_sbit_seen</obj_property>
-   </wvobject>
-   <wvobject fp_name="divider113" type="divider">
+   <wvobject fp_name="divider118" type="divider">
       <obj_property name="label">New Divider</obj_property>
       <obj_property name="DisplayName">label</obj_property>
       <obj_property name="BkColor">128 128 255</obj_property>
       <obj_property name="TextColor">230 230 230</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes/reset_i" type="logic" db_ref_id="1">
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/\aligner_loop(0)\/frame_aligner_inst/sbits_i" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">sbits_i[63:0]</obj_property>
+      <obj_property name="ObjectShortName">sbits_i[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/\aligner_loop(0)\/frame_aligner_inst/sbits_o" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">sbits_o[63:0]</obj_property>
+      <obj_property name="ObjectShortName">sbits_o[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/\aligner_loop(0)\/frame_aligner_inst/start_of_frame" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">start_of_frame[7:0]</obj_property>
+      <obj_property name="ObjectShortName">start_of_frame[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/\aligner_loop(0)\/frame_aligner_inst/reset_i" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">reset_i</obj_property>
       <obj_property name="ObjectShortName">reset_i</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes/gbt_clk40" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">gbt_clk40</obj_property>
-      <obj_property name="ObjectShortName">gbt_clk40</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/\aligner_loop(0)\/frame_aligner_inst/mask" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">mask</obj_property>
+      <obj_property name="ObjectShortName">mask</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes/gbt_clk80" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">gbt_clk80</obj_property>
-      <obj_property name="ObjectShortName">gbt_clk80</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes/gbt_clk160_0" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">gbt_clk160_0</obj_property>
-      <obj_property name="ObjectShortName">gbt_clk160_0</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes/gbt_clk160_90" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">gbt_clk160_90</obj_property>
-      <obj_property name="ObjectShortName">gbt_clk160_90</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes/gbt_clk160_180" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">gbt_clk160_180</obj_property>
-      <obj_property name="ObjectShortName">gbt_clk160_180</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes/gbt_clk320" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">gbt_clk320</obj_property>
-      <obj_property name="ObjectShortName">gbt_clk320</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes/clock" type="logic" db_ref_id="1">
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/\aligner_loop(0)\/frame_aligner_inst/clock" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">clock</obj_property>
       <obj_property name="ObjectShortName">clock</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes/tx_delay_i" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">tx_delay_i[4:0]</obj_property>
-      <obj_property name="ObjectShortName">tx_delay_i[4:0]</obj_property>
-      <obj_property name="Radix">HEXRADIX</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/\aligner_loop(0)\/frame_aligner_inst/clock4x" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">clock4x</obj_property>
+      <obj_property name="ObjectShortName">clock4x</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes/elink_o_p" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">elink_o_p</obj_property>
-      <obj_property name="ObjectShortName">elink_o_p</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/\aligner_loop(0)\/frame_aligner_inst/aligned_count_to_ready" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">aligned_count_to_ready[11:0]</obj_property>
+      <obj_property name="ObjectShortName">aligned_count_to_ready[11:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes/elink_o_n" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">elink_o_n</obj_property>
-      <obj_property name="ObjectShortName">elink_o_n</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/\aligner_loop(0)\/frame_aligner_inst/start_of_frame_slipped" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">start_of_frame_slipped[7:0]</obj_property>
+      <obj_property name="ObjectShortName">start_of_frame_slipped[7:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes/elink_i_p" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">elink_i_p</obj_property>
-      <obj_property name="ObjectShortName">elink_i_p</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/\aligner_loop(0)\/frame_aligner_inst/sot_mon" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">sot_mon</obj_property>
+      <obj_property name="ObjectShortName">sot_mon</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes/elink_i_n" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">elink_i_n</obj_property>
-      <obj_property name="ObjectShortName">elink_i_n</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/\aligner_loop(0)\/frame_aligner_inst/sot_unstable" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">sot_unstable</obj_property>
+      <obj_property name="ObjectShortName">sot_unstable</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes/gbt_link_error_i" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">gbt_link_error_i</obj_property>
-      <obj_property name="ObjectShortName">gbt_link_error_i</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/\aligner_loop(0)\/frame_aligner_inst/sot_is_aligned" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">sot_is_aligned</obj_property>
+      <obj_property name="ObjectShortName">sot_is_aligned</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes/gbt_ready_i" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">gbt_ready_i</obj_property>
-      <obj_property name="ObjectShortName">gbt_ready_i</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes/data_i" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">data_i[7:0]</obj_property>
-      <obj_property name="ObjectShortName">data_i[7:0]</obj_property>
-      <obj_property name="Radix">HEXRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes/data_o" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">data_o[7:0]</obj_property>
-      <obj_property name="ObjectShortName">data_o[7:0]</obj_property>
-      <obj_property name="Radix">HEXRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes/from_gbt_raw" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">from_gbt_raw[7:0]</obj_property>
-      <obj_property name="ObjectShortName">from_gbt_raw[7:0]</obj_property>
-      <obj_property name="Radix">HEXRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes/from_gbt" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">from_gbt[7:0]</obj_property>
-      <obj_property name="ObjectShortName">from_gbt[7:0]</obj_property>
-      <obj_property name="Radix">HEXRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes/to_gbt" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">to_gbt[7:0]</obj_property>
-      <obj_property name="ObjectShortName">to_gbt[7:0]</obj_property>
-      <obj_property name="Radix">HEXRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes/to_gbt_sync" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">to_gbt_sync[7:0]</obj_property>
-      <obj_property name="ObjectShortName">to_gbt_sync[7:0]</obj_property>
-      <obj_property name="Radix">HEXRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes/iserdes_reset" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">iserdes_reset</obj_property>
-      <obj_property name="ObjectShortName">iserdes_reset</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes/oserdes_reset" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">oserdes_reset</obj_property>
-      <obj_property name="ObjectShortName">oserdes_reset</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes/gbt_ready" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">gbt_ready</obj_property>
-      <obj_property name="ObjectShortName">gbt_ready</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes/gbt_link_error" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">gbt_link_error</obj_property>
-      <obj_property name="ObjectShortName">gbt_link_error</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes/bitslip_err_cnt" type="other" db_ref_id="1">
-      <obj_property name="ElementShortName">bitslip_err_cnt</obj_property>
-      <obj_property name="ObjectShortName">bitslip_err_cnt</obj_property>
-      <obj_property name="Radix">HEXRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes/rx_bitslip_cnt" type="other" db_ref_id="1">
-      <obj_property name="ElementShortName">rx_bitslip_cnt</obj_property>
-      <obj_property name="ObjectShortName">rx_bitslip_cnt</obj_property>
-      <obj_property name="Radix">HEXRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes/rx_bitslip_cnt_stdlog" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">rx_bitslip_cnt_stdlog[2:0]</obj_property>
-      <obj_property name="ObjectShortName">rx_bitslip_cnt_stdlog[2:0]</obj_property>
-      <obj_property name="Radix">HEXRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes/bitslip_increment" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">bitslip_increment</obj_property>
-      <obj_property name="ObjectShortName">bitslip_increment</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes/reset" type="logic" db_ref_id="1">
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/\aligner_loop(0)\/frame_aligner_inst/reset" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">reset</obj_property>
       <obj_property name="ObjectShortName">reset</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes/bitslip_err_cnt_max" type="other" db_ref_id="1">
-      <obj_property name="ElementShortName">bitslip_err_cnt_max</obj_property>
-      <obj_property name="ObjectShortName">bitslip_err_cnt_max</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/\aligner_loop(0)\/frame_aligner_inst/start_of_frame_reg" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">start_of_frame_reg[7:0]</obj_property>
+      <obj_property name="ObjectShortName">start_of_frame_reg[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/\aligner_loop(0)\/frame_aligner_inst/bitslip_cnt" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">bitslip_cnt[2:0]</obj_property>
+      <obj_property name="ObjectShortName">bitslip_cnt[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/\aligner_loop(0)\/frame_aligner_inst/sot_good" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">sot_good</obj_property>
+      <obj_property name="ObjectShortName">sot_good</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/\aligner_loop(0)\/frame_aligner_inst/stable_counts" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">stable_counts[11:0]</obj_property>
+      <obj_property name="ObjectShortName">stable_counts[11:0]</obj_property>
       <obj_property name="Radix">HEXRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_serdes/mxbits" type="other" db_ref_id="1">
-      <obj_property name="ElementShortName">mxbits</obj_property>
-      <obj_property name="ObjectShortName">mxbits</obj_property>
-      <obj_property name="Radix">HEXRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="divider146" type="divider">
-      <obj_property name="label">New Divider</obj_property>
-      <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="BkColor">128 128 255</obj_property>
-      <obj_property name="TextColor">230 230 230</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/gbt_rx/reset_i" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">reset_i</obj_property>
-      <obj_property name="ObjectShortName">reset_i</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/gbt_rx/clock" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">clock</obj_property>
-      <obj_property name="ObjectShortName">clock</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/gbt_rx/data_i" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">data_i[7:0]</obj_property>
-      <obj_property name="ObjectShortName">data_i[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/gbt_rx/l1a_o" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">l1a_o</obj_property>
-      <obj_property name="ObjectShortName">l1a_o</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/gbt_rx/bc0_o" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">bc0_o</obj_property>
-      <obj_property name="ObjectShortName">bc0_o</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/gbt_rx/resync_o" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">resync_o</obj_property>
-      <obj_property name="ObjectShortName">resync_o</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/gbt_rx/req_en_o" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">req_en_o</obj_property>
-      <obj_property name="ObjectShortName">req_en_o</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/gbt_rx/req_data_o" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">req_data_o[48:0]</obj_property>
-      <obj_property name="ObjectShortName">req_data_o[48:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/gbt_rx/ready_o" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">ready_o</obj_property>
-      <obj_property name="ObjectShortName">ready_o</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/gbt_rx/error_o" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">error_o</obj_property>
-      <obj_property name="ObjectShortName">error_o</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/gbt_rx/req_valid" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">req_valid</obj_property>
-      <obj_property name="ObjectShortName">req_valid</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/gbt_rx/req_data_buf" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">req_data_buf[48:0]</obj_property>
-      <obj_property name="ObjectShortName">req_data_buf[48:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/gbt_rx/state" type="other" db_ref_id="1">
-      <obj_property name="ElementShortName">state</obj_property>
-      <obj_property name="ObjectShortName">state</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/gbt_rx/data_frame_cnt" type="other" db_ref_id="1">
-      <obj_property name="ElementShortName">data_frame_cnt</obj_property>
-      <obj_property name="ObjectShortName">data_frame_cnt</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/gbt_rx/ready_cnt" type="other" db_ref_id="1">
-      <obj_property name="ElementShortName">ready_cnt</obj_property>
-      <obj_property name="ObjectShortName">ready_cnt</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/gbt_rx/ready" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">ready</obj_property>
-      <obj_property name="ObjectShortName">ready</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/gbt_rx/frame_data" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">frame_data[5:0]</obj_property>
-      <obj_property name="ObjectShortName">frame_data[5:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/gbt_rx/frame_data_delay" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">frame_data_delay[5:0]</obj_property>
-      <obj_property name="ObjectShortName">frame_data_delay[5:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/gbt_rx/char_is_data" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">char_is_data</obj_property>
-      <obj_property name="ObjectShortName">char_is_data</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/gbt_rx/char_is_ttc" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">char_is_ttc</obj_property>
-      <obj_property name="ObjectShortName">char_is_ttc</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/gbt_rx/char_is_header" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">char_is_header</obj_property>
-      <obj_property name="ObjectShortName">char_is_header</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/gbt_rx/not_in_table" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">not_in_table</obj_property>
-      <obj_property name="ObjectShortName">not_in_table</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/gbt_rx/reset" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">reset</obj_property>
-      <obj_property name="ObjectShortName">reset</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/gbt_rx/last_data_frame" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">last_data_frame</obj_property>
-      <obj_property name="ObjectShortName">last_data_frame</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/gbt_rx/l1a" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">l1a</obj_property>
-      <obj_property name="ObjectShortName">l1a</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/gbt_rx/bc0" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">bc0</obj_property>
-      <obj_property name="ObjectShortName">bc0</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/gbt_rx/idle_rx" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">idle_rx</obj_property>
-      <obj_property name="ObjectShortName">idle_rx</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/gbt_rx/resync" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">resync</obj_property>
-      <obj_property name="ObjectShortName">resync</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/gbt_rx/g_frame_count_max" type="other" db_ref_id="1">
-      <obj_property name="ElementShortName">g_frame_count_max</obj_property>
-      <obj_property name="ObjectShortName">g_frame_count_max</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/gbt_rx/g_frame_width" type="other" db_ref_id="1">
-      <obj_property name="ElementShortName">g_frame_width</obj_property>
-      <obj_property name="ObjectShortName">g_frame_width</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link/gbt_rx/g_ready_count_max" type="other" db_ref_id="1">
-      <obj_property name="ElementShortName">g_ready_count_max</obj_property>
-      <obj_property name="ObjectShortName">g_ready_count_max</obj_property>
-   </wvobject>
-   <wvobject fp_name="divider178" type="divider">
-      <obj_property name="label">New Divider</obj_property>
-      <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="BkColor">128 128 255</obj_property>
-      <obj_property name="TextColor">230 230 230</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/reset_i" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">reset_i</obj_property>
-      <obj_property name="ObjectShortName">reset_i</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/clock_i" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">clock_i</obj_property>
-      <obj_property name="ObjectShortName">clock_i</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_clk40" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">gbt_clk40</obj_property>
-      <obj_property name="ObjectShortName">gbt_clk40</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_clk80" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">gbt_clk80</obj_property>
-      <obj_property name="ObjectShortName">gbt_clk80</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_clk160_0" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">gbt_clk160_0</obj_property>
-      <obj_property name="ObjectShortName">gbt_clk160_0</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_clk160_90" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">gbt_clk160_90</obj_property>
-      <obj_property name="ObjectShortName">gbt_clk160_90</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_clk160_180" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">gbt_clk160_180</obj_property>
-      <obj_property name="ObjectShortName">gbt_clk160_180</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_clk320" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">gbt_clk320</obj_property>
-      <obj_property name="ObjectShortName">gbt_clk320</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/elink_i_p" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">elink_i_p</obj_property>
-      <obj_property name="ObjectShortName">elink_i_p</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/elink_i_n" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">elink_i_n</obj_property>
-      <obj_property name="ObjectShortName">elink_i_n</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/elink_o_p" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">elink_o_p</obj_property>
-      <obj_property name="ObjectShortName">elink_o_p</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/elink_o_n" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">elink_o_n</obj_property>
-      <obj_property name="ObjectShortName">elink_o_n</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link_error_o" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">gbt_link_error_o</obj_property>
-      <obj_property name="ObjectShortName">gbt_link_error_o</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link_ready_o" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">gbt_link_ready_o</obj_property>
-      <obj_property name="ObjectShortName">gbt_link_ready_o</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/l1a_o" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">l1a_o</obj_property>
-      <obj_property name="ObjectShortName">l1a_o</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/bc0_o" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">bc0_o</obj_property>
-      <obj_property name="ObjectShortName">bc0_o</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/resync_o" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">resync_o</obj_property>
-      <obj_property name="ObjectShortName">resync_o</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/cnt_snap" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">cnt_snap</obj_property>
-      <obj_property name="ObjectShortName">cnt_snap</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_rxready_i" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">gbt_rxready_i</obj_property>
-      <obj_property name="ObjectShortName">gbt_rxready_i</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_rxvalid_i" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">gbt_rxvalid_i</obj_property>
-      <obj_property name="ObjectShortName">gbt_rxvalid_i</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_txready_i" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">gbt_txready_i</obj_property>
-      <obj_property name="ObjectShortName">gbt_txready_i</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/ipb_mosi_o" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">ipb_mosi_o</obj_property>
-      <obj_property name="ObjectShortName">ipb_mosi_o</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/ipb_miso_i" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">ipb_miso_i</obj_property>
-      <obj_property name="ObjectShortName">ipb_miso_i</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/ipb_mosi_i" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">ipb_mosi_i</obj_property>
-      <obj_property name="ObjectShortName">ipb_mosi_i</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/ipb_miso_o" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">ipb_miso_o</obj_property>
-      <obj_property name="ObjectShortName">ipb_miso_o</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/ipb_reset_i" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">ipb_reset_i</obj_property>
-      <obj_property name="ObjectShortName">ipb_reset_i</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_tx_data" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">gbt_tx_data[7:0]</obj_property>
-      <obj_property name="ObjectShortName">gbt_tx_data[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_rx_data" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">gbt_rx_data[7:0]</obj_property>
-      <obj_property name="ObjectShortName">gbt_rx_data[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link_error" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">gbt_link_error</obj_property>
-      <obj_property name="ObjectShortName">gbt_link_error</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link_unstable" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">gbt_link_unstable</obj_property>
-      <obj_property name="ObjectShortName">gbt_link_unstable</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link_ready" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">gbt_link_ready</obj_property>
-      <obj_property name="ObjectShortName">gbt_link_ready</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/gbt_link_err_ready" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">gbt_link_err_ready</obj_property>
-      <obj_property name="ObjectShortName">gbt_link_err_ready</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/l1a_force" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">l1a_force</obj_property>
-      <obj_property name="ObjectShortName">l1a_force</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/bc0_force" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">bc0_force</obj_property>
-      <obj_property name="ObjectShortName">bc0_force</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/resync_force" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">resync_force</obj_property>
-      <obj_property name="ObjectShortName">resync_force</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/l1a_gbt" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">l1a_gbt</obj_property>
-      <obj_property name="ObjectShortName">l1a_gbt</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/bc0_gbt" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">bc0_gbt</obj_property>
-      <obj_property name="ObjectShortName">bc0_gbt</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/resync_gbt" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">resync_gbt</obj_property>
-      <obj_property name="ObjectShortName">resync_gbt</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/reset" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">reset</obj_property>
-      <obj_property name="ObjectShortName">reset</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/cnt_reset" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">cnt_reset</obj_property>
-      <obj_property name="ObjectShortName">cnt_reset</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/tx_delay" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">tx_delay[4:0]</obj_property>
-      <obj_property name="ObjectShortName">tx_delay[4:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/ipb_mosi" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">ipb_mosi</obj_property>
-      <obj_property name="ObjectShortName">ipb_mosi</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/ipb_miso" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">ipb_miso</obj_property>
-      <obj_property name="ObjectShortName">ipb_miso</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/regs_read_arr" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">regs_read_arr[5:0]</obj_property>
-      <obj_property name="ObjectShortName">regs_read_arr[5:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/regs_write_arr" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">regs_write_arr[5:0]</obj_property>
-      <obj_property name="ObjectShortName">regs_write_arr[5:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/regs_addresses" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">regs_addresses[5:0]</obj_property>
-      <obj_property name="ObjectShortName">regs_addresses[5:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/regs_defaults" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">regs_defaults[5:0]</obj_property>
-      <obj_property name="ObjectShortName">regs_defaults[5:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/regs_read_pulse_arr" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">regs_read_pulse_arr[5:0]</obj_property>
-      <obj_property name="ObjectShortName">regs_read_pulse_arr[5:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/regs_write_pulse_arr" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">regs_write_pulse_arr[5:0]</obj_property>
-      <obj_property name="ObjectShortName">regs_write_pulse_arr[5:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/regs_read_ready_arr" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">regs_read_ready_arr[5:0]</obj_property>
-      <obj_property name="ObjectShortName">regs_read_ready_arr[5:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/regs_write_done_arr" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">regs_write_done_arr[5:0]</obj_property>
-      <obj_property name="ObjectShortName">regs_write_done_arr[5:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/regs_writable_arr" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">regs_writable_arr[5:0]</obj_property>
-      <obj_property name="ObjectShortName">regs_writable_arr[5:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/cnt_ipb_response" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">cnt_ipb_response[23:0]</obj_property>
-      <obj_property name="ObjectShortName">cnt_ipb_response[23:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/cnt_ipb_request" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">cnt_ipb_request[23:0]</obj_property>
-      <obj_property name="ObjectShortName">cnt_ipb_request[23:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/cnt_link_err" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">cnt_link_err[23:0]</obj_property>
-      <obj_property name="ObjectShortName">cnt_link_err[23:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/debug" type="other" db_ref_id="1">
-      <obj_property name="ElementShortName">debug</obj_property>
-      <obj_property name="ObjectShortName">debug</obj_property>
-   </wvobject>
-   <wvobject fp_name="divider239" type="divider">
-      <obj_property name="label">New Divider</obj_property>
-      <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="BkColor">128 128 255</obj_property>
-      <obj_property name="TextColor">230 230 230</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/ipbus_slave_inst/ipb_reset_i" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">ipb_reset_i</obj_property>
-      <obj_property name="ObjectShortName">ipb_reset_i</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/ipbus_slave_inst/ipb_clk_i" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">ipb_clk_i</obj_property>
-      <obj_property name="ObjectShortName">ipb_clk_i</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/ipbus_slave_inst/ipb_mosi_i" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">ipb_mosi_i</obj_property>
-      <obj_property name="ObjectShortName">ipb_mosi_i</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/ipbus_slave_inst/ipb_miso_o" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">ipb_miso_o</obj_property>
-      <obj_property name="ObjectShortName">ipb_miso_o</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/ipbus_slave_inst/usr_clk_i" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">usr_clk_i</obj_property>
-      <obj_property name="ObjectShortName">usr_clk_i</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/ipbus_slave_inst/regs_read_arr_i" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">regs_read_arr_i[5:0]</obj_property>
-      <obj_property name="ObjectShortName">regs_read_arr_i[5:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/ipbus_slave_inst/regs_write_arr_o" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">regs_write_arr_o[5:0]</obj_property>
-      <obj_property name="ObjectShortName">regs_write_arr_o[5:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/ipbus_slave_inst/read_pulse_arr_o" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">read_pulse_arr_o[5:0]</obj_property>
-      <obj_property name="ObjectShortName">read_pulse_arr_o[5:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/ipbus_slave_inst/write_pulse_arr_o" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">write_pulse_arr_o[5:0]</obj_property>
-      <obj_property name="ObjectShortName">write_pulse_arr_o[5:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/ipbus_slave_inst/regs_read_ready_arr_i" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">regs_read_ready_arr_i[5:0]</obj_property>
-      <obj_property name="ObjectShortName">regs_read_ready_arr_i[5:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/ipbus_slave_inst/regs_write_done_arr_i" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">regs_write_done_arr_i[5:0]</obj_property>
-      <obj_property name="ObjectShortName">regs_write_done_arr_i[5:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/ipbus_slave_inst/regs_defaults_arr_i" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">regs_defaults_arr_i[5:0]</obj_property>
-      <obj_property name="ObjectShortName">regs_defaults_arr_i[5:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/ipbus_slave_inst/writable_regs_i" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">writable_regs_i[5:0]</obj_property>
-      <obj_property name="ObjectShortName">writable_regs_i[5:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/ipbus_slave_inst/individual_addrs_arr_i" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">individual_addrs_arr_i[5:0]</obj_property>
-      <obj_property name="ObjectShortName">individual_addrs_arr_i[5:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/ipbus_slave_inst/ipb_state" type="other" db_ref_id="1">
-      <obj_property name="ElementShortName">ipb_state</obj_property>
-      <obj_property name="ObjectShortName">ipb_state</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/ipbus_slave_inst/ipb_reg_sel" type="other" db_ref_id="1">
-      <obj_property name="ElementShortName">ipb_reg_sel</obj_property>
-      <obj_property name="ObjectShortName">ipb_reg_sel</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/ipbus_slave_inst/ipb_addr_valid" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">ipb_addr_valid</obj_property>
-      <obj_property name="ObjectShortName">ipb_addr_valid</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/ipbus_slave_inst/ipb_miso" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">ipb_miso</obj_property>
-      <obj_property name="ObjectShortName">ipb_miso</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/ipbus_slave_inst/ipb_mosi" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">ipb_mosi</obj_property>
-      <obj_property name="ObjectShortName">ipb_mosi</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/ipbus_slave_inst/reg_read_data" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">reg_read_data[31:0]</obj_property>
-      <obj_property name="ObjectShortName">reg_read_data[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/ipbus_slave_inst/reg_write_data" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">reg_write_data[31:0]</obj_property>
-      <obj_property name="ObjectShortName">reg_write_data[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/ipbus_slave_inst/regs_write_strb" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">regs_write_strb</obj_property>
-      <obj_property name="ObjectShortName">regs_write_strb</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/ipbus_slave_inst/regs_write_ack" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">regs_write_ack</obj_property>
-      <obj_property name="ObjectShortName">regs_write_ack</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/ipbus_slave_inst/regs_read_strb" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">regs_read_strb</obj_property>
-      <obj_property name="ObjectShortName">regs_read_strb</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/ipbus_slave_inst/regs_read_ack" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">regs_read_ack</obj_property>
-      <obj_property name="ObjectShortName">regs_read_ack</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/ipbus_slave_inst/regs_read_ack_sync_ipb" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">regs_read_ack_sync_ipb</obj_property>
-      <obj_property name="ObjectShortName">regs_read_ack_sync_ipb</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/ipbus_slave_inst/regs_write_ack_sync_ipb" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">regs_write_ack_sync_ipb</obj_property>
-      <obj_property name="ObjectShortName">regs_write_ack_sync_ipb</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/ipbus_slave_inst/regs_read_strb_sync_usr" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">regs_read_strb_sync_usr</obj_property>
-      <obj_property name="ObjectShortName">regs_read_strb_sync_usr</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/ipbus_slave_inst/regs_write_strb_sync_usr" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">regs_write_strb_sync_usr</obj_property>
-      <obj_property name="ObjectShortName">regs_write_strb_sync_usr</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/ipbus_slave_inst/ipb_reset_sync_usr" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">ipb_reset_sync_usr</obj_property>
-      <obj_property name="ObjectShortName">ipb_reset_sync_usr</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/ipbus_slave_inst/regs_write_pulse_done" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">regs_write_pulse_done</obj_property>
-      <obj_property name="ObjectShortName">regs_write_pulse_done</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/ipbus_slave_inst/regs_read_pulse_done" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">regs_read_pulse_done</obj_property>
-      <obj_property name="ObjectShortName">regs_read_pulse_done</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/ipbus_slave_inst/ipb_timer" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">ipb_timer[15:0]</obj_property>
-      <obj_property name="ObjectShortName">ipb_timer[15:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/ipbus_slave_inst/g_n_sync_stages" type="other" db_ref_id="1">
-      <obj_property name="ElementShortName">g_n_sync_stages</obj_property>
-      <obj_property name="ObjectShortName">g_n_sync_stages</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/ipbus_slave_inst/g_num_regs" type="other" db_ref_id="1">
-      <obj_property name="ElementShortName">g_num_regs</obj_property>
-      <obj_property name="ObjectShortName">g_num_regs</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/ipbus_slave_inst/g_addr_high_bit" type="other" db_ref_id="1">
-      <obj_property name="ElementShortName">g_addr_high_bit</obj_property>
-      <obj_property name="ObjectShortName">g_addr_high_bit</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/ipbus_slave_inst/g_addr_low_bit" type="other" db_ref_id="1">
-      <obj_property name="ElementShortName">g_addr_low_bit</obj_property>
-      <obj_property name="ObjectShortName">g_addr_low_bit</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/ipbus_slave_inst/g_use_individual_addrs" type="other" db_ref_id="1">
-      <obj_property name="ElementShortName">g_use_individual_addrs</obj_property>
-      <obj_property name="ObjectShortName">g_use_individual_addrs</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/gbt/ipbus_slave_inst/ipb_timeout" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">ipb_timeout[15:0]</obj_property>
-      <obj_property name="ObjectShortName">ipb_timeout[15:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="divider229" type="divider">
-      <obj_property name="label">led control</obj_property>
-      <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="BkColor">128 128 255</obj_property>
-      <obj_property name="TextColor">230 230 230</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/clock" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">clock</obj_property>
-      <obj_property name="ObjectShortName">clock</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/mmcm_locked" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">mmcm_locked</obj_property>
-      <obj_property name="ObjectShortName">mmcm_locked</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/gbt_eclk" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">gbt_eclk</obj_property>
-      <obj_property name="ObjectShortName">gbt_eclk</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/ttc_l1a" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">ttc_l1a</obj_property>
-      <obj_property name="ObjectShortName">ttc_l1a</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/ttc_bc0" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">ttc_bc0</obj_property>
-      <obj_property name="ObjectShortName">ttc_bc0</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/ttc_resync" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">ttc_resync</obj_property>
-      <obj_property name="ObjectShortName">ttc_resync</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/vfat_reset" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">vfat_reset</obj_property>
-      <obj_property name="ObjectShortName">vfat_reset</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/gbt_rxready" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">gbt_rxready</obj_property>
-      <obj_property name="ObjectShortName">gbt_rxready</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/gbt_rxvalid" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">gbt_rxvalid</obj_property>
-      <obj_property name="ObjectShortName">gbt_rxvalid</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/gbt_link_ready" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">gbt_link_ready</obj_property>
-      <obj_property name="ObjectShortName">gbt_link_ready</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/gbt_request_received" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">gbt_request_received</obj_property>
-      <obj_property name="ObjectShortName">gbt_request_received</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/reset" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">reset</obj_property>
-      <obj_property name="ObjectShortName">reset</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/cluster_count_i" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">cluster_count_i[7:0]</obj_property>
-      <obj_property name="ObjectShortName">cluster_count_i[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/cluster_rate" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">cluster_rate[31:0]</obj_property>
-      <obj_property name="ObjectShortName">cluster_rate[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/cylon_mode" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">cylon_mode</obj_property>
-      <obj_property name="ObjectShortName">cylon_mode</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/led_cylon" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">led_cylon[15:0]</obj_property>
-      <obj_property name="ObjectShortName">led_cylon[15:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/led_logic" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">led_logic[15:0]</obj_property>
-      <obj_property name="ObjectShortName">led_logic[15:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/led_err" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">led_err[15:0]</obj_property>
-      <obj_property name="ObjectShortName">led_err[15:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/fader_led" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">fader_led</obj_property>
-      <obj_property name="ObjectShortName">fader_led</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/clk" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">clk</obj_property>
-      <obj_property name="ObjectShortName">clk</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/eclk" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">eclk</obj_property>
-      <obj_property name="ObjectShortName">eclk</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/progress_bar" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">progress_bar[7:0]</obj_property>
-      <obj_property name="ObjectShortName">progress_bar[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/gbt_flash" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">gbt_flash</obj_property>
-      <obj_property name="ObjectShortName">gbt_flash</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/bc0_flash" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">bc0_flash</obj_property>
-      <obj_property name="ObjectShortName">bc0_flash</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/resync_flash" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">resync_flash</obj_property>
-      <obj_property name="ObjectShortName">resync_flash</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/l1a_flash" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">l1a_flash</obj_property>
-      <obj_property name="ObjectShortName">l1a_flash</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/vfat_reset_flash" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">vfat_reset_flash</obj_property>
-      <obj_property name="ObjectShortName">vfat_reset_flash</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/async_clock" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">async_clock</obj_property>
-      <obj_property name="ObjectShortName">async_clock</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/led_out" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">led_out[15:0]</obj_property>
-      <obj_property name="ObjectShortName">led_out[15:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/clk_cnt" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">clk_cnt[20:0]</obj_property>
-      <obj_property name="ObjectShortName">clk_cnt[20:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/clk_led" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">clk_led</obj_property>
-      <obj_property name="ObjectShortName">clk_led</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/eclk_cnt" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">eclk_cnt[20:0]</obj_property>
-      <obj_property name="ObjectShortName">eclk_cnt[20:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/eclk_led" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">eclk_led</obj_property>
-      <obj_property name="ObjectShortName">eclk_led</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/cluster_count" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">cluster_count[7:0]</obj_property>
-      <obj_property name="ObjectShortName">cluster_count[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/first_sbit_seen" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">first_sbit_seen</obj_property>
-      <obj_property name="ObjectShortName">first_sbit_seen</obj_property>
-   </wvobject>
-   <wvobject fp_name="divider274" type="divider">
-      <obj_property name="label">err_ind</obj_property>
-      <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="BkColor">128 128 255</obj_property>
-      <obj_property name="TextColor">230 230 230</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/u_err_ind/clock" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">clock</obj_property>
-      <obj_property name="ObjectShortName">clock</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/u_err_ind/rate" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">rate[1:0]</obj_property>
-      <obj_property name="ObjectShortName">rate[1:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/u_err_ind/err" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">err</obj_property>
-      <obj_property name="ObjectShortName">err</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/u_err_ind/pdly" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">pdly[3:0]</obj_property>
-      <obj_property name="ObjectShortName">pdly[3:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/u_err_ind/idly" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">idly</obj_property>
-      <obj_property name="ObjectShortName">idly</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/u_err_ind/full_scale" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">full_scale[23:0]</obj_property>
-      <obj_property name="ObjectShortName">full_scale[23:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/u_err_ind/next_adr" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">next_adr</obj_property>
-      <obj_property name="ObjectShortName">next_adr</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/u_err_ind/last_adr" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">last_adr</obj_property>
-      <obj_property name="ObjectShortName">last_adr</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/u_err_ind/q" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">q[15:0]</obj_property>
-      <obj_property name="ObjectShortName">q[15:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/u_err_ind/ready" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">ready</obj_property>
-      <obj_property name="ObjectShortName">ready</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/u_err_ind/prescaler" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">prescaler[23:0]</obj_property>
-      <obj_property name="ObjectShortName">prescaler[23:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/u_err_ind/adr" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">adr[4:0]</obj_property>
-      <obj_property name="ObjectShortName">adr[4:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/u_err_ind/rom" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">rom[15:0]</obj_property>
-      <obj_property name="ObjectShortName">rom[15:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/control/led_control/u_err_ind/MXPRE" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">MXPRE[31:0]</obj_property>
-      <obj_property name="ObjectShortName">MXPRE[31:0]</obj_property>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/\aligner_loop(0)\/frame_aligner_inst/DDR" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">DDR[31:0]</obj_property>
+      <obj_property name="ObjectShortName">DDR[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/\aligner_loop(0)\/frame_aligner_inst/MXSBITS" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">MXSBITS[31:0]</obj_property>
+      <obj_property name="ObjectShortName">MXSBITS[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/optohybrid_top_tb/optohybrid_top/trigger/sbits/trig_alignment/\aligner_loop(0)\/frame_aligner_inst/FRAME_SIZE" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">FRAME_SIZE[31:0]</obj_property>
+      <obj_property name="ObjectShortName">FRAME_SIZE[31:0]</obj_property>
    </wvobject>
 </wave_config>

@@ -1869,11 +1869,11 @@
                     description="Reset trigger links"
                     fw_write_pulse_signal="reset_links"/>
                 <node id="TX_PLL_LOCKED" address="0x1" permission="r"
-                    mask="0x0000000f"
+                    mask="0x00000001"
                     description="Transmit PLLs are Locked"
                     fw_signal="tx_pll_locked"/>
                 <node id="TX_RESET_DONE" address="0x1" permission="r"
-                    mask="0x000000f0"
+                    mask="0x00000010"
                     description="Transmit Resets are Done"
                     fw_signal="tx_reset_done"/>
                 <node id="TX_PRBS_MODE" address="0x1" permission="rw"
