@@ -87,6 +87,6 @@ module reset (
       startup_reset_cnt <= startup_reset_cnt;
   end
 
-  assign core_reset_o = (hold_reset_cnt < STARTUP_RESET_CNT_MAX);
+  assign core_reset_o = (startup_reset_cnt < STARTUP_RESET_CNT_MAX);
 
 endmodule
