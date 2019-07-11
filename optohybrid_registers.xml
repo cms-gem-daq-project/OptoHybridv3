@@ -715,7 +715,7 @@
 
                 <!-- updated by update_vfat_counters.py-->
                 <!-- START: VFAT_COUNTERS DO NOT EDIT -->
-                <node id="VFAT${VFAT_CNT_IDX}" address="0x0" permission="r"
+                <node id="VFAT${VFAT_CNT_IDX}_SBITS" address="0x0" permission="r"
                     mask="0xffffffff"
                     description="VFAT ${VFAT_CNT_IDX} Counter"
                     fw_cnt_en_signal="active_vfats(${VFAT_CNT_IDX})"
@@ -1958,24 +1958,15 @@
             fw_reg_addr_msb="1"
             fw_reg_addr_lsb="0">
 
-            <node id="GBT_MMCM_LOCKED" address="0x0" permission="r"
+            <node id="MMCM_LOCKED" address="0x0" permission="r"
                 mask="0x00000001"
-                description="GBT deserialization MMCM locked"
-                fw_signal="mmcm_locked(1)"/>
-            <node id="LOGIC_MMCM_LOCKED" address="0x0" permission="r"
-                mask="0x00000002"
-                description="User logic MMCM locked"
-                fw_signal="mmcm_locked(0)"/>
-            <node id="GBT_MMCM_UNLOCKED_CNT" address="0x0" permission="r"
+                description="MMCM locked"
+                fw_signal="mmcm_locked"/>
+            <node id="MMCM_UNLOCKED_CNT" address="0x0" permission="r"
                 mask="0x00ff0000"
-                description="GBT deserialization MMCM unlocked cnt"
-                fw_cnt_en_signal="mmcm_unlocked(1)"
-                fw_signal="cnt_eprt_mmcm_unlocked"/>
-            <node id="LOGIC_MMCM_UNLOCKED_CNT" address="0x0" permission="r"
-                mask="0xff000000"
-                description="User logic MMCM unlocked cnt"
-                fw_cnt_en_signal="mmcm_unlocked(0)"
-                fw_signal="cnt_dskw_mmcm_unlocked"/>
+                description="MMCM unlocked cnt"
+                fw_cnt_en_signal="not mmcm_locked"
+                fw_signal="mmcm_unlocked"/>
     </node>
 
     <!--GBT module -->
@@ -2003,11 +1994,6 @@
                     mask="0x00000001"
                     description="GBT TX READY from GBTx Chip"
                     fw_signal="gbt_txready_i"/>
-                <node id="TX_DELAY" address="0x1" permission="rw"
-                    mask="0x1f0"
-                    description="GBT TX IODELAY in 78 ps steps, 0-31"
-                    fw_default="0x0"
-                    fw_signal="tx_delay"/>
             </node> <!--TX-->
 
             <node id="RX" address="0x4" description = "Controls and monitors the transmit link from the GBTx to the FPGA">

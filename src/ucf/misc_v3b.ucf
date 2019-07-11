@@ -63,8 +63,8 @@ INST "ext_sbits_o<3>" TNM = ext_sbits_o;
 INST "ext_sbits_o<4>" TNM = ext_sbits_o;
 INST "ext_sbits_o<5>" TNM = ext_sbits_o;
 
-TIMEGRP "led_o"       OFFSET = OUT 12.5 ns VALID 25 ns AFTER "logic_clock_p" RISING;
-TIMEGRP "ext_sbits_o" OFFSET = OUT 12.5 ns VALID 25 ns AFTER "logic_clock_p" RISING;
+TIMEGRP "led_o"       OFFSET = OUT 12.5 ns VALID 25 ns AFTER "clock_p" RISING;
+TIMEGRP "ext_sbits_o" OFFSET = OUT 12.5 ns VALID 25 ns AFTER "clock_p" RISING;
 
 # GBT
 # NET "gbt_txvalid_o" LOC =      ; # hardwired, apparently

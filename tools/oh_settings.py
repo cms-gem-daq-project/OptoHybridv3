@@ -8,7 +8,7 @@ geb_version = "v3c"
 geb_length  = "long"
 firmware_version_major   = "03"
 firmware_version_minor   = "02"
-firmware_release_version = "04"
+firmware_release_version = "05"
 # END: OH_VERSION
 
 hybrid_version           = "v3b"

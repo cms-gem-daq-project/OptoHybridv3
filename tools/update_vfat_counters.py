@@ -63,7 +63,7 @@ def write_vfat_counters (file_handle):
 
     padding = "                " #spaces for indentation
 
-    f.write('%s<node id="VFAT${VFAT_CNT_IDX}" address="0x0" permission="r"\n'  %  (padding) )
+    f.write('%s<node id="VFAT${VFAT_CNT_IDX}_SBITS" address="0x0" permission="r"\n'  %  (padding) )
     f.write('%s    mask="0xffffffff"\n'                                        %  (padding) )
     f.write('%s    description="VFAT ${VFAT_CNT_IDX} Counter"\n'               %  (padding) )
     f.write('%s    fw_cnt_en_signal="active_vfats(${VFAT_CNT_IDX})"\n'         %  (padding) )

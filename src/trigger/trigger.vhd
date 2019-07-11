@@ -741,30 +741,30 @@ begin
     regs_read_arr(20)(REG_TRIG_CTRL_TU_MASK_VFAT21_TU_MASK_MSB downto REG_TRIG_CTRL_TU_MASK_VFAT21_TU_MASK_LSB) <= TU_MASK (175 downto 168);
     regs_read_arr(20)(REG_TRIG_CTRL_TU_MASK_VFAT22_TU_MASK_MSB downto REG_TRIG_CTRL_TU_MASK_VFAT22_TU_MASK_LSB) <= TU_MASK (183 downto 176);
     regs_read_arr(20)(REG_TRIG_CTRL_TU_MASK_VFAT23_TU_MASK_MSB downto REG_TRIG_CTRL_TU_MASK_VFAT23_TU_MASK_LSB) <= TU_MASK (191 downto 184);
-    regs_read_arr(21)(REG_TRIG_CNT_VFAT0_MSB downto REG_TRIG_CNT_VFAT0_LSB) <= cnt_vfat0;
-    regs_read_arr(22)(REG_TRIG_CNT_VFAT1_MSB downto REG_TRIG_CNT_VFAT1_LSB) <= cnt_vfat1;
-    regs_read_arr(23)(REG_TRIG_CNT_VFAT2_MSB downto REG_TRIG_CNT_VFAT2_LSB) <= cnt_vfat2;
-    regs_read_arr(24)(REG_TRIG_CNT_VFAT3_MSB downto REG_TRIG_CNT_VFAT3_LSB) <= cnt_vfat3;
-    regs_read_arr(25)(REG_TRIG_CNT_VFAT4_MSB downto REG_TRIG_CNT_VFAT4_LSB) <= cnt_vfat4;
-    regs_read_arr(26)(REG_TRIG_CNT_VFAT5_MSB downto REG_TRIG_CNT_VFAT5_LSB) <= cnt_vfat5;
-    regs_read_arr(27)(REG_TRIG_CNT_VFAT6_MSB downto REG_TRIG_CNT_VFAT6_LSB) <= cnt_vfat6;
-    regs_read_arr(28)(REG_TRIG_CNT_VFAT7_MSB downto REG_TRIG_CNT_VFAT7_LSB) <= cnt_vfat7;
-    regs_read_arr(29)(REG_TRIG_CNT_VFAT8_MSB downto REG_TRIG_CNT_VFAT8_LSB) <= cnt_vfat8;
-    regs_read_arr(30)(REG_TRIG_CNT_VFAT9_MSB downto REG_TRIG_CNT_VFAT9_LSB) <= cnt_vfat9;
-    regs_read_arr(31)(REG_TRIG_CNT_VFAT10_MSB downto REG_TRIG_CNT_VFAT10_LSB) <= cnt_vfat10;
-    regs_read_arr(32)(REG_TRIG_CNT_VFAT11_MSB downto REG_TRIG_CNT_VFAT11_LSB) <= cnt_vfat11;
-    regs_read_arr(33)(REG_TRIG_CNT_VFAT12_MSB downto REG_TRIG_CNT_VFAT12_LSB) <= cnt_vfat12;
-    regs_read_arr(34)(REG_TRIG_CNT_VFAT13_MSB downto REG_TRIG_CNT_VFAT13_LSB) <= cnt_vfat13;
-    regs_read_arr(35)(REG_TRIG_CNT_VFAT14_MSB downto REG_TRIG_CNT_VFAT14_LSB) <= cnt_vfat14;
-    regs_read_arr(36)(REG_TRIG_CNT_VFAT15_MSB downto REG_TRIG_CNT_VFAT15_LSB) <= cnt_vfat15;
-    regs_read_arr(37)(REG_TRIG_CNT_VFAT16_MSB downto REG_TRIG_CNT_VFAT16_LSB) <= cnt_vfat16;
-    regs_read_arr(38)(REG_TRIG_CNT_VFAT17_MSB downto REG_TRIG_CNT_VFAT17_LSB) <= cnt_vfat17;
-    regs_read_arr(39)(REG_TRIG_CNT_VFAT18_MSB downto REG_TRIG_CNT_VFAT18_LSB) <= cnt_vfat18;
-    regs_read_arr(40)(REG_TRIG_CNT_VFAT19_MSB downto REG_TRIG_CNT_VFAT19_LSB) <= cnt_vfat19;
-    regs_read_arr(41)(REG_TRIG_CNT_VFAT20_MSB downto REG_TRIG_CNT_VFAT20_LSB) <= cnt_vfat20;
-    regs_read_arr(42)(REG_TRIG_CNT_VFAT21_MSB downto REG_TRIG_CNT_VFAT21_LSB) <= cnt_vfat21;
-    regs_read_arr(43)(REG_TRIG_CNT_VFAT22_MSB downto REG_TRIG_CNT_VFAT22_LSB) <= cnt_vfat22;
-    regs_read_arr(44)(REG_TRIG_CNT_VFAT23_MSB downto REG_TRIG_CNT_VFAT23_LSB) <= cnt_vfat23;
+    regs_read_arr(21)(REG_TRIG_CNT_VFAT0_SBITS_MSB downto REG_TRIG_CNT_VFAT0_SBITS_LSB) <= cnt_vfat0;
+    regs_read_arr(22)(REG_TRIG_CNT_VFAT1_SBITS_MSB downto REG_TRIG_CNT_VFAT1_SBITS_LSB) <= cnt_vfat1;
+    regs_read_arr(23)(REG_TRIG_CNT_VFAT2_SBITS_MSB downto REG_TRIG_CNT_VFAT2_SBITS_LSB) <= cnt_vfat2;
+    regs_read_arr(24)(REG_TRIG_CNT_VFAT3_SBITS_MSB downto REG_TRIG_CNT_VFAT3_SBITS_LSB) <= cnt_vfat3;
+    regs_read_arr(25)(REG_TRIG_CNT_VFAT4_SBITS_MSB downto REG_TRIG_CNT_VFAT4_SBITS_LSB) <= cnt_vfat4;
+    regs_read_arr(26)(REG_TRIG_CNT_VFAT5_SBITS_MSB downto REG_TRIG_CNT_VFAT5_SBITS_LSB) <= cnt_vfat5;
+    regs_read_arr(27)(REG_TRIG_CNT_VFAT6_SBITS_MSB downto REG_TRIG_CNT_VFAT6_SBITS_LSB) <= cnt_vfat6;
+    regs_read_arr(28)(REG_TRIG_CNT_VFAT7_SBITS_MSB downto REG_TRIG_CNT_VFAT7_SBITS_LSB) <= cnt_vfat7;
+    regs_read_arr(29)(REG_TRIG_CNT_VFAT8_SBITS_MSB downto REG_TRIG_CNT_VFAT8_SBITS_LSB) <= cnt_vfat8;
+    regs_read_arr(30)(REG_TRIG_CNT_VFAT9_SBITS_MSB downto REG_TRIG_CNT_VFAT9_SBITS_LSB) <= cnt_vfat9;
+    regs_read_arr(31)(REG_TRIG_CNT_VFAT10_SBITS_MSB downto REG_TRIG_CNT_VFAT10_SBITS_LSB) <= cnt_vfat10;
+    regs_read_arr(32)(REG_TRIG_CNT_VFAT11_SBITS_MSB downto REG_TRIG_CNT_VFAT11_SBITS_LSB) <= cnt_vfat11;
+    regs_read_arr(33)(REG_TRIG_CNT_VFAT12_SBITS_MSB downto REG_TRIG_CNT_VFAT12_SBITS_LSB) <= cnt_vfat12;
+    regs_read_arr(34)(REG_TRIG_CNT_VFAT13_SBITS_MSB downto REG_TRIG_CNT_VFAT13_SBITS_LSB) <= cnt_vfat13;
+    regs_read_arr(35)(REG_TRIG_CNT_VFAT14_SBITS_MSB downto REG_TRIG_CNT_VFAT14_SBITS_LSB) <= cnt_vfat14;
+    regs_read_arr(36)(REG_TRIG_CNT_VFAT15_SBITS_MSB downto REG_TRIG_CNT_VFAT15_SBITS_LSB) <= cnt_vfat15;
+    regs_read_arr(37)(REG_TRIG_CNT_VFAT16_SBITS_MSB downto REG_TRIG_CNT_VFAT16_SBITS_LSB) <= cnt_vfat16;
+    regs_read_arr(38)(REG_TRIG_CNT_VFAT17_SBITS_MSB downto REG_TRIG_CNT_VFAT17_SBITS_LSB) <= cnt_vfat17;
+    regs_read_arr(39)(REG_TRIG_CNT_VFAT18_SBITS_MSB downto REG_TRIG_CNT_VFAT18_SBITS_LSB) <= cnt_vfat18;
+    regs_read_arr(40)(REG_TRIG_CNT_VFAT19_SBITS_MSB downto REG_TRIG_CNT_VFAT19_SBITS_LSB) <= cnt_vfat19;
+    regs_read_arr(41)(REG_TRIG_CNT_VFAT20_SBITS_MSB downto REG_TRIG_CNT_VFAT20_SBITS_LSB) <= cnt_vfat20;
+    regs_read_arr(42)(REG_TRIG_CNT_VFAT21_SBITS_MSB downto REG_TRIG_CNT_VFAT21_SBITS_LSB) <= cnt_vfat21;
+    regs_read_arr(43)(REG_TRIG_CNT_VFAT22_SBITS_MSB downto REG_TRIG_CNT_VFAT22_SBITS_LSB) <= cnt_vfat22;
+    regs_read_arr(44)(REG_TRIG_CNT_VFAT23_SBITS_MSB downto REG_TRIG_CNT_VFAT23_SBITS_LSB) <= cnt_vfat23;
     regs_read_arr(46)(REG_TRIG_CNT_SBIT_CNT_PERSIST_BIT) <= sbit_cnt_persist;
     regs_read_arr(47)(REG_TRIG_CNT_SBIT_CNT_TIME_MAX_MSB downto REG_TRIG_CNT_SBIT_CNT_TIME_MAX_LSB) <= sbit_cnt_time_max;
     regs_read_arr(48)(REG_TRIG_CNT_CLUSTER_COUNT_MSB downto REG_TRIG_CNT_CLUSTER_COUNT_LSB) <= cnt_clusters;
@@ -1337,7 +1337,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT0 : entity work.counter_snap
+    COUNTER_TRIG_CNT_VFAT0_SBITS : entity work.counter_snap
     generic map (
         g_COUNTER_WIDTH  => 32
     )
@@ -1350,7 +1350,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT1 : entity work.counter_snap
+    COUNTER_TRIG_CNT_VFAT1_SBITS : entity work.counter_snap
     generic map (
         g_COUNTER_WIDTH  => 32
     )
@@ -1363,7 +1363,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT2 : entity work.counter_snap
+    COUNTER_TRIG_CNT_VFAT2_SBITS : entity work.counter_snap
     generic map (
         g_COUNTER_WIDTH  => 32
     )
@@ -1376,7 +1376,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT3 : entity work.counter_snap
+    COUNTER_TRIG_CNT_VFAT3_SBITS : entity work.counter_snap
     generic map (
         g_COUNTER_WIDTH  => 32
     )
@@ -1389,7 +1389,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT4 : entity work.counter_snap
+    COUNTER_TRIG_CNT_VFAT4_SBITS : entity work.counter_snap
     generic map (
         g_COUNTER_WIDTH  => 32
     )
@@ -1402,7 +1402,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT5 : entity work.counter_snap
+    COUNTER_TRIG_CNT_VFAT5_SBITS : entity work.counter_snap
     generic map (
         g_COUNTER_WIDTH  => 32
     )
@@ -1415,7 +1415,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT6 : entity work.counter_snap
+    COUNTER_TRIG_CNT_VFAT6_SBITS : entity work.counter_snap
     generic map (
         g_COUNTER_WIDTH  => 32
     )
@@ -1428,7 +1428,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT7 : entity work.counter_snap
+    COUNTER_TRIG_CNT_VFAT7_SBITS : entity work.counter_snap
     generic map (
         g_COUNTER_WIDTH  => 32
     )
@@ -1441,7 +1441,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT8 : entity work.counter_snap
+    COUNTER_TRIG_CNT_VFAT8_SBITS : entity work.counter_snap
     generic map (
         g_COUNTER_WIDTH  => 32
     )
@@ -1454,7 +1454,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT9 : entity work.counter_snap
+    COUNTER_TRIG_CNT_VFAT9_SBITS : entity work.counter_snap
     generic map (
         g_COUNTER_WIDTH  => 32
     )
@@ -1467,7 +1467,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT10 : entity work.counter_snap
+    COUNTER_TRIG_CNT_VFAT10_SBITS : entity work.counter_snap
     generic map (
         g_COUNTER_WIDTH  => 32
     )
@@ -1480,7 +1480,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT11 : entity work.counter_snap
+    COUNTER_TRIG_CNT_VFAT11_SBITS : entity work.counter_snap
     generic map (
         g_COUNTER_WIDTH  => 32
     )
@@ -1493,7 +1493,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT12 : entity work.counter_snap
+    COUNTER_TRIG_CNT_VFAT12_SBITS : entity work.counter_snap
     generic map (
         g_COUNTER_WIDTH  => 32
     )
@@ -1506,7 +1506,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT13 : entity work.counter_snap
+    COUNTER_TRIG_CNT_VFAT13_SBITS : entity work.counter_snap
     generic map (
         g_COUNTER_WIDTH  => 32
     )
@@ -1519,7 +1519,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT14 : entity work.counter_snap
+    COUNTER_TRIG_CNT_VFAT14_SBITS : entity work.counter_snap
     generic map (
         g_COUNTER_WIDTH  => 32
     )
@@ -1532,7 +1532,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT15 : entity work.counter_snap
+    COUNTER_TRIG_CNT_VFAT15_SBITS : entity work.counter_snap
     generic map (
         g_COUNTER_WIDTH  => 32
     )
@@ -1545,7 +1545,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT16 : entity work.counter_snap
+    COUNTER_TRIG_CNT_VFAT16_SBITS : entity work.counter_snap
     generic map (
         g_COUNTER_WIDTH  => 32
     )
@@ -1558,7 +1558,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT17 : entity work.counter_snap
+    COUNTER_TRIG_CNT_VFAT17_SBITS : entity work.counter_snap
     generic map (
         g_COUNTER_WIDTH  => 32
     )
@@ -1571,7 +1571,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT18 : entity work.counter_snap
+    COUNTER_TRIG_CNT_VFAT18_SBITS : entity work.counter_snap
     generic map (
         g_COUNTER_WIDTH  => 32
     )
@@ -1584,7 +1584,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT19 : entity work.counter_snap
+    COUNTER_TRIG_CNT_VFAT19_SBITS : entity work.counter_snap
     generic map (
         g_COUNTER_WIDTH  => 32
     )
@@ -1597,7 +1597,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT20 : entity work.counter_snap
+    COUNTER_TRIG_CNT_VFAT20_SBITS : entity work.counter_snap
     generic map (
         g_COUNTER_WIDTH  => 32
     )
@@ -1610,7 +1610,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT21 : entity work.counter_snap
+    COUNTER_TRIG_CNT_VFAT21_SBITS : entity work.counter_snap
     generic map (
         g_COUNTER_WIDTH  => 32
     )
@@ -1623,7 +1623,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT22 : entity work.counter_snap
+    COUNTER_TRIG_CNT_VFAT22_SBITS : entity work.counter_snap
     generic map (
         g_COUNTER_WIDTH  => 32
     )
@@ -1636,7 +1636,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT23 : entity work.counter_snap
+    COUNTER_TRIG_CNT_VFAT23_SBITS : entity work.counter_snap
     generic map (
         g_COUNTER_WIDTH  => 32
     )

@@ -14,7 +14,7 @@ TIMESPEC TS_SBIT_TIG   = FROM sbit_serdes_grp TO sbit_ff_grp     TIG;
 
 NET "trigger/sbits/trig_alignment/*oversample*/q<*>" MAXDELAY = 2.00 ns;
 
-TIMEGRP "sbit_i_grp" OFFSET = IN 4 ns VALID 3.125 ns BEFORE "logic_clock_p" RISING;
+TIMEGRP "sbit_i_grp" OFFSET = IN 4 ns VALID 3.125 ns BEFORE "clock_p" RISING;
 
 NET vfat_sot_p<23>     IOSTANDARD=LVDS_25 | LOC = "AN19"; # polarity swap
 NET vfat_sot_n<23>     IOSTANDARD=LVDS_25 | LOC = "AN20"; # polarity swap

@@ -2,11 +2,11 @@
 # Clock Periods
 #######################################################################################################################
 
-NET "logic_clock_p" TNM_NET = "TN_LOGIC_CLOCK";
-TIMESPEC TS_logic_clock = PERIOD "TN_LOGIC_CLOCK" 24.95 ns HIGH 50 %;
+#NET "logic_clock_p" TNM_NET = "TN_LOGIC_CLOCK";
+#TIMESPEC TS_logic_clock = PERIOD "TN_LOGIC_CLOCK" 24.95 ns HIGH 50 %;
 
-NET "elink_clock_p" TNM_NET = "TN_ELINK_CLOCK";
-TIMESPEC TS_elink_clock = PERIOD "TN_ELINK_CLOCK" 24.95 ns HIGH 50 %;
+#NET "clock_p" TNM_NET = "TN_CLOCK";
+#TIMESPEC TS_clock = PERIOD "TN_CLOCK" 24.95 ns HIGH 50 %;
 
 #######################################################################################################################
 # CFGMCLK
@@ -22,22 +22,22 @@ TIMESPEC TS_clk_cfg_to_clk_logic = FROM "cfgmclk" TO "FFS" TIG;
 # GBT Deskew (Phase Shiftable) Clocks
 ########################################################################################################################
 
-NET "logic_clock_p" IOSTANDARD = LVDS_25;
-NET "logic_clock_p" DIFF_TERM = "FALSE";
-NET "logic_clock_n" IOSTANDARD = LVDS_25;
-NET "logic_clock_n" DIFF_TERM = "FALSE";
+#NET "logic_clock_p" IOSTANDARD = LVDS_25;
+#NET "logic_clock_p" DIFF_TERM = "FALSE";
+#NET "logic_clock_n" IOSTANDARD = LVDS_25;
+#NET "logic_clock_n" DIFF_TERM = "FALSE";
 
-NET "elink_clock_p" IOSTANDARD = LVDS_25;
-NET "elink_clock_p" DIFF_TERM = "FALSE";
-NET "elink_clock_n" IOSTANDARD = LVDS_25;
-NET "elink_clock_n" DIFF_TERM = "FALSE";
+NET "clock_p" IOSTANDARD = LVDS_25;
+NET "clock_p" DIFF_TERM = "FALSE";
+NET "clock_n" IOSTANDARD = LVDS_25;
+NET "clock_n" DIFF_TERM = "FALSE";
 
 ### GBTx data clock -- these are 320MHz data clock (terminated outside), the phase is aligned such that rising edge is in the middle of the data bit
-NET "logic_clock_p"   LOC = AP20;
-NET "logic_clock_n"   LOC = AP21;
-#
-NET "elink_clock_p"   LOC = A10;
-NET "elink_clock_n"   LOC = B10;
+
+NET "clock_p"   LOC = J9; #elink clock
+NET "clock_n"   LOC = H9; #elink clock
+#NET "clock_p"   LOC = A10; #dskw clock
+#NET "clock_n"   LOC = B10; #dskw clock
 
 ########################################################################################################################
 # GBT
