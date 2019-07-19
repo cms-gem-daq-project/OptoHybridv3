@@ -23,7 +23,7 @@
 
 \title{Optohybrid v3 Address Table}
 % START: ADDRESS_TABLE_VERSION :: DO NOT EDIT
-    \author{\textbf{GE1/1 Long} \\  \\ v03.02.05.1C \\ 20190711}
+    \author{\textbf{GE1/1 Short} \\  \\ v03.02.06.0C \\ 20190728}
 % END: ADDRESS_TABLE_VERSION :: DO NOT EDIT
 \begin{document}
 
@@ -804,6 +804,45 @@
     CLUSTER6 & \texttt{0x2097} & \texttt{[15:0]} & r & \texttt{} & Last cluster 6 \\\hline
     CLUSTER7 & \texttt{0x2098} & \texttt{[15:0]} & r & \texttt{} & Last cluster 7 \\\hline
     L1A\_DELAY & \texttt{0x20a0} & \texttt{[31:0]} & r & \texttt{} & Number of BX between this sbit and the subsequent L1A \\\hline
+    \end{tabularx}
+    \vspace{5mm}
+
+
+    \noindent
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.TRIG.SBIT\_HITMAP}}}
+
+    \vspace{4mm}
+    \noindent
+    The Sbit hitmap module accumulates all incoming Sbits during a period of time
+    \noindent
+
+    \keepXColumns
+    \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
+    \hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \nopagebreak
+    RESET & \texttt{0x20b0} & \texttt{[31:0]} & w & Pulsed & Reset the accumulation registers \\\hline
+    ACQUIRE & \texttt{0x20b1} & \texttt{[0:0]} & rw & \texttt{0x0} & Sbits are accumulated as long as this flag is set \\\hline
+    VFAT0\_MSB & \texttt{0x20b2} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 63 to 32 of VFAT\{VFAT\_IDX\} \\\hline
+    VFAT0\_LSB & \texttt{0x20b3} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 31 to 0 of VFAT\{VFAT\_IDX\} \\\hline
+    \end{tabularx}
+    \vspace{5mm}
+
+
+    \noindent
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.TRIG.CTRL}}}
+
+    \vspace{4mm}
+    \noindent
+    Controls and monitors various parameters of the S-bit deserialization and cluster building.
+    \noindent
+
+    \keepXColumns
+    \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
+    \hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \nopagebreak
+    SBIT\_SOT\_INVALID\_BITSKIP & \texttt{0x20e2} & \texttt{[23:0]} & r & \texttt{} & 24 bit list of VFATs with a invalid bitskip counter for Start-of-frame pulses \\\hline
     \end{tabularx}
     \vspace{5mm}
 

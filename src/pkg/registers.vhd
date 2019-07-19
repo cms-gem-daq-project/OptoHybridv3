@@ -258,7 +258,7 @@ package registers is
     -- Connects to the trigger control module
     --============================================================================
 
-    constant REG_TRIG_NUM_REGS : integer := 121;
+    constant REG_TRIG_NUM_REGS : integer := 172;
     constant REG_TRIG_ADDRESS_MSB : integer := 7;
     constant REG_TRIG_ADDRESS_LSB : integer := 0;
     constant REG_TRIG_CTRL_VFAT_MASK_ADDR    : std_logic_vector(7 downto 0) := x"00";
@@ -1929,6 +1929,210 @@ package registers is
     constant REG_TRIG_SBIT_MONITOR_L1A_DELAY_ADDR    : std_logic_vector(7 downto 0) := x"a0";
     constant REG_TRIG_SBIT_MONITOR_L1A_DELAY_MSB    : integer := 31;
     constant REG_TRIG_SBIT_MONITOR_L1A_DELAY_LSB     : integer := 0;
+
+    constant REG_TRIG_SBIT_HITMAP_RESET_ADDR    : std_logic_vector(7 downto 0) := x"b0";
+    constant REG_TRIG_SBIT_HITMAP_RESET_MSB    : integer := 31;
+    constant REG_TRIG_SBIT_HITMAP_RESET_LSB     : integer := 0;
+
+    constant REG_TRIG_SBIT_HITMAP_ACQUIRE_ADDR    : std_logic_vector(7 downto 0) := x"b1";
+    constant REG_TRIG_SBIT_HITMAP_ACQUIRE_BIT    : integer := 0;
+    constant REG_TRIG_SBIT_HITMAP_ACQUIRE_DEFAULT : std_logic := '0';
+
+    constant REG_TRIG_SBIT_HITMAP_VFAT0_MSB_ADDR    : std_logic_vector(7 downto 0) := x"b2";
+    constant REG_TRIG_SBIT_HITMAP_VFAT0_MSB_MSB    : integer := 31;
+    constant REG_TRIG_SBIT_HITMAP_VFAT0_MSB_LSB     : integer := 0;
+
+    constant REG_TRIG_SBIT_HITMAP_VFAT0_LSB_ADDR    : std_logic_vector(7 downto 0) := x"b3";
+    constant REG_TRIG_SBIT_HITMAP_VFAT0_LSB_MSB    : integer := 31;
+    constant REG_TRIG_SBIT_HITMAP_VFAT0_LSB_LSB     : integer := 0;
+
+    constant REG_TRIG_SBIT_HITMAP_VFAT1_MSB_ADDR    : std_logic_vector(7 downto 0) := x"b4";
+    constant REG_TRIG_SBIT_HITMAP_VFAT1_MSB_MSB    : integer := 31;
+    constant REG_TRIG_SBIT_HITMAP_VFAT1_MSB_LSB     : integer := 0;
+
+    constant REG_TRIG_SBIT_HITMAP_VFAT1_LSB_ADDR    : std_logic_vector(7 downto 0) := x"b5";
+    constant REG_TRIG_SBIT_HITMAP_VFAT1_LSB_MSB    : integer := 31;
+    constant REG_TRIG_SBIT_HITMAP_VFAT1_LSB_LSB     : integer := 0;
+
+    constant REG_TRIG_SBIT_HITMAP_VFAT2_MSB_ADDR    : std_logic_vector(7 downto 0) := x"b6";
+    constant REG_TRIG_SBIT_HITMAP_VFAT2_MSB_MSB    : integer := 31;
+    constant REG_TRIG_SBIT_HITMAP_VFAT2_MSB_LSB     : integer := 0;
+
+    constant REG_TRIG_SBIT_HITMAP_VFAT2_LSB_ADDR    : std_logic_vector(7 downto 0) := x"b7";
+    constant REG_TRIG_SBIT_HITMAP_VFAT2_LSB_MSB    : integer := 31;
+    constant REG_TRIG_SBIT_HITMAP_VFAT2_LSB_LSB     : integer := 0;
+
+    constant REG_TRIG_SBIT_HITMAP_VFAT3_MSB_ADDR    : std_logic_vector(7 downto 0) := x"b8";
+    constant REG_TRIG_SBIT_HITMAP_VFAT3_MSB_MSB    : integer := 31;
+    constant REG_TRIG_SBIT_HITMAP_VFAT3_MSB_LSB     : integer := 0;
+
+    constant REG_TRIG_SBIT_HITMAP_VFAT3_LSB_ADDR    : std_logic_vector(7 downto 0) := x"b9";
+    constant REG_TRIG_SBIT_HITMAP_VFAT3_LSB_MSB    : integer := 31;
+    constant REG_TRIG_SBIT_HITMAP_VFAT3_LSB_LSB     : integer := 0;
+
+    constant REG_TRIG_SBIT_HITMAP_VFAT4_MSB_ADDR    : std_logic_vector(7 downto 0) := x"ba";
+    constant REG_TRIG_SBIT_HITMAP_VFAT4_MSB_MSB    : integer := 31;
+    constant REG_TRIG_SBIT_HITMAP_VFAT4_MSB_LSB     : integer := 0;
+
+    constant REG_TRIG_SBIT_HITMAP_VFAT4_LSB_ADDR    : std_logic_vector(7 downto 0) := x"bb";
+    constant REG_TRIG_SBIT_HITMAP_VFAT4_LSB_MSB    : integer := 31;
+    constant REG_TRIG_SBIT_HITMAP_VFAT4_LSB_LSB     : integer := 0;
+
+    constant REG_TRIG_SBIT_HITMAP_VFAT5_MSB_ADDR    : std_logic_vector(7 downto 0) := x"bc";
+    constant REG_TRIG_SBIT_HITMAP_VFAT5_MSB_MSB    : integer := 31;
+    constant REG_TRIG_SBIT_HITMAP_VFAT5_MSB_LSB     : integer := 0;
+
+    constant REG_TRIG_SBIT_HITMAP_VFAT5_LSB_ADDR    : std_logic_vector(7 downto 0) := x"bd";
+    constant REG_TRIG_SBIT_HITMAP_VFAT5_LSB_MSB    : integer := 31;
+    constant REG_TRIG_SBIT_HITMAP_VFAT5_LSB_LSB     : integer := 0;
+
+    constant REG_TRIG_SBIT_HITMAP_VFAT6_MSB_ADDR    : std_logic_vector(7 downto 0) := x"be";
+    constant REG_TRIG_SBIT_HITMAP_VFAT6_MSB_MSB    : integer := 31;
+    constant REG_TRIG_SBIT_HITMAP_VFAT6_MSB_LSB     : integer := 0;
+
+    constant REG_TRIG_SBIT_HITMAP_VFAT6_LSB_ADDR    : std_logic_vector(7 downto 0) := x"bf";
+    constant REG_TRIG_SBIT_HITMAP_VFAT6_LSB_MSB    : integer := 31;
+    constant REG_TRIG_SBIT_HITMAP_VFAT6_LSB_LSB     : integer := 0;
+
+    constant REG_TRIG_SBIT_HITMAP_VFAT7_MSB_ADDR    : std_logic_vector(7 downto 0) := x"c0";
+    constant REG_TRIG_SBIT_HITMAP_VFAT7_MSB_MSB    : integer := 31;
+    constant REG_TRIG_SBIT_HITMAP_VFAT7_MSB_LSB     : integer := 0;
+
+    constant REG_TRIG_SBIT_HITMAP_VFAT7_LSB_ADDR    : std_logic_vector(7 downto 0) := x"c1";
+    constant REG_TRIG_SBIT_HITMAP_VFAT7_LSB_MSB    : integer := 31;
+    constant REG_TRIG_SBIT_HITMAP_VFAT7_LSB_LSB     : integer := 0;
+
+    constant REG_TRIG_SBIT_HITMAP_VFAT8_MSB_ADDR    : std_logic_vector(7 downto 0) := x"c2";
+    constant REG_TRIG_SBIT_HITMAP_VFAT8_MSB_MSB    : integer := 31;
+    constant REG_TRIG_SBIT_HITMAP_VFAT8_MSB_LSB     : integer := 0;
+
+    constant REG_TRIG_SBIT_HITMAP_VFAT8_LSB_ADDR    : std_logic_vector(7 downto 0) := x"c3";
+    constant REG_TRIG_SBIT_HITMAP_VFAT8_LSB_MSB    : integer := 31;
+    constant REG_TRIG_SBIT_HITMAP_VFAT8_LSB_LSB     : integer := 0;
+
+    constant REG_TRIG_SBIT_HITMAP_VFAT9_MSB_ADDR    : std_logic_vector(7 downto 0) := x"c4";
+    constant REG_TRIG_SBIT_HITMAP_VFAT9_MSB_MSB    : integer := 31;
+    constant REG_TRIG_SBIT_HITMAP_VFAT9_MSB_LSB     : integer := 0;
+
+    constant REG_TRIG_SBIT_HITMAP_VFAT9_LSB_ADDR    : std_logic_vector(7 downto 0) := x"c5";
+    constant REG_TRIG_SBIT_HITMAP_VFAT9_LSB_MSB    : integer := 31;
+    constant REG_TRIG_SBIT_HITMAP_VFAT9_LSB_LSB     : integer := 0;
+
+    constant REG_TRIG_SBIT_HITMAP_VFAT10_MSB_ADDR    : std_logic_vector(7 downto 0) := x"c6";
+    constant REG_TRIG_SBIT_HITMAP_VFAT10_MSB_MSB    : integer := 31;
+    constant REG_TRIG_SBIT_HITMAP_VFAT10_MSB_LSB     : integer := 0;
+
+    constant REG_TRIG_SBIT_HITMAP_VFAT10_LSB_ADDR    : std_logic_vector(7 downto 0) := x"c7";
+    constant REG_TRIG_SBIT_HITMAP_VFAT10_LSB_MSB    : integer := 31;
+    constant REG_TRIG_SBIT_HITMAP_VFAT10_LSB_LSB     : integer := 0;
+
+    constant REG_TRIG_SBIT_HITMAP_VFAT11_MSB_ADDR    : std_logic_vector(7 downto 0) := x"c8";
+    constant REG_TRIG_SBIT_HITMAP_VFAT11_MSB_MSB    : integer := 31;
+    constant REG_TRIG_SBIT_HITMAP_VFAT11_MSB_LSB     : integer := 0;
+
+    constant REG_TRIG_SBIT_HITMAP_VFAT11_LSB_ADDR    : std_logic_vector(7 downto 0) := x"c9";
+    constant REG_TRIG_SBIT_HITMAP_VFAT11_LSB_MSB    : integer := 31;
+    constant REG_TRIG_SBIT_HITMAP_VFAT11_LSB_LSB     : integer := 0;
+
+    constant REG_TRIG_SBIT_HITMAP_VFAT12_MSB_ADDR    : std_logic_vector(7 downto 0) := x"ca";
+    constant REG_TRIG_SBIT_HITMAP_VFAT12_MSB_MSB    : integer := 31;
+    constant REG_TRIG_SBIT_HITMAP_VFAT12_MSB_LSB     : integer := 0;
+
+    constant REG_TRIG_SBIT_HITMAP_VFAT12_LSB_ADDR    : std_logic_vector(7 downto 0) := x"cb";
+    constant REG_TRIG_SBIT_HITMAP_VFAT12_LSB_MSB    : integer := 31;
+    constant REG_TRIG_SBIT_HITMAP_VFAT12_LSB_LSB     : integer := 0;
+
+    constant REG_TRIG_SBIT_HITMAP_VFAT13_MSB_ADDR    : std_logic_vector(7 downto 0) := x"cc";
+    constant REG_TRIG_SBIT_HITMAP_VFAT13_MSB_MSB    : integer := 31;
+    constant REG_TRIG_SBIT_HITMAP_VFAT13_MSB_LSB     : integer := 0;
+
+    constant REG_TRIG_SBIT_HITMAP_VFAT13_LSB_ADDR    : std_logic_vector(7 downto 0) := x"cd";
+    constant REG_TRIG_SBIT_HITMAP_VFAT13_LSB_MSB    : integer := 31;
+    constant REG_TRIG_SBIT_HITMAP_VFAT13_LSB_LSB     : integer := 0;
+
+    constant REG_TRIG_SBIT_HITMAP_VFAT14_MSB_ADDR    : std_logic_vector(7 downto 0) := x"ce";
+    constant REG_TRIG_SBIT_HITMAP_VFAT14_MSB_MSB    : integer := 31;
+    constant REG_TRIG_SBIT_HITMAP_VFAT14_MSB_LSB     : integer := 0;
+
+    constant REG_TRIG_SBIT_HITMAP_VFAT14_LSB_ADDR    : std_logic_vector(7 downto 0) := x"cf";
+    constant REG_TRIG_SBIT_HITMAP_VFAT14_LSB_MSB    : integer := 31;
+    constant REG_TRIG_SBIT_HITMAP_VFAT14_LSB_LSB     : integer := 0;
+
+    constant REG_TRIG_SBIT_HITMAP_VFAT15_MSB_ADDR    : std_logic_vector(7 downto 0) := x"d0";
+    constant REG_TRIG_SBIT_HITMAP_VFAT15_MSB_MSB    : integer := 31;
+    constant REG_TRIG_SBIT_HITMAP_VFAT15_MSB_LSB     : integer := 0;
+
+    constant REG_TRIG_SBIT_HITMAP_VFAT15_LSB_ADDR    : std_logic_vector(7 downto 0) := x"d1";
+    constant REG_TRIG_SBIT_HITMAP_VFAT15_LSB_MSB    : integer := 31;
+    constant REG_TRIG_SBIT_HITMAP_VFAT15_LSB_LSB     : integer := 0;
+
+    constant REG_TRIG_SBIT_HITMAP_VFAT16_MSB_ADDR    : std_logic_vector(7 downto 0) := x"d2";
+    constant REG_TRIG_SBIT_HITMAP_VFAT16_MSB_MSB    : integer := 31;
+    constant REG_TRIG_SBIT_HITMAP_VFAT16_MSB_LSB     : integer := 0;
+
+    constant REG_TRIG_SBIT_HITMAP_VFAT16_LSB_ADDR    : std_logic_vector(7 downto 0) := x"d3";
+    constant REG_TRIG_SBIT_HITMAP_VFAT16_LSB_MSB    : integer := 31;
+    constant REG_TRIG_SBIT_HITMAP_VFAT16_LSB_LSB     : integer := 0;
+
+    constant REG_TRIG_SBIT_HITMAP_VFAT17_MSB_ADDR    : std_logic_vector(7 downto 0) := x"d4";
+    constant REG_TRIG_SBIT_HITMAP_VFAT17_MSB_MSB    : integer := 31;
+    constant REG_TRIG_SBIT_HITMAP_VFAT17_MSB_LSB     : integer := 0;
+
+    constant REG_TRIG_SBIT_HITMAP_VFAT17_LSB_ADDR    : std_logic_vector(7 downto 0) := x"d5";
+    constant REG_TRIG_SBIT_HITMAP_VFAT17_LSB_MSB    : integer := 31;
+    constant REG_TRIG_SBIT_HITMAP_VFAT17_LSB_LSB     : integer := 0;
+
+    constant REG_TRIG_SBIT_HITMAP_VFAT18_MSB_ADDR    : std_logic_vector(7 downto 0) := x"d6";
+    constant REG_TRIG_SBIT_HITMAP_VFAT18_MSB_MSB    : integer := 31;
+    constant REG_TRIG_SBIT_HITMAP_VFAT18_MSB_LSB     : integer := 0;
+
+    constant REG_TRIG_SBIT_HITMAP_VFAT18_LSB_ADDR    : std_logic_vector(7 downto 0) := x"d7";
+    constant REG_TRIG_SBIT_HITMAP_VFAT18_LSB_MSB    : integer := 31;
+    constant REG_TRIG_SBIT_HITMAP_VFAT18_LSB_LSB     : integer := 0;
+
+    constant REG_TRIG_SBIT_HITMAP_VFAT19_MSB_ADDR    : std_logic_vector(7 downto 0) := x"d8";
+    constant REG_TRIG_SBIT_HITMAP_VFAT19_MSB_MSB    : integer := 31;
+    constant REG_TRIG_SBIT_HITMAP_VFAT19_MSB_LSB     : integer := 0;
+
+    constant REG_TRIG_SBIT_HITMAP_VFAT19_LSB_ADDR    : std_logic_vector(7 downto 0) := x"d9";
+    constant REG_TRIG_SBIT_HITMAP_VFAT19_LSB_MSB    : integer := 31;
+    constant REG_TRIG_SBIT_HITMAP_VFAT19_LSB_LSB     : integer := 0;
+
+    constant REG_TRIG_SBIT_HITMAP_VFAT20_MSB_ADDR    : std_logic_vector(7 downto 0) := x"da";
+    constant REG_TRIG_SBIT_HITMAP_VFAT20_MSB_MSB    : integer := 31;
+    constant REG_TRIG_SBIT_HITMAP_VFAT20_MSB_LSB     : integer := 0;
+
+    constant REG_TRIG_SBIT_HITMAP_VFAT20_LSB_ADDR    : std_logic_vector(7 downto 0) := x"db";
+    constant REG_TRIG_SBIT_HITMAP_VFAT20_LSB_MSB    : integer := 31;
+    constant REG_TRIG_SBIT_HITMAP_VFAT20_LSB_LSB     : integer := 0;
+
+    constant REG_TRIG_SBIT_HITMAP_VFAT21_MSB_ADDR    : std_logic_vector(7 downto 0) := x"dc";
+    constant REG_TRIG_SBIT_HITMAP_VFAT21_MSB_MSB    : integer := 31;
+    constant REG_TRIG_SBIT_HITMAP_VFAT21_MSB_LSB     : integer := 0;
+
+    constant REG_TRIG_SBIT_HITMAP_VFAT21_LSB_ADDR    : std_logic_vector(7 downto 0) := x"dd";
+    constant REG_TRIG_SBIT_HITMAP_VFAT21_LSB_MSB    : integer := 31;
+    constant REG_TRIG_SBIT_HITMAP_VFAT21_LSB_LSB     : integer := 0;
+
+    constant REG_TRIG_SBIT_HITMAP_VFAT22_MSB_ADDR    : std_logic_vector(7 downto 0) := x"de";
+    constant REG_TRIG_SBIT_HITMAP_VFAT22_MSB_MSB    : integer := 31;
+    constant REG_TRIG_SBIT_HITMAP_VFAT22_MSB_LSB     : integer := 0;
+
+    constant REG_TRIG_SBIT_HITMAP_VFAT22_LSB_ADDR    : std_logic_vector(7 downto 0) := x"df";
+    constant REG_TRIG_SBIT_HITMAP_VFAT22_LSB_MSB    : integer := 31;
+    constant REG_TRIG_SBIT_HITMAP_VFAT22_LSB_LSB     : integer := 0;
+
+    constant REG_TRIG_SBIT_HITMAP_VFAT23_MSB_ADDR    : std_logic_vector(7 downto 0) := x"e0";
+    constant REG_TRIG_SBIT_HITMAP_VFAT23_MSB_MSB    : integer := 31;
+    constant REG_TRIG_SBIT_HITMAP_VFAT23_MSB_LSB     : integer := 0;
+
+    constant REG_TRIG_SBIT_HITMAP_VFAT23_LSB_ADDR    : std_logic_vector(7 downto 0) := x"e1";
+    constant REG_TRIG_SBIT_HITMAP_VFAT23_LSB_MSB    : integer := 31;
+    constant REG_TRIG_SBIT_HITMAP_VFAT23_LSB_LSB     : integer := 0;
+
+    constant REG_TRIG_CTRL_SBIT_SOT_INVALID_BITSKIP_ADDR    : std_logic_vector(7 downto 0) := x"e2";
+    constant REG_TRIG_CTRL_SBIT_SOT_INVALID_BITSKIP_MSB    : integer := 23;
+    constant REG_TRIG_CTRL_SBIT_SOT_INVALID_BITSKIP_LSB     : integer := 0;
 
 
     --============================================================================

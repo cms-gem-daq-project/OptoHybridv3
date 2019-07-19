@@ -5,10 +5,10 @@ now = datetime.datetime.now()
 gem_version = "ge11"
 oh_version  = "v3c"
 geb_version = "v3c"
-geb_length  = "long"
+geb_length  = "short"
 firmware_version_major   = "03"
 firmware_version_minor   = "02"
-firmware_release_version = "05"
+firmware_release_version = "06"
 # END: OH_VERSION
 
 hybrid_version           = "v3b"

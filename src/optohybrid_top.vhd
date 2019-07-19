@@ -104,7 +104,6 @@ architecture Behavioral of optohybrid_top is
     signal eprt_mmcm_locked : std_logic;
 
     signal clk40      : std_logic;
-    signal clk80      : std_logic;
     signal clk160_0   : std_logic;
     signal clk160_90  : std_logic;
     signal clk200     : std_logic;
@@ -213,7 +212,7 @@ begin
         mmcm_locked_o       => mmcm_locked,
 
         clk40_o          => clk40,      -- 40  MHz e-port aligned GBT clock
-        clk80_o          => clk80,      -- 80  MHz e-port aligned GBT clock
+        clk80_o          => open,       -- 80  MHz e-port aligned GBT clock
         clk160_0_o       => clk160_0,   -- 160  MHz e-port aligned GBT clock
         clk160_90_o      => clk160_90,  -- 160  MHz e-port aligned GBT clock
         clk200_o         => clk200      -- 200  MHz e-port aligned GBT clock
@@ -222,7 +221,7 @@ begin
     reset_ctl : entity work.reset
     port map (
         clock_i        => clk40,
-        soft_reset     => soft_reset or (not mgts_ready),
+        soft_reset     => soft_reset,
         mmcms_locked_i => mmcm_locked,
         gbt_rxready_i  => gbt_rxready(0),
         gbt_rxvalid_i  => gbt_rxvalid(0),
@@ -251,7 +250,6 @@ begin
         -- input clocks
 
         gbt_clk40      => clk40,     -- 40 MHz frame clock
-        gbt_clk80      => clk80,     -- 80  MHz e-port aligned GBT clock
         gbt_clk160_0   => clk160_0,  --
         gbt_clk160_90  => clk160_90, --
 
@@ -438,14 +436,13 @@ begin
         logic_mmcm_lock_i => logic_mmcm_locked,
         logic_mmcm_reset_o => logic_mmcm_reset,
 
-        clk_40_sbit     => clk40,
-        clk_80_sbit     => clk80,
-        clk_160_sbit    => clk160_0,
-        clk_200_sbit    => clk200,
-        clk_160_90_sbit => clk160_90,
-
         clk_40      => clk40,
         clk_160     => clk160_0,
+
+        clk_40_sbit     => clk40,
+        clk_160_sbit    => clk160_0,
+        clk_160_90_sbit => clk160_90,
+        clk_200_sbit    => clk200,
 
         -- mgt pairs
         mgt_tx_p => mgt_tx_p_o,

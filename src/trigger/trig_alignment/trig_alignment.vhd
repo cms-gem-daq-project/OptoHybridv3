@@ -48,15 +48,13 @@ port(
 
     sot_is_aligned         : out std_logic_vector (MXVFATS-1 downto 0);
     sot_unstable           : out std_logic_vector (MXVFATS-1 downto 0);
+    sot_invalid_bitskip    : out std_logic_vector (MXVFATS-1 downto 0);
 
     aligned_count_to_ready : in std_logic_vector (11 downto 0);
 
     clock                  : in std_logic;
-
-    clk80_0                : in std_logic;
     clk160_0               : in std_logic;
     clk160_90              : in std_logic;
-    clk160_180             : in std_logic;
 
     sbits                  : out std_logic_vector (( MXSBITS_CHAMBER - 1) downto 0)
 );
@@ -126,21 +124,21 @@ begin
             g_PHASE_SEL_EXTERNAL => FALSE
         )
         port map (
-            rst           => sot_reset(ivfat),
-            invert        => sot_invert (ivfat),
-            rxd_p         => start_of_frame_p(ivfat),
-            rxd_n         => start_of_frame_n(ivfat),
-            clk1x_logic   => clk80_0,
-            clk2x_logic   => clk160_0,
-            clk2x_0       => clk160_0,
-            clk2x_90      => clk160_90,
-            clk2x_180     => clk160_180,
-            rxdata_o      => start_of_frame_8b(ivfat),
-            tap_delay_i   => sot_tap_delay(ivfat),
-            e4_in         => (others => '0'),
-            e4_out        => vfat_e4(ivfat),
-            phase_sel_in  => (others => '0'),
-            phase_sel_out => vfat_phase_sel(ivfat)
+            clk1x_logic       => clock,
+            clk1x             => clock,
+            clk4x_0           => clk160_0,
+            clk4x_90          => clk160_90,
+            reset_i           => sot_reset(ivfat),
+            rxd_p             => start_of_frame_p(ivfat),
+            rxd_n             => start_of_frame_n(ivfat),
+            rxdata_o          => start_of_frame_8b(ivfat),
+            invert            => sot_invert (ivfat),
+            tap_delay_i       => sot_tap_delay(ivfat),
+            e4_in             => (others => '0'),
+            e4_out            => vfat_e4(ivfat),
+            phase_sel_in      => (others => '0'),
+            phase_sel_out     => vfat_phase_sel(ivfat),
+            invalid_bitskip_o => sot_invalid_bitskip(ivfat)
         );
 
     end generate;
@@ -162,21 +160,21 @@ begin
             g_PHASE_SEL_EXTERNAL => TRUE
         )
         port map (
-            rst           => tu_reset(ipin),
-            invert        => tu_invert (ipin),
-            rxd_p         => sbits_p(ipin),
-            rxd_n         => sbits_n(ipin),
-            clk1x_logic   => clk80_0,
-            clk2x_logic   => clk160_0,
-            clk2x_0       => clk160_0,
-            clk2x_90      => clk160_90,
-            clk2x_180     => clk160_180,
-            rxdata_o      => sbits_unaligned ((ipin+1)*8 - 1 downto ipin*8),
-            tap_delay_i   => trig_tap_delay(ipin),
-            e4_in         => vfat_e4(ipin/8),
-            e4_out        => open,
-            phase_sel_in  => vfat_phase_sel(ipin/8),
-            phase_sel_out => open
+            clk1x_logic       => clock,
+            clk1x             => clock,
+            clk4x_0           => clk160_0,
+            clk4x_90          => clk160_90,
+            reset_i           => tu_reset(ipin),
+            rxd_p             => sbits_p(ipin),
+            rxd_n             => sbits_n(ipin),
+            rxdata_o          => sbits_unaligned ((ipin+1)*8 - 1 downto ipin*8),
+            invert            => tu_invert (ipin),
+            tap_delay_i       => trig_tap_delay(ipin),
+            e4_in             => vfat_e4(ipin/8),
+            e4_out            => open,
+            phase_sel_in      => vfat_phase_sel(ipin/8),
+            phase_sel_out     => open,
+            invalid_bitskip_o => open
         );
 
     end generate;
@@ -201,7 +199,6 @@ begin
             start_of_frame => start_of_frame_8b(ivfat),
 
             clock          => clock,
-            clock4x        => clk160_0,
 
             aligned_count_to_ready => aligned_count_to_ready,
 

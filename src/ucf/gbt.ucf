@@ -13,14 +13,13 @@ TIMEGRP "gbt_status_grp" OFFSET = IN 12.5 ns VALID 25 ns BEFORE "clock_p" RISING
 ########################################################################################################################
 # E-links
 ########################################################################################################################
-# outputs
 
 # inputs
 # 320 MHz e-link
 # GBTx DIN 36
 NET "elink_i_p" IOSTANDARD = LVDS_25;
 NET "elink_i_p" DIFF_TERM = "FALSE";
-#
+
 NET "elink_i_n" IOSTANDARD = LVDS_25;
 NET "elink_i_n" DIFF_TERM = "FALSE";
 
@@ -29,3 +28,22 @@ NET "elink_o_n" LOC = L18;
 
 NET "elink_i_p" LOC = AD24;
 NET "elink_i_n" LOC = AE24;
+
+
+########################################################################################################################
+# GBT TIG
+########################################################################################################################
+
+# Output
+INST "elink_o_p" TNM = "elink_o_grp";
+INST "elink_o_n" TNM = "elink_o_grp";
+INST "gbt/gbt_serdes*/to_gbt_ser*/*" TNM = "elink_o_serdes_grp";
+
+TIMESPEC TS_ELINK_O_TIG = FROM "elink_o_serdes_grp" TO "elink_o_grp" TIG ;
+
+# Input
+INST "elink_i_p" TNM = "elink_i_grp";
+INST "elink_i_n" TNM = "elink_i_grp";
+INST "gbt/gbt_serdes*/*oversample/ise1*/*" TNM = "elink_i_serdes_grp";
+
+TIMESPEC TS_GBT_IOTIG = FROM "elink_i_grp" TO "elink_i_serdes_grp" TIG ;
