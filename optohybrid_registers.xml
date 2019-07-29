@@ -1956,14 +1956,14 @@
                     description="Sbits are accumulated as long as this flag is set"
                     fw_signal="hitmap_acquire"
                     fw_default="0x0"/>
-                <node id="VFAT${VFAT_IDX}_MSB" address="0x2" mask="0xffffffff" permission="r"
-                    description="Accumulator for Sbit 63 to 32 of VFAT{VFAT_IDX}"
-                    fw_signal="hitmap_sbits(${VFAT_IDX})(63 downto 32)"
-                    generate="true" generate_size="24" generate_address_step="0x2" generate_idx_var="VFAT_IDX"/>
-                <node id="VFAT${VFAT_IDX}_LSB" address="0x3" mask="0xffffffff" permission="r"
-                    description="Accumulator for Sbit 31 to 0 of VFAT{VFAT_IDX}"
-                    fw_signal="hitmap_sbits(${VFAT_IDX})(31 downto 0)"
-                    generate="true" generate_size="24" generate_address_step="0x2" generate_idx_var="VFAT_IDX"/>
+                <node id="VFAT${VFAT_HITMAP_IDX}_MSB" address="0x2" mask="0xffffffff" permission="r"
+                    description="Accumulator for Sbit 63 to 32 of VFAT${VFAT_HITMAP_IDX}"
+                    fw_signal="hitmap_sbits(${VFAT_HITMAP_IDX})(63 downto 32)"
+                    generate="true" generate_size="24" generate_address_step="0x2" generate_idx_var="VFAT_HITMAP_IDX"/>
+                <node id="VFAT${VFAT_HITMAP_IDX}_LSB" address="0x3" mask="0xffffffff" permission="r"
+                    description="Accumulator for Sbit 31 to 0 of VFAT${VFAT_HITMAP_IDX}"
+                    fw_signal="hitmap_sbits(${VFAT_HITMAP_IDX})(31 downto 0)"
+                    generate="true" generate_size="24" generate_address_step="0x2" generate_idx_var="VFAT_HITMAP_IDX"/>
             </node>
 
     </node> <!--TRIG-->

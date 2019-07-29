@@ -13,7 +13,7 @@ package param_pkg is
     constant RELEASE_MONTH          : std_logic_vector(7 downto  0) := x"07";
     constant RELEASE_DAY            : std_logic_vector(7 downto  0) := x"28";
 
-    constant RELEASE_HARDWARE       : std_logic_vector(7 downto  0) := x"0C";
+    constant RELEASE_HARDWARE       : std_logic_vector(7 downto  0) := x"1C";
 
     constant FPGA_TYPE     : string  := "VIRTEX6";
     constant FPGA_TYPE_IS_VIRTEX6  : integer := 1;

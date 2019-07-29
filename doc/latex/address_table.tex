@@ -23,7 +23,7 @@
 
 \title{Optohybrid v3 Address Table}
 % START: ADDRESS_TABLE_VERSION :: DO NOT EDIT
-    \author{\textbf{GE1/1 Short} \\  \\ v03.02.06.0C \\ 20190728}
+    \author{\textbf{GE1/1 Long} \\  \\ v03.02.06.1C \\ 20190728}
 % END: ADDRESS_TABLE_VERSION :: DO NOT EDIT
 \begin{document}
 
@@ -823,8 +823,54 @@
     \nopagebreak
     RESET & \texttt{0x20b0} & \texttt{[31:0]} & w & Pulsed & Reset the accumulation registers \\\hline
     ACQUIRE & \texttt{0x20b1} & \texttt{[0:0]} & rw & \texttt{0x0} & Sbits are accumulated as long as this flag is set \\\hline
-    VFAT0\_MSB & \texttt{0x20b2} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 63 to 32 of VFAT\{VFAT\_IDX\} \\\hline
-    VFAT0\_LSB & \texttt{0x20b3} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 31 to 0 of VFAT\{VFAT\_IDX\} \\\hline
+    VFAT0\_MSB & \texttt{0x20b2} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 63 to 32 of VFAT0 \\\hline
+    VFAT0\_LSB & \texttt{0x20b3} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 31 to 0 of VFAT0 \\\hline
+    VFAT1\_MSB & \texttt{0x20b4} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 63 to 32 of VFAT1 \\\hline
+    VFAT1\_LSB & \texttt{0x20b5} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 31 to 0 of VFAT1 \\\hline
+    VFAT2\_MSB & \texttt{0x20b6} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 63 to 32 of VFAT2 \\\hline
+    VFAT2\_LSB & \texttt{0x20b7} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 31 to 0 of VFAT2 \\\hline
+    VFAT3\_MSB & \texttt{0x20b8} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 63 to 32 of VFAT3 \\\hline
+    VFAT3\_LSB & \texttt{0x20b9} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 31 to 0 of VFAT3 \\\hline
+    VFAT4\_MSB & \texttt{0x20ba} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 63 to 32 of VFAT4 \\\hline
+    VFAT4\_LSB & \texttt{0x20bb} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 31 to 0 of VFAT4 \\\hline
+    VFAT5\_MSB & \texttt{0x20bc} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 63 to 32 of VFAT5 \\\hline
+    VFAT5\_LSB & \texttt{0x20bd} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 31 to 0 of VFAT5 \\\hline
+    VFAT6\_MSB & \texttt{0x20be} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 63 to 32 of VFAT6 \\\hline
+    VFAT6\_LSB & \texttt{0x20bf} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 31 to 0 of VFAT6 \\\hline
+    VFAT7\_MSB & \texttt{0x20c0} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 63 to 32 of VFAT7 \\\hline
+    VFAT7\_LSB & \texttt{0x20c1} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 31 to 0 of VFAT7 \\\hline
+    VFAT8\_MSB & \texttt{0x20c2} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 63 to 32 of VFAT8 \\\hline
+    VFAT8\_LSB & \texttt{0x20c3} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 31 to 0 of VFAT8 \\\hline
+    VFAT9\_MSB & \texttt{0x20c4} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 63 to 32 of VFAT9 \\\hline
+    VFAT9\_LSB & \texttt{0x20c5} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 31 to 0 of VFAT9 \\\hline
+    VFAT10\_MSB & \texttt{0x20c6} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 63 to 32 of VFAT10 \\\hline
+    VFAT10\_LSB & \texttt{0x20c7} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 31 to 0 of VFAT10 \\\hline
+    VFAT11\_MSB & \texttt{0x20c8} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 63 to 32 of VFAT11 \\\hline
+    VFAT11\_LSB & \texttt{0x20c9} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 31 to 0 of VFAT11 \\\hline
+    VFAT12\_MSB & \texttt{0x20ca} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 63 to 32 of VFAT12 \\\hline
+    VFAT12\_LSB & \texttt{0x20cb} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 31 to 0 of VFAT12 \\\hline
+    VFAT13\_MSB & \texttt{0x20cc} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 63 to 32 of VFAT13 \\\hline
+    VFAT13\_LSB & \texttt{0x20cd} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 31 to 0 of VFAT13 \\\hline
+    VFAT14\_MSB & \texttt{0x20ce} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 63 to 32 of VFAT14 \\\hline
+    VFAT14\_LSB & \texttt{0x20cf} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 31 to 0 of VFAT14 \\\hline
+    VFAT15\_MSB & \texttt{0x20d0} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 63 to 32 of VFAT15 \\\hline
+    VFAT15\_LSB & \texttt{0x20d1} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 31 to 0 of VFAT15 \\\hline
+    VFAT16\_MSB & \texttt{0x20d2} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 63 to 32 of VFAT16 \\\hline
+    VFAT16\_LSB & \texttt{0x20d3} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 31 to 0 of VFAT16 \\\hline
+    VFAT17\_MSB & \texttt{0x20d4} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 63 to 32 of VFAT17 \\\hline
+    VFAT17\_LSB & \texttt{0x20d5} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 31 to 0 of VFAT17 \\\hline
+    VFAT18\_MSB & \texttt{0x20d6} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 63 to 32 of VFAT18 \\\hline
+    VFAT18\_LSB & \texttt{0x20d7} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 31 to 0 of VFAT18 \\\hline
+    VFAT19\_MSB & \texttt{0x20d8} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 63 to 32 of VFAT19 \\\hline
+    VFAT19\_LSB & \texttt{0x20d9} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 31 to 0 of VFAT19 \\\hline
+    VFAT20\_MSB & \texttt{0x20da} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 63 to 32 of VFAT20 \\\hline
+    VFAT20\_LSB & \texttt{0x20db} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 31 to 0 of VFAT20 \\\hline
+    VFAT21\_MSB & \texttt{0x20dc} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 63 to 32 of VFAT21 \\\hline
+    VFAT21\_LSB & \texttt{0x20dd} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 31 to 0 of VFAT21 \\\hline
+    VFAT22\_MSB & \texttt{0x20de} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 63 to 32 of VFAT22 \\\hline
+    VFAT22\_LSB & \texttt{0x20df} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 31 to 0 of VFAT22 \\\hline
+    VFAT23\_MSB & \texttt{0x20e0} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 63 to 32 of VFAT23 \\\hline
+    VFAT23\_LSB & \texttt{0x20e1} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 31 to 0 of VFAT23 \\\hline
     \end{tabularx}
     \vspace{5mm}
 
