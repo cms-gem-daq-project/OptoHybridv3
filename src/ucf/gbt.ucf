@@ -8,19 +8,18 @@ NET "gbt_txready_i[0]" TNM = "gbt_status_grp";
 NET "gbt_rxvalid_i[0]" TNM = "gbt_status_grp";
 NET "gbt_rxready_i[0]" TNM = "gbt_status_grp";
 
-TIMEGRP "gbt_status_grp" OFFSET = IN 12.5 ns VALID 25 ns BEFORE "logic_clock_p" RISING;
+TIMEGRP "gbt_status_grp" OFFSET = IN 12.5 ns VALID 25 ns BEFORE "clock_p" RISING;
 
 ########################################################################################################################
 # E-links
 ########################################################################################################################
-# outputs
 
 # inputs
 # 320 MHz e-link
 # GBTx DIN 36
 NET "elink_i_p" IOSTANDARD = LVDS_25;
 NET "elink_i_p" DIFF_TERM = "FALSE";
-#
+
 NET "elink_i_n" IOSTANDARD = LVDS_25;
 NET "elink_i_n" DIFF_TERM = "FALSE";
 
@@ -31,18 +30,20 @@ NET "elink_i_p" LOC = AD24;
 NET "elink_i_n" LOC = AE24;
 
 
+########################################################################################################################
+# GBT TIG
+########################################################################################################################
 
-#NET "gbt/gbt_serdes/gbt_rx_data_sync/*/xst_fifo_generator/gconvfifo.rf/grf.rf/*/wr_pntr_gc_*" TIG;
-#NET "gbt/gbt_serdes/gbt_rx_data_sync/*/xst_fifo_generator/gconvfifo.rf/grf.rf/*/rd_pntr_gc_*" TIG;
+# Output
+INST "elink_o_p" TNM = "elink_o_grp";
+INST "elink_o_n" TNM = "elink_o_grp";
+INST "gbt/gbt_serdes*/to_gbt_ser*/*" TNM = "elink_o_serdes_grp";
 
-NET "gbt/gbt_serdes/gbt_rx_data_sync/*/xst_fifo_generator/gconvfifo.rf/grf.rf/*/wr_pntr_gc_*" TNM_NET = "WR_PNTR";
-NET "gbt/gbt_serdes/gbt_rx_data_sync/*/xst_fifo_generator/gconvfifo.rf/grf.rf/*/rd_pntr_gc_*" TNM_NET = "RD_PNTR";
+TIMESPEC TS_ELINK_O_TIG = FROM "elink_o_serdes_grp" TO "elink_o_grp" TIG ;
 
-# Datapathonly indicates that timing should not take into account clock skew or phase information
+# Input
+INST "elink_i_p" TNM = "elink_i_grp";
+INST "elink_i_n" TNM = "elink_i_grp";
+INST "gbt/gbt_serdes*/*oversample/ise1*/*" TNM = "elink_i_serdes_grp";
 
-TIMESPEC TS_wr_pntr = FROM "WR_PNTR" TO  FFS 10 ns DATAPATHONLY;
-TIMESPEC TS_rd_pntr = FROM  FFS TO "RD_PNTR" 10 ns DATAPATHONLY;
-
-TIMESPEC TS_wr_pntr_tig = FROM "WR_PNTR" TO  FFS TIG ;
-TIMESPEC TS_rd_pntr_tig = FROM  FFS TO "RD_PNTR" TIG ;
-
+TIMESPEC TS_GBT_IOTIG = FROM "elink_i_grp" TO "elink_i_serdes_grp" TIG ;

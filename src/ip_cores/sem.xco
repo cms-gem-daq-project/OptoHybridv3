@@ -1,7 +1,7 @@
 ##############################################################
 #
 # Xilinx Core Generator version 14.7
-# Date: Tue Sep 11 20:36:55 2018
+# Date: Mon May 20 20:30:45 2019
 #
 ##############################################################
 #
@@ -39,7 +39,7 @@ SET vhdlsim = true
 SELECT Soft_Error_Mitigation xilinx.com:ip:sem:3.6
 # END Select
 # BEGIN Parameters
-CSET clock_freq=8
+CSET clock_freq=40
 CSET component_name=sem
 CSET correction_method=repair
 CSET enable_bottom_gt_scan=true
@@ -54,4 +54,4 @@ CSET retrieval_shim=none
 MISC pkg_timestamp=2013-04-08T13:40:10Z
 # END Extra information
 GENERATE
-# CRC: f512ac72
+# CRC: 349de664

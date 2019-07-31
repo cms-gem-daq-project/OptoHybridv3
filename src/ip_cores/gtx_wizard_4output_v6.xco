@@ -1,7 +1,7 @@
 ##############################################################
 #
 # Xilinx Core Generator version 14.7
-# Date: Fri Apr 26 23:48:08 2019
+# Date: Tue Jun 18 22:51:00 2019
 #
 ##############################################################
 #
@@ -255,10 +255,10 @@ CSET tx_refclk_x0_y0=REFCLK0_Q0
 CSET tx_refclk_x0_y1=REFCLK0_Q0
 CSET tx_refclk_x0_y10=REFCLK0_Q2
 CSET tx_refclk_x0_y11=REFCLK0_Q2
-CSET tx_refclk_x0_y12=REFCLK1_Q3
-CSET tx_refclk_x0_y13=REFCLK1_Q3
-CSET tx_refclk_x0_y14=REFCLK1_Q3
-CSET tx_refclk_x0_y15=REFCLK1_Q3
+CSET tx_refclk_x0_y12=REFCLK0_Q3
+CSET tx_refclk_x0_y13=REFCLK0_Q3
+CSET tx_refclk_x0_y14=REFCLK0_Q3
+CSET tx_refclk_x0_y15=REFCLK0_Q3
 CSET tx_refclk_x0_y16=REFCLK0_Q4
 CSET tx_refclk_x0_y17=REFCLK0_Q4
 CSET tx_refclk_x0_y18=REFCLK0_Q4
@@ -287,7 +287,7 @@ CSET tx_refclk_x0_y6=REFCLK0_Q1
 CSET tx_refclk_x0_y7=REFCLK0_Q1
 CSET tx_refclk_x0_y8=REFCLK0_Q2
 CSET tx_refclk_x0_y9=REFCLK0_Q2
-CSET tx_reference_clock=160.00
+CSET tx_reference_clock=80.00
 CSET tx_tdcc_cfg=11
 CSET txoutclk_source=AUTO
 CSET txpll_sata=00
@@ -408,4 +408,4 @@ CSET wideband_highpass_mix=Use_RXEQMIX_Port
 MISC pkg_timestamp=2011-04-08T05:24:23Z
 # END Extra information
 GENERATE
-# CRC: cc4d8728
+# CRC: b817c4f6

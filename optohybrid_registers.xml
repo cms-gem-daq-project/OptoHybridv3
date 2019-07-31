@@ -382,7 +382,7 @@
         fw_reg_addr_msb="7"
         fw_reg_addr_lsb="0">
 
-            <node id="CTRL" address="0x0" description = "Controls and monitors various parameters of the S-bit deserialization and cluster building.">
+        <node id="CTRL" address="0x0" description = "Controls and monitors various parameters of the S-bit deserialization and cluster building.">
 
                 <!-- updated by update_vfat_counters.py-->
                 <!-- START: VFAT_MASK DO NOT EDIT -->
@@ -393,11 +393,11 @@
                 fw_default="0x0"/>
                 <!-- END: VFAT_MASK DO NOT EDIT -->
 
-                <node id="SBIT_DEADTIME" address="0x0" permission="rw"
-                    description="Set programmable oneshot deadtime which applies to retriggers on individual VFAT channels"
-                    fw_signal="trig_deadtime"
-                    mask="0x0f000000"
-                    fw_default="0x7"/>
+            <node id="SBIT_DEADTIME" address="0x0" permission="rw"
+                description="Set programmable oneshot deadtime which applies to retriggers on individual VFAT channels"
+                fw_signal="trig_deadtime"
+                mask="0x0f000000"
+                fw_default="0x7"/>
 
                 <!-- updated by update_vfat_counters.py-->
                 <!-- START: ACTIVE_VFATS DO NOT EDIT -->
@@ -407,16 +407,22 @@
                 fw_signal="active_vfats"/>
                 <!-- END: ACTIVE_VFATS DO NOT EDIT -->
 
-                <node id="CNT_OVERFLOW" address="0x2" permission="r"
-                    mask="0xffff"
-                    description="Overflow Counter (more than 8 clusters in a bx)"
-                    fw_cnt_en_signal="sbit_overflow"
-                    fw_cnt_reset_signal="cnt_reset"
-                    fw_cnt_snap_signal="cnt_snap"
-                    fw_signal="cnt_sbit_overflow"/>
+            <node id="CNT_OVERFLOW" address="0x2" permission="r"
+                mask="0xffff"
+                description="Overflow Counter (more than 8 clusters in a bx)"
+                fw_cnt_en_signal="sbit_overflow"
+                fw_cnt_reset_signal="cnt_reset"
+                fw_cnt_snap_signal="cnt_snap"
+                fw_signal="cnt_sbit_overflow"/>
+
+            <node id="ALIGNED_COUNT_TO_READY" address="0x2" permission="rw"
+                description="Number of link consecutive good frames required before the transmission unit is marked as good and S-bits can be produced"
+                fw_signal="aligned_count_to_ready"
+                mask="0xfff0000"
+                fw_default="0x1ff"/>
 
                 <!-- updated by update_vfat_counters.py-->
-                <!-- START: SOT_READY_UNSTABLE DO NOT EDIT -->
+                <!-- START: SOT_STATUS DO NOT EDIT -->
             <node id="SBIT_SOT_READY" address="0x3" permission="r"
                 description="24 bit list of VFATs with stable Start-of-frame pulses (in sync for a number of clock cycles)"
                 mask="0xffffff"
@@ -425,16 +431,14 @@
                 description="24 bit list of VFATs with unstable Start-of-frame pulses (became misaligned after already achieving lock)"
                 mask="0xffffff"
                 fw_signal="sot_unstable" />
-                <!-- END: SOT_READY_UNSTABLE DO NOT EDIT -->
+            <node id="SBIT_SOT_INVALID_BITSKIP" address="0xe2" permission="r"
+                description="24 bit list of VFATs with a invalid bitskip counter for Start-of-frame pulses"
+                mask="0xffffff"
+                fw_signal="sot_invalid_bitskip" />
+                <!-- END: SOT_STATUS DO NOT EDIT -->
 
 
-                <node id="ALIGNED_COUNT_TO_READY" address="0x2" permission="rw"
-                    description="Number of link consecutive good frames required before the transmission unit is marked as good and S-bits can be produced"
-                    fw_signal="aligned_count_to_ready"
-                    mask="0xfff0000"
-                    fw_default="0x1ff"/>
-
-                <node id="INVERT" address="0x5" description="Controls the polarity of S-bit signals to account for polarity swaps on the GEB or OH">
+	    <node id="INVERT" address="0x5" description="Controls the polarity of S-bit signals to account for polarity swaps on the GEB or OH">
                 <!-- START: INVERT_REGS DO NOT EDIT -->
                 <node id="SOT_INVERT" address="0x0" permission="rw"
                     description="1=invert pair"
@@ -715,7 +719,7 @@
 
                 <!-- updated by update_vfat_counters.py-->
                 <!-- START: VFAT_COUNTERS DO NOT EDIT -->
-                <node id="VFAT${VFAT_CNT_IDX}" address="0x0" permission="r"
+                <node id="VFAT${VFAT_CNT_IDX}_SBITS" address="0x0" permission="r"
                     mask="0xffffffff"
                     description="VFAT ${VFAT_CNT_IDX} Counter"
                     fw_cnt_en_signal="active_vfats(${VFAT_CNT_IDX})"
@@ -1943,6 +1947,25 @@
                     fw_signal="sbitmon_l1a_delay"/>
             </node>
 
+            <node id="SBIT_HITMAP" address="0xb0"
+                  description="The Sbit hitmap module accumulates all incoming Sbits during a period of time">
+                <node id="RESET" address="0x0" permission="w"
+                    description="Reset the accumulation registers"
+                    fw_write_pulse_signal="hitmap_reset"/>
+                <node id="ACQUIRE" address="0x1" mask="0x1" permission="rw"
+                    description="Sbits are accumulated as long as this flag is set"
+                    fw_signal="hitmap_acquire"
+                    fw_default="0x0"/>
+                <node id="VFAT${VFAT_IDX}_MSB" address="0x2" mask="0xffffffff" permission="r"
+                    description="Accumulator for Sbit 63 to 32 of VFAT{VFAT_IDX}"
+                    fw_signal="hitmap_sbits(${VFAT_IDX})(63 downto 32)"
+                    generate="true" generate_size="24" generate_address_step="0x2" generate_idx_var="VFAT_IDX"/>
+                <node id="VFAT${VFAT_IDX}_LSB" address="0x3" mask="0xffffffff" permission="r"
+                    description="Accumulator for Sbit 31 to 0 of VFAT{VFAT_IDX}"
+                    fw_signal="hitmap_sbits(${VFAT_IDX})(31 downto 0)"
+                    generate="true" generate_size="24" generate_address_step="0x2" generate_idx_var="VFAT_IDX"/>
+            </node>
+
     </node> <!--TRIG-->
 
     <!--Clocking module -->
@@ -1958,24 +1981,15 @@
             fw_reg_addr_msb="1"
             fw_reg_addr_lsb="0">
 
-            <node id="GBT_MMCM_LOCKED" address="0x0" permission="r"
+            <node id="MMCM_LOCKED" address="0x0" permission="r"
                 mask="0x00000001"
-                description="GBT deserialization MMCM locked"
-                fw_signal="mmcm_locked(1)"/>
-            <node id="LOGIC_MMCM_LOCKED" address="0x0" permission="r"
-                mask="0x00000002"
-                description="User logic MMCM locked"
-                fw_signal="mmcm_locked(0)"/>
-            <node id="GBT_MMCM_UNLOCKED_CNT" address="0x0" permission="r"
+                description="MMCM locked"
+                fw_signal="mmcm_locked"/>
+            <node id="MMCM_UNLOCKED_CNT" address="0x0" permission="r"
                 mask="0x00ff0000"
-                description="GBT deserialization MMCM unlocked cnt"
-                fw_cnt_en_signal="mmcm_unlocked(1)"
-                fw_signal="cnt_eprt_mmcm_unlocked"/>
-            <node id="LOGIC_MMCM_UNLOCKED_CNT" address="0x0" permission="r"
-                mask="0xff000000"
-                description="User logic MMCM unlocked cnt"
-                fw_cnt_en_signal="mmcm_unlocked(0)"
-                fw_signal="cnt_dskw_mmcm_unlocked"/>
+                description="MMCM unlocked cnt"
+                fw_cnt_en_signal="not mmcm_locked"
+                fw_signal="mmcm_unlocked"/>
     </node>
 
     <!--GBT module -->
@@ -2003,11 +2017,6 @@
                     mask="0x00000001"
                     description="GBT TX READY from GBTx Chip"
                     fw_signal="gbt_txready_i"/>
-                <node id="TX_DELAY" address="0x1" permission="rw"
-                    mask="0x1f0"
-                    description="GBT TX IODELAY in 78 ps steps, 0-31"
-                    fw_default="0x0"
-                    fw_signal="tx_delay"/>
             </node> <!--TX-->
 
             <node id="RX" address="0x4" description = "Controls and monitors the transmit link from the GBTx to the FPGA">

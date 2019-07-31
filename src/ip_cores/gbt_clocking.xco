@@ -1,7 +1,7 @@
 ##############################################################
 #
 # Xilinx Core Generator version 14.7
-# Date: Mon May  6 19:38:59 2019
+# Date: Tue Jun 18 21:33:51 2019
 #
 ##############################################################
 #
@@ -68,26 +68,26 @@ CSET clkin1_jitter_ps=49.9
 CSET clkin1_ui_jitter=0.002
 CSET clkin2_jitter_ps=100.0
 CSET clkin2_ui_jitter=0.010
-CSET clkout1_drives=BUFGCE
+CSET clkout1_drives=BUFG
 CSET clkout1_requested_duty_cycle=50.0
 CSET clkout1_requested_out_freq=40.08
 CSET clkout1_requested_phase=0.000
-CSET clkout2_drives=BUFGCE
+CSET clkout2_drives=BUFG
 CSET clkout2_requested_duty_cycle=50.0
 CSET clkout2_requested_out_freq=320.642
 CSET clkout2_requested_phase=0.000
 CSET clkout2_used=true
-CSET clkout3_drives=BUFGCE
+CSET clkout3_drives=BUFG
 CSET clkout3_requested_duty_cycle=50.0
 CSET clkout3_requested_out_freq=160.321
 CSET clkout3_requested_phase=0
 CSET clkout3_used=true
-CSET clkout4_drives=BUFGCE
+CSET clkout4_drives=BUFG
 CSET clkout4_requested_duty_cycle=50.0
 CSET clkout4_requested_out_freq=160.321
 CSET clkout4_requested_phase=90
 CSET clkout4_used=true
-CSET clkout5_drives=BUFGCE
+CSET clkout5_drives=BUFG
 CSET clkout5_requested_duty_cycle=50.0
 CSET clkout5_requested_out_freq=80.160
 CSET clkout5_requested_phase=0.000
@@ -96,7 +96,7 @@ CSET clkout6_drives=BUFG
 CSET clkout6_requested_duty_cycle=50.0
 CSET clkout6_requested_out_freq=40.08
 CSET clkout6_requested_phase=0.000
-CSET clkout6_used=true
+CSET clkout6_used=false
 CSET clkout7_drives=BUFG
 CSET clkout7_requested_duty_cycle=50.0
 CSET clkout7_requested_out_freq=100.000
@@ -145,9 +145,9 @@ CSET in_freq_units=Units_MHz
 CSET in_jitter_units=Units_UI
 CSET input_clk_stopped_port=INPUT_CLK_STOPPED
 CSET jitter_options=UI
-CSET jitter_sel=No_Jitter
+CSET jitter_sel=Max_I_Jitter
 CSET locked_port=locked_o
-CSET mmcm_bandwidth=OPTIMIZED
+CSET mmcm_bandwidth=LOW
 CSET mmcm_clkfbout_mult_f=16.000
 CSET mmcm_clkfbout_phase=0.000
 CSET mmcm_clkfbout_use_fine_ps=false
@@ -189,13 +189,13 @@ CSET mmcm_notes=None
 CSET mmcm_ref_jitter1=0.002
 CSET mmcm_ref_jitter2=0.010
 CSET mmcm_startup_wait=false
-CSET num_out_clks=6
+CSET num_out_clks=5
 CSET override_dcm=false
 CSET override_dcm_clkgen=false
 CSET override_mmcm=false
 CSET override_pll=false
 CSET platform=nt64
-CSET pll_bandwidth=OPTIMIZED
+CSET pll_bandwidth=LOW
 CSET pll_clk_feedback=CLKFBOUT
 CSET pll_clkfbout_mult=16
 CSET pll_clkfbout_phase=0.000
@@ -225,7 +225,7 @@ CSET pll_ref_jitter=0.010
 CSET power_down_port=POWER_DOWN
 CSET prim_in_freq=40.08
 CSET prim_in_jitter=0.002
-CSET prim_source=Differential_clock_capable_pin
+CSET prim_source=No_buffer
 CSET primary_port=clk_in1
 CSET primitive=MMCM
 CSET primtype_sel=DCM_SP
@@ -266,4 +266,4 @@ CSET use_status=false
 MISC pkg_timestamp=2012-05-10T12:44:55Z
 # END Extra information
 GENERATE
-# CRC: 8488b46b
+# CRC:  d745ed1

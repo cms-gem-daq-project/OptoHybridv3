@@ -73,12 +73,6 @@ port
   DATA_OUT_TO_PINS_P      : out   std_logic_vector(sys_w-1 downto 0);
   DATA_OUT_TO_PINS_N      : out   std_logic_vector(sys_w-1 downto 0);
 
-  -- Input, Output delay control signals
-  DELAY_RESET    : in    std_logic;                             -- Active high synchronous reset for input delay
-  DELAY_DATA_CE  : in    std_logic_vector(sys_w -1 downto 0);   -- Enable signal for delay for bit
-  DELAY_DATA_INC : in    std_logic_vector(sys_w -1 downto 0);   -- Delay increment, decrement signal for bit
-  DELAY_TAP_IN   : in    std_logic_vector(5*sys_w -1 downto 0); -- Dynamically loadable delay tap value for bit
-  DELAY_TAP_OUT  : out   std_logic_vector(5*sys_w -1 downto 0); -- Bit  Delay tap value for monitoring
 
 -- Clock and reset signals
   CLK_IN                  : in    std_logic;                    -- Fast clock from PLL/MMCM
@@ -88,9 +82,10 @@ end to_gbt_ser;
 
 architecture xilinx of to_gbt_ser is
   attribute CORE_GENERATION_INFO            : string;
-  attribute CORE_GENERATION_INFO of xilinx  : architecture is "to_gbt_ser,selectio_wiz_v4_1,{component_name=to_gbt_ser,bus_dir=OUTPUTS,bus_sig_type=DIFF,bus_io_std=LVDS_25,use_serialization=true,use_phase_detector=false,serialization_factor=8,enable_bitslip=false,enable_train=false,system_data_width=1,bus_in_delay=NONE,bus_out_delay=NONE,clk_sig_type=DIFF,clk_io_std=LVCMOS18,clk_buf=BUFIO2,active_edge=RISING,clk_delay=NONE,v6_bus_in_delay=NONE,v6_bus_out_delay=VAR_LOADABLE,v6_clk_buf=MMCM,v6_active_edge=SDR,v6_ddr_alignment=SAME_EDGE_PIPELINED,v6_oddr_alignment=SAME_EDGE,ddr_alignment=C0,v6_interface_type=NETWORKING,interface_type=NETWORKING,v6_bus_in_tap=0,v6_bus_out_tap=6,v6_clk_io_std=LVCMOS25,v6_clk_sig_type=SINGLE}";
+  attribute CORE_GENERATION_INFO of xilinx  : architecture is "to_gbt_ser,selectio_wiz_v4_1,{component_name=to_gbt_ser,bus_dir=OUTPUTS,bus_sig_type=DIFF,bus_io_std=LVDS_25,use_serialization=true,use_phase_detector=false,serialization_factor=8,enable_bitslip=false,enable_train=false,system_data_width=1,bus_in_delay=NONE,bus_out_delay=NONE,clk_sig_type=DIFF,clk_io_std=LVCMOS18,clk_buf=BUFIO2,active_edge=RISING,clk_delay=NONE,v6_bus_in_delay=NONE,v6_bus_out_delay=NONE,v6_clk_buf=MMCM,v6_active_edge=DDR,v6_ddr_alignment=SAME_EDGE_PIPELINED,v6_oddr_alignment=SAME_EDGE,ddr_alignment=C0,v6_interface_type=NETWORKING,interface_type=NETWORKING,v6_bus_in_tap=0,v6_bus_out_tap=0,v6_clk_io_std=LVDS_25,v6_clk_sig_type=DIFF}";
   constant clock_enable            : std_logic := '1';
   signal unused : std_logic;
+  signal clk_in_int                : std_logic;
   signal clk_in_int_buf            : std_logic;
   signal clk_div_in_int            : std_logic;
 
@@ -99,12 +94,6 @@ architecture xilinx of to_gbt_ser is
   signal data_out_to_pins_int      : std_logic_vector(sys_w-1 downto 0);
   -- Between the delay and serdes
   signal data_out_to_pins_predelay : std_logic_vector(sys_w-1 downto 0);
-  signal data_delay                : std_logic_vector(sys_w-1 downto 0);
-  signal delay_ce              : std_logic_vector(sys_w-1 downto 0);
-  signal delay_inc_dec         : std_logic_vector(sys_w-1 downto 0);
-  type loadarr is array (0 to 15) of std_logic_vector(4 downto 0);
-  signal intap                 : loadarr := (( others => (others => '0')));
-  signal outtap                : loadarr := (( others => (others => '0')));
   constant num_serial_bits         : integer := dev_w/sys_w;
   type serdarr is array (0 to 9) of std_logic_vector(sys_w-1 downto 0);
   -- Array to use intermediately from the serdes to the internal
@@ -118,21 +107,17 @@ architecture xilinx of to_gbt_ser is
   signal ocascade_sm_t            : std_logic_vector(sys_w-1 downto 0);
 
 
-  attribute IODELAY_GROUP : string;
 
 begin
 
-  delay_ce(0) <= DELAY_DATA_CE(0);
-  delay_inc_dec(0) <= DELAY_DATA_INC(0);
-   intap(0) <= DELAY_TAP_IN(5*(0 + 1) -1 downto 5*(0));
-   DELAY_TAP_OUT(5*(0 + 1) -1 downto 5*(0)) <= outtap(0);
+
 
 
   -- Create the clock logic
 
+
   -- We have multiple bits- step over every bit, instantiating the required elements
   pins: for pin_count in 0 to sys_w-1 generate
-     attribute IODELAY_GROUP of iodelaye1_bus: label is "IODLY_GROUP";
   begin
     -- Instantiate the buffers
     ----------------------------------
@@ -145,40 +130,10 @@ begin
          OB         => DATA_OUT_TO_PINS_N  (pin_count),
          I          => data_out_to_pins_int(pin_count));
 
-    -- Instantiate the delay primitive
+
+    -- Pass through the delay
     -----------------------------------
-
-     iodelaye1_bus : IODELAYE1
-       generic map (
-         CINVCTRL_SEL           => FALSE,            -- TRUE, FALSE
-         DELAY_SRC              => "O",              -- I, IO, O, CLKIN, DATAIN
-         HIGH_PERFORMANCE_MODE  => TRUE,             -- TRUE, FALSE
-         IDELAY_TYPE            => "FIXED",          -- Has to be set to FIXED when IODELAYE1 is configured for Output
-         IDELAY_VALUE           => 0,                -- Set to 0 as IODELAYE1 is configured for Output
-         ODELAY_TYPE            => "VAR_LOADABLE",          -- FIXED, VARIABLE, or VAR_LOADABLE
-         ODELAY_VALUE           => 6,              -- 0 to 31
-         REFCLK_FREQUENCY       => 200.0,
-         SIGNAL_PATTERN         => "DATA"           -- CLOCK, DATA
-         )
-       port map (
-         DATAOUT                => data_delay (pin_count),
-         DATAIN                 => '0', -- Data from FPGA logic
-         IDATAIN                => '0',
-         ODATAIN                => data_out_to_pins_predelay(pin_count), -- Driven by OLOGIC/OSERDES
-
-         C                      => CLK_DIV_IN,
-         CE                     => delay_ce(pin_count), --DELAY_DATA_CE,
-         INC                    => delay_inc_dec(pin_count), --DELAY_DATA_INC,
-         RST                    => DELAY_RESET,
-         T                      => '0',
-         CNTVALUEIN             => intap(pin_count), --DELAY_TAP_IN,
-         CNTVALUEOUT            => outtap(pin_count), --DELAY_TAP_OUT,
-         CLKIN                  => '0',
-         CINVCTRL               => '0'
-         );
-
-       data_out_to_pins_int(pin_count) <= data_delay(pin_count);
-
+   data_out_to_pins_int(pin_count)    <= data_out_to_pins_predelay(pin_count);
 
      -- Instantiate the serdes primitive
      ----------------------------------
@@ -186,7 +141,7 @@ begin
      -- declare the oserdes
      oserdese1_master : OSERDESE1
        generic map (
-         DATA_RATE_OQ   => "SDR",
+         DATA_RATE_OQ   => "DDR",
          DATA_RATE_TQ   => "SDR",
          DATA_WIDTH     => 8,
          INTERFACE_TYPE => "DEFAULT",
@@ -215,17 +170,17 @@ begin
          CLKPERFDELAY   => '0', -- used in DDR3 mode only
          WC             => '0', -- DDR3 mode only
          ODV            => '0', -- DDR3 mode only
-         OQ             => open,
+         OQ             => data_out_to_pins_predelay(pin_count),
          TQ             => open,
          OCBEXTEND      => open,
-         OFB            => data_out_to_pins_predelay(pin_count),
+         OFB            => open,
          TFB            => open,
          TCE            => '0',
          RST            => IO_RESET);
 
      oserdese1_slave : OSERDESE1
        generic map (
-         DATA_RATE_OQ   => "SDR",
+         DATA_RATE_OQ   => "DDR",
          DATA_RATE_TQ   => "SDR",
          DATA_WIDTH     => 8,
          TRISTATE_WIDTH => 1,
@@ -281,9 +236,4 @@ begin
 
   end generate pins;
 
-
-
 end xilinx;
-
-
-

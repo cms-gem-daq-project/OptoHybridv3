@@ -31,6 +31,9 @@ def main():
         elif (geb_version=="v3b" and geb_length=="short" and gem_version=="ge11"):
             trig_tap_delays = v3b_short_trig_tap_delays
             sot_tap_delays = v3b_short_sot_tap_delays
+        elif (geb_version=="v3c" and geb_length=="short" and gem_version=="ge11"):
+            trig_tap_delays = v3c_long_trig_tap_delays
+            sot_tap_delays = v3c_long_sot_tap_delays
         elif (geb_version=="v3c" and geb_length=="long" and gem_version=="ge11"):
             trig_tap_delays = v3c_long_trig_tap_delays
             sot_tap_delays = v3c_long_sot_tap_delays

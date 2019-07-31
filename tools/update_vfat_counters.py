@@ -22,9 +22,9 @@ def main():
     MARKER_END="<!-- END: VFAT_MASK DO NOT EDIT -->"
     insert_code (ADDRESS_TABLE_TOP, ADDRESS_TABLE_TOP, MARKER_START, MARKER_END, write_vfat_mask)
 
-    MARKER_START='<!-- START: SOT_READY_UNSTABLE DO NOT EDIT -->'
-    MARKER_END="<!-- END: SOT_READY_UNSTABLE DO NOT EDIT -->"
-    insert_code (ADDRESS_TABLE_TOP, ADDRESS_TABLE_TOP, MARKER_START, MARKER_END, write_ready_unstable)
+    MARKER_START='<!-- START: SOT_STATUS DO NOT EDIT -->'
+    MARKER_END="<!-- END: SOT_STATUS DO NOT EDIT -->"
+    insert_code (ADDRESS_TABLE_TOP, ADDRESS_TABLE_TOP, MARKER_START, MARKER_END, write_status)
 
     MARKER_START='<!-- START: ACTIVE_VFATS DO NOT EDIT -->'
     MARKER_END="<!-- END: ACTIVE_VFATS DO NOT EDIT -->"
@@ -63,7 +63,7 @@ def write_vfat_counters (file_handle):
 
     padding = "                " #spaces for indentation
 
-    f.write('%s<node id="VFAT${VFAT_CNT_IDX}" address="0x0" permission="r"\n'  %  (padding) )
+    f.write('%s<node id="VFAT${VFAT_CNT_IDX}_SBITS" address="0x0" permission="r"\n'  %  (padding) )
     f.write('%s    mask="0xffffffff"\n'                                        %  (padding) )
     f.write('%s    description="VFAT ${VFAT_CNT_IDX} Counter"\n'               %  (padding) )
     f.write('%s    fw_cnt_en_signal="active_vfats(${VFAT_CNT_IDX})"\n'         %  (padding) )
@@ -113,7 +113,7 @@ def write_active_vfats (file_handle):
     f.write('%s    mask="%s"\n' % (padding, mask))
     f.write('%s    fw_signal="active_vfats"/>\n' % (padding))
 
-def write_ready_unstable (file_handle):
+def write_status (file_handle):
 
     f = file_handle
     padding = "            " #spaces for indentation
@@ -132,6 +132,11 @@ def write_ready_unstable (file_handle):
     f.write('%s    description="%d bit list of VFATs with unstable Start-of-frame pulses (became misaligned after already achieving lock)"\n'  %  (padding, num_vfats))
     f.write('%s    mask="%s"\n'                                                                                                                %  (padding, mask))
     f.write('%s    fw_signal="sot_unstable" />\n'                                                                                              %  (padding))
+
+    f.write('%s<node id="SBIT_SOT_INVALID_BITSKIP" address="0xe2" permission="r"\n'                                 %  (padding))
+    f.write('%s    description="%d bit list of VFATs with a invalid bitskip counter for Start-of-frame pulses"\n'  %  (padding, num_vfats))
+    f.write('%s    mask="%s"\n'                                                                                    %  (padding, mask))
+    f.write('%s    fw_signal="sot_invalid_bitskip" />\n'                                                           %  (padding))
 
 if __name__ == '__main__':
     main()

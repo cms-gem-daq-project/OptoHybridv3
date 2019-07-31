@@ -34,11 +34,8 @@ port(
     clock_i            : in std_logic; -- 40 MHz logic clock
 
     gbt_clk40          : in std_logic; -- 40  MHz phase shiftable frame clock from GBT
-    gbt_clk80          : in std_logic; -- 40  MHz phase shiftable frame clock from GBT
     gbt_clk160_0       : in std_logic; -- 320 MHz phase shiftable frame clock from GBT
     gbt_clk160_90      : in std_logic; -- 320 MHz phase shiftable frame clock from GBT
-    gbt_clk160_180     : in std_logic; -- 320 MHz phase shiftable frame clock from GBT
-    gbt_clk320         : in std_logic; -- 320 MHz phase shiftable frame clock from GBT
 
     elink_i_p          : in  std_logic;
     elink_i_n          : in  std_logic;
@@ -149,18 +146,13 @@ begin
     gbt_serdes : entity work.gbt_serdes
     port map(
         -- reset
-       reset_i          => reset,
+       rst_i          => reset,
 
        -- input clocks
 
-       gbt_clk40      => gbt_clk40,      -- 40 MHz phase shiftable frame clock from GBT
-       gbt_clk80      => gbt_clk80,      -- 80 MHz phase shiftable frame clock from GBT
-       gbt_clk160_0   => gbt_clk160_0,   --
-       gbt_clk160_90  => gbt_clk160_90,  --
-       gbt_clk160_180 => gbt_clk160_180, --
-       gbt_clk320     => gbt_clk320,     -- 320 MHz phase shiftable frame clock from GBT
-
-       clock            => clock_i,     -- 40 MHz logic clock
+       clk_1x           => gbt_clk40,      -- 40 MHz phase shiftable frame clock from GBT
+       clk_4x           => gbt_clk160_0,   --
+       clk_4x_90        => gbt_clk160_90,  --
 
        -- serial data
        elink_o_p      => elink_o_p,  -- output e-links
@@ -169,10 +161,8 @@ begin
        elink_i_p       => elink_i_p,   -- input e-links
        elink_i_n       => elink_i_n,   -- input e-links
 
-       gbt_link_error_i => gbt_link_error,
-       gbt_ready_i => gbt_link_ready,
-
-       tx_delay_i         => tx_delay,
+       gbt_link_err_i   => gbt_link_error,
+       gbt_link_rdy_i   => gbt_link_ready,
 
        -- parallel data
        data_o           => gbt_rx_data,    -- Parallel data out
@@ -257,14 +247,12 @@ begin
     -- Connect read signals
     regs_read_arr(0)(REG_GBT_TX_CNT_RESPONSE_SENT_MSB downto REG_GBT_TX_CNT_RESPONSE_SENT_LSB) <= cnt_ipb_response;
     regs_read_arr(1)(REG_GBT_TX_TX_READY_BIT) <= gbt_txready_i;
-    regs_read_arr(1)(REG_GBT_TX_TX_DELAY_MSB downto REG_GBT_TX_TX_DELAY_LSB) <= tx_delay;
     regs_read_arr(2)(REG_GBT_RX_RX_READY_BIT) <= gbt_rxready_i;
     regs_read_arr(2)(REG_GBT_RX_RX_VALID_BIT) <= gbt_rxvalid_i;
     regs_read_arr(2)(REG_GBT_RX_CNT_REQUEST_RECEIVED_MSB downto REG_GBT_RX_CNT_REQUEST_RECEIVED_LSB) <= cnt_ipb_request;
     regs_read_arr(3)(REG_GBT_RX_CNT_LINK_ERR_MSB downto REG_GBT_RX_CNT_LINK_ERR_LSB) <= cnt_link_err;
 
     -- Connect write signals
-    tx_delay <= regs_write_arr(1)(REG_GBT_TX_TX_DELAY_MSB downto REG_GBT_TX_TX_DELAY_LSB);
 
     -- Connect write pulse signals
     l1a_force <= regs_write_pulse_arr(3);
@@ -321,10 +309,8 @@ begin
     -- Connect read ready signals
 
     -- Defaults
-    regs_defaults(1)(REG_GBT_TX_TX_DELAY_MSB downto REG_GBT_TX_TX_DELAY_LSB) <= REG_GBT_TX_TX_DELAY_DEFAULT;
 
     -- Define writable regs
-    regs_writable_arr(1) <= '1';
 
     --==== Registers end ============================================================================
 end Behavioral;

@@ -27,11 +27,10 @@ entity sbits is
 generic (oh_lite : integer := OH_LITE);
 port(
 
-    clk80_i                : in std_logic;
-    clk160_i               : in std_logic;
-    clk200_i               : in std_logic;
-    clk160_90_i            : in std_logic;
     clk40_i                : in std_logic;
+    clk160_i               : in std_logic;
+    clk160_90_i            : in std_logic;
+    clk200_i               : in std_logic;
 
     reset_i                : in std_logic;
 
@@ -67,9 +66,14 @@ port(
 
     sot_is_aligned_o       : out std_logic_vector (MXVFATS-1 downto 0);
     sot_unstable_o         : out std_logic_vector (MXVFATS-1 downto 0);
+    sot_invalid_bitskip_o  : out std_logic_vector (MXVFATS-1 downto 0);
 
     sot_tap_delay          : in t_std5_array (MXVFATS-1 downto 0);
-    trig_tap_delay         : in t_std5_array (MXVFATS*8-1 downto 0)
+    trig_tap_delay         : in t_std5_array (MXVFATS*8-1 downto 0);
+
+    hitmap_reset_i         : in std_logic;
+    hitmap_acquire_i       : in std_logic;
+    hitmap_sbits_o         : out sbits_array_t(MXVFATS-1 downto 0)
 
 );
 end sbits;
@@ -82,8 +86,6 @@ architecture Behavioral of sbits is
     constant empty_vfat             : std_logic_vector (63 downto 0) := x"0000000000000000";
 
     signal active_vfats             : std_logic_vector (MXVFATS-1 downto 0);
-
-    signal clk160_180               : std_logic;
 
     signal sbits                    : std_logic_vector (MXSBITS_CHAMBER-1 downto 0);
 
@@ -139,8 +141,6 @@ begin
         end if;
     end process;
 
-    -- don't need to do a 180 on the clock-- use local inverters for deserialization to save 1 global clock
-    clk160_180 <= not clk160_i;
     active_vfats_o <= active_vfats;
 
     --------------------------------------------------------------------------------------------------------------------
@@ -168,14 +168,13 @@ begin
         start_of_frame_p       => start_of_frame_p,
         start_of_frame_n       => start_of_frame_n,
 
-        clk80_0                => clk80_i,
+        clock                  => clk40_i,
         clk160_0               => clk160_i,
         clk160_90              => clk160_90_i,
-        clk160_180             => clk160_180,
-        clock                  => clk40_i,
 
         sot_is_aligned         => sot_is_aligned_o,
         sot_unstable           => sot_unstable_o,
+        sot_invalid_bitskip    => sot_invalid_bitskip_o,
 
         sot_tap_delay          => sot_tap_delay,
         trig_tap_delay         => trig_tap_delay,
@@ -229,6 +228,19 @@ begin
 
         end if;
     end process;
+
+    --------------------------------------------------------------------------------------------------------------------
+    -- Sbits hitmap
+    --------------------------------------------------------------------------------------------------------------------
+
+    sbits_hitmap_inst : entity work.sbits_hitmap
+    port map (
+        clock_i    => clk40_i,
+        reset_i    => hitmap_reset_i,
+        acquire_i  => hitmap_acquire_i,
+        sbits_i    => vfat_sbits_strip_mapped,
+        hitmap_o   => hitmap_sbits_o
+    );
 
     --------------------------------------------------------------------------------------------------------------------
     -- Cluster Packer

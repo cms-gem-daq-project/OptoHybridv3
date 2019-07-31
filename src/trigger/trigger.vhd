@@ -43,10 +43,9 @@ port(
     clk_160           : in std_logic;
 
     clk_40_sbit       : in std_logic;
-    clk_80_sbit       : in std_logic;
     clk_160_sbit      : in std_logic;
-    clk_200_sbit      : in std_logic;
     clk_160_90_sbit   : in std_logic;
+    clk_200_sbit      : in std_logic;
 
     trigger_reset_i : in std_logic;
     core_reset_i    : in std_logic;
@@ -155,14 +154,19 @@ architecture Behavioral of trigger is
     attribute EQUIVALENT_REGISTER_REMOVAL of trigger_reset : signal is "NO";
     attribute EQUIVALENT_REGISTER_REMOVAL of ipb_reset : signal is "NO";
 
-    signal sot_is_aligned      : std_logic_vector (MXVFATS-1 downto 0);
-    signal sot_unstable        : std_logic_vector (MXVFATS-1 downto 0);
+    signal sot_is_aligned       : std_logic_vector (MXVFATS-1 downto 0);
+    signal sot_unstable         : std_logic_vector (MXVFATS-1 downto 0);
+    signal sot_invalid_bitskip  : std_logic_vector (MXVFATS-1 downto 0);
 
     signal sot_tap_delay       : t_std5_array (MXVFATS-1 downto 0);
     signal trig_tap_delay      : t_std5_array ((MXVFATS*8)-1 downto 0);
 
     signal sbits_mux_sel        : std_logic_vector  (4 downto 0);
     signal sbits_mux            : std_logic_vector (63 downto 0);
+
+    signal hitmap_reset     : std_logic;
+    signal hitmap_acquire   : std_logic;
+    signal hitmap_sbits     : sbits_array_t(MXVFATS-1  downto 0);
 
     -- control signals from gbt (verb, object)
     signal reset_counters       : std_logic;
@@ -389,7 +393,6 @@ begin
         trig_stop_i             => trig_stop_i,
 
         clk40_i                 => clk_40_sbit,
-        clk80_i                 => clk_80_sbit,
         clk160_i                => clk_160_sbit,
         clk160_90_i             => clk_160_90_sbit,
         clk200_i                => clk_200_sbit,
@@ -424,7 +427,12 @@ begin
         trig_tap_delay          => trig_tap_delay,
 
         sot_is_aligned_o        => sot_is_aligned,
-        sot_unstable_o          => sot_unstable
+        sot_unstable_o          => sot_unstable,
+        sot_invalid_bitskip_o   => sot_invalid_bitskip,
+
+        hitmap_reset_i    => hitmap_reset,
+        hitmap_acquire_i  => hitmap_acquire,
+        hitmap_sbits_o    => hitmap_sbits
 
     );
 
@@ -680,6 +688,57 @@ begin
     regs_addresses(118)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"97";
     regs_addresses(119)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"98";
     regs_addresses(120)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"a0";
+    regs_addresses(121)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"b0";
+    regs_addresses(122)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"b1";
+    regs_addresses(123)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"b2";
+    regs_addresses(124)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"b3";
+    regs_addresses(125)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"b4";
+    regs_addresses(126)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"b5";
+    regs_addresses(127)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"b6";
+    regs_addresses(128)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"b7";
+    regs_addresses(129)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"b8";
+    regs_addresses(130)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"b9";
+    regs_addresses(131)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"ba";
+    regs_addresses(132)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"bb";
+    regs_addresses(133)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"bc";
+    regs_addresses(134)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"bd";
+    regs_addresses(135)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"be";
+    regs_addresses(136)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"bf";
+    regs_addresses(137)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"c0";
+    regs_addresses(138)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"c1";
+    regs_addresses(139)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"c2";
+    regs_addresses(140)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"c3";
+    regs_addresses(141)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"c4";
+    regs_addresses(142)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"c5";
+    regs_addresses(143)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"c6";
+    regs_addresses(144)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"c7";
+    regs_addresses(145)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"c8";
+    regs_addresses(146)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"c9";
+    regs_addresses(147)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"ca";
+    regs_addresses(148)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"cb";
+    regs_addresses(149)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"cc";
+    regs_addresses(150)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"cd";
+    regs_addresses(151)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"ce";
+    regs_addresses(152)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"cf";
+    regs_addresses(153)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"d0";
+    regs_addresses(154)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"d1";
+    regs_addresses(155)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"d2";
+    regs_addresses(156)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"d3";
+    regs_addresses(157)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"d4";
+    regs_addresses(158)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"d5";
+    regs_addresses(159)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"d6";
+    regs_addresses(160)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"d7";
+    regs_addresses(161)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"d8";
+    regs_addresses(162)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"d9";
+    regs_addresses(163)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"da";
+    regs_addresses(164)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"db";
+    regs_addresses(165)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"dc";
+    regs_addresses(166)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"dd";
+    regs_addresses(167)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"de";
+    regs_addresses(168)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"df";
+    regs_addresses(169)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"e0";
+    regs_addresses(170)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"e1";
+    regs_addresses(171)(REG_TRIG_ADDRESS_MSB downto REG_TRIG_ADDRESS_LSB) <= x"e2";
 
     -- Connect read signals
     regs_read_arr(0)(REG_TRIG_CTRL_VFAT_MASK_MSB downto REG_TRIG_CTRL_VFAT_MASK_LSB) <= vfat_mask;
@@ -741,30 +800,30 @@ begin
     regs_read_arr(20)(REG_TRIG_CTRL_TU_MASK_VFAT21_TU_MASK_MSB downto REG_TRIG_CTRL_TU_MASK_VFAT21_TU_MASK_LSB) <= TU_MASK (175 downto 168);
     regs_read_arr(20)(REG_TRIG_CTRL_TU_MASK_VFAT22_TU_MASK_MSB downto REG_TRIG_CTRL_TU_MASK_VFAT22_TU_MASK_LSB) <= TU_MASK (183 downto 176);
     regs_read_arr(20)(REG_TRIG_CTRL_TU_MASK_VFAT23_TU_MASK_MSB downto REG_TRIG_CTRL_TU_MASK_VFAT23_TU_MASK_LSB) <= TU_MASK (191 downto 184);
-    regs_read_arr(21)(REG_TRIG_CNT_VFAT0_MSB downto REG_TRIG_CNT_VFAT0_LSB) <= cnt_vfat0;
-    regs_read_arr(22)(REG_TRIG_CNT_VFAT1_MSB downto REG_TRIG_CNT_VFAT1_LSB) <= cnt_vfat1;
-    regs_read_arr(23)(REG_TRIG_CNT_VFAT2_MSB downto REG_TRIG_CNT_VFAT2_LSB) <= cnt_vfat2;
-    regs_read_arr(24)(REG_TRIG_CNT_VFAT3_MSB downto REG_TRIG_CNT_VFAT3_LSB) <= cnt_vfat3;
-    regs_read_arr(25)(REG_TRIG_CNT_VFAT4_MSB downto REG_TRIG_CNT_VFAT4_LSB) <= cnt_vfat4;
-    regs_read_arr(26)(REG_TRIG_CNT_VFAT5_MSB downto REG_TRIG_CNT_VFAT5_LSB) <= cnt_vfat5;
-    regs_read_arr(27)(REG_TRIG_CNT_VFAT6_MSB downto REG_TRIG_CNT_VFAT6_LSB) <= cnt_vfat6;
-    regs_read_arr(28)(REG_TRIG_CNT_VFAT7_MSB downto REG_TRIG_CNT_VFAT7_LSB) <= cnt_vfat7;
-    regs_read_arr(29)(REG_TRIG_CNT_VFAT8_MSB downto REG_TRIG_CNT_VFAT8_LSB) <= cnt_vfat8;
-    regs_read_arr(30)(REG_TRIG_CNT_VFAT9_MSB downto REG_TRIG_CNT_VFAT9_LSB) <= cnt_vfat9;
-    regs_read_arr(31)(REG_TRIG_CNT_VFAT10_MSB downto REG_TRIG_CNT_VFAT10_LSB) <= cnt_vfat10;
-    regs_read_arr(32)(REG_TRIG_CNT_VFAT11_MSB downto REG_TRIG_CNT_VFAT11_LSB) <= cnt_vfat11;
-    regs_read_arr(33)(REG_TRIG_CNT_VFAT12_MSB downto REG_TRIG_CNT_VFAT12_LSB) <= cnt_vfat12;
-    regs_read_arr(34)(REG_TRIG_CNT_VFAT13_MSB downto REG_TRIG_CNT_VFAT13_LSB) <= cnt_vfat13;
-    regs_read_arr(35)(REG_TRIG_CNT_VFAT14_MSB downto REG_TRIG_CNT_VFAT14_LSB) <= cnt_vfat14;
-    regs_read_arr(36)(REG_TRIG_CNT_VFAT15_MSB downto REG_TRIG_CNT_VFAT15_LSB) <= cnt_vfat15;
-    regs_read_arr(37)(REG_TRIG_CNT_VFAT16_MSB downto REG_TRIG_CNT_VFAT16_LSB) <= cnt_vfat16;
-    regs_read_arr(38)(REG_TRIG_CNT_VFAT17_MSB downto REG_TRIG_CNT_VFAT17_LSB) <= cnt_vfat17;
-    regs_read_arr(39)(REG_TRIG_CNT_VFAT18_MSB downto REG_TRIG_CNT_VFAT18_LSB) <= cnt_vfat18;
-    regs_read_arr(40)(REG_TRIG_CNT_VFAT19_MSB downto REG_TRIG_CNT_VFAT19_LSB) <= cnt_vfat19;
-    regs_read_arr(41)(REG_TRIG_CNT_VFAT20_MSB downto REG_TRIG_CNT_VFAT20_LSB) <= cnt_vfat20;
-    regs_read_arr(42)(REG_TRIG_CNT_VFAT21_MSB downto REG_TRIG_CNT_VFAT21_LSB) <= cnt_vfat21;
-    regs_read_arr(43)(REG_TRIG_CNT_VFAT22_MSB downto REG_TRIG_CNT_VFAT22_LSB) <= cnt_vfat22;
-    regs_read_arr(44)(REG_TRIG_CNT_VFAT23_MSB downto REG_TRIG_CNT_VFAT23_LSB) <= cnt_vfat23;
+    regs_read_arr(21)(REG_TRIG_CNT_VFAT0_SBITS_MSB downto REG_TRIG_CNT_VFAT0_SBITS_LSB) <= cnt_vfat0;
+    regs_read_arr(22)(REG_TRIG_CNT_VFAT1_SBITS_MSB downto REG_TRIG_CNT_VFAT1_SBITS_LSB) <= cnt_vfat1;
+    regs_read_arr(23)(REG_TRIG_CNT_VFAT2_SBITS_MSB downto REG_TRIG_CNT_VFAT2_SBITS_LSB) <= cnt_vfat2;
+    regs_read_arr(24)(REG_TRIG_CNT_VFAT3_SBITS_MSB downto REG_TRIG_CNT_VFAT3_SBITS_LSB) <= cnt_vfat3;
+    regs_read_arr(25)(REG_TRIG_CNT_VFAT4_SBITS_MSB downto REG_TRIG_CNT_VFAT4_SBITS_LSB) <= cnt_vfat4;
+    regs_read_arr(26)(REG_TRIG_CNT_VFAT5_SBITS_MSB downto REG_TRIG_CNT_VFAT5_SBITS_LSB) <= cnt_vfat5;
+    regs_read_arr(27)(REG_TRIG_CNT_VFAT6_SBITS_MSB downto REG_TRIG_CNT_VFAT6_SBITS_LSB) <= cnt_vfat6;
+    regs_read_arr(28)(REG_TRIG_CNT_VFAT7_SBITS_MSB downto REG_TRIG_CNT_VFAT7_SBITS_LSB) <= cnt_vfat7;
+    regs_read_arr(29)(REG_TRIG_CNT_VFAT8_SBITS_MSB downto REG_TRIG_CNT_VFAT8_SBITS_LSB) <= cnt_vfat8;
+    regs_read_arr(30)(REG_TRIG_CNT_VFAT9_SBITS_MSB downto REG_TRIG_CNT_VFAT9_SBITS_LSB) <= cnt_vfat9;
+    regs_read_arr(31)(REG_TRIG_CNT_VFAT10_SBITS_MSB downto REG_TRIG_CNT_VFAT10_SBITS_LSB) <= cnt_vfat10;
+    regs_read_arr(32)(REG_TRIG_CNT_VFAT11_SBITS_MSB downto REG_TRIG_CNT_VFAT11_SBITS_LSB) <= cnt_vfat11;
+    regs_read_arr(33)(REG_TRIG_CNT_VFAT12_SBITS_MSB downto REG_TRIG_CNT_VFAT12_SBITS_LSB) <= cnt_vfat12;
+    regs_read_arr(34)(REG_TRIG_CNT_VFAT13_SBITS_MSB downto REG_TRIG_CNT_VFAT13_SBITS_LSB) <= cnt_vfat13;
+    regs_read_arr(35)(REG_TRIG_CNT_VFAT14_SBITS_MSB downto REG_TRIG_CNT_VFAT14_SBITS_LSB) <= cnt_vfat14;
+    regs_read_arr(36)(REG_TRIG_CNT_VFAT15_SBITS_MSB downto REG_TRIG_CNT_VFAT15_SBITS_LSB) <= cnt_vfat15;
+    regs_read_arr(37)(REG_TRIG_CNT_VFAT16_SBITS_MSB downto REG_TRIG_CNT_VFAT16_SBITS_LSB) <= cnt_vfat16;
+    regs_read_arr(38)(REG_TRIG_CNT_VFAT17_SBITS_MSB downto REG_TRIG_CNT_VFAT17_SBITS_LSB) <= cnt_vfat17;
+    regs_read_arr(39)(REG_TRIG_CNT_VFAT18_SBITS_MSB downto REG_TRIG_CNT_VFAT18_SBITS_LSB) <= cnt_vfat18;
+    regs_read_arr(40)(REG_TRIG_CNT_VFAT19_SBITS_MSB downto REG_TRIG_CNT_VFAT19_SBITS_LSB) <= cnt_vfat19;
+    regs_read_arr(41)(REG_TRIG_CNT_VFAT20_SBITS_MSB downto REG_TRIG_CNT_VFAT20_SBITS_LSB) <= cnt_vfat20;
+    regs_read_arr(42)(REG_TRIG_CNT_VFAT21_SBITS_MSB downto REG_TRIG_CNT_VFAT21_SBITS_LSB) <= cnt_vfat21;
+    regs_read_arr(43)(REG_TRIG_CNT_VFAT22_SBITS_MSB downto REG_TRIG_CNT_VFAT22_SBITS_LSB) <= cnt_vfat22;
+    regs_read_arr(44)(REG_TRIG_CNT_VFAT23_SBITS_MSB downto REG_TRIG_CNT_VFAT23_SBITS_LSB) <= cnt_vfat23;
     regs_read_arr(46)(REG_TRIG_CNT_SBIT_CNT_PERSIST_BIT) <= sbit_cnt_persist;
     regs_read_arr(47)(REG_TRIG_CNT_SBIT_CNT_TIME_MAX_MSB downto REG_TRIG_CNT_SBIT_CNT_TIME_MAX_LSB) <= sbit_cnt_time_max;
     regs_read_arr(48)(REG_TRIG_CNT_CLUSTER_COUNT_MSB downto REG_TRIG_CNT_CLUSTER_COUNT_LSB) <= cnt_clusters;
@@ -1029,6 +1088,56 @@ begin
     regs_read_arr(118)(REG_TRIG_SBIT_MONITOR_CLUSTER6_MSB downto REG_TRIG_SBIT_MONITOR_CLUSTER6_LSB) <= '0' & frozen_cluster_6(13 downto 11) & '0' & frozen_cluster_6 (10 downto 0);
     regs_read_arr(119)(REG_TRIG_SBIT_MONITOR_CLUSTER7_MSB downto REG_TRIG_SBIT_MONITOR_CLUSTER7_LSB) <= '0' & frozen_cluster_7(13 downto 11) & '0' & frozen_cluster_7 (10 downto 0);
     regs_read_arr(120)(REG_TRIG_SBIT_MONITOR_L1A_DELAY_MSB downto REG_TRIG_SBIT_MONITOR_L1A_DELAY_LSB) <= sbitmon_l1a_delay;
+    regs_read_arr(122)(REG_TRIG_SBIT_HITMAP_ACQUIRE_BIT) <= hitmap_acquire;
+    regs_read_arr(123)(REG_TRIG_SBIT_HITMAP_VFAT0_MSB_MSB downto REG_TRIG_SBIT_HITMAP_VFAT0_MSB_LSB) <= hitmap_sbits(0)(63 downto 32);
+    regs_read_arr(124)(REG_TRIG_SBIT_HITMAP_VFAT0_LSB_MSB downto REG_TRIG_SBIT_HITMAP_VFAT0_LSB_LSB) <= hitmap_sbits(0)(31 downto 0);
+    regs_read_arr(125)(REG_TRIG_SBIT_HITMAP_VFAT1_MSB_MSB downto REG_TRIG_SBIT_HITMAP_VFAT1_MSB_LSB) <= hitmap_sbits(1)(63 downto 32);
+    regs_read_arr(126)(REG_TRIG_SBIT_HITMAP_VFAT1_LSB_MSB downto REG_TRIG_SBIT_HITMAP_VFAT1_LSB_LSB) <= hitmap_sbits(1)(31 downto 0);
+    regs_read_arr(127)(REG_TRIG_SBIT_HITMAP_VFAT2_MSB_MSB downto REG_TRIG_SBIT_HITMAP_VFAT2_MSB_LSB) <= hitmap_sbits(2)(63 downto 32);
+    regs_read_arr(128)(REG_TRIG_SBIT_HITMAP_VFAT2_LSB_MSB downto REG_TRIG_SBIT_HITMAP_VFAT2_LSB_LSB) <= hitmap_sbits(2)(31 downto 0);
+    regs_read_arr(129)(REG_TRIG_SBIT_HITMAP_VFAT3_MSB_MSB downto REG_TRIG_SBIT_HITMAP_VFAT3_MSB_LSB) <= hitmap_sbits(3)(63 downto 32);
+    regs_read_arr(130)(REG_TRIG_SBIT_HITMAP_VFAT3_LSB_MSB downto REG_TRIG_SBIT_HITMAP_VFAT3_LSB_LSB) <= hitmap_sbits(3)(31 downto 0);
+    regs_read_arr(131)(REG_TRIG_SBIT_HITMAP_VFAT4_MSB_MSB downto REG_TRIG_SBIT_HITMAP_VFAT4_MSB_LSB) <= hitmap_sbits(4)(63 downto 32);
+    regs_read_arr(132)(REG_TRIG_SBIT_HITMAP_VFAT4_LSB_MSB downto REG_TRIG_SBIT_HITMAP_VFAT4_LSB_LSB) <= hitmap_sbits(4)(31 downto 0);
+    regs_read_arr(133)(REG_TRIG_SBIT_HITMAP_VFAT5_MSB_MSB downto REG_TRIG_SBIT_HITMAP_VFAT5_MSB_LSB) <= hitmap_sbits(5)(63 downto 32);
+    regs_read_arr(134)(REG_TRIG_SBIT_HITMAP_VFAT5_LSB_MSB downto REG_TRIG_SBIT_HITMAP_VFAT5_LSB_LSB) <= hitmap_sbits(5)(31 downto 0);
+    regs_read_arr(135)(REG_TRIG_SBIT_HITMAP_VFAT6_MSB_MSB downto REG_TRIG_SBIT_HITMAP_VFAT6_MSB_LSB) <= hitmap_sbits(6)(63 downto 32);
+    regs_read_arr(136)(REG_TRIG_SBIT_HITMAP_VFAT6_LSB_MSB downto REG_TRIG_SBIT_HITMAP_VFAT6_LSB_LSB) <= hitmap_sbits(6)(31 downto 0);
+    regs_read_arr(137)(REG_TRIG_SBIT_HITMAP_VFAT7_MSB_MSB downto REG_TRIG_SBIT_HITMAP_VFAT7_MSB_LSB) <= hitmap_sbits(7)(63 downto 32);
+    regs_read_arr(138)(REG_TRIG_SBIT_HITMAP_VFAT7_LSB_MSB downto REG_TRIG_SBIT_HITMAP_VFAT7_LSB_LSB) <= hitmap_sbits(7)(31 downto 0);
+    regs_read_arr(139)(REG_TRIG_SBIT_HITMAP_VFAT8_MSB_MSB downto REG_TRIG_SBIT_HITMAP_VFAT8_MSB_LSB) <= hitmap_sbits(8)(63 downto 32);
+    regs_read_arr(140)(REG_TRIG_SBIT_HITMAP_VFAT8_LSB_MSB downto REG_TRIG_SBIT_HITMAP_VFAT8_LSB_LSB) <= hitmap_sbits(8)(31 downto 0);
+    regs_read_arr(141)(REG_TRIG_SBIT_HITMAP_VFAT9_MSB_MSB downto REG_TRIG_SBIT_HITMAP_VFAT9_MSB_LSB) <= hitmap_sbits(9)(63 downto 32);
+    regs_read_arr(142)(REG_TRIG_SBIT_HITMAP_VFAT9_LSB_MSB downto REG_TRIG_SBIT_HITMAP_VFAT9_LSB_LSB) <= hitmap_sbits(9)(31 downto 0);
+    regs_read_arr(143)(REG_TRIG_SBIT_HITMAP_VFAT10_MSB_MSB downto REG_TRIG_SBIT_HITMAP_VFAT10_MSB_LSB) <= hitmap_sbits(10)(63 downto 32);
+    regs_read_arr(144)(REG_TRIG_SBIT_HITMAP_VFAT10_LSB_MSB downto REG_TRIG_SBIT_HITMAP_VFAT10_LSB_LSB) <= hitmap_sbits(10)(31 downto 0);
+    regs_read_arr(145)(REG_TRIG_SBIT_HITMAP_VFAT11_MSB_MSB downto REG_TRIG_SBIT_HITMAP_VFAT11_MSB_LSB) <= hitmap_sbits(11)(63 downto 32);
+    regs_read_arr(146)(REG_TRIG_SBIT_HITMAP_VFAT11_LSB_MSB downto REG_TRIG_SBIT_HITMAP_VFAT11_LSB_LSB) <= hitmap_sbits(11)(31 downto 0);
+    regs_read_arr(147)(REG_TRIG_SBIT_HITMAP_VFAT12_MSB_MSB downto REG_TRIG_SBIT_HITMAP_VFAT12_MSB_LSB) <= hitmap_sbits(12)(63 downto 32);
+    regs_read_arr(148)(REG_TRIG_SBIT_HITMAP_VFAT12_LSB_MSB downto REG_TRIG_SBIT_HITMAP_VFAT12_LSB_LSB) <= hitmap_sbits(12)(31 downto 0);
+    regs_read_arr(149)(REG_TRIG_SBIT_HITMAP_VFAT13_MSB_MSB downto REG_TRIG_SBIT_HITMAP_VFAT13_MSB_LSB) <= hitmap_sbits(13)(63 downto 32);
+    regs_read_arr(150)(REG_TRIG_SBIT_HITMAP_VFAT13_LSB_MSB downto REG_TRIG_SBIT_HITMAP_VFAT13_LSB_LSB) <= hitmap_sbits(13)(31 downto 0);
+    regs_read_arr(151)(REG_TRIG_SBIT_HITMAP_VFAT14_MSB_MSB downto REG_TRIG_SBIT_HITMAP_VFAT14_MSB_LSB) <= hitmap_sbits(14)(63 downto 32);
+    regs_read_arr(152)(REG_TRIG_SBIT_HITMAP_VFAT14_LSB_MSB downto REG_TRIG_SBIT_HITMAP_VFAT14_LSB_LSB) <= hitmap_sbits(14)(31 downto 0);
+    regs_read_arr(153)(REG_TRIG_SBIT_HITMAP_VFAT15_MSB_MSB downto REG_TRIG_SBIT_HITMAP_VFAT15_MSB_LSB) <= hitmap_sbits(15)(63 downto 32);
+    regs_read_arr(154)(REG_TRIG_SBIT_HITMAP_VFAT15_LSB_MSB downto REG_TRIG_SBIT_HITMAP_VFAT15_LSB_LSB) <= hitmap_sbits(15)(31 downto 0);
+    regs_read_arr(155)(REG_TRIG_SBIT_HITMAP_VFAT16_MSB_MSB downto REG_TRIG_SBIT_HITMAP_VFAT16_MSB_LSB) <= hitmap_sbits(16)(63 downto 32);
+    regs_read_arr(156)(REG_TRIG_SBIT_HITMAP_VFAT16_LSB_MSB downto REG_TRIG_SBIT_HITMAP_VFAT16_LSB_LSB) <= hitmap_sbits(16)(31 downto 0);
+    regs_read_arr(157)(REG_TRIG_SBIT_HITMAP_VFAT17_MSB_MSB downto REG_TRIG_SBIT_HITMAP_VFAT17_MSB_LSB) <= hitmap_sbits(17)(63 downto 32);
+    regs_read_arr(158)(REG_TRIG_SBIT_HITMAP_VFAT17_LSB_MSB downto REG_TRIG_SBIT_HITMAP_VFAT17_LSB_LSB) <= hitmap_sbits(17)(31 downto 0);
+    regs_read_arr(159)(REG_TRIG_SBIT_HITMAP_VFAT18_MSB_MSB downto REG_TRIG_SBIT_HITMAP_VFAT18_MSB_LSB) <= hitmap_sbits(18)(63 downto 32);
+    regs_read_arr(160)(REG_TRIG_SBIT_HITMAP_VFAT18_LSB_MSB downto REG_TRIG_SBIT_HITMAP_VFAT18_LSB_LSB) <= hitmap_sbits(18)(31 downto 0);
+    regs_read_arr(161)(REG_TRIG_SBIT_HITMAP_VFAT19_MSB_MSB downto REG_TRIG_SBIT_HITMAP_VFAT19_MSB_LSB) <= hitmap_sbits(19)(63 downto 32);
+    regs_read_arr(162)(REG_TRIG_SBIT_HITMAP_VFAT19_LSB_MSB downto REG_TRIG_SBIT_HITMAP_VFAT19_LSB_LSB) <= hitmap_sbits(19)(31 downto 0);
+    regs_read_arr(163)(REG_TRIG_SBIT_HITMAP_VFAT20_MSB_MSB downto REG_TRIG_SBIT_HITMAP_VFAT20_MSB_LSB) <= hitmap_sbits(20)(63 downto 32);
+    regs_read_arr(164)(REG_TRIG_SBIT_HITMAP_VFAT20_LSB_MSB downto REG_TRIG_SBIT_HITMAP_VFAT20_LSB_LSB) <= hitmap_sbits(20)(31 downto 0);
+    regs_read_arr(165)(REG_TRIG_SBIT_HITMAP_VFAT21_MSB_MSB downto REG_TRIG_SBIT_HITMAP_VFAT21_MSB_LSB) <= hitmap_sbits(21)(63 downto 32);
+    regs_read_arr(166)(REG_TRIG_SBIT_HITMAP_VFAT21_LSB_MSB downto REG_TRIG_SBIT_HITMAP_VFAT21_LSB_LSB) <= hitmap_sbits(21)(31 downto 0);
+    regs_read_arr(167)(REG_TRIG_SBIT_HITMAP_VFAT22_MSB_MSB downto REG_TRIG_SBIT_HITMAP_VFAT22_MSB_LSB) <= hitmap_sbits(22)(63 downto 32);
+    regs_read_arr(168)(REG_TRIG_SBIT_HITMAP_VFAT22_LSB_MSB downto REG_TRIG_SBIT_HITMAP_VFAT22_LSB_LSB) <= hitmap_sbits(22)(31 downto 0);
+    regs_read_arr(169)(REG_TRIG_SBIT_HITMAP_VFAT23_MSB_MSB downto REG_TRIG_SBIT_HITMAP_VFAT23_MSB_LSB) <= hitmap_sbits(23)(63 downto 32);
+    regs_read_arr(170)(REG_TRIG_SBIT_HITMAP_VFAT23_LSB_MSB downto REG_TRIG_SBIT_HITMAP_VFAT23_LSB_LSB) <= hitmap_sbits(23)(31 downto 0);
+    regs_read_arr(171)(REG_TRIG_CTRL_SBIT_SOT_INVALID_BITSKIP_MSB downto REG_TRIG_CTRL_SBIT_SOT_INVALID_BITSKIP_LSB) <= sot_invalid_bitskip;
 
     -- Connect write signals
     vfat_mask <= regs_write_arr(0)(REG_TRIG_CTRL_VFAT_MASK_MSB downto REG_TRIG_CTRL_VFAT_MASK_LSB);
@@ -1312,11 +1421,13 @@ begin
     txpowerdown_mode <= regs_write_arr(110)(REG_TRIG_LINKS_TXPOWERDOWN_MODE_MSB downto REG_TRIG_LINKS_TXPOWERDOWN_MODE_LSB);
     txpllpowerdown <= regs_write_arr(110)(REG_TRIG_LINKS_TXPLLPOWERDOWN_BIT);
     force_mgts_not_ready <= regs_write_arr(110)(REG_TRIG_LINKS_FORCE_NOT_READY_BIT);
+    hitmap_acquire <= regs_write_arr(122)(REG_TRIG_SBIT_HITMAP_ACQUIRE_BIT);
 
     -- Connect write pulse signals
     reset_counters <= regs_write_pulse_arr(45);
     reset_links <= regs_write_pulse_arr(109);
     reset_monitor <= regs_write_pulse_arr(111);
+    hitmap_reset <= regs_write_pulse_arr(121);
 
     -- Connect write done signals
 
@@ -1337,7 +1448,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT0 : entity work.counter_snap
+    COUNTER_TRIG_CNT_VFAT0_SBITS : entity work.counter_snap
     generic map (
         g_COUNTER_WIDTH  => 32
     )
@@ -1350,7 +1461,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT1 : entity work.counter_snap
+    COUNTER_TRIG_CNT_VFAT1_SBITS : entity work.counter_snap
     generic map (
         g_COUNTER_WIDTH  => 32
     )
@@ -1363,7 +1474,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT2 : entity work.counter_snap
+    COUNTER_TRIG_CNT_VFAT2_SBITS : entity work.counter_snap
     generic map (
         g_COUNTER_WIDTH  => 32
     )
@@ -1376,7 +1487,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT3 : entity work.counter_snap
+    COUNTER_TRIG_CNT_VFAT3_SBITS : entity work.counter_snap
     generic map (
         g_COUNTER_WIDTH  => 32
     )
@@ -1389,7 +1500,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT4 : entity work.counter_snap
+    COUNTER_TRIG_CNT_VFAT4_SBITS : entity work.counter_snap
     generic map (
         g_COUNTER_WIDTH  => 32
     )
@@ -1402,7 +1513,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT5 : entity work.counter_snap
+    COUNTER_TRIG_CNT_VFAT5_SBITS : entity work.counter_snap
     generic map (
         g_COUNTER_WIDTH  => 32
     )
@@ -1415,7 +1526,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT6 : entity work.counter_snap
+    COUNTER_TRIG_CNT_VFAT6_SBITS : entity work.counter_snap
     generic map (
         g_COUNTER_WIDTH  => 32
     )
@@ -1428,7 +1539,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT7 : entity work.counter_snap
+    COUNTER_TRIG_CNT_VFAT7_SBITS : entity work.counter_snap
     generic map (
         g_COUNTER_WIDTH  => 32
     )
@@ -1441,7 +1552,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT8 : entity work.counter_snap
+    COUNTER_TRIG_CNT_VFAT8_SBITS : entity work.counter_snap
     generic map (
         g_COUNTER_WIDTH  => 32
     )
@@ -1454,7 +1565,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT9 : entity work.counter_snap
+    COUNTER_TRIG_CNT_VFAT9_SBITS : entity work.counter_snap
     generic map (
         g_COUNTER_WIDTH  => 32
     )
@@ -1467,7 +1578,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT10 : entity work.counter_snap
+    COUNTER_TRIG_CNT_VFAT10_SBITS : entity work.counter_snap
     generic map (
         g_COUNTER_WIDTH  => 32
     )
@@ -1480,7 +1591,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT11 : entity work.counter_snap
+    COUNTER_TRIG_CNT_VFAT11_SBITS : entity work.counter_snap
     generic map (
         g_COUNTER_WIDTH  => 32
     )
@@ -1493,7 +1604,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT12 : entity work.counter_snap
+    COUNTER_TRIG_CNT_VFAT12_SBITS : entity work.counter_snap
     generic map (
         g_COUNTER_WIDTH  => 32
     )
@@ -1506,7 +1617,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT13 : entity work.counter_snap
+    COUNTER_TRIG_CNT_VFAT13_SBITS : entity work.counter_snap
     generic map (
         g_COUNTER_WIDTH  => 32
     )
@@ -1519,7 +1630,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT14 : entity work.counter_snap
+    COUNTER_TRIG_CNT_VFAT14_SBITS : entity work.counter_snap
     generic map (
         g_COUNTER_WIDTH  => 32
     )
@@ -1532,7 +1643,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT15 : entity work.counter_snap
+    COUNTER_TRIG_CNT_VFAT15_SBITS : entity work.counter_snap
     generic map (
         g_COUNTER_WIDTH  => 32
     )
@@ -1545,7 +1656,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT16 : entity work.counter_snap
+    COUNTER_TRIG_CNT_VFAT16_SBITS : entity work.counter_snap
     generic map (
         g_COUNTER_WIDTH  => 32
     )
@@ -1558,7 +1669,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT17 : entity work.counter_snap
+    COUNTER_TRIG_CNT_VFAT17_SBITS : entity work.counter_snap
     generic map (
         g_COUNTER_WIDTH  => 32
     )
@@ -1571,7 +1682,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT18 : entity work.counter_snap
+    COUNTER_TRIG_CNT_VFAT18_SBITS : entity work.counter_snap
     generic map (
         g_COUNTER_WIDTH  => 32
     )
@@ -1584,7 +1695,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT19 : entity work.counter_snap
+    COUNTER_TRIG_CNT_VFAT19_SBITS : entity work.counter_snap
     generic map (
         g_COUNTER_WIDTH  => 32
     )
@@ -1597,7 +1708,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT20 : entity work.counter_snap
+    COUNTER_TRIG_CNT_VFAT20_SBITS : entity work.counter_snap
     generic map (
         g_COUNTER_WIDTH  => 32
     )
@@ -1610,7 +1721,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT21 : entity work.counter_snap
+    COUNTER_TRIG_CNT_VFAT21_SBITS : entity work.counter_snap
     generic map (
         g_COUNTER_WIDTH  => 32
     )
@@ -1623,7 +1734,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT22 : entity work.counter_snap
+    COUNTER_TRIG_CNT_VFAT22_SBITS : entity work.counter_snap
     generic map (
         g_COUNTER_WIDTH  => 32
     )
@@ -1636,7 +1747,7 @@ begin
     );
 
 
-    COUNTER_TRIG_CNT_VFAT23 : entity work.counter_snap
+    COUNTER_TRIG_CNT_VFAT23_SBITS : entity work.counter_snap
     generic map (
         g_COUNTER_WIDTH  => 32
     )
@@ -2260,6 +2371,7 @@ begin
     regs_defaults(110)(REG_TRIG_LINKS_TXPOWERDOWN_MODE_MSB downto REG_TRIG_LINKS_TXPOWERDOWN_MODE_LSB) <= REG_TRIG_LINKS_TXPOWERDOWN_MODE_DEFAULT;
     regs_defaults(110)(REG_TRIG_LINKS_TXPLLPOWERDOWN_BIT) <= REG_TRIG_LINKS_TXPLLPOWERDOWN_DEFAULT;
     regs_defaults(110)(REG_TRIG_LINKS_FORCE_NOT_READY_BIT) <= REG_TRIG_LINKS_FORCE_NOT_READY_DEFAULT;
+    regs_defaults(122)(REG_TRIG_SBIT_HITMAP_ACQUIRE_BIT) <= REG_TRIG_SBIT_HITMAP_ACQUIRE_DEFAULT;
 
     -- Define writable regs
     regs_writable_arr(0) <= '1';
@@ -2317,6 +2429,7 @@ begin
     regs_writable_arr(107) <= '1';
     regs_writable_arr(108) <= '1';
     regs_writable_arr(110) <= '1';
+    regs_writable_arr(122) <= '1';
 
     --==== Registers end ============================================================================
 
