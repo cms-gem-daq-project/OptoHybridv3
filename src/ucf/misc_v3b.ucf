@@ -1,3 +1,11 @@
+
+########################################################################################################################
+# Resync
+########################################################################################################################
+
+INST "*/s_resync_1" TNM = "resync_grp";
+TIMESPEC TS_SYNC = FROM  FFS TO "resync_grp" TIG ;
+
 # This file constraints miscellaneous signals
 ## HDMI
 
@@ -107,3 +115,8 @@ NET "mgt_tx_n_o<3>" LOC = F2; #
 NET "adc_vp" LOC=U18;
 NET "adc_vn" LOC=V17;
 
+## Help P&R by placing the truncators
+INST "trigger/sbits/OH_FULL_GEN.cluster_packer_inst/u_first8/encloop[0].u_truncate/*" AREA_GROUP = "pblock_truncator_0";
+AREA_GROUP "pblock_truncator_0" RANGE=CLOCKREGION_X1Y2:CLOCKREGION_X1Y2;
+INST "trigger/sbits/OH_FULL_GEN.cluster_packer_inst/u_first8/encloop[1].u_truncate/*" AREA_GROUP = "pblock_truncator_1";
+AREA_GROUP "pblock_truncator_1" RANGE=CLOCKREGION_X0Y1:CLOCKREGION_X0Y1;

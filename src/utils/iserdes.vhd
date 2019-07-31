@@ -11,25 +11,31 @@ use work.param_pkg.all;
 
 entity iserdes is
 generic (
-g_SERDES_MODE : string := "MASTER"
+  g_SERDES_MODE : string := "MASTER"
 );
 port(
-  data_i        : in std_logic;
+  clk_i         : in std_logic;
+  clk_90_i      : in std_logic;
   reset_i       : in std_logic;
-  data_o        : out std_logic_vector (3 downto 0);
-  clk2x_0       : in std_logic;
-  clk2x_180     : in std_logic;
-  clk2x_90      : in std_logic
+  data_i        : in std_logic;
+  data_o        : out std_logic_vector (3 downto 0)
 );
 end iserdes;
 
 architecture behavioral of iserdes is
 
-  signal clk2x_270 : std_logic;
+  signal clk     : std_logic;
+  signal clk_90  : std_logic;
+  signal clk_180 : std_logic;
+  signal clk_270 : std_logic;
 
 begin
 
-  clk2x_270 <= not clk2x_90;
+  -- Clocks MUST come from only two BFUG/BUFIO; see UG471
+  clk     <= clk_i;
+  clk_90  <= clk_90_i;
+  clk_180 <= not clk_i;
+  clk_270 <= not clk_90_i;
 
   ----------------------------------------------------------------------------------------------------------------------
   -- iserdes
@@ -47,9 +53,9 @@ begin
           SERDES_MODE    => g_SERDES_MODE,
           IOBDELAY       => "IFD")
   port map(
-          clk          => clk2x_0,
-          clkb         => clk2x_180,
-          oclk         => clk2x_90,
+          clk          => clk,
+          clkb         => clk_180,
+          oclk         => clk_90,
           d            => '0',
           bitslip      => '0',
           ce1          => '1',
@@ -116,10 +122,10 @@ begin
 
           -- clocks
           clkdivp => '0',       -- 1-bit input: tbd
-          clk     => clk2x_0,   -- 1-bit input: high-speed clock
-          clkb    => clk2x_180, -- 1-bit input: high-speed secondary clock
-          oclk    => clk2x_90,  -- 1-bit input: high speed output clock used when interface_type="memory"
-          oclkb   => clk2x_270, -- 1-bit input: high speed negative edge output clock
+          clk     => clk,       -- 1-bit input: high-speed clock
+          clkb    => clk_180,   -- 1-bit input: high-speed secondary clock
+          oclk    => clk_90,    -- 1-bit input: high speed output clock used when interface_type="memory"
+          oclkb   => clk_270,   -- 1-bit input: high speed negative edge output clock
           clkdiv  => '0',       -- 1-bit input: divided clock
 
           -- dynamic clock inversions: 1-bit each input: dynamic clock inversion pins to switch clock polarity

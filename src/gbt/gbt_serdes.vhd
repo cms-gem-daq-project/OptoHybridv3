@@ -39,9 +39,8 @@ port(
     -- input clocks
 
     clk_1x      : in std_logic; -- 40 MHz phase shiftable frame clock from GBT
-    clk_2x      : in std_logic; -- 160 MHz phase shiftable frame clock from GBT
-    clk_4x   : in std_logic; -- 160 MHz phase shiftable frame clock from GBT
-    clk_4x_90  : in std_logic; -- 160 MHz phase shiftable frame clock from GBT
+    clk_4x      : in std_logic; -- 160 MHz phase shiftable frame clock from GBT
+    clk_4x_90   : in std_logic; -- 160 MHz phase shiftable frame clock from GBT
 
     -- serial data to/from GBTx
     elink_o_p        : out std_logic;
@@ -120,20 +119,21 @@ begin
         g_PHASE_SEL_EXTERNAL => FALSE
     )
     port map (
-        rst           => rst,
-        invert        => '0',
-        rxd_p         => elink_i_p,
-        rxd_n         => elink_i_n,
-        clk1x_logic   => clk_2x,
-        clk2x_logic   => clk_4x,
-        clk2x_0       => clk_4x,
-        clk2x_90      => clk_4x_90,
-        clk2x_180     => not clk_4x,
-        rxdata_o      => from_gbt_raw,
-        tap_delay_i   => (others => '0'),
-        phase_sel_in  => (others => '0'),
-        e4_out        => sump_vector (3 downto 0),
-        phase_sel_out => sump_vector (5 downto 4)
+        clk1x_logic       => clk_1x,
+        clk1x             => clk_1x,
+        clk4x_0           => clk_4x,
+        clk4x_90          => clk_4x_90,
+        reset_i           => rst,
+        rxd_p             => elink_i_p,
+        rxd_n             => elink_i_n,
+        rxdata_o          => from_gbt_raw,
+        invert            => '0',
+        tap_delay_i       => (others => '0'),
+        e4_in             => (others => '0'),
+        e4_out            => sump_vector (3 downto 0),
+        phase_sel_in      => (others => '0'),
+        phase_sel_out     => sump_vector (5 downto 4),
+        invalid_bitskip_o => open
     );
 
     --------------------------------------------------------------------------------------------------------------------

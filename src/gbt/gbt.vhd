@@ -34,7 +34,6 @@ port(
     clock_i            : in std_logic; -- 40 MHz logic clock
 
     gbt_clk40          : in std_logic; -- 40  MHz phase shiftable frame clock from GBT
-    gbt_clk80          : in std_logic; -- 40  MHz phase shiftable frame clock from GBT
     gbt_clk160_0       : in std_logic; -- 320 MHz phase shiftable frame clock from GBT
     gbt_clk160_90      : in std_logic; -- 320 MHz phase shiftable frame clock from GBT
 
@@ -152,7 +151,6 @@ begin
        -- input clocks
 
        clk_1x           => gbt_clk40,      -- 40 MHz phase shiftable frame clock from GBT
-       clk_2x           => gbt_clk80,      -- 80 MHz phase shiftable frame clock from GBT
        clk_4x           => gbt_clk160_0,   --
        clk_4x_90        => gbt_clk160_90,  --
 

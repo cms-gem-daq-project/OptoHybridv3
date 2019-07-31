@@ -25,7 +25,6 @@ module frame_aligner (
   input mask,
 
   input clock,
-  input clock4x,
 
   input [11:0] aligned_count_to_ready,
 

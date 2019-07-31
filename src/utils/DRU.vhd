@@ -1,60 +1,69 @@
+-- TODO: add reset for bitskip
+
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 entity dru is
-generic (
-  g_PHASE_SEL_EXTERNAL : boolean := FALSE
-);
-port(
-  clk1x : in  std_logic;                    -- 80 MHz clock
-  clk2x : in  std_logic;                    -- 160 MHz clock
-  i     : in  std_logic_vector(7 downto 0); -- 8-bit input, the even bits are inverted!
-  o     : out std_logic_vector(7 downto 0); -- 8-bit recovered output
 
-  e4_out        : out std_logic_vector (3 downto 0);
-  e4_in         : in  std_logic_vector (3 downto 0);
-  phase_sel_in  : in std_logic_vector (1 downto 0);
-  phase_sel_out : out std_logic_vector (1 downto 0);
+  generic (
+    g_PHASE_SEL_EXTERNAL : boolean := FALSE
+  );
+  port(
+  
+    clk1x : in  std_logic;                    -- 40 MHz clock
+    clk4x : in  std_logic;                    -- 160 MHz clock
 
-  vo    : out std_logic);                   -- valid data out
+    i     : in  std_logic_vector(7 downto 0); -- 8-bit input, the even bits are inverted!
+    o     : out std_logic_vector(7 downto 0); -- 8-bit recovered output
+  
+    e4_in         : in  std_logic_vector (3 downto 0);
+    e4_out        : out std_logic_vector (3 downto 0);
+    phase_sel_in  : in  std_logic_vector (1 downto 0);
+    phase_sel_out : out std_logic_vector (1 downto 0);
+
+    invalid_bitskip_o : out std_logic
+
+  );
+
 end dru;
 
 architecture behavioral of dru is
 
-  signal e4                                     : std_logic_vector(3 downto 0):=(others=>'0');
+  signal data_in_delay             : std_logic_vector(7 downto 0) := (others=>'0');
+  signal data_in_delay_uninverted  : std_logic_vector(7 downto 0) := (others=>'0');
+  signal data7_delay_delay         : std_logic := '0';
 
-  signal data_in_delay,data_in_delay_uninverted : std_logic_vector(7 downto 0):=(others=>'0');
-  signal data7_delay_delay                      : std_logic:='0';
-  signal phase_sel_state                        : std_logic_vector(1 downto 0):="00";
+  signal e4                        : std_logic_vector(3 downto 0) := (others=>'0');
+  signal phase_sel_state           : std_logic_vector(1 downto 0) := "00";
 
-  signal positive_bitslip                       : std_logic;
-  signal negative_bitslip                       : std_logic;
+  signal positive_bitskip_next  : std_logic;
+  signal negative_bitskip_next  : std_logic;
+  signal positive_bitskip       : std_logic;
+  signal negative_bitskip       : std_logic;
 
-  signal fifo_s1                                : std_logic_vector(2 downto 0):="000";
-  signal fifo_s2                                : std_logic_vector(4 downto 0):="00000";
-  signal fifo_s3                                : std_logic_vector(4 downto 0):="00000";
+  signal fifo_s1             : std_logic_vector(2 downto 0)  := "000";
+  signal fifo_s2             : std_logic_vector(11 downto 0) := x"000";
+  signal fifo_cdc            : std_logic_vector(11 downto 0) := x"000";
 
-  signal rxsh                                   : std_logic_vector(6 downto 0):=(others=>'0');
-  signal rxdata                                 : std_logic_vector(7 downto 0):=(others=>'0');
-  signal rxcnt                                  : unsigned(3 downto 0):=(others=>'0');
-  signal rxvalid                                : std_logic:='0';
+  signal bitskip_cnt      : unsigned(2 downto 0) := "010";
+  signal bitskip_cnt_cdc  : unsigned(2 downto 0) := "010";
+
+  signal invalid_bitskip  : std_logic := '0';
+
+  signal rxdata                    : std_logic_vector(7 downto 0) := (others=>'0');
 
   attribute use_clock_enable                    : string;
   attribute use_clock_enable of fifo_s2         : signal is "no";
-
-  type   bitslip_state_t is (slip_pos, slip_neg, slip_none);
-  signal bitslip_state     : bitslip_state_t := slip_none;
-  signal bitslip_state_dly : bitslip_state_t := slip_none;
 
 begin
 
   ----------------------------------------------------------------------------------------------------------------------
   -- Buffer data
   ----------------------------------------------------------------------------------------------------------------------
-  process(clk2x)
+  process(clk4x)
   begin
-    if rising_edge(clk2x) then
+    if rising_edge(clk4x) then
 
       data_in_delay<=i;
 
@@ -69,6 +78,7 @@ begin
   -- Self Phase alignment
   ----------------------------------------------------------------------------------------------------------------------
 
+  e4_out <= e4;
   phase_sel_out <= phase_sel_state;
 
   --==============--
@@ -76,16 +86,15 @@ begin
   --==============--
 
   INTERNAL : if (not g_PHASE_SEL_EXTERNAL) generate
-    process (clk2x)
-    begin
-      if rising_edge(clk2x) then
 
+    process(clk4x)
+    begin
+      if rising_edge(clk4x) then
 
             e4(0)<=(data_in_delay(0) xnor data_in_delay(1)) or (data_in_delay(4) xnor data_in_delay(5));
             e4(1)<=(data_in_delay(1) xnor data_in_delay(2)) or (data_in_delay(5) xnor data_in_delay(6));
             e4(2)<=(data_in_delay(2) xnor data_in_delay(3)) or (data_in_delay(6) xnor data_in_delay(7));
             e4(3)<=(data_in_delay(3) xnor data_in_delay(4)) or (data_in_delay_uninverted(7) xnor data_in_delay(0));
-
 
             case phase_sel_state is
 
@@ -116,10 +125,7 @@ begin
       end if;
     end process;
 
-    e4_out <= e4;
-
   end generate INTERNAL;
-
 
   --==============--
   --== External ==--
@@ -127,9 +133,8 @@ begin
 
   EXTERNAL : if (g_PHASE_SEL_EXTERNAL) generate
 
-  e4 <= e4_in;
-  e4_out <= "0000";
-  phase_sel_state <= phase_sel_in;
+    e4 <= e4_in;
+    phase_sel_state <= phase_sel_in;
 
   end generate EXTERNAL;
 
@@ -137,22 +142,10 @@ begin
   -- Bitskip
   ----------------------------------------------------------------------------------------------------------------------
 
-  process (clk2x)
+  -- Sample the right phases
+  process(clk4x)
   begin
-    if rising_edge(clk2x) then
-
-      if (phase_sel_state="10" and e4(3)='0' and e4(2)='1') then negative_bitslip <='1';
-      else                                                       negative_bitslip <='0';
-      end if;
-
-      if (phase_sel_state="00" and e4(3)='0' and e4(0)='1') then positive_bitslip <='1';
-      else                                                       positive_bitslip <='0'; -- transition from 00 to 10
-      end if;
-
-      if    (negative_bitslip = '1')                          then bitslip_state <=  slip_neg;
-      elsif (positive_bitslip = '1')                          then bitslip_state <=  slip_pos;
-      elsif (negative_bitslip = '0' and positive_bitslip='0') then bitslip_state <=  slip_none;
-      end if;
+    if rising_edge(clk4x) then
 
       case phase_sel_state is
         when "00"   => fifo_s1 <= data7_delay_delay & data_in_delay_uninverted(0) & data_in_delay_uninverted(4);
@@ -165,16 +158,44 @@ begin
     end if;
   end process;
 
-  process(clk2x)
+  -- Compute the bitskip
+  process(clk4x)
   begin
-    if rising_edge(clk2x) then
+    if rising_edge(clk4x) then
 
-        case bitslip_state is
-          when slip_neg  => fifo_s2 <= fifo_s2(4-1 downto 0) & fifo_s1(0);          -- negative bitslip
-          when slip_none => fifo_s2 <= fifo_s2(4-2 downto 0) & fifo_s1(1 downto 0); -- no bitslip
-          when slip_pos  => fifo_s2 <= fifo_s2(4-3 downto 0) & fifo_s1(2 downto 0); -- positive bitslip
-          when others    => null;
-        end case;
+      if (phase_sel_state="10" and e4(3)='0' and e4(2)='1') then -- transition from 10 to 00
+        negative_bitskip_next <='1';
+      else
+        negative_bitskip_next <='0';
+      end if;
+
+      if (phase_sel_state="00" and e4(3)='0' and e4(0)='1') then -- transition from 00 to 10
+        positive_bitskip_next <='1';
+      else
+        positive_bitskip_next <='0';
+      end if;
+
+      positive_bitskip <= positive_bitskip_next;
+      negative_bitskip <= negative_bitskip_next;
+
+    end if;
+  end process;
+
+  -- Process the bitskip
+  process(clk4x)
+  begin
+    if rising_edge(clk4x) then
+
+      if (negative_bitskip = '1') then-- negative bitskip
+          bitskip_cnt <= bitskip_cnt - 1;
+          fifo_s2 <= fifo_s2(11-1 downto 0) & fifo_s1(0);
+      elsif (positive_bitskip = '1') then-- positive bitskip
+          bitskip_cnt <= bitskip_cnt + 1;
+          fifo_s2 <= fifo_s2(11-3 downto 0) & fifo_s1(2 downto 0);
+      else -- no bitskip
+          bitskip_cnt <= bitskip_cnt;
+          fifo_s2 <= fifo_s2(11-2 downto 0) & fifo_s1(1 downto 0);
+      end if;
 
     end if;
 
@@ -184,102 +205,37 @@ begin
   -- Output deserialization
   ----------------------------------------------------------------------------------------------------------------------
 
-  -- put 3/4/5 bits into the frame per 80MHz clock
-  -- presumably could be done with 1/2/3 bits per 160 MHz clock to stay in the same clock domain
-  --                       or with 7/8/9 bits per 40  MHz clock
-  -- but the deserializer would have to be rewritten...
-
   process(clk1x)
   begin
     if rising_edge(clk1x) then
 
-      fifo_s3           <= fifo_s2;
-      bitslip_state_dly <= bitslip_state;
+      fifo_cdc        <= fifo_s2;
+      bitskip_cnt_cdc <= bitskip_cnt;
 
-      case bitslip_state_dly is
+      if bitskip_cnt_cdc = 0 then
+          rxdata <= fifo_cdc(7 downto 0);
+      elsif bitskip_cnt_cdc = 1 then
+          rxdata <= fifo_cdc(8 downto 1);
+      elsif bitskip_cnt_cdc = 2 then
+          rxdata <= fifo_cdc(9 downto 2);
+      elsif bitskip_cnt_cdc = 3 then
+          rxdata <= fifo_cdc(10 downto 3);
+      elsif bitskip_cnt_cdc = 4 then
+          rxdata <= fifo_cdc(11 downto 4);
+      else
+          rxdata <= (others => '0');
+      end if;
 
-        when slip_neg => -- negative bitslip; add 3 bits
+      if (bitskip_cnt_cdc >= 5) then
+        invalid_bitskip <= '1';
+      else
+        invalid_bitskip <= invalid_bitskip;
+      end if;
 
-          rxsh<=rxsh(rxsh'high-3 downto rxsh'low)&fifo_s3(2 downto 0);
-
-                    if rxcnt=5 then
-                      rxvalid<='1';
-                      rxdata<=rxsh(rxsh'high-2 downto rxsh'low)&fifo_s3(2 downto 0);
-                      rxcnt<=to_unsigned(0,rxcnt'length);
-                    elsif rxcnt=6 then
-                      rxvalid<='1';
-                      rxdata<=rxsh(rxsh'high-1 downto rxsh'low)&fifo_s3(2 downto 1);
-                      rxcnt<=to_unsigned(1,rxcnt'length);
-                    elsif rxcnt=7 then
-                      rxvalid<='1';
-                      rxdata<=rxsh(rxsh'high downto rxsh'low)&fifo_s3(2);
-                      rxcnt<=to_unsigned(2,rxcnt'length);
-                    else
-                      rxvalid<='0';
-                      rxcnt<=rxcnt+3;
-                    end if;
-
-        when slip_none => -- no bitslip; add 4 bits
-
-          rxsh<=rxsh(rxsh'high-4 downto rxsh'low)&fifo_s3(3 downto 0);
-
-                    if rxcnt=4 then
-                      rxvalid<='1';
-                      rxdata<=rxsh(rxsh'high-3 downto rxsh'low)&fifo_s3(3 downto 0);
-                      rxcnt<=to_unsigned(0,rxcnt'length);
-                    elsif rxcnt=5 then
-                      rxvalid<='1';
-                      rxdata<=rxsh(rxsh'high-2 downto rxsh'low)&fifo_s3(3 downto 1);
-                      rxcnt<=to_unsigned(1,rxcnt'length);
-                    elsif rxcnt=6 then
-                      rxvalid<='1';
-                      rxdata<=rxsh(rxsh'high-1 downto rxsh'low)&fifo_s3(3 downto 2);
-                      rxcnt<=to_unsigned(2,rxcnt'length);
-                    elsif rxcnt=7 then
-                      rxvalid<='1';
-                      rxdata<=rxsh(rxsh'high downto rxsh'low)&fifo_s3(3);
-                      rxcnt<=to_unsigned(3,rxcnt'length);
-                    else
-                      rxvalid<='0';
-                      rxcnt<=rxcnt+4;
-                    end if;
-
-        when slip_pos => -- positive bitslip; add 5 bits
-
-          rxsh<=rxsh(rxsh'high-5 downto rxsh'low)&fifo_s3(4 downto 0);
-
-                    if rxcnt=3 then
-                      rxvalid<='1';
-                      rxdata<=rxsh(rxsh'high-4 downto rxsh'low)&fifo_s3(4 downto 0);
-                      rxcnt<=to_unsigned(0,rxcnt'length);
-                    elsif rxcnt=4 then
-                      rxvalid<='1';
-                      rxdata<=rxsh(rxsh'high-3 downto rxsh'low)&fifo_s3(4 downto 1);
-                      rxcnt<=to_unsigned(1,rxcnt'length);
-                    elsif rxcnt=5 then
-                      rxvalid<='1';
-                      rxdata<=rxsh(rxsh'high-2 downto rxsh'low)&fifo_s3(4 downto 2);
-                      rxcnt<=to_unsigned(2,rxcnt'length);
-                    elsif rxcnt=6 then
-                      rxvalid<='1';
-                      rxdata<=rxsh(rxsh'high-1 downto rxsh'low)&fifo_s3(4 downto 3);
-                      rxcnt<=to_unsigned(3,rxcnt'length);
-                    elsif rxcnt=7 then
-                      rxvalid<='1';
-                      rxdata<=rxsh(rxsh'high downto rxsh'low)&fifo_s3(4);
-                      rxcnt<=to_unsigned(4,rxcnt'length);
-                    else
-                      rxvalid<='0';
-                      rxcnt<=rxcnt+5;
-                    end if;
-
-        when others=>null;
-
-      end case;
     end if;
   end process;
 
-  vo<=rxvalid;
   o <= rxdata;
+  invalid_bitskip_o <= invalid_bitskip;
 
 end behavioral;
