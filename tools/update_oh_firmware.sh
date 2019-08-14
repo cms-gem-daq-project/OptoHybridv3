@@ -1,14 +1,8 @@
 set -e
 echo "Setting OH version..." \
 && python ./change_oh_version.py  "$@" \
-echo "Updating timing registers..." \
-&& python ./update_timing_registers.py \
-echo "Updating s-bit inversion registers..." \
-&& python ./update_invert_registers.py \
-echo "Updating vfat counters registers..." \
-&& python ./update_vfat_counters.py \
-echo "Updating tu_mask registers..." \
-&& python ./update_tu_mask.py \
+echo "Updating xml..." \
+&& python ./update_xml.py \
 echo "Updating param_pkg..." \
 && python ./update_param_pkg.py \
 echo "Updating cluster packer..." \

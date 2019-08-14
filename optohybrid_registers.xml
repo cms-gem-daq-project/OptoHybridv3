@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!-- START: GLOBALS DO NOT EDIT -->
+<!DOCTYPE node [
+<!ENTITY NUM_VFATS_PER_OH "24">
+<!ENTITY VFAT_BITMASK  "0xffffff">
+]>
+<!-- END: GLOBALS DO NOT EDIT -->
+
 <!--  The tags attribute is a free test attribute which meaning is defined by the uHAL user -->
 <node id="FPGA">
     <!--Control module -->
@@ -384,14 +392,11 @@
 
         <node id="CTRL" address="0x0" description = "Controls and monitors various parameters of the S-bit deserialization and cluster building.">
 
-                <!-- updated by update_vfat_counters.py-->
-                <!-- START: VFAT_MASK DO NOT EDIT -->
             <node id="VFAT_MASK" address="0x0" permission="rw"
-                description="24 bit mask of VFATs (1=off)"
-                mask="0xffffff"
+                description="&NUM_VFATS_PER_OH; bit mask of VFATs (1=off)"
+                mask="&VFAT_BITMASK;"
                 fw_signal="vfat_mask"
                 fw_default="0x0"/>
-                <!-- END: VFAT_MASK DO NOT EDIT -->
 
             <node id="SBIT_DEADTIME" address="0x0" permission="rw"
                 description="Set programmable oneshot deadtime which applies to retriggers on individual VFAT channels"
@@ -399,13 +404,10 @@
                 mask="0x0f000000"
                 fw_default="0x7"/>
 
-                <!-- updated by update_vfat_counters.py-->
-                <!-- START: ACTIVE_VFATS DO NOT EDIT -->
             <node id="ACTIVE_VFATS" address="0x1" permission="r"
-                description="24 bit list of VFATs with hits in this BX"
-                mask="0xffffff"
+                description="&NUM_VFATS_PER_OH; bit list of VFATs with hits in this BX"
+                mask="&VFAT_BITMASK;"
                 fw_signal="active_vfats"/>
-                <!-- END: ACTIVE_VFATS DO NOT EDIT -->
 
             <node id="CNT_OVERFLOW" address="0x2" permission="r"
                 mask="0xffff"
@@ -421,22 +423,18 @@
                 mask="0xfff0000"
                 fw_default="0x1ff"/>
 
-                <!-- updated by update_vfat_counters.py-->
-                <!-- START: SOT_STATUS DO NOT EDIT -->
             <node id="SBIT_SOT_READY" address="0x3" permission="r"
-                description="24 bit list of VFATs with stable Start-of-frame pulses (in sync for a number of clock cycles)"
-                mask="0xffffff"
+                description="&NUM_VFATS_PER_OH; bit list of VFATs with stable Start-of-frame pulses (in sync for a number of clock cycles)"
+                mask="&VFAT_BITMASK;"
                 fw_signal="sot_is_aligned"/>
             <node id="SBIT_SOT_UNSTABLE" address="0x4" permission="r"
-                description="24 bit list of VFATs with unstable Start-of-frame pulses (became misaligned after already achieving lock)"
-                mask="0xffffff"
+                description="&NUM_VFATS_PER_OH; bit list of VFATs with unstable Start-of-frame pulses (became misaligned after already achieving lock)"
+                mask="&VFAT_BITMASK;"
                 fw_signal="sot_unstable" />
             <node id="SBIT_SOT_INVALID_BITSKIP" address="0xe2" permission="r"
-                description="24 bit list of VFATs with a invalid bitskip counter for Start-of-frame pulses"
-                mask="0xffffff"
+                description="&NUM_VFATS_PER_OH; bit list of VFATs with a invalid bitskip counter for Start-of-frame pulses"
+                mask="&VFAT_BITMASK;"
                 fw_signal="sot_invalid_bitskip" />
-                <!-- END: SOT_STATUS DO NOT EDIT -->
-
 
 	    <node id="INVERT" address="0x5" description="Controls the polarity of S-bit signals to account for polarity swaps on the GEB or OH">
                 <!-- START: INVERT_REGS DO NOT EDIT -->
@@ -717,21 +715,18 @@
 
             <node id="CNT" address="0x17" description = "S-BIT Counters \\  Set CNT_PERSIST to 1 to accumulate. Otherwise the counters will automatically reset after a programmable time (default is 1 second). By default this time is 1 second, making these counters a rate counter in Hertz">
 
-                <!-- updated by update_vfat_counters.py-->
-                <!-- START: VFAT_COUNTERS DO NOT EDIT -->
-                <node id="VFAT${VFAT_CNT_IDX}_SBITS" address="0x0" permission="r"
-                    mask="0xffffffff"
-                    description="VFAT ${VFAT_CNT_IDX} Counter"
-                    fw_cnt_en_signal="active_vfats(${VFAT_CNT_IDX})"
-                    fw_cnt_snap_signal="sbit_cnt_snap"
-                    fw_cnt_reset_signal="cnt_reset_strobed"
-                    fw_cnt_clk_signal="clk_40_sbit"
-                    fw_signal="cnt_vfat${VFAT_CNT_IDX}"
-                    generate="true"
-                    generate_size="24"
-                    generate_address_step="0x1"
-                    generate_idx_var="VFAT_CNT_IDX"/>
-                <!-- END: VFAT_COUNTERS DO NOT EDIT -->
+            <node id="VFAT${VFAT_CNT_IDX}_SBITS" address="0x0" permission="r"
+                mask="0xffffffff"
+                description="VFAT ${VFAT_CNT_IDX} Counter"
+                fw_cnt_en_signal="active_vfats(${VFAT_CNT_IDX})"
+                fw_cnt_snap_signal="sbit_cnt_snap"
+                fw_cnt_reset_signal="cnt_reset_strobed"
+                fw_cnt_clk_signal="clk_40_sbit"
+                fw_signal="cnt_vfat${VFAT_CNT_IDX}"
+                generate="true"
+                generate_size="&NUM_VFATS_PER_OH;"
+                generate_address_step="0x1"
+                generate_idx_var="VFAT_CNT_IDX"/>
 
                 <node id="RESET" address="0x18" permission="w"
                     mask="0x1"
@@ -759,8 +754,6 @@
                     fw_cnt_reset_signal="cnt_reset_strobed"
                     fw_signal="cnt_clusters"/>
 
-                <!-- updated by update_vfat_counters.py-->
-                <!-- START: OVERFLOW_COUNTERS DO NOT EDIT -->
                 <node id="SBITS_OVER_64x${OVERFLOW_IDX}" address="0x1f" permission="r"
                     mask="0x0000ffff"
                     description="More than 64 * ${OVERFLOW_IDX} Sbits in a bx Counter"
@@ -770,10 +763,9 @@
                     fw_cnt_clk_signal="clk_40_sbit"
                     fw_signal="cnt_over_threshold${OVERFLOW_IDX}"
                     generate="true"
-                    generate_size="24"
+                    generate_size="&NUM_VFATS_PER_OH;"
                     generate_address_step="0x1"
                     generate_idx_var="OVERFLOW_IDX"/>
-                <!-- END: OVERFLOW_COUNTERS DO NOT EDIT -->
 
             </node> <!--CNT-->
 
@@ -1948,7 +1940,7 @@
             </node>
 
             <node id="SBIT_HITMAP" address="0xb0"
-                  description="The Sbit hitmap module accumulates all incoming Sbits during a period of time">
+                    description="The Sbit hitmap module accumulates all incoming Sbits during a period of time">
                 <node id="RESET" address="0x0" permission="w"
                     description="Reset the accumulation registers"
                     fw_write_pulse_signal="hitmap_reset"/>
@@ -1959,11 +1951,11 @@
                 <node id="VFAT${VFAT_HITMAP_IDX}_MSB" address="0x2" mask="0xffffffff" permission="r"
                     description="Accumulator for Sbit 63 to 32 of VFAT${VFAT_HITMAP_IDX}"
                     fw_signal="hitmap_sbits(${VFAT_HITMAP_IDX})(63 downto 32)"
-                    generate="true" generate_size="24" generate_address_step="0x2" generate_idx_var="VFAT_HITMAP_IDX"/>
+                    generate="true" generate_size="&NUM_VFATS_PER_OH;" generate_address_step="0x2" generate_idx_var="VFAT_HITMAP_IDX"/>
                 <node id="VFAT${VFAT_HITMAP_IDX}_LSB" address="0x3" mask="0xffffffff" permission="r"
                     description="Accumulator for Sbit 31 to 0 of VFAT${VFAT_HITMAP_IDX}"
                     fw_signal="hitmap_sbits(${VFAT_HITMAP_IDX})(31 downto 0)"
-                    generate="true" generate_size="24" generate_address_step="0x2" generate_idx_var="VFAT_HITMAP_IDX"/>
+                    generate="true" generate_size="&NUM_VFATS_PER_OH;" generate_address_step="0x2" generate_idx_var="VFAT_HITMAP_IDX"/>
             </node>
 
     </node> <!--TRIG-->

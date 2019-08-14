@@ -9,10 +9,6 @@
 -- 2017/07/25 -- Restructure top level module to improve organization
 -- 2018/04/18 -- Mods for for OH lite compatibility
 ----------------------------------------------------------------------------------
--- TODO: Replace redundant gbt rx clocks with standard logic clocks, keep only tx
---       clock on its own mmcm
---       Remove obsolete CDC circuit
--- TODO: Replace GBT tx 320MHz with 160MHz ddr ?
 
 library ieee;
 use ieee.std_logic_1164.all;

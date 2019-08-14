@@ -6,11 +6,8 @@ set_property IOSTANDARD LVDS_25 [get_ports {master_slave_*}]
 set_property IOSTANDARD LVDS_25 [get_ports {vfat_sbits_*}]
 set_property IOSTANDARD LVDS_25 [get_ports {vfat_sot_*}]
 
-set_property IOSTANDARD LVDS_25 [get_ports logic_clock_p]
-set_property IOSTANDARD LVDS_25 [get_ports logic_clock_n]
-
-set_property IOSTANDARD LVDS_25 [get_ports elink_clock_p]
-set_property IOSTANDARD LVDS_25 [get_ports elink_clock_n]
+set_property IOSTANDARD LVDS_25 [get_ports clock_p]
+set_property IOSTANDARD LVDS_25 [get_ports clock_n]
 
 set_property IOSTANDARD LVDS_25 [get_ports elink_i_p]
 set_property IOSTANDARD LVDS_25 [get_ports elink_i_n]

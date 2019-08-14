@@ -6,7 +6,7 @@
   <spirit:version>1.0</spirit:version>
   <spirit:componentInstances>
     <spirit:componentInstance>
-      <spirit:instanceName>to_gbt_ser_a7</spirit:instanceName>
+      <spirit:instanceName>to_gbt_ser</spirit:instanceName>
       <spirit:componentRef spirit:vendor="xilinx.com" spirit:library="ip" spirit:name="selectio_wiz" spirit:version="5.1"/>
       <spirit:configurableElementValues>
         <spirit:configurableElementValue spirit:referenceId="BUSIFPARAM_VALUE.CLK_DIV_OUT.ASSOCIATED_BUSIF"/>
@@ -77,7 +77,7 @@
         <spirit:configurableElementValue spirit:referenceId="MODELPARAM_VALUE.C_INCLUDE_IDELAYCTRL_BUFG">1</spirit:configurableElementValue>
         <spirit:configurableElementValue spirit:referenceId="MODELPARAM_VALUE.C_INTERFACE_TYPE">NETWORKING</spirit:configurableElementValue>
         <spirit:configurableElementValue spirit:referenceId="MODELPARAM_VALUE.C_NOTES">None</spirit:configurableElementValue>
-        <spirit:configurableElementValue spirit:referenceId="MODELPARAM_VALUE.C_SELIO_ACTIVE_EDGE">SDR</spirit:configurableElementValue>
+        <spirit:configurableElementValue spirit:referenceId="MODELPARAM_VALUE.C_SELIO_ACTIVE_EDGE">DDR</spirit:configurableElementValue>
         <spirit:configurableElementValue spirit:referenceId="MODELPARAM_VALUE.C_SELIO_BUS_IN_DELAY">NONE</spirit:configurableElementValue>
         <spirit:configurableElementValue spirit:referenceId="MODELPARAM_VALUE.C_SELIO_BUS_IN_TAP">0</spirit:configurableElementValue>
         <spirit:configurableElementValue spirit:referenceId="MODELPARAM_VALUE.C_SELIO_BUS_OUT_DELAY">NONE</spirit:configurableElementValue>
@@ -95,7 +95,7 @@
         <spirit:configurableElementValue spirit:referenceId="MODELPARAM_VALUE.C_USE_PHASE_DETECTOR">false</spirit:configurableElementValue>
         <spirit:configurableElementValue spirit:referenceId="MODELPARAM_VALUE.C_USE_SERIALIZATION">true</spirit:configurableElementValue>
         <spirit:configurableElementValue spirit:referenceId="MODELPARAM_VALUE.C_USE_TEMPLATE">Custom</spirit:configurableElementValue>
-        <spirit:configurableElementValue spirit:referenceId="MODELPARAM_VALUE.c_component_name">from_gbt_ser_a7</spirit:configurableElementValue>
+        <spirit:configurableElementValue spirit:referenceId="MODELPARAM_VALUE.c_component_name">from_gbt_ser</spirit:configurableElementValue>
         <spirit:configurableElementValue spirit:referenceId="PARAM_VALUE.ACTIVE_EDGE">RISING</spirit:configurableElementValue>
         <spirit:configurableElementValue spirit:referenceId="PARAM_VALUE.BUS_DIR">OUTPUTS</spirit:configurableElementValue>
         <spirit:configurableElementValue spirit:referenceId="PARAM_VALUE.BUS_IN_DELAY">NONE</spirit:configurableElementValue>
@@ -117,7 +117,7 @@
         <spirit:configurableElementValue spirit:referenceId="PARAM_VALUE.CLK_SIG_TYPE">SINGLE</spirit:configurableElementValue>
         <spirit:configurableElementValue spirit:referenceId="PARAM_VALUE.CLK_TAP">0</spirit:configurableElementValue>
         <spirit:configurableElementValue spirit:referenceId="PARAM_VALUE.CONFIG_CLK_FWD">false</spirit:configurableElementValue>
-        <spirit:configurableElementValue spirit:referenceId="PARAM_VALUE.Component_Name">from_gbt_ser_a7</spirit:configurableElementValue>
+        <spirit:configurableElementValue spirit:referenceId="PARAM_VALUE.Component_Name">from_gbt_ser</spirit:configurableElementValue>
         <spirit:configurableElementValue spirit:referenceId="PARAM_VALUE.DDR_ALIGNMENT">C0</spirit:configurableElementValue>
         <spirit:configurableElementValue spirit:referenceId="PARAM_VALUE.DDR_CLK_BUF">BUFR</spirit:configurableElementValue>
         <spirit:configurableElementValue spirit:referenceId="PARAM_VALUE.ENABLE_BITSLIP">false</spirit:configurableElementValue>
@@ -128,7 +128,7 @@
         <spirit:configurableElementValue spirit:referenceId="PARAM_VALUE.INCLUDE_IDELAYCTRL_BUFG">true</spirit:configurableElementValue>
         <spirit:configurableElementValue spirit:referenceId="PARAM_VALUE.INTERFACE_TYPE">NETWORKING</spirit:configurableElementValue>
         <spirit:configurableElementValue spirit:referenceId="PARAM_VALUE.NOTES">None</spirit:configurableElementValue>
-        <spirit:configurableElementValue spirit:referenceId="PARAM_VALUE.SELIO_ACTIVE_EDGE">SDR</spirit:configurableElementValue>
+        <spirit:configurableElementValue spirit:referenceId="PARAM_VALUE.SELIO_ACTIVE_EDGE">DDR</spirit:configurableElementValue>
         <spirit:configurableElementValue spirit:referenceId="PARAM_VALUE.SELIO_BUS_IN_DELAY">NONE</spirit:configurableElementValue>
         <spirit:configurableElementValue spirit:referenceId="PARAM_VALUE.SELIO_BUS_IN_TAP">0</spirit:configurableElementValue>
         <spirit:configurableElementValue spirit:referenceId="PARAM_VALUE.SELIO_BUS_OUT_DELAY">NONE</spirit:configurableElementValue>
@@ -176,6 +176,7 @@
             <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.CLK_FWD_IO_STD" xilinx:valueSource="user"/>
             <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.CLK_FWD_SIG_TYPE" xilinx:valueSource="user"/>
             <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.Component_Name" xilinx:valueSource="user"/>
+            <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.SELIO_ACTIVE_EDGE" xilinx:valueSource="user"/>
             <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.SELIO_BUS_IN_DELAY" xilinx:valueSource="user"/>
             <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.SELIO_CLK_BUF" xilinx:valueSource="user"/>
             <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.SELIO_CLK_IO_STD" xilinx:valueSource="user"/>

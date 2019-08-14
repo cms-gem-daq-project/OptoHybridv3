@@ -9,6 +9,9 @@ geb_length  = "long"
 firmware_version_major   = "03"
 firmware_version_minor   = "02"
 firmware_release_version = "06"
+firmware_year            = 2019
+firmware_month           = 7
+firmware_day             = 28
 # END: OH_VERSION
 
 hybrid_version           = "v3b"
@@ -16,10 +19,6 @@ hybrid_version           = "v3b"
 ge21_five_cluster        = True
 
 ge11_full_cluster_builder = False
-
-firmware_year            = now.year
-firmware_month           = now.month
-firmware_day             = now.day
 
 release_hardware        = "00"
 fpga_type                = "NULL"

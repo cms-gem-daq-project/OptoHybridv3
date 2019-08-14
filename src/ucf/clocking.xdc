@@ -1,21 +1,20 @@
 create_clock -period 10.000 -name {control/led_control/fader_cnt_reg[0]_0} -waveform {0.000 5.000} [get_pins control/led_control_inst/prescaler_reg[0]
 create_clock -period 6.250 -name VIRTUAL_clk160_o_logic_clocking -waveform {0.000 3.125}
-create_clock -period 3.125 -name VIRTUAL_clk320_o_gbt_clocking   -waveform {0.000 1.563}
 
 set_property MAX_FANOUT 128 [get_nets trigger/ipbus_slave_inst/i_ipb_reset_sync_usr_clk/s_resync[0]]
 set_property MAX_FANOUT 128 [get_nets trigger/ipbus_slave_inst/i_ipb_reset_sync_usr_clk/s_resync[1]]
 
-set_input_delay -clock [get_clocks logic_clock_p] 12.500 [get_ports {gbt_rxready_i[*]}]
-set_input_delay -clock [get_clocks logic_clock_p] 12.500 [get_ports {gbt_rxvalid_i[*]}]
-set_input_delay -clock [get_clocks logic_clock_p] 12.500 [get_ports {gbt_txready_i[*]}]
+set_input_delay -clock [get_clocks clock_p] 12.500 [get_ports {gbt_rxready_i[*]}]
+set_input_delay -clock [get_clocks clock_p] 12.500 [get_ports {gbt_rxvalid_i[*]}]
+set_input_delay -clock [get_clocks clock_p] 12.500 [get_ports {gbt_txready_i[*]}]
 
 set_input_delay -clock [get_clocks VIRTUAL_clk160_o_logic_clocking] 1.625 [get_ports {vfat_sbits_*[*]}]
 set_input_delay -clock [get_clocks VIRTUAL_clk160_o_logic_clocking] 1.625 [get_ports {vfat_sot_*[*]}]
 set_input_delay -clock [get_clocks VIRTUAL_clk160_o_logic_clocking] 1.625 [get_ports elink_i_*]
 
 
-set_output_delay -clock [get_clocks logic_clock_p] -min -add_delay 0.000 [get_ports {led_o[0]}]
-set_output_delay -clock [get_clocks logic_clock_p] -max -add_delay 2.000 [get_ports {led_o[0]}]
+set_output_delay -clock [get_clocks clock_p] -min -add_delay 0.000 [get_ports {led_o[0]}]
+set_output_delay -clock [get_clocks clock_p] -max -add_delay 2.000 [get_ports {led_o[0]}]
 
 
 
