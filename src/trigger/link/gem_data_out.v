@@ -57,6 +57,9 @@ module   gem_data_out #(
 // Transmit data
 //----------------------------------------------------------------------------------------------------------------------
 
+  reg  overflow_reg, overflow_reg2;
+  reg  [111:0] gem_data_reg;
+  reg  [111:0] gem_data_reg2;
   wire [111:0] gem_data_sync;
 
   wire [3:0] mgt_reset;
@@ -321,14 +324,22 @@ module   gem_data_out #(
 
       initial $display ("Generating optical links for Virtex-6");
 
-      assign gem_data_sync    = gem_data;
+      always @(posedge usrclk_160) begin
+        gem_data_reg <= gem_data;
+        gem_data_reg2 <= gem_data_reg;
+
+        overflow_reg <= overflow_i;
+        overflow_reg2 <= overflow_reg;
+      end
+
+      assign gem_data_sync    = gem_data_reg2;
+      assign overflow         = overflow_reg2;
       assign ready_sync       = ready;
       assign reset            = reset_i;
       assign reset_sync       = reset;
       assign bc0              = bc0_i;
       assign resync           = resync_i;
       assign bxn_counter_lsbs = bxn_counter_i[1:0];
-      assign overflow         = overflow_i;
       assign usrclk_160       = clock_160;
 
       assign pll_lock_o = &pll_lock;

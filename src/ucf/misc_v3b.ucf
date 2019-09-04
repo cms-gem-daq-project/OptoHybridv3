@@ -1,4 +1,3 @@
-
 ########################################################################################################################
 # Resync
 ########################################################################################################################
@@ -116,7 +115,19 @@ NET "adc_vp" LOC=U18;
 NET "adc_vn" LOC=V17;
 
 ## Help P&R by placing the truncators
-INST "trigger/sbits/OH_FULL_GEN.cluster_packer_inst/u_first8/encloop[0].u_truncate/*" AREA_GROUP = "pblock_truncator_0";
-AREA_GROUP "pblock_truncator_0" RANGE=CLOCKREGION_X1Y2:CLOCKREGION_X1Y2;
-INST "trigger/sbits/OH_FULL_GEN.cluster_packer_inst/u_first8/encloop[1].u_truncate/*" AREA_GROUP = "pblock_truncator_1";
-AREA_GROUP "pblock_truncator_1" RANGE=CLOCKREGION_X0Y1:CLOCKREGION_X0Y1;
+#INST "trigger/sbits/OH_FULL_GEN.cluster_packer_inst/u_first8/encloop[0]*truncate*" AREA_GROUP = "pblock_enc0";
+#AREA_GROUP "pblock_enc0" RANGE=CLOCKREGION_X1Y0:CLOCKREGION_X1Y0;
+#AREA_GROUP "pblock_enc0" GROUP=CLOSED;
+#AREA_GROUP "pblock_enc0" PLACE=CLOSED;
+#
+#INST "trigger/sbits/OH_FULL_GEN.cluster_packer_inst/u_first8/encloop[1]*truncate*" AREA_GROUP = "pblock_enc1";
+#AREA_GROUP "pblock_enc1" RANGE=CLOCKREGION_X1Y1:CLOCKREGION_X1Y1;
+#AREA_GROUP "pblock_enc1" GROUP=CLOSED;
+#AREA_GROUP "pblock_enc1" PLACE=CLOSED;
+
+# create a closed group around the mgts to keep out extra trigger logic
+INST "trigger/gem_data_out*" AREA_GROUP=MGT_GROUP;
+AREA_GROUP "MGT_GROUP" RANGE=SLICE_X98Y120:SLICE_X105Y179;
+AREA_GROUP "MGT_GROUP" GROUP=CLOSED;
+AREA_GROUP "MGT_GROUP" PLACE=CLOSED;
+

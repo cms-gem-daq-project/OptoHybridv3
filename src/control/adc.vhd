@@ -153,9 +153,9 @@ begin
     port map(
         daddr_in         => daddr,        -- Address bus for the dynamic reconfiguration port
         dclk_in          => clock_i,      -- Clock input for the dynamic reconfiguration port
-        den_in           => den_os,       -- Enable Signal for the dynamic reconfiguration port
+        den_in           => den,          -- Enable Signal for the dynamic reconfiguration port
         di_in            => data_in,      -- Input data bus for the dynamic reconfiguration port
-        dwe_in           => write_en_os,  -- Write Enable for the dynamic reconfiguration port
+        dwe_in           => write_en,     -- Write Enable for the dynamic reconfiguration port
         reset_in         => reset,        -- Reset signal for the System Monitor control logic
         busy_out         => open,         -- ADC Busy signal
         channel_out      => open,         -- Channel Selection Outputs
@@ -178,9 +178,9 @@ begin
     port map(
         daddr_in            => daddr,        -- Address bus for the dynamic reconfiguration port
         dclk_in             => clock_i,      -- Clock input for the dynamic reconfiguration port
-        den_in              => den_os,       -- Enable Signal for the dynamic reconfiguration port
+        den_in              => den,          -- Enable Signal for the dynamic reconfiguration port
         di_in               => data_in,      -- Input data bus for the dynamic reconfiguration port
-        dwe_in              => write_en_os,  -- Write Enable for the dynamic reconfiguration port
+        dwe_in              => write_en,     -- Write Enable for the dynamic reconfiguration port
         reset_in            => reset,        -- Reset signal for the System Monitor control logic
         busy_out            => open,         -- ADC Busy signal
         channel_out         => open,         -- Channel Selection Outputs

@@ -105,7 +105,7 @@ parameter DDR = 0;
   always @(posedge clk320)
     sot_cnt <= sot_cnt - 1'b1;
 
-  reg [2:0] slow_cnt=0;
+  reg [5:0] slow_cnt=0;
   always @(posedge clk320)
     if (sotd0)
       slow_cnt <= slow_cnt + 1'b1;
@@ -196,6 +196,8 @@ parameter DDR = 0;
 
   wire [191:0] tu_p;
   wire [191:0] tu_p_inverted;
+
+  wire sbit_trigger = |tu_p;
 
   reg [8:0] tu_cnt=0;
   reg [5:0] tu_dly=0;
@@ -392,11 +394,8 @@ parameter DDR = 0;
 
   optohybrid_top optohybrid_top (
 
-      .logic_clock_p    (logic_clock_p),
-      .logic_clock_n    (logic_clock_n),
-
-      .elink_clock_p    (elink_clock_p),
-      .elink_clock_n    (elink_clock_n),
+      .clock_p    ( clk320),
+      .clock_n    (~clk320),
 
       .elink_i_p     (elink_i_p),
       .elink_i_n     (elink_i_n),

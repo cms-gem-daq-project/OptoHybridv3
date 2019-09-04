@@ -32,7 +32,7 @@ def main():
     firmware_month           = (now.month)
     firmware_day             = (now.day)
 
-    if (len(sys.argv)>6):
+    if (len(sys.argv)>8):
 
         date           = sys.argv[6].split('.')
         firmware_year  = int(date[0])

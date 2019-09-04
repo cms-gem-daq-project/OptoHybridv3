@@ -10,13 +10,13 @@ entity dru is
     g_PHASE_SEL_EXTERNAL : boolean := FALSE
   );
   port(
-  
+
     clk1x : in  std_logic;                    -- 40 MHz clock
     clk4x : in  std_logic;                    -- 160 MHz clock
 
     i     : in  std_logic_vector(7 downto 0); -- 8-bit input, the even bits are inverted!
     o     : out std_logic_vector(7 downto 0); -- 8-bit recovered output
-  
+
     e4_in         : in  std_logic_vector (3 downto 0);
     e4_out        : out std_logic_vector (3 downto 0);
     phase_sel_in  : in  std_logic_vector (1 downto 0);
@@ -51,7 +51,7 @@ architecture behavioral of dru is
 
   signal invalid_bitskip  : std_logic := '0';
 
-  signal rxdata                    : std_logic_vector(7 downto 0) := (others=>'0');
+  signal rxdata           : std_logic_vector(7 downto 0) := (others=>'0');
 
   attribute use_clock_enable                    : string;
   attribute use_clock_enable of fifo_s2         : signal is "no";
