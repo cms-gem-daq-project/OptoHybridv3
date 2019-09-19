@@ -7,11 +7,11 @@ package param_pkg is
     -- START: PARAM_PKG DO NOT EDIT --
     constant MAJOR_VERSION          : std_logic_vector(7 downto 0) := x"03";
     constant MINOR_VERSION          : std_logic_vector(7 downto 0) := x"02";
-    constant RELEASE_VERSION        : std_logic_vector(7 downto 0) := x"07";
+    constant RELEASE_VERSION        : std_logic_vector(7 downto 0) := x"08";
 
     constant RELEASE_YEAR           : std_logic_vector(15 downto 0) := x"2019";
     constant RELEASE_MONTH          : std_logic_vector(7 downto  0) := x"09";
-    constant RELEASE_DAY            : std_logic_vector(7 downto  0) := x"03";
+    constant RELEASE_DAY            : std_logic_vector(7 downto  0) := x"19";
 
     constant RELEASE_HARDWARE       : std_logic_vector(7 downto  0) := x"1C";
 

@@ -8,10 +8,10 @@ geb_version = "v3c"
 geb_length  = "long"
 firmware_version_major   = "03"
 firmware_version_minor   = "02"
-firmware_release_version = "07"
+firmware_release_version = "08"
 firmware_year            = 2019
 firmware_month           = 9
-firmware_day             = 3
+firmware_day             = 19
 # END: OH_VERSION
 
 hybrid_version           = "v3b"

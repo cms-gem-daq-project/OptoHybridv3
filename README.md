@@ -1,4 +1,4 @@
-# Firmware for the Optohybrid v3 
+# Optohybrid v3 Firmware
 
 Releases are labeled as version_major.version_minor.version_patch.hardware_id
 

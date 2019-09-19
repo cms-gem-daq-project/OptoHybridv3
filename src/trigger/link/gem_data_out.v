@@ -3,9 +3,9 @@
 module   gem_data_out #(
   parameter FPGA_TYPE_IS_VIRTEX6 = 0,
   parameter FPGA_TYPE_IS_ARTIX7  = 0,
-  parameter ALLOW_TTC_CHARS      = 0,
+  parameter ALLOW_TTC_CHARS      = 1,
   parameter ALLOW_RETRY          = 0,
-  parameter FRAME_CTRL_TTC       = 0
+  parameter FRAME_CTRL_TTC       = 1
 
 )
 (

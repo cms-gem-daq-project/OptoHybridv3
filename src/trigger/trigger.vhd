@@ -338,7 +338,7 @@ begin
 
             sbit_cnt_snap <= (sbit_timer_snap or sbit_cnt_persist);
 
-            if (trigger_reset = '1') then
+            if (trigger_reset = '1' or reset_counters = '1') then
                 sbit_time_counter <= (others => '0');
                 sbit_timer_reset <= '1';
                 sbit_timer_snap  <= '1';
