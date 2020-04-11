@@ -1,5 +1,7 @@
+#/usr/env python2
 from __future__ import unicode_literals
 import sys
+import math
 
 from oh_settings import *
 from polarity_swaps import *
@@ -9,7 +11,6 @@ from timing_constants_geb_v3b_short import *
 from timing_constants_geb_v3a_short import *
 from timing_constants_geb_v3c_long  import *
 from timing_constants_geb_ge21_null  import *
-
 
 ADDRESS_TABLE_TOP = '../optohybrid_registers.xml'
 
@@ -99,21 +100,21 @@ def write_timing_delays (file_handle):
         else:
             geb_slot = vfat
 
-        for bit in range (8):
+        for sbit in range (8):
 
-            global_bit                  = vfat*8+bit
-            global_bit_in_geb_numbering = geb_slot*8+bit
+            global_sbit                  = vfat*8+sbit
+            global_sbit_in_geb_numbering = geb_slot*8+sbit
 
-            address=(vfat*8+bit) / 6 # 5 bits per tap means 6 taps per 32 bit register
-            mask=0x1f << 5*(global_bit % 6)
+            address=math.floor((vfat*8+sbit) / 6) # 5 sbits per tap means 6 taps per 32 bit register
+            mask=0x1f << 5*(global_sbit % 6)
 
-            #print ( "VFAT #%s, Trigger Bit %s, Tap Delay=%s" % (vfat, bit, trig_tap_delays[global_bit]))
+            #print ( "VFAT #%s, Trigger Bit %s, Tap Delay=%s" % (vfat, sbit, trig_tap_delays[global_sbit]))
 
-            f.write('%s<node id="TAP_DELAY_VFAT%s_BIT%s" address="0x%X" permission="rw"\n'                          %  (padding, vfat, bit, address))
+            f.write('%s<node id="TAP_DELAY_VFAT%s_BIT%s" address="0x%X" permission="rw"\n'                          %  (padding, vfat, sbit, address))
             f.write('%s    mask="0x%08X"\n'                                                                         %  (padding, mask))
-            f.write('%s    description="VFAT %d S-bit %d tap delay"\n'  %  (padding, vfat, bit))
-            f.write('%s    fw_signal="trig_tap_delay(%d)"\n'                                                        %  (padding, global_bit))
-            f.write('%s    fw_default="%d"/>\n'                                                                     %  (padding, trig_tap_delays[global_bit_in_geb_numbering]))
+            f.write('%s    description="VFAT %d S-bit %d tap delay"\n'  %  (padding, vfat, sbit))
+            f.write('%s    fw_signal="trig_tap_delay(%d)"\n'                                                        %  (padding, global_sbit))
+            f.write('%s    fw_default="%d"/>\n'                                                                     %  (padding, trig_tap_delays[global_sbit_in_geb_numbering]))
 
     for vfat in range (num_vfats):
 
@@ -130,7 +131,7 @@ def write_timing_delays (file_handle):
 
         #print ( "VFAT #%s SOT, Tap Delay=%s" % (vfat, sot_tap_delays[geb_slot]))
 
-        f.write('%s<node id="SOT_TAP_DELAY_VFAT%s" address="0x%X" permission="rw"\n'                            %  (padding, vfat, address))
+        f.write('%s<node id="SOT_TAP_DELAY_VFAT%s" address="0x%X" permission="rw"\n'                            %  (padding, vfat, int(address)))
         f.write('%s    mask="0x%08X"\n'                                                                         %  (padding, mask))
         f.write('%s    description="VFAT %d SOT tap delay"\n'                                                   %  (padding, vfat))
         f.write('%s    fw_signal="sot_tap_delay(%d)"\n'                                                         %  (padding, vfat))

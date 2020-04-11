@@ -1,3 +1,4 @@
+#/usr/env python2
 from __future__ import unicode_literals
 from insert_code import *
 import sys

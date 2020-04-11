@@ -1,17 +1,18 @@
+#/usr/env python2
 import datetime
 now = datetime.datetime.now()
 
 # START: OH_VERSION
-gem_version = "ge11"
+gem_version = "ge21"
 oh_version  = "v3c"
 geb_version = "v3c"
-geb_length  = "long"
+geb_length  = "short"
 firmware_version_major   = "03"
 firmware_version_minor   = "02"
-firmware_release_version = "08"
-firmware_year            = 2019
-firmware_month           = 9
-firmware_day             = 19
+firmware_release_version = "04"
+firmware_year            = 2020
+firmware_month           = 4
+firmware_day             = 11
 # END: OH_VERSION
 
 hybrid_version           = "v3b"

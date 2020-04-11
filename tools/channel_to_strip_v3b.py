@@ -1,3 +1,4 @@
+#/usr/env python2
 def channel_to_strip (vfat, channel):
     if (vfat==2 or vfat==3 or vfat==5 or vfat==7 or vfat==8 or vfat==9 or vfat==10 or vfat==11 or vfat==13 or vfat==15) :
             if (channel==0): return 0;

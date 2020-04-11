@@ -1,3 +1,4 @@
+#/usr/env python2
 from __future__ import unicode_literals
 from oh_settings import *
 from insert_code import *
@@ -51,7 +52,7 @@ def write_oh_ports (file_handle):
         f.write ('%sadc_vp      : in   std_logic;\n'                                              %  (padding))
         f.write ('%sadc_vn      : in   std_logic;\n'                                              %  (padding))
     else:
-        print "invalid GEM station"
+        print("invalid GEM station")
         return sys.exit(1)
 
 def write_oh_signals (file_handle):
@@ -73,7 +74,7 @@ def write_oh_signals (file_handle):
     elif (gem_version=="ge11"):
         f.write('\n')
     else:
-        print "invalid GEM station"
+        print("invalid GEM station")
         return sys.exit(1)
 
 def write_oh_io (file_handle):
@@ -101,7 +102,7 @@ def write_oh_io (file_handle):
         f.write('%sext_reset_o  <= ctrl_reset_vfats;\n' % padding)
         f.write('%sext_sbits_o  <= ext_sbits;\n' % padding)
     else:
-        print "invalid GEM station"
+        print("invalid GEM station")
         return sys.exit(1)
 
 if __name__ == '__main__':

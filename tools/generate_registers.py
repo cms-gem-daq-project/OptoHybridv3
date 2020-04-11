@@ -1,3 +1,4 @@
+#!/usr/bin/python2
 from __future__ import unicode_literals
 
 __author__ = 'evka'
@@ -1195,16 +1196,16 @@ def printNodeToUHALFile(node, file, level, baseAddress, baseName, addrOffset, nu
 
     if (num_of_oh == None and "%s.%s"%(baseName,name) in amcTopNodesToSkip):
         # only for writing the AMC specific file
-        print 'Not writing node "%s" to AMC uHAL address table file'%(name)
+        print('Not writing node "%s" to AMC uHAL address table file'%(name))
         return
 
     if num_of_oh in range(0,12):
         # only for writing the OH specific file
         if "%s.%s"%(baseName,name) in ohTopNodesToSkip:
-            print 'Not writing node "%s" to OH uHAL address table file'%(name)
+            print('Not writing node "%s" to OH uHAL address table file'%(name))
             return
         if name in ["OH%d"%(oh) for oh in range(0,12) if oh != num_of_oh]:
-            print 'Not writing node "%s" to OH%d uHAL address table file'%(name,num_of_oh)
+            print('Not writing node "%s" to OH%d uHAL address table file'%(name,num_of_oh))
             return
     for i in range(level):
         file.write('  ')
@@ -1359,4 +1360,6 @@ def substituteVars(string, vars):
     return ret
 
 if __name__ == '__main__':
+    if sys.version_info[0] >= 3:
+        raise Exception("Python 2 required.")
     main()
