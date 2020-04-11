@@ -19,7 +19,7 @@ use work.types_pkg.all;
 
 library work;
 use work.ipbus_pkg.all;
-use work.param_pkg.all;
+use work.hardware_pkg.all;
 
 entity link_request is
   port(

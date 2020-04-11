@@ -41,3 +41,7 @@ set_false_path -from [get_pins {gbt/gbt_serdes/to_gbt_ser_gen_a7.i_to_gbt_ser/in
 
 set_max_delay -from [get_cells trigger/tx_link_reset_reg]                                                                                                                         -to [get_cells {trigger/gem_data_out_inst/synchronizer_reset/sync_gen.gen_ff*.s_resync_reg*}]      20.0 -datapath_only
 set_max_delay -from [get_cells trigger/gem_data_out_inst/a7_gtp_wrapper/a7_mgts_with_buffer0_support_i/U0/a7_mgts_with_buffer0_init_i/gt*_txresetfsm_i/tx_fsm_reset_done_int_reg] -to [get_cells {trigger/gem_data_out_inst/synchronizer_ready_sync/sync_gen.gen_ff*.s_resync_reg*}] 20.0 -datapath_only
+
+# nothing important comes from the CFGMCLK^M
+set_false_path -from [get_clocks CFGMCLK] -to [get_clocks *]
+set_false_path -from [get_clocks  *     ] -to [get_clocks CFGMCLK]

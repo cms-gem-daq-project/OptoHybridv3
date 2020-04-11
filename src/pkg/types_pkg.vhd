@@ -2,6 +2,9 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
+library work;
+use work.hardware_pkg.all;
+
 package types_pkg is
 
     --============--
@@ -21,10 +24,24 @@ package types_pkg is
     type t_std32_array is array(integer range <>) of std_logic_vector(31 downto 0);
     type t_std64_array is array(integer range <>) of std_logic_vector(63 downto 0);
 
+    type mgt_status_t is record
+  txfsm_done : std_logic;
+  pll_lock   : std_logic;
+  ready      : std_logic;
+    end record;
 
-    ----------------------------------------------------------------------------------------------------
-    -- Clocks
-    ----------------------------------------------------------------------------------------------------
+    type mgt_control_t is record
+        tx_prbs_mode       : std_logic_vector (2 downto 0);
+        pll_reset        : std_logic;
+        mgt_reset        : std_logic_vector (3 downto 0);
+        gtxtest_start    : std_logic;
+        txreset          : std_logic;
+        mgt_realign      : std_logic;
+        txpowerdown      : std_logic;
+        txpowerdown_mode : std_logic_vector (1 downto 0);
+        txpllpowerdown   : std_logic;
+        force_not_ready    : std_logic;
+    end record;
 
     type ttc_t is record
       resync : std_logic;
@@ -58,7 +75,13 @@ package types_pkg is
 
     type sbits_array_t is array(integer range <>) of sbits_t;
 
-    subtype sbit_cluster_t is std_logic_vector(13 downto 0);
+    type sbit_cluster_t is record
+        adr : std_logic_vector (MXADRB-1 downto 0);
+        cnt : std_logic_vector (MXCNTB-1 downto 0);
+        prt : std_logic_vector (MXPRTB-1 downto 0);
+        vpf : std_logic;
+    end record;
+
 
     type sbit_cluster_array_t is array(integer range<>) of sbit_cluster_t;
 
@@ -84,4 +107,30 @@ package types_pkg is
 
     type wb_res_array_t is array(integer range <>) of wb_res_t;
 
+    function majority (a : std_logic_vector; b: std_logic_vector; c: std_logic_vector)
+      return std_logic_vector;
+
+    function majority (a : std_logic; b: std_logic; c: std_logic)
+      return std_logic;
+
 end types_pkg;
+
+package body types_pkg is
+
+    function majority (a : std_logic_vector; b: std_logic_vector; c: std_logic_vector)
+      return std_logic_vector is
+      variable tmp : std_logic_vector (a'length-1 downto 0);
+    begin
+      tmp := (a and b) or (b and c) or (a and c);
+      return tmp;
+    end function;
+
+    function majority (a : std_logic; b: std_logic; c: std_logic)
+      return std_logic is
+      variable tmp : std_logic;
+    begin
+      tmp := (a and b) or (b and c) or (a and c);
+      return tmp;
+    end function;
+
+end package body;

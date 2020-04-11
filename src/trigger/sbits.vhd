@@ -21,10 +21,9 @@ use ieee.numeric_std.all;
 
 library work;
 use work.types_pkg.all;
-use work.trig_pkg.all;
+use work.hardware_pkg.all;
 
 entity sbits is
-  generic (oh_lite : integer := OH_LITE);
   port(
     clocks : in clocks_t;
 
@@ -302,7 +301,7 @@ begin
   --== Light (12 VFAT) Cluster Packer ==--
   --====================================--
 
-  OH_LITE_GEN : if (oh_lite = 1) generate
+  GE21_GEN : if (GE21 = 1) generate
 
     cluster_packer_inst : cluster_packer
 
@@ -340,14 +339,15 @@ begin
         vfat22 => empty_vfat,
         vfat23 => empty_vfat,
 
-        cluster0 => vfat_sbit_clusters_o(0),
-        cluster1 => vfat_sbit_clusters_o(1),
-        cluster2 => vfat_sbit_clusters_o(2),
-        cluster3 => vfat_sbit_clusters_o(3),
-        cluster4 => vfat_sbit_clusters_o(4),
-        cluster5 => vfat_sbit_clusters_o(5),
-        cluster6 => vfat_sbit_clusters_o(6),
-        cluster7 => vfat_sbit_clusters_o(7),
+        -- TODO: fixme
+        cluster0 => open, --vfat_sbit_clusters_o(0),
+        cluster1 => open, --vfat_sbit_clusters_o(1),
+        cluster2 => open, --vfat_sbit_clusters_o(2),
+        cluster3 => open, --vfat_sbit_clusters_o(3),
+        cluster4 => open, --vfat_sbit_clusters_o(4),
+        cluster5 => open, --vfat_sbit_clusters_o(5),
+        cluster6 => open, --vfat_sbit_clusters_o(6),
+        cluster7 => open, --vfat_sbit_clusters_o(7),
 
         overflow => overflow_o
         );
@@ -358,7 +358,7 @@ begin
   --== Heavy (24 VFAT) Cluster Packer ==--
   --====================================--
 
-  OH_FULL_GEN : if (oh_lite = 0) generate
+  GE11_GEN : if (GE11 = 1) generate
 
     cluster_packer_inst : cluster_packer
 
@@ -394,14 +394,14 @@ begin
         vfat21        => vfat_sbits_strip_mapped(21),
         vfat22        => vfat_sbits_strip_mapped(22),
         vfat23        => vfat_sbits_strip_mapped(23),
-        cluster0      => vfat_sbit_clusters_o(0),
-        cluster1      => vfat_sbit_clusters_o(1),
-        cluster2      => vfat_sbit_clusters_o(2),
-        cluster3      => vfat_sbit_clusters_o(3),
-        cluster4      => vfat_sbit_clusters_o(4),
-        cluster5      => vfat_sbit_clusters_o(5),
-        cluster6      => vfat_sbit_clusters_o(6),
-        cluster7      => vfat_sbit_clusters_o(7),
+        cluster0      => open, -- vfat_sbit_clusters_o(0),
+        cluster1      => open, -- vfat_sbit_clusters_o(1),
+        cluster2      => open, -- vfat_sbit_clusters_o(2),
+        cluster3      => open, -- vfat_sbit_clusters_o(3),
+        cluster4      => open, -- vfat_sbit_clusters_o(4),
+        cluster5      => open, -- vfat_sbit_clusters_o(5),
+        cluster6      => open, -- vfat_sbit_clusters_o(6),
+        cluster7      => open, -- vfat_sbit_clusters_o(7),
         overflow      => overflow_o
         );
 

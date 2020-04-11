@@ -20,8 +20,7 @@ use ieee.std_logic_misc.all;
 library work;
 use work.types_pkg.all;
 use work.ipbus_pkg.all;
-use work.param_pkg.all;
-use work.trig_pkg.all;
+use work.hardware_pkg.all;
 use work.registers.all;
 
 entity trigger is
@@ -393,14 +392,15 @@ begin
       reset_i          => (trigger_reset or reset_monitor),
       ttc_clk_i        => clocks.clk40,
       l1a_i            => ttc.l1a,
-      sbit_cluster_0   => sbit_clusters(0),
-      sbit_cluster_1   => sbit_clusters(1),
-      sbit_cluster_2   => sbit_clusters(2),
-      sbit_cluster_3   => sbit_clusters(3),
-      sbit_cluster_4   => sbit_clusters(4),
-      sbit_cluster_5   => sbit_clusters(5),
-      sbit_cluster_6   => sbit_clusters(6),
-      sbit_cluster_7   => sbit_clusters(7),
+      -- FIXME:
+      sbit_cluster_0   => (others => '0'), -- sbit_clusters(0),
+      sbit_cluster_1   => (others => '0'), -- sbit_clusters(1),
+      sbit_cluster_2   => (others => '0'), -- sbit_clusters(2),
+      sbit_cluster_3   => (others => '0'), -- sbit_clusters(3),
+      sbit_cluster_4   => (others => '0'), -- sbit_clusters(4),
+      sbit_cluster_5   => (others => '0'), -- sbit_clusters(5),
+      sbit_cluster_6   => (others => '0'), -- sbit_clusters(6),
+      sbit_cluster_7   => (others => '0'), -- sbit_clusters(7),
       sbit_cluster_8   => ("000" & "111" & x"FA"),
       sbit_cluster_9   => ("000" & "111" & x"FA"),
       frozen_cluster_0 => frozen_cluster_0,
@@ -422,14 +422,14 @@ begin
   -- Fixed latency trigger links
   --------------------------------------------------------------------------------------------------------------------
 
-  valid_clusters(0) <= '0' when sbit_clusters(0)(10 downto 9) = "11" else '1';
-  valid_clusters(1) <= '0' when sbit_clusters(1)(10 downto 9) = "11" else '1';
-  valid_clusters(2) <= '0' when sbit_clusters(2)(10 downto 9) = "11" else '1';
-  valid_clusters(3) <= '0' when sbit_clusters(3)(10 downto 9) = "11" else '1';
-  valid_clusters(4) <= '0' when sbit_clusters(4)(10 downto 9) = "11" else '1';
-  valid_clusters(5) <= '0' when sbit_clusters(5)(10 downto 9) = "11" else '1';
-  valid_clusters(6) <= '0' when sbit_clusters(6)(10 downto 9) = "11" else '1';
-  valid_clusters(7) <= '0' when sbit_clusters(7)(10 downto 9) = "11" else '1';
+  valid_clusters(0) <= sbit_clusters(0).vpf;
+  valid_clusters(1) <= sbit_clusters(1).vpf;
+  valid_clusters(2) <= sbit_clusters(2).vpf;
+  valid_clusters(3) <= sbit_clusters(3).vpf;
+  valid_clusters(4) <= sbit_clusters(4).vpf;
+  valid_clusters(5) <= sbit_clusters(5).vpf;
+  valid_clusters(6) <= sbit_clusters(6).vpf;
+  valid_clusters(7) <= sbit_clusters(7).vpf;
 
   valid_clusters_or <= or_reduce (valid_clusters(7 downto 0));
 

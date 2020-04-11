@@ -17,9 +17,9 @@ use IEEE.Numeric_STD.all;
 
 library work;
 use work.types_pkg.all;
-use work.trig_pkg.all;
 use work.ipbus_pkg.all;
-use work.param_pkg.all;
+use work.hardware_pkg.all;
+use work.version_pkg.all;
 use work.registers.all;
 
 entity control is
@@ -334,6 +334,23 @@ begin
   end process;
 
   --------------------------------------------------------------------------------------------------------------------
+  -- Uptime
+  --------------------------------------------------------------------------------------------------------------------
+
+  --process (clock_i) begin
+  --    if (rising_edge(clock_i)) then
+  --        if (reset) then
+  --            uptime_cnt <= 0;
+  --            uptime <= 0;
+  --        elsif (uptime_cnt < x"2638e98")
+  --            uptime_cnt <= uptime_cnt + 1;
+  --        else
+  --            uptime_cnt <= 0;
+  --            uptime <= uptime + 1;
+  --        end if;
+  --end process;
+
+  --------------------------------------------------------------------------------------------------------------------
   -- LED Control
   --------------------------------------------------------------------------------------------------------------------
 
@@ -395,7 +412,7 @@ begin
   -- This module handles the external signals: the input trigger and the output SBits.
 
   external_inst : external
-    generic map (GE21 => OH_LITE, MXVFATS => MXVFATS)
+    generic map (GE21 => GE21, MXVFATS => MXVFATS)
     port map(
       clock => clocks.clk40,
 

@@ -13,8 +13,7 @@ use ieee.numeric_std.all;
 library work;
 use work.types_pkg.all;
 use work.ipbus_pkg.all;
-use work.trig_pkg.all;
-use work.param_pkg.all;
+use work.hardware_pkg.all;
 library unisim;
 use unisim.vcomponents.all;
 
@@ -51,6 +50,9 @@ entity top_optohybrid is
     elink_o_p : out std_logic;
     elink_o_n : out std_logic;
 
+    gbt_trig_o_p : out std_logic_vector (11*GE21-1 downto 0);
+    gbt_trig_o_n : out std_logic_vector (11*GE21-1 downto 0);
+
     --== GBT ==--
 
     -- only 1 connected in GE11, 2 in GE21
@@ -65,10 +67,10 @@ entity top_optohybrid is
     adc_vn      : in  std_logic_vector (1*GE11-1 downto 0);
 
     -- GE21
-    gbt_txvalid_o  : out   std_logic_vector (MXREADY*GE21-1 downto 0);
+    --gbt_txvalid_o  : out   std_logic_vector (MXREADY*GE21-1 downto 0);
     master_slave   : in    std_logic_vector (1*GE21-1 downto 0);
-    master_slave_p : inout std_logic_vector (12*GE21-1 downto 0);
-    master_slave_n : inout std_logic_vector (12*GE21-1 downto 0);
+    master_slave_p : inout std_logic_vector (5*GE21-1 downto 0);
+    master_slave_n : inout std_logic_vector (5*GE21-1 downto 0);
     vtrx_mabs_i    : in    std_logic_vector (1*GE21 downto 0);
 
     --== LEDs ==--
@@ -80,8 +82,8 @@ entity top_optohybrid is
     mgt_clk_p_i : in std_logic_vector (1 downto 0);
     mgt_clk_n_i : in std_logic_vector (1 downto 0);
 
-    mgt_tx_p_o : out std_logic_vector(3 downto 0);
-    mgt_tx_n_o : out std_logic_vector(3 downto 0);
+    --mgt_tx_p_o : out std_logic_vector(3 downto 0);
+    --mgt_tx_n_o : out std_logic_vector(3 downto 0);
 
     --== VFAT Trigger Data ==--
 
@@ -114,6 +116,8 @@ architecture Behavioral of top_optohybrid is
   signal txpllpowerdown   : std_logic;
   signal sbit_clusters    : sbit_cluster_array_t (7 downto 0);
 
+  signal mgt_control : mgt_control_t;
+  signal mgt_status  : mgt_status_t;
 
   --== Global signals ==--
 
@@ -195,48 +199,6 @@ architecture Behavioral of top_optohybrid is
     reset_o      : out std_logic
     );
   end component;
-
-  component gem_data_out
-    generic (
-      GE11 : integer := 0;
-      GE21 : integer := 1
-      );
-    port (
-      trg_tx_n : out std_logic_vector (3 downto 0);
-      trg_tx_p : out std_logic_vector (3 downto 0);
-
-      refclk_n : in std_logic_vector (1 downto 0);
-      refclk_p : in std_logic_vector (1 downto 0);
-
-      tx_prbs_mode : in std_logic_vector (2 downto 0);
-
-      gem_data      : in std_logic_vector (111 downto 0);  -- 56 bit gem data
-      overflow_i    : in std_logic;                        -- 1 bit gem has more than 8 clusters
-      bxn_counter_i : in std_logic_vector (11 downto 0);   -- 12 bit bxn counter
-      bc0_i         : in std_logic;                        -- 1  bit bx0 flag
-      resync_i      : in std_logic;                        -- 1  bit bx0 flag
-
-      force_not_ready    : in std_logic;
-      pll_reset_i        : in std_logic;
-      mgt_reset_i        : in std_logic_vector(3 downto 0);
-      gtxtest_start_i    : in std_logic;
-      txreset_i          : in std_logic;
-      mgt_realign_i      : in std_logic;
-      txpowerdown_i      : in std_logic;
-      txpowerdown_mode_i : in std_logic_vector (1 downto 0);
-      txpllpowerdown_i   : in std_logic;
-
-      clock_40  : in std_logic;
-      clock_160 : in std_logic;
-
-      ready_o      : out std_logic;
-      pll_lock_o   : out std_logic;
-      txfsm_done_o : out std_logic;
-
-      reset_i : in std_logic
-      );
-  end component;
-
 
 begin
 
@@ -545,49 +507,22 @@ begin
   -- Fiber Output
   --------------------------------------------------------------------------------
 
-  gem_data_out_inst : gem_data_out
-    generic map (
-      GE11 => GE11,
-      GE21 => GE21
-      )
+  trigger_output_inst : entity work.trigger_output
     port map (
-
-      refclk_p => mgt_clk_p_i,          -- 160 MHz Reference Clock Positive
-      refclk_n => mgt_clk_n_i,          -- 160 MHz Reference Clock Negative
-
-      clock_40  => clocks.clk40,        -- 40 MHz  Logic Clock
-      clock_160 => clocks.clk160_0,     -- 160 MHz  Logic Clock
-
+      clocks        => clocks,
+      reset_i       => core_reset,
+      trg_tx_p      => open,
+      trg_tx_n      => open,
+      refclk_p      => mgt_clk_p_i,
+      refclk_n      => mgt_clk_n_i,
+      gbt_trig_p    => gbt_trig_o_p,
+      gbt_trig_n    => gbt_trig_o_n,
+      clusters      => sbit_clusters,
+      ttc           => ttc,
+      overflow_i    => sbit_overflow,
       bxn_counter_i => bxn_counter,
-
-      bc0_i    => ttc.bc0,
-      resync_i => ttc.resync,
-
-      reset_i => tx_link_reset,
-
-      force_not_ready => '0',
-
-      ready_o      => mgts_ready,
-      pll_lock_o   => pll_lock,
-      txfsm_done_o => txfsm_done,
-      tx_prbs_mode => tx_prbs_mode,
-
-
-      pll_reset_i        => pll_reset,
-      mgt_reset_i        => mgt_reset,
-      gtxtest_start_i    => gtxtest_start,
-      txreset_i          => txreset,
-      mgt_realign_i      => mgt_realign,
-      txpowerdown_i      => txpowerdown,
-      txpowerdown_mode_i => txpowerdown_mode,
-      txpllpowerdown_i   => txpllpowerdown,
-
-      trg_tx_p => mgt_tx_p_o,
-      trg_tx_n => mgt_tx_n_o,
-
-      gem_data => sbit_clusters(7) & sbit_clusters(6) & sbit_clusters(5) & sbit_clusters(4) & sbit_clusters(3) & sbit_clusters(2) & sbit_clusters(1) & sbit_clusters(0),
-
-      overflow_i => sbit_overflow
-      );
+      error_i       => '0',
+      mgt_control   => mgt_control,
+      mgt_status    => mgt_status);
 
 end Behavioral;

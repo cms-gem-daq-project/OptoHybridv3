@@ -23,8 +23,7 @@ use UNISIM.vcomponents.all;
 
 library work;
 use work.types_pkg.all;
-use work.trig_pkg.all;
-use work.param_pkg.all;
+use work.hardware_pkg.all;
 
 entity trig_alignment is
   port(

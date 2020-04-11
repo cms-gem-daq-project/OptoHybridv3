@@ -287,6 +287,13 @@
                 mask="0x01ffffff"
                 fw_signal="dna(56 downto 32)"/>
         </node> <!--DNA-->
+        <node id="UPTIME" address="0x18" description="Uptime in seconds">
+            <node id="SECONDS" address="0x0" permission="r"
+                description="Device uptime in seconds (20 bits)"
+                mask="0xfffff"
+                fw_signal="std_logic_vector(uptime)"/>
+        </node> <!--UPTIME-->
+
     </node> <!--CTRL-->
 
     <!--ADC module -->

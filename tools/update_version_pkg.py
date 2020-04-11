@@ -4,9 +4,9 @@ from oh_settings import *
 from polarity_swaps import *
 from insert_code import *
 
-ADDRESS_TABLE_TOP = '../src/pkg/param_pkg.vhd'
-MARKER_START='-- START: PARAM_PKG DO NOT EDIT --'
-MARKER_END="-- END: PARAM_PKG DO NOT EDIT --"
+ADDRESS_TABLE_TOP = '../src/pkg/version_pkg.vhd'
+MARKER_START='-- START: VERSION_PKG DO NOT EDIT --'
+MARKER_END="-- END: VERSION_PKG DO NOT EDIT --"
 
 
 def main():
@@ -14,10 +14,10 @@ def main():
     trig_tap_delays = 0
     sot_tap_delays = 0
 
-    insert_code (ADDRESS_TABLE_TOP, ADDRESS_TABLE_TOP, MARKER_START, MARKER_END, write_param_pkg)
+    insert_code (ADDRESS_TABLE_TOP, ADDRESS_TABLE_TOP, MARKER_START, MARKER_END, write_version_pkg)
 
 
-def write_param_pkg (file_handle):
+def write_version_pkg (file_handle):
 
     f = file_handle
 
@@ -37,14 +37,6 @@ def write_param_pkg (file_handle):
     f.write ('\n')
     f.write ('%sconstant RELEASE_HARDWARE       : std_logic_vector(7 downto  0) := x"%s";\n'    %  (padding, release_hardware))
     f.write ('\n')
-    f.write ('%sconstant FPGA_TYPE     : string  := "%s";\n'                                    %  (padding, fpga_type))
-    f.write ('%sconstant GE11  : integer := %d;\n'                                              %  (padding, fpga_series6))
-    f.write ('%sconstant GE21  : integer := %d;\n'                                              %  (padding, fpga_series7))
-    f.write ('\n')
-    f.write ('%sconstant MXELINKS : integer := %d;\n'                                           %  (padding, mxelinks))
-    f.write ('%sconstant MXLED    : integer := %d;\n'                                           %  (padding, mxleds))
-    f.write ('%sconstant MXRESET  : integer := %d;\n'                                           %  (padding, mxresets))
-    f.write ('%sconstant MXREADY  : integer := %d;\n'                                           %  (padding, mxready))
 
 if __name__ == '__main__':
     main()

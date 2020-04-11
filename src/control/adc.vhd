@@ -14,7 +14,7 @@ use ieee.std_logic_1164.all;
 library work;
 use work.types_pkg.all;
 use work.ipbus_pkg.all;
-use work.param_pkg.all;
+use work.hardware_pkg.all;
 use work.registers.all;
 
 entity adc is
@@ -39,9 +39,6 @@ entity adc is
 end adc;
 
 architecture Behavioral of adc is
-  --====================--
-  --== System Monitor ==--
-  --====================--
 
   signal reset : std_logic;
 

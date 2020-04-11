@@ -13,7 +13,7 @@ library unisim;
 use unisim.vcomponents.all;
 
 library work;
-use work.param_pkg.all;
+use work.hardware_pkg.all;
 
 entity sem_mon is
   port(
