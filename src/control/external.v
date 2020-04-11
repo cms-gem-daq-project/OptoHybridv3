@@ -47,10 +47,10 @@ module external (
 
 );
 
-  parameter oh_lite=0;
+  parameter GE21=0;
   parameter MXVFATS = 24;
 
-  initial $display ("Instantiating external.v with MXVFATS=%d OH_LITE=%d", MXVFATS, oh_lite);
+  initial $display ("Instantiating external.v with MXVFATS=%d OH_LITE=%d", MXVFATS, GE21);
 
   wire [4:0] sbit_sel [7:0];
   wire [1:0] sbit_mode [7:0];
@@ -88,7 +88,7 @@ module external (
 
   genvar j;
   generate
-    if (oh_lite) begin: partitionsplit
+    if (GE21) begin: partitionsplit
 
       for (j=0; j<2; j=j+1) begin: zerotoone
         always @(posedge clock)
@@ -103,7 +103,7 @@ module external (
           eta_row[j] <= ors[j] || ors[8+j] || ors[16+j];
       end
 
-    end // if oh_lite
+    end // if GE21
   endgenerate
 
 
@@ -118,8 +118,8 @@ module external (
         sector_row[j] <= 0;
       end
       else begin
-        if (oh_lite) sector_row[j] <= ors[j*2] || ors[j*2+1];
-        else         sector_row[j] <= ors[j*4] || ors[j*4+1] || ors[j*4+2] || ors[j*4+3];
+        if (GE21) sector_row[j] <= ors[j*2] || ors[j*2+1];
+        else      sector_row[j] <= ors[j*4] || ors[j*4+1] || ors[j*4+2] || ors[j*4+3];
       end
     end
   end

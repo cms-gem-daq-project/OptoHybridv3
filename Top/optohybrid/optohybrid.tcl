@@ -4,7 +4,7 @@ set bin_file 1
 set use_questa_simulator 0
 
 ## FPGA and Vivado strategies and flows
-set FPGA xcku15p-ffva1760-2-e
+set FPGA xc7a75tfgg484-3
 set SYNTH_STRATEGY "Flow_AreaOptimized_High" 
 set SYNTH_FLOW "Vivado Synthesis 2019"
 set IMPL_STRATEGY "Performance_ExplorePostRoutePhysOpt"

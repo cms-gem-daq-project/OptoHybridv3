@@ -121,6 +121,59 @@ architecture Behavioral of sbits is
     return result;
     end; -- function reverse_vector
 
+
+    component cluster_packer
+      port (
+
+    clock5x      : in                 std_logic;
+    clock4x      : in                 std_logic;
+    clock1x      : in                 std_logic;
+    reset_i      : in                 std_logic;
+    cluster_count : out std_logic_vector (10 downto 0);
+    deadtime_i   : in  std_logic_vector (3 downto 0);
+
+    trig_stop_i :   in std_logic;
+
+    vfat0   :  in  std_logic_vector (MXSBITS-1 downto 0);
+    vfat1   :  in  std_logic_vector (MXSBITS-1 downto 0);
+    vfat2   :  in  std_logic_vector (MXSBITS-1 downto 0);
+    vfat3   :  in  std_logic_vector (MXSBITS-1 downto 0);
+    vfat4   :  in  std_logic_vector (MXSBITS-1 downto 0);
+    vfat5   :  in  std_logic_vector (MXSBITS-1 downto 0);
+    vfat6   :  in  std_logic_vector (MXSBITS-1 downto 0);
+    vfat7   :  in  std_logic_vector (MXSBITS-1 downto 0);
+    vfat8   :  in  std_logic_vector (MXSBITS-1 downto 0);
+    vfat9   :  in  std_logic_vector (MXSBITS-1 downto 0);
+    vfat10  :  in  std_logic_vector (MXSBITS-1 downto 0);
+    vfat11  :  in  std_logic_vector (MXSBITS-1 downto 0);
+    vfat12  :  in  std_logic_vector (MXSBITS-1 downto 0);
+    vfat13  :  in  std_logic_vector (MXSBITS-1 downto 0);
+    vfat14  :  in  std_logic_vector (MXSBITS-1 downto 0);
+    vfat15  :  in  std_logic_vector (MXSBITS-1 downto 0);
+    vfat16  :  in  std_logic_vector (MXSBITS-1 downto 0);
+    vfat17  :  in  std_logic_vector (MXSBITS-1 downto 0);
+    vfat18  :  in  std_logic_vector (MXSBITS-1 downto 0);
+    vfat19  :  in  std_logic_vector (MXSBITS-1 downto 0);
+    vfat20  :  in  std_logic_vector (MXSBITS-1 downto 0);
+    vfat21  :  in  std_logic_vector (MXSBITS-1 downto 0);
+    vfat22  :  in  std_logic_vector (MXSBITS-1 downto 0);
+    vfat23  :  in  std_logic_vector (MXSBITS-1 downto 0);
+
+    cluster0 : out std_logic_vector (13 downto 0);
+    cluster1 : out std_logic_vector (13 downto 0);
+    cluster2 : out std_logic_vector (13 downto 0);
+    cluster3 : out std_logic_vector (13 downto 0);
+    cluster4 : out std_logic_vector (13 downto 0);
+    cluster5 : out std_logic_vector (13 downto 0);
+    cluster6 : out std_logic_vector (13 downto 0);
+    cluster7 : out std_logic_vector (13 downto 0);
+
+    overflow : out std_logic
+
+
+    );
+    end component;
+
 begin
 
     -- reset fanout
@@ -246,13 +299,13 @@ begin
     -- Cluster Packer
     --------------------------------------------------------------------------------------------------------------------
 
-    --====================================--
+--    --====================================--
     --== Light (12 VFAT) Cluster Packer ==--
     --====================================--
 
     OH_LITE_GEN : if (oh_lite=1) GENERATE
 
-    cluster_packer_inst : entity work.cluster_packer
+    cluster_packer_inst : cluster_packer
 
         port map(
             trig_stop_i         => trig_stop_i,
@@ -308,7 +361,7 @@ begin
 
     OH_FULL_GEN : if (oh_lite=0) GENERATE
 
-    cluster_packer_inst : entity work.cluster_packer
+    cluster_packer_inst : cluster_packer
 
         port map(
             trig_stop_i         => trig_stop_i,

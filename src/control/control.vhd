@@ -95,13 +95,84 @@ port(
 
     trig_stop_o   : out std_logic;
     bxn_counter_o : out std_logic_vector (11 downto 0)
-
 );
 
 end control;
 
 architecture Behavioral of control is
 
+    component device_dna
+    port (
+        clock : in std_logic;
+        reset : in std_logic;
+        dna : out std_logic_vector (56 downto 0)
+    );
+    end component;
+
+    component fmm
+      port (
+            clock : in std_logic;
+
+            reset_i : in std_logic;
+
+            ttc_bx0 : in std_logic;
+            ttc_resync : in std_logic;
+            dont_wait : in std_logic;
+
+            fmm_trig_stop : out std_logic
+    );
+    end component;
+
+    component ttc
+      port (
+            clock : in std_logic;
+
+            reset : in std_logic;
+
+            ttc_bx0 : in std_logic;
+            bx0_local : out std_logic;
+
+            ttc_resync : in std_logic;
+
+            bxn_offset  :  in std_logic_vector (11 downto 0) ;
+
+            bxn_counter  :  in std_logic_vector (11 downto 0) ;
+
+            bx0_sync_err : in std_logic;
+            bxn_sync_err  : in std_logic
+    );
+    end component;
+
+    component external
+      generic (GE21 : integer;
+               MXVFATS : integer);
+      port (
+        clock : in std_logic;
+
+        reset_i : in std_logic;
+
+        active_vfats_i : in std_logic_vector (MXVFATS-1 downto 0);
+
+        sbit_mode0 : in std_logic_vector (1 downto 0);
+        sbit_mode1 : in std_logic_vector (1 downto 0);
+        sbit_mode2 : in std_logic_vector (1 downto 0);
+        sbit_mode3 : in std_logic_vector (1 downto 0);
+        sbit_mode4 : in std_logic_vector (1 downto 0);
+        sbit_mode5 : in std_logic_vector (1 downto 0);
+        sbit_mode6 : in std_logic_vector (1 downto 0);
+        sbit_mode7 : in std_logic_vector (1 downto 0);
+        sbit_sel0  : in std_logic_vector (4 downto 0);
+        sbit_sel1  : in std_logic_vector (4 downto 0);
+        sbit_sel2  : in std_logic_vector (4 downto 0);
+        sbit_sel3  : in std_logic_vector (4 downto 0);
+        sbit_sel4  : in std_logic_vector (4 downto 0);
+        sbit_sel5  : in std_logic_vector (4 downto 0);
+        sbit_sel6  : in std_logic_vector (4 downto 0);
+        sbit_sel7  : in std_logic_vector (4 downto 0);
+
+        ext_sbits_o : out std_logic_vector (7 downto 0)
+    );
+    end component;
 
     --== SEM ==--
 
@@ -315,7 +386,7 @@ begin
     -- Device DNA
     --------------------------------------------------------------------------------------------------------------------
 
-    device_dna : entity work.device_dna
+    device_dna_inst : device_dna
     port map (
         clock => clock_i,
         reset => reset_i,
@@ -328,8 +399,8 @@ begin
 
     -- This module handles the external signals: the input trigger and the output SBits.
 
-    external_inst : entity work.external
-    generic map (oh_lite => OH_LITE, MXVFATS => MXVFATS)
+    external_inst : external
+    generic map (GE21 => OH_LITE, MXVFATS => MXVFATS)
     port map(
         clock               => clock_i,
 
@@ -362,7 +433,7 @@ begin
     -- TTC
     --------------------------------------------------------------------------------------------------------------------
 
-    ttc_inst : entity work.ttc
+    ttc_inst : ttc
 
     port map (
 
@@ -389,7 +460,7 @@ begin
     -- Trigger Start/Stop Control
     --------------------------------------------------------------------------------------------------------------------
 
-    fmm_inst : entity work.fmm
+    fmm_inst : fmm
     port map (
 
         -- clock & reset

@@ -20,11 +20,11 @@ package trig_pkg is
 
   -- START: TRIG_PKG DO NOT EDIT --
 
-    constant OH_LITE : integer := 0; -- lite oh only has 12 VFATs
+    constant OH_LITE : integer := 1; -- lite oh only has 12 VFATs
 
-    constant MXVFATS : integer := 24;
+    constant MXVFATS : integer := 12;
 
-    constant REVERSE_VFAT_SBITS : std_logic_vector (23 downto 0) := x"000000";
+    constant REVERSE_VFAT_SBITS : std_logic_vector (11 downto 0) := x"000";
 
   -- END: TRIG_PKG DO NOT EDIT --
 

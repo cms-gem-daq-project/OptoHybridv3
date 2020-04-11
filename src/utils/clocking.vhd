@@ -15,6 +15,8 @@ use ieee.numeric_std.all;
 library unisim;
 use unisim.vcomponents.all;
 
+library xil_defaultlib;
+
 library work;
 use work.types_pkg.all;
 use work.param_pkg.all;
@@ -32,7 +34,6 @@ port(
     clock_n : in std_logic;
 
     clk40_o      : out std_logic; -- 40 MHz phase shiftable frame clock from GBT
-    clk80_o      : out std_logic; -- 80 MHz phase shiftable frame clock from GBT
     clk160_0_o   : out std_logic; -- 160 MHz phase shiftable frame clock from GBT
     clk160_90_o  : out std_logic; -- 160 MHz phase shiftable frame clock from GBT
     clk200_o     : out std_logic;
@@ -56,7 +57,6 @@ end clocking;
 architecture Behavioral of clocking is
 
     signal clk40      : std_logic; -- 40 MHz phase shiftable frame clock from GBT
-    signal clk80      : std_logic; -- 80 MHz phase shiftable frame clock from GBT
     signal clk160_0   : std_logic; -- 160 MHz phase shiftable frame clock from GBT
     signal clk160_90  : std_logic; -- 160 MHz phase shiftable frame clock from GBT
     signal clk200     : std_logic;
@@ -91,13 +91,12 @@ begin
         IB => clock_n
     );
 
-    logic_clocking : entity work.logic_clocking
+    logic_clocking : entity xil_defaultlib.logic_clocking
     port map(
 
         clk_in1     => clock_i,
 
         clk40_o     => clk40,
-        clk80_o     => clk80,
         clk160_o    => clk160_0,
         clk160_90_o => clk160_90,
         clk200_o    => clk200,
@@ -106,7 +105,6 @@ begin
     );
 
     clk40_o      <=     clk40;
-    clk80_o      <=     clk80;
     clk160_0_o   <=     clk160_0;
     clk160_90_o  <=     clk160_90;
     clk200_o     <=     clk200;

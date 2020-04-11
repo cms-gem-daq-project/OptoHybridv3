@@ -51,13 +51,12 @@ port(
     gbt_rxready_i : in std_logic_vector (MXREADY-1 downto 0);
 
     -- START: Station Specific Ports DO NOT EDIT --
+    gbt_txvalid_o  : out    std_logic_vector (MXREADY-1 downto 0);
 
-    ext_sbits_o : out  std_logic_vector (7 downto 0);
-
-    ext_reset_o : out  std_logic_vector (MXRESET-1 downto 0);
-
-    adc_vp      : in   std_logic;
-    adc_vn      : in   std_logic;
+    master_slave   : in     std_logic;
+    master_slave_p : inout  std_logic_vector (11 downto 0);
+    master_slave_n : inout  std_logic_vector (11 downto 0);
+    vtrx_mabs_i    : in    std_logic_vector (1 downto 0);
     -- END: Station Specific Ports DO NOT EDIT --
 
     --== LEDs ==--
@@ -161,8 +160,29 @@ architecture Behavioral of top_optohybrid is
     signal ext_reset : std_logic_vector (11 downto 0);
 
     -- START: Station Specific Signals DO NOT EDIT --
-
+    -- dummy signals for ge21
+    signal ext_reset_o : std_logic_vector (11 downto 0);
+    signal ext_sbits_o : std_logic_vector (7 downto 0);
+    signal adc_vp      : std_logic;
+    signal adc_vn      : std_logic;
     -- END: Station Specific Signals DO NOT EDIT --
+
+    component reset port (
+
+    clock_i  : in std_logic;
+
+    soft_reset  : in std_logic;
+
+    mmcms_locked_i  : in std_logic;
+    idlyrdy_i  : in std_logic;
+    gbt_rxready_i  : in std_logic;
+    gbt_rxvalid_i  : in std_logic;
+    gbt_txready_i : in std_logic;
+
+    core_reset_o: out std_logic;
+    reset_o: out std_logic
+    );
+    end component;
 
 begin
 
@@ -183,17 +203,17 @@ begin
 
     -- START: Station Specific IO DO NOT EDIT --
     --===========--
-    --== GE11  ==--
+    --== GE21  ==--
     --===========--
-    ext_reset_o  <= ctrl_reset_vfats;
-    ext_sbits_o  <= ext_sbits;
+    gbt_txvalid_o <= "11";
+    vtrx_mabs    <= vtrx_mabs_i;
     -- END: Station Specific IO DO NOT EDIT --
 
     --==============--
     --== Clocking ==--
     --==============--
 
-    clocking : entity work.clocking
+    clocking_inst : entity work.clocking
     port map(
 
         clock_p        => clock_p, -- phase shiftable 40MHz ttc clocks
@@ -208,13 +228,12 @@ begin
         mmcm_locked_o       => mmcm_locked,
 
         clk40_o          => clk40,      -- 40  MHz e-port aligned GBT clock
-        clk80_o          => open,       -- 80  MHz e-port aligned GBT clock
         clk160_0_o       => clk160_0,   -- 160  MHz e-port aligned GBT clock
         clk160_90_o      => clk160_90,  -- 160  MHz e-port aligned GBT clock
         clk200_o         => clk200      -- 200  MHz e-port aligned GBT clock
     );
 
-    reset_ctl : entity work.reset
+    reset_inst : reset
     port map (
         clock_i        => clk40,
         soft_reset     => soft_reset,
@@ -231,7 +250,7 @@ begin
     --== GBT ==--
     --=========--
 
-    gbt : entity work.gbt
+    gbt_inst : entity work.gbt
     port map(
 
         -- reset
@@ -326,7 +345,7 @@ begin
     --== Control ==--
     --=============--
 
-    control : entity work.control
+    control_inst : entity work.control
     port map (
 
         mgts_ready   => mgts_ready, -- to drive LED controller only
@@ -407,7 +426,7 @@ begin
     --== Trigger Data ==--
     --==================--
 
-    trigger : entity work.trigger
+    trigger_inst : entity work.trigger
     port map (
 
         -- wishbone
@@ -471,7 +490,7 @@ begin
 
 
 -- IDELAYCTRL is needed for calibration
-    delayctrl : IDELAYCTRL
+    delayctrl_inst : IDELAYCTRL
     port map (
         RDY    => idlyrdy,
         REFCLK => clk200,

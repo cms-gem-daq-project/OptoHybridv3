@@ -81,6 +81,24 @@ architecture Behavioral of trig_alignment is
     attribute EQUIVALENT_REGISTER_REMOVAL of sot_reset : signal is "NO";
     attribute EQUIVALENT_REGISTER_REMOVAL of  tu_reset : signal is "NO";
 
+    component frame_aligner
+      port (
+
+      sbits_i : in  std_logic_vector (MXSBITS-1 downto 0);
+      sbits_o : out std_logic_vector (MXSBITS-1 downto 0);
+
+      start_of_frame : in  std_logic_vector (7 downto 0);
+
+      reset_i : in std_logic;
+      clock : in std_logic;
+      mask : in std_logic;
+
+      aligned_count_to_ready : in std_logic_vector (11 downto 0);
+      sot_unstable : out std_logic;
+      sot_is_aligned : out std_logic
+      );
+    end component;
+
 begin
 
     assert_fpga_type :
@@ -185,10 +203,7 @@ begin
 
     aligner_loop: for ivfat in 0 to MXVFATS-1 generate begin
 
-        frame_aligner_inst : entity work.frame_aligner
-        generic map (
-            DDR     => DDR
-        )
+        frame_aligner_inst : frame_aligner
         port map (
 
             sbits_i => sbits_unaligned ((ivfat+1)*MXSBITS - 1 downto ivfat*MXSBITS),

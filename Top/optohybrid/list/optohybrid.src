@@ -18,6 +18,7 @@
 ../../src/gbt/gbt_serdes.vhd
 ../../src/gbt/gbt_tx.vhd
 ../../src/gbt/gbt.vhd
+../../src/gbt/to_gbt_ser.vhd
 ../../src/gbt/link_request.vhd
 
 # Pkg
@@ -28,16 +29,18 @@
 
 # GBT
 ../../src/ip_cores_a7/xadc_a7/xadc_a7.xci
+../../src/ip_cores_a7/to_gbt_ser/to_gbt_ser.xci
 ../../src/ip_cores_a7/sem_a7/sem_a7.xci
-../../src/ip_cores_a7/fifo_request_tx_a7/fifo_request_tx_a7.xci
-../../src/ip_cores_a7/cluster_data_cdc/cluster_data_cdc.xci
 ../../src/ip_cores_a7/logic_clocking/logic_clocking.xci
+../../src/ip_cores_a7/fifo_request_tx_a7/fifo_request_tx_a7.xci
+../../src/ip_cores_a7/fifo_request_rx_a7/fifo_request_rx_a7.xci
+../../src/ip_cores_a7/cluster_data_cdc/cluster_data_cdc.xci
+../../src/ip_cores_a7/a7_mgts_with_buffer0/a7_mgts_with_buffer0.xci
 
 # Cluster packer
 ../../src/sbit_cluster_packer/source/cluster_packer.v
 ../../src/sbit_cluster_packer/source/consecutive_count.v
 ../../src/sbit_cluster_packer/source/count_clusters_lite.v
-../../src/sbit_cluster_packer/source/count_clusters.v
 ../../src/sbit_cluster_packer/source/find_cluster_primaries.v
 ../../src/sbit_cluster_packer/source/first8of1536.v
 ../../src/sbit_cluster_packer/source/lac.v
@@ -48,11 +51,11 @@
 ../../src/trigger/active_vfats.vhd
 ../../src/trigger/channel_to_strip.vhd
 ../../src/trigger/link/a7_gtp_wrapper.vhd
-../../src/trigger/link/a7_trig_tx_buf_bypass_common.vhd
-../../src/trigger/link/a7_trig_tx_buf_bypass_cpll_railing.vhd
+#../../src/trigger/link/a7_trig_tx_buf_bypass_common.vhd
+#../../src/trigger/link/a7_trig_tx_buf_bypass_cpll_railing.vhd
 ../../src/trigger/link/gem_data_out.v
-../../src/trigger/link/gem_fiber_out.v
-../../src/trigger/link/trigger_links.v
+#../../src/trigger/link/gem_fiber_out.v
+#../../src/trigger/link/trigger_links.v
 ../../src/trigger/sbit_monitor.vhd
 ../../src/trigger/sbits_hitmap.vhd
 ../../src/trigger/sbits.vhd
