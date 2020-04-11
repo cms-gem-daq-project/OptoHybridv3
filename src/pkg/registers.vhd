@@ -1130,10 +1130,6 @@ package registers is
     constant REG_TRIG_LINKS_TXPLLPOWERDOWN_BIT    : integer := 22;
     constant REG_TRIG_LINKS_TXPLLPOWERDOWN_DEFAULT : std_logic := '0';
 
-    constant REG_TRIG_LINKS_FORCE_NOT_READY_ADDR    : std_logic_vector(7 downto 0) := x"81";
-    constant REG_TRIG_LINKS_FORCE_NOT_READY_BIT    : integer := 23;
-    constant REG_TRIG_LINKS_FORCE_NOT_READY_DEFAULT : std_logic := '0';
-
     constant REG_TRIG_SBIT_MONITOR_RESET_ADDR    : std_logic_vector(7 downto 0) := x"90";
     constant REG_TRIG_SBIT_MONITOR_RESET_MSB    : integer := 31;
     constant REG_TRIG_SBIT_MONITOR_RESET_LSB     : integer := 0;

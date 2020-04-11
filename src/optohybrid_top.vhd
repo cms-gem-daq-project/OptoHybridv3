@@ -97,9 +97,22 @@ architecture Behavioral of top_optohybrid is
 
   --== SBit cluster packer ==--
 
+  signal tx_link_reset : std_logic;
+  signal tx_prbs_mode : std_logic_vector (2 downto 0);
   signal sbit_overflow : std_logic;
   signal cluster_count : std_logic_vector (10 downto 0);
   signal active_vfats  : std_logic_vector (MXVFATS-1 downto 0);
+
+  signal pll_reset        : std_logic;
+  signal mgt_reset        : std_logic_vector(3 downto 0);
+  signal gtxtest_start    : std_logic;
+  signal txreset          : std_logic;
+  signal mgt_realign      : std_logic;
+  signal txpowerdown      : std_logic;
+  signal txpowerdown_mode : std_logic_vector (1 downto 0);
+  signal txpllpowerdown   : std_logic;
+  signal sbit_clusters   : sbit_cluster_array_t (7 downto 0);
+
 
   --== Global signals ==--
 
@@ -183,6 +196,48 @@ architecture Behavioral of top_optohybrid is
     reset_o      : out std_logic
     );
   end component;
+
+  component gem_data_out
+    generic (
+      GE11 : integer := 0;
+      GE21  : integer := 1
+      );
+    port (
+      trg_tx_n : out std_logic_vector (3 downto 0);
+      trg_tx_p : out std_logic_vector (3 downto 0);
+
+      refclk_n : in std_logic_vector (1 downto 0);
+      refclk_p : in std_logic_vector (1 downto 0);
+
+      tx_prbs_mode : in std_logic_vector (2 downto 0);
+
+      gem_data      : in std_logic_vector (111 downto 0);  -- 56 bit gem data
+      overflow_i    : in std_logic;     -- 1 bit gem has more than 8 clusters
+      bxn_counter_i : in std_logic_vector (11 downto 0);  -- 12 bit bxn counter
+      bc0_i         : in std_logic;     -- 1  bit bx0 flag
+      resync_i      : in std_logic;     -- 1  bit bx0 flag
+
+      force_not_ready    : in std_logic;
+      pll_reset_i        : in std_logic;
+      mgt_reset_i        : in std_logic_vector(3 downto 0);
+      gtxtest_start_i    : in std_logic;
+      txreset_i          : in std_logic;
+      mgt_realign_i      : in std_logic;
+      txpowerdown_i      : in std_logic;
+      txpowerdown_mode_i : in std_logic_vector (1 downto 0);
+      txpllpowerdown_i   : in std_logic;
+
+      clock_40  : in std_logic;
+      clock_160 : in std_logic;
+
+      ready_o      : out std_logic;
+      pll_lock_o   : out std_logic;
+      txfsm_done_o : out std_logic;
+
+      reset_i : in std_logic
+      );
+  end component;
+
 
 begin
 
@@ -436,28 +491,34 @@ begin
       ipb_mosi_i => ipb_mosi_slaves(IPB_SLAVE.TRIG),
       ipb_miso_o => ipb_miso_slaves(IPB_SLAVE.TRIG),
 
-      mgts_ready   => mgts_ready,
-      pll_lock_o   => pll_lock,
-      txfsm_done_o => txfsm_done,
+      tx_pll_lock_i   => pll_lock,
+      tx_reset_done_i => txfsm_done,
+      tx_prbs_mode_o => tx_prbs_mode,
+
+      sbit_clusters_o => sbit_clusters,
 
       -- reset
       trigger_reset_i => trigger_reset,
       core_reset_i    => core_reset,
       cnt_snap        => cnt_snap,
       ttc_resync      => ttc_resync,
+      tx_link_reset_o => tx_link_reset,
+
+      pll_reset        => pll_reset,
+      mgt_reset        => mgt_reset,
+      gtxtest_start    => gtxtest_start,
+      txreset          => txreset,
+      mgt_realign      => mgt_realign,
+      txpowerdown      => txpowerdown,
+      txpowerdown_mode => txpowerdown_mode,
+      txpllpowerdown   => txpllpowerdown,
 
       -- clocks
-      mgt_clk_p => mgt_clk_p_i,
-      mgt_clk_n => mgt_clk_n_i,
 
       logic_mmcm_lock_i  => logic_mmcm_locked,
       logic_mmcm_reset_o => logic_mmcm_reset,
 
       clocks => clocks,
-
-      -- mgt pairs
-      mgt_tx_p => mgt_tx_p_o,
-      mgt_tx_n => mgt_tx_n_o,
 
       -- config
       cluster_count_o => cluster_count,
@@ -491,6 +552,50 @@ begin
       RDY    => idlyrdy,
       REFCLK => clocks.clk200,
       RST    => not mmcm_locked
+      );
+
+  gem_data_out_inst : gem_data_out
+    generic map (
+      GE11 => GE11,
+      GE21  => GE21
+      )
+    port map (
+
+      refclk_p => mgt_clk_p_i,            -- 160 MHz Reference Clock Positive
+      refclk_n => mgt_clk_n_i,            -- 160 MHz Reference Clock Negative
+
+      clock_40  => clocks.clk40,              -- 40 MHz  Logic Clock
+      clock_160 => clocks.clk160_0,             -- 160 MHz  Logic Clock
+
+      bxn_counter_i => bxn_counter,
+      bc0_i         => ttc_bc0,
+      resync_i      => ttc_resync,
+
+      reset_i => tx_link_reset,
+
+      force_not_ready => '0',
+
+      ready_o      => mgts_ready,
+      pll_lock_o   => pll_lock,
+      txfsm_done_o => txfsm_done,
+      tx_prbs_mode => tx_prbs_mode,
+
+
+      pll_reset_i        => pll_reset,
+      mgt_reset_i        => mgt_reset,
+      gtxtest_start_i    => gtxtest_start,
+      txreset_i          => txreset,
+      mgt_realign_i      => mgt_realign,
+      txpowerdown_i      => txpowerdown,
+      txpowerdown_mode_i => txpowerdown_mode,
+      txpllpowerdown_i   => txpllpowerdown,
+
+      trg_tx_p => mgt_tx_p_o,
+      trg_tx_n => mgt_tx_n_o,
+
+      gem_data => sbit_clusters(7) & sbit_clusters(6) & sbit_clusters(5) & sbit_clusters(4) & sbit_clusters(3) & sbit_clusters(2) & sbit_clusters(1) & sbit_clusters(0),
+
+      overflow_i => sbit_overflow
       );
 
 end Behavioral;

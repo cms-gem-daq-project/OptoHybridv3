@@ -620,7 +620,6 @@
     TXPOWERDOWN & \texttt{0x2081} & \texttt{[19:19]} & rw & \texttt{0x0} & Set the MGT tx into powerdown. The type of powerdown is controlled by TXPOWERDOWN\_MODE \\\hline
     TXPOWERDOWN\_MODE & \texttt{0x2081} & \texttt{[21:20]} & rw & \texttt{0x1} & 00: P0 (normal operation) \\ & & & & & 01: P0s (low recovery time power down) \\ & & & & & 10: P1 (longer recovery time \\ & & & & & Receiver Detection still on) \\ & & & & & 11: P2 (lowest power state) \\\hline
     TXPLLPOWERDOWN & \texttt{0x2081} & \texttt{[22:22]} & rw & \texttt{0x0} & Input to power down the TX PLL. \\\hline
-    FORCE\_NOT\_READY & \texttt{0x2081} & \texttt{[23:23]} & rw & \texttt{0x0} & Set high to force MGTs not ready and gate the clocks for and reset the rest of the FPGA logic \\\hline
     \end{tabularx}
     \vspace{5mm}
 

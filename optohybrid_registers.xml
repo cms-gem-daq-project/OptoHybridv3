@@ -1207,11 +1207,11 @@
                 <node id="TX_PLL_LOCKED" address="0x1" permission="r"
                     mask="0x00000001"
                     description="Transmit PLLs are Locked"
-                    fw_signal="tx_pll_locked"/>
+                    fw_signal="tx_pll_lock_i"/>
                 <node id="TX_RESET_DONE" address="0x1" permission="r"
                     mask="0x00000010"
                     description="Transmit Resets are Done"
-                    fw_signal="tx_reset_done"/>
+                    fw_signal="tx_reset_done_i"/>
                 <node id="TX_PRBS_MODE" address="0x1" permission="rw"
                     mask="0x00000700"
                     description="000: Standard \n 001: PRBS-7 \n 010: PRBS-15 \n 011: PRBS-23 \n 100: PRBS-31"
@@ -1257,12 +1257,6 @@
                     description="Input to power down the TX PLL."
                     fw_default="0x0"
                     fw_signal="txpllpowerdown"/>
-                <node id="FORCE_NOT_READY" address="0x1" permission="rw"
-                    mask="0x00800000"
-                    description="Set high to force MGTs not ready and gate the clocks for and reset the rest of the FPGA logic"
-                    fw_default="0x0"
-                    fw_signal="force_mgts_not_ready"/>
-
             </node> <!--Links-->
 
             <node id="SBIT_MONITOR" address="0x90"
