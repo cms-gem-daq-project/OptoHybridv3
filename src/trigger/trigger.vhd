@@ -25,214 +25,214 @@ use work.trig_pkg.all;
 use work.registers.all;
 
 entity trigger is
-port(
+  port(
 
     -- ipbus wishbone
 
-    ipb_mosi_i        : in  ipb_wbus;
-    ipb_miso_o        : out ipb_rbus;
+    ipb_mosi_i : in  ipb_wbus;
+    ipb_miso_o : out ipb_rbus;
 
     -- links
-    mgt_clk_p         : in std_logic_vector(1 downto 0); -- 160 MHz Reference Clock
-    mgt_clk_n         : in std_logic_vector(1 downto 0); -- 160 MHz Reference Clock
+    mgt_clk_p : in std_logic_vector(1 downto 0);  -- 160 MHz Reference Clock
+    mgt_clk_n : in std_logic_vector(1 downto 0);  -- 160 MHz Reference Clock
 
-    logic_mmcm_lock_i  : in std_logic;
+    logic_mmcm_lock_i  : in  std_logic;
     logic_mmcm_reset_o : out std_logic;
 
-    clk_40            : in std_logic;
-    clk_160           : in std_logic;
+    clk_40  : in std_logic;
+    clk_160 : in std_logic;
 
-    clk_40_sbit       : in std_logic;
-    clk_160_sbit      : in std_logic;
-    clk_160_90_sbit   : in std_logic;
-    clk_200_sbit      : in std_logic;
+    clk_40_sbit     : in std_logic;
+    clk_160_sbit    : in std_logic;
+    clk_160_90_sbit : in std_logic;
+    clk_200_sbit    : in std_logic;
 
     trigger_reset_i : in std_logic;
     core_reset_i    : in std_logic;
     ttc_resync      : in std_logic;
 
-    mgt_tx_p          : out std_logic_vector(3 downto 0);
-    mgt_tx_n          : out std_logic_vector(3 downto 0);
+    mgt_tx_p : out std_logic_vector(3 downto 0);
+    mgt_tx_n : out std_logic_vector(3 downto 0);
 
-    mgts_ready        : out std_logic;
-    pll_lock_o        : out std_logic;
-    txfsm_done_o      : out std_logic;
+    mgts_ready   : out std_logic;
+    pll_lock_o   : out std_logic;
+    txfsm_done_o : out std_logic;
 
     -- ttc
 
-    trig_stop_i       : in std_logic;
-    bxn_counter_i     : in std_logic_vector(11 downto 0);
-    ttc_bx0_i         : in std_logic;
-    ttc_l1a_i         : in std_logic;
+    trig_stop_i   : in std_logic;
+    bxn_counter_i : in std_logic_vector(11 downto 0);
+    ttc_bx0_i     : in std_logic;
+    ttc_l1a_i     : in std_logic;
 
     -- cluster packer
 
-    cluster_count_o   : out std_logic_vector (10 downto 0);
-    overflow_o        : out std_logic;
+    cluster_count_o : out std_logic_vector (10 downto 0);
+    overflow_o      : out std_logic;
 
-    active_vfats_o    : out std_logic_vector (MXVFATS-1 downto 0);
-
-    -- sbits
-    vfat_sot_p        : in std_logic_vector (MXVFATS-1 downto 0);
-    vfat_sot_n        : in std_logic_vector (MXVFATS-1 downto 0);
-
-    vfat_sbits_p      : in std_logic_vector ((MXVFATS*8)-1 downto 0);
-    vfat_sbits_n      : in std_logic_vector ((MXVFATS*8)-1 downto 0);
+    active_vfats_o : out std_logic_vector (MXVFATS-1 downto 0);
 
     -- sbits
+    vfat_sot_p : in std_logic_vector (MXVFATS-1 downto 0);
+    vfat_sot_n : in std_logic_vector (MXVFATS-1 downto 0);
 
-    master_slave_p    : inout  std_logic_vector (11 downto 0);
-    master_slave_n    : inout  std_logic_vector (11 downto 0);
+    vfat_sbits_p : in std_logic_vector ((MXVFATS*8)-1 downto 0);
+    vfat_sbits_n : in std_logic_vector ((MXVFATS*8)-1 downto 0);
 
-    cnt_snap          : in std_logic
+    -- sbits
 
-);
+    master_slave_p : inout std_logic_vector (11 downto 0);
+    master_slave_n : inout std_logic_vector (11 downto 0);
+
+    cnt_snap : in std_logic
+
+    );
 end trigger;
 
 architecture Behavioral of trigger is
 
 
-    signal cluster0 : std_logic_vector (13 downto 0);
-    signal cluster1 : std_logic_vector (13 downto 0);
-    signal cluster2 : std_logic_vector (13 downto 0);
-    signal cluster3 : std_logic_vector (13 downto 0);
-    signal cluster4 : std_logic_vector (13 downto 0);
-    signal cluster5 : std_logic_vector (13 downto 0);
-    signal cluster6 : std_logic_vector (13 downto 0);
-    signal cluster7 : std_logic_vector (13 downto 0);
+  signal cluster0 : std_logic_vector (13 downto 0);
+  signal cluster1 : std_logic_vector (13 downto 0);
+  signal cluster2 : std_logic_vector (13 downto 0);
+  signal cluster3 : std_logic_vector (13 downto 0);
+  signal cluster4 : std_logic_vector (13 downto 0);
+  signal cluster5 : std_logic_vector (13 downto 0);
+  signal cluster6 : std_logic_vector (13 downto 0);
+  signal cluster7 : std_logic_vector (13 downto 0);
 
-    signal frozen_cluster_0 : std_logic_vector (13 downto 0);
-    signal frozen_cluster_1 : std_logic_vector (13 downto 0);
-    signal frozen_cluster_2 : std_logic_vector (13 downto 0);
-    signal frozen_cluster_3 : std_logic_vector (13 downto 0);
-    signal frozen_cluster_4 : std_logic_vector (13 downto 0);
-    signal frozen_cluster_5 : std_logic_vector (13 downto 0);
-    signal frozen_cluster_6 : std_logic_vector (13 downto 0);
-    signal frozen_cluster_7 : std_logic_vector (13 downto 0);
+  signal frozen_cluster_0 : std_logic_vector (13 downto 0);
+  signal frozen_cluster_1 : std_logic_vector (13 downto 0);
+  signal frozen_cluster_2 : std_logic_vector (13 downto 0);
+  signal frozen_cluster_3 : std_logic_vector (13 downto 0);
+  signal frozen_cluster_4 : std_logic_vector (13 downto 0);
+  signal frozen_cluster_5 : std_logic_vector (13 downto 0);
+  signal frozen_cluster_6 : std_logic_vector (13 downto 0);
+  signal frozen_cluster_7 : std_logic_vector (13 downto 0);
 
-    signal sbitmon_l1a_delay : std_logic_vector (31 downto 0);
+  signal sbitmon_l1a_delay : std_logic_vector (31 downto 0);
 
-    signal sbit_overflow     : std_logic;
-    signal sbit_clusters     : sbit_cluster_array_t (7  downto 0);
-    signal valid_clusters_or : std_logic;
-    signal valid_clusters    : std_logic_vector (7 downto 0);
+  signal sbit_overflow     : std_logic;
+  signal sbit_clusters     : sbit_cluster_array_t (7 downto 0);
+  signal valid_clusters_or : std_logic;
+  signal valid_clusters    : std_logic_vector (7 downto 0);
 
-    signal cluster_count   : std_logic_vector (10 downto 0);
+  signal cluster_count : std_logic_vector (10 downto 0);
 
-    signal active_vfats : std_logic_vector (MXVFATS-1 downto 0);
+  signal active_vfats : std_logic_vector (MXVFATS-1 downto 0);
 
-    signal vfat_mask : std_logic_vector (MXVFATS-1 downto 0);
-    signal trig_deadtime : std_logic_vector (3 downto 0);
+  signal vfat_mask     : std_logic_vector (MXVFATS-1 downto 0);
+  signal trig_deadtime : std_logic_vector (3 downto 0);
 
-    signal sbits_comparator_over_threshold : std_logic_vector (MXVFATS-1 downto 0);
+  signal sbits_comparator_over_threshold : std_logic_vector (MXVFATS-1 downto 0);
 
-    signal sot_invert : std_logic_vector (MXVFATS-1 downto 0);     -- 24 or 12
-    signal  tu_invert : std_logic_vector ((MXVFATS*8)-1 downto 0); -- 192 or 96
-    signal  tu_mask   : std_logic_vector ((MXVFATS*8)-1 downto 0); -- 192 or 96
+  signal sot_invert : std_logic_vector (MXVFATS-1 downto 0);      -- 24 or 12
+  signal tu_invert  : std_logic_vector ((MXVFATS*8)-1 downto 0);  -- 192 or 96
+  signal tu_mask    : std_logic_vector ((MXVFATS*8)-1 downto 0);  -- 192 or 96
 
-    signal aligned_count_to_ready : std_logic_vector (11 downto 0);
+  signal aligned_count_to_ready : std_logic_vector (11 downto 0);
 
-    signal tx_prbs_mode : std_logic_vector (2 downto 0);
+  signal tx_prbs_mode : std_logic_vector (2 downto 0);
 
-    signal pll_reset        : std_logic;
-    signal mgt_reset        : std_logic_vector(3 downto 0);
-    signal gtxtest_start    : std_logic;
-    signal txreset          : std_logic;
-    signal mgt_realign      : std_logic;
-    signal txpowerdown      : std_logic;
-    signal txpowerdown_mode : std_logic_vector (1 downto 0);
-    signal txpllpowerdown   : std_logic;
+  signal pll_reset        : std_logic;
+  signal mgt_reset        : std_logic_vector(3 downto 0);
+  signal gtxtest_start    : std_logic;
+  signal txreset          : std_logic;
+  signal mgt_realign      : std_logic;
+  signal txpowerdown      : std_logic;
+  signal txpowerdown_mode : std_logic_vector (1 downto 0);
+  signal txpllpowerdown   : std_logic;
 
-    signal pll_lock    : std_logic;
-    signal txfsm_done  : std_logic;
+  signal pll_lock   : std_logic;
+  signal txfsm_done : std_logic;
 
-    signal trigger_reset     : std_logic;
-    signal reset_monitor     : std_logic;
-    signal ipb_reset : std_logic;
+  signal trigger_reset : std_logic;
+  signal reset_monitor : std_logic;
+  signal ipb_reset     : std_logic;
 
-    attribute EQUIVALENT_REGISTER_REMOVAL : string;
-    attribute EQUIVALENT_REGISTER_REMOVAL of trigger_reset : signal is "NO";
-    attribute EQUIVALENT_REGISTER_REMOVAL of ipb_reset : signal is "NO";
+  attribute EQUIVALENT_REGISTER_REMOVAL                  : string;
+  attribute EQUIVALENT_REGISTER_REMOVAL of trigger_reset : signal is "NO";
+  attribute EQUIVALENT_REGISTER_REMOVAL of ipb_reset     : signal is "NO";
 
-    signal sot_is_aligned       : std_logic_vector (MXVFATS-1 downto 0);
-    signal sot_unstable         : std_logic_vector (MXVFATS-1 downto 0);
-    signal sot_invalid_bitskip  : std_logic_vector (MXVFATS-1 downto 0);
+  signal sot_is_aligned      : std_logic_vector (MXVFATS-1 downto 0);
+  signal sot_unstable        : std_logic_vector (MXVFATS-1 downto 0);
+  signal sot_invalid_bitskip : std_logic_vector (MXVFATS-1 downto 0);
 
-    signal sot_tap_delay       : t_std5_array (MXVFATS-1 downto 0);
-    signal trig_tap_delay      : t_std5_array ((MXVFATS*8)-1 downto 0);
+  signal sot_tap_delay  : t_std5_array (MXVFATS-1 downto 0);
+  signal trig_tap_delay : t_std5_array ((MXVFATS*8)-1 downto 0);
 
-    signal sbits_mux_sel        : std_logic_vector  (4 downto 0);
-    signal sbits_mux            : std_logic_vector (63 downto 0);
+  signal sbits_mux_sel : std_logic_vector (4 downto 0);
+  signal sbits_mux     : std_logic_vector (63 downto 0);
 
-    signal hitmap_reset     : std_logic;
-    signal hitmap_acquire   : std_logic;
-    signal hitmap_sbits     : sbits_array_t(MXVFATS-1  downto 0);
+  signal hitmap_reset   : std_logic;
+  signal hitmap_acquire : std_logic;
+  signal hitmap_sbits   : sbits_array_t(MXVFATS-1 downto 0);
 
-    -- control signals from gbt (verb, object)
-    signal reset_counters       : std_logic;
-    signal sbit_cnt_persist     : std_logic;
-    signal sbit_cnt_time_max    : std_logic_vector (31 downto 0);
+  -- control signals from gbt (verb, object)
+  signal reset_counters    : std_logic;
+  signal sbit_cnt_persist  : std_logic;
+  signal sbit_cnt_time_max : std_logic_vector (31 downto 0);
 
-    signal sbit_cnt_snap        : std_logic;
-    signal sbit_timer_snap      : std_logic;
-    signal sbit_timer_reset     : std_logic;
+  signal sbit_cnt_snap    : std_logic;
+  signal sbit_timer_snap  : std_logic;
+  signal sbit_timer_reset : std_logic;
 
-    signal sbit_time_counter    : unsigned (31 downto 0);
+  signal sbit_time_counter : unsigned (31 downto 0);
 
-    signal reset_links          : std_logic;
+  signal reset_links : std_logic;
 
-    signal cnt_pulse            : std_logic;
+  signal cnt_pulse : std_logic;
 
-    -- reset signal (ORed with global reset)
-    signal cnt_reset            : std_logic;
-    signal cnt_reset_strobed    : std_logic;
-    signal tx_link_reset        : std_logic;
-    signal force_mgts_not_ready : std_logic;
-    signal tx_reset_done        : std_logic;
-    signal tx_pll_locked        : std_logic;
+  -- reset signal (ORed with global reset)
+  signal cnt_reset            : std_logic;
+  signal cnt_reset_strobed    : std_logic;
+  signal tx_link_reset        : std_logic;
+  signal force_mgts_not_ready : std_logic;
+  signal tx_reset_done        : std_logic;
+  signal tx_pll_locked        : std_logic;
 
-    COMPONENT   gem_data_out
-    GENERIC (
-        FPGA_TYPE_IS_VIRTEX6 : integer := 0;
-        FPGA_TYPE_IS_ARTIX7  : integer := 1
-    );
-    PORT (
-        trg_tx_n : OUT std_logic_vector (3 downto 0);
-        trg_tx_p : OUT std_logic_vector (3 downto 0);
+  component gem_data_out
+    generic (
+      FPGA_TYPE_IS_VIRTEX6 : integer := 0;
+      FPGA_TYPE_IS_ARTIX7  : integer := 1
+      );
+    port (
+      trg_tx_n : out std_logic_vector (3 downto 0);
+      trg_tx_p : out std_logic_vector (3 downto 0);
 
-        refclk_n: IN std_logic_vector (1 downto 0);
-        refclk_p: IN std_logic_vector (1 downto 0);
+      refclk_n : in std_logic_vector (1 downto 0);
+      refclk_p : in std_logic_vector (1 downto 0);
 
-        tx_prbs_mode : IN std_logic_vector (2 downto 0);
+      tx_prbs_mode : in std_logic_vector (2 downto 0);
 
-        gem_data           : IN std_logic_vector (111 downto 0); -- 56 bit gem data
-        overflow_i         : IN std_logic;                       -- 1 bit gem has more than 8 clusters
-        bxn_counter_i      : IN std_logic_vector (11 downto 0);  -- 12 bit bxn counter
-        bc0_i              : IN std_logic;                       -- 1  bit bx0 flag
-        resync_i           : IN std_logic;                       -- 1  bit bx0 flag
+      gem_data      : in std_logic_vector (111 downto 0);  -- 56 bit gem data
+      overflow_i    : in std_logic;     -- 1 bit gem has more than 8 clusters
+      bxn_counter_i : in std_logic_vector (11 downto 0);  -- 12 bit bxn counter
+      bc0_i         : in std_logic;     -- 1  bit bx0 flag
+      resync_i      : in std_logic;     -- 1  bit bx0 flag
 
-        force_not_ready    : IN std_logic;
-        pll_reset_i        : IN std_logic;
-        mgt_reset_i        : IN std_logic_vector(3 downto 0);
-        gtxtest_start_i    : IN std_logic;
-        txreset_i          : IN std_logic;
-        mgt_realign_i      : IN std_logic;
-        txpowerdown_i      : IN std_logic;
-        txpowerdown_mode_i : IN std_logic_vector (1 downto 0);
-        txpllpowerdown_i   : IN std_logic;
+      force_not_ready    : in std_logic;
+      pll_reset_i        : in std_logic;
+      mgt_reset_i        : in std_logic_vector(3 downto 0);
+      gtxtest_start_i    : in std_logic;
+      txreset_i          : in std_logic;
+      mgt_realign_i      : in std_logic;
+      txpowerdown_i      : in std_logic;
+      txpowerdown_mode_i : in std_logic_vector (1 downto 0);
+      txpllpowerdown_i   : in std_logic;
 
-        clock_40  : IN std_logic;
-        clock_160 : IN std_logic;
+      clock_40  : in std_logic;
+      clock_160 : in std_logic;
 
-        ready_o      : OUT std_logic;
-        pll_lock_o   : OUT std_logic;
-        txfsm_done_o : OUT std_logic;
+      ready_o      : out std_logic;
+      pll_lock_o   : out std_logic;
+      txfsm_done_o : out std_logic;
 
-        reset_i : IN std_logic
-    );
-    END COMPONENT;
+      reset_i : in std_logic
+      );
+  end component;
 
-    ------ Register signals begin (this section is generated by <optohybrid_top>/tools/generate_registers.py -- do not edit)
+  ------ Register signals begin (this section is generated by <optohybrid_top>/tools/generate_registers.py -- do not edit)
     signal regs_read_arr        : t_std32_array(REG_TRIG_NUM_REGS - 1 downto 0) := (others => (others => '0'));
     signal regs_write_arr       : t_std32_array(REG_TRIG_NUM_REGS - 1 downto 0) := (others => (others => '0'));
     signal regs_addresses       : t_std32_array(REG_TRIG_NUM_REGS - 1 downto 0) := (others => (others => '0'));
@@ -269,253 +269,259 @@ architecture Behavioral of trigger is
     signal cnt_over_threshold9 : std_logic_vector (15 downto 0) := (others => '0');
     signal cnt_over_threshold10 : std_logic_vector (15 downto 0) := (others => '0');
     signal cnt_over_threshold11 : std_logic_vector (15 downto 0) := (others => '0');
-    ------ Register signals end ----------------------------------------------
+  ------ Register signals end ----------------------------------------------
 
 begin
 
-    --------------------------------------------------------------------------------------------------------------------
-    -- Resets
-    --------------------------------------------------------------------------------------------------------------------
+  --------------------------------------------------------------------------------------------------------------------
+  -- Resets
+  --------------------------------------------------------------------------------------------------------------------
 
-    process (clk_40) begin
-        if (rising_edge(clk_40)) then
-            trigger_reset <= trigger_reset_i;
-            ipb_reset <= core_reset_i;
+  process (clk_40)
+  begin
+    if (rising_edge(clk_40)) then
+      trigger_reset <= trigger_reset_i;
+      ipb_reset     <= core_reset_i;
+    end if;
+  end process;
+
+  process (clk_40)
+  begin
+    if (rising_edge(clk_40)) then
+      cnt_reset         <= trigger_reset or ttc_resync or reset_counters;
+      cnt_reset_strobed <= trigger_reset or ttc_resync or reset_counters or (sbit_timer_reset and not sbit_cnt_persist);
+    end if;
+  end process;
+
+  process (clk_40)
+  begin
+    if (rising_edge(clk_40)) then
+      tx_link_reset <= reset_links;
+    end if;
+  end process;
+
+  --------------------------------------------------------------------------------------------------------------------
+  -- Outputs
+  --------------------------------------------------------------------------------------------------------------------
+
+  overflow_o      <= sbit_overflow;
+  active_vfats_o  <= active_vfats;
+  cluster_count_o <= cluster_count;
+
+  --------------------------------------------------------------------------------------------------------------------
+  -- Counter Snap
+  --------------------------------------------------------------------------------------------------------------------
+
+  process (clk_40_sbit)
+  begin
+    if (rising_edge(clk_40_sbit)) then
+
+      sbit_cnt_snap <= (sbit_timer_snap or sbit_cnt_persist);
+
+      if (trigger_reset = '1' or reset_counters = '1') then
+        sbit_time_counter <= (others => '0');
+        sbit_timer_reset  <= '1';
+        sbit_timer_snap   <= '1';
+      else
+        if (sbit_time_counter = unsigned(sbit_cnt_time_max)) then
+          sbit_time_counter <= (others => '0');
+          sbit_timer_reset  <= '1';
+          sbit_timer_snap   <= '1';
+        else
+          sbit_time_counter <= sbit_time_counter + 1;
+          sbit_timer_reset  <= '0';
+          sbit_timer_snap   <= '0';
         end if;
-    end process;
+      end if;
 
-    process (clk_40) begin
-        if (rising_edge(clk_40)) then
-            cnt_reset         <= trigger_reset or ttc_resync or reset_counters;
-            cnt_reset_strobed <= trigger_reset or ttc_resync or reset_counters or (sbit_timer_reset and not sbit_cnt_persist);
-        end if;
-    end process;
+    end if;
+  end process;
 
-    process (clk_40) begin
-        if (rising_edge(clk_40)) then
-            tx_link_reset <= reset_links;
-        end if;
-    end process;
+  --------------------------------------------------------------------------------------------------------------------
+  -- S-bit overflow comparator
+  --------------------------------------------------------------------------------------------------------------------
 
-    --------------------------------------------------------------------------------------------------------------------
-    -- Outputs
-    --------------------------------------------------------------------------------------------------------------------
+  process (clk_40_sbit)
+  begin
+    if (rising_edge(clk_40_sbit)) then
 
-    overflow_o <= sbit_overflow;
-    active_vfats_o <= active_vfats;
-    cluster_count_o <= cluster_count;
+      if (unsigned(cluster_count) > 0) then sbits_comparator_over_threshold(0) <= '1';
+      else sbits_comparator_over_threshold(0)                                  <= '0';
+      end if;
+    end if;
+  end process;
 
-    --------------------------------------------------------------------------------------------------------------------
-    -- Counter Snap
-    --------------------------------------------------------------------------------------------------------------------
+  clusters_over_threshold_loop : for I in 1 to (MXVFATS-1) generate
+  begin
 
-    process (clk_40_sbit) begin
-        if (rising_edge(clk_40_sbit)) then
-
-            sbit_cnt_snap <= (sbit_timer_snap or sbit_cnt_persist);
-
-            if (trigger_reset = '1' or reset_counters = '1') then
-                sbit_time_counter <= (others => '0');
-                sbit_timer_reset <= '1';
-                sbit_timer_snap  <= '1';
-            else
-                if (sbit_time_counter = unsigned(sbit_cnt_time_max)) then
-                    sbit_time_counter <= (others => '0');
-                    sbit_timer_reset  <= '1';
-                    sbit_timer_snap   <= '1';
-                else
-                    sbit_time_counter <= sbit_time_counter + 1;
-                    sbit_timer_reset  <= '0';
-                    sbit_timer_snap   <= '0';
-                end if;
-            end if;
-
-        end if;
-    end process;
-
-    --------------------------------------------------------------------------------------------------------------------
-    -- S-bit overflow comparator
-    --------------------------------------------------------------------------------------------------------------------
-
-    process (clk_40_sbit) begin
-        if (rising_edge(clk_40_sbit)) then
-
-            if (unsigned(cluster_count) > 0)  then sbits_comparator_over_threshold(0) <= '1';
-            else sbits_comparator_over_threshold(0) <= '0';
-            end if;
-        end if;
-    end process;
-
-    clusters_over_threshold_loop : for I in 1 to (MXVFATS-1) generate
+    process (clk_40_sbit)
     begin
-
-    process (clk_40_sbit) begin
-        if (rising_edge(clk_40_sbit)) then
-                if (unsigned(cluster_count) > 63*I)  then sbits_comparator_over_threshold(I) <= '1';
-                else sbits_comparator_over_threshold(I) <= '0';
-                end if;
+      if (rising_edge(clk_40_sbit)) then
+        if (unsigned(cluster_count) > 63*I) then sbits_comparator_over_threshold(I) <= '1';
+        else sbits_comparator_over_threshold(I)                                     <= '0';
         end if;
+      end if;
     end process;
 
-    end generate;
+  end generate;
 
-    --------------------------------------------------------------------------------------------------------------------
-    -- S-bit deserilization and cluster building
-    --------------------------------------------------------------------------------------------------------------------
+  --------------------------------------------------------------------------------------------------------------------
+  -- S-bit deserilization and cluster building
+  --------------------------------------------------------------------------------------------------------------------
 
-    sbits : entity work.sbits
+  sbits : entity work.sbits
     port map (
 
-        trig_stop_i             => trig_stop_i,
+      trig_stop_i => trig_stop_i,
 
-        clk40_i                 => clk_40_sbit,
-        clk160_i                => clk_160_sbit,
-        clk160_90_i             => clk_160_90_sbit,
-        clk200_i                => clk_200_sbit,
+      clk40_i     => clk_40_sbit,
+      clk160_i    => clk_160_sbit,
+      clk160_90_i => clk_160_90_sbit,
+      clk200_i    => clk_200_sbit,
 
-        sbits_mux_sel_i         => sbits_mux_sel,
-        sbits_mux_o             => sbits_mux,
+      sbits_mux_sel_i => sbits_mux_sel,
+      sbits_mux_o     => sbits_mux,
 
 
-        aligned_count_to_ready   => aligned_count_to_ready,
+      aligned_count_to_ready => aligned_count_to_ready,
 
-        reset_i                 => trigger_reset,
+      reset_i => trigger_reset,
 
-        sbits_p                  => vfat_sbits_p,
-        sbits_n                  => vfat_sbits_n,
+      sbits_p => vfat_sbits_p,
+      sbits_n => vfat_sbits_n,
 
-        start_of_frame_p         => vfat_sot_p,
-        start_of_frame_n         => vfat_sot_n,
+      start_of_frame_p => vfat_sot_p,
+      start_of_frame_n => vfat_sot_n,
 
-        vfat_mask_i  => vfat_mask (MXVFATS -1 downto 0),
-        sot_invert_i => sot_invert (MXVFATS-1 downto 0),
-        tu_invert_i  => tu_invert,
-        tu_mask_i    => tu_mask,
+      vfat_mask_i  => vfat_mask (MXVFATS -1 downto 0),
+      sot_invert_i => sot_invert (MXVFATS-1 downto 0),
+      tu_invert_i  => tu_invert,
+      tu_mask_i    => tu_mask,
 
-        active_vfats_o          => active_vfats,
+      active_vfats_o => active_vfats,
 
-        vfat_sbit_clusters_o    => sbit_clusters,
-        trigger_deadtime_i      => trig_deadtime,
-        cluster_count_o         => cluster_count,
-        overflow_o              => sbit_overflow,
+      vfat_sbit_clusters_o => sbit_clusters,
+      trigger_deadtime_i   => trig_deadtime,
+      cluster_count_o      => cluster_count,
+      overflow_o           => sbit_overflow,
 
-        sot_tap_delay           => sot_tap_delay,
-        trig_tap_delay          => trig_tap_delay,
+      sot_tap_delay  => sot_tap_delay,
+      trig_tap_delay => trig_tap_delay,
 
-        sot_is_aligned_o        => sot_is_aligned,
-        sot_unstable_o          => sot_unstable,
-        sot_invalid_bitskip_o   => sot_invalid_bitskip,
+      sot_is_aligned_o      => sot_is_aligned,
+      sot_unstable_o        => sot_unstable,
+      sot_invalid_bitskip_o => sot_invalid_bitskip,
 
-        hitmap_reset_i    => hitmap_reset,
-        hitmap_acquire_i  => hitmap_acquire,
-        hitmap_sbits_o    => hitmap_sbits
+      hitmap_reset_i   => hitmap_reset,
+      hitmap_acquire_i => hitmap_acquire,
+      hitmap_sbits_o   => hitmap_sbits
 
-    );
+      );
 
-    --------------------------------------------------------------------------------------------------------------------
-    -- Sbit Monitor
-    --------------------------------------------------------------------------------------------------------------------
+  --------------------------------------------------------------------------------------------------------------------
+  -- Sbit Monitor
+  --------------------------------------------------------------------------------------------------------------------
 
-    sbit_monitor_inst : entity work.sbit_monitor
+  sbit_monitor_inst : entity work.sbit_monitor
     generic map (
-        g_NUM_OF_OHs => 1
-    )
+      g_NUM_OF_OHs => 1
+      )
     port map (
-        reset_i          => (trigger_reset or reset_monitor),
-        ttc_clk_i        => clk_40_sbit,
-        l1a_i            => ttc_l1a_i,
-        sbit_cluster_0   => sbit_clusters(0),
-        sbit_cluster_1   => sbit_clusters(1),
-        sbit_cluster_2   => sbit_clusters(2),
-        sbit_cluster_3   => sbit_clusters(3),
-        sbit_cluster_4   => sbit_clusters(4),
-        sbit_cluster_5   => sbit_clusters(5),
-        sbit_cluster_6   => sbit_clusters(6),
-        sbit_cluster_7   => sbit_clusters(7),
-        sbit_cluster_8   => ("000" & "111" & x"FA"),
-        sbit_cluster_9   => ("000" & "111" & x"FA"),
-        frozen_cluster_0 => frozen_cluster_0,
-        frozen_cluster_1 => frozen_cluster_1,
-        frozen_cluster_2 => frozen_cluster_2,
-        frozen_cluster_3 => frozen_cluster_3,
-        frozen_cluster_4 => frozen_cluster_4,
-        frozen_cluster_5 => frozen_cluster_5,
-        frozen_cluster_6 => frozen_cluster_6,
-        frozen_cluster_7 => frozen_cluster_7,
-        frozen_cluster_8 => open,
-        frozen_cluster_9 => open,
-        l1a_delay_o      => sbitmon_l1a_delay
-    );
+      reset_i          => (trigger_reset or reset_monitor),
+      ttc_clk_i        => clk_40_sbit,
+      l1a_i            => ttc_l1a_i,
+      sbit_cluster_0   => sbit_clusters(0),
+      sbit_cluster_1   => sbit_clusters(1),
+      sbit_cluster_2   => sbit_clusters(2),
+      sbit_cluster_3   => sbit_clusters(3),
+      sbit_cluster_4   => sbit_clusters(4),
+      sbit_cluster_5   => sbit_clusters(5),
+      sbit_cluster_6   => sbit_clusters(6),
+      sbit_cluster_7   => sbit_clusters(7),
+      sbit_cluster_8   => ("000" & "111" & x"FA"),
+      sbit_cluster_9   => ("000" & "111" & x"FA"),
+      frozen_cluster_0 => frozen_cluster_0,
+      frozen_cluster_1 => frozen_cluster_1,
+      frozen_cluster_2 => frozen_cluster_2,
+      frozen_cluster_3 => frozen_cluster_3,
+      frozen_cluster_4 => frozen_cluster_4,
+      frozen_cluster_5 => frozen_cluster_5,
+      frozen_cluster_6 => frozen_cluster_6,
+      frozen_cluster_7 => frozen_cluster_7,
+      frozen_cluster_8 => open,
+      frozen_cluster_9 => open,
+      l1a_delay_o      => sbitmon_l1a_delay
+      );
 
 
-    --------------------------------------------------------------------------------------------------------------------
-    -- Fixed latency trigger links
-    --------------------------------------------------------------------------------------------------------------------
+  --------------------------------------------------------------------------------------------------------------------
+  -- Fixed latency trigger links
+  --------------------------------------------------------------------------------------------------------------------
 
-    valid_clusters(0) <= '0' when sbit_clusters(0)(10 downto 9) = "11" else '1';
-    valid_clusters(1) <= '0' when sbit_clusters(1)(10 downto 9) = "11" else '1';
-    valid_clusters(2) <= '0' when sbit_clusters(2)(10 downto 9) = "11" else '1';
-    valid_clusters(3) <= '0' when sbit_clusters(3)(10 downto 9) = "11" else '1';
-    valid_clusters(4) <= '0' when sbit_clusters(4)(10 downto 9) = "11" else '1';
-    valid_clusters(5) <= '0' when sbit_clusters(5)(10 downto 9) = "11" else '1';
-    valid_clusters(6) <= '0' when sbit_clusters(6)(10 downto 9) = "11" else '1';
-    valid_clusters(7) <= '0' when sbit_clusters(7)(10 downto 9) = "11" else '1';
+  valid_clusters(0) <= '0' when sbit_clusters(0)(10 downto 9) = "11" else '1';
+  valid_clusters(1) <= '0' when sbit_clusters(1)(10 downto 9) = "11" else '1';
+  valid_clusters(2) <= '0' when sbit_clusters(2)(10 downto 9) = "11" else '1';
+  valid_clusters(3) <= '0' when sbit_clusters(3)(10 downto 9) = "11" else '1';
+  valid_clusters(4) <= '0' when sbit_clusters(4)(10 downto 9) = "11" else '1';
+  valid_clusters(5) <= '0' when sbit_clusters(5)(10 downto 9) = "11" else '1';
+  valid_clusters(6) <= '0' when sbit_clusters(6)(10 downto 9) = "11" else '1';
+  valid_clusters(7) <= '0' when sbit_clusters(7)(10 downto 9) = "11" else '1';
 
-    valid_clusters_or <= or_reduce (valid_clusters(7 downto 0));
+  valid_clusters_or <= or_reduce (valid_clusters(7 downto 0));
 
-    gem_data_out_inst : gem_data_out
+  gem_data_out_inst : gem_data_out
     generic map (
-        FPGA_TYPE_IS_VIRTEX6  => FPGA_TYPE_IS_VIRTEX6,
-        FPGA_TYPE_IS_ARTIX7   => FPGA_TYPE_IS_ARTIX7
-    )
+      FPGA_TYPE_IS_VIRTEX6 => FPGA_TYPE_IS_VIRTEX6,
+      FPGA_TYPE_IS_ARTIX7  => FPGA_TYPE_IS_ARTIX7
+      )
     port map (
 
-        refclk_p  => mgt_clk_p, -- 160 MHz Reference Clock Positive
-        refclk_n  => mgt_clk_n, -- 160 MHz Reference Clock Negative
+      refclk_p => mgt_clk_p,            -- 160 MHz Reference Clock Positive
+      refclk_n => mgt_clk_n,            -- 160 MHz Reference Clock Negative
 
-        clock_40  => clk_40,  -- 40 MHz  Logic Clock
-        clock_160 => clk_160, -- 160 MHz  Logic Clock
+      clock_40  => clk_40,              -- 40 MHz  Logic Clock
+      clock_160 => clk_160,             -- 160 MHz  Logic Clock
 
-        bxn_counter_i => bxn_counter_i,
-        bc0_i         => ttc_bx0_i,
-        resync_i      => ttc_resync,
+      bxn_counter_i => bxn_counter_i,
+      bc0_i         => ttc_bx0_i,
+      resync_i      => ttc_resync,
 
-        reset_i       => tx_link_reset ,
+      reset_i => tx_link_reset,
 
-        force_not_ready => force_mgts_not_ready,
+      force_not_ready => force_mgts_not_ready,
 
-        ready_o      => mgts_ready,
-        pll_lock_o   => pll_lock,
-        txfsm_done_o => txfsm_done,
-        tx_prbs_mode => tx_prbs_mode,
+      ready_o      => mgts_ready,
+      pll_lock_o   => pll_lock,
+      txfsm_done_o => txfsm_done,
+      tx_prbs_mode => tx_prbs_mode,
 
 
-        pll_reset_i        => pll_reset,
-        mgt_reset_i        => mgt_reset,
-        gtxtest_start_i    => gtxtest_start,
-        txreset_i          => txreset,
-        mgt_realign_i      => mgt_realign,
-        txpowerdown_i      => txpowerdown,
-        txpowerdown_mode_i => txpowerdown_mode,
-        txpllpowerdown_i   => txpllpowerdown,
+      pll_reset_i        => pll_reset,
+      mgt_reset_i        => mgt_reset,
+      gtxtest_start_i    => gtxtest_start,
+      txreset_i          => txreset,
+      mgt_realign_i      => mgt_realign,
+      txpowerdown_i      => txpowerdown,
+      txpowerdown_mode_i => txpowerdown_mode,
+      txpllpowerdown_i   => txpllpowerdown,
 
-        trg_tx_p   => mgt_tx_p (3 downto 0),
-        trg_tx_n   => mgt_tx_n (3 downto 0),
+      trg_tx_p => mgt_tx_p (3 downto 0),
+      trg_tx_n => mgt_tx_n (3 downto 0),
 
-        gem_data => sbit_clusters(7) & sbit_clusters(6) & sbit_clusters(5) & sbit_clusters(4) & sbit_clusters(3) & sbit_clusters(2) & sbit_clusters(1) & sbit_clusters(0),
+      gem_data => sbit_clusters(7) & sbit_clusters(6) & sbit_clusters(5) & sbit_clusters(4) & sbit_clusters(3) & sbit_clusters(2) & sbit_clusters(1) & sbit_clusters(0),
 
-        overflow_i => sbit_overflow
-    );
+      overflow_i => sbit_overflow
+      );
 
-    pll_lock_o <= pll_lock;
-    txfsm_done_o <= txfsm_done;
+  pll_lock_o   <= pll_lock;
+  txfsm_done_o <= txfsm_done;
 
-    tx_pll_locked <= pll_lock;
-    tx_reset_done <= txfsm_done;
+  tx_pll_locked <= pll_lock;
+  tx_reset_done <= txfsm_done;
 
-    --===============================================================================================
-    -- (this section is generated by <optohybrid_top>/tools/generate_registers.py -- do not edit)
-    --==== Registers begin ==========================================================================
+  --===============================================================================================
+  -- (this section is generated by <optohybrid_top>/tools/generate_registers.py -- do not edit)
+  --==== Registers begin ==========================================================================
 
     -- IPbus slave instanciation
     ipbus_slave_inst : entity work.ipbus_slave
@@ -1555,6 +1561,6 @@ begin
     regs_writable_arr(62) <= '1';
     regs_writable_arr(74) <= '1';
 
-    --==== Registers end ============================================================================
+  --==== Registers end ============================================================================
 
 end Behavioral;

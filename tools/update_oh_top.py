@@ -8,18 +8,18 @@ OH_TOP       = '../src/optohybrid_top.vhd'
 
 def main():
 
-    MARKER_START = '    -- START: Station Specific Ports DO NOT EDIT --'
-    MARKER_END   = '    -- END: Station Specific Ports DO NOT EDIT --'
+    MARKER_START = '-- START: Station Specific Ports DO NOT EDIT --'
+    MARKER_END   = '-- END: Station Specific Ports DO NOT EDIT --'
 
     insert_code (OH_TOP, OH_TOP, MARKER_START, MARKER_END, write_oh_ports)
 
-    MARKER_START = '    -- START: Station Specific Signals DO NOT EDIT --'
-    MARKER_END   = '    -- END: Station Specific Signals DO NOT EDIT --'
+    MARKER_START = '-- START: Station Specific Signals DO NOT EDIT --'
+    MARKER_END   = '-- END: Station Specific Signals DO NOT EDIT --'
 
     insert_code (OH_TOP, OH_TOP, MARKER_START, MARKER_END, write_oh_signals)
 
-    MARKER_START = '    -- START: Station Specific IO DO NOT EDIT --'
-    MARKER_END   = '    -- END: Station Specific IO DO NOT EDIT --'
+    MARKER_START = '-- START: Station Specific IO DO NOT EDIT --'
+    MARKER_END   = '-- END: Station Specific IO DO NOT EDIT --'
 
     insert_code (OH_TOP, OH_TOP, MARKER_START, MARKER_END, write_oh_io)
 

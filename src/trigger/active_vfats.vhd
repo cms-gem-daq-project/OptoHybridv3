@@ -21,55 +21,55 @@ use work.types_pkg.all;
 use work.trig_pkg.all;
 
 entity active_vfats is
-port(
-    clock          : in std_logic;
-    sbits_i        : in std_logic_vector (MXSBITS_CHAMBER-1 downto 0);
+  port(
+    clock          : in  std_logic;
+    sbits_i        : in  std_logic_vector (MXSBITS_CHAMBER-1 downto 0);
     active_vfats_o : out std_logic_vector (MXVFATS-1 downto 0)
-);
+    );
 end active_vfats;
 
 architecture Behavioral of active_vfats is
 
-    signal sbits                    : std_logic_vector (MXSBITS_CHAMBER-1 downto 0);
-    signal active_vfats_s1          : std_logic_vector (MXVFATS*8-1 downto 0);
+  signal sbits           : std_logic_vector (MXSBITS_CHAMBER-1 downto 0);
+  signal active_vfats_s1 : std_logic_vector (MXVFATS*8-1 downto 0);
 
 begin
 
-    --------------------------------------------------------------------------------------------------------------------
-    -- Active VFAT Flags
-    --------------------------------------------------------------------------------------------------------------------
+  --------------------------------------------------------------------------------------------------------------------
+  -- Active VFAT Flags
+  --------------------------------------------------------------------------------------------------------------------
 
+  process (clock)
+  begin
+    if (rising_edge(clock)) then
+      sbits <= sbits_i;
+    end if;
+  end process;
+
+  -- want to generate 24 bits as active VFAT flags, indicating that at least one s-bit on that VFAT
+  -- was active in this 40MHz cycle
+
+  -- I don't want to do 64 bit reduction in 1 clock... split it over 2 to add slack to PAR and timing
+
+  active_vfat_s1 : for I in 0 to (MXVFATS*8-1) generate
+  begin
     process (clock)
     begin
-        if (rising_edge(clock)) then
-            sbits <= sbits_i;
-        end if;
+      if (rising_edge(clock)) then
+        active_vfats_s1 (I) <= or_reduce (sbits (8*(I+1)-1 downto (8*I)));
+      end if;
     end process;
+  end generate;
 
-    -- want to generate 24 bits as active VFAT flags, indicating that at least one s-bit on that VFAT
-    -- was active in this 40MHz cycle
-
-    -- I don't want to do 64 bit reduction in 1 clock... split it over 2 to add slack to PAR and timing
-
-    active_vfat_s1 : for I in 0 to (MXVFATS*8-1) generate
-    begin
+  active_vfat_s2 : for I in 0 to (MXVFATS-1) generate
+  begin
     process (clock)
     begin
-        if (rising_edge(clock)) then
-            active_vfats_s1 (I)   <= or_reduce (sbits (8*(I+1)-1 downto (8*I)));
-        end if;
+      if (rising_edge(clock)) then
+        active_vfats_o (I) <= or_reduce (active_vfats_s1 (8*(I+1)-1 downto (8*I)));
+      end if;
     end process;
-    end generate;
-
-    active_vfat_s2 : for I in 0 to (MXVFATS-1) generate
-    begin
-    process (clock)
-    begin
-        if (rising_edge(clock)) then
-            active_vfats_o (I)   <= or_reduce (active_vfats_s1 (8*(I+1)-1 downto (8*I)));
-        end if;
-    end process;
-    end generate;
+  end generate;
 
 end Behavioral;
 

@@ -22,19 +22,19 @@ use work.types_pkg.all;
 use work.trig_pkg.all;
 
 entity channel_to_strip is
-generic (oh_lite : integer := OH_LITE);
-port(
+  generic (oh_lite : integer := OH_LITE);
+  port(
     channels_in : in  sbits_array_t(MXVFATS-1 downto 0);
     strips_out  : out sbits_array_t(MXVFATS-1 downto 0)
-);
+    );
 end channel_to_strip;
 
 architecture Behavioral of channel_to_strip is
 
 begin
 
-    vfat_loop : for I in 0 to (MXVFATS-1) generate
-    begin
+  vfat_loop : for I in 0 to (MXVFATS-1) generate
+  begin
 
     -- these values are sourced automatically from the script update_channel_to_strip.py
     -- you should NOT edit them directly, as they will be overwritten later
@@ -104,7 +104,7 @@ begin
         strips_out(I)(61) <= channels_in(I)(61);
         strips_out(I)(62) <= channels_in(I)(62);
         strips_out(I)(63) <= channels_in(I)(63);
-    -- END: SBIT_MAPPING
-    end generate;
+  -- END: SBIT_MAPPING
+  end generate;
 
 end Behavioral;
