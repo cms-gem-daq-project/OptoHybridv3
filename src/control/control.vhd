@@ -31,13 +31,9 @@ entity control is
 
     --== TTC ==--
 
-    clock_i     : in std_logic;
-    gbt_clock_i : in std_logic;
+    clocks : in clocks_t;
+    ttc_i : in ttc_t;
     reset_i     : in std_logic;
-
-    ttc_l1a    : in std_logic;
-    ttc_bc0    : in std_logic;
-    ttc_resync : in std_logic;
 
     ipb_mosi_i : in  ipb_wbus;
     ipb_miso_o : out ipb_rbus;
@@ -292,9 +288,9 @@ begin
   -- Startup
   --------------------------------------------------------------------------------------------------------------------
 
-  process (clock_i)
+  process (clocks.clk40)
   begin
-    if (rising_edge(clock_i)) then
+    if (rising_edge(clocks.clk40)) then
 
       -- startup timer; count to max then deassert the startup reset
       if (reset_i = '1') then
@@ -316,11 +312,11 @@ begin
   -- Reset
   --------------------------------------------------------------------------------------------------------------------
 
-  process (clock_i)
+  process (clocks.clk40)
   begin
-    if (rising_edge(clock_i)) then
+    if (rising_edge(clocks.clk40)) then
       reset     <= reset_i;
-      cnt_reset <= reset_i or ttc_resync;
+      cnt_reset <= reset_i or ttc_i.resync;
     end if;
   end process;
 
@@ -330,9 +326,9 @@ begin
   --------------------------------------------------------------------------------------------------------------------
 
   -- clock the OR for fanout
-  process (clock_i)
+  process (clocks.clk40)
   begin
-    if (rising_edge(clock_i)) then
+    if (rising_edge(clocks.clk40)) then
       cnt_snap <= cnt_snap_pulse or cnt_snap_disable;
     end if;
   end process;
@@ -343,7 +339,8 @@ begin
 
   led_control_inst : led_control
     port map (
-      clock => clock_i,
+      clock => clocks.clk40,
+      gbt_eclk => clocks.clk40,
 
       mgts_ready => mgts_ready,
 
@@ -358,13 +355,12 @@ begin
       -- reset
       reset => reset,
 
-      gbt_eclk => gbt_clock_i,
 
       -- ttc commands
 
-      ttc_l1a    => ttc_l1a,
-      ttc_bc0    => ttc_bc0,
-      ttc_resync => ttc_resync,
+      ttc_l1a    => ttc_i.l1a,
+      ttc_bc0    => ttc_i.bc0,
+      ttc_resync => ttc_i.resync,
       vfat_reset => or_reduce(vfat_reset),
 
       -- signals
@@ -387,7 +383,7 @@ begin
 
   device_dna_inst : device_dna
     port map (
-      clock => clock_i,
+      clock => clocks.clk40,
       reset => reset_i,
       dna   => dna
       );
@@ -401,7 +397,7 @@ begin
   external_inst : external
     generic map (GE21 => OH_LITE, MXVFATS => MXVFATS)
     port map(
-      clock => clock_i,
+      clock => clocks.clk40,
 
       reset_i => reset,
 
@@ -437,13 +433,13 @@ begin
     port map (
 
       -- clock & reset
-      clock => clock_i,
+      clock => clocks.clk40,
       reset => reset,
 
       -- ttc commands
-      ttc_bx0    => ttc_bc0,
+      ttc_bx0    => ttc_i.bc0,
       bx0_local  => bx0_local,
-      ttc_resync => ttc_resync,
+      ttc_resync => ttc_i.resync,
 
       -- control
       bxn_offset => ttc_bxn_offset,
@@ -463,12 +459,12 @@ begin
     port map (
 
       -- clock & reset
-      clock   => clock_i,
+      clock   => clocks.clk40,
       reset_i => reset,
 
       -- ttc commands
-      ttc_bx0    => ttc_bc0,
-      ttc_resync => ttc_resync,
+      ttc_bx0    => ttc_i.bc0,
+      ttc_resync => ttc_i.resync,
 
       -- control
 
@@ -485,7 +481,7 @@ begin
 
   sem_mon_inst : entity work.sem_mon
     port map(
-      clk_i            => clock_i,
+      clk_i            => clocks.clk40,
       heartbeat_o      => open,
       initialization_o => open,
       observation_o    => open,
@@ -510,10 +506,10 @@ begin
        )
        port map(
            ipb_reset_i            => reset,
-           ipb_clk_i              => clock_i,
+           ipb_clk_i              => clocks.clk40,
            ipb_mosi_i             => ipb_mosi_i,
            ipb_miso_o             => ipb_miso_o,
-           usr_clk_i              => clock_i,
+           usr_clk_i              => clocks.clk40,
            regs_read_arr_i        => regs_read_arr,
            regs_write_arr_o       => regs_write_arr,
            read_pulse_arr_o       => regs_read_pulse_arr,
@@ -632,7 +628,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clock_i,
+        ref_clk_i => clocks.clk40,
         reset_i   => reset,
         en_i      => sem_critical,
         snap_i    => cnt_snap,
@@ -645,7 +641,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clock_i,
+        ref_clk_i => clocks.clk40,
         reset_i   => reset,
         en_i      => sem_correction,
         snap_i    => cnt_snap,
@@ -658,7 +654,7 @@ begin
         g_COUNTER_WIDTH  => 24
     )
     port map (
-        ref_clk_i => clock_i,
+        ref_clk_i => clocks.clk40,
         reset_i   => cnt_reset,
         en_i      => bx0_local,
         snap_i    => cnt_snap,
@@ -671,9 +667,9 @@ begin
         g_COUNTER_WIDTH  => 24
     )
     port map (
-        ref_clk_i => clock_i,
+        ref_clk_i => clocks.clk40,
         reset_i   => cnt_reset,
-        en_i      => ttc_bc0,
+        en_i      => ttc_i.bc0,
         snap_i    => cnt_snap,
         count_o   => cnt_bx0_rxd
     );
@@ -684,9 +680,9 @@ begin
         g_COUNTER_WIDTH  => 24
     )
     port map (
-        ref_clk_i => clock_i,
+        ref_clk_i => clocks.clk40,
         reset_i   => cnt_reset,
-        en_i      => ttc_l1a,
+        en_i      => ttc_i.l1a,
         snap_i    => cnt_snap,
         count_o   => cnt_l1a
     );
@@ -697,7 +693,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clock_i,
+        ref_clk_i => clocks.clk40,
         reset_i   => cnt_reset,
         en_i      => ttc_bxn_sync_err,
         snap_i    => cnt_snap,
@@ -710,7 +706,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clock_i,
+        ref_clk_i => clocks.clk40,
         reset_i   => cnt_reset,
         en_i      => ttc_bx0_sync_err,
         snap_i    => cnt_snap,

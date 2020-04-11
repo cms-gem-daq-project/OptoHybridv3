@@ -26,6 +26,12 @@ package types_pkg is
     -- Clocks
     ----------------------------------------------------------------------------------------------------
 
+    type ttc_t is record
+      resync : std_logic;
+      l1a : std_logic;
+      bc0 : std_logic;
+    end record;
+
     type clocks_t is record
         clk40 : std_logic;
         clk160_0 : std_logic;

@@ -25,10 +25,7 @@ entity clocking is
     clock_p : in std_logic;
     clock_n : in std_logic;
 
-    clk40_o     : out std_logic;  -- 40 MHz phase shiftable frame clock from GBT
-    clk160_0_o  : out std_logic;  -- 160 MHz phase shiftable frame clock from GBT
-    clk160_90_o : out std_logic;  -- 160 MHz phase shiftable frame clock from GBT
-    clk200_o    : out std_logic;
+    clocks : out clocks_t;
 
     -- mmcm locked status monitors
     mmcm_locked_o : out std_logic;
@@ -95,10 +92,10 @@ begin
       locked_o => mmcm_locked
       );
 
-  clk40_o     <= clk40;
-  clk160_0_o  <= clk160_0;
-  clk160_90_o <= clk160_90;
-  clk200_o    <= clk200;
+  clocks.clk40     <= clk40;
+  clocks.clk160_0  <= clk160_0;
+  clocks.clk160_90 <= clk160_90;
+  clocks.clk200    <= clk200;
 
   mmcm_locked_o <= mmcm_locked;
 

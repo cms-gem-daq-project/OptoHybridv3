@@ -33,7 +33,8 @@ entity top_optohybrid is
     XML_VERSION         : std_logic_vector (31 downto 0) := x"00000000";
     HOG_FWHASH          : std_logic_vector (31 downto 0) := x"00000000";
     FRAMEWORK_FWVERSION : std_logic_vector (31 downto 0) := x"00000000";
-    FRAMEWORK_FWHASH    : std_logic_vector (31 downto 0) := x"00000000"
+    FRAMEWORK_FWHASH    : std_logic_vector (31 downto 0) := x"00000000";
+    FLAVOUR             : integer                        := 0
     );
   port(
 
@@ -58,16 +59,16 @@ entity top_optohybrid is
     gbt_rxready_i : in std_logic_vector (MXREADY-1 downto 0);
 
     -- GE11
-    ext_sbits_o : out  std_logic_vector (8*GE11-1 downto 0);
-    ext_reset_o : out  std_logic_vector (MXRESET*GE11-1 downto 0);
-    adc_vp : in  std_logic_vector (1*GE11-1 downto 0);
-    adc_vn : in  std_logic_vector (1*GE11-1 downto 0);
+    ext_sbits_o : out std_logic_vector (8*GE11-1 downto 0);
+    ext_reset_o : out std_logic_vector (MXRESET*GE11-1 downto 0);
+    adc_vp      : in  std_logic_vector (1*GE11-1 downto 0);
+    adc_vn      : in  std_logic_vector (1*GE11-1 downto 0);
 
     -- GE21
-    gbt_txvalid_o  : out    std_logic_vector (MXREADY*GE21-1 downto 0);
-    master_slave   : in     std_logic_vector (1*GE21-1 downto 0);
-    master_slave_p : inout  std_logic_vector (12*GE21-1 downto 0);
-    master_slave_n : inout  std_logic_vector (12*GE21-1 downto 0);
+    gbt_txvalid_o  : out   std_logic_vector (MXREADY*GE21-1 downto 0);
+    master_slave   : in    std_logic_vector (1*GE21-1 downto 0);
+    master_slave_p : inout std_logic_vector (12*GE21-1 downto 0);
+    master_slave_n : inout std_logic_vector (12*GE21-1 downto 0);
     vtrx_mabs_i    : in    std_logic_vector (1*GE21 downto 0);
 
     --== LEDs ==--
@@ -98,7 +99,7 @@ architecture Behavioral of top_optohybrid is
   --== SBit cluster packer ==--
 
   signal tx_link_reset : std_logic;
-  signal tx_prbs_mode : std_logic_vector (2 downto 0);
+  signal tx_prbs_mode  : std_logic_vector (2 downto 0);
   signal sbit_overflow : std_logic;
   signal cluster_count : std_logic_vector (10 downto 0);
   signal active_vfats  : std_logic_vector (MXVFATS-1 downto 0);
@@ -111,7 +112,7 @@ architecture Behavioral of top_optohybrid is
   signal txpowerdown      : std_logic;
   signal txpowerdown_mode : std_logic_vector (1 downto 0);
   signal txpllpowerdown   : std_logic;
-  signal sbit_clusters   : sbit_cluster_array_t (7 downto 0);
+  signal sbit_clusters    : sbit_cluster_array_t (7 downto 0);
 
 
   --== Global signals ==--
@@ -123,6 +124,7 @@ architecture Behavioral of top_optohybrid is
   signal eprt_mmcm_locked  : std_logic;
 
   signal clocks : clocks_t;
+  signal ttc    : ttc_t;
 
   signal vtrx_mabs : std_logic_vector (1 downto 0);
 
@@ -144,9 +146,6 @@ architecture Behavioral of top_optohybrid is
   signal cnt_snap      : std_logic;
 
   signal ctrl_reset_vfats : std_logic_vector (11 downto 0);
-  signal ttc_resync       : std_logic;
-  signal ttc_l1a          : std_logic;
-  signal ttc_bc0          : std_logic;
 
   --== Wishbone ==--
 
@@ -200,7 +199,7 @@ architecture Behavioral of top_optohybrid is
   component gem_data_out
     generic (
       GE11 : integer := 0;
-      GE21  : integer := 1
+      GE21 : integer := 1
       );
     port (
       trg_tx_n : out std_logic_vector (3 downto 0);
@@ -212,10 +211,10 @@ architecture Behavioral of top_optohybrid is
       tx_prbs_mode : in std_logic_vector (2 downto 0);
 
       gem_data      : in std_logic_vector (111 downto 0);  -- 56 bit gem data
-      overflow_i    : in std_logic;     -- 1 bit gem has more than 8 clusters
-      bxn_counter_i : in std_logic_vector (11 downto 0);  -- 12 bit bxn counter
-      bc0_i         : in std_logic;     -- 1  bit bx0 flag
-      resync_i      : in std_logic;     -- 1  bit bx0 flag
+      overflow_i    : in std_logic;                        -- 1 bit gem has more than 8 clusters
+      bxn_counter_i : in std_logic_vector (11 downto 0);   -- 12 bit bxn counter
+      bc0_i         : in std_logic;                        -- 1  bit bx0 flag
+      resync_i      : in std_logic;                        -- 1  bit bx0 flag
 
       force_not_ready    : in std_logic;
       pll_reset_i        : in std_logic;
@@ -245,7 +244,6 @@ begin
 
   gbt_request_received <= ipb_mosi_gbt.ipb_strobe;
 
-
   --=============--
   --== Common  ==--
   --=============--
@@ -256,14 +254,14 @@ begin
   gbt_rxvalid <= gbt_rxvalid_i;
   gbt_txready <= gbt_txready_i;
 
-  ge11_out_assign : if (GE11=1) generate
-    ext_reset_o  <= ctrl_reset_vfats;
-    ext_sbits_o  <= ext_sbits;
+  ge11_out_assign : if (GE11 = 1) generate
+    ext_reset_o <= ctrl_reset_vfats;
+    ext_sbits_o <= ext_sbits;
   end generate;
 
-  --==============--
-  --== Clocking ==--
-  --==============--
+  --------------------------------------------------------------------------------
+  -- Clocking
+  --------------------------------------------------------------------------------
 
   clocking_inst : entity work.clocking
     port map(
@@ -279,11 +277,12 @@ begin
 
       mmcm_locked_o => mmcm_locked,
 
-      clk40_o     => clocks.clk40,             -- 40  MHz e-port aligned GBT clock
-      clk160_0_o  => clocks.clk160_0,          -- 160  MHz e-port aligned GBT clock
-      clk160_90_o => clocks.clk160_90,         -- 160  MHz e-port aligned GBT clock
-      clk200_o    => clocks.clk200             -- 200  MHz e-port aligned GBT clock
+      clocks => clocks
       );
+
+  --------------------------------------------------------------------------------
+  -- Reset
+  --------------------------------------------------------------------------------
 
   reset_inst : reset
     port map (
@@ -298,9 +297,9 @@ begin
       reset_o        => trigger_reset
       );
 
-  --=========--
-  --== GBT ==--
-  --=========--
+  --------------------------------------------------------------------------------
+  -- GBT
+  --------------------------------------------------------------------------------
 
   gbt_inst : entity work.gbt
     port map(
@@ -316,11 +315,7 @@ begin
 
       -- input clocks
 
-      gbt_clk40     => clocks.clk40,           -- 40 MHz frame clock
-      gbt_clk160_0  => clocks.clk160_0,        --
-      gbt_clk160_90 => clocks.clk160_90,       --
-
-      clock_i => clocks.clk40,                 -- 320 MHz sampling clock
+      clocks => clocks,
 
       -- elinks
       elink_i_p => elink_i_p,
@@ -345,15 +340,12 @@ begin
       cnt_snap => cnt_snap,
 
       -- decoded TTC
-      resync_o => ttc_resync,
-      l1a_o    => ttc_l1a,
-      bc0_o    => ttc_bc0
-
+      ttc_o => ttc
       );
 
-  --=====================--
-  --== Wishbone switch ==--
-  --=====================--
+  --------------------------------------------------------------------------------
+  -- Wishbone
+  --------------------------------------------------------------------------------
 
   -- This module is the Wishbone switch which redirects requests from the masters to the slaves.
 
@@ -374,15 +366,15 @@ begin
       miso_slaves => ipb_miso_slaves
       );
 
-  --====================--
-  --== System Monitor ==--
-  --====================--
+  --------------------------------------------------------------------------------
+  -- ADC
+  --------------------------------------------------------------------------------
 
-  adc_v6 : if (GE11=1) generate
+  adc_v6 : if (GE11 = 1) generate
     adc_vp_int <= adc_vp(0);
     adc_vn_int <= adc_vn(0);
   end generate;
-  adc_a7 : if (GE21=1) generate
+  adc_a7 : if (GE21 = 1) generate
     adc_vp_int <= '1';
     adc_vn_int <= '0';
   end generate;
@@ -402,9 +394,9 @@ begin
     adc_vn => adc_vn_int
     );
 
-  --=============--
-  --== Control ==--
-  --=============--
+  --------------------------------------------------------------------------------
+  -- Control
+  --------------------------------------------------------------------------------
 
   control_inst : entity work.control
     port map (
@@ -415,13 +407,11 @@ begin
 
       --== TTC ==--
 
-      clock_i     => clocks.clk40,
-      gbt_clock_i => clocks.clk40,
-      reset_i     => core_reset,
+      clocks => clocks,
 
-      ttc_l1a    => ttc_l1a,
-      ttc_bc0    => ttc_bc0,
-      ttc_resync => ttc_resync,
+      reset_i => core_reset,
+
+      ttc_i => ttc,
 
       ipb_mosi_i => ipb_mosi_slaves (IPB_SLAVE.CONTROL),
       ipb_miso_o => ipb_miso_slaves (IPB_SLAVE.CONTROL),
@@ -454,10 +444,6 @@ begin
       -- GBT
       gbt_link_error_i => gbt_link_error,
 
-      ---------
-      -- TTC --
-      ---------
-
       bxn_counter_o => bxn_counter,
 
       trig_stop_o => trig_stop,
@@ -479,9 +465,9 @@ begin
 
       );
 
-  --==================--
-  --== Trigger Data ==--
-  --==================--
+  --------------------------------------------------------------------------------
+  -- Trigger & Sbits
+  --------------------------------------------------------------------------------
 
   trigger_inst : entity work.trigger
     port map (
@@ -493,7 +479,7 @@ begin
 
       tx_pll_lock_i   => pll_lock,
       tx_reset_done_i => txfsm_done,
-      tx_prbs_mode_o => tx_prbs_mode,
+      tx_prbs_mode_o  => tx_prbs_mode,
 
       sbit_clusters_o => sbit_clusters,
 
@@ -501,17 +487,16 @@ begin
       trigger_reset_i => trigger_reset,
       core_reset_i    => core_reset,
       cnt_snap        => cnt_snap,
-      ttc_resync      => ttc_resync,
       tx_link_reset_o => tx_link_reset,
 
-      pll_reset        => pll_reset,
-      mgt_reset        => mgt_reset,
-      gtxtest_start    => gtxtest_start,
-      txreset          => txreset,
-      mgt_realign      => mgt_realign,
-      txpowerdown      => txpowerdown,
-      txpowerdown_mode => txpowerdown_mode,
-      txpllpowerdown   => txpllpowerdown,
+      pll_reset_o        => pll_reset,
+      mgt_reset_o        => mgt_reset,
+      gtxtest_start_o    => gtxtest_start,
+      txreset_o          => txreset,
+      mgt_realign_o      => mgt_realign,
+      txpowerdown_o      => txpowerdown,
+      txpowerdown_mode_o => txpowerdown_mode,
+      txpllpowerdown_o   => txpllpowerdown,
 
       -- clocks
 
@@ -524,8 +509,7 @@ begin
       cluster_count_o => cluster_count,
       overflow_o      => sbit_overflow,
       bxn_counter_i   => bxn_counter,
-      ttc_bx0_i       => ttc_bc0,
-      ttc_l1a_i       => ttc_l1a,
+      ttc             => ttc,
 
       -- sbit_ors
 
@@ -546,7 +530,10 @@ begin
       );
 
 
--- IDELAYCTRL is needed for calibration
+  --------------------------------------------------------------------------------
+  -- IDELAYCTRL
+  --------------------------------------------------------------------------------
+
   delayctrl_inst : IDELAYCTRL
     port map (
       RDY    => idlyrdy,
@@ -554,22 +541,27 @@ begin
       RST    => not mmcm_locked
       );
 
+  --------------------------------------------------------------------------------
+  -- Fiber Output
+  --------------------------------------------------------------------------------
+
   gem_data_out_inst : gem_data_out
     generic map (
       GE11 => GE11,
-      GE21  => GE21
+      GE21 => GE21
       )
     port map (
 
-      refclk_p => mgt_clk_p_i,            -- 160 MHz Reference Clock Positive
-      refclk_n => mgt_clk_n_i,            -- 160 MHz Reference Clock Negative
+      refclk_p => mgt_clk_p_i,          -- 160 MHz Reference Clock Positive
+      refclk_n => mgt_clk_n_i,          -- 160 MHz Reference Clock Negative
 
-      clock_40  => clocks.clk40,              -- 40 MHz  Logic Clock
-      clock_160 => clocks.clk160_0,             -- 160 MHz  Logic Clock
+      clock_40  => clocks.clk40,        -- 40 MHz  Logic Clock
+      clock_160 => clocks.clk160_0,     -- 160 MHz  Logic Clock
 
       bxn_counter_i => bxn_counter,
-      bc0_i         => ttc_bc0,
-      resync_i      => ttc_resync,
+
+      bc0_i    => ttc.bc0,
+      resync_i => ttc.resync,
 
       reset_i => tx_link_reset,
 

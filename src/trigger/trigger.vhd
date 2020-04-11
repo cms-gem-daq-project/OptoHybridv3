@@ -37,14 +37,14 @@ entity trigger is
     logic_mmcm_reset_o : out std_logic;
 
     clocks : in clocks_t;
+    ttc : in ttc_t;
 
     sbit_clusters_o : out sbit_cluster_array_t (7 downto 0);
 
-    tx_prbs_mode_o  : out std_logic_vector (1 downto 0);
+    tx_prbs_mode_o  : out std_logic_vector (2 downto 0);
     tx_link_reset_o : out std_logic;
     trigger_reset_i : in  std_logic;
     core_reset_i    : in  std_logic;
-    ttc_resync      : in  std_logic;
 
     mgt_tx_p : out std_logic_vector(3 downto 0);
     mgt_tx_n : out std_logic_vector(3 downto 0);
@@ -65,8 +65,6 @@ entity trigger is
 
     trig_stop_i   : in std_logic;
     bxn_counter_i : in std_logic_vector(11 downto 0);
-    ttc_bx0_i     : in std_logic;
-    ttc_l1a_i     : in std_logic;
 
     -- cluster packer
 
@@ -247,8 +245,8 @@ begin
   process (clocks.clk40)
   begin
     if (rising_edge(clocks.clk40)) then
-      cnt_reset         <= trigger_reset or ttc_resync or reset_counters;
-      cnt_reset_strobed <= trigger_reset or ttc_resync or reset_counters or (sbit_timer_reset and not sbit_cnt_persist);
+      cnt_reset         <= trigger_reset or ttc.resync or reset_counters;
+      cnt_reset_strobed <= trigger_reset or ttc.resync or reset_counters or (sbit_timer_reset and not sbit_cnt_persist);
     end if;
   end process;
 
@@ -394,7 +392,7 @@ begin
     port map (
       reset_i          => (trigger_reset or reset_monitor),
       ttc_clk_i        => clocks.clk40,
-      l1a_i            => ttc_l1a_i,
+      l1a_i            => ttc.l1a,
       sbit_cluster_0   => sbit_clusters(0),
       sbit_cluster_1   => sbit_clusters(1),
       sbit_cluster_2   => sbit_clusters(2),

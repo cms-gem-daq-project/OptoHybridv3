@@ -24,18 +24,11 @@ use work.param_pkg.all;
 use work.registers.all;
 
 entity gbt is
-  generic(
-    DEBUG : boolean := false
-    );
   port(
 
     reset_i : in std_logic;
 
-    clock_i : in std_logic;             -- 40 MHz logic clock
-
-    gbt_clk40     : in std_logic;  -- 40  MHz phase shiftable frame clock from GBT
-    gbt_clk160_0  : in std_logic;  -- 320 MHz phase shiftable frame clock from GBT
-    gbt_clk160_90 : in std_logic;  -- 320 MHz phase shiftable frame clock from GBT
+    clocks : in clocks_t;
 
     elink_i_p : in std_logic;
     elink_i_n : in std_logic;
@@ -46,9 +39,7 @@ entity gbt is
     gbt_link_error_o : out std_logic;
     gbt_link_ready_o : out std_logic;
 
-    l1a_o    : out std_logic;
-    bc0_o    : out std_logic;
-    resync_o : out std_logic;
+    ttc_o    : out ttc_t;
 
     cnt_snap : in std_logic;
 
@@ -123,20 +114,20 @@ begin
 
   -- fanout reset tree
 
-  process (clock_i)
+  process (clocks.clk40)
   begin
-    if (rising_edge(clock_i)) then
+    if (rising_edge(clocks.clk40)) then
       reset     <= reset_i;
       cnt_reset <= (reset_i or resync_gbt or resync_force);
     end if;
   end process;
 
-  process (clock_i)
+  process (clocks.clk40)
   begin
-    if (rising_edge(clock_i)) then
-      l1a_o    <= l1a_force or l1a_gbt;
-      bc0_o    <= bc0_force or bc0_gbt;
-      resync_o <= resync_force or resync_gbt;
+    if (rising_edge(clocks.clk40)) then
+      ttc_o.l1a    <= l1a_force or l1a_gbt;
+      ttc_o.bc0    <= bc0_force or bc0_gbt;
+      ttc_o.resync <= resync_force or resync_gbt;
     end if;
   end process;
 
@@ -152,9 +143,9 @@ begin
 
       -- input clocks
 
-      clk_1x    => gbt_clk40,  -- 40 MHz phase shiftable frame clock from GBT
-      clk_4x    => gbt_clk160_0,        --
-      clk_4x_90 => gbt_clk160_90,       --
+      clk_1x    => clocks.clk40,  -- 40 MHz phase shiftable frame clock from GBT
+      clk_4x    => clocks.clk160_0,        --
+      clk_4x_90 => clocks.clk160_90,       --
 
       -- serial data
       elink_o_p => elink_o_p,           -- output e-links
@@ -182,7 +173,7 @@ begin
       reset_i => reset,
 
       -- clock inputs
-      clock => clock_i,                 -- 40 MHz ttc fabric clock
+      clock => clocks.clk40,                 -- 40 MHz ttc fabric clock
 
       -- parallel data
       data_i => gbt_rx_data,
@@ -223,10 +214,10 @@ begin
        )
        port map(
            ipb_reset_i            => ipb_reset_i,
-           ipb_clk_i              => clock_i,
+           ipb_clk_i              => clocks.clk40,
            ipb_mosi_i             => ipb_mosi_i,
            ipb_miso_o             => ipb_miso_o,
-           usr_clk_i              => clock_i,
+           usr_clk_i              => clocks.clk40,
            regs_read_arr_i        => regs_read_arr,
            regs_write_arr_o       => regs_write_arr,
            read_pulse_arr_o       => regs_read_pulse_arr,
@@ -272,7 +263,7 @@ begin
         g_COUNTER_WIDTH  => 24
     )
     port map (
-        ref_clk_i => clock_i,
+        ref_clk_i => clocks.clk40,
         reset_i   => cnt_reset,
         en_i      => ipb_miso.ipb_ack,
         snap_i    => cnt_snap,
@@ -285,7 +276,7 @@ begin
         g_COUNTER_WIDTH  => 24
     )
     port map (
-        ref_clk_i => clock_i,
+        ref_clk_i => clocks.clk40,
         reset_i   => cnt_reset,
         en_i      => ipb_mosi.ipb_strobe,
         snap_i    => cnt_snap,
@@ -298,7 +289,7 @@ begin
         g_COUNTER_WIDTH  => 24
     )
     port map (
-        ref_clk_i => clock_i,
+        ref_clk_i => clocks.clk40,
         reset_i   => cnt_reset,
         en_i      => gbt_link_err_ready,
         snap_i    => cnt_snap,
