@@ -7,7 +7,7 @@ package param_pkg is
     -- START: PARAM_PKG DO NOT EDIT --
     constant MAJOR_VERSION          : std_logic_vector(7 downto 0) := x"03";
     constant MINOR_VERSION          : std_logic_vector(7 downto 0) := x"02";
-    constant RELEASE_VERSION        : std_logic_vector(7 downto 0) := x"09";
+    constant RELEASE_VERSION        : std_logic_vector(7 downto 0) := x"04";
 
     constant RELEASE_YEAR           : std_logic_vector(15 downto 0) := x"2020";
     constant RELEASE_MONTH          : std_logic_vector(7 downto  0) := x"04";
@@ -17,7 +17,7 @@ package param_pkg is
 
     constant FPGA_TYPE     : string  := "ARTIX7";
     constant GE11  : integer := 0;
-    constant GE21   : integer := 1;
+    constant GE21  : integer := 1;
 
     constant MXELINKS : integer := 1;
     constant MXLED    : integer := 1;

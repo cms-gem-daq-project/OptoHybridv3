@@ -26,11 +26,7 @@ use work.trig_pkg.all;
 entity sbits is
   generic (oh_lite : integer := OH_LITE);
   port(
-
-    clk40_i     : in std_logic;
-    clk160_i    : in std_logic;
-    clk160_90_i : in std_logic;
-    clk200_i    : in std_logic;
+    clocks : in clocks_t;
 
     reset_i : in std_logic;
 
@@ -178,16 +174,16 @@ begin
 
   -- reset fanout
 
-  process (clk40_i)
+  process (clocks.clk40)
   begin
-    if (rising_edge(clk40_i)) then
+    if (rising_edge(clocks.clk40)) then
       reset <= reset_i;
     end if;
   end process;
 
-  process (clk40_i)
+  process (clocks.clk40)
   begin
-    if (rising_edge(clk40_i)) then
+    if (rising_edge(clocks.clk40)) then
       if (unsigned(sbits_mux_sel_i) > to_unsigned(MXVFATS, sbits_mux_sel_i'length)-1) then
         sbits_mux_sel <= (others => '0');
       else
@@ -223,9 +219,9 @@ begin
       start_of_frame_p => start_of_frame_p,
       start_of_frame_n => start_of_frame_n,
 
-      clock     => clk40_i,
-      clk160_0  => clk160_i,
-      clk160_90 => clk160_90_i,
+      clock     => clocks.clk40,
+      clk160_0  => clocks.clk160_0,
+      clk160_90 => clocks.clk160_90,
 
       sot_is_aligned      => sot_is_aligned_o,
       sot_unstable        => sot_unstable_o,
@@ -263,7 +259,7 @@ begin
 
   active_vfats_inst : entity work.active_vfats
     port map (
-      clock          => clk40_i,
+      clock          => clocks.clk40,
       sbits_i        => sbits,
       active_vfats_o => active_vfats
       );
@@ -272,9 +268,9 @@ begin
   -- Sbits Monitor Multiplexer
   --------------------------------------------------------------------------------------------------------------------
 
-  process (clk40_i)
+  process (clocks.clk40)
   begin
-    if (rising_edge(clk40_i)) then
+    if (rising_edge(clocks.clk40)) then
       sbits_mux_s0 <= vfat_sbits_strip_mapped(to_integer(unsigned(sbits_mux_sel)));
       sbits_mux_s1 <= sbits_mux_s0;
       sbits_mux    <= sbits_mux_s1;
@@ -291,7 +287,7 @@ begin
 
   sbits_hitmap_inst : entity work.sbits_hitmap
     port map (
-      clock_i   => clk40_i,
+      clock_i   => clocks.clk40,
       reset_i   => hitmap_reset_i,
       acquire_i => hitmap_acquire_i,
       sbits_i   => vfat_sbits_strip_mapped,
@@ -312,9 +308,9 @@ begin
 
       port map(
         trig_stop_i   => trig_stop_i,
-        clock5x       => clk200_i,
-        clock4x       => clk160_i,
-        clock1x       => clk40_i,
+        clock5x       => clocks.clk200,
+        clock4x       => clocks.clk160_0,
+        clock1x       => clocks.clk40,
         reset_i       => reset,
         cluster_count => cluster_count_o,
         deadtime_i    => trigger_deadtime_i,
@@ -368,9 +364,9 @@ begin
 
       port map(
         trig_stop_i   => trig_stop_i,
-        clock5x       => clk200_i,
-        clock4x       => clk160_i,
-        clock1x       => clk40_i,
+        clock5x       => clocks.clk200,
+        clock4x       => clocks.clk160_0,
+        clock1x       => clocks.clk40,
         reset_i       => reset,
         cluster_count => cluster_count_o,
         deadtime_i    => trigger_deadtime_i,

@@ -2,10 +2,6 @@
 -- CMS Muon Endcap
 -- GEM Collaboration
 -- Optohybrid v3 Firmware -- Clocking
--- 2017/07/21 -- Initial port to version 3 electronics
--- 2017/07/22 -- Additional MMCM added to monitor and dejitter the eport clock
--- 2017/08/09 -- 200MHz iodelay refclk added to primary MMCM
--- 2019/05/02 -- Added BUFGCE outputs to disable clocks during MGT init
 ----------------------------------------------------------------------------------
 
 library ieee;
@@ -24,10 +20,6 @@ use work.ipbus_pkg.all;
 use work.registers.all;
 
 entity clocking is
-  generic(
-    g_ERROR_COUNT_MAX       : integer   := 5;
-    g_DONT_USE_CLOCK_GATING : std_logic := '0'
-    );
   port(
 
     clock_p : in std_logic;
@@ -52,7 +44,6 @@ entity clocking is
 
     );
 end clocking;
-
 
 architecture Behavioral of clocking is
 

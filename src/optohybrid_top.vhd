@@ -1,13 +1,8 @@
 ---------------------------------------------------------------------------------
 -- CMS Muon Endcap
 -- GEM Collaboration
--- Optohybrid v3 Firmware -- Top Logic
--- T. Lenzi, E. Juska, A. Peck
-----------------------------------------------------------------------------------
--- 2017/07/21 -- Initial port to version 3 electronics
--- 2017/07/22 -- Additional MMCM added to monitor and dejitter the eport clock
--- 2017/07/25 -- Restructure top level module to improve organization
--- 2018/04/18 -- Mods for for OH lite compatibility
+-- Optohybrid Firmware -- Top Logic
+-- E. Juska, T. Lenzi, A. Peck, L. Petre
 ----------------------------------------------------------------------------------
 
 library ieee;
@@ -114,10 +109,7 @@ architecture Behavioral of top_optohybrid is
   signal logic_mmcm_reset  : std_logic;
   signal eprt_mmcm_locked  : std_logic;
 
-  signal clk40     : std_logic;
-  signal clk160_0  : std_logic;
-  signal clk160_90 : std_logic;
-  signal clk200    : std_logic;
+  signal clocks : clocks_t;
 
   signal vtrx_mabs : std_logic_vector (1 downto 0);
 
@@ -209,7 +201,7 @@ begin
   gbt_rxvalid <= gbt_rxvalid_i;
   gbt_txready <= gbt_txready_i;
 
-  ge11_out_assign : if (GE11='1') generate
+  ge11_out_assign : if (GE11=1) generate
     ext_reset_o  <= ctrl_reset_vfats;
     ext_sbits_o  <= ext_sbits;
   end generate;
@@ -232,15 +224,15 @@ begin
 
       mmcm_locked_o => mmcm_locked,
 
-      clk40_o     => clk40,             -- 40  MHz e-port aligned GBT clock
-      clk160_0_o  => clk160_0,          -- 160  MHz e-port aligned GBT clock
-      clk160_90_o => clk160_90,         -- 160  MHz e-port aligned GBT clock
-      clk200_o    => clk200             -- 200  MHz e-port aligned GBT clock
+      clk40_o     => clocks.clk40,             -- 40  MHz e-port aligned GBT clock
+      clk160_0_o  => clocks.clk160_0,          -- 160  MHz e-port aligned GBT clock
+      clk160_90_o => clocks.clk160_90,         -- 160  MHz e-port aligned GBT clock
+      clk200_o    => clocks.clk200             -- 200  MHz e-port aligned GBT clock
       );
 
   reset_inst : reset
     port map (
-      clock_i        => clk40,
+      clock_i        => clocks.clk40,
       soft_reset     => soft_reset,
       mmcms_locked_i => mmcm_locked,
       gbt_rxready_i  => gbt_rxready(0),
@@ -269,11 +261,11 @@ begin
 
       -- input clocks
 
-      gbt_clk40     => clk40,           -- 40 MHz frame clock
-      gbt_clk160_0  => clk160_0,        --
-      gbt_clk160_90 => clk160_90,       --
+      gbt_clk40     => clocks.clk40,           -- 40 MHz frame clock
+      gbt_clk160_0  => clocks.clk160_0,        --
+      gbt_clk160_90 => clocks.clk160_90,       --
 
-      clock_i => clk40,                 -- 320 MHz sampling clock
+      clock_i => clocks.clk40,                 -- 320 MHz sampling clock
 
       -- elinks
       elink_i_p => elink_i_p,
@@ -315,7 +307,7 @@ begin
 
   ipb_switch_inst : entity work.ipb_switch
     port map(
-      clock_i => clk40,
+      clock_i => clocks.clk40,
       reset_i => core_reset,
 
       -- connect to master
@@ -331,17 +323,17 @@ begin
   --== System Monitor ==--
   --====================--
 
-  adc_v6 : if (GE11='1') generate
+  adc_v6 : if (GE11=1) generate
     adc_vp_int <= adc_vp(0);
     adc_vn_int <= adc_vn(0);
   end generate;
-  adc_a7 : if (GE21='1') generate
+  adc_a7 : if (GE21=1) generate
     adc_vp_int <= '1';
     adc_vn_int <= '0';
   end generate;
 
   adc_inst : entity work.adc port map(
-    clock_i => clk40,
+    clock_i => clocks.clk40,
     reset_i => core_reset,
 
     cnt_snap => cnt_snap,
@@ -349,7 +341,7 @@ begin
     ipb_mosi_i  => ipb_mosi_slaves (IPB_SLAVE.ADC),
     ipb_miso_o  => ipb_miso_slaves (IPB_SLAVE.ADC),
     ipb_reset_i => core_reset,
-    ipb_clk_i   => clk40,
+    ipb_clk_i   => clocks.clk40,
 
     adc_vp => adc_vp_int,
     adc_vn => adc_vn_int
@@ -368,8 +360,8 @@ begin
 
       --== TTC ==--
 
-      clock_i     => clk40,
-      gbt_clock_i => clk40,
+      clock_i     => clocks.clk40,
+      gbt_clock_i => clocks.clk40,
       reset_i     => core_reset,
 
       ttc_l1a    => ttc_l1a,
@@ -461,13 +453,7 @@ begin
       logic_mmcm_lock_i  => logic_mmcm_locked,
       logic_mmcm_reset_o => logic_mmcm_reset,
 
-      clk_40  => clk40,
-      clk_160 => clk160_0,
-
-      clk_40_sbit     => clk40,
-      clk_160_sbit    => clk160_0,
-      clk_160_90_sbit => clk160_90,
-      clk_200_sbit    => clk200,
+      clocks => clocks,
 
       -- mgt pairs
       mgt_tx_p => mgt_tx_p_o,
@@ -503,7 +489,7 @@ begin
   delayctrl_inst : IDELAYCTRL
     port map (
       RDY    => idlyrdy,
-      REFCLK => clk200,
+      REFCLK => clocks.clk200,
       RST    => not mmcm_locked
       );
 

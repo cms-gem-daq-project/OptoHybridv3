@@ -22,6 +22,16 @@ package types_pkg is
     type t_std64_array is array(integer range <>) of std_logic_vector(63 downto 0);
 
 
+    ----------------------------------------------------------------------------------------------------
+    -- Clocks
+    ----------------------------------------------------------------------------------------------------
+
+    type clocks_t is record
+        clk40 : std_logic;
+        clk160_0 : std_logic;
+        clk160_90 : std_logic;
+        clk200 : std_logic;
+    end record;
 
     --==================--
     --== Trigger data ==--
