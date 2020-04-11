@@ -68,10 +68,6 @@ entity control is
     gbt_link_error_i       : in std_logic;
     gbt_request_received_i : in std_logic;
 
-    -- Analog input
-    adc_vp : in std_logic;
-    adc_vn : in std_logic;
-
     --------------------
     -- config outputs --
     --------------------

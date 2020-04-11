@@ -25,12 +25,24 @@ use unisim.vcomponents.all;
 
 
 entity top_optohybrid is
+  generic (
+    -- these generics get set by hog at synthesis
+    GLOBAL_FWDATE       : std_logic_vector (31 downto 0) := x"00000000";
+    GLOBAL_FWTIME       : std_logic_vector (31 downto 0) := x"00000000";
+    OFFICIAL            : std_logic_vector (31 downto 0) := x"00000000";
+    GLOBAL_FWHASH       : std_logic_vector (31 downto 0) := x"00000000";
+    TOP_FWHASH          : std_logic_vector (31 downto 0) := x"00000000";
+    XML_HASH            : std_logic_vector (31 downto 0) := x"00000000";
+    GLOBAL_FWVERSION    : std_logic_vector (31 downto 0) := x"00000000";
+    TOP_FWVERSION       : std_logic_vector (31 downto 0) := x"00000000";
+    XML_VERSION         : std_logic_vector (31 downto 0) := x"00000000";
+    HOG_FWHASH          : std_logic_vector (31 downto 0) := x"00000000";
+    FRAMEWORK_FWVERSION : std_logic_vector (31 downto 0) := x"00000000";
+    FRAMEWORK_FWHASH    : std_logic_vector (31 downto 0) := x"00000000"
+    );
   port(
 
     --== Clocking ==--
-
-    -- logic_clock_p : in std_logic;
-    -- logic_clock_n : in std_logic;
 
     clock_p : in std_logic;
     clock_n : in std_logic;
@@ -50,14 +62,18 @@ entity top_optohybrid is
     gbt_rxvalid_i : in std_logic_vector (MXREADY-1 downto 0);
     gbt_rxready_i : in std_logic_vector (MXREADY-1 downto 0);
 
-    -- START: Station Specific Ports DO NOT EDIT --
-    gbt_txvalid_o  : out    std_logic_vector (MXREADY-1 downto 0);
+    -- GE11
+    ext_sbits_o : out  std_logic_vector (8*FPGA_TYPE_IS_VIRTEX6-1 downto 0);
+    ext_reset_o : out  std_logic_vector (MXRESET*FPGA_TYPE_IS_VIRTEX6-1 downto 0);
+    adc_vp : in  std_logic_vector (1*FPGA_TYPE_IS_VIRTEX6-1 downto 0);
+    adc_vn : in  std_logic_vector (1*FPGA_TYPE_IS_VIRTEX6-1 downto 0);
 
-    master_slave   : in     std_logic;
-    master_slave_p : inout  std_logic_vector (11 downto 0);
-    master_slave_n : inout  std_logic_vector (11 downto 0);
-    vtrx_mabs_i    : in    std_logic_vector (1 downto 0);
-    -- END: Station Specific Ports DO NOT EDIT --
+    -- GE21
+    gbt_txvalid_o  : out    std_logic_vector (MXREADY*FPGA_TYPE_IS_ARTIX7-1 downto 0);
+    master_slave   : in     std_logic_vector (1*FPGA_TYPE_IS_ARTIX7-1 downto 0);
+    master_slave_p : inout  std_logic_vector (12*FPGA_TYPE_IS_ARTIX7-1 downto 0);
+    master_slave_n : inout  std_logic_vector (12*FPGA_TYPE_IS_ARTIX7-1 downto 0);
+    vtrx_mabs_i    : in    std_logic_vector (1*FPGA_TYPE_IS_ARTIX7 downto 0);
 
     --== LEDs ==--
 
@@ -156,16 +172,8 @@ architecture Behavioral of top_optohybrid is
 
   signal led : std_logic_vector (15 downto 0);
 
-  -- don't remove duplicates for fanout, needed to pack into iob
-  signal ext_reset : std_logic_vector (11 downto 0);
-
-  -- START: Station Specific Signals DO NOT EDIT --
-    -- dummy signals for ge21
-    signal ext_reset_o : std_logic_vector (11 downto 0);
-    signal ext_sbits_o : std_logic_vector (7 downto 0);
-    signal adc_vp      : std_logic;
-    signal adc_vn      : std_logic;
-  -- END: Station Specific Signals DO NOT EDIT --
+  signal adc_vp_int : std_logic;
+  signal adc_vn_int : std_logic;
 
   component reset port (
 
@@ -201,13 +209,10 @@ begin
   gbt_rxvalid <= gbt_rxvalid_i;
   gbt_txready <= gbt_txready_i;
 
-  -- START: Station Specific IO DO NOT EDIT --
-    --===========--
-    --== GE21  ==--
-    --===========--
-    gbt_txvalid_o <= "11";
-    vtrx_mabs    <= vtrx_mabs_i;
-  -- END: Station Specific IO DO NOT EDIT --
+  ge11_out_assign : if (FPGA_TYPE_IS_VIRTEX6='1') generate
+    ext_reset_o  <= ctrl_reset_vfats;
+    ext_sbits_o  <= ext_sbits;
+  end generate;
 
   --==============--
   --== Clocking ==--
@@ -326,6 +331,15 @@ begin
   --== System Monitor ==--
   --====================--
 
+  adc_v6 : if (FPGA_TYPE_IS_VIRTEX6='1') generate
+    adc_vp_int <= adc_vp(0);
+    adc_vn_int <= adc_vn(0);
+  end generate;
+  adc_a7 : if (FPGA_TYPE_IS_ARTIX7='1') generate
+    adc_vp_int <= '1';
+    adc_vn_int <= '0';
+  end generate;
+
   adc_inst : entity work.adc port map(
     clock_i => clk40,
     reset_i => core_reset,
@@ -337,8 +351,8 @@ begin
     ipb_reset_i => core_reset,
     ipb_clk_i   => clk40,
 
-    adc_vp => adc_vp,
-    adc_vn => adc_vn
+    adc_vp => adc_vp_int,
+    adc_vn => adc_vn_int
     );
 
   --=============--
@@ -392,10 +406,6 @@ begin
 
       -- GBT
       gbt_link_error_i => gbt_link_error,
-
-      -- Analog input
-      adc_vp => adc_vp,
-      adc_vn => adc_vn,
 
       ---------
       -- TTC --
