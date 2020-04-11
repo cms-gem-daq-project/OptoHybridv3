@@ -1,0 +1,84 @@
+# -*- mode: TCL;-*-
+../../src/optohybrid_top.vhd
+
+# Control
+../../src/control/adc.vhd
+../../src/control/control.vhd
+../../src/control/device_dna.v
+../../src/control/external.v
+../../src/control/fmm.v
+../../src/control/led_control.v
+../../src/control/reset.v
+../../src/control/startup.vhd
+../../src/control/ttc.v
+
+# GBT
+../../src/gbt/gbt_link.vhd
+../../src/gbt/gbt_rx.vhd
+../../src/gbt/gbt_serdes.vhd
+../../src/gbt/gbt_tx.vhd
+../../src/gbt/gbt.vhd
+../../src/gbt/link_request.vhd
+
+# Pkg
+../../src/pkg/ipbus_pkg.vhd
+../../src/pkg/param_pkg.vhd
+../../src/pkg/registers.vhd
+../../src/pkg/types_pkg.vhd
+
+# GBT
+../../src/ip_cores_a7/xadc_a7/xadc_a7.xci
+../../src/ip_cores_a7/sem_a7/sem_a7.xci
+../../src/ip_cores_a7/fifo_request_tx_a7/fifo_request_tx_a7.xci
+../../src/ip_cores_a7/cluster_data_cdc/cluster_data_cdc.xci
+../../src/ip_cores_a7/logic_clocking/logic_clocking.xci
+
+# Cluster packer
+../../src/sbit_cluster_packer/source/cluster_packer.v
+../../src/sbit_cluster_packer/source/consecutive_count.v
+../../src/sbit_cluster_packer/source/count_clusters_lite.v
+../../src/sbit_cluster_packer/source/count_clusters.v
+../../src/sbit_cluster_packer/source/find_cluster_primaries.v
+../../src/sbit_cluster_packer/source/first8of1536.v
+../../src/sbit_cluster_packer/source/lac.v
+../../src/sbit_cluster_packer/source/priority768.v
+../../src/sbit_cluster_packer/source/truncate_clusters.v
+
+# Trigger
+../../src/trigger/active_vfats.vhd
+../../src/trigger/channel_to_strip.vhd
+../../src/trigger/link/a7_gtp_wrapper.vhd
+../../src/trigger/link/a7_trig_tx_buf_bypass_common.vhd
+../../src/trigger/link/a7_trig_tx_buf_bypass_cpll_railing.vhd
+../../src/trigger/link/gem_data_out.v
+../../src/trigger/link/gem_fiber_out.v
+../../src/trigger/link/trigger_links.v
+../../src/trigger/sbit_monitor.vhd
+../../src/trigger/sbits_hitmap.vhd
+../../src/trigger/sbits.vhd
+../../src/trigger/trig_alignment/frame_aligner.v
+../../src/trigger/trig_alignment/trig_alignment.vhd
+../../src/trigger/trig_alignment/trig_pkg.vhd
+../../src/trigger/trigger.vhd
+
+# Utils
+../../src/utils/6b8b_pkg.vhd
+../../src/utils/6b8b.vhd
+../../src/utils/8b6b.vhd
+../../src/utils/bitslip.vhd
+../../src/utils/clocking.vhd
+../../src/utils/counter_snap.vhd
+../../src/utils/cylon.v
+../../src/utils/DRU.vhd
+../../src/utils/err_indicator.v
+../../src/utils/fader.v
+../../src/utils/iodelay.vhd
+../../src/utils/iserdes.vhd
+../../src/utils/OVERSAMPLE.vhd
+../../src/utils/progress_bar.vhd
+../../src/utils/sem_mon.vhd
+../../src/utils/synchronizer.vhd
+../../src/utils/x_flashsm.v
+../../src/wb/ipb_switch.vhd
+../../src/wb/ipbus_slave.vhd
+../../src/wb/wb_switch.vhd

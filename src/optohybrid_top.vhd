@@ -24,7 +24,7 @@ library unisim;
 use unisim.vcomponents.all;
 
 
-entity optohybrid_top is
+entity top_optohybrid is
 port(
 
     --== Clocking ==--
@@ -81,9 +81,9 @@ port(
     vfat_sbits_n : in std_logic_vector ((MXVFATS*8)-1 downto 0)
 
 );
-end optohybrid_top;
+end top_optohybrid;
 
-architecture Behavioral of optohybrid_top is
+architecture Behavioral of top_optohybrid is
 
     --== SBit cluster packer ==--
 
