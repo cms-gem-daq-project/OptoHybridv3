@@ -63,17 +63,17 @@ entity top_optohybrid is
     gbt_rxready_i : in std_logic_vector (MXREADY-1 downto 0);
 
     -- GE11
-    ext_sbits_o : out  std_logic_vector (8*FPGA_TYPE_IS_VIRTEX6-1 downto 0);
-    ext_reset_o : out  std_logic_vector (MXRESET*FPGA_TYPE_IS_VIRTEX6-1 downto 0);
-    adc_vp : in  std_logic_vector (1*FPGA_TYPE_IS_VIRTEX6-1 downto 0);
-    adc_vn : in  std_logic_vector (1*FPGA_TYPE_IS_VIRTEX6-1 downto 0);
+    ext_sbits_o : out  std_logic_vector (8*GE11-1 downto 0);
+    ext_reset_o : out  std_logic_vector (MXRESET*GE11-1 downto 0);
+    adc_vp : in  std_logic_vector (1*GE11-1 downto 0);
+    adc_vn : in  std_logic_vector (1*GE11-1 downto 0);
 
     -- GE21
-    gbt_txvalid_o  : out    std_logic_vector (MXREADY*FPGA_TYPE_IS_ARTIX7-1 downto 0);
-    master_slave   : in     std_logic_vector (1*FPGA_TYPE_IS_ARTIX7-1 downto 0);
-    master_slave_p : inout  std_logic_vector (12*FPGA_TYPE_IS_ARTIX7-1 downto 0);
-    master_slave_n : inout  std_logic_vector (12*FPGA_TYPE_IS_ARTIX7-1 downto 0);
-    vtrx_mabs_i    : in    std_logic_vector (1*FPGA_TYPE_IS_ARTIX7 downto 0);
+    gbt_txvalid_o  : out    std_logic_vector (MXREADY*GE21-1 downto 0);
+    master_slave   : in     std_logic_vector (1*GE21-1 downto 0);
+    master_slave_p : inout  std_logic_vector (12*GE21-1 downto 0);
+    master_slave_n : inout  std_logic_vector (12*GE21-1 downto 0);
+    vtrx_mabs_i    : in    std_logic_vector (1*GE21 downto 0);
 
     --== LEDs ==--
 
@@ -209,7 +209,7 @@ begin
   gbt_rxvalid <= gbt_rxvalid_i;
   gbt_txready <= gbt_txready_i;
 
-  ge11_out_assign : if (FPGA_TYPE_IS_VIRTEX6='1') generate
+  ge11_out_assign : if (GE11='1') generate
     ext_reset_o  <= ctrl_reset_vfats;
     ext_sbits_o  <= ext_sbits;
   end generate;
@@ -331,11 +331,11 @@ begin
   --== System Monitor ==--
   --====================--
 
-  adc_v6 : if (FPGA_TYPE_IS_VIRTEX6='1') generate
+  adc_v6 : if (GE11='1') generate
     adc_vp_int <= adc_vp(0);
     adc_vn_int <= adc_vn(0);
   end generate;
-  adc_a7 : if (FPGA_TYPE_IS_ARTIX7='1') generate
+  adc_a7 : if (GE21='1') generate
     adc_vp_int <= '1';
     adc_vn_int <= '0';
   end generate;

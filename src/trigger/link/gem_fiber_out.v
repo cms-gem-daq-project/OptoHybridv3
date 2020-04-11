@@ -3,8 +3,8 @@
 module   gem_fiber_out #(
   parameter NLINKS               = 1,
   parameter SIM_SPEEDUP          = 0,
-  parameter FPGA_TYPE_IS_VIRTEX6 = 0,
-  parameter FPGA_TYPE_IS_ARTIX7  = 0
+  parameter GE11 = 0,
+  parameter GE21  = 0
 )
 (
   output [NLINKS-1:0]  TRG_TX_N,
@@ -95,7 +95,7 @@ assign tx_dly_align_mon_ena = 1'b0;
   // Virtex 6
   //------------------------------------------------------------------------------------------------------------------
 
-  if (FPGA_TYPE_IS_VIRTEX6) begin
+  if (GE11) begin
 
     TRG_TX_BUF_BYPASS # ( .WRAPPER_SIM_GTXRESET_SPEEDUP   (SIM_SPEEDUP))      // Set this to 1 for simulation
     trg_tx_buf_bypass_i (
@@ -156,7 +156,7 @@ assign tx_dly_align_mon_ena = 1'b0;
   // Artix-7
   //------------------------------------------------------------------------------------------------------------------
 
-  if (FPGA_TYPE_IS_ARTIX7) begin
+  if (GE21) begin
 
   // txusrclk rate  = line rate / internal datapath width = 3200 / 20 = 160 MHz
   // txusrclk2 rate = txusrclk / 2 (when in 32 or 40 bit) = 80MHz

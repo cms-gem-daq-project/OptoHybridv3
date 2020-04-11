@@ -1,8 +1,8 @@
 `timescale 1ns / 1ps
 
 module   gem_data_out #(
-  parameter FPGA_TYPE_IS_VIRTEX6 = 0,
-  parameter FPGA_TYPE_IS_ARTIX7  = 0,
+  parameter GE11 = 0,
+  parameter GE21  = 0,
   parameter ALLOW_TTC_CHARS      = 1,
   parameter ALLOW_RETRY          = 0,
   parameter FRAME_CTRL_TTC       = 1
@@ -259,7 +259,7 @@ module   gem_data_out #(
   end
 
   generate
-  if (FPGA_TYPE_IS_ARTIX7) begin
+  if (GE21) begin
 
       initial $display ("Generating optical links for Artix-7");
 
@@ -320,7 +320,7 @@ module   gem_data_out #(
   endgenerate
 
   generate
-  if (FPGA_TYPE_IS_VIRTEX6) begin
+  if (GE11) begin
 
       initial $display ("Generating optical links for Virtex-6");
 

@@ -1,6 +1,6 @@
 module trigger_links #(
-parameter FPGA_TYPE_IS_VIRTEX6 = 0,
-parameter FPGA_TYPE_IS_ARTIX7 = 0,
+parameter GE11 = 0,
+parameter GE21 = 0,
 parameter ILINKS = 4
 
 ) (
@@ -84,7 +84,7 @@ generate
   //----------------------------------------------------------------------------------------------------------------------
   // Virtex-6
   //----------------------------------------------------------------------------------------------------------------------
-  if (FPGA_TYPE_IS_VIRTEX6) begin
+  if (GE11) begin
     IBUFDS_GTXE1 ibufds_mgt
     (
         .I       (mgt_clk_p),
@@ -100,7 +100,7 @@ generate
   // Artix-7
   //----------------------------------------------------------------------------------------------------------------------
 
-  if (FPGA_TYPE_IS_ARTIX7) begin
+  if (GE21) begin
     IBUFDS_GTE2  ibufds_mgtclk0
     (
         .I       (mgt_clk_p),
@@ -255,12 +255,12 @@ localparam IMODULES          = ILINKS / ILINKS_PER_MODULE;
 genvar igem;
 generate
 
-  wire [3:0] mgt_refclk_array = FPGA_TYPE_IS_VIRTEX6 ? {4{mgt_refclk}} : 4'd0;
+  wire [3:0] mgt_refclk_array = GE11 ? {4{mgt_refclk}} : 4'd0;
 
   for (igem=0; igem<IMODULES; igem=igem+1'b1) begin: gemgen
   gem_fiber_out  #(
-    .FPGA_TYPE_IS_VIRTEX6 (FPGA_TYPE_IS_VIRTEX6),
-    .FPGA_TYPE_IS_ARTIX7  (FPGA_TYPE_IS_ARTIX7),
+    .GE11 (GE11),
+    .GE21  (GE21),
     .NLINKS               (ILINKS_PER_MODULE)
   )
   gem_fibers_out   (

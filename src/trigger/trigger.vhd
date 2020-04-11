@@ -193,8 +193,8 @@ architecture Behavioral of trigger is
 
   component gem_data_out
     generic (
-      FPGA_TYPE_IS_VIRTEX6 : integer := 0;
-      FPGA_TYPE_IS_ARTIX7  : integer := 1
+      GE11 : integer := 0;
+      GE21  : integer := 1
       );
     port (
       trg_tx_n : out std_logic_vector (3 downto 0);
@@ -471,8 +471,8 @@ begin
 
   gem_data_out_inst : gem_data_out
     generic map (
-      FPGA_TYPE_IS_VIRTEX6 => FPGA_TYPE_IS_VIRTEX6,
-      FPGA_TYPE_IS_ARTIX7  => FPGA_TYPE_IS_ARTIX7
+      GE11 => GE11,
+      GE21  => GE21
       )
     port map (
 
