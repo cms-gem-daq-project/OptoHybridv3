@@ -146,7 +146,7 @@ begin
     end if;
   end process;
 
-  xadc_gen : if (FPGA_TYPE = "VIRTEX6") generate
+  xadc_gen : if (FPGA_TYPE = "V6") generate
 
     xadc_inst : xadc
       port map(
@@ -171,7 +171,7 @@ begin
 
   end generate xadc_gen;
 
-  xadc_gen_a7 : if (FPGA_TYPE = "ARTIX7") generate
+  xadc_gen_a7 : if (FPGA_TYPE = "A7") generate
 
     xadc_inst : xadc_a7
       port map(

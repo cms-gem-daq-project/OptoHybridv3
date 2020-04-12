@@ -50,8 +50,8 @@ entity top_optohybrid is
     elink_o_p : out std_logic;
     elink_o_n : out std_logic;
 
-    gbt_trig_o_p : out std_logic_vector (11*GE21-1 downto 0);
-    gbt_trig_o_n : out std_logic_vector (11*GE21-1 downto 0);
+    gbt_trig_o_p : out std_logic_vector (MXELINKS-1 downto 0);
+    gbt_trig_o_n : out std_logic_vector (MXELINKS-1 downto 0);
 
     --== GBT ==--
 
@@ -61,10 +61,10 @@ entity top_optohybrid is
     gbt_rxready_i : in std_logic_vector (MXREADY-1 downto 0);
 
     -- GE11
-    ext_sbits_o : out std_logic_vector (8*GE11-1 downto 0);
-    ext_reset_o : out std_logic_vector (MXRESET*GE11-1 downto 0);
-    adc_vp      : in  std_logic_vector (1*GE11-1 downto 0);
-    adc_vn      : in  std_logic_vector (1*GE11-1 downto 0);
+    ext_sbits_o : out std_logic_vector (MXEXT-1 downto 0);
+    ext_reset_o : out std_logic_vector (MXRESET-1 downto 0);
+    adc_vp      : in  std_logic_vector (MXADC-1 downto 0);
+    adc_vn      : in  std_logic_vector (MXADC-1 downto 0);
 
     -- GE21
     --gbt_txvalid_o  : out   std_logic_vector (MXREADY*GE21-1 downto 0);

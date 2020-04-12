@@ -25,7 +25,7 @@ begin
   -- IODELAY
   ----------------------------------------------------------------------------------------------------------------------
 
-  iodelay_v6 : if (FPGA_TYPE = "VIRTEX6") generate
+  iodelay_v6 : if (FPGA_TYPE = "V6") generate
 
     iodelay : iodelaye1
       generic map(
@@ -50,7 +50,7 @@ begin
         );
   end generate iodelay_v6;
 
-  iodelay_a7 : if (FPGA_TYPE = "ARTIX7") generate
+  iodelay_a7 : if (FPGA_TYPE = "A7") generate
 
     iodelay_a7 : idelaye2
       generic map (

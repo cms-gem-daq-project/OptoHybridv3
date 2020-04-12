@@ -123,7 +123,7 @@ begin
   -- Virtex-6
   --------------------------------------------------------------------------------------------------------------------
 
-  sem_gen_v6 : if (FPGA_TYPE = "VIRTEX6") generate
+  sem_gen_v6 : if (FPGA_TYPE = "V6") generate
     sem_core_inst : sem
       port map(
         status_heartbeat      => heartbeat_o,
@@ -204,7 +204,7 @@ begin
   -- Artix-7
   --------------------------------------------------------------------------------------------------------------------
 
-  sem_gen_a7 : if (FPGA_TYPE = "ARTIX7") generate
+  sem_gen_a7 : if (FPGA_TYPE = "A7") generate
 
     sem_a7_inst : sem_a7
 

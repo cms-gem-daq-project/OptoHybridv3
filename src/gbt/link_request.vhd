@@ -123,7 +123,7 @@ begin
   --== Virtex 6 ==--
   --==============--
 
-  gen_rx_fifo_series6 : if (FPGA_TYPE = "VIRTEX6") generate
+  gen_rx_fifo_series6 : if (FPGA_TYPE = "V6") generate
     fifo_request_rx_inst : fifo_request_rx
       port map(
         rst     => reset_i,
@@ -144,7 +144,7 @@ begin
   --== Artix 7 ==--
   --=============--
 
-  gen_rx_fifo_series7 : if (FPGA_TYPE = "ARTIX7") generate
+  gen_rx_fifo_series7 : if (FPGA_TYPE = "A7") generate
     fifo_request_rx_a7_inst : fifo_request_rx_a7
       port map(
         srst    => reset_i,
@@ -191,7 +191,7 @@ begin
   --== Virtex 6 ==--
   --==============--
 
-  gen_tx_fifo_series6 : if (FPGA_TYPE = "VIRTEX6") generate
+  gen_tx_fifo_series6 : if (FPGA_TYPE = "V6") generate
     fifo_request_tx_inst : fifo_request_tx
       port map(
         rst     => reset_i,
@@ -212,7 +212,7 @@ begin
   --== Artix 7 ==--
   --=============--
 
-  gen_tx_fifo_series7 : if (FPGA_TYPE = "ARTIX7") generate
+  gen_tx_fifo_series7 : if (FPGA_TYPE = "A7") generate
     fifo_request_tx_a7_inst : fifo_request_tx_a7
       port map(
         srst    => reset_i,

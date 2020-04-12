@@ -205,12 +205,12 @@ begin
   -- we want to output the data on the falling edge of the clock so that the GBT can sample on the rising edge
 
   --------------------------------------------------------------------------------------------------------------------
-  to_gbt_inv_v6 : if (FPGA_TYPE = "VIRTEX6") generate
+  to_gbt_inv_v6 : if (FPGA_TYPE = "V6") generate
     to_gbt_inv <= "not"(to_gbt);
   end generate to_gbt_inv_v6;
   --------------------------------------------------------------------------------------------------------------------
   --------------------------------------------------------------------------------------------------------------------
-  to_gbt_inv_a7 : if (FPGA_TYPE = "ARTIX7") generate
+  to_gbt_inv_a7 : if (FPGA_TYPE = "A7") generate
     to_gbt_inv <= to_gbt;
   end generate to_gbt_inv_a7;
   --------------------------------------------------------------------------------------------------------------------

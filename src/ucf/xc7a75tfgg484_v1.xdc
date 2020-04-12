@@ -310,10 +310,11 @@ set_property PACKAGE_PIN F4  [get_ports {gbt_rxready_i[1]}]
 set_property PACKAGE_PIN U7  [get_ports {gbt_txready_i[0]}]
 set_property PACKAGE_PIN L6  [get_ports {gbt_txready_i[1]}]
 
-set_property PACKAGE_PIN D14 [get_ports {gbt_rxvalid_i[0]}]
-set_property PACKAGE_PIN B16 [get_ports {gbt_rxvalid_i[1]}]
-set_property PACKAGE_PIN F15 [get_ports {gbt_txvalid_o[0]}]
-set_property PACKAGE_PIN F21 [get_ports {gbt_txvalid_o[1]}]
+set_property PACKAGE_PIN F15 [get_ports {gbt_rxvalid_i[0]}]
+set_property PACKAGE_PIN F21 [get_ports {gbt_rxvalid_i[1]}]
+set_property PULLTYPE PULLUP [get_ports {gbt_rxvalid_i[0]}]
+set_property PULLTYPE PULLUP [get_ports {gbt_rxvalid_i[1]}]
+#F21 and F15 need weak pullups enabled to keep compatibility with the v1 prototype where they connect to the txvalid of the gbt
 
 ## ELINKS
 

@@ -19,8 +19,8 @@ entity trigger_output is
     NUM_ELINKS           : integer := 11;
     USE_TMR_MGT_CONTROL  : integer := 1;
     USE_TMR_MGT_DATA     : integer := 1;
-    FPGA_TYPE_IS_VIRTEX6 : integer := 0;
-    FPGA_TYPE_IS_ARTIX7  : integer := 0;
+    FPGA_TYPE_IS_V6 : integer := 0;
+    FPGA_TYPE_IS_A7  : integer := 0;
     ALLOW_TTC_CHARS      : integer := 1;
     ALLOW_RETRY          : integer := 1;
     FRAME_CTRL_TTC       : integer := 1

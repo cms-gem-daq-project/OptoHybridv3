@@ -38,7 +38,7 @@ if (gem_version == "ge21"):
 
     release_hardware        = "2A"
 
-    fpga_type = "ARTIX7"
+    fpga_type = "A7"
     fpga_series7 = 1
     fpga_series6 = 0
 
@@ -61,7 +61,7 @@ elif (gem_version == "ge11"):
     if (geb_version=="v3b" and geb_length == "short"):
         release_hardware        = "0B"
 
-    fpga_type = "VIRTEX6"
+    fpga_type = "V6"
     fpga_series7 = 0
     fpga_series6 = 1
 

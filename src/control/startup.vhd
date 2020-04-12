@@ -4,8 +4,6 @@
 -- Optohybrid v3 Firmware -- startup clock; generic wrapper around v6 and a7
 -- a. peck
 ----------------------------------------------------------------------------------
--- 2018/10/15 -- initial
-----------------------------------------------------------------------------------
 
 library ieee;
 use ieee.std_logic_1164.all;
@@ -29,10 +27,10 @@ end startup;
 architecture behavioral of startup is
 begin
 
-  startup_gen : if (FPGA_TYPE = "VIRTEX6") generate
+  startup_gen : if (FPGA_TYPE = "V6") generate
 
 
-    startup_virtex6_inst : STARTUP_VIRTEX6
+    startup_virtex6_inst : STARTUP_V6
       generic map (
         PROG_USR => false               -- activate program event security feature. requires encrypted bitstreams.
         )
@@ -59,7 +57,7 @@ begin
 
   end generate startup_gen;
 
-  startup_gen_a7 : if (FPGA_TYPE = "ARTIX7") generate
+  startup_gen_a7 : if (FPGA_TYPE = "A7") generate
 
     startupe2_inst : STARTUPE2
       generic map (

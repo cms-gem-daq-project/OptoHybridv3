@@ -101,7 +101,7 @@ architecture Behavioral of trig_alignment is
 begin
 
   assert_fpga_type :
-  if (FPGA_TYPE /= "VIRTEX6" and FPGA_TYPE /= "ARTIX7") generate
+  if (FPGA_TYPE /= "V6" and FPGA_TYPE /= "A7") generate
     assert false report "Unknown FPGA TYPE" severity error;
   end generate assert_fpga_type;
 

@@ -40,7 +40,7 @@ begin
   -- iserdes
   ----------------------------------------------------------------------------------------------------------------------
 
-  iserdes_v6 : if (FPGA_TYPE = "VIRTEX6") generate
+  iserdes_v6 : if (FPGA_TYPE = "V6") generate
 
     iserdes : iserdese1
       generic map(
@@ -81,7 +81,7 @@ begin
   end generate iserdes_v6;
 
 
-  iserdes_a7 : if (FPGA_TYPE = "ARTIX7") generate
+  iserdes_a7 : if (FPGA_TYPE = "A7") generate
 
     iserdes : iserdese2
       generic map (
