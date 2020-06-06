@@ -21,6 +21,9 @@ library work;
 use work.ipbus_pkg.all;
 use work.hardware_pkg.all;
 
+library UNIMACRO;
+use UNIMACRO.vcomponents.all;
+
 entity link_request is
   port(
 
@@ -47,38 +50,6 @@ architecture Behavioral of link_request is
 
   signal sbiterr : std_logic;
   signal dbiterr : std_logic;
-
-  component fifo_request_rx_a7
-    port (
-      clk     : in  std_logic;
-      srst    : in  std_logic;
-      din     : in  std_logic_vector(48 downto 0);
-      wr_en   : in  std_logic;
-      rd_en   : in  std_logic;
-      dout    : out std_logic_vector(48 downto 0);
-      full    : out std_logic;
-      empty   : out std_logic;
-      valid   : out std_logic;
-      sbiterr : out std_logic;
-      dbiterr : out std_logic
-      );
-  end component;
-
-  component fifo_request_tx_a7
-    port (
-      clk     : in  std_logic;
-      srst    : in  std_logic;
-      din     : in  std_logic_vector(31 downto 0);
-      wr_en   : in  std_logic;
-      rd_en   : in  std_logic;
-      dout    : out std_logic_vector(31 downto 0);
-      full    : out std_logic;
-      empty   : out std_logic;
-      valid   : out std_logic;
-      sbiterr : out std_logic;
-      dbiterr : out std_logic
-      );
-  end component;
 
   component fifo_request_tx
     port (
@@ -144,22 +115,31 @@ begin
   --== Artix 7 ==--
   --=============--
 
-  gen_rx_fifo_series7 : if (FPGA_TYPE = "A7") generate
-    fifo_request_rx_a7_inst : fifo_request_rx_a7
-      port map(
-        srst    => reset_i,
-        clk     => fabric_clock_i,
-        wr_en   => rx_en_i,
-        din     => rx_data_i,
-        rd_en   => '1',
-        valid   => rd_valid,
-        dout    => rd_data,
-        full    => open,
-        empty   => open,
-        sbiterr => open,
-        dbiterr => open
-        );
-  end generate gen_rx_fifo_series7;
+  gbt_rx_fifo_inst : FIFO_DUALCLOCK_MACRO
+    generic map (
+      DEVICE                  => "7SERIES",  -- Target Device: "VIRTEX5", "VIRTEX6", "7SERIES"
+      ALMOST_FULL_OFFSET      => X"0080",    -- Sets almost full threshold
+      ALMOST_EMPTY_OFFSET     => X"0080",    -- Sets the almost empty threshold
+      DATA_WIDTH              => 49,         -- Valid values are 1-72 (37-72 only valid when FIFO_SIZE="36Kb")
+      FIFO_SIZE               => "36Kb",     -- Target BRAM, "18Kb" or "36Kb"
+      FIRST_WORD_FALL_THROUGH => false)      -- Sets the FIFO FWFT to TRUE or FALSE
+    port map (
+      ALMOSTEMPTY => open,                   -- 1-bit output almost empty
+      ALMOSTFULL  => open,                   -- 1-bit output almost full
+      EMPTY       => open,                   -- 1-bit output empty
+      FULL        => open,                   -- 1-bit output full
+      RDCOUNT     => open,                   -- Output read count, width determined by FIFO depth
+      RDERR       => open,                   -- 1-bit output read error
+      WRCOUNT     => open,                   -- Output write count, width determined by FIFO depth
+      WRERR       => open,                   -- 1-bit output write error
+      DI          => rx_data_i,              -- Input data, width defined by DATA_WIDTH parameter
+      DO          => rd_data,                -- Output data, width defined by DATA_WIDTH parameter
+      RDCLK       => fabric_clock_i,         -- 1-bit input read clock
+      RDEN        => '1',                    -- 1-bit input read enable
+      RST         => reset_i,                -- 1-bit input reset
+      WRCLK       => fabric_clock_i,         -- 1-bit input write clock
+      WREN        => rx_en_i                 -- 1-bit input write enable
+      );
 
   --== Rx Request processing ==--
 
@@ -213,19 +193,30 @@ begin
   --=============--
 
   gen_tx_fifo_series7 : if (FPGA_TYPE = "A7") generate
-    fifo_request_tx_a7_inst : fifo_request_tx_a7
-      port map(
-        srst    => reset_i,
-        clk     => fabric_clock_i,
-        wr_en   => ipb_miso_i.ipb_ack,
-        din     => ipb_miso_i.ipb_rdata,
-        rd_en   => tx_en_i,
-        valid   => tx_valid_o,
-        dout    => tx_data_o,
-        full    => open,
-        empty   => open,
-        sbiterr => open,
-        dbiterr => open
+    gbt_tx_fifo_inst : FIFO_DUALCLOCK_MACRO
+      generic map (
+        DEVICE                  => "7SERIES",  -- Target Device: "VIRTEX5", "VIRTEX6", "7SERIES"
+        ALMOST_FULL_OFFSET      => X"0080",    -- Sets almost full threshold
+        ALMOST_EMPTY_OFFSET     => X"0080",    -- Sets the almost empty threshold
+        DATA_WIDTH              => 32,         -- Valid values are 1-72 (37-72 only valid when FIFO_SIZE="36Kb")
+        FIFO_SIZE               => "16Kb",     -- Target BRAM, "18Kb" or "36Kb"
+        FIRST_WORD_FALL_THROUGH => false)      -- Sets the FIFO FWFT to TRUE or FALSE
+      port map (
+        ALMOSTEMPTY => open,                   -- 1-bit output almost empty
+        ALMOSTFULL  => open,                   -- 1-bit output almost full
+        EMPTY       => open,                   -- 1-bit output empty
+        FULL        => open,                   -- 1-bit output full
+        RDCOUNT     => open,                   -- Output read count, width determined by FIFO depth
+        RDERR       => open,                   -- 1-bit output read error
+        WRCOUNT     => open,                   -- Output write count, width determined by FIFO depth
+        WRERR       => open,                   -- 1-bit output write error
+        DI          => ipb_miso_i.ipb_rdata,   -- Input data, width defined by DATA_WIDTH parameter
+        DO          => tx_data_o,              -- Output data, width defined by DATA_WIDTH parameter
+        RDCLK       => fabric_clock_i,         -- 1-bit input read clock
+        RDEN        => tx_en_i,                -- 1-bit input read enable
+        RST         => reset_i,                -- 1-bit input reset
+        WRCLK       => fabric_clock_i,         -- 1-bit input write clock
+        WREN        => ipb_miso_i.ipb_ack      -- 1-bit input write enable
         );
   end generate gen_tx_fifo_series7;
 

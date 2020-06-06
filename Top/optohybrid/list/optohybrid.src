@@ -33,8 +33,6 @@
 ../../src/ip_cores_a7/to_gbt_ser/to_gbt_ser.xci
 ../../src/ip_cores_a7/sem_a7/sem_a7.xci
 ../../src/ip_cores_a7/logic_clocking/logic_clocking.xci
-../../src/ip_cores_a7/fifo_request_tx_a7/fifo_request_tx_a7.xci
-../../src/ip_cores_a7/fifo_request_rx_a7/fifo_request_rx_a7.xci
 ../../src/ip_cores_a7/cluster_data_cdc/cluster_data_cdc.xci
 ../../src/ip_cores_a7/a7_mgts_with_buffer0/a7_mgts_with_buffer0.xci
 
