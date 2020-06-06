@@ -38,7 +38,7 @@ entity trigger is
     clocks : in clocks_t;
     ttc : in ttc_t;
 
-    sbit_clusters_o : out sbit_cluster_array_t (7 downto 0);
+    sbit_clusters_o : out sbit_cluster_array_t (NUM_FOUND_CLUSTERS_PER_BX-1 downto 0);
 
     tx_prbs_mode_o  : out std_logic_vector (2 downto 0);
     tx_link_reset_o : out std_logic;
@@ -70,14 +70,14 @@ entity trigger is
     cluster_count_o : out std_logic_vector (10 downto 0);
     overflow_o      : out std_logic;
 
-    active_vfats_o : out std_logic_vector (MXVFATS-1 downto 0);
+    active_vfats_o : out std_logic_vector (c_NUM_VFATS-1 downto 0);
 
     -- sbits
-    vfat_sot_p : in std_logic_vector (MXVFATS-1 downto 0);
-    vfat_sot_n : in std_logic_vector (MXVFATS-1 downto 0);
+    vfat_sot_p : in std_logic_vector (c_NUM_VFATS-1 downto 0);
+    vfat_sot_n : in std_logic_vector (c_NUM_VFATS-1 downto 0);
 
-    vfat_sbits_p : in std_logic_vector ((MXVFATS*8)-1 downto 0);
-    vfat_sbits_n : in std_logic_vector ((MXVFATS*8)-1 downto 0);
+    vfat_sbits_p : in std_logic_vector ((c_NUM_VFATS*8)-1 downto 0);
+    vfat_sbits_n : in std_logic_vector ((c_NUM_VFATS*8)-1 downto 0);
 
     -- sbits
 
@@ -123,22 +123,22 @@ architecture Behavioral of trigger is
   signal sbitmon_l1a_delay : std_logic_vector (31 downto 0);
 
   signal sbit_overflow     : std_logic;
-  signal sbit_clusters     : sbit_cluster_array_t (7 downto 0);
+  signal sbit_clusters    : sbit_cluster_array_t (NUM_FOUND_CLUSTERS_PER_BX-1 downto 0);
   signal valid_clusters_or : std_logic;
   signal valid_clusters    : std_logic_vector (7 downto 0);
 
   signal cluster_count : std_logic_vector (10 downto 0);
 
-  signal active_vfats : std_logic_vector (MXVFATS-1 downto 0);
+  signal active_vfats : std_logic_vector (c_NUM_VFATS-1 downto 0);
 
-  signal vfat_mask     : std_logic_vector (MXVFATS-1 downto 0);
+  signal vfat_mask     : std_logic_vector (c_NUM_VFATS-1 downto 0);
   signal trig_deadtime : std_logic_vector (3 downto 0);
 
-  signal sbits_comparator_over_threshold : std_logic_vector (MXVFATS-1 downto 0);
+  signal sbits_comparator_over_threshold : std_logic_vector (c_NUM_VFATS-1 downto 0);
 
-  signal sot_invert : std_logic_vector (MXVFATS-1 downto 0);      -- 24 or 12
-  signal tu_invert  : std_logic_vector ((MXVFATS*8)-1 downto 0);  -- 192 or 96
-  signal tu_mask    : std_logic_vector ((MXVFATS*8)-1 downto 0);  -- 192 or 96
+  signal sot_invert : std_logic_vector (c_NUM_VFATS-1 downto 0);      -- 24 or 12
+  signal tu_invert  : std_logic_vector ((c_NUM_VFATS*8)-1 downto 0);  -- 192 or 96
+  signal tu_mask    : std_logic_vector ((c_NUM_VFATS*8)-1 downto 0);  -- 192 or 96
 
   signal aligned_count_to_ready : std_logic_vector (11 downto 0);
 
@@ -153,19 +153,19 @@ architecture Behavioral of trigger is
   attribute EQUIVALENT_REGISTER_REMOVAL of trigger_reset : signal is "NO";
   attribute EQUIVALENT_REGISTER_REMOVAL of ipb_reset     : signal is "NO";
 
-  signal sot_is_aligned      : std_logic_vector (MXVFATS-1 downto 0);
-  signal sot_unstable        : std_logic_vector (MXVFATS-1 downto 0);
-  signal sot_invalid_bitskip : std_logic_vector (MXVFATS-1 downto 0);
+  signal sot_is_aligned      : std_logic_vector (c_NUM_VFATS-1 downto 0);
+  signal sot_unstable        : std_logic_vector (c_NUM_VFATS-1 downto 0);
+  signal sot_invalid_bitskip : std_logic_vector (c_NUM_VFATS-1 downto 0);
 
-  signal sot_tap_delay  : t_std5_array (MXVFATS-1 downto 0);
-  signal trig_tap_delay : t_std5_array ((MXVFATS*8)-1 downto 0);
+  signal sot_tap_delay  : t_std5_array (c_NUM_VFATS-1 downto 0);
+  signal trig_tap_delay : t_std5_array ((c_NUM_VFATS*8)-1 downto 0);
 
   signal sbits_mux_sel : std_logic_vector (4 downto 0);
   signal sbits_mux     : std_logic_vector (63 downto 0);
 
   signal hitmap_reset   : std_logic;
   signal hitmap_acquire : std_logic;
-  signal hitmap_sbits   : sbits_array_t(MXVFATS-1 downto 0);
+  signal hitmap_sbits   : sbits_array_t(c_NUM_VFATS-1 downto 0);
 
   -- control signals from gbt (verb, object)
   signal reset_counters    : std_logic;
@@ -316,7 +316,7 @@ begin
     end if;
   end process;
 
-  clusters_over_threshold_loop : for I in 1 to (MXVFATS-1) generate
+  clusters_over_threshold_loop : for I in 1 to (c_NUM_VFATS-1) generate
   begin
 
     process (clocks.clk40)
@@ -355,8 +355,8 @@ begin
       start_of_frame_p => vfat_sot_p,
       start_of_frame_n => vfat_sot_n,
 
-      vfat_mask_i  => vfat_mask (MXVFATS -1 downto 0),
-      sot_invert_i => sot_invert (MXVFATS-1 downto 0),
+      vfat_mask_i  => vfat_mask (c_NUM_VFATS -1 downto 0),
+      sot_invert_i => sot_invert (c_NUM_VFATS-1 downto 0),
       tu_invert_i  => tu_invert,
       tu_mask_i    => tu_mask,
 

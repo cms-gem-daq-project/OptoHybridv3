@@ -1,10 +1,7 @@
 module count_clusters (
     input clock4x,
-
     input  [1535:0] vpfs_i,
-
     output reg [10:0] cnt_o,
-
     output reg overflow_o
 );
 
@@ -20,7 +17,6 @@ module count_clusters (
 
   // register inputs
   // make sure xilinx doesn't merge these with copies in the cluster finding
-  // flop twice for easier fanout
   (*equivalent_register_removal="no"*)
   (*shreg_extract="no"*)
   reg  [1535:0] vpfs;

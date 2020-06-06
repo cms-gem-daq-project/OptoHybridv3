@@ -27,8 +27,8 @@ entity sbits_hitmap is
     clock_i   : in  std_logic;
     reset_i   : in  std_logic;
     acquire_i : in  std_logic;
-    sbits_i   : in  sbits_array_t(MXVFATS-1 downto 0);
-    hitmap_o  : out sbits_array_t(MXVFATS-1 downto 0)
+    sbits_i   : in  sbits_array_t(c_NUM_VFATS-1 downto 0);
+    hitmap_o  : out sbits_array_t(c_NUM_VFATS-1 downto 0)
 
     );
 
@@ -37,14 +37,14 @@ end sbits_hitmap;
 architecture sbits_hitmap of sbits_hitmap is
 
   -- Signal fanout (1 per IPBus register)
-  signal reset   : std_logic_vector(2*MXVFATS-1 downto 0);
-  signal acquire : std_logic_vector(2*MXVFATS-1 downto 0);
+  signal reset   : std_logic_vector(2*c_NUM_VFATS-1 downto 0);
+  signal acquire : std_logic_vector(2*c_NUM_VFATS-1 downto 0);
 
   -- Pipeline
-  signal sbits_s0 : sbits_array_t(MXVFATS-1 downto 0);
-  signal sbits_s1 : sbits_array_t(MXVFATS-1 downto 0);
+  signal sbits_s0 : sbits_array_t(c_NUM_VFATS-1 downto 0);
+  signal sbits_s1 : sbits_array_t(c_NUM_VFATS-1 downto 0);
 
-  signal hitmap : sbits_array_t(MXVFATS-1 downto 0);
+  signal hitmap : sbits_array_t(c_NUM_VFATS-1 downto 0);
 
   -- Attributes for no simplification logic
   attribute equivalent_register_removal             : string;
@@ -77,7 +77,7 @@ begin
     end if;
   end process;
 
-  hitmap_g : for I in 0 to (MXVFATS - 1) generate
+  hitmap_g : for I in 0 to (c_NUM_VFATS - 1) generate
   begin
     process(clock_i)
     begin

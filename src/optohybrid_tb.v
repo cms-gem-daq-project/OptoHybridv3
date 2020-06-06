@@ -421,11 +421,11 @@ parameter DDR = 0;
       .mgt_clk_p_i   ({2{mgt_clk_p_i}}),
       .mgt_clk_n_i   ({2{mgt_clk_n_i}}),
 
-      .vfat_sot_p    (vfat_sot_p [MXVFATS-1:0]),
-      .vfat_sot_n    (vfat_sot_n [MXVFATS-1:0]),
+      .vfat_sot_p    (vfat_sot_p [c_NUM_VFATS-1:0]),
+      .vfat_sot_n    (vfat_sot_n [c_NUM_VFATS-1:0]),
 
-      .vfat_sbits_p  (vfat_sbits_p [8*MXVFATS-1:0]),
-      .vfat_sbits_n  (vfat_sbits_n [8*MXVFATS-1:0]),
+      .vfat_sbits_p  (vfat_sbits_p [8*c_NUM_VFATS-1:0]),
+      .vfat_sbits_n  (vfat_sbits_n [8*c_NUM_VFATS-1:0]),
 
       .led_o         (),
 

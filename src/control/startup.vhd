@@ -30,7 +30,7 @@ begin
   startup_gen : if (FPGA_TYPE = "V6") generate
 
 
-    startup_virtex6_inst : STARTUP_V6
+    startup_virtex6_inst : STARTUP_VIRTEX6
       generic map (
         PROG_USR => false               -- activate program event security feature. requires encrypted bitstreams.
         )

@@ -86,62 +86,7 @@ architecture Behavioral of link_request is
 
 begin
 
-  --==============================================================================
-  --== RX buffer
-  --==============================================================================
-
-  --==============--
-  --== Virtex 6 ==--
-  --==============--
-
-  gen_rx_fifo_series6 : if (FPGA_TYPE = "V6") generate
-    fifo_request_rx_inst : fifo_request_rx
-      port map(
-        rst     => reset_i,
-        clk     => fabric_clock_i,
-        wr_en   => rx_en_i,
-        din     => rx_data_i,
-        rd_en   => '1',
-        valid   => rd_valid,
-        dout    => rd_data,
-        full    => open,
-        empty   => open,
-        sbiterr => open,
-        dbiterr => open
-        );
-  end generate gen_rx_fifo_series6;
-
-  --=============--
-  --== Artix 7 ==--
-  --=============--
-
-  gbt_rx_fifo_inst : FIFO_DUALCLOCK_MACRO
-    generic map (
-      DEVICE                  => "7SERIES",  -- Target Device: "VIRTEX5", "VIRTEX6", "7SERIES"
-      ALMOST_FULL_OFFSET      => X"0080",    -- Sets almost full threshold
-      ALMOST_EMPTY_OFFSET     => X"0080",    -- Sets the almost empty threshold
-      DATA_WIDTH              => 49,         -- Valid values are 1-72 (37-72 only valid when FIFO_SIZE="36Kb")
-      FIFO_SIZE               => "36Kb",     -- Target BRAM, "18Kb" or "36Kb"
-      FIRST_WORD_FALL_THROUGH => false)      -- Sets the FIFO FWFT to TRUE or FALSE
-    port map (
-      ALMOSTEMPTY => open,                   -- 1-bit output almost empty
-      ALMOSTFULL  => open,                   -- 1-bit output almost full
-      EMPTY       => open,                   -- 1-bit output empty
-      FULL        => open,                   -- 1-bit output full
-      RDCOUNT     => open,                   -- Output read count, width determined by FIFO depth
-      RDERR       => open,                   -- 1-bit output read error
-      WRCOUNT     => open,                   -- Output write count, width determined by FIFO depth
-      WRERR       => open,                   -- 1-bit output write error
-      DI          => rx_data_i,              -- Input data, width defined by DATA_WIDTH parameter
-      DO          => rd_data,                -- Output data, width defined by DATA_WIDTH parameter
-      RDCLK       => fabric_clock_i,         -- 1-bit input read clock
-      RDEN        => '1',                    -- 1-bit input read enable
-      RST         => reset_i,                -- 1-bit input reset
-      WRCLK       => fabric_clock_i,         -- 1-bit input write clock
-      WREN        => rx_en_i                 -- 1-bit input write enable
-      );
-
-  --== Rx Request processing ==--
+  -- Rx Request processing
 
   process(fabric_clock_i)
   begin
@@ -163,43 +108,18 @@ begin
     end if;
   end process;
 
-  --==============================================================================
-  --== TX buffer
-  --==============================================================================
-
-  --==============--
-  --== Virtex 6 ==--
-  --==============--
-
-  gen_tx_fifo_series6 : if (FPGA_TYPE = "V6") generate
-    fifo_request_tx_inst : fifo_request_tx
-      port map(
-        rst     => reset_i,
-        clk     => fabric_clock_i,
-        wr_en   => ipb_miso_i.ipb_ack,
-        din     => ipb_miso_i.ipb_rdata,
-        rd_en   => tx_en_i,
-        valid   => tx_valid_o,
-        dout    => tx_data_o,
-        full    => open,
-        empty   => open,
-        sbiterr => open,
-        dbiterr => open
-        );
-  end generate gen_tx_fifo_series6;
-
   --=============--
   --== Artix 7 ==--
   --=============--
 
-  gen_tx_fifo_series7 : if (FPGA_TYPE = "A7") generate
+  gen_fifo_series7 : if (FPGA_TYPE = "A7") generate
     gbt_tx_fifo_inst : FIFO_DUALCLOCK_MACRO
       generic map (
         DEVICE                  => "7SERIES",  -- Target Device: "VIRTEX5", "VIRTEX6", "7SERIES"
         ALMOST_FULL_OFFSET      => X"0080",    -- Sets almost full threshold
         ALMOST_EMPTY_OFFSET     => X"0080",    -- Sets the almost empty threshold
         DATA_WIDTH              => 32,         -- Valid values are 1-72 (37-72 only valid when FIFO_SIZE="36Kb")
-        FIFO_SIZE               => "16Kb",     -- Target BRAM, "18Kb" or "36Kb"
+        FIFO_SIZE               => "36Kb",     -- Target BRAM, "18Kb" or "36Kb"
         FIRST_WORD_FALL_THROUGH => false)      -- Sets the FIFO FWFT to TRUE or FALSE
       port map (
         ALMOSTEMPTY => open,                   -- 1-bit output almost empty
@@ -218,6 +138,64 @@ begin
         WRCLK       => fabric_clock_i,         -- 1-bit input write clock
         WREN        => ipb_miso_i.ipb_ack      -- 1-bit input write enable
         );
-  end generate gen_tx_fifo_series7;
+
+  gbt_rx_fifo_inst : FIFO_DUALCLOCK_MACRO
+    generic map (
+      DEVICE                  => "7SERIES",  -- Target Device: "VIRTEX5", "VIRTEX6", "7SERIES"
+      ALMOST_FULL_OFFSET      => x"0080",    -- Sets almost full threshold
+      ALMOST_EMPTY_OFFSET     => x"0080",    -- Sets the almost empty threshold
+      DATA_WIDTH              => 49,         -- Valid values are 1-72 (37-72 only valid when FIFO_SIZE="36Kb")
+      FIFO_SIZE               => "36Kb",     -- Target BRAM, "18Kb" or "36Kb"
+      FIRST_WORD_FALL_THROUGH => false)      -- Sets the FIFO FWFT to TRUE or FALSE
+    port map (
+      ALMOSTEMPTY => open,                   -- 1-bit output almost empty
+      ALMOSTFULL  => open,                   -- 1-bit output almost full
+      EMPTY       => open,                   -- 1-bit output empty
+      FULL        => open,                   -- 1-bit output full
+      RDCOUNT     => open,                   -- Output read count, width determined by FIFO depth
+      RDERR       => open,                   -- 1-bit output read error
+      WRCOUNT     => open,                   -- Output write count, width determined by FIFO depth
+      WRERR       => open,                   -- 1-bit output write error
+      DI          => rx_data_i,              -- Input data, width defined by DATA_WIDTH parameter
+      DO          => rd_data,                -- Output data, width defined by DATA_WIDTH parameter
+      RDCLK       => fabric_clock_i,         -- 1-bit input read clock
+      RDEN        => '1',                    -- 1-bit input read enable
+      RST         => reset_i,                -- 1-bit input reset
+      WRCLK       => fabric_clock_i,         -- 1-bit input write clock
+      WREN        => rx_en_i                 -- 1-bit input write enable
+      );
+
+  end generate gen_fifo_series7;
+
+  gen_fifo_series6 : if (FPGA_TYPE = "V6") generate
+    fifo_request_rx_inst : fifo_request_rx
+      port map(
+        rst     => reset_i,
+        clk     => fabric_clock_i,
+        wr_en   => rx_en_i,
+        din     => rx_data_i,
+        rd_en   => '1',
+        valid   => rd_valid,
+        dout    => rd_data,
+        full    => open,
+        empty   => open,
+        sbiterr => open,
+        dbiterr => open
+        );
+    fifo_request_tx_inst : fifo_request_tx
+      port map(
+        rst     => reset_i,
+        clk     => fabric_clock_i,
+        wr_en   => ipb_miso_i.ipb_ack,
+        din     => ipb_miso_i.ipb_rdata,
+        rd_en   => tx_en_i,
+        valid   => tx_valid_o,
+        dout    => tx_data_o,
+        full    => open,
+        empty   => open,
+        sbiterr => open,
+        dbiterr => open
+        );
+  end generate gen_fifo_series6;
 
 end Behavioral;

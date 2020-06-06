@@ -37,12 +37,12 @@ entity top_optohybrid is
     );
   port(
 
-    --== Clocking ==--
+    -- Clocking
 
     clock_p : in std_logic;
     clock_n : in std_logic;
 
-    --== Elinks ==--
+    -- Elinks
 
     elink_i_p : in std_logic;
     elink_i_n : in std_logic;
@@ -53,7 +53,7 @@ entity top_optohybrid is
     gbt_trig_o_p : out std_logic_vector (MXELINKS-1 downto 0);
     gbt_trig_o_n : out std_logic_vector (MXELINKS-1 downto 0);
 
-    --== GBT ==--
+    -- GBT
 
     -- only 1 connected in GE11, 2 in GE21
     gbt_txready_i : in std_logic_vector (MXREADY-1 downto 0);
@@ -73,11 +73,11 @@ entity top_optohybrid is
     master_slave_n : inout std_logic_vector (5*GE21-1 downto 0);
     vtrx_mabs_i    : in    std_logic_vector (1*GE21 downto 0);
 
-    --== LEDs ==--
+    -- LEDs
 
     led_o : out std_logic_vector (MXLED-1 downto 0);
 
-    --== GTX ==--
+    -- GTX
 
     mgt_clk_p_i : in std_logic_vector (1 downto 0);
     mgt_clk_n_i : in std_logic_vector (1 downto 0);
@@ -85,26 +85,26 @@ entity top_optohybrid is
     --mgt_tx_p_o : out std_logic_vector(3 downto 0);
     --mgt_tx_n_o : out std_logic_vector(3 downto 0);
 
-    --== VFAT Trigger Data ==--
+    -- VFAT Trigger Data
 
-    vfat_sot_p : in std_logic_vector (MXVFATS-1 downto 0);
-    vfat_sot_n : in std_logic_vector (MXVFATS-1 downto 0);
+    vfat_sot_p : in std_logic_vector (c_NUM_VFATS-1 downto 0);
+    vfat_sot_n : in std_logic_vector (c_NUM_VFATS-1 downto 0);
 
-    vfat_sbits_p : in std_logic_vector ((MXVFATS*8)-1 downto 0);
-    vfat_sbits_n : in std_logic_vector ((MXVFATS*8)-1 downto 0)
+    vfat_sbits_p : in std_logic_vector ((c_NUM_VFATS*8)-1 downto 0);
+    vfat_sbits_n : in std_logic_vector ((c_NUM_VFATS*8)-1 downto 0)
 
     );
 end top_optohybrid;
 
 architecture Behavioral of top_optohybrid is
 
-  --== SBit cluster packer ==--
+  -- SBit cluster packer
 
   signal tx_link_reset : std_logic;
   signal tx_prbs_mode  : std_logic_vector (2 downto 0);
   signal sbit_overflow : std_logic;
   signal cluster_count : std_logic_vector (10 downto 0);
-  signal active_vfats  : std_logic_vector (MXVFATS-1 downto 0);
+  signal active_vfats  : std_logic_vector (c_NUM_VFATS-1 downto 0);
 
   signal pll_reset        : std_logic;
   signal mgt_reset        : std_logic_vector(3 downto 0);
@@ -114,12 +114,13 @@ architecture Behavioral of top_optohybrid is
   signal txpowerdown      : std_logic;
   signal txpowerdown_mode : std_logic_vector (1 downto 0);
   signal txpllpowerdown   : std_logic;
-  signal sbit_clusters    : sbit_cluster_array_t (7 downto 0);
+
+  signal sbit_clusters    : sbit_cluster_array_t (NUM_FOUND_CLUSTERS_PER_BX-1 downto 0);
 
   signal mgt_control : mgt_control_t;
   signal mgt_status  : mgt_status_t;
 
-  --== Global signals ==--
+  -- Global signals
 
   signal idlyrdy           : std_logic;
   signal mmcm_locked       : std_logic;
@@ -151,7 +152,7 @@ architecture Behavioral of top_optohybrid is
 
   signal ctrl_reset_vfats : std_logic_vector (11 downto 0);
 
-  --== Wishbone ==--
+  -- Wishbone
 
   -- Master
   signal ipb_mosi_gbt : ipb_wbus;
@@ -165,12 +166,12 @@ architecture Behavioral of top_optohybrid is
   signal ipb_mosi_slaves : ipb_wbus_array (WB_SLAVES-1 downto 0);
   signal ipb_miso_slaves : ipb_rbus_array (WB_SLAVES-1 downto 0);
 
-  --== TTC ==--
+  -- TTC
 
   signal bxn_counter : std_logic_vector(11 downto 0);
   signal trig_stop   : std_logic;
 
-  --== IOB Constraints for Outputs ==--
+  -- IOB Constraints for Outputs
 
   attribute IOB  : string;
   attribute KEEP : string;
@@ -206,9 +207,9 @@ begin
 
   gbt_request_received <= ipb_mosi_gbt.ipb_strobe;
 
-  --=============--
-  --== Common  ==--
-  --=============--
+  -----------
+  -- Common
+  -----------
 
   led_o (MXLED-1 downto 0) <= led (MXLED-1 downto 0);
 
@@ -367,7 +368,7 @@ begin
       pll_lock   => pll_lock,
       txfsm_done => txfsm_done,
 
-      --== TTC ==--
+      -- TTC
 
       clocks => clocks,
 
@@ -491,6 +492,48 @@ begin
 
       );
 
+  --------------------------------------------------------------------------------
+  -- Trigger Data Formatter
+  --------------------------------------------------------------------------------
+
+  trigger_data_formatter_inst : entity work.trigger_data_formatter
+    port map (
+      clocks        => clocks,
+      reset_i       => core_reset,
+      clusters_i    => sbit_clusters,
+      --clusters_strobe_i => sbit_cluster
+      ttc_i         => ttc,
+      overflow_i    => sbit_overflow,
+      bxn_counter_i => bxn_counter,
+      error_i       => '0'
+      );
+
+  --------------------------------------------------------------------------------
+  -- Trigger Link Physical Interface
+  --------------------------------------------------------------------------------
+
+--  phygen : if (GENERATE_TRIG_PHY) generate
+--  trigger_data_formatter_inst : entity work.trigger_data_formatter
+--    port map (
+--      clocks        => clocks,
+--      reset_i       => core_reset,
+--      trg_tx_p      => open,
+--      trg_tx_n      => open,
+--      refclk_p      => mgt_clk_p_i,
+--      refclk_n      => mgt_clk_n_i,
+--      gbt_trig_p    => gbt_trig_o_p,
+--      gbt_trig_n    => gbt_trig_o_n,
+--      clusters      => sbit_clusters,
+--      ttc           => ttc,
+--      overflow_i    => sbit_overflow,
+--      bxn_counter_i => bxn_counter,
+--      error_i       => '0',
+--      mgt_control   => mgt_control,
+--      mgt_status    => mgt_status
+--
+--      );
+--  end generate;
+
 
   --------------------------------------------------------------------------------
   -- IDELAYCTRL
@@ -502,27 +545,5 @@ begin
       REFCLK => clocks.clk200,
       RST    => not mmcm_locked
       );
-
-  --------------------------------------------------------------------------------
-  -- Fiber Output
-  --------------------------------------------------------------------------------
-
-  trigger_output_inst : entity work.trigger_output
-    port map (
-      clocks        => clocks,
-      reset_i       => core_reset,
-      trg_tx_p      => open,
-      trg_tx_n      => open,
-      refclk_p      => mgt_clk_p_i,
-      refclk_n      => mgt_clk_n_i,
-      gbt_trig_p    => gbt_trig_o_p,
-      gbt_trig_n    => gbt_trig_o_n,
-      clusters      => sbit_clusters,
-      ttc           => ttc,
-      overflow_i    => sbit_overflow,
-      bxn_counter_i => bxn_counter,
-      error_i       => '0',
-      mgt_control   => mgt_control,
-      mgt_status    => mgt_status);
 
 end Behavioral;

@@ -94,8 +94,8 @@ module truncate_clusters #(
 
     // with latch_pulseen, our ff latches the incoming clusters, otherwise we latch the copied segments
     always @(posedge clock) begin
-      if   (latch_pulse[iseg]) segment_ff[iseg] <= segment      [iseg];
-      else                     segment_ff[iseg] <= segment_copy [iseg];
+      if   (latch_pulse) segment_ff[iseg] <= segment      [iseg];
+      else               segment_ff[iseg] <= segment_copy [iseg];
     end
 
     assign segment_out[iseg] = segment_ff[iseg];

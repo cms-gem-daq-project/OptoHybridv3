@@ -3,8 +3,6 @@ echo "Setting OH version..." \
 && python2 ./change_oh_version.py  "$@" \
 echo "Updating xml..." \
 && python2 ./update_xml.py \
-echo "Updating cluster packer..." \
-&& python2 ./update_cluster_packer.py \
 echo "Updating version_pkg..." \
 && python2 ./update_version_pkg.py \
 echo "Regenerating registers and documentation..." \

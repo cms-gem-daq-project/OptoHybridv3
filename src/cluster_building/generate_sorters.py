@@ -229,9 +229,10 @@ def generate_sorter (filename, number_of_inputs, number_of_outputs, latch_list, 
 
     s += ");\n"
 
-    s += "parameter MXVPFB=1;\n"
-    s += "parameter MXADRB=11;\n"
-    s += "parameter MXCNTB=3;\n"
+    s += "parameter MXPRTB=0;\n"
+    s += "parameter MXVPFB=0;\n"
+    s += "parameter MXADRB=0;\n"
+    s += "parameter MXCNTB=0;\n"
 
     s += "//----------------------------------------------------------------------------------------------------------------------\n"
     s += "// vectorize inputs\n"

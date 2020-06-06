@@ -7,9 +7,9 @@ use work.hardware_pkg.all;
 
 package types_pkg is
 
-  --============--
-  --== Common ==--
-  --============--
+  --------------------------------------------------------------------------------
+  -- Common
+  --------------------------------------------------------------------------------
 
   type int_array_t is array(integer range <>) of integer;
   type std_array_t is array(integer range <>) of std_logic;
@@ -56,9 +56,9 @@ package types_pkg is
     clk200    : std_logic;
   end record;
 
---==================--
---== Trigger data ==--
---==================--
+  ---------------------------------------------------------------------------------
+  -- Trigger data
+  ---------------------------------------------------------------------------------
 
   type trigger_unit_t is record
     start_of_frame_p : std_logic;
@@ -75,19 +75,22 @@ package types_pkg is
 
   type sbits_array_t is array(integer range <>) of sbits_t;
 
+
   type sbit_cluster_t is record
     adr : std_logic_vector (MXADRB-1 downto 0);
     cnt : std_logic_vector (MXCNTB-1 downto 0);
     prt : std_logic_vector (MXPRTB-1 downto 0);
-    vpf : std_logic;
+    vpf : std_logic; -- high for full 25ns
   end record;
-
 
   type sbit_cluster_array_t is array(integer range<>) of sbit_cluster_t;
 
---==============--
---== Wishbone ==--
---==============--
+  subtype partition_t is std_logic_vector(c_PARTITION_SIZE*MXSBITS-1 downto 0);
+  type partition_array_t is array(integer range <>) of partition_t;
+
+  ---------------------------------------------------------------------------------
+  -- Wishbone
+  ---------------------------------------------------------------------------------
 
   type wb_req_t is record
     stb  : std_logic;
@@ -97,7 +100,6 @@ package types_pkg is
   end record;
 
   type wb_req_array_t is array(integer range <>) of wb_req_t;
-
 
   type wb_res_t is record
     ack  : std_logic;

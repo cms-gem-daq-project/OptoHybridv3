@@ -31,16 +31,16 @@ entity sbits is
 
     trig_stop_i : in std_logic;
 
-    vfat_sbit_clusters_o : out sbit_cluster_array_t(7 downto 0);
+    vfat_sbit_clusters_o : out sbit_cluster_array_t (NUM_FOUND_CLUSTERS_PER_BX-1 downto 0);
 
-    vfat_mask_i : in std_logic_vector (MXVFATS-1 downto 0);
+    vfat_mask_i : in std_logic_vector (c_NUM_VFATS-1 downto 0);
 
     sbits_mux_sel_i : in  std_logic_vector (4 downto 0);
     sbits_mux_o     : out std_logic_vector (63 downto 0);
 
-    sot_invert_i : in std_logic_vector (MXVFATS-1 downto 0);    -- 24 or 12
-    tu_invert_i  : in std_logic_vector (MXVFATS*8-1 downto 0);  -- 192 or 96
-    tu_mask_i    : in std_logic_vector (MXVFATS*8-1 downto 0);  -- 192 or 96
+    sot_invert_i : in std_logic_vector (c_NUM_VFATS-1 downto 0);    -- 24 or 12
+    tu_invert_i  : in std_logic_vector (c_NUM_VFATS*8-1 downto 0);  -- 192 or 96
+    tu_mask_i    : in std_logic_vector (c_NUM_VFATS*8-1 downto 0);  -- 192 or 96
 
     aligned_count_to_ready : in std_logic_vector (11 downto 0);
 
@@ -48,43 +48,43 @@ entity sbits is
 
     trigger_deadtime_i : in std_logic_vector (3 downto 0);
 
-    sbits_p : in std_logic_vector (MXVFATS*8-1 downto 0);
-    sbits_n : in std_logic_vector (MXVFATS*8-1 downto 0);
+    sbits_p : in std_logic_vector (c_NUM_VFATS*8-1 downto 0);
+    sbits_n : in std_logic_vector (c_NUM_VFATS*8-1 downto 0);
 
-    start_of_frame_p : in std_logic_vector (MXVFATS-1 downto 0);
-    start_of_frame_n : in std_logic_vector (MXVFATS-1 downto 0);
+    start_of_frame_p : in std_logic_vector (c_NUM_VFATS-1 downto 0);
+    start_of_frame_n : in std_logic_vector (c_NUM_VFATS-1 downto 0);
 
 
-    active_vfats_o : out std_logic_vector (MXVFATS-1 downto 0);
+    active_vfats_o : out std_logic_vector (c_NUM_VFATS-1 downto 0);
 
     overflow_o : out std_logic;
 
-    sot_is_aligned_o      : out std_logic_vector (MXVFATS-1 downto 0);
-    sot_unstable_o        : out std_logic_vector (MXVFATS-1 downto 0);
-    sot_invalid_bitskip_o : out std_logic_vector (MXVFATS-1 downto 0);
+    sot_is_aligned_o      : out std_logic_vector (c_NUM_VFATS-1 downto 0);
+    sot_unstable_o        : out std_logic_vector (c_NUM_VFATS-1 downto 0);
+    sot_invalid_bitskip_o : out std_logic_vector (c_NUM_VFATS-1 downto 0);
 
-    sot_tap_delay  : in t_std5_array (MXVFATS-1 downto 0);
-    trig_tap_delay : in t_std5_array (MXVFATS*8-1 downto 0);
+    sot_tap_delay  : in t_std5_array (c_NUM_VFATS-1 downto 0);
+    trig_tap_delay : in t_std5_array (c_NUM_VFATS*8-1 downto 0);
 
     hitmap_reset_i   : in  std_logic;
     hitmap_acquire_i : in  std_logic;
-    hitmap_sbits_o   : out sbits_array_t(MXVFATS-1 downto 0)
+    hitmap_sbits_o   : out sbits_array_t(c_NUM_VFATS-1 downto 0)
 
     );
 end sbits;
 
 architecture Behavioral of sbits is
 
-  signal vfat_sbits_strip_mapped : sbits_array_t(MXVFATS-1 downto 0);
-  signal vfat_sbits              : sbits_array_t(MXVFATS-1 downto 0);
+  signal vfat_sbits_strip_mapped : sbits_array_t(c_NUM_VFATS-1 downto 0);
+  signal vfat_sbits              : sbits_array_t(c_NUM_VFATS-1 downto 0);
 
   constant empty_vfat : std_logic_vector (63 downto 0) := x"0000000000000000";
 
-  signal active_vfats : std_logic_vector (MXVFATS-1 downto 0);
+  signal active_vfats : std_logic_vector (c_NUM_VFATS-1 downto 0);
 
   signal sbits : std_logic_vector (MXSBITS_CHAMBER-1 downto 0);
 
-  signal active_vfats_s1 : std_logic_vector (MXVFATS*8-1 downto 0);
+  signal active_vfats_s1 : std_logic_vector (c_NUM_VFATS*8-1 downto 0);
 
   signal sbits_mux_s0 : std_logic_vector (63 downto 0);
   signal sbits_mux_s1 : std_logic_vector (63 downto 0);
@@ -115,60 +115,6 @@ architecture Behavioral of sbits is
     end loop;
     return result;
   end;  -- function reverse_vector
-
-
-  component cluster_packer
-    port (
-
-      clock5x       : in  std_logic;
-      clock4x       : in  std_logic;
-      clock1x       : in  std_logic;
-      reset_i       : in  std_logic;
-      cluster_count : out std_logic_vector (10 downto 0);
-      deadtime_i    : in  std_logic_vector (3 downto 0);
-
-      trig_stop_i : in std_logic;
-
-      vfat0  : in std_logic_vector (MXSBITS-1 downto 0);
-      vfat1  : in std_logic_vector (MXSBITS-1 downto 0);
-      vfat2  : in std_logic_vector (MXSBITS-1 downto 0);
-      vfat3  : in std_logic_vector (MXSBITS-1 downto 0);
-      vfat4  : in std_logic_vector (MXSBITS-1 downto 0);
-      vfat5  : in std_logic_vector (MXSBITS-1 downto 0);
-      vfat6  : in std_logic_vector (MXSBITS-1 downto 0);
-      vfat7  : in std_logic_vector (MXSBITS-1 downto 0);
-      vfat8  : in std_logic_vector (MXSBITS-1 downto 0);
-      vfat9  : in std_logic_vector (MXSBITS-1 downto 0);
-      vfat10 : in std_logic_vector (MXSBITS-1 downto 0);
-      vfat11 : in std_logic_vector (MXSBITS-1 downto 0);
-      vfat12 : in std_logic_vector (MXSBITS-1 downto 0);
-      vfat13 : in std_logic_vector (MXSBITS-1 downto 0);
-      vfat14 : in std_logic_vector (MXSBITS-1 downto 0);
-      vfat15 : in std_logic_vector (MXSBITS-1 downto 0);
-      vfat16 : in std_logic_vector (MXSBITS-1 downto 0);
-      vfat17 : in std_logic_vector (MXSBITS-1 downto 0);
-      vfat18 : in std_logic_vector (MXSBITS-1 downto 0);
-      vfat19 : in std_logic_vector (MXSBITS-1 downto 0);
-      vfat20 : in std_logic_vector (MXSBITS-1 downto 0);
-      vfat21 : in std_logic_vector (MXSBITS-1 downto 0);
-      vfat22 : in std_logic_vector (MXSBITS-1 downto 0);
-      vfat23 : in std_logic_vector (MXSBITS-1 downto 0);
-
-      cluster0 : out std_logic_vector (13 downto 0);
-      cluster1 : out std_logic_vector (13 downto 0);
-      cluster2 : out std_logic_vector (13 downto 0);
-      cluster3 : out std_logic_vector (13 downto 0);
-      cluster4 : out std_logic_vector (13 downto 0);
-      cluster5 : out std_logic_vector (13 downto 0);
-      cluster6 : out std_logic_vector (13 downto 0);
-      cluster7 : out std_logic_vector (13 downto 0);
-
-      overflow : out std_logic
-
-
-      );
-  end component;
-
 begin
 
   -- reset fanout
@@ -183,7 +129,7 @@ begin
   process (clocks.clk40)
   begin
     if (rising_edge(clocks.clk40)) then
-      if (unsigned(sbits_mux_sel_i) > to_unsigned(MXVFATS, sbits_mux_sel_i'length)-1) then
+      if (unsigned(sbits_mux_sel_i) > to_unsigned(c_NUM_VFATS, sbits_mux_sel_i'length)-1) then
         sbits_mux_sel <= (others => '0');
       else
         sbits_mux_sel <= sbits_mux_sel_i;
@@ -236,7 +182,7 @@ begin
   -- Channel to Strip Mapping
   --------------------------------------------------------------------------------------------------------------------
 
-  sbit_reverse : for I in 0 to (MXVFATS-1) generate
+  sbit_reverse : for I in 0 to (c_NUM_VFATS-1) generate
   begin
     vfat_sbits (I) <= sbits ((I+1)*MXSBITS-1 downto (I)*MXSBITS) when REVERSE_VFAT_SBITS(0) = '0' else reverse_vector(sbits ((I+1)*MXSBITS-1 downto (I)*MXSBITS));
   end generate;
@@ -250,11 +196,6 @@ begin
   --------------------------------------------------------------------------------------------------------------------
   -- Active VFAT Flags
   --------------------------------------------------------------------------------------------------------------------
-
-  -- want to generate 24 bits as active VFAT flags, indicating that at least one s-bit on that VFAT
-  -- was active in this 40MHz cycle
-
-  -- I don't want to do 64 bit reduction in 1 clock... split it over 2 to add slack to PAR and timing
 
   active_vfats_inst : entity work.active_vfats
     port map (
@@ -297,114 +238,20 @@ begin
   -- Cluster Packer
   --------------------------------------------------------------------------------------------------------------------
 
---    --====================================--
-  --== Light (12 VFAT) Cluster Packer ==--
-  --====================================--
-
-  GE21_GEN : if (GE21 = 1) generate
-
-    cluster_packer_inst : cluster_packer
-
-      port map(
-        trig_stop_i   => trig_stop_i,
-        clock5x       => clocks.clk200,
-        clock4x       => clocks.clk160_0,
-        clock1x       => clocks.clk40,
-        reset_i       => reset,
-        cluster_count => cluster_count_o,
-        deadtime_i    => trigger_deadtime_i,
-
-        vfat0  => vfat_sbits_strip_mapped(0),
-        vfat1  => vfat_sbits_strip_mapped(1),
-        vfat2  => vfat_sbits_strip_mapped(2),
-        vfat3  => vfat_sbits_strip_mapped(3),
-        vfat4  => vfat_sbits_strip_mapped(4),
-        vfat5  => vfat_sbits_strip_mapped(5),
-        vfat6  => vfat_sbits_strip_mapped(6),
-        vfat7  => vfat_sbits_strip_mapped(7),
-        vfat8  => vfat_sbits_strip_mapped(8),
-        vfat9  => vfat_sbits_strip_mapped(9),
-        vfat10 => vfat_sbits_strip_mapped(10),
-        vfat11 => vfat_sbits_strip_mapped(11),
-        vfat12 => empty_vfat,
-        vfat13 => empty_vfat,
-        vfat14 => empty_vfat,
-        vfat15 => empty_vfat,
-        vfat16 => empty_vfat,
-        vfat17 => empty_vfat,
-        vfat18 => empty_vfat,
-        vfat19 => empty_vfat,
-        vfat20 => empty_vfat,
-        vfat21 => empty_vfat,
-        vfat22 => empty_vfat,
-        vfat23 => empty_vfat,
-
-        -- TODO: fixme
-        cluster0 => open, --vfat_sbit_clusters_o(0),
-        cluster1 => open, --vfat_sbit_clusters_o(1),
-        cluster2 => open, --vfat_sbit_clusters_o(2),
-        cluster3 => open, --vfat_sbit_clusters_o(3),
-        cluster4 => open, --vfat_sbit_clusters_o(4),
-        cluster5 => open, --vfat_sbit_clusters_o(5),
-        cluster6 => open, --vfat_sbit_clusters_o(6),
-        cluster7 => open, --vfat_sbit_clusters_o(7),
-
-        overflow => overflow_o
-        );
-
-  end generate;
-
-  --====================================--
-  --== Heavy (24 VFAT) Cluster Packer ==--
-  --====================================--
-
-  GE11_GEN : if (GE11 = 1) generate
-
-    cluster_packer_inst : cluster_packer
-
-      port map(
-        trig_stop_i   => trig_stop_i,
-        clock5x       => clocks.clk200,
-        clock4x       => clocks.clk160_0,
-        clock1x       => clocks.clk40,
-        reset_i       => reset,
-        cluster_count => cluster_count_o,
-        deadtime_i    => trigger_deadtime_i,
-        vfat0         => vfat_sbits_strip_mapped(0),
-        vfat1         => vfat_sbits_strip_mapped(1),
-        vfat2         => vfat_sbits_strip_mapped(2),
-        vfat3         => vfat_sbits_strip_mapped(3),
-        vfat4         => vfat_sbits_strip_mapped(4),
-        vfat5         => vfat_sbits_strip_mapped(5),
-        vfat6         => vfat_sbits_strip_mapped(6),
-        vfat7         => vfat_sbits_strip_mapped(7),
-        vfat8         => vfat_sbits_strip_mapped(8),
-        vfat9         => vfat_sbits_strip_mapped(9),
-        vfat10        => vfat_sbits_strip_mapped(10),
-        vfat11        => vfat_sbits_strip_mapped(11),
-        vfat12        => vfat_sbits_strip_mapped(12),
-        vfat13        => vfat_sbits_strip_mapped(13),
-        vfat14        => vfat_sbits_strip_mapped(14),
-        vfat15        => vfat_sbits_strip_mapped(15),
-        vfat16        => vfat_sbits_strip_mapped(16),
-        vfat17        => vfat_sbits_strip_mapped(17),
-        vfat18        => vfat_sbits_strip_mapped(18),
-        vfat19        => vfat_sbits_strip_mapped(19),
-        vfat20        => vfat_sbits_strip_mapped(20),
-        vfat21        => vfat_sbits_strip_mapped(21),
-        vfat22        => vfat_sbits_strip_mapped(22),
-        vfat23        => vfat_sbits_strip_mapped(23),
-        cluster0      => open, -- vfat_sbit_clusters_o(0),
-        cluster1      => open, -- vfat_sbit_clusters_o(1),
-        cluster2      => open, -- vfat_sbit_clusters_o(2),
-        cluster3      => open, -- vfat_sbit_clusters_o(3),
-        cluster4      => open, -- vfat_sbit_clusters_o(4),
-        cluster5      => open, -- vfat_sbit_clusters_o(5),
-        cluster6      => open, -- vfat_sbit_clusters_o(6),
-        cluster7      => open, -- vfat_sbit_clusters_o(7),
-        overflow      => overflow_o
-        );
-
-  end generate;
+  cluster_packer_inst : entity work.cluster_packer
+    generic map (
+      DEADTIME => 0,
+      ONESHOT  => false
+      )
+    port map (
+      clocks          => clocks,
+      reset           => reset_i,
+      trig_stop_i     => trig_stop_i,
+      sbits_i         => vfat_sbits_strip_mapped,
+      cluster_count_o => cluster_count_o,
+      clusters_o      => vfat_sbit_clusters_o,
+      clusters_ena_o  => open,
+      overflow_o      => overflow_o
+      );
 
 end Behavioral;

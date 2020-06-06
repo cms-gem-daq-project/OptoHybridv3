@@ -14,11 +14,10 @@ def main():
 
     if (len(sys.argv) < 6):
         print('Arguments: <gem_station> <oh_version> <geb_version> <geb_length> <firmware_version> [<date>]')
-        print('e.g.: sh update_oh_firmware.sh ge21 v3c v3c short 03.02.04 20190728')
+        print('e.g.: sh update_oh_firmware.sh ge21 v3c v3c short 03.02.04')
         sys.exit(1)
     else:
         print('%d arguments received'%len(sys.argv))
-
 
     gem_version              = sys.argv[1]
     oh_version               = sys.argv[2]

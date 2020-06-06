@@ -14,7 +14,7 @@ module priority384 (
 );
 parameter MXKEYS    = 384;
 parameter MXKEYBITS = 9;
-parameter MXCNTB = 3;
+parameter MXCNTB    = 3;
 
 //----------------------------------------------------------------------------------------------------------------------
 // Wires
@@ -146,7 +146,12 @@ always @(*) begin
 
     if      (vpf_s7[0]) {vpf, cnt, adr} = {vpf_s7[0], cnt_s7[0], {2'b00, key_s7[0]}};
     else if (vpf_s7[1]) {vpf, cnt, adr} = {vpf_s7[1], cnt_s7[1], {2'b01, key_s7[1]}};
-    else                {vpf, cnt, adr} = {vpf_s7[2], cnt_s7[2], {2'b10, key_s7[2]}};
+    else if (vpf_s7[2]) {vpf, cnt, adr} = {vpf_s7[2], cnt_s7[2], {2'b10, key_s7[2]}};
+    else   begin
+       vpf <=  0;
+       cnt <=  0;
+       adr <= ~0;
+    end
 
     pass_out <= pass_s7;
 

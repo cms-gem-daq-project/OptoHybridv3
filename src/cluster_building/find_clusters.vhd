@@ -13,10 +13,10 @@ entity find_clusters is
 
     latch_in : in std_logic;            -- this should go high when new vpfs are ready and stay high for just 1 clock
 
-    vpfs_in : in std_logic_vector (MXSBITS*MXVFATS -1 downto 0);
-    cnts_in : in std_logic_vector (MXSBITS*MXVFATS*3-1 downto 0);
+    vpfs_in : in std_logic_vector (MXSBITS*c_NUM_VFATS -1 downto 0);
+    cnts_in : in std_logic_vector (MXSBITS*c_NUM_VFATS*3-1 downto 0);
 
-    clusters_o : out sbit_cluster_array_t (g_NUM_CLUSTERS-1 downto 0);
+    clusters_o : out sbit_cluster_array_t (NUM_FOUND_CLUSTERS_PER_BX-1 downto 0);
 
     latch_out : out std_logic           -- this should go high when new vpfs are ready and stay high for just 1 clock
     );
@@ -24,25 +24,42 @@ end find_clusters;
 
 architecture behavioral of find_clusters is
 
-  function correct_address_ge11 (ge11 : boolean; adr : std_logic_vector) return std_logic_vector is
+  function int (vec : std_logic_vector) return integer is
   begin
-    if (ge11 and adr > 191) then
-      return adr-192;
+    return to_integer(unsigned(vec));
+  end int;
+
+  function correct_address_ge11 (is_ge11 : boolean; adr : std_logic_vector) return std_logic_vector is
+  begin
+    if (is_ge11 and int(adr) > 191) then
+      return std_logic_vector(
+        to_unsigned(
+          int(adr)-192,
+          adr'length)
+        );
     else
       return adr;
     end if;
   end correct_address_ge11;
 
-  function correct_partition_ge11 (ge11 : boolean; adr : std_logic_vector) return integer is
+  function to_partition (is_ge11 : boolean; encoder : integer; adr : std_logic_vector) return std_logic_vector is
+    variable odd : integer;
+    variable prt : integer;
   begin
-    if (ge11 and adr > 191) then
-      return 1;
+    if (not is_ge11) then
+      prt := encoder;
     else
-      return 0;
+      if (is_ge11 and int(adr) > 191) then
+        odd := 1;
+      else
+        odd := 0;
+      end if;
+      prt := odd + encoder*2;
     end if;
-  end correct_partition_ge11;
+    return std_logic_vector(to_unsigned(prt, MXPRTB));
+  end to_partition;
 
-  function if_then_else (bool : boolean; a : std_logic; b : std_logic) return std_logic is
+  function if_then_else (bool : boolean; a : integer; b : integer) return integer is
   begin
     if (bool) then
       return a;
@@ -55,56 +72,30 @@ architecture behavioral of find_clusters is
   constant NUM_CYCLES   : integer := 4;  -- number of clocks (4 for 160MHz, 5 for 200MHz)
   constant ENCODER_SIZE : integer := 384;
 
-  signal clusters_buf : sbit_cluster_array_t (NUM_ENCODERS*NUM_CYCLES-1 downto 0);
+  --------------------------------------------------------------------------------
+  -- Signals
+  --------------------------------------------------------------------------------
 
-  -- ------------------------------------------------------------------------------------------------------------------------
-  -- -- Signals
-  -- ------------------------------------------------------------------------------------------------------------------------
-  --
-  -- wire [MXSBITS*MXVFATS-1:0] vpfs_truncated;
-  --
-  -- wire   [MXADRB_ENC-1:0] adr_enc [NUM_ENCODERS-1:0];
-  -- wire   [           0:0] vpf_enc [NUM_ENCODERS-1:0];
-  -- wire   [MXCNTB -1   :0] cnt_enc [NUM_ENCODERS-1:0];
-  --
-  -- ------------------------------------------------------------------------------------------------------------------------
-  -- -- Encoders
-  -- ------------------------------------------------------------------------------------------------------------------------
-  --
-  -- reg [MXPRTB-1:0] prt_latch [NUM_ENCODERS-1:0][NUM_CYCLES-1:0];
-  -- reg [MXADRB-1:0] adr_latch [NUM_ENCODERS-1:0][NUM_CYCLES-1:0];
-  -- reg [MXCNTB-1:0] cnt_latch [NUM_ENCODERS-1:0][NUM_CYCLES-1:0];
-  -- reg [       0:0] vpf_latch [NUM_ENCODERS-1:0][NUM_CYCLES-1:0];
-  --
-  -- -- carry along a marker showing the ith cluster which is being processed-- used for sync
-  -- wire [MXCNTB-1:0] pass_truncate [NUM_ENCODERS-1:0];
-  -- wire [MXCNTB-1:0] pass_encoder  [NUM_ENCODERS-1:0];
-  --
-  -- reg latch_out_s1=0;
-  --
-  -- reg    [MXSBITS*MXVFATS*3-1:0] cnts_dly1;
--- reg  [0:0]        vpf_s1 [NUM_ENCODERS*NUM_CYCLES-1:0];
--- reg  [MXADRB-1:0] adr_s1 [NUM_ENCODERS*NUM_CYCLES-1:0];
--- reg  [MXCNTB-1:0] cnt_s1 [NUM_ENCODERS*NUM_CYCLES-1:0];
+  signal clusters_s1  : sbit_cluster_array_t (NUM_FOUND_CLUSTERS_PER_BX-1 downto 0);
+  signal cnts_dly1    : std_logic_vector (MXSBITS*c_NUM_VFATS*3-1 downto 0);
+  signal latch_out_s1 : std_logic_vector (1 downto 0);
 
 begin
 
   -- GE2/1 uses 1 384 bit encoder per partition
   -- 2 partitions total, returning 4 or 5 clusters / clock from each partition
   -- 2 encoders total
-  -- (8 or 10 clusters total)
+  -- 8 or 10 clusters total, depending on 160MHz or 200MHz clock (200M not supported right now but is possible)
   --
-  -- GE2/1 uses 1 384 bit encoder per TWO partitions
+  -- GE1/1 uses 1 384 bit encoder per TWO partitions
   -- 8 partitions total, returning 4 or 5 clusters / clock from each di-partition
   -- 4 encoders total
-  -- (16 clusters total)
+  -- 16 clusters total
 
   process (clock)
   begin
     if (rising_edge(clock)) then
-      if (pass_encoder(ienc) = i) then
-        cnts_dly1 <= cnts_in;
-      end if;
+      cnts_dly1 <= cnts_in;
     end if;
   end process;
 
@@ -126,10 +117,49 @@ begin
   -- cycle_prior                                                  |  Zero | One
 
   encoder_gen : for I in 0 to (NUM_ENCODERS-1) generate
+    signal pass_truncate : std_logic_vector (2 downto 0);
+    signal pass_encoder  : std_logic_vector (2 downto 0);
+    signal clusters_buf  : sbit_cluster_array_t (NUM_FOUND_CLUSTERS_PER_BX/NUM_ENCODERS-1 downto 0);
+
+    signal adr_enc : std_logic_vector(MXADRB-1 downto 0);
+    signal vpf_enc : std_logic_vector(0 downto 0);
+    signal cnt_enc : std_logic_vector(MXCNTB-1 downto 0);
+
+    signal vpfs_truncated : std_logic_vector (MXSBITS*c_NUM_VFATS/NUM_ENCODERS-1 downto 0);
+
+    component truncate_clusters
+      generic (
+        MXVPF  : integer;
+        MXSEGS : integer
+        );
+      port (
+        clock       : in  std_logic;
+        latch_pulse : in  std_logic;
+        pass        : out std_logic_vector;
+        vpfs_in     : in  std_logic_vector;
+        vpfs_out    : out std_logic_vector
+        );
+    end component;
+
+    component priority384
+      port (
+        clock    : in  std_logic;
+        pass_in  : in  std_logic_vector;
+        vpfs_in  : in  std_logic_vector;
+        cnts_in  : in  std_logic_vector;
+        pass_out : out std_logic_vector;
+        cnt      : out std_logic_vector;
+        adr      : out std_logic_vector;
+        vpf      : out std_logic_vector
+        );
+    end component;
+
+
+  begin
 
     -- 384-bit truncator
     ----------------------------
-    truncate_clusters_inst : entity work.truncate_clusters
+    truncate_clusters_inst : truncate_clusters
       generic map (
         MXVPF  => ENCODER_SIZE,
         MXSEGS => 12
@@ -138,22 +168,22 @@ begin
         clock       => clock,
         latch_pulse => latch_in,
         vpfs_in     => vpfs_in (384*(I+1)-1 downto 384*I),
-        vpfs_out    => vpfs_truncated(384*(I+1)-1 downto 384*I),
-        pass        => pass_truncated(I)
+        vpfs_out    => vpfs_truncated (383 downto 0),
+        pass        => pass_truncate
         );
 
     -- 384-bit priority encoder
     ----------------------------
-    priority384_inst : entity work.priority384
+    priority384_inst : priority384
       port map (
-        pass_in  => pass_truncate(I),
-        pass_out => pass_encoder(I),
+        pass_in  => pass_truncate,
+        pass_out => pass_encoder,
         clock    => clock,
-        vpfs_in  => vpfs_truncated(384 *(I+1)-1 downto 384 *I),
+        vpfs_in  => vpfs_truncated,
         cnts_in  => cnts_dly1 (384*3*(I+1)-1 downto 384*3*I),
-        cnt      => cnt_enc(I),
-        adr      => adr_enc(I),
-        vpf      => vpf_enc(I)
+        cnt      => cnt_enc,
+        adr      => adr_enc,
+        vpf      => vpf_enc
         );
 
     -- GE1/1 handles 2 partitions per encoder, need to subtract 192 and add +1 to ienc
@@ -162,26 +192,29 @@ begin
     process (clock)
     begin
       if (rising_edge(clock)) then
-        clusters_buf(I)(ienc*NUM_CYCLES + pass_encoder(I)).adr <= correct_address_ge11(GE11 = 1, adr_enc(ienc));
-        clusters_buf(I)(ienc*NUM_CYCLES + pass_encoder(I)).cnt <= cnt_enc(ienc);
-        clusters_buf(I)(ienc*NUM_CYCLES + pass_encoder(I)).vpf <= vpf_enc(ienc);
-        clusters_buf(I)(ienc*NUM_CYCLES + pass_encoder(I)).prt <= std_logic_vector(to_unsigned(ienc + correct_partition_ge11 (GE11 = 1, adr_enc(ienc)), MXPRTB));
+        clusters_buf(int(pass_encoder)).adr <= correct_address_ge11(GE11 = 1, adr_enc);
+        clusters_buf(int(pass_encoder)).cnt <= cnt_enc;
+        clusters_buf(int(pass_encoder)).vpf <= vpf_enc(0);
+        clusters_buf(int(pass_encoder)).prt <= to_partition (GE11 = 1, I, adr_enc);
       end if;
     end process;
+
+    -- latch outputs of priority encoder when it produces its results, stable for sorter
+    process (clock)
+      constant C : integer := NUM_FOUND_CLUSTERS_PER_BX/NUM_ENCODERS;
+    begin
+      if (rising_edge(clock)) then
+        if (int(pass_encoder) = 0) then
+          latch_out_s1(I)                    <= '1';
+          clusters_s1 ((I+1)*C-1 downto C*I) <= clusters_buf;
+        else
+          latch_out_s1(I) <= '0';
+        end if;
+      end if;
+    end process;
+
   end generate;
 
-  -- latch outputs of priority encoder when it produces its results, stable for sorter
-  process (clock)
-  begin
-    if (rising_edge(clock)) then
-      if (pass_encoder(0) = 0) then
-        latch_out_s1 <= '1';
-        clusters_s1  <= clusters_buf;
-      else
-        latch_out_s1 <= '0';
-      end if;
-    end if;
-  end process;
 
   ---------------------------------------------------------------------------------------------------------------------
   -- Cluster Sorter
@@ -189,11 +222,101 @@ begin
 
   -- we get up to 16 clusters / bx but only get to send a few so we put them in order
 
-  ge21 : if (GE21 = 1) generate
-    sorter8 : entity work.sorter8
+  sort_ge21 : if (GE21 = 1) generate
+
+    component sorter8
+      generic (
+        MXADRB : integer;
+        MXCNTB : integer;
+        MXPRTB : integer;
+        MXVPFB : integer
+        );
+      port (
+        clock : in std_logic;
+
+        pulse_in  : in  std_logic;
+        pulse_out : out std_logic;
+
+        prt_in0 : in std_logic_vector;
+        prt_in1 : in std_logic_vector;
+        prt_in2 : in std_logic_vector;
+        prt_in3 : in std_logic_vector;
+        prt_in4 : in std_logic_vector;
+        prt_in5 : in std_logic_vector;
+        prt_in6 : in std_logic_vector;
+        prt_in7 : in std_logic_vector;
+
+        adr_in0 : in std_logic_vector;
+        adr_in1 : in std_logic_vector;
+        adr_in2 : in std_logic_vector;
+        adr_in3 : in std_logic_vector;
+        adr_in4 : in std_logic_vector;
+        adr_in5 : in std_logic_vector;
+        adr_in6 : in std_logic_vector;
+        adr_in7 : in std_logic_vector;
+
+        cnt_in0 : in std_logic_vector;
+        cnt_in1 : in std_logic_vector;
+        cnt_in2 : in std_logic_vector;
+        cnt_in3 : in std_logic_vector;
+        cnt_in4 : in std_logic_vector;
+        cnt_in5 : in std_logic_vector;
+        cnt_in6 : in std_logic_vector;
+        cnt_in7 : in std_logic_vector;
+
+        vpf_in0 : in std_logic;
+        vpf_in1 : in std_logic;
+        vpf_in2 : in std_logic;
+        vpf_in3 : in std_logic;
+        vpf_in4 : in std_logic;
+        vpf_in5 : in std_logic;
+        vpf_in6 : in std_logic;
+        vpf_in7 : in std_logic;
+
+        prt_out0 : out std_logic_vector;
+        prt_out1 : out std_logic_vector;
+        prt_out2 : out std_logic_vector;
+        prt_out3 : out std_logic_vector;
+        prt_out4 : out std_logic_vector;
+        prt_out5 : out std_logic_vector;
+        prt_out6 : out std_logic_vector;
+        prt_out7 : out std_logic_vector;
+
+        adr_out0 : out std_logic_vector;
+        adr_out1 : out std_logic_vector;
+        adr_out2 : out std_logic_vector;
+        adr_out3 : out std_logic_vector;
+        adr_out4 : out std_logic_vector;
+        adr_out5 : out std_logic_vector;
+        adr_out6 : out std_logic_vector;
+        adr_out7 : out std_logic_vector;
+
+        cnt_out0 : out std_logic_vector;
+        cnt_out1 : out std_logic_vector;
+        cnt_out2 : out std_logic_vector;
+        cnt_out3 : out std_logic_vector;
+        cnt_out4 : out std_logic_vector;
+        cnt_out5 : out std_logic_vector;
+        cnt_out6 : out std_logic_vector;
+        cnt_out7 : out std_logic_vector;
+
+        vpf_out0 : out std_logic;
+        vpf_out1 : out std_logic;
+        vpf_out2 : out std_logic;
+        vpf_out3 : out std_logic;
+        vpf_out4 : out std_logic;
+        vpf_out5 : out std_logic;
+        vpf_out6 : out std_logic;
+        vpf_out7 : out std_logic
+        );
+    end component;
+  begin
+
+    sorter8_inst : sorter8
       generic map (
         MXADRB => MXADRB,
         MXCNTB => MXCNTB,
+        MXPRTB => MXPRTB,
         MXVPFB => 1
         )
       port map (
@@ -274,62 +397,9 @@ begin
         cnt_out6 => clusters_o(6).cnt,
         cnt_out7 => clusters_o(7).cnt,
 
-        pulse_in  => latch_out_s1,
-        pulse_out => latch_out_s2
+        pulse_in  => latch_out_s1(0),
+        pulse_out => latch_out
         );
   end generate;
-
----------------------------------------------------------------------------------------------------------------------
--- Outputs
--- ------------------------------------------------------------------------------------------------------------------
-
---    `ifdef output_latch
---    always @(posedge clock)
---  begin
---    `else
---    always @(*)
---      begin
---        `endif
---
---        adr0 <= adr_s2[0];
---        adr1 <= adr_s2[1];
---        adr2 <= adr_s2[2];
---        adr3 <= adr_s2[3];
---        adr4 <= adr_s2[4];
---        adr5 <= adr_s2[5];
---        adr6 <= adr_s2[6];
---        adr7 <= adr_s2[7];
---
---        prt0 <= prt_s2[0];
---        prt1 <= prt_s2[1];
---        prt2 <= prt_s2[2];
---        prt3 <= prt_s2[3];
---        prt4 <= prt_s2[4];
---        prt5 <= prt_s2[5];
---        prt6 <= prt_s2[6];
---        prt7 <= prt_s2[7];
---
---        cnt0 <= cnt_s2[0];
---        cnt1 <= cnt_s2[1];
---        cnt2 <= cnt_s2[2];
---        cnt3 <= cnt_s2[3];
---        cnt4 <= cnt_s2[4];
---        cnt5 <= cnt_s2[5];
---        cnt6 <= cnt_s2[6];
---        cnt7 <= cnt_s2[7];
---
---        vpf0 <= vpf_s2[0];
---        vpf1 <= vpf_s2[1];
---        vpf2 <= vpf_s2[2];
---        vpf3 <= vpf_s2[3];
---        vpf4 <= vpf_s2[4];
---        vpf5 <= vpf_s2[5];
---        vpf6 <= vpf_s2[6];
---        vpf7 <= vpf_s2[7];
---
---        latch_out <= latch_out_s2;
---      end
-
-end behavioral;
 
 end behavioral;

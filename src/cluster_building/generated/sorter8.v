@@ -84,9 +84,10 @@ module sorter8 (
     input  pulse_in,
     output pulse_out
 );
-parameter MXVPFB=1;
-parameter MXADRB=11;
-parameter MXCNTB=3;
+parameter MXPRTB=0;
+parameter MXVPFB=0;
+parameter MXADRB=0;
+parameter MXCNTB=0;
 //----------------------------------------------------------------------------------------------------------------------
 // vectorize inputs
 //----------------------------------------------------------------------------------------------------------------------
@@ -113,7 +114,7 @@ end
 reg  [MXCNTB+MXADRB:0] adr_cnt_prt_vpf_s3 [7:0];
 reg                    pulse_s3;
 
-always @(*) begin
+always @(posedge clock) begin
     {adr_cnt_prt_vpf_s3[1 ], adr_cnt_prt_vpf_s3 [2 ]} <= (adr_cnt_prt_vpf_s0[2 ][0] > adr_cnt_prt_vpf_s0[1 ][0]) ? {adr_cnt_prt_vpf_s0[2 ], adr_cnt_prt_vpf_s0[1 ]} :{adr_cnt_prt_vpf_s0[1 ], adr_cnt_prt_vpf_s0[2 ]};
     {adr_cnt_prt_vpf_s3[5 ], adr_cnt_prt_vpf_s3 [6 ]} <= (adr_cnt_prt_vpf_s0[6 ][0] > adr_cnt_prt_vpf_s0[5 ][0]) ? {adr_cnt_prt_vpf_s0[6 ], adr_cnt_prt_vpf_s0[5 ]} :{adr_cnt_prt_vpf_s0[5 ], adr_cnt_prt_vpf_s0[6 ]};
     adr_cnt_prt_vpf_s3[0 ] <= adr_cnt_prt_vpf_s0[0 ];
@@ -129,7 +130,7 @@ end
 reg  [MXCNTB+MXADRB:0] adr_cnt_prt_vpf_s4 [7:0];
 reg                    pulse_s4;
 
-always @(posedge clock) begin
+always @(*) begin
     {adr_cnt_prt_vpf_s4[0 ], adr_cnt_prt_vpf_s4 [4 ]} <= (adr_cnt_prt_vpf_s3[4 ][0] > adr_cnt_prt_vpf_s3[0 ][0]) ? {adr_cnt_prt_vpf_s3[4 ], adr_cnt_prt_vpf_s3[0 ]} :{adr_cnt_prt_vpf_s3[0 ], adr_cnt_prt_vpf_s3[4 ]};
     {adr_cnt_prt_vpf_s4[1 ], adr_cnt_prt_vpf_s4 [5 ]} <= (adr_cnt_prt_vpf_s3[5 ][0] > adr_cnt_prt_vpf_s3[1 ][0]) ? {adr_cnt_prt_vpf_s3[5 ], adr_cnt_prt_vpf_s3[1 ]} :{adr_cnt_prt_vpf_s3[1 ], adr_cnt_prt_vpf_s3[5 ]};
     {adr_cnt_prt_vpf_s4[2 ], adr_cnt_prt_vpf_s4 [6 ]} <= (adr_cnt_prt_vpf_s3[6 ][0] > adr_cnt_prt_vpf_s3[2 ][0]) ? {adr_cnt_prt_vpf_s3[6 ], adr_cnt_prt_vpf_s3[2 ]} :{adr_cnt_prt_vpf_s3[2 ], adr_cnt_prt_vpf_s3[6 ]};
@@ -159,7 +160,7 @@ end
 reg  [MXCNTB+MXADRB:0] adr_cnt_prt_vpf_s6 [7:0];
 reg                    pulse_s6;
 
-always @(*) begin
+always @(posedge clock) begin
     {adr_cnt_prt_vpf_s6[1 ], adr_cnt_prt_vpf_s6 [2 ]} <= (adr_cnt_prt_vpf_s5[2 ][0] > adr_cnt_prt_vpf_s5[1 ][0]) ? {adr_cnt_prt_vpf_s5[2 ], adr_cnt_prt_vpf_s5[1 ]} :{adr_cnt_prt_vpf_s5[1 ], adr_cnt_prt_vpf_s5[2 ]};
     {adr_cnt_prt_vpf_s6[3 ], adr_cnt_prt_vpf_s6 [4 ]} <= (adr_cnt_prt_vpf_s5[4 ][0] > adr_cnt_prt_vpf_s5[3 ][0]) ? {adr_cnt_prt_vpf_s5[4 ], adr_cnt_prt_vpf_s5[3 ]} :{adr_cnt_prt_vpf_s5[3 ], adr_cnt_prt_vpf_s5[4 ]};
     {adr_cnt_prt_vpf_s6[5 ], adr_cnt_prt_vpf_s6 [6 ]} <= (adr_cnt_prt_vpf_s5[6 ][0] > adr_cnt_prt_vpf_s5[5 ][0]) ? {adr_cnt_prt_vpf_s5[6 ], adr_cnt_prt_vpf_s5[5 ]} :{adr_cnt_prt_vpf_s5[5 ], adr_cnt_prt_vpf_s5[6 ]};
