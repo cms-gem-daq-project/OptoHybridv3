@@ -19,7 +19,6 @@
 ../../src/gbt/gbt_serdes.vhd
 ../../src/gbt/gbt_tx.vhd
 ../../src/gbt/link_request.vhd
-../../src/gbt/to_gbt_ser.vhd
 
 # Pkg
 ../../src/pkg/hardware_pkg_ge21.vhd

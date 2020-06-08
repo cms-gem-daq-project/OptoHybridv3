@@ -23,7 +23,7 @@
 
 \title{Optohybrid v3 Address Table}
 % START: ADDRESS_TABLE_VERSION :: DO NOT EDIT
-    \author{\textbf{GE2/1} \\  \\ v03.02.09.2A \\ 20200411}
+    \author{\textbf{GE2/1} \\  \\ v03.02.09.2A \\ 20200608}
 % END: ADDRESS_TABLE_VERSION :: DO NOT EDIT
 \begin{document}
 
@@ -279,6 +279,41 @@
     \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
     \nopagebreak
     DNA\_LSBS & \texttt{0x17} & \texttt{[31:0]} & r & \texttt{} & Device DNA bits 31 downto 0 \\\hline
+    \end{tabularx}
+    \vspace{5mm}
+
+
+    \noindent
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.CONTROL.UPTIME}}}
+
+    \vspace{4mm}
+    \noindent
+    Uptime in seconds
+    \noindent
+
+    \keepXColumns
+    \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
+    \hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \nopagebreak
+    SECONDS & \texttt{0x18} & \texttt{[19:0]} & r & \texttt{} & Device uptime in seconds (20 bits) \\\hline
+    \end{tabularx}
+    \vspace{5mm}
+
+
+    \noindent
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.CONTROL.DNA}}}
+
+    \vspace{4mm}
+    \noindent
+    57 Bit FPGA-specific device identifier
+    \noindent
+
+    \keepXColumns
+    \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
+    \hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \nopagebreak
     DNA\_MSBS & \texttt{0x18} & \texttt{[24:0]} & r & \texttt{} & Device DNA bits 56 downto 32 \\\hline
     \end{tabularx}
     \vspace{5mm}
@@ -596,35 +631,6 @@
 
 
     \noindent
-    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.TRIG.LINKS}}}
-
-    \vspace{4mm}
-    \noindent
-    Controls and monitors the multi-gigabit links that drive the trigger fiber tranceivers
-    \noindent
-
-    \keepXColumns
-    \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
-    \hline
-    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
-    \nopagebreak
-    RESET & \texttt{0x2080} & \texttt{[0:0]} & w & Pulsed & Reset trigger links \\\hline
-    TX\_PLL\_LOCKED & \texttt{0x2081} & \texttt{[0:0]} & r & \texttt{} & Transmit PLLs are Locked \\\hline
-    TX\_RESET\_DONE & \texttt{0x2081} & \texttt{[4:4]} & r & \texttt{} & Transmit Resets are Done \\\hline
-    TX\_PRBS\_MODE & \texttt{0x2081} & \texttt{[10:8]} & rw & \texttt{0x0} & 000: Standard \\ & & & & & 001: PRBS-7 \\ & & & & & 010: PRBS-15 \\ & & & & & 011: PRBS-23 \\ & & & & & 100: PRBS-31 \\\hline
-    TX\_PLL\_RESET & \texttt{0x2081} & \texttt{[11:11]} & rw & \texttt{0x0} & This port resets the TX PLL of the GTX transceiver when driven High. It affects the clock generated from the TX PMA. When this reset is asserted or deasserted, TXRESET must also be asserted or deasserted. \\\hline
-    MGT\_RESET & \texttt{0x2081} & \texttt{[15:12]} & rw & \texttt{0x0} & Asserts the MGT reset (GTXTXRESET). This sequence takes about 120 us to complete and systematically resets all subcomponents of the GTX transceiver TX.  \\\hline
-    GTXTEST\_START & \texttt{0x2081} & \texttt{[16:16]} & rw & \texttt{0x0} & Initiates a double reset of the TX output clock dividers \\\hline
-    TXRESET & \texttt{0x2081} & \texttt{[17:17]} & rw & \texttt{0x0} & PCS TX system reset. Resets the TX FIFO, 8B/10B encoder and other transmitter registers. This reset is a subset of GTXTXRESET. \\\hline
-    MGT\_REALIGN & \texttt{0x2081} & \texttt{[18:18]} & rw & \texttt{0x0} & Resets the TX\_SYNC module to realign the buf\_bypass alignment FSM \\\hline
-    TXPOWERDOWN & \texttt{0x2081} & \texttt{[19:19]} & rw & \texttt{0x0} & Set the MGT tx into powerdown. The type of powerdown is controlled by TXPOWERDOWN\_MODE \\\hline
-    TXPOWERDOWN\_MODE & \texttt{0x2081} & \texttt{[21:20]} & rw & \texttt{0x1} & 00: P0 (normal operation) \\ & & & & & 01: P0s (low recovery time power down) \\ & & & & & 10: P1 (longer recovery time \\ & & & & & Receiver Detection still on) \\ & & & & & 11: P2 (lowest power state) \\\hline
-    TXPLLPOWERDOWN & \texttt{0x2081} & \texttt{[22:22]} & rw & \texttt{0x0} & Input to power down the TX PLL. \\\hline
-    \end{tabularx}
-    \vspace{5mm}
-
-
-    \noindent
     \subsection*{\textcolor{parentcolor}{\textbf{FPGA.TRIG.SBIT\_MONITOR}}}
 
     \vspace{4mm}
@@ -801,6 +807,42 @@
     FORCE\_L1A & \texttt{0x4005} & \texttt{[31:0]} & w & Pulsed & GBT Force L1A \\\hline
     FORCE\_BC0 & \texttt{0x4006} & \texttt{[31:0]} & w & Pulsed & GBT Force BC0 \\\hline
     FORCE\_RESYNC & \texttt{0x4007} & \texttt{[31:0]} & w & Pulsed & GBT Force Resync \\\hline
+    \end{tabularx}
+    \vspace{5mm}
+
+
+
+    \pagebreak
+    \section{Module: FPGA.MGT \hfill \texttt{0x5000}}
+
+    Controls and monitors the multi-gigabit links that drive the trigger fiber tranceivers\\
+
+    \renewcommand{\arraystretch}{1.3}
+    \noindent
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.MGT}}}
+
+    \vspace{4mm}
+    \noindent
+    Controls and monitors the multi-gigabit links that drive the trigger fiber tranceivers
+    \noindent
+
+    \keepXColumns
+    \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
+    \hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \nopagebreak
+    RESET & \texttt{0x5000} & \texttt{[0:0]} & w & Pulsed & Reset trigger links \\\hline
+    TX\_PLL\_LOCKED & \texttt{0x5001} & \texttt{[0:0]} & r & \texttt{} & Transmit PLLs are Locked \\\hline
+    TX\_RESET\_DONE & \texttt{0x5001} & \texttt{[4:4]} & r & \texttt{} & Transmit Resets are Done \\\hline
+    TX\_PRBS\_MODE & \texttt{0x5001} & \texttt{[10:8]} & rw & \texttt{0x0} & 000: Standard \\ & & & & & 001: PRBS-7 \\ & & & & & 010: PRBS-15 \\ & & & & & 011: PRBS-23 \\ & & & & & 100: PRBS-31 \\\hline
+    TX\_PLL\_RESET & \texttt{0x5001} & \texttt{[11:11]} & rw & \texttt{0x0} & This port resets the TX PLL of the GTX transceiver when driven High. It affects the clock generated from the TX PMA. When this reset is asserted or deasserted, TXRESET must also be asserted or deasserted. \\\hline
+    MGT\_RESET & \texttt{0x5001} & \texttt{[15:12]} & rw & \texttt{0x0} & Asserts the MGT reset (GTXTXRESET). This sequence takes about 120 us to complete and systematically resets all subcomponents of the GTX transceiver TX.  \\\hline
+    GTXTEST\_START & \texttt{0x5001} & \texttt{[16:16]} & rw & \texttt{0x0} & Initiates a double reset of the TX output clock dividers \\\hline
+    TXRESET & \texttt{0x5001} & \texttt{[17:17]} & rw & \texttt{0x0} & PCS TX system reset. Resets the TX FIFO, 8B/10B encoder and other transmitter registers. This reset is a subset of GTXTXRESET. \\\hline
+    MGT\_REALIGN & \texttt{0x5001} & \texttt{[18:18]} & rw & \texttt{0x0} & Resets the TX\_SYNC module to realign the buf\_bypass alignment FSM \\\hline
+    TXPOWERDOWN & \texttt{0x5001} & \texttt{[19:19]} & rw & \texttt{0x0} & Set the MGT tx into powerdown. The type of powerdown is controlled by TXPOWERDOWN\_MODE \\\hline
+    TXPOWERDOWN\_MODE & \texttt{0x5001} & \texttt{[21:20]} & rw & \texttt{0x1} & 00: P0 (normal operation) \\ & & & & & 01: P0s (low recovery time power down) \\ & & & & & 10: P1 (longer recovery time \\ & & & & & Receiver Detection still on) \\ & & & & & 11: P2 (lowest power state) \\\hline
+    TXPLLPOWERDOWN & \texttt{0x5001} & \texttt{[22:22]} & rw & \texttt{0x0} & Input to power down the TX PLL. \\\hline
     \end{tabularx}
     \vspace{5mm}
 

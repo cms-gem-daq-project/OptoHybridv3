@@ -31,8 +31,9 @@ package hardware_pkg is
 
   constant INVERT_PARTITIONS : boolean := true;
 
-  constant MXADRB : integer := 11;
+  constant MXADRB : integer := 8;
   constant MXCNTB : integer := 3;
+  constant MXPRTB : integer := 3;       --
 
   constant MXCLUSTERS : integer := 8;
 

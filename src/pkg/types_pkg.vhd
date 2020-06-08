@@ -83,10 +83,19 @@ package types_pkg is
     vpf : std_logic; -- high for full 25ns
   end record;
 
+  constant NULL_CLUSTER : sbit_cluster_t := (
+    adr => (others => '1'),
+    cnt => (others => '1'),
+    prt => (others => '1'),
+    vpf => '0');
+
   type sbit_cluster_array_t is array(integer range<>) of sbit_cluster_t;
 
   subtype partition_t is std_logic_vector(c_PARTITION_SIZE*MXSBITS-1 downto 0);
   type partition_array_t is array(integer range <>) of partition_t;
+
+  function cluster_to_vector (a : sbit_cluster_t; size : integer)
+    return std_logic_vector;
 
   ---------------------------------------------------------------------------------
   -- Wishbone
@@ -133,6 +142,14 @@ package body types_pkg is
   begin
     tmp := (a and b) or (b and c) or (a and c);
     return tmp;
+  end function;
+
+  function cluster_to_vector (a : sbit_cluster_t; size : integer)
+    return std_logic_vector is
+    variable tmp : std_logic_vector (a.cnt'length + a.prt'length + a.adr'length-1 downto 0);
+  begin
+    tmp :=a.cnt & a.prt & a.adr ;
+    return std_logic_vector(resize(unsigned(tmp), size));
   end function;
 
 end package body;

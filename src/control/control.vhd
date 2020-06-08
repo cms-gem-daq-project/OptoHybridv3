@@ -31,9 +31,9 @@ entity control is
 
     --== TTC ==--
 
-    clocks : in clocks_t;
-    ttc_i : in ttc_t;
-    reset_i     : in std_logic;
+    clocks  : in clocks_t;
+    ttc_i   : in ttc_t;
+    reset_i : in std_logic;
 
     ipb_mosi_i : in  ipb_wbus;
     ipb_miso_o : out ipb_rbus;
@@ -43,9 +43,7 @@ entity control is
     -------------------
 
     -- MMCM
-    mmcms_locked_i     : in std_logic;
-    dskw_mmcm_locked_i : in std_logic;
-    eprt_mmcm_locked_i : in std_logic;
+    mmcms_locked_i : in std_logic;
 
     -- GBT
 
@@ -136,7 +134,7 @@ architecture Behavioral of control is
   end component;
 
   component external
-    generic (GE21    : integer;
+    generic (GE21        : integer;
              c_NUM_VFATS : integer);
     port (
       clock : in std_logic;
@@ -238,13 +236,9 @@ architecture Behavioral of control is
       pll_lock             : in  std_logic;
       clock                : in  std_logic;
       mmcm_locked          : in  std_logic;
-      elink_mmcm_locked    : in  std_logic;
-      logic_mmcm_locked    : in  std_logic;
-      gbt_eclk             : in  std_logic;
       ttc_l1a              : in  std_logic;
       ttc_bc0              : in  std_logic;
       ttc_resync           : in  std_logic;
-      vfat_reset           : in  std_logic;
       gbt_rxready          : in  std_logic;
       gbt_rxvalid          : in  std_logic;
       gbt_link_ready       : in  std_logic;
@@ -340,10 +334,10 @@ begin
   -- Uptime
   --------------------------------------------------------------------------------------------------------------------
 
-  process (clock_i) is
+  process (clocks.clk40) is
     variable uptime_cnt : unsigned (29 downto 0) := (others => '0');
   begin
-    if (rising_edge(clock_i)) then
+    if (rising_edge(clocks.clk40)) then
       if (reset_i='1') then
         uptime_cnt := (others => '0');
         uptime     <= (others => '0');
@@ -362,29 +356,22 @@ begin
 
   led_control_inst : led_control
     port map (
-      clock => clocks.clk40,
-      gbt_eclk => clocks.clk40,
 
+      -- clock
+      clock       => clocks.clk40,
+      mmcm_locked => mmcms_locked_i,
+      reset       => reset,
+
+      -- mgt
       mgts_ready => mgts_ready,
-
-      pll_lock => pll_lock,
-
+      pll_lock   => pll_lock,
       txfsm_done => txfsm_done,
-
-      mmcm_locked       => mmcms_locked_i,
-      elink_mmcm_locked => eprt_mmcm_locked_i,
-      logic_mmcm_locked => dskw_mmcm_locked_i,
-
-      -- reset
-      reset => reset,
-
 
       -- ttc commands
 
       ttc_l1a    => ttc_i.l1a,
       ttc_bc0    => ttc_i.bc0,
       ttc_resync => ttc_i.resync,
-      vfat_reset => or_reduce(vfat_reset),
 
       -- signals
       gbt_rxready          => gbt_rxready_i,
@@ -611,6 +598,7 @@ begin
     regs_read_arr(19)(REG_CONTROL_HDMI_SBIT_MODE7_MSB downto REG_CONTROL_HDMI_SBIT_MODE7_LSB) <= sbit_mode7;
     regs_read_arr(21)(REG_CONTROL_CNT_SNAP_DISABLE_BIT) <= cnt_snap_disable;
     regs_read_arr(23)(REG_CONTROL_DNA_DNA_LSBS_MSB downto REG_CONTROL_DNA_DNA_LSBS_LSB) <= dna(31 downto 0);
+    regs_read_arr(24)(REG_CONTROL_UPTIME_SECONDS_MSB downto REG_CONTROL_UPTIME_SECONDS_LSB) <= std_logic_vector(uptime);
     regs_read_arr(24)(REG_CONTROL_DNA_DNA_MSBS_MSB downto REG_CONTROL_DNA_DNA_MSBS_LSB) <= dna(56 downto 32);
 
     -- Connect write signals

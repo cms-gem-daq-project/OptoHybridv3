@@ -20,6 +20,11 @@ use unisim.vcomponents.all;
 
 entity top_optohybrid is
   generic (
+
+    -- turn off to disable the MGTs
+
+    GEN_TRIG_PHY : boolean := true;
+
     -- these generics get set by hog at synthesis
     GLOBAL_FWDATE       : std_logic_vector (31 downto 0) := x"00000000";
     GLOBAL_FWTIME       : std_logic_vector (31 downto 0) := x"00000000";
@@ -115,7 +120,7 @@ architecture Behavioral of top_optohybrid is
   signal txpowerdown_mode : std_logic_vector (1 downto 0);
   signal txpllpowerdown   : std_logic;
 
-  signal sbit_clusters    : sbit_cluster_array_t (NUM_FOUND_CLUSTERS_PER_BX-1 downto 0);
+  signal sbit_clusters : sbit_cluster_array_t (NUM_FOUND_CLUSTERS_PER_BX-1 downto 0);
 
   signal mgt_control : mgt_control_t;
   signal mgt_status  : mgt_status_t;
@@ -124,9 +129,6 @@ architecture Behavioral of top_optohybrid is
 
   signal idlyrdy           : std_logic;
   signal mmcm_locked       : std_logic;
-  signal logic_mmcm_locked : std_logic;
-  signal logic_mmcm_reset  : std_logic;
-  signal eprt_mmcm_locked  : std_logic;
 
   signal clocks : clocks_t;
   signal ttc    : ttc_t;
@@ -266,41 +268,33 @@ begin
 
   gbt_inst : entity work.gbt
     port map(
-
-      -- reset
+      -- clock and reset
       reset_i => core_reset,
-
-      -- GBT
-
-      gbt_rxready_i => gbt_rxready(0),
-      gbt_rxvalid_i => gbt_rxvalid(0),
-      gbt_txready_i => gbt_txready(0),
-
-      -- input clocks
-
       clocks => clocks,
 
-      -- elinks
-      elink_i_p => elink_i_p,
-      elink_i_n => elink_i_n,
-
-      elink_o_p => elink_o_p,
-      elink_o_n => elink_o_n,
-
-      gbt_link_error_o => gbt_link_error,
-      gbt_link_ready_o => gbt_link_ready,
-
-      -- wishbone master
+      -- wishbone
       ipb_mosi_o => ipb_mosi_gbt,
       ipb_miso_i => ipb_miso_gbt,
 
       -- wishbone slave
-
       ipb_mosi_i  => ipb_mosi_slaves (IPB_SLAVE.GBT),
       ipb_miso_o  => ipb_miso_slaves (IPB_SLAVE.GBT),
       ipb_reset_i => core_reset,
 
       cnt_snap => cnt_snap,
+
+      -- GBT Status
+      gbt_rxready_i => gbt_rxready(0),
+      gbt_rxvalid_i => gbt_rxvalid(0),
+      gbt_txready_i => gbt_txready(0),
+      gbt_link_error_o => gbt_link_error,
+      gbt_link_ready_o => gbt_link_ready,
+
+      -- elinks
+      elink_i_p => elink_i_p,
+      elink_i_n => elink_i_n,
+      elink_o_p => elink_o_p,
+      elink_o_n => elink_o_n,
 
       -- decoded TTC
       ttc_o => ttc
@@ -364,68 +358,44 @@ begin
   control_inst : entity work.control
     port map (
 
-      mgts_ready => mgts_ready,         -- to drive LED controller only
-      pll_lock   => pll_lock,
-      txfsm_done => txfsm_done,
-
-      -- TTC
-
-      clocks => clocks,
-
-      reset_i => core_reset,
-
-      ttc_i => ttc,
-
+      -- wishbone
       ipb_mosi_i => ipb_mosi_slaves (IPB_SLAVE.CONTROL),
       ipb_miso_o => ipb_miso_slaves (IPB_SLAVE.CONTROL),
 
-      -------------------
+      -- clock and reset
+      clocks  => clocks,
+      reset_i => core_reset,
+      ttc_i   => ttc,
+
+      -- to drive LED controller only
+      mgts_ready => mgts_ready,
+      pll_lock   => pll_lock,
+      txfsm_done => txfsm_done,
+
       -- status inputs --
-      -------------------
-
-      -- MMCM
       mmcms_locked_i     => mmcm_locked,
-      dskw_mmcm_locked_i => mmcm_locked,
-      eprt_mmcm_locked_i => '1',
 
-      -- GBT
-
-      gbt_link_ready_i => gbt_link_ready,
-
-      gbt_rxready_i => gbt_rxready(0),
-      gbt_rxvalid_i => gbt_rxvalid(0),
-      gbt_txready_i => gbt_txready(0),
-
+      -- GBT status
+      gbt_link_ready_i       => gbt_link_ready,
+      gbt_rxready_i          => gbt_rxready(0),
+      gbt_rxvalid_i          => gbt_rxvalid(0),
+      gbt_txready_i          => gbt_txready(0),
       gbt_request_received_i => gbt_request_received,
+      gbt_link_error_i       => gbt_link_error,
 
       -- Trigger
-
       active_vfats_i  => active_vfats,
       sbit_overflow_i => sbit_overflow,
       cluster_count_i => cluster_count,
 
-      -- GBT
-      gbt_link_error_i => gbt_link_error,
-
+      -- Outputs
       bxn_counter_o => bxn_counter,
-
-      trig_stop_o => trig_stop,
-
-      --------------------
-      -- config outputs --
-      --------------------
-
-      -- VFAT
-      vfat_reset_o => ctrl_reset_vfats,
-      ext_sbits_o  => ext_sbits,
-
-      -- LEDs
-      led_o => led,
-
-      soft_reset_o => soft_reset,
-
-      cnt_snap_o => cnt_snap
-
+      trig_stop_o   => trig_stop,
+      vfat_reset_o  => ctrl_reset_vfats,
+      ext_sbits_o   => ext_sbits,
+      led_o         => led,
+      soft_reset_o  => soft_reset,
+      cnt_snap_o    => cnt_snap
       );
 
   --------------------------------------------------------------------------------
@@ -434,62 +404,33 @@ begin
 
   trigger_inst : entity work.trigger
     port map (
-
       -- wishbone
-
       ipb_mosi_i => ipb_mosi_slaves(IPB_SLAVE.TRIG),
       ipb_miso_o => ipb_miso_slaves(IPB_SLAVE.TRIG),
 
-      tx_pll_lock_i   => pll_lock,
-      tx_reset_done_i => txfsm_done,
-      tx_prbs_mode_o  => tx_prbs_mode,
-
-      sbit_clusters_o => sbit_clusters,
-
-      -- reset
-      trigger_reset_i => trigger_reset,
+      -- clock and reset
+      clocks          => clocks,
       core_reset_i    => core_reset,
-      cnt_snap        => cnt_snap,
-      tx_link_reset_o => tx_link_reset,
+      trigger_reset_i => trigger_reset,
 
-      pll_reset_o        => pll_reset,
-      mgt_reset_o        => mgt_reset,
-      gtxtest_start_o    => gtxtest_start,
-      txreset_o          => txreset,
-      mgt_realign_o      => mgt_realign,
-      txpowerdown_o      => txpowerdown,
-      txpowerdown_mode_o => txpowerdown_mode,
-      txpllpowerdown_o   => txpllpowerdown,
+      -- ttc
+      bxn_counter_i => bxn_counter,
+      ttc           => ttc,
+      trig_stop_i   => trig_stop,
 
-      -- clocks
+      cnt_snap => cnt_snap,
 
-      logic_mmcm_lock_i  => logic_mmcm_locked,
-      logic_mmcm_reset_o => logic_mmcm_reset,
-
-      clocks => clocks,
-
-      -- config
-      cluster_count_o => cluster_count,
-      overflow_o      => sbit_overflow,
-      bxn_counter_i   => bxn_counter,
-      ttc             => ttc,
-
-      -- sbit_ors
-
-      active_vfats_o => active_vfats,
-
-      -- trig stop from fmm
-
-      trig_stop_i => trig_stop,
-
-      -- sbits follow
-
+      -- sbits inputs
       vfat_sbits_p => vfat_sbits_p,
       vfat_sbits_n => vfat_sbits_n,
+      vfat_sot_p   => vfat_sot_p,
+      vfat_sot_n   => vfat_sot_n,
 
-      vfat_sot_p => vfat_sot_p,
-      vfat_sot_n => vfat_sot_n
-
+      -- cluster finding outputs
+      sbit_clusters_o => sbit_clusters,
+      cluster_count_o => cluster_count,
+      overflow_o      => sbit_overflow,
+      active_vfats_o  => active_vfats
       );
 
   --------------------------------------------------------------------------------
@@ -500,9 +441,8 @@ begin
     port map (
       clocks        => clocks,
       reset_i       => core_reset,
-      clusters_i    => sbit_clusters,
-      --clusters_strobe_i => sbit_cluster
       ttc_i         => ttc,
+      clusters_i    => sbit_clusters,
       overflow_i    => sbit_overflow,
       bxn_counter_i => bxn_counter,
       error_i       => '0'
@@ -533,7 +473,6 @@ begin
 --
 --      );
 --  end generate;
-
 
   --------------------------------------------------------------------------------
   -- IDELAYCTRL

@@ -11,8 +11,8 @@ firmware_version_major   = "03"
 firmware_version_minor   = "02"
 firmware_release_version = "09"
 firmware_year            = 2020
-firmware_month           = 4
-firmware_day             = 11
+firmware_month           = 6
+firmware_day             = 8
 # END: OH_VERSION
 
 hybrid_version           = "v3b"
