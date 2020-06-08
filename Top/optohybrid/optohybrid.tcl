@@ -3,12 +3,14 @@
 set bin_file 1
 set use_questa_simulator 0
 
-## FPGA and Vivado strategies and flows
 set FPGA xc7a75tfgg484-3
-set SYNTH_STRATEGY "Flow_AreaOptimized_High" 
-set SYNTH_FLOW "Vivado Synthesis 2019"
-set IMPL_STRATEGY "Performance_ExplorePostRoutePhysOpt"
-set IMPL_FLOW "Vivado Implementation 2019"
+
+## FPGA and Vivado strategies and flows
+regexp -- {Vivado v([0-9]{4})\.[0-9]} [version] -> VIVADO_YEAR
+set SYNTH_STRATEGY "Vivado Synthesis Defaults"
+set SYNTH_FLOW "Vivado Synthesis $VIVADO_YEAR"
+set IMPL_STRATEGY "Vivado Implementation Defaults"
+set IMPL_FLOW "Vivado Implementation $VIVADO_YEAR"
 
 ### Set Vivado Runs Properties ###
 #
@@ -21,24 +23,20 @@ set IMPL_FLOW "Vivado Implementation 2019"
 # Then copy and paste the name and the values from the Vivado Tcl console into the lines below.
 
 set PROPERTIES [dict create \
-		    synth_1 [dict create \
-                STEPS.SYNTH_DESIGN.ARGS.ASSERT true \
-				STEPS.SYNTH_DESIGN.ARGS.KEEP_EQUIVALENT_REGISTERS true \
-				STEPS.SYNTH_DESIGN.ARGS.RETIMING false \
-				] \
-		    impl_1 [dict create \
-				STEPS.OPT_DESIGN.ARGS.DIRECTIVE Default \
-				STEPS.POST_ROUTE_PHYS_OPT_DESIGN.ARGS.DIRECTIVE AggressiveExplore \
-			       ]\
-		   ]
-############################################################
-
+					synth_1 [dict create \
+								 STEPS.SYNTH_DESIGN.ARGS.ASSERT true \
+								 STEPS.SYNTH_DESIGN.ARGS.KEEP_EQUIVALENT_REGISTERS true \
+								 STEPS.SYNTH_DESIGN.ARGS.RETIMING false \
+								] \
+					impl_1 [dict create \
+								STEPS.OPT_DESIGN.ARGS.DIRECTIVE Default \
+								STEPS.POST_ROUTE_PHYS_OPT_DESIGN.ARGS.DIRECTIVE AggressiveExplore \
+							   ]\
+				   ]
 
 ############################################################
+
 set DESIGN    "[file rootname [file tail [info script]]]"
-set path_repo "[file normalize [file dirname [info script]]]/../../"
-source $path_repo/Hog/Tcl/create-project.tcl
+set PATH_REPO "[file normalize [file dirname [info script]]]/../../"
 
-#highlight_objects -color_index 1 [get_cells -hierarchical -filter {NAME =~ "*downlink*"}]
-#highlight_objects -color_index 2 [get_cells -hierarchical -filter {NAME =~ "*uplink*"}]
-#highlight_objects -color_index 3 [get_cells -hierarchical -filter {NAME =~ "*sector_logic*"}]
+source $PATH_REPO/Hog/Tcl/create_project.tcl

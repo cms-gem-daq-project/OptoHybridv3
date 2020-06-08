@@ -1,4 +1,5 @@
-../../src/ucf/iostandards.xdc
-../../src/ucf/clocking.xdc
-../../src/ucf/auto_constraints.xdc
-../../src/ucf/xc7a75tfgg484_v1.xdc
+# -*- mode: TCL;-*-
+src/ucf/iostandards.xdc
+src/ucf/clocking.xdc
+src/ucf/auto_constraints.xdc
+src/ucf/xc7a75tfgg484_v1.xdc
