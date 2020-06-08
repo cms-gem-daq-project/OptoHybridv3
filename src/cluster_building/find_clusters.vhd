@@ -77,7 +77,6 @@ architecture behavioral of find_clusters is
   --------------------------------------------------------------------------------
 
   signal clusters_s1  : sbit_cluster_array_t (NUM_FOUND_CLUSTERS_PER_BX-1 downto 0);
-  signal cnts_dly1    : std_logic_vector (MXSBITS*c_NUM_VFATS*3-1 downto 0);
   signal latch_out_s1 : std_logic_vector (1 downto 0);
 
 begin
@@ -91,13 +90,6 @@ begin
   -- 8 partitions total, returning 4 or 5 clusters / clock from each di-partition
   -- 4 encoders total
   -- 16 clusters total
-
-  process (clock)
-  begin
-    if (rising_edge(clock)) then
-      cnts_dly1 <= cnts_in;
-    end if;
-  end process;
 
   --                _____   _____   _____   _____   _____   _____   _____   _____
   -- clk_in      ___|   |___|   |___|   |___|   |___|   |___|   |___|   |___|   |
@@ -117,15 +109,18 @@ begin
   -- cycle_prior                                                  |  Zero | One
 
   encoder_gen : for I in 0 to (NUM_ENCODERS-1) generate
-    signal pass_truncate : std_logic_vector (2 downto 0);
-    signal pass_encoder  : std_logic_vector (2 downto 0);
-    signal clusters_buf  : sbit_cluster_array_t (NUM_FOUND_CLUSTERS_PER_BX/NUM_ENCODERS-1 downto 0);
+
+    signal truncator_cycle : std_logic_vector (2 downto 0);
+    signal encoder_cycle   : std_logic_vector (2 downto 0);
+    signal clusters_buf    : sbit_cluster_array_t (NUM_CYCLES-1 downto 0);
 
     signal adr_enc : std_logic_vector(MXADRB-1 downto 0);
-    signal vpf_enc : std_logic_vector(0 downto 0);
     signal cnt_enc : std_logic_vector(MXCNTB-1 downto 0);
+    signal vpf_enc : std_logic;
 
-    signal vpfs_truncated : std_logic_vector (MXSBITS*c_NUM_VFATS/NUM_ENCODERS-1 downto 0);
+    signal vpfs_truncated : std_logic_vector (ENCODER_SIZE-1 downto 0);
+
+    signal cnts_dly : std_logic_vector (ENCODER_SIZE*3-1 downto 0);
 
     component truncate_clusters
       generic (
@@ -135,7 +130,7 @@ begin
       port (
         clock       : in  std_logic;
         latch_pulse : in  std_logic;
-        pass        : out std_logic_vector;
+        pass_o      : out std_logic_vector;
         vpfs_in     : in  std_logic_vector;
         vpfs_out    : out std_logic_vector
         );
@@ -150,14 +145,20 @@ begin
         pass_out : out std_logic_vector;
         cnt      : out std_logic_vector;
         adr      : out std_logic_vector;
-        vpf      : out std_logic_vector
+        vpf      : out std_logic
         );
     end component;
 
-
   begin
 
-    -- 384-bit truncator
+    process (clock)
+    begin
+      if (rising_edge(clock)) then
+        cnts_dly <= cnts_in (ENCODER_SIZE*MXCNTB*(I+1)-1 downto ENCODER_SIZE*MXCNTB*I);
+      end if;
+    end process;
+
+    -- parameterizable width truncator
     ----------------------------
     truncate_clusters_inst : truncate_clusters
       generic map (
@@ -167,46 +168,47 @@ begin
       port map (
         clock       => clock,
         latch_pulse => latch_in,
-        vpfs_in     => vpfs_in (384*(I+1)-1 downto 384*I),
-        vpfs_out    => vpfs_truncated (383 downto 0),
-        pass        => pass_truncate
+        vpfs_in     => vpfs_in (ENCODER_SIZE*(I+1)-1 downto ENCODER_SIZE*I),
+        vpfs_out    => vpfs_truncated (ENCODER_SIZE-1 downto 0),
+        pass_o      => truncator_cycle
         );
 
-    -- 384-bit priority encoder
+    -- n-bit priority encoder
     ----------------------------
     priority384_inst : priority384
       port map (
-        pass_in  => pass_truncate,
-        pass_out => pass_encoder,
         clock    => clock,
+        pass_in  => truncator_cycle,
+        pass_out => encoder_cycle,
         vpfs_in  => vpfs_truncated,
-        cnts_in  => cnts_dly1 (384*3*(I+1)-1 downto 384*3*I),
+        cnts_in  => cnts_dly,
         cnt      => cnt_enc,
         adr      => adr_enc,
         vpf      => vpf_enc
         );
 
-    -- GE1/1 handles 2 partitions per encoder, need to subtract 192 and add +1 to ienc
-    -- if (adr>191) adr = adr-192
-    -- if (adr>191) prt = prt + 1
     process (clock)
     begin
-      if (rising_edge(clock)) then
-        clusters_buf(int(pass_encoder)).adr <= correct_address_ge11(GE11 = 1, adr_enc);
-        clusters_buf(int(pass_encoder)).cnt <= cnt_enc;
-        clusters_buf(int(pass_encoder)).vpf <= vpf_enc(0);
-        clusters_buf(int(pass_encoder)).prt <= to_partition (GE11 = 1, I, adr_enc);
-      end if;
-    end process;
 
-    -- latch outputs of priority encoder when it produces its results, stable for sorter
-    process (clock)
-      constant C : integer := NUM_FOUND_CLUSTERS_PER_BX/NUM_ENCODERS;
-    begin
+      -- GE1/1 handles 2 partitions per encoder, need to subtract 192 and add +1 to ienc
+      -- if (adr>191) adr = adr-192
+      -- if (adr>191) prt = prt + 1
       if (rising_edge(clock)) then
-        if (int(pass_encoder) = 0) then
+        for cycle in 0 to NUM_CYCLES-1 loop
+          if (cycle = int(encoder_cycle)) then
+            clusters_buf(cycle).adr <= correct_address_ge11(GE11 = 1, adr_enc);
+            clusters_buf(cycle).cnt <= cnt_enc;
+            clusters_buf(cycle).vpf <= vpf_enc;
+            clusters_buf(cycle).prt <= to_partition (GE11 = 1, I, adr_enc);
+          end if;
+        end loop;  -- J
+      end if;
+
+      -- latch outputs of priority encoder when it produces its results, stable for sorter
+      if (rising_edge(clock)) then
+        if (int(encoder_cycle) = 0) then
           latch_out_s1(I)                    <= '1';
-          clusters_s1 ((I+1)*C-1 downto C*I) <= clusters_buf;
+          clusters_s1 ((I+1)*NUM_CYCLES-1 downto NUM_CYCLES*I) <= clusters_buf(NUM_CYCLES-1 downto 0);
         else
           latch_out_s1(I) <= '0';
         end if;
@@ -215,12 +217,12 @@ begin
 
   end generate;
 
-
   ---------------------------------------------------------------------------------------------------------------------
   -- Cluster Sorter
   --------------------------------------------------------------------------------------------------------------------
 
-  -- we get up to 16 clusters / bx but only get to send a few so we put them in order
+  -- we get up to 16 clusters / bx but only get to send a few so we put them in order of priority
+  -- (should choose lowest addr first--- highest addr is invalid)
 
   sort_ge21 : if (GE21 = 1) generate
 

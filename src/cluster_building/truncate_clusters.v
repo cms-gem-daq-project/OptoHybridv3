@@ -49,7 +49,7 @@ module truncate_clusters #(
 
   input latch_pulse,
 
-  output reg [2:0] pass,
+  output reg [2:0] pass_o,
 
   input  [MXVPF-1:0] vpfs_in,
   output [MXVPF-1:0] vpfs_out
@@ -64,9 +64,9 @@ module truncate_clusters #(
 
   always @(posedge clock) begin
     if (latch_pulse)
-      pass <= 0;
+      pass_o <= 0;
     else
-      pass <= pass + 1'b1;
+      pass_o <= pass_o + 1'b1;
   end
 
 

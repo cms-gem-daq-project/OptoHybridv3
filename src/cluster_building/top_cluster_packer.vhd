@@ -49,7 +49,7 @@ architecture behavioral of cluster_packer is
 
   signal overflow_out       : std_logic;
   signal overflow_dly       : std_logic;
-  constant OVERFLOW_LATENCY : std_logic_vector (3 downto 0) := x"7";
+  constant OVERFLOW_LATENCY : std_logic_vector (3 downto 0) := x"1";
 
   signal cluster_latch : std_logic;
 
@@ -212,7 +212,6 @@ begin
       cnts  => cnts
       );
 
-
   ----------------------------------------------------------------------------------
   -- count cluster sizes
   --
@@ -224,7 +223,6 @@ begin
   count_clusters_inst : count_clusters
     port map (
       clock4x    => clocks.clk160_0,
-      --reset      => reset,
       vpfs_i     => vpfs,
       cnt_o      => cluster_count_o,
       overflow_o => overflow_out
@@ -260,31 +258,21 @@ begin
       latch_out  => cluster_latch
       );
 
-------------------------------------------------------------------------------------------------------------------------
--- Assign cluster outputs
-------------------------------------------------------------------------------------------------------------------------
+  ------------------------------------------------------------------------------------------------------------------------
+  -- Assign cluster outputs
+  ------------------------------------------------------------------------------------------------------------------------
 
-  cluster_assign : for I in 0 to (NUM_FOUND_CLUSTERS_PER_BX-1) generate
-
-    process (clocks.clk160_0)
-    begin
-      if (rising_edge(clocks.clk160_0)) then
-        if (trig_stop_i = '1' or reset = '1') then
-          overflow_o <= '0';
-          clusters_o(I) <= (vpf => '0',
-                            adr => (others => '1'),
-                            cnt => (others => '1'),
-                            prt => (others => '1')
-                            );
-          clusters_ena_o <= '0';
-        else
-          overflow_o     <= overflow_dly;
-          clusters_o(I)  <= clusters(I);
-          clusters_ena_o <= cluster_latch;
-        end if;
-
+  process (clocks.clk160_0)
+  begin
+    if (rising_edge(clocks.clk160_0)) then
+      if (trig_stop_i = '1' or reset = '1') then
+        clusters_o <= (others => NULL_CLUSTER);
+      else
+        clusters_o <= clusters;
       end if;
-    end process;
-  end generate;
+    end if;
+    overflow_o     <= overflow_dly;
+    clusters_ena_o <= cluster_latch;
+  end process;
 
 end behavioral;

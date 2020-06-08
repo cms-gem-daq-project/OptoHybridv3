@@ -70,7 +70,6 @@ module count_clusters (
   always @(posedge clock4x) begin
     cnt_s7[0] <= cnt_s6[0]  + cnt_s6[1]  + cnt_s6[2]  + cnt_s6[3];
     cnt_s7[1] <= 0;
- // cnt_s7[1] <= cnt_s6[4]  + cnt_s6[5]  + cnt_s6[6]  + cnt_s6[7];
   end
 
   // delay count by clock to align with overflow

@@ -177,9 +177,13 @@ last_stage = 0
 def generate_sorter (filename, number_of_inputs, number_of_outputs, latch_list, disable_list):
 
     def reg_decl (stage):
+        all_types = ""
+        for type in types:
+            all_types += "MX%sB" % type.upper()
+            all_types += "+"
         s = ""
-        s += "reg  [MXCNTB+MXADRB:0] adr_cnt_prt_vpf_s%d [%d:0];\n" % (stage, number_of_inputs-1)
-        s += "reg                    pulse_s%d;\n"      % stage
+        s += "reg [%s0-1:0] data_concat_s%d [%d:0];\n" % (all_types, stage, number_of_inputs-1)
+        s += "reg pulse_s%d;\n"      % stage
         s += "\n"
         return s
 
@@ -191,15 +195,15 @@ def generate_sorter (filename, number_of_inputs, number_of_outputs, latch_list, 
 
     def pass_decl (stage, stage_last, a):
         s  = ""
-        s += "    adr_cnt_prt_vpf_s%d[%-2d] <= adr_cnt_prt_vpf_s%d[%-2d];\n" % (stage, a, stage_last, a)
+        s += "    data_concat_s%d[%-2d] <= data_concat_s%d[%-2d];\n" % (stage, a, stage_last, a)
         return s
 
     def swap_decl (stage, stage_last, a, b):
         s  = ""
-        s += "    {adr_cnt_prt_vpf_s%d[%-2d], adr_cnt_prt_vpf_s%-2d[%-2d]} <= " % (stage, a, stage,b)
-        s += "(adr_cnt_prt_vpf_s%d[%-2d][0] > adr_cnt_prt_vpf_s%d[%-2d][0]) ? " % (stage_last, b, stage_last, a)
-        s += "{adr_cnt_prt_vpf_s%d[%-2d], adr_cnt_prt_vpf_s%d[%-2d]} :" % (stage_last,b,stage_last,a)
-        s += "{adr_cnt_prt_vpf_s%d[%-2d], adr_cnt_prt_vpf_s%d[%-2d]};\n" % (stage_last,a,stage_last,b)
+        s += "    {data_concat_s%d[%-2d], data_concat_s%-2d[%-2d]} <= " % (stage, a, stage,b)
+        s += "(data_concat_s%d[%-2d][0] > data_concat_s%d[%-2d][0]) ? " % (stage_last, b, stage_last, a)
+        s += "{data_concat_s%d[%-2d], data_concat_s%d[%-2d]} :" % (stage_last,b,stage_last,a)
+        s += "{data_concat_s%d[%-2d], data_concat_s%d[%-2d]};\n" % (stage_last,a,stage_last,b)
         return s
 
     def pulse_decl(stage, stage_last):
@@ -229,11 +233,10 @@ def generate_sorter (filename, number_of_inputs, number_of_outputs, latch_list, 
 
     s += ");\n"
 
-    s += "parameter MXPRTB=0;\n"
-    s += "parameter MXVPFB=0;\n"
-    s += "parameter MXADRB=0;\n"
-    s += "parameter MXCNTB=0;\n"
+    for type in types:
+        s += "parameter MX%sB=0;\n" % (type.upper())
 
+    s += "\n"
     s += "//----------------------------------------------------------------------------------------------------------------------\n"
     s += "// vectorize inputs\n"
     s += "//----------------------------------------------------------------------------------------------------------------------\n"
@@ -245,7 +248,7 @@ def generate_sorter (filename, number_of_inputs, number_of_outputs, latch_list, 
     s += latch_decl (stage, latch_list)
 
     for input in range(number_of_inputs):
-        s += "    adr_cnt_prt_vpf_s0[%-2d]  <=  {adr_in%-2d, cnt_in%-2d, vpf_in%-2d};\n" % (4*(input,))
+        s += "    data_concat_s0[%-2d]  <=  {adr_in%-2d, cnt_in%-2d, prt_in%-2d, vpf_in%-2d};\n" % (5*(input,))
     s += "\n"
 
     s += "    pulse_s0 <= pulse_in;\n"
@@ -299,8 +302,6 @@ def generate_sorter (filename, number_of_inputs, number_of_outputs, latch_list, 
         last_stage=0
         #  https://en.wikipedia.org/wiki/Pairwise_sorting_network
         # implement a pairwise sorting network, but we already know that the 16 inputs are sorted into pre-sorted groups of 4 so we can skip the first 2 steps
-
-
         s += sorter_stage(16, 1, [0,2,4,6,8,10,12,14], 1) # Stage 1
         s += sorter_stage(16, 2, [0,1,4,5,8,9,12,13], 2)  # Stage 2
         s += sorter_stage(16, 3, [0,1,2,3,8,9,10,11], 4)  # Stage 3
@@ -329,7 +330,7 @@ def generate_sorter (filename, number_of_inputs, number_of_outputs, latch_list, 
     s+="//----------------------------------------------------------------------------------------------------------------------\n"
 
     for ioutput in range (number_of_outputs):
-        s+="    assign {adr_out%d,cnt_out%d,prt_out%d,vpf_out%d} = adr_cnt_prt_vpf_s%d[%d];\n" % (4*(ioutput,)+ (last_stage, ioutput))
+        s+="    assign {adr_out%d,cnt_out%d,prt_out%d,vpf_out%d} = data_concat_s%d[%d];\n" % (4*(ioutput,)+ (last_stage, ioutput))
 
     s+="    assign pulse_out = pulse_s%s;\n" % last_stage
 
