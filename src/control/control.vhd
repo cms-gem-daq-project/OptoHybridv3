@@ -166,6 +166,9 @@ architecture Behavioral of control is
       );
   end component;
 
+
+  signal uptime : unsigned (19 downto 0);
+
   --== SEM ==--
 
   signal sem_correction : std_logic;
@@ -337,18 +340,21 @@ begin
   -- Uptime
   --------------------------------------------------------------------------------------------------------------------
 
-  --process (clock_i) begin
-  --    if (rising_edge(clock_i)) then
-  --        if (reset) then
-  --            uptime_cnt <= 0;
-  --            uptime <= 0;
-  --        elsif (uptime_cnt < x"2638e98")
-  --            uptime_cnt <= uptime_cnt + 1;
-  --        else
-  --            uptime_cnt <= 0;
-  --            uptime <= uptime + 1;
-  --        end if;
-  --end process;
+  process (clock_i) is
+    variable uptime_cnt : unsigned (29 downto 0) := (others => '0');
+  begin
+    if (rising_edge(clock_i)) then
+      if (reset_i='1') then
+        uptime_cnt := (others => '0');
+        uptime     <= (others => '0');
+      elsif (uptime_cnt < x"2638e98") then
+        uptime_cnt := uptime_cnt + 1;
+      else
+        uptime_cnt := (others => '0');
+        uptime     <= uptime + 1;
+      end if;
+    end if;
+  end process;
 
   --------------------------------------------------------------------------------------------------------------------
   -- LED Control
