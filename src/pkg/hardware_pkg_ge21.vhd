@@ -32,11 +32,14 @@ package hardware_pkg is
 
   constant INVERT_PARTITIONS : boolean := false;
 
+  constant NUM_GT_TX : integer := 4;
+  constant NUM_GT_REFCLK : integer := 2;
+
   constant NUM_FOUND_CLUSTERS_PER_BX  : integer := 8;
   constant NUM_OUTPUT_CLUSTERS_PER_BX : integer := 5;
   constant NUM_OVERFLOW_CLUSTERS      : integer := 5;
   constant NUM_OPTICAL_PACKETS        : integer := 1;
-
+  constant NUM_ELINK_PACKETS : integer := 1;
   -- TMR Enables
   constant USE_TMR_RESET              : integer := 1;
   constant USE_TMR_TTC                : integer := 1;

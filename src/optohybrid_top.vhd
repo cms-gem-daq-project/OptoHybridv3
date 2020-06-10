@@ -104,6 +104,9 @@ end top_optohybrid;
 architecture Behavioral of top_optohybrid is
 
   -- SBit cluster packer
+  signal fiber_packets : t_fiber_packet_array (NUM_OPTICAL_PACKETS-1 downto 0);
+  signal elink_packets : t_elink_packet_array (NUM_ELINK_PACKETS-1 downto 0);
+  signal fiber_kchars  : t_std10_array (NUM_OPTICAL_PACKETS-1 downto 0);
 
   signal tx_link_reset : std_logic;
   signal tx_prbs_mode  : std_logic_vector (2 downto 0);
@@ -439,40 +442,38 @@ begin
 
   trigger_data_formatter_inst : entity work.trigger_data_formatter
     port map (
-      clocks        => clocks,
-      reset_i       => core_reset,
-      ttc_i         => ttc,
-      clusters_i    => sbit_clusters,
-      overflow_i    => sbit_overflow,
-      bxn_counter_i => bxn_counter,
-      error_i       => '0'
+      clocks          => clocks,
+      reset_i         => core_reset,
+      ttc_i           => ttc,
+      clusters_i      => sbit_clusters,
+      overflow_i      => sbit_overflow,
+      bxn_counter_i   => bxn_counter,
+      error_i         => '0',
+      fiber_packets_o => fiber_packets,
+      fiber_kchars_o  => fiber_kchars,
+      elink_packets_o => elink_packets
       );
 
   --------------------------------------------------------------------------------
   -- Trigger Link Physical Interface
   --------------------------------------------------------------------------------
 
---  phygen : if (GENERATE_TRIG_PHY) generate
---  trigger_data_formatter_inst : entity work.trigger_data_formatter
---    port map (
---      clocks        => clocks,
---      reset_i       => core_reset,
---      trg_tx_p      => open,
---      trg_tx_n      => open,
---      refclk_p      => mgt_clk_p_i,
---      refclk_n      => mgt_clk_n_i,
---      gbt_trig_p    => gbt_trig_o_p,
---      gbt_trig_n    => gbt_trig_o_n,
---      clusters      => sbit_clusters,
---      ttc           => ttc,
---      overflow_i    => sbit_overflow,
---      bxn_counter_i => bxn_counter,
---      error_i       => '0',
---      mgt_control   => mgt_control,
---      mgt_status    => mgt_status
---
---      );
---  end generate;
+  phygen : if (GEN_TRIG_PHY) generate
+    trigger_data_phy_inst : entity work.trigger_data_phy
+      port map (
+        clocks          => clocks,
+        reset_i         => core_reset,
+        trg_tx_p        => open,
+        trg_tx_n        => open,
+        refclk_p        => mgt_clk_p_i,
+        refclk_n        => mgt_clk_n_i,
+        gbt_trig_p      => gbt_trig_o_p,
+        gbt_trig_n      => gbt_trig_o_n,
+        fiber_packets_i => fiber_packets,
+        fiber_kchars_i  => fiber_kchars,
+        elink_packets_i => elink_packets
+        );
+  end generate;
 
   --------------------------------------------------------------------------------
   -- IDELAYCTRL

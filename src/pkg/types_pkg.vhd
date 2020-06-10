@@ -20,9 +20,13 @@ package types_pkg is
   type t_std4_array is array(integer range <>) of std_logic_vector(3 downto 0);
   type t_std5_array is array(integer range <>) of std_logic_vector(4 downto 0);
   type t_std8_array is array(integer range <>) of std_logic_vector(7 downto 0);
+  type t_std10_array is array(integer range <>) of std_logic_vector(9 downto 0);
   type t_std16_array is array(integer range <>) of std_logic_vector(15 downto 0);
   type t_std32_array is array(integer range <>) of std_logic_vector(31 downto 0);
   type t_std64_array is array(integer range <>) of std_logic_vector(63 downto 0);
+
+  type t_elink_packet_array is array(integer range <>) of std_logic_vector(8*11-1 downto 0);
+  type t_fiber_packet_array is array(integer range <>) of std_logic_vector(16*5-1 downto 0);
 
   type mgt_status_t is record
     txfsm_done : std_logic;
@@ -97,6 +101,11 @@ package types_pkg is
   function cluster_to_vector (a : sbit_cluster_t; size : integer)
     return std_logic_vector;
 
+  function if_then_else (bool : boolean; a : integer; b : integer)
+    return integer;
+  function if_then_else (bool : boolean; a : std_logic; b : std_logic)
+    return std_logic;
+
   ---------------------------------------------------------------------------------
   -- Wishbone
   ---------------------------------------------------------------------------------
@@ -147,9 +156,29 @@ package body types_pkg is
   function cluster_to_vector (a : sbit_cluster_t; size : integer)
     return std_logic_vector is
     variable tmp : std_logic_vector (a.cnt'length + a.prt'length + a.adr'length-1 downto 0);
+    variable tmp2 : std_logic_vector (size-1 downto 0);
   begin
     tmp :=a.cnt & a.prt & a.adr ;
-    return std_logic_vector(resize(unsigned(tmp), size));
+    tmp2 := std_logic_vector(resize(unsigned(tmp), size));
+    return tmp2;
   end function;
+
+  function if_then_else (bool : boolean; a : std_logic; b : std_logic) return std_logic is
+  begin
+    if (bool) then
+      return a;
+    else
+      return b;
+    end if;
+  end if_then_else;
+
+  function if_then_else (bool : boolean; a : integer; b : integer) return integer is
+  begin
+    if (bool) then
+      return a;
+    else
+      return b;
+    end if;
+  end if_then_else;
 
 end package body;

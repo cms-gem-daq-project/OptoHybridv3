@@ -50,6 +50,7 @@ src/cluster_building/x_oneshot.v
 src/trigger/active_vfats.vhd
 src/trigger/channel_to_strip.vhd
 src/trigger/link/trigger_data_formatter.vhd
+src/trigger/link/trigger_data_phy.vhd
 src/trigger/sbit_monitor.vhd
 src/trigger/sbits.vhd
 src/trigger/sbits_hitmap.vhd
@@ -58,6 +59,7 @@ src/trigger/trig_alignment/trig_alignment.vhd
 src/trigger/trigger.vhd
 
 # Utils
+src/utils/clock_strobe.vhd
 src/utils/6b8b.vhd
 src/utils/6b8b_pkg.vhd
 src/utils/8b6b.vhd

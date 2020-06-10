@@ -35,12 +35,14 @@ package hardware_pkg is
   constant MXCNTB : integer := 3;
   constant MXPRTB : integer := 3;       --
 
-  constant MXCLUSTERS : integer := 8;
+  constant NUM_GT_TX : integer := 4;
+  constant NUM_GT_REFCLK : integer := 2;
 
   constant INVALID_SBIT_ADR : std_logic_vector (MXADRB-1 downto 0) := "111" & x"FE";
 
   constant cluster_pad : std_logic := '0';
 
+  constant NUME_LINK_PACKETS : integer := 0;
   constant MXCLUSTERS                 : integer := 16;
   constant NUM_OUTPUT_CLUSTERS_PER_BX : integer := 10;
   constant NUM_OVERFLOW_CLUSTERS      : integer := 10;

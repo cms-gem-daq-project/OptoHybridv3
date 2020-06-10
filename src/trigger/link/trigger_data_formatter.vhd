@@ -1,12 +1,13 @@
 -- https://gitlab.cern.ch/tdr/notes/DN-20-016/blob/master/temp/DN-20-016_temp.pdf
+--
 -- TODO: Only empty clusters are sent for 4 orbits following a resync signal, thus guaranteeing that the comma/bc0
 --       symbols will not be replaced by CL WORD4 during this time
+--
 -- TODO: Whenever the number of clusters reaches the limit of the bandwidth provided by CL WORD0
 --       CL WORD3 (8 clusters in 2 link OHs, and 4 cluster in 1 link OHs), the CL WORD4 is used,
 --       and replaces the ECC8 + Comma/bc0 word, however a maximum delay of 100 BXs is guaran-
 --       teed between consecutive comma characters (the number 100 can be tuned later)
--- TODO:
-
+--
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.std_logic_misc.all;
@@ -21,18 +22,6 @@ use work.ipbus_pkg.all;
 use work.hardware_pkg.all;
 
 entity trigger_data_formatter is
---  generic (
---    NUM_CLUSTERS        : integer := 5;
---    NUM_OVERFLOW_MAX    : integer := 5;
---    MXELINKS          : integer := 11;
---    USE_TMR_MGT_CONTROL : integer := 1;
---    USE_TMR_MGT_DATA    : integer := 1;
---    FPGA_TYPE_IS_V6     : integer := 0;
---    FPGA_TYPE_IS_A7     : integer := 0;
---    ALLOW_TTC_CHARS     : integer := 1;
---    ALLOW_RETRY         : integer := 1;
---    FRAME_CTRL_TTC      : integer := 1
---    );
   port(
 
     clocks : in clocks_t;
@@ -48,7 +37,11 @@ entity trigger_data_formatter is
 
     bxn_counter_i : in std_logic_vector (11 downto 0);  -- 12 bit bxn counter
 
-    error_i : in std_logic              -- 1  bit error flag
+    error_i : in std_logic;             -- 1  bit error flag
+
+    fiber_kchars_o  : out t_std10_array (NUM_OPTICAL_PACKETS-1 downto 0);
+    fiber_packets_o : out t_fiber_packet_array (NUM_OPTICAL_PACKETS-1 downto 0);
+    elink_packets_o : out t_elink_packet_array (NUM_ELINK_PACKETS-1 downto 0)
 
     );
 end trigger_data_formatter;
@@ -58,11 +51,110 @@ architecture Behavioral of trigger_data_formatter is
   -- NUM_FOUND_CLUSTERS_PER_BX = # clusters found per bx
   -- NUM_OUTPUT_CLUSTERS_PER_BX = # clusters we can send on the output link
 
-  signal overflow_clusters : sbit_cluster_array_t (NUM_FOUND_CLUSTERS_PER_BX-NUM_OUTPUT_CLUSTERS_PER_BX-1 downto 0);
+  -- We can transmit N clusters per bunch crossing
+  -- for each of the N clusters we need to select whether it is a primary cluster (from this BX), or a
+  -- late cluster (from the prior bx)
+  --
+  -- The logic for this ends up being reasonably complicated...
+  --
+  -- Consider the 0th cluster...
+  --    If:  the 0th cluster of this bx is valid, we transmit it,
+  --    else:  transmit the 0th overflow cluster from last bx
+  --
+  -- Consider the 1st cluster...
+  --    If: the 1st cluster of this bx is valid, we transmit it,
+  --    Else:
+  --       -   If: the 0th cluster is valid, we send the 0th overflow cluster in this slot
+  --       - ElIf: the 0th cluster is invalid, we send the 1st overflow cluster in this slot
+  --
+  -- Consider the 2nd cluster (cluster[2])...
+  --    If: the 2nd cluster of this bx is valid, we transmit it,
+  --    Else:
+  --       -   If: the 1st cluster is valid, we send the 0th overflow cluster in this slot
+  --       - ElIf: the 0th cluster is valid, we send the 1st overflow cluster in this slot
+  --       - Else:                           we send the 2nd overflow cluster in this slot
+  --
+  -- Consider the 3rd cluster (cluster[3])...
+  --    If: the 3rd cluster of this bx is valid, we transmit it,
+  --    Else:
+  --       -   If: the 2nd cluster is valid, we send the 0th overflow cluster in this slot
+  --       - ElIf: the 1st cluster is valid, we send the 1st overflow cluster in this slot
+  --       - ElIf: the 0th cluster is valid, we send the 2nd overflow cluster in this slot
+  --       - Else:                           we send the 3rd overflow cluster in this slot
+  --
+  --  And so on...
+  --
+  --  at the same time we need to make sure we don't try to select overflow clusters that don't exist
+  --
+  -- For example, if there are 10 clusters transmittable per bunch crossing but only 16 clusters found,
+  -- there are only 6 overflow clusters / bx
+  --
+  -- So we need to modify the logic to be
+  --
+  -- Consider the nth cluster (cluster[n])...
+  --    If: the nth cluster of this bx is valid, OR n > # overflow clusters, we transmit it
+  --    Else:
+  --       .....
+  --
+  -- This logic is accomplished via a function. It takes advantage of the trick that
+  -- (ignoring the max # of overflow caveat for now) if you look at an example psuedocode
+  -- switch case for this logic,
+  --
+  -- If there is a 1 in the most significant valid cluster flag, we choose that cluster of course.
+  --
+  -- Otherwise, the index of the cluster we use is the # of zeroes in the mask given by mask(n-1 downto 0)
+  --
+  --    case vpf_mask(2 downto 0) is
+  --      when "1XX"  => clusters(2) <= clusters_i(2);
+  --      when "011"  => clusters(2) <= overflow_clusters(0);
+  --      when "001"  => clusters(2) <= overflow_clusters(1);
+  --      when "000"  => clusters(2) <= overflow_clusters(2);
+  --    end case;
 
-  signal clusters        : sbit_cluster_array_t (NUM_OUTPUT_CLUSTERS_PER_BX-1 downto 0);
-  signal cluster_bx_flag : std_logic_vector (NUM_OUTPUT_CLUSTERS_PER_BX-1 downto 0) := (others => '0');
-  signal vpf_mask : std_logic_vector (NUM_OUTPUT_CLUSTERS_PER_BX-1 downto 0) := (others => '0');
+  function count_zeros(slv : std_logic_vector) return natural is
+    variable n_zeros : natural := 0;
+  begin
+    for i in slv'range loop
+      if slv(i) = '0' then
+        n_zeros := n_zeros + 1;
+      end if;
+    end loop;
+    return n_zeros;
+  end function count_zeros;
+
+  function cluster_ovf_selector (
+    max  : integer;                     -- maximum number of overflow clusters per bx
+    clst : sbit_cluster_array_t;        -- array of primary clusters
+    ovfl : sbit_cluster_array_t         -- array of late clusters
+    )
+    return sbit_cluster_array_t is
+    variable num_clst : integer := NUM_OUTPUT_CLUSTERS_PER_BX;
+    variable num_ovfl : integer := ovfl'length;
+    variable mask     : std_logic_vector (clst'length-1 downto 0);
+    variable ret      : sbit_cluster_array_t (NUM_OUTPUT_CLUSTERS_PER_BX-1 downto 0);
+  begin
+
+    for I in 0 to num_clst-1 loop
+      mask(I) := clst(I).vpf;
+    end loop;  -- I
+
+    for I in 0 to num_clst-1 loop
+      if (I > max or '1' = and_reduce(mask(I downto 0))) then
+        ret (I) := clst (I);
+      else
+        ret (I) := ovfl (count_zeros(mask(I-1 downto 0)));
+      end if;
+    end loop;
+
+    return ret;
+  end function;
+
+  constant c_NUM_OVERFLOW : integer := NUM_FOUND_CLUSTERS_PER_BX-NUM_OUTPUT_CLUSTERS_PER_BX;
+
+  signal overflow_clusters : sbit_cluster_array_t (c_NUM_OVERFLOW - 1 downto 0);
+
+  signal clusters          : sbit_cluster_array_t (NUM_OUTPUT_CLUSTERS_PER_BX-1 downto 0);
+  signal late_cluster_flag : std_logic_vector (NUM_OUTPUT_CLUSTERS_PER_BX-1 downto 0) := (others => '0');
 
   signal ecc8     : std_logic_vector (7 downto 0);
   signal ecc8_2nd : std_logic_vector (7 downto 0);
@@ -70,30 +162,53 @@ architecture Behavioral of trigger_data_formatter is
 
   signal special_bits : std_logic_vector (NUM_OUTPUT_CLUSTERS_PER_BX-1 downto 0) := (others => '0');
 
-  signal cluster_output : t_std16_array (NUM_OUTPUT_CLUSTERS_PER_BX-1 downto 0);
+  signal cluster_words : t_std16_array (NUM_OUTPUT_CLUSTERS_PER_BX-1 downto 0);
 
 begin
 
-  -- make a copy of the clusters that couldn't be sent out this bx, to let them be send out the next bx instead
-  -- TODO: use srl16 to avoid additional domain crossings
-  process (clocks.clk40)
+  --------------------------------------------------------------------------------
+  -- Cluster assignment
+  --------------------------------------------------------------------------------
+
+  -- Make a copy of the clusters that couldn't be sent out this bx, to let them be send out the next bx instead
+  process (clocks.clk160_0)
   begin
-    if (rising_edge(clocks.clk40)) then
-      -- FIXME: this formula won't work for ge11
+    if (rising_edge(clocks.clk160_0)) then
       overflow_clusters <= clusters_i (NUM_FOUND_CLUSTERS_PER_BX-1 downto NUM_OUTPUT_CLUSTERS_PER_BX);
     end if;
   end process;
 
---  overflow_dly : entity work.srl16e_bbl
---    port map
---    (
---      clock => clocks.clk160_0,
---      ce => '1',
---      adr => 4,
---      d =
---
---
---);
+  --- cluster assignment, primary or overflow?
+  process (clocks.clk160_0)
+  begin
+    if (rising_edge(clocks.clk160_0)) then
+      clusters <= cluster_ovf_selector (c_NUM_OVERFLOW, clusters_i, overflow_clusters);
+    end if;
+  end process;
+
+  clusterloop : for I in 0 to NUM_OUTPUT_CLUSTERS_PER_BX-1 generate  -- 5 clusters in GE2/1, 5 + 5 in GE1/1
+  begin
+
+    -- 0 = cluster from this bx
+    -- 1 = late clusters
+    --
+    -- any valid cluster from this bx is sent... for the others they are either overflow or
+    -- invalid so we can just make this simple and set them all to 1
+
+    late_cluster_flag(I) <= not clusters(I).vpf;
+
+    -- create cluster words for ge1/1 or ge2/1
+    ge21_gen : if (GE21 = 1) generate
+      cluster_words (I) <= late_cluster_flag(I) & special_bits(I) & '0'
+                           & clusters(I).cnt & clusters(I).prt & clusters(I).adr;
+    end generate;
+
+    ge11_gen : if (GE21 = 0) generate
+      cluster_words (I) <= late_cluster_flag(I) & special_bits(I)
+                           & clusters(I).cnt & clusters(I).prt & clusters(I).adr;
+    end generate;
+  end generate;
+
   --------------------------------------------------------------------------------
   -- Special bit allocation
   --------------------------------------------------------------------------------
@@ -107,222 +222,25 @@ begin
   -- 3'h6 Reserved
   -- 3'h7 Error
 
-  special_bits(0) <= ttc_i.bc0;
-  process (error_i, ttc_i, overflow_i, bxn_counter_i)
+  process (clocks.clk160_0)
   begin
-    if (error_i = '1') then
-      special_bits (3 downto 1) <= "111";  -- 7
-    elsif (ttc_i.resync = '1') then
-      special_bits (3 downto 1) <= "101";  --5
-    elsif (overflow_i = '1') then
-      special_bits (3 downto 1) <= "011";  -- 3
-    else
-      special_bits (3 downto 1) <= '0' & bxn_counter_i(1 downto 0);
+    -- clock once to align with cluster selector
+    if (rising_edge(clocks.clk160_0)) then
+
+      special_bits(0) <= ttc_i.bc0;
+
+      if (error_i = '1') then
+        special_bits (3 downto 1) <= "111";  -- 7
+      elsif (ttc_i.resync = '1') then
+        special_bits (3 downto 1) <= "101";  --5
+      elsif (overflow_i = '1') then
+        special_bits (3 downto 1) <= "011";  -- 3
+      else
+        special_bits (3 downto 1) <= '0' & bxn_counter_i(1 downto 0);
+      end if;
+
     end if;
   end process;
-
-  --------------------------------------------------------------------------------
-  -- Cluster assignment
-  --------------------------------------------------------------------------------
-
-  -- TODO: create a function that will do this in a nicer way...
-
-  -- cluster 0
-  c0 : if (NUM_OUTPUT_CLUSTERS_PER_BX > 0) generate
-    process (clocks.clk160_0)
-    begin
-      if (rising_edge(clocks.clk160_0)) then
-        case vpf_mask(0 downto 0) is
-          when "0"    => clusters(0) <= overflow_clusters(0);
-          when others => clusters(0) <= clusters_i(0);
-        end case;
-      end if;
-    end process;
-  end generate;
-
-  c1 : if (NUM_OUTPUT_CLUSTERS_PER_BX > 1) generate
-    process (clocks.clk160_0)
-    begin
-      -- cluster 1
-      if (rising_edge(clocks.clk160_0)) then
-        case vpf_mask(1 downto 0) is
-          when "01"   => clusters(1) <= overflow_clusters(1);
-          when "00"   => clusters(1) <= overflow_clusters(2);
-          when others => clusters(1) <= clusters_i(1);
-        end case;
-      end if;
-    end process;
-  end generate;
-
-  c2 : if (NUM_OUTPUT_CLUSTERS_PER_BX > 2) generate
-    process (clocks.clk160_0)
-    begin
-      -- cluster 2
-      if (rising_edge(clocks.clk160_0)) then
-        case vpf_mask(2 downto 0) is
-          when "011"  => clusters(2) <= overflow_clusters(0);
-          when "001"  => clusters(2) <= overflow_clusters(1);
-          when "000"  => clusters(2) <= overflow_clusters(2);
-          when others => clusters(2) <= clusters_i(2);
-        end case;
-      end if;
-    end process;
-  end generate;
-
-  c3 : if (NUM_OUTPUT_CLUSTERS_PER_BX > 3) generate
-    process (clocks.clk160_0)
-    begin
-      -- cluster 3
-      if (rising_edge(clocks.clk160_0)) then
-        case vpf_mask(3 downto 0) is
-          when "0111" => clusters(3) <= overflow_clusters(0);
-          when "0011" => clusters(3) <= overflow_clusters(1);
-          when "0001" => clusters(3) <= overflow_clusters(2);
-          when "0000" => clusters(3) <= clusters_i(3);  --overflow_clusters(3);
-          when others => clusters(3) <= clusters_i(3);
-        end case;
-      end if;
-    end process;
-  end generate;
-
-  c4 : if (NUM_OUTPUT_CLUSTERS_PER_BX > 4) generate
-    process (clocks.clk160_0)
-    begin
-      -- cluster 4
-      if (rising_edge(clocks.clk160_0)) then
-        case vpf_mask(4 downto 0) is
-          when "01111" => clusters(4) <= overflow_clusters(0);
-          when "00111" => clusters(4) <= overflow_clusters(1);
-          when "00011" => clusters(4) <= overflow_clusters(2);
-          when "00001" => clusters(4) <= clusters_i(4); --overflow_clusters(3);
-          when "00000" => clusters(4) <= clusters_i(4); --overflow_clusters(4);
-          when others  => clusters(4) <= clusters_i(4);
-        end case;
-      end if;
-    end process;
-  end generate;
-
-  c5 : if (NUM_OUTPUT_CLUSTERS_PER_BX > 5) generate
-    process (clocks.clk160_0)
-    begin
-      -- cluster 5
-      if (rising_edge(clocks.clk160_0)) then
-        case vpf_mask(5 downto 0) is
-          when "011111" => clusters(5) <= overflow_clusters(0);
-          when "001111" => clusters(5) <= overflow_clusters(1);
-          when "000111" => clusters(5) <= overflow_clusters(2);
-          when "000011" => clusters(5) <= overflow_clusters(3);
-          when "000001" => clusters(5) <= overflow_clusters(4);
-          when "000000" => clusters(5) <= overflow_clusters(5);
-          when others   => clusters(5) <= clusters_i(5);
-        end case;
-      end if;
-    end process;
-  end generate;
-
-  c6 : if (NUM_OUTPUT_CLUSTERS_PER_BX > 6) generate
-    process (clocks.clk160_0)
-    begin
-      -- cluster 6
-      if (rising_edge(clocks.clk160_0)) then
-        case vpf_mask(6 downto 0) is
-          when "0111111" => clusters(6) <= overflow_clusters(0);
-          when "0011111" => clusters(6) <= overflow_clusters(1);
-          when "0001111" => clusters(6) <= overflow_clusters(2);
-          when "0000111" => clusters(6) <= overflow_clusters(3);
-          when "0000011" => clusters(6) <= overflow_clusters(4);
-          when "0000001" => clusters(6) <= overflow_clusters(5);
-          when "0000000" => clusters(6) <= overflow_clusters(6);
-          when others    => clusters(6) <= clusters_i(6);
-        end case;
-      end if;
-    end process;
-  end generate;
-
-  c7 : if (NUM_OUTPUT_CLUSTERS_PER_BX > 7) generate
-    process (clocks.clk160_0)
-    begin
-      -- cluster 7
-      if (rising_edge(clocks.clk160_0)) then
-        case vpf_mask(7 downto 0) is
-          when "01111111" => clusters(7) <= overflow_clusters(0);
-          when "00111111" => clusters(7) <= overflow_clusters(1);
-          when "00011111" => clusters(7) <= overflow_clusters(2);
-          when "00001111" => clusters(7) <= overflow_clusters(3);
-          when "00000111" => clusters(7) <= overflow_clusters(4);
-          when "00000011" => clusters(7) <= overflow_clusters(5);
-          when "00000001" => clusters(7) <= overflow_clusters(6);
-          when "00000000" => clusters(7) <= overflow_clusters(7);
-          when others     => clusters(7) <= clusters_i(7);
-        end case;
-      end if;
-    end process;
-  end generate;
-
-  c8 : if (NUM_OUTPUT_CLUSTERS_PER_BX > 8) generate
-    process (clocks.clk160_0)
-    begin
-      -- cluster 8
-      if (rising_edge(clocks.clk160_0)) then
-        case vpf_mask(8 downto 0) is
-          when "011111111" => clusters(8) <= overflow_clusters(0);
-          when "001111111" => clusters(8) <= overflow_clusters(1);
-          when "000111111" => clusters(8) <= overflow_clusters(2);
-          when "000011111" => clusters(8) <= overflow_clusters(3);
-          when "000001111" => clusters(8) <= overflow_clusters(4);
-          when "000000111" => clusters(8) <= overflow_clusters(5);
-          when "000000011" => clusters(8) <= overflow_clusters(6);
-          when "000000001" => clusters(8) <= overflow_clusters(7);
-          when "000000000" => clusters(8) <= overflow_clusters(8);
-          when others      => clusters(8) <= clusters_i(8);
-        end case;
-      end if;
-    end process;
-  end generate;
-
-  c9 : if (NUM_OUTPUT_CLUSTERS_PER_BX > 9) generate
-    process (clocks.clk160_0)
-    begin
-      -- cluster 9
-      if (rising_edge(clocks.clk160_0)) then
-        case vpf_mask(9 downto 0) is
-          when "0111111111" => clusters(9) <= overflow_clusters(0);
-          when "0011111111" => clusters(9) <= overflow_clusters(1);
-          when "0001111111" => clusters(9) <= overflow_clusters(2);
-          when "0000111111" => clusters(9) <= overflow_clusters(3);
-          when "0000011111" => clusters(9) <= overflow_clusters(4);
-          when "0000001111" => clusters(9) <= overflow_clusters(5);
-          when "0000000111" => clusters(9) <= overflow_clusters(6);
-          when "0000000011" => clusters(9) <= overflow_clusters(7);
-          when "0000000001" => clusters(9) <= overflow_clusters(8);
-          when "0000000000" => clusters(9) <= overflow_clusters(9);
-          when others       => clusters(9) <= clusters_i(9);
-        end case;
-      end if;
-    end process;
-  end generate;
-
-  clusterloop : for I in 0 to NUM_OUTPUT_CLUSTERS_PER_BX-1 generate  -- 5 clusters in GE2/1, 5 + 5 in GE1/1
-  begin
-
-    -- concat together the valid flags from all clusters into a single std_logic_vector
-    vpf_mask(I) <= clusters(I).vpf;
-
-    -- for clusters from THIS bx, set the bx flag to zero
-    -- for any other clusters might as well just set them to 1
-    cluster_bx_flag(I) <= not clusters(I).vpf;
-
-    -- create cluster words for ge1/1 or ge2/1
-    ge21_gen : if (GE21 = 1) generate
-      cluster_output (I) <= cluster_bx_flag(I) & special_bits(I) & '0'
-                            & clusters(I).cnt & clusters(I).prt & clusters(I).adr;
-    end generate;
-
-    ge11_gen : if (GE21 = 0) generate
-      cluster_output (I) <= cluster_bx_flag(I) & special_bits(I)
-                            & clusters(I).cnt & clusters(I).prt & clusters(I).adr;
-    end generate;
-  end generate;
 
   --------------------------------------------------------------------------------
   -- Optical Data Packet
@@ -342,14 +260,42 @@ begin
     signal frame : std_logic_vector (79 downto 0);
   begin
 
-    word4 <= cluster_output(4+5*I) when (clusters(4+5*I).vpf = '1') else (comma & ecc8);
+    -- word 4 is a special case since it holds the comma / ecc... the others are simple
+    -- put the when else in a separate assignment since it is not allowed in a process until VHDL2008... uhg..
+    word4             <= cluster_words(4+5*I) when (clusters(4+5*I).vpf = '1') else (comma & ecc8);
+    fiber_kchars_o(I) <= "0000000000"         when (clusters(4+5*I).vpf = '1') else "0100000000";
 
-    process (clocks.clk200)
+    -- copy onto 40MHz clock so it can be copied onto the 200MHz clock easily
+    -- (160 --> 200 MHz transfer requires proper CDC)
+    process (clocks.clk40)
     begin
-      if (rising_edge(clocks.clk200)) then
-        frame <= word4 & cluster_output(3+5*I) & cluster_output(2+5*I) & cluster_output(1+5*I) & cluster_output(0+5*I);
+      if (rising_edge(clocks.clk40)) then
+        frame(15 downto 0)  <= cluster_words(0+5*I);
+        frame(31 downto 16) <= cluster_words(1+5*I);
+        frame(47 downto 32) <= cluster_words(2+5*I);
+        frame(63 downto 48) <= cluster_words(3+5*I);
+        frame(79 downto 64) <= word4;
       end if;
     end process;
+
+    fiber_packets_o(I) <= frame;
+
+  end generate;
+
+  --------------------------------------------------------------------------------
+  -- Copper Data Packet
+  --------------------------------------------------------------------------------
+
+  ge21_elink_gen : if (GE21 = 1) and HAS_ELINK_OUTPUTS generate
+  begin
+
+    process (clocks.clk160_0)
+    begin
+      if (rising_edge(clocks.clk160_0)) then
+        elink_packets_o(0) <= ecc8 & cluster_words(4) & cluster_words(3) & cluster_words(2) & cluster_words(1) & cluster_words(0);
+      end if;
+    end process;
+
   end generate;
 
   --------------------------------------------------------------------------------
@@ -358,14 +304,14 @@ begin
 
   --  ecc64_inst : entity work.ecc64
   --    port map (
-  --      enc_in     => (cluster_output(3) & cluster_output(2) & cluster_output(1) & cluster_output(0)),
+  --      enc_in     => (cluster_words(3) & cluster_output(2) & cluster_output(1) & cluster_output(0)),
   --      parity_out => ecc8
   --      );
   --
   --  ge11_ecc8_2nd : if (GE11 = 1) generate
   --    ecc64_inst : entity work.ecc64
   --      port map (
-  --        enc_in     => (cluster_output(7) & cluster_output(6) & cluster_output(5) & cluster_output(4)),
+  --        enc_in     => (cluster_words(7) & cluster_output(6) & cluster_output(5) & cluster_output(4)),
   --        parity_out => ecc8_2nd
   --        );
   --  end generate;

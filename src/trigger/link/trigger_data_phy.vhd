@@ -19,27 +19,15 @@ library work;
 use work.types_pkg.all;
 use work.ipbus_pkg.all;
 use work.hardware_pkg.all;
+use work.registers.all;
 
-entity trigger_data_formatter is
---  generic (
---    NUM_CLUSTERS        : integer := 5;
---    NUM_OVERFLOW_MAX    : integer := 5;
---    MXELINKS          : integer := 11;
---    USE_TMR_MGT_CONTROL : integer := 1;
---    USE_TMR_MGT_DATA    : integer := 1;
---    FPGA_TYPE_IS_V6     : integer := 0;
---    FPGA_TYPE_IS_A7     : integer := 0;
---    ALLOW_TTC_CHARS     : integer := 1;
---    ALLOW_RETRY         : integer := 1;
---    FRAME_CTRL_TTC      : integer := 1
---    );
+entity trigger_data_phy is
   port(
     ----------------------------------------------------------------------------------------------------------------------
     -- Core
     ----------------------------------------------------------------------------------------------------------------------
 
-    clocks : in clocks_t;
-
+    clocks  : in clocks_t;
     reset_i : in std_logic;
 
     ----------------------------------------------------------------------------------------------------------------------
@@ -47,12 +35,12 @@ entity trigger_data_formatter is
     ----------------------------------------------------------------------------------------------------------------------
 
     -- gtp/gtx
-    trg_tx_n : out std_logic_vector(3 downto 0);
-    trg_tx_p : out std_logic_vector(3 downto 0);
+    trg_tx_n : out std_logic_vector(NUM_GT_TX-1 downto 0);
+    trg_tx_p : out std_logic_vector(NUM_GT_TX-1 downto 0);
 
     -- refclk
-    refclk_p : in std_logic_vector(1 downto 0);
-    refclk_n : in std_logic_vector(1 downto 0);
+    refclk_p : in std_logic_vector(NUM_GT_REFCLK-1 downto 0);
+    refclk_n : in std_logic_vector(NUM_GT_REFCLK-1 downto 0);
 
     -- gbtx trigger data (ge21)
     gbt_trig_p : out std_logic_vector(MXELINKS-1 downto 0);
@@ -62,339 +50,62 @@ entity trigger_data_formatter is
     -- Data
     ----------------------------------------------------------------------------------------------------------------------
 
-    clusters_i : in sbit_cluster_array_t (MXCLUSTERS-1 downto 0);
-    clusters_strobe_i : in std_logic;
-
-    ttc : in ttc_t;
-
-    overflow_i : in std_logic;          -- 1 bit gem has more than 8 clusters
-
-    bxn_counter_i : in std_logic_vector (11 downto 0);  -- 12 bit bxn counter
-
-    error_i : in std_logic;             -- 1  bit error flag
-
-    ----------------------------------------------------------------------------------------------------------------------
-    -- Control
-    ----------------------------------------------------------------------------------------------------------------------
-
-    mgt_control : in  mgt_control_t;
-    mgt_status  : out mgt_status_t
+    fiber_kchars_i  : in t_std10_array (NUM_OPTICAL_PACKETS-1 downto 0);
+    fiber_packets_i : in t_fiber_packet_array (NUM_OPTICAL_PACKETS-1 downto 0);
+    elink_packets_i : in t_elink_packet_array (NUM_ELINK_PACKETS-1 downto 0)
 
     );
-end trigger_data_formatter;
+end trigger_data_phy;
 
-architecture Behavioral of trigger_data_formatter is
+architecture Behavioral of trigger_data_phy is
 
-  -- MXCLUSTERS = # clusters found per bx
-  -- NUM_OUTPUT_CLUSTERS_PER_BX = # clusters we can send on the output link
+  signal strobe    : std_logic;         -- 200MHz strobe
+  signal tx_usrclk : std_logic;         -- 200MHz userclk
+  signal is_kchar  : t_std2_array (NUM_OPTICAL_PACKETS-1 downto 0);
+  signal mgt_words : t_std16_array (NUM_OPTICAL_PACKETS-1 downto 0);
 
-  -- say we find 16 clusters per bx but can only send 10, we copy the 6 leftover for the next bx
-  signal overflow_clusters : sbit_cluster_array_t (NUM_OUTPUT_CLUSTERS_PER_BX-1 downto 0);
+  signal link_frame_cnt         : unsigned (2 downto 0) := (others => '0');
+  constant c_LINK_FRAME_CNT_MAX : unsigned (2 downto 0) := to_unsigned (4, 3);
 
-  signal clusters        : sbit_cluster_array_t (MXCLUSTERS-1 downto 0);
-  signal cluster_bx_flag : std_logic_vector (NUM_OUTPUT_CLUSTERS_PER_BX-1 downto 0) := (others => '0');
-  signal vpf_mask : std_logic_vector (NUM_OUTPUT_CLUSTERS_PER_BX-1 downto 0) := (others => '0');
+  --signal tx_prbs_mode : std_logic_vector (2 downto 0);
 
-  signal ecc8     : std_logic_vector (7 downto 0);
-  signal ecc8_2nd : std_logic_vector (7 downto 0);
-  signal comma    : std_logic_vector (7 downto 0);
+  --signal pll_reset            : std_logic;
+  --signal mgt_reset            : std_logic_vector(3 downto 0);
+  --signal gtxtest_start        : std_logic;
+  --signal txreset              : std_logic;
+  --signal mgt_realign          : std_logic;
+  --signal txpowerdown          : std_logic;
+  --signal txpowerdown_mode     : std_logic_vector (1 downto 0);
+  --signal txpllpowerdown       : std_logic;
 
-  signal special_bits : std_logic_vector (3 downto 0);
-
-  signal cluster_output : t_std16_array (NUM_OUTPUT_CLUSTERS_PER_BX-1 downto 0);
+  ------ Register signals begin (this section is generated by <optohybrid_top>/tools/generate_registers.py -- do not edit)
+  signal regs_read_arr        : t_std32_array(REG_MGT_NUM_REGS - 1 downto 0)    := (others => (others => '0'));
+  signal regs_write_arr       : t_std32_array(REG_MGT_NUM_REGS - 1 downto 0)    := (others => (others => '0'));
+  signal regs_addresses       : t_std32_array(REG_MGT_NUM_REGS - 1 downto 0)    := (others => (others => '0'));
+  signal regs_defaults        : t_std32_array(REG_MGT_NUM_REGS - 1 downto 0)    := (others => (others => '0'));
+  signal regs_read_pulse_arr  : std_logic_vector(REG_MGT_NUM_REGS - 1 downto 0) := (others => '0');
+  signal regs_write_pulse_arr : std_logic_vector(REG_MGT_NUM_REGS - 1 downto 0) := (others => '0');
+  signal regs_read_ready_arr  : std_logic_vector(REG_MGT_NUM_REGS - 1 downto 0) := (others => '1');
+  signal regs_write_done_arr  : std_logic_vector(REG_MGT_NUM_REGS - 1 downto 0) := (others => '1');
+  signal regs_writable_arr    : std_logic_vector(REG_MGT_NUM_REGS - 1 downto 0) := (others => '0');
+  ------ Register signals end ----------------------------------------------
 
 begin
-
-  -- make a copy of the clusters that couldn't be sent out this bx, to let them be send out the next bx instead
-  -- TODO: use srl16 to avoid additional domain crossings
-  process (clocks.clk40)
-  begin
-    if (rising_edge(clocks.clk40)) then
-      overflow_clusters <= clusters_i (MXCLUSTERS-1 downto NUM_OUTPUT_CLUSTERS_PER_BX);
-    end if;
-  end process;
-
---  overflow_dly : entity work.srl16e_bbl
---    port map
---    (
---      clock => clocks.clk160_0,
---      ce => '1',
---      adr => 4,
---      d =
---
---
---);
-  --------------------------------------------------------------------------------
-  -- Special bit allocation
-  --------------------------------------------------------------------------------
-
-  -- 3'h0 BXN[1:0]==2'h0
-  -- 3'h1 BXN[1:0]==2'h1
-  -- 3'h2 BXN[1:0]==2'h2
-  -- 3'h3 BXN[1:0]==2'h3
-  -- 3'h4 Overflow
-  -- 3'h5 Resync
-  -- 3'h6 Reserved
-  -- 3'h7 Error
-
-  special_bits(0) <= ttc.bc0;
-  process (error_i, ttc, overflow_i, bxn_counter_i)
-  begin
-    if (error_i = '1') then
-      special_bits (3 downto 1) <= "111";  -- 7
-    elsif (ttc.resync = '1') then
-      special_bits (3 downto 1) <= "101";  --5
-    elsif (overflow_i = '1') then
-      special_bits (3 downto 1) <= "011";  -- 3
-    else
-      special_bits (3 downto 1) <= '0' & bxn_counter_i(1 downto 0);
-    end if;
-  end process;
-
-  --------------------------------------------------------------------------------
-  -- Cluster assignment
-  --------------------------------------------------------------------------------
-
-  -- TODO: create a function that will do this in a nicer way...
-
-  -- cluster 0
-  c0 : if (NUM_OUTPUT_CLUSTERS_PER_BX > 0) generate
-    process (clocks.clk160_0)
-    begin
-      if (rising_edge(clocks.clk160_0)) then
-        case vpf_mask(0 downto 0) is
-          when "0"    => clusters(0) <= overflow_clusters(0);
-          when others => clusters(0) <= clusters_i(0);
-        end case;
-      end if;
-    end process;
-  end generate;
-
-  c1 : if (NUM_OUTPUT_CLUSTERS_PER_BX > 1) generate
-    process (clocks.clk160_0)
-    begin
-      -- cluster 1
-      if (rising_edge(clocks.clk160_0)) then
-        case vpf_mask(1 downto 0) is
-          when "01"   => clusters(1) <= overflow_clusters(1);
-          when "00"   => clusters(1) <= overflow_clusters(2);
-          when others => clusters(1) <= clusters_i(1);
-        end case;
-      end if;
-    end process;
-  end generate;
-
-  c2 : if (NUM_OUTPUT_CLUSTERS_PER_BX > 2) generate
-    process (clocks.clk160_0)
-    begin
-      -- cluster 2
-      if (rising_edge(clocks.clk160_0)) then
-        case vpf_mask(2 downto 0) is
-          when "011"  => clusters(2) <= overflow_clusters(0);
-          when "001"  => clusters(2) <= overflow_clusters(1);
-          when "000"  => clusters(2) <= overflow_clusters(2);
-          when others => clusters(2) <= clusters_i(2);
-        end case;
-      end if;
-    end process;
-  end generate;
-
-  c3 : if (NUM_OUTPUT_CLUSTERS_PER_BX > 3) generate
-    process (clocks.clk160_0)
-    begin
-      -- cluster 3
-      if (rising_edge(clocks.clk160_0)) then
-        case vpf_mask(3 downto 0) is
-          when "0111" => clusters(3) <= overflow_clusters(0);
-          when "0011" => clusters(3) <= overflow_clusters(1);
-          when "0001" => clusters(3) <= overflow_clusters(2);
-          when "0000" => clusters(3) <= overflow_clusters(3);
-          when others => clusters(3) <= clusters_i(3);
-        end case;
-      end if;
-    end process;
-  end generate;
-
-  c4 : if (NUM_OUTPUT_CLUSTERS_PER_BX > 4) generate
-    process (clocks.clk160_0)
-    begin
-      -- cluster 4
-      if (rising_edge(clocks.clk160_0)) then
-        case vpf_mask(4 downto 0) is
-          when "01111" => clusters(4) <= overflow_clusters(0);
-          when "00111" => clusters(4) <= overflow_clusters(1);
-          when "00011" => clusters(4) <= overflow_clusters(2);
-          when "00001" => clusters(4) <= overflow_clusters(3);
-          when "00000" => clusters(4) <= overflow_clusters(4);
-          when others  => clusters(4) <= clusters_i(4);
-        end case;
-      end if;
-    end process;
-  end generate;
-
-  c5 : if (NUM_OUTPUT_CLUSTERS_PER_BX > 5) generate
-    process (clocks.clk160_0)
-    begin
-      -- cluster 5
-      if (rising_edge(clocks.clk160_0)) then
-        case vpf_mask(5 downto 0) is
-          when "011111" => clusters(5) <= overflow_clusters(0);
-          when "001111" => clusters(5) <= overflow_clusters(1);
-          when "000111" => clusters(5) <= overflow_clusters(2);
-          when "000011" => clusters(5) <= overflow_clusters(3);
-          when "000001" => clusters(5) <= overflow_clusters(4);
-          when "000000" => clusters(5) <= overflow_clusters(5);
-          when others   => clusters(5) <= clusters_i(5);
-        end case;
-      end if;
-    end process;
-  end generate;
-
-  c6 : if (NUM_OUTPUT_CLUSTERS_PER_BX > 6) generate
-    process (clocks.clk160_0)
-    begin
-      -- cluster 6
-      if (rising_edge(clocks.clk160_0)) then
-        case vpf_mask(6 downto 0) is
-          when "0111111" => clusters(6) <= overflow_clusters(0);
-          when "0011111" => clusters(6) <= overflow_clusters(1);
-          when "0001111" => clusters(6) <= overflow_clusters(2);
-          when "0000111" => clusters(6) <= overflow_clusters(3);
-          when "0000011" => clusters(6) <= overflow_clusters(4);
-          when "0000001" => clusters(6) <= overflow_clusters(5);
-          when "0000000" => clusters(6) <= overflow_clusters(6);
-          when others    => clusters(6) <= clusters_i(6);
-        end case;
-      end if;
-    end process;
-  end generate;
-
-  c7 : if (NUM_OUTPUT_CLUSTERS_PER_BX > 7) generate
-    process (clocks.clk160_0)
-    begin
-      -- cluster 7
-      if (rising_edge(clocks.clk160_0)) then
-        case vpf_mask(7 downto 0) is
-          when "01111111" => clusters(7) <= overflow_clusters(0);
-          when "00111111" => clusters(7) <= overflow_clusters(1);
-          when "00011111" => clusters(7) <= overflow_clusters(2);
-          when "00001111" => clusters(7) <= overflow_clusters(3);
-          when "00000111" => clusters(7) <= overflow_clusters(4);
-          when "00000011" => clusters(7) <= overflow_clusters(5);
-          when "00000001" => clusters(7) <= overflow_clusters(6);
-          when "00000000" => clusters(7) <= overflow_clusters(7);
-          when others     => clusters(7) <= clusters_i(7);
-        end case;
-      end if;
-    end process;
-  end generate;
-
-  c8 : if (NUM_OUTPUT_CLUSTERS_PER_BX > 8) generate
-    process (clocks.clk160_0)
-    begin
-      -- cluster 8
-      if (rising_edge(clocks.clk160_0)) then
-        case vpf_mask(8 downto 0) is
-          when "011111111" => clusters(8) <= overflow_clusters(0);
-          when "001111111" => clusters(8) <= overflow_clusters(1);
-          when "000111111" => clusters(8) <= overflow_clusters(2);
-          when "000011111" => clusters(8) <= overflow_clusters(3);
-          when "000001111" => clusters(8) <= overflow_clusters(4);
-          when "000000111" => clusters(8) <= overflow_clusters(5);
-          when "000000011" => clusters(8) <= overflow_clusters(6);
-          when "000000001" => clusters(8) <= overflow_clusters(7);
-          when "000000000" => clusters(8) <= overflow_clusters(8);
-          when others      => clusters(8) <= clusters_i(8);
-        end case;
-      end if;
-    end process;
-  end generate;
-
-  c9 : if (NUM_OUTPUT_CLUSTERS_PER_BX > 9) generate
-    process (clocks.clk160_0)
-    begin
-      -- cluster 9
-      if (rising_edge(clocks.clk160_0)) then
-        case vpf_mask(9 downto 0) is
-          when "0111111111" => clusters(9) <= overflow_clusters(0);
-          when "0011111111" => clusters(9) <= overflow_clusters(1);
-          when "0001111111" => clusters(9) <= overflow_clusters(2);
-          when "0000111111" => clusters(9) <= overflow_clusters(3);
-          when "0000011111" => clusters(9) <= overflow_clusters(4);
-          when "0000001111" => clusters(9) <= overflow_clusters(5);
-          when "0000000111" => clusters(9) <= overflow_clusters(6);
-          when "0000000011" => clusters(9) <= overflow_clusters(7);
-          when "0000000001" => clusters(9) <= overflow_clusters(8);
-          when "0000000000" => clusters(9) <= overflow_clusters(9);
-          when others       => clusters(9) <= clusters_i(9);
-        end case;
-      end if;
-    end process;
-  end generate;
-
-  clusterloop : for I in 0 to NUM_OUTPUT_CLUSTERS_PER_BX-1 generate  -- 5 clusters in GE2/1, 5 + 5 in GE1/1
-  begin
-
-    -- concat together the valid flags from all clusters into a single std_logic_vector
-    vpf_mask(I) <= clusters(I).vpf;
-
-    -- for clusters from THIS bx, set the bx flag to zero
-    -- for any other clusters might as well just set them to 1
-    cluster_bx_flag(I) <= not clusters(I).vpf;
-
-    -- create cluster words for ge1/1 or ge2/1
-    ge21_gen : if (GE21 = 1) generate
-      cluster_output (I) <= cluster_bx_flag(I) & special_bits(I) & '0'
-                            & clusters(I).cnt & clusters(I).prt & clusters(I).adr;
-    end generate;
-
-    ge11_gen : if (GE21 = 0) generate
-      cluster_output (I) <= cluster_bx_flag(I) & special_bits(I)
-                            & clusters(I).cnt & clusters(I).prt & clusters(I).adr;
-    end generate;
-  end generate;
-
-  --------------------------------------------------------------------------------
-  -- Optical Data Packet
-  --------------------------------------------------------------------------------
-  -- GE1/1 sends clusters on two
-  -- On the 8b10b link we will transmit the 16 bit data words at 200 MHz in the following order:
-  -- CL WORD0 -> CL WORD1 -> CL WORD2 -> CL WORD3 -> CL WORD4 / ECC8 [7:0] + -- Comma/BC0 [15:8].
-  -- The 16bit words are sent from LSB to MSB.
-  --
-  -- <---WORD0----- ><---WORD1------><--WORD2-------><--WORD3-------><-ECC8-><COM/BC>
-  -- <---WORD0----- ><---WORD1------><--WORD2-------><--WORD3-------><--CL_WORD4---->
-
-  comma <= x"DC" when ttc.bc0 = '1' else x"BC";
-
-  elink_outputs : for I in 0 to (NUM_OPTICAL_PACKETS-1) generate
-    signal word4 : std_logic_vector (15 downto 0);
-    signal frame : std_logic_vector (79 downto 0);
-  begin
-
-    word4 <= cluster_output(4+5*I) when (clusters(4+5*I).vpf = '1') else (comma & ecc8);
-
-    process (clocks.clk200)
-    begin
-      if (rising_edge(clocks.clk200)) then
-        frame <= word4 & cluster_output(3+5*I) & cluster_output(2+5*I) & cluster_output(1+5*I) & cluster_output(0+5*I);
-      end if;
-    end process;
-  end generate;
 
   --------------------------------------------------------------------------------
   -- GE2/1 Copper Output
   --------------------------------------------------------------------------------
 
   ge21_elink_gen : if (GE21 = 1) and HAS_ELINK_OUTPUTS generate
-    signal elink_data : std_logic_vector (MXELINKS*8-1 downto 0);
+    signal elink_packets : t_elink_packet_array (NUM_ELINK_PACKETS-1 downto 0);
   begin
 
-    process (clocks.clk160_0)
+    -- copy onto 40MHz clock, make sure it is stable... there might be a better (lower latency way to do this but at
+    -- least this is safe)
+    process (clocks.clk40)
     begin
-      if (rising_edge(clocks.clk160_0)) then
-        elink_data <= ecc8 & cluster_output(4) & cluster_output(3)
-                      & cluster_output(2) & cluster_output(1) & cluster_output(0);
+      if (rising_edge(clocks.clk40)) then
+        elink_packets <= elink_packets_i;
       end if;
     end process;
 
@@ -402,7 +113,7 @@ begin
     begin
       to_gbt_ser_inst : entity work.to_gbt_ser
         port map (
-          data_out_from_device  => elink_data(8*(I+1)-1 downto 8*I),
+          data_out_from_device  => elink_packets_i(0)(8*(I+1)-1 downto 8*I),
           data_out_to_pins_p(0) => gbt_trig_p(I),
           data_out_to_pins_n(0) => gbt_trig_n(I),
           clk_in                => clocks.clk160_0,
@@ -413,21 +124,153 @@ begin
   end generate;
 
   --------------------------------------------------------------------------------
-  -- ECC
+  -- Optical Data Frames
   --------------------------------------------------------------------------------
 
-  --  ecc64_inst : entity work.ecc64
-  --    port map (
-  --      enc_in     => (cluster_output(3) & cluster_output(2) & cluster_output(1) & cluster_output(0)),
-  --      parity_out => ecc8
-  --      );
+  -- Create a 1 of n high signal synced to the slow clock, e.g.
+  --             ______________                ____________
+  -- clk40    __|              |______________|
+  --             _____________________________
+  -- r        __|                             |_____________
+  --                ______________________________
+  -- r_dly    ______|                             |_____________
+  --             ___                           ___
+  -- valid    __|   |_________________________|   |______
   --
-  --  ge11_ecc8_2nd : if (GE11 = 1) generate
-  --    ecc64_inst : entity work.ecc64
-  --      port map (
-  --        enc_in     => (cluster_output(7) & cluster_output(6) & cluster_output(5) & cluster_output(4)),
-  --        parity_out => ecc8_2nd
-  --        );
-  --  end generate;
+  -- cnt        < 0 >< 1 >< 2 >< 3 >< 4 >< 5 >< 0>
 
+  clock_strobe_200_inst : entity work.clock_strobe
+    port map (
+      fast_clk_i => tx_usrclk,
+      slow_clk_i => clocks.clk40,
+      strobe_o   => strobe
+      );
+
+  process (tx_usrclk)
+  begin
+    if (rising_edge(tx_usrclk)) then
+      if (strobe) then
+        link_frame_cnt <= (others => '1');
+      elsif (link_frame_cnt = c_LINK_FRAME_CNT_MAX) then
+        link_frame_cnt <= (others => '0');
+      else
+        link_frame_cnt <= link_frame_cnt + 1;
+      end if;
+    end if;
+  end process;
+
+  elink_outputs : for I in 0 to (NUM_OPTICAL_PACKETS-1) generate
+    signal cnt : integer;
+  begin
+    cnt <= to_integer(link_frame_cnt);
+    process (tx_usrclk)
+    begin
+      if (rising_edge(tx_usrclk)) then
+        mgt_words (I) <= fiber_packets_i(I)((cnt+1)*16-1 downto cnt*16);
+        is_kchar  (I) <= fiber_kchars_i (I)((cnt+1)*2 -1 downto cnt*2);
+      end if;
+      end process;
+  end generate;
+
+  --------------------------------------------------------------------------------
+  -- A7 MGT
+  --------------------------------------------------------------------------------
+
+  a7_optics_gen : if (FPGA_TYPE = "A7") generate
+  begin
+  end generate;
+
+  --------------------------------------------------------------------------------
+  -- V6 MGT
+  --------------------------------------------------------------------------------
+
+  v6_optics_gen : if (FPGA_TYPE = "V6") generate
+  begin
+  end generate;
+
+--  --===============================================================================================
+--  -- (this section is generated by <optohybrid_top>/tools/generate_registers.py -- do not edit)
+--  --==== Registers begin ==========================================================================
+--
+--  -- IPbus slave instanciation
+--  ipbus_slave_inst : entity work.ipbus_slave
+--    generic map(
+--      g_NUM_REGS             => REG_MGT_NUM_REGS,
+--      g_ADDR_HIGH_BIT        => REG_MGT_ADDRESS_MSB,
+--      g_ADDR_LOW_BIT         => REG_MGT_ADDRESS_LSB,
+--      g_USE_INDIVIDUAL_ADDRS => true
+--      )
+--    port map(
+--      ipb_reset_i            => ipb_reset_i,
+--      ipb_clk_i              => clocks.clk40,
+--      ipb_mosi_i             => ipb_mosi_i,
+--      ipb_miso_o             => ipb_miso_o,
+--      usr_clk_i              => clocks.clk40,
+--      regs_read_arr_i        => regs_read_arr,
+--      regs_write_arr_o       => regs_write_arr,
+--      read_pulse_arr_o       => regs_read_pulse_arr,
+--      write_pulse_arr_o      => regs_write_pulse_arr,
+--      regs_read_ready_arr_i  => regs_read_ready_arr,
+--      regs_write_done_arr_i  => regs_write_done_arr,
+--      individual_addrs_arr_i => regs_addresses,
+--      regs_defaults_arr_i    => regs_defaults,
+--      writable_regs_i        => regs_writable_arr
+--      );
+--
+--  -- Addresses
+--  regs_addresses(0)(REG_MGT_ADDRESS_MSB downto REG_MGT_ADDRESS_LSB) <= x"0";
+--  regs_addresses(1)(REG_MGT_ADDRESS_MSB downto REG_MGT_ADDRESS_LSB) <= x"1";
+--
+--  -- Connect read signals
+--  regs_read_arr(1)(REG_MGT_TX_PLL_LOCKED_BIT)                                        <= tx_pll_lock_i;
+--  regs_read_arr(1)(REG_MGT_TX_RESET_DONE_BIT)                                        <= tx_reset_done_i;
+--  regs_read_arr(1)(REG_MGT_TX_PRBS_MODE_MSB downto REG_MGT_TX_PRBS_MODE_LSB)         <= tx_prbs_mode;
+--  regs_read_arr(1)(REG_MGT_TX_PLL_RESET_BIT)                                         <= pll_reset;
+--  regs_read_arr(1)(REG_MGT_MGT_RESET_MSB downto REG_MGT_MGT_RESET_LSB)               <= mgt_reset;
+--  regs_read_arr(1)(REG_MGT_GTXTEST_START_BIT)                                        <= gtxtest_start;
+--  regs_read_arr(1)(REG_MGT_TXRESET_BIT)                                              <= txreset;
+--  regs_read_arr(1)(REG_MGT_MGT_REALIGN_BIT)                                          <= mgt_realign;
+--  regs_read_arr(1)(REG_MGT_TXPOWERDOWN_BIT)                                          <= txpowerdown;
+--  regs_read_arr(1)(REG_MGT_TXPOWERDOWN_MODE_MSB downto REG_MGT_TXPOWERDOWN_MODE_LSB) <= txpowerdown_mode;
+--  regs_read_arr(1)(REG_MGT_TXPLLPOWERDOWN_BIT)                                       <= txpllpowerdown;
+--
+--  -- Connect write signals
+--  tx_prbs_mode     <= regs_write_arr(1)(REG_MGT_TX_PRBS_MODE_MSB downto REG_MGT_TX_PRBS_MODE_LSB);
+--  pll_reset        <= regs_write_arr(1)(REG_MGT_TX_PLL_RESET_BIT);
+--  mgt_reset        <= regs_write_arr(1)(REG_MGT_MGT_RESET_MSB downto REG_MGT_MGT_RESET_LSB);
+--  gtxtest_start    <= regs_write_arr(1)(REG_MGT_GTXTEST_START_BIT);
+--  txreset          <= regs_write_arr(1)(REG_MGT_TXRESET_BIT);
+--  mgt_realign      <= regs_write_arr(1)(REG_MGT_MGT_REALIGN_BIT);
+--  txpowerdown      <= regs_write_arr(1)(REG_MGT_TXPOWERDOWN_BIT);
+--  txpowerdown_mode <= regs_write_arr(1)(REG_MGT_TXPOWERDOWN_MODE_MSB downto REG_MGT_TXPOWERDOWN_MODE_LSB);
+--  txpllpowerdown   <= regs_write_arr(1)(REG_MGT_TXPLLPOWERDOWN_BIT);
+--
+--  -- Connect write pulse signals
+--  reset_links <= regs_write_pulse_arr(0);
+--
+--  -- Connect write done signals
+--
+--  -- Connect read pulse signals
+--
+--  -- Connect counter instances
+--
+--  -- Connect rate instances
+--
+--  -- Connect read ready signals
+--
+--  -- Defaults
+--  regs_defaults(1)(REG_MGT_TX_PRBS_MODE_MSB downto REG_MGT_TX_PRBS_MODE_LSB)         <= REG_MGT_TX_PRBS_MODE_DEFAULT;
+--  regs_defaults(1)(REG_MGT_TX_PLL_RESET_BIT)                                         <= REG_MGT_TX_PLL_RESET_DEFAULT;
+--  regs_defaults(1)(REG_MGT_MGT_RESET_MSB downto REG_MGT_MGT_RESET_LSB)               <= REG_MGT_MGT_RESET_DEFAULT;
+--  regs_defaults(1)(REG_MGT_GTXTEST_START_BIT)                                        <= REG_MGT_GTXTEST_START_DEFAULT;
+--  regs_defaults(1)(REG_MGT_TXRESET_BIT)                                              <= REG_MGT_TXRESET_DEFAULT;
+--  regs_defaults(1)(REG_MGT_MGT_REALIGN_BIT)                                          <= REG_MGT_MGT_REALIGN_DEFAULT;
+--  regs_defaults(1)(REG_MGT_TXPOWERDOWN_BIT)                                          <= REG_MGT_TXPOWERDOWN_DEFAULT;
+--  regs_defaults(1)(REG_MGT_TXPOWERDOWN_MODE_MSB downto REG_MGT_TXPOWERDOWN_MODE_LSB) <= REG_MGT_TXPOWERDOWN_MODE_DEFAULT;
+--  regs_defaults(1)(REG_MGT_TXPLLPOWERDOWN_BIT)                                       <= REG_MGT_TXPLLPOWERDOWN_DEFAULT;
+--
+--  -- Define writable regs
+--  regs_writable_arr(1) <= '1';
+
+--==== Registers end ============================================================================
 end Behavioral;
