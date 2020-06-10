@@ -31,12 +31,12 @@ reg [2:0] pass_s7;
 
 reg [383:0] vpf_s0;
 reg [191:0] vpf_s1;
-reg [95:0] vpf_s2;
-reg [47:0] vpf_s3;
-reg [23:0] vpf_s4;
-reg [11:0] vpf_s5;
-reg [5:0] vpf_s6;
-reg [2:0] vpf_s7;
+reg [95:0]  vpf_s2;
+reg [47:0]  vpf_s3;
+reg [23:0]  vpf_s4;
+reg [11:0]  vpf_s5;
+reg [5:0]   vpf_s6;
+reg [2:0]   vpf_s7;
 
 reg [0:0] key_s1 [191:0];
 reg [1:0] key_s2 [95:0];
