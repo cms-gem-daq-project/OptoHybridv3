@@ -58,7 +58,6 @@ architecture behavioral of cluster_packer is
   component count_clusters
     port (
       clock4x    : in  std_logic;
-      --reset      : in std_logic;
       vpfs_i     : in  std_logic_vector;
       cnt_o      : out std_logic_vector;
       overflow_o : out std_logic

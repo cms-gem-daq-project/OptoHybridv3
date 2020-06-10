@@ -59,14 +59,6 @@ architecture behavioral of find_clusters is
     return std_logic_vector(to_unsigned(prt, MXPRTB));
   end to_partition;
 
-  function if_then_else (bool : boolean; a : integer; b : integer) return integer is
-  begin
-    if (bool) then
-      return a;
-    else
-      return b;
-    end if;
-  end if_then_else;
 
   constant NUM_ENCODERS : integer := if_then_else (GE11 = 1, 4, 2);
   constant NUM_CYCLES   : integer := 4;  -- number of clocks (4 for 160MHz, 5 for 200MHz)

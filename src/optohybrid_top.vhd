@@ -103,6 +103,7 @@ end top_optohybrid;
 
 architecture Behavioral of top_optohybrid is
 
+  signal led : std_logic_vector (15 downto 0);
   -- SBit cluster packer
   signal fiber_packets : t_fiber_packet_array (NUM_OPTICAL_PACKETS-1 downto 0);
   signal elink_packets : t_elink_packet_array (NUM_ELINK_PACKETS-1 downto 0);
@@ -130,18 +131,13 @@ architecture Behavioral of top_optohybrid is
 
   -- Global signals
 
-  signal idlyrdy           : std_logic;
-  signal mmcm_locked       : std_logic;
+  signal idlyrdy     : std_logic;
+  signal mmcm_locked : std_logic;
 
   signal clocks : clocks_t;
   signal ttc    : ttc_t;
 
   signal vtrx_mabs : std_logic_vector (1 downto 0);
-
-  signal gbt_txvalid : std_logic_vector (MXREADY-1 downto 0);
-  signal gbt_txready : std_logic_vector (MXREADY-1 downto 0);
-  signal gbt_rxvalid : std_logic_vector (MXREADY-1 downto 0);
-  signal gbt_rxready : std_logic_vector (MXREADY-1 downto 0);
 
   signal gbt_link_ready       : std_logic;
   signal gbt_link_error       : std_logic;
@@ -184,8 +180,6 @@ architecture Behavioral of top_optohybrid is
   signal ext_sbits  : std_logic_vector (7 downto 0);
   signal soft_reset : std_logic;
 
-  signal led : std_logic_vector (15 downto 0);
-
   signal adc_vp_int : std_logic;
   signal adc_vn_int : std_logic;
 
@@ -208,24 +202,10 @@ architecture Behavioral of top_optohybrid is
 
 begin
 
-  -- internal wiring
-
   gbt_request_received <= ipb_mosi_gbt.ipb_strobe;
-
-  -----------
-  -- Common
-  -----------
-
-  led_o (MXLED-1 downto 0) <= led (MXLED-1 downto 0);
-
-  gbt_rxready <= gbt_rxready_i;
-  gbt_rxvalid <= gbt_rxvalid_i;
-  gbt_txready <= gbt_txready_i;
-
-  ge11_out_assign : if (GE11 = 1) generate
-    ext_reset_o <= ctrl_reset_vfats;
-    ext_sbits_o <= ext_sbits;
-  end generate;
+  ext_reset_o          <= ctrl_reset_vfats(MXRESET-1 downto 0);
+  ext_sbits_o          <= ext_sbits (MXEXT-1 downto 0);
+  led_o          <= led (MXLED-1 downto 0);
 
   --------------------------------------------------------------------------------
   -- Clocking
@@ -257,9 +237,9 @@ begin
       clock_i        => clocks.clk40,
       soft_reset     => soft_reset,
       mmcms_locked_i => mmcm_locked,
-      gbt_rxready_i  => gbt_rxready(0),
-      gbt_rxvalid_i  => gbt_rxvalid(0),
-      gbt_txready_i  => gbt_txready(0),
+      gbt_rxready_i  => gbt_rxready_i(0),
+      gbt_rxvalid_i  => gbt_rxvalid_i(0),
+      gbt_txready_i  => gbt_txready_i(0),
       idlyrdy_i      => idlyrdy,
       core_reset_o   => core_reset,
       reset_o        => trigger_reset
@@ -273,7 +253,7 @@ begin
     port map(
       -- clock and reset
       reset_i => core_reset,
-      clocks => clocks,
+      clocks  => clocks,
 
       -- wishbone
       ipb_mosi_o => ipb_mosi_gbt,
@@ -287,9 +267,9 @@ begin
       cnt_snap => cnt_snap,
 
       -- GBT Status
-      gbt_rxready_i => gbt_rxready(0),
-      gbt_rxvalid_i => gbt_rxvalid(0),
-      gbt_txready_i => gbt_txready(0),
+      gbt_rxready_i    => gbt_rxready_i(0),
+      gbt_rxvalid_i    => gbt_rxvalid_i(0),
+      gbt_txready_i    => gbt_txready_i(0),
       gbt_link_error_o => gbt_link_error,
       gbt_link_ready_o => gbt_link_ready,
 
@@ -330,14 +310,8 @@ begin
   -- ADC
   --------------------------------------------------------------------------------
 
-  adc_v6 : if (GE11 = 1) generate
-    adc_vp_int <= adc_vp(0);
-    adc_vn_int <= adc_vn(0);
-  end generate;
-  adc_a7 : if (GE21 = 1) generate
-    adc_vp_int <= '1';
-    adc_vn_int <= '0';
-  end generate;
+  adc_vp_int <= if_then_else (GE11 = 1, adc_vp(0), '1');
+  adc_vn_int <= if_then_else (GE11 = 1, adc_vn(0), '0');
 
   adc_inst : entity work.adc port map(
     clock_i => clocks.clk40,
@@ -376,13 +350,13 @@ begin
       txfsm_done => txfsm_done,
 
       -- status inputs --
-      mmcms_locked_i     => mmcm_locked,
+      mmcms_locked_i => mmcm_locked,
 
       -- GBT status
       gbt_link_ready_i       => gbt_link_ready,
-      gbt_rxready_i          => gbt_rxready(0),
-      gbt_rxvalid_i          => gbt_rxvalid(0),
-      gbt_txready_i          => gbt_txready(0),
+      gbt_rxready_i          => gbt_rxready_i(0),
+      gbt_rxvalid_i          => gbt_rxvalid_i(0),
+      gbt_txready_i          => gbt_txready_i(0),
       gbt_request_received_i => gbt_request_received,
       gbt_link_error_i       => gbt_link_error,
 

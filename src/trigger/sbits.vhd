@@ -31,7 +31,7 @@ entity sbits is
 
     trig_stop_i : in std_logic;
 
-    vfat_sbit_clusters_o : out sbit_cluster_array_t (NUM_FOUND_CLUSTERS_PER_BX-1 downto 0);
+    clusters_o : out sbit_cluster_array_t (NUM_FOUND_CLUSTERS_PER_BX-1 downto 0);
 
     vfat_mask_i : in std_logic_vector (c_NUM_VFATS-1 downto 0);
 
@@ -249,7 +249,7 @@ begin
       trig_stop_i     => trig_stop_i,
       sbits_i         => vfat_sbits_strip_mapped,
       cluster_count_o => cluster_count_o,
-      clusters_o      => vfat_sbit_clusters_o,
+      clusters_o      => clusters_o,
       clusters_ena_o  => open,
       overflow_o      => overflow_o
       );
