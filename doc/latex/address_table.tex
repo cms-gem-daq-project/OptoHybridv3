@@ -279,6 +279,7 @@
     \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
     \nopagebreak
     DNA\_LSBS & \texttt{0x17} & \texttt{[31:0]} & r & \texttt{} & Device DNA bits 31 downto 0 \\\hline
+    DNA\_MSBS & \texttt{0x18} & \texttt{[24:0]} & r & \texttt{} & Device DNA bits 56 downto 32 \\\hline
     \end{tabularx}
     \vspace{5mm}
 
@@ -296,25 +297,7 @@
     \hline
     \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
     \nopagebreak
-    SECONDS & \texttt{0x18} & \texttt{[19:0]} & r & \texttt{} & Device uptime in seconds (20 bits) \\\hline
-    \end{tabularx}
-    \vspace{5mm}
-
-
-    \noindent
-    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.CONTROL.DNA}}}
-
-    \vspace{4mm}
-    \noindent
-    57 Bit FPGA-specific device identifier
-    \noindent
-
-    \keepXColumns
-    \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
-    \hline
-    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
-    \nopagebreak
-    DNA\_MSBS & \texttt{0x18} & \texttt{[24:0]} & r & \texttt{} & Device DNA bits 56 downto 32 \\\hline
+    SECONDS & \texttt{0x19} & \texttt{[19:0]} & r & \texttt{} & Device uptime in seconds (20 bits) \\\hline
     \end{tabularx}
     \vspace{5mm}
 

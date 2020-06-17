@@ -10,7 +10,7 @@ package registers is
     -- Implements various control and monitoring functions of the Optohybrid
     --============================================================================
 
-    constant REG_CONTROL_NUM_REGS : integer := 25;
+    constant REG_CONTROL_NUM_REGS : integer := 26;
     constant REG_CONTROL_ADDRESS_MSB : integer := 5;
     constant REG_CONTROL_ADDRESS_LSB : integer := 0;
     constant REG_CONTROL_LOOPBACK_DATA_ADDR    : std_logic_vector(5 downto 0) := "00" & x"0";
@@ -191,13 +191,13 @@ package registers is
     constant REG_CONTROL_DNA_DNA_LSBS_MSB    : integer := 31;
     constant REG_CONTROL_DNA_DNA_LSBS_LSB     : integer := 0;
 
-    constant REG_CONTROL_UPTIME_SECONDS_ADDR    : std_logic_vector(5 downto 0) := "01" & x"8";
-    constant REG_CONTROL_UPTIME_SECONDS_MSB    : integer := 19;
-    constant REG_CONTROL_UPTIME_SECONDS_LSB     : integer := 0;
-
     constant REG_CONTROL_DNA_DNA_MSBS_ADDR    : std_logic_vector(5 downto 0) := "01" & x"8";
     constant REG_CONTROL_DNA_DNA_MSBS_MSB    : integer := 24;
     constant REG_CONTROL_DNA_DNA_MSBS_LSB     : integer := 0;
+
+    constant REG_CONTROL_UPTIME_SECONDS_ADDR    : std_logic_vector(5 downto 0) := "01" & x"9";
+    constant REG_CONTROL_UPTIME_SECONDS_MSB    : integer := 19;
+    constant REG_CONTROL_UPTIME_SECONDS_LSB     : integer := 0;
 
 
     --============================================================================
