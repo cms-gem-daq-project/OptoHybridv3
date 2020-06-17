@@ -10,6 +10,8 @@ entity clock_strobe is
 end clock_strobe;
 
 architecture behavioral of clock_strobe is
+  signal reg     : std_logic := '0';
+  signal reg_dly : std_logic;
 begin
   --------------------------------------------------------------------------------
   -- Valid
@@ -25,20 +27,20 @@ begin
   --            __________                    __________
   -- valid    __|        |____________________|        |______
 
-  process (fast_clk_i, slow_clk_i)
-    variable reg     : std_logic := '0';
-    variable reg_dly : std_logic;
+  process (slow_clk_i)
   begin
     if (rising_edge(slow_clk_i)) then
-      reg := not reg;
+      reg <= not reg;
     end if;
-
-    if (rising_edge(fast_clk_i)) then
-      reg_dly := reg;
-    end if;
-
-    strobe_o <= reg_dly xor reg;
-
   end process;
+
+  process (fast_clk_i)
+  begin
+    if (rising_edge(fast_clk_i)) then
+      reg_dly <= reg;
+    end if;
+  end process;
+
+  strobe_o <= reg_dly xor reg;
 
 end behavioral;

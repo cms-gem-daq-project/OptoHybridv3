@@ -1,16 +1,16 @@
 `timescale 1ns / 100 ps
-module priority384 (
+module priority_n (
     input clock,
 
-    input      [2:0] pass_in,
-    output reg [2:0] pass_out,
+    input      [2:0] pass_i,
+    output reg [2:0] pass_o,
 
-    input   [MXKEYS       -1:0] vpfs_in,
-    input   [MXKEYS*MXCNTB-1:0] cnts_in,
+    input   [MXKEYS       -1:0] vpfs_i,
+    input   [MXKEYS*MXCNTB-1:0] cnts_i,
 
-    output reg  [MXKEYBITS-1:0] adr,
-    output reg                  vpf,
-    output reg  [MXCNTB-1:0]    cnt
+    output reg  [MXKEYBITS-1:0] adr_o,
+    output reg                  vpf_o,
+    output reg  [MXCNTB-1:0]    cnt_o
 );
 parameter MXKEYS    = 384;
 parameter MXKEYBITS = 9;
@@ -37,6 +37,7 @@ reg [23:0]  vpf_s4;
 reg [11:0]  vpf_s5;
 reg [5:0]   vpf_s6;
 reg [2:0]   vpf_s7;
+reg         vpf_s7;
 
 reg [0:0] key_s1 [191:0];
 reg [1:0] key_s2 [95:0];
@@ -45,6 +46,7 @@ reg [3:0] key_s4 [23:0];
 reg [4:0] key_s5 [11:0];
 reg [5:0] key_s6 [5:0];
 reg [6:0] key_s7 [2:0];
+reg [8:0] key;
 
 reg [2:0] cnt_s0 [383:0];
 reg [2:0] cnt_s1 [191:0];
@@ -54,6 +56,7 @@ reg [2:0] cnt_s4 [23:0];
 reg [2:0] cnt_s5 [11:0];
 reg [2:0] cnt_s6 [5:0];
 reg [2:0] cnt_s7 [2:0];
+reg [2:0] cnt;
 
 // choose here to specify pipeline register stages
 `define always_in  always @(*)
@@ -76,8 +79,8 @@ reg [2:0] cnt_s7 [2:0];
 `always_s7  pass_s7 <= pass_s6;
 `always_out pass_out <= pass_s7;
 
-`always_in pass_s0 <= pass_in;
-`always_in vpf_s0 <= vpfs_in;
+`always_in pass_s0 <= pass_i;
+`always_in vpf_s0 <= vpfs_i;
 
 //Remap flattened count bits into a 2D vector
 genvar ipad;
@@ -145,17 +148,24 @@ end
 endgenerate
 
 // Stage 8: 1 of 3 Parallel Encoder
-`always_out
+always @(*)
 begin
-    if      (vpf_s7[0]) {vpf, cnt, adr} = {vpf_s7[0], cnt_s7[0], {2'b00, key_s7[0]}};
-    else if (vpf_s7[1]) {vpf, cnt, adr} = {vpf_s7[1], cnt_s7[1], {2'b01, key_s7[1]}};
-    else if (vpf_s7[2]) {vpf, cnt, adr} = {vpf_s7[2], cnt_s7[2], {2'b10, key_s7[2]}};
+    if      (vpf_s7[0]) {vpf, cnt, key} = {vpf_s7[0], cnt_s7[0], {2'b00, key_s7[0]}};
+    else if (vpf_s7[1]) {vpf, cnt, key} = {vpf_s7[1], cnt_s7[1], {2'b01, key_s7[1]}};
+    else if (vpf_s7[2]) {vpf, cnt, key} = {vpf_s7[2], cnt_s7[2], {2'b10, key_s7[2]}};
     else   begin
        vpf <=  0;
        cnt <=  0;
-       adr <= ~0;
+       key <= ~0;
     end
 end
+
+`always_out begin
+    cnt_o <= cnt;
+    vpf_o <= vpf;
+    adr_o <= key;
+end
+
 //----------------------------------------------------------------------------------------------------------------------
 endmodule
 //----------------------------------------------------------------------------------------------------------------------

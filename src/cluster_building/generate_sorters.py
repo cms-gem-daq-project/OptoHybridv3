@@ -344,5 +344,5 @@ def generate_sorter (filename, number_of_inputs, number_of_outputs, latch_list, 
 
 # the first few stages can be disabled because the lists already come pre-sorted...
 # but this needs to be done with care and understanding
-generate_sorter("generated/sorter16.v", 16, 8, [3,6,10], [0,1])
+generate_sorter("generated/sorter16.v", 16, 16, [3,6,10], [0,1])
 generate_sorter("generated/sorter8.v", 8, 8, [3,6], [0,1,2])

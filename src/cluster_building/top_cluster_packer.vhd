@@ -57,7 +57,7 @@ architecture behavioral of cluster_packer is
 
   component count_clusters
     port (
-      clock4x    : in  std_logic;
+      clock      : in  std_logic;
       vpfs_i     : in  std_logic_vector;
       cnt_o      : out std_logic_vector;
       overflow_o : out std_logic
@@ -83,7 +83,8 @@ architecture behavioral of cluster_packer is
   component x_oneshot is
     port (
       d        : in  std_logic;
-      clock    : in  std_logic;
+      clk      : in  std_logic;
+      slowclk  : in  std_logic;
       deadtime : in  std_logic_vector;
       q        : out std_logic
       );
@@ -105,22 +106,19 @@ begin
   --            __________                    __________
   -- valid    __|        |____________________|        |______
 
-  process (clocks.clk160_0, clocks.clk40)
-    variable r80     : std_logic := '0';
-    variable r80_dly : std_logic;
+  process (clocks.clk160_0)
   begin
-    if (rising_edge(clocks.clk40)) then
-      r80 := not r80;
-    end if;
-
     if (rising_edge(clocks.clk160_0)) then
-      r80_dly        := r80;
       latch_pulse_s1 <= latch_pulse_s0;
     end if;
-
-    latch_pulse_s0 <= r80_dly xor r80;
   end process;
 
+  clock_strobe_inst : entity work.clock_strobe
+    port map (
+      fast_clk_i => clocks.clk160_0,
+      slow_clk_i => clocks.clk40,
+      strobe_o   => latch_pulse_s0
+      );
 
   --------------------------------------------------------------------------------
   -- Oneshot
@@ -131,13 +129,13 @@ begin
 
       -- Optional oneshot to keep VFATs from re-firing the same channel
       os_gen : if (ONESHOT) generate
-        sbit_oneshot : entity work.x_oneshot
+        sbit_oneshot : x_oneshot
           port map (
-            d          => sbits_i(os_vfat)(os_sbit),
-            q          => sbits_os(os_vfat)(os_sbit),
-            deadtime_i => std_logic_vector(to_unsigned(DEADTIME, 4)),
-            clock      => clocks.clk160_0,
-            slowclk    => clocks.clk40
+            d        => sbits_i(os_vfat)(os_sbit),
+            q        => sbits_os(os_vfat)(os_sbit),
+            deadtime => std_logic_vector(to_unsigned(DEADTIME, 4)),
+            clk      => clocks.clk160_0,
+            slowclk  => clocks.clk40
             );
       end generate;
 
@@ -156,12 +154,16 @@ begin
 
   ge21_partition_map_gen : if (GE21 = 1) generate
     invert_gen : if (INVERT_PARTITIONS) generate
-      partitions(0) <= sbits_os(0) & sbits_os(1) & sbits_os(2) & sbits_os(3) & sbits_os(4) & sbits_os(5);
-      partitions(1) <= sbits_os(6) & sbits_os(7) & sbits_os(8) & sbits_os(9) & sbits_os(10) & sbits_os(11);
+      partitions(0) <= sbits_os(5) & sbits_os(4) & sbits_os(3) & sbits_os(2) & sbits_os(1) & sbits_os(0);
+      partitions(1) <= sbits_os(11) & sbits_os(10) & sbits_os(9) & sbits_os(8) & sbits_os(7) & sbits_os(6);
+      --partitions(0) <= sbits_os(0) & sbits_os(1) & sbits_os(2) & sbits_os(3) & sbits_os(4) & sbits_os(5);
+      --partitions(1) <= sbits_os(6) & sbits_os(7) & sbits_os(8) & sbits_os(9) & sbits_os(10) & sbits_os(11);
     end generate;
     noninvert_gen : if (not INVERT_PARTITIONS) generate
-      partitions(1) <= sbits_os(0) & sbits_os(1) & sbits_os(2) & sbits_os(3) & sbits_os(4) & sbits_os(5);
-      partitions(0) <= sbits_os(6) & sbits_os(7) & sbits_os(8) & sbits_os(9) & sbits_os(10) & sbits_os(11);
+      --partitions(1) <= sbits_os(0) & sbits_os(1) & sbits_os(2) & sbits_os(3) & sbits_os(4) & sbits_os(5);
+      --partitions(0) <= sbits_os(6) & sbits_os(7) & sbits_os(8) & sbits_os(9) & sbits_os(10) & sbits_os(11);
+      partitions(1) <= sbits_os(5) & sbits_os(4) & sbits_os(3) & sbits_os(2) & sbits_os(1) & sbits_os(0);
+      partitions(0) <= sbits_os(11) & sbits_os(10) & sbits_os(9) & sbits_os(8) & sbits_os(7) & sbits_os(6);
     end generate;
   end generate;
 
@@ -221,7 +223,7 @@ begin
 
   count_clusters_inst : count_clusters
     port map (
-      clock4x    => clocks.clk160_0,
+      clock      => clocks.clk160_0,
       vpfs_i     => vpfs,
       cnt_o      => cluster_count_o,
       overflow_o => overflow_out

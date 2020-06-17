@@ -40,8 +40,8 @@ src/cluster_building/consecutive_count.v
 src/cluster_building/count768.v
 src/cluster_building/find_cluster_primaries.v
 src/cluster_building/find_clusters.vhd
-src/cluster_building/generated/sorter8.v
-src/cluster_building/priority384.v
+src/cluster_building/generated/sorter16.v
+src/cluster_building/priority192.v
 src/cluster_building/top_cluster_packer.vhd
 src/cluster_building/truncate_clusters.v
 src/cluster_building/x_oneshot.v

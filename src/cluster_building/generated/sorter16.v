@@ -85,6 +85,14 @@ module sorter16 (
     output [MXADRB-1:0] adr_out5,
     output [MXADRB-1:0] adr_out6,
     output [MXADRB-1:0] adr_out7,
+    output [MXADRB-1:0] adr_out8,
+    output [MXADRB-1:0] adr_out9,
+    output [MXADRB-1:0] adr_out10,
+    output [MXADRB-1:0] adr_out11,
+    output [MXADRB-1:0] adr_out12,
+    output [MXADRB-1:0] adr_out13,
+    output [MXADRB-1:0] adr_out14,
+    output [MXADRB-1:0] adr_out15,
 
     output [MXCNTB-1:0] cnt_out0,
     output [MXCNTB-1:0] cnt_out1,
@@ -94,6 +102,14 @@ module sorter16 (
     output [MXCNTB-1:0] cnt_out5,
     output [MXCNTB-1:0] cnt_out6,
     output [MXCNTB-1:0] cnt_out7,
+    output [MXCNTB-1:0] cnt_out8,
+    output [MXCNTB-1:0] cnt_out9,
+    output [MXCNTB-1:0] cnt_out10,
+    output [MXCNTB-1:0] cnt_out11,
+    output [MXCNTB-1:0] cnt_out12,
+    output [MXCNTB-1:0] cnt_out13,
+    output [MXCNTB-1:0] cnt_out14,
+    output [MXCNTB-1:0] cnt_out15,
 
     output [MXVPFB-1:0] vpf_out0,
     output [MXVPFB-1:0] vpf_out1,
@@ -103,6 +119,14 @@ module sorter16 (
     output [MXVPFB-1:0] vpf_out5,
     output [MXVPFB-1:0] vpf_out6,
     output [MXVPFB-1:0] vpf_out7,
+    output [MXVPFB-1:0] vpf_out8,
+    output [MXVPFB-1:0] vpf_out9,
+    output [MXVPFB-1:0] vpf_out10,
+    output [MXVPFB-1:0] vpf_out11,
+    output [MXVPFB-1:0] vpf_out12,
+    output [MXVPFB-1:0] vpf_out13,
+    output [MXVPFB-1:0] vpf_out14,
+    output [MXVPFB-1:0] vpf_out15,
 
     output [MXPRTB-1:0] prt_out0,
     output [MXPRTB-1:0] prt_out1,
@@ -112,6 +136,14 @@ module sorter16 (
     output [MXPRTB-1:0] prt_out5,
     output [MXPRTB-1:0] prt_out6,
     output [MXPRTB-1:0] prt_out7,
+    output [MXPRTB-1:0] prt_out8,
+    output [MXPRTB-1:0] prt_out9,
+    output [MXPRTB-1:0] prt_out10,
+    output [MXPRTB-1:0] prt_out11,
+    output [MXPRTB-1:0] prt_out12,
+    output [MXPRTB-1:0] prt_out13,
+    output [MXPRTB-1:0] prt_out14,
+    output [MXPRTB-1:0] prt_out15,
 
     input  pulse_in,
     output pulse_out
@@ -339,6 +371,14 @@ end
     assign {adr_out5,cnt_out5,prt_out5,vpf_out5} = data_concat_s10[5];
     assign {adr_out6,cnt_out6,prt_out6,vpf_out6} = data_concat_s10[6];
     assign {adr_out7,cnt_out7,prt_out7,vpf_out7} = data_concat_s10[7];
+    assign {adr_out8,cnt_out8,prt_out8,vpf_out8} = data_concat_s10[8];
+    assign {adr_out9,cnt_out9,prt_out9,vpf_out9} = data_concat_s10[9];
+    assign {adr_out10,cnt_out10,prt_out10,vpf_out10} = data_concat_s10[10];
+    assign {adr_out11,cnt_out11,prt_out11,vpf_out11} = data_concat_s10[11];
+    assign {adr_out12,cnt_out12,prt_out12,vpf_out12} = data_concat_s10[12];
+    assign {adr_out13,cnt_out13,prt_out13,vpf_out13} = data_concat_s10[13];
+    assign {adr_out14,cnt_out14,prt_out14,vpf_out14} = data_concat_s10[14];
+    assign {adr_out15,cnt_out15,prt_out15,vpf_out15} = data_concat_s10[15];
     assign pulse_out = pulse_s10;
 //----------------------------------------------------------------------------------------------------------------------
 endmodule

@@ -20,6 +20,7 @@ package hardware_pkg is
   constant REVERSE_VFAT_SBITS : std_logic_vector (11 downto 0) := x"000";
   constant MXSBITS            : integer                        := 64;
 
+  constant c_ENCODER_SIZE   : integer := 192;
   constant c_PARTITION_SIZE : integer := 6;
   constant c_NUM_PARTITIONS : integer := 2;
   constant c_NUM_VFATS      : integer := c_PARTITION_SIZE * c_NUM_PARTITIONS;  --12
@@ -35,7 +36,8 @@ package hardware_pkg is
   constant NUM_GT_TX : integer := 4;
   constant NUM_GT_REFCLK : integer := 2;
 
-  constant NUM_FOUND_CLUSTERS_PER_BX  : integer := 8;
+  constant NUM_ENCODERS : integer := 4;
+  constant NUM_FOUND_CLUSTERS_PER_BX  : integer := 16;
   constant NUM_OUTPUT_CLUSTERS_PER_BX : integer := 5;
   constant NUM_OVERFLOW_CLUSTERS      : integer := 5;
   constant NUM_OPTICAL_PACKETS        : integer := 1;

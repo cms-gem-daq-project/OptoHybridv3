@@ -2,7 +2,7 @@
 //`define DEBUG_X_ONESHOT 1
 //------------------------------------------------------------------------------------------------------------------
 // Digital One-Shot:
-//    Produces 1-clock wide pulse when d goes high.
+//    Produces 1-clk wide pulse when d goes high.
 //    Waits for d to go low before re-triggering.
 //
 //  02/07/2002  Initial
@@ -13,13 +13,13 @@
 //  09/06/2016  Mod to reduce latency by 1bx
 //  08/11/2017  Mod to add programmable deadtime
 //-----------------------------------------------------------------------------------------------------------------
-  module x_oneshot (d,clock,slowclk,deadtime_i,q);
+  module x_oneshot (d,clk,slowclk,deadtime,q);
 
   parameter NBITS    = 4;
 
   input  d;
-  input  clock;
-  input [NBITS-1:0] deadtime_i;
+  input  clk;
+  input [NBITS-1:0] deadtime;
   input  slowclk;
   output q;
 
@@ -27,11 +27,6 @@
   reg [2:0] sm;    // synthesis attribute safe_implementation of sm is "yes";
   parameter idle  =  0;
   parameter hold  =  1;
-
-  reg [NBITS-1:0] deadtime;
-  always @(posedge slowclk) begin
-    deadtime <= deadtime_i;
-  end
 
   reg [NBITS-1:0] halt = 3'd0;
   always @(posedge slowclk) begin
@@ -49,7 +44,7 @@
 // One-shot state machine
   initial sm = idle;
 
-  always @(posedge clock) begin
+  always @(posedge clk) begin
     case (sm)
       idle:    if (d)         sm <= hold;
       hold:    if(!d && done) sm <= idle;
@@ -61,7 +56,7 @@
   reg  q = 0;
 
   generate
-  always @(posedge clock) begin
+  always @(posedge clk) begin
       q <= d && (sm==idle);
   end
   endgenerate
