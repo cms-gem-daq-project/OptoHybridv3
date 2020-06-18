@@ -37,7 +37,7 @@ reg [23:0]  vpf_s4;
 reg [11:0]  vpf_s5;
 reg [5:0]   vpf_s6;
 reg [2:0]   vpf_s7;
-reg         vpf_s7;
+reg         vpf;
 
 reg [0:0] key_s1 [191:0];
 reg [1:0] key_s2 [95:0];
@@ -77,7 +77,7 @@ reg [2:0] cnt;
 `always_s5  pass_s5 <= pass_s4;
 `always_s6  pass_s6 <= pass_s5;
 `always_s7  pass_s7 <= pass_s6;
-`always_out pass_out <= pass_s7;
+`always_out pass_o   <= pass_s7;
 
 `always_in pass_s0 <= pass_i;
 `always_in vpf_s0 <= vpfs_i;
@@ -87,7 +87,7 @@ genvar ipad;
 generate
 for (ipad=0; ipad<384; ipad=ipad+1) begin: padloop
 `always_in
-    cnt_s0 [ipad] <= cnts_in [ipad*3+2:ipad*3];
+    cnt_s0 [ipad] <= cnts_i [ipad*3+2:ipad*3];
 end
 endgenerate
 
@@ -154,16 +154,16 @@ begin
     else if (vpf_s7[1]) {vpf, cnt, key} = {vpf_s7[1], cnt_s7[1], {2'b01, key_s7[1]}};
     else if (vpf_s7[2]) {vpf, cnt, key} = {vpf_s7[2], cnt_s7[2], {2'b10, key_s7[2]}};
     else   begin
-       vpf <=  0;
-       cnt <=  0;
-       key <= ~0;
+       vpf =  0;
+       cnt =  0;
+       key = ~0;
     end
 end
 
 `always_out begin
-    cnt_o <= cnt;
-    vpf_o <= vpf;
-    adr_o <= key;
+    cnt_o = cnt;
+    vpf_o = vpf;
+    adr_o = key;
 end
 
 //----------------------------------------------------------------------------------------------------------------------

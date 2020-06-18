@@ -61,23 +61,21 @@ library unisim;
 use unisim.vcomponents.all;
 
 entity to_gbt_ser is
-  generic
-    (                                   -- width of the data for the system
-      sys_w : integer := 1;
-      -- width of the data for the device
-      dev_w : integer := 8);
-  port
-    (
-      -- From the device out to the system
-      DATA_OUT_FROM_DEVICE : in  std_logic_vector(dev_w-1 downto 0);
-      DATA_OUT_TO_PINS_P   : out std_logic_vector(sys_w-1 downto 0);
-      DATA_OUT_TO_PINS_N   : out std_logic_vector(sys_w-1 downto 0);
-
-
--- Clock and reset signals
-      CLK_IN     : in std_logic;        -- Fast clock from PLL/MMCM
-      CLK_DIV_IN : in std_logic;        -- Slow clock from PLL/MMCM
-      IO_RESET   : in std_logic);       -- Reset signal for IO circuit
+  generic (
+    -- width of the data for the system
+    sys_w : integer := 1;
+    -- width of the data for the device
+    dev_w : integer := 8);
+  port (
+    -- From the device out to the system
+    DATA_OUT_FROM_DEVICE : in  std_logic_vector(dev_w-1 downto 0);
+    DATA_OUT_TO_PINS_P   : out std_logic_vector(sys_w-1 downto 0);
+    DATA_OUT_TO_PINS_N   : out std_logic_vector(sys_w-1 downto 0);
+    -- Clock and reset signals
+    CLK_IN               : in  std_logic;  -- Fast clock from PLL/MMCM
+    CLK_DIV_IN           : in  std_logic;  -- Slow clock from PLL/MMCM
+    IO_RESET             : in  std_logic   -- Reset signal for IO circuit
+    );
 end to_gbt_ser;
 
 architecture xilinx of to_gbt_ser is
@@ -89,7 +87,6 @@ architecture xilinx of to_gbt_ser is
   signal clk_in_int_buf                    : std_logic;
   signal clk_div_in_int                    : std_logic;
 
-
   -- Before the buffer
   signal data_out_to_pins_int      : std_logic_vector(sys_w-1 downto 0);
   -- Between the delay and serdes
@@ -97,8 +94,8 @@ architecture xilinx of to_gbt_ser is
   constant num_serial_bits         : integer := dev_w/sys_w;
   type serdarr is array (0 to 9) of std_logic_vector(sys_w-1 downto 0);
   -- Array to use intermediately from the serdes to the internal
-  --  devices. bus "0" is the leftmost bus
-  --  * fills in from higher order
+  -- devices. bus "0" is the leftmost bus
+  -- * fills in from higher order
   signal oserdes_d                 : serdarr := ((others => (others => '0')));
   signal serdesstrobe              : std_logic;
   signal ocascade_ms_d             : std_logic_vector(sys_w-1 downto 0);
@@ -106,16 +103,8 @@ architecture xilinx of to_gbt_ser is
   signal ocascade_sm_d             : std_logic_vector(sys_w-1 downto 0);
   signal ocascade_sm_t             : std_logic_vector(sys_w-1 downto 0);
 
-
-
 begin
-
-
-
-
   -- Create the clock logic
-
-
   -- We have multiple bits- step over every bit, instantiating the required elements
   pins : for pin_count in 0 to sys_w-1 generate
   begin

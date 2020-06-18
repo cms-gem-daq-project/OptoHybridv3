@@ -19,6 +19,7 @@ src/gbt/gbt_rx.vhd
 src/gbt/gbt_serdes.vhd
 src/gbt/gbt_tx.vhd
 src/gbt/link_request.vhd
+src/gbt/fifo_a7.vhd
 src/gbt/to_gbt_ser.vhd
 
 # Pkg

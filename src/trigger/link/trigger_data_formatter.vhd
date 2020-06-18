@@ -28,7 +28,7 @@ entity trigger_data_formatter is
 
     reset_i : in std_logic;
 
-    clusters_i : in sbit_cluster_array_t (NUM_FOUND_CLUSTERS_PER_BX-1 downto 0);
+    clusters_i : in sbit_cluster_array_t (NUM_FOUND_CLUSTERS-1 downto 0);
     --clusters_strobe_i : in std_logic;
 
     ttc_i : in ttc_t;
@@ -48,8 +48,8 @@ end trigger_data_formatter;
 
 architecture Behavioral of trigger_data_formatter is
 
-  -- NUM_FOUND_CLUSTERS_PER_BX = # clusters found per bx
-  -- NUM_OUTPUT_CLUSTERS_PER_BX = # clusters we can send on the output link
+  -- NUM_FOUND_CLUSTERS = # clusters found per bx
+  -- NUM_OUTPUT_CLUSTERS = # clusters we can send on the output link
 
   -- We can transmit N clusters per bunch crossing
   -- for each of the N clusters we need to select whether it is a primary cluster (from this BX), or a
@@ -128,10 +128,10 @@ architecture Behavioral of trigger_data_formatter is
     ovfl : sbit_cluster_array_t         -- array of late clusters
     )
     return sbit_cluster_array_t is
-    variable num_clst : integer := NUM_OUTPUT_CLUSTERS_PER_BX;
+    variable num_clst : integer := NUM_OUTPUT_CLUSTERS;
     variable num_ovfl : integer := ovfl'length;
     variable mask     : std_logic_vector (clst'length-1 downto 0);
-    variable ret      : sbit_cluster_array_t (NUM_OUTPUT_CLUSTERS_PER_BX-1 downto 0);
+    variable ret      : sbit_cluster_array_t (NUM_OUTPUT_CLUSTERS-1 downto 0);
   begin
 
     for I in 0 to num_clst-1 loop
@@ -149,20 +149,20 @@ architecture Behavioral of trigger_data_formatter is
     return ret;
   end function;
 
-  constant c_NUM_OVERFLOW : integer := NUM_FOUND_CLUSTERS_PER_BX-NUM_OUTPUT_CLUSTERS_PER_BX;
+  constant c_NUM_OVERFLOW : integer := NUM_FOUND_CLUSTERS-NUM_OUTPUT_CLUSTERS;
 
   signal overflow_clusters : sbit_cluster_array_t (c_NUM_OVERFLOW - 1 downto 0);
 
-  signal clusters          : sbit_cluster_array_t (NUM_OUTPUT_CLUSTERS_PER_BX-1 downto 0);
-  signal late_cluster_flag : std_logic_vector (NUM_OUTPUT_CLUSTERS_PER_BX-1 downto 0) := (others => '0');
+  signal clusters          : sbit_cluster_array_t (NUM_OUTPUT_CLUSTERS-1 downto 0);
+  signal late_cluster_flag : std_logic_vector (NUM_OUTPUT_CLUSTERS-1 downto 0) := (others => '0');
 
   signal ecc8     : std_logic_vector (7 downto 0);
   signal ecc8_2nd : std_logic_vector (7 downto 0);
   signal comma    : std_logic_vector (7 downto 0);
 
-  signal special_bits : std_logic_vector (NUM_OUTPUT_CLUSTERS_PER_BX-1 downto 0) := (others => '0');
+  signal special_bits : std_logic_vector (NUM_OUTPUT_CLUSTERS-1 downto 0) := (others => '0');
 
-  signal cluster_words : t_std16_array (NUM_OUTPUT_CLUSTERS_PER_BX-1 downto 0);
+  signal cluster_words : t_std16_array (NUM_OUTPUT_CLUSTERS-1 downto 0);
 
 begin
 
@@ -174,7 +174,7 @@ begin
   process (clocks.clk160_0)
   begin
     if (rising_edge(clocks.clk160_0)) then
-      overflow_clusters <= clusters_i (NUM_FOUND_CLUSTERS_PER_BX-1 downto NUM_OUTPUT_CLUSTERS_PER_BX);
+      overflow_clusters <= clusters_i (NUM_FOUND_CLUSTERS-1 downto NUM_OUTPUT_CLUSTERS);
     end if;
   end process;
 
@@ -186,7 +186,7 @@ begin
     end if;
   end process;
 
-  clusterloop : for I in 0 to NUM_OUTPUT_CLUSTERS_PER_BX-1 generate  -- 5 clusters in GE2/1, 5 + 5 in GE1/1
+  clusterloop : for I in 0 to NUM_OUTPUT_CLUSTERS-1 generate  -- 5 clusters in GE2/1, 5 + 5 in GE1/1
   begin
 
     -- 0 = cluster from this bx

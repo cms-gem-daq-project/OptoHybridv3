@@ -2,9 +2,6 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-library work;
-use work.types_pkg.all;
-
 package hardware_pkg is
 
   -- Configuration
@@ -43,9 +40,9 @@ package hardware_pkg is
   constant MXPRTB : integer := 3;       -- bits for # of partitions
 
   constant NUM_ENCODERS               : integer := 4;
-  constant NUM_CYCLES                 : integer := 4;                            -- number of clocks (4 for 160MHz, 5 for 200MHz)
-  constant NUM_FOUND_CLUSTERS_PER_BX  : integer := NUM_ENCODERS * NUM_CLUSTERS;  -- 16
-  constant NUM_OUTPUT_CLUSTERS_PER_BX : integer := 10;
+  constant NUM_CYCLES                 : integer := 4;                          -- number of clocks (4 for 160MHz, 5 for 200MHz)
+  constant NUM_FOUND_CLUSTERS  : integer := NUM_ENCODERS * NUM_CYCLES;  -- 16
+  constant NUM_OUTPUT_CLUSTERS : integer := 10;
 
   constant NUM_OPTICAL_PACKETS        : integer := 2; -- # of different optical link packets
   constant NUM_ELINK_PACKETS          : integer := 0; -- # of different copper link packets

@@ -16,7 +16,7 @@ entity find_clusters is
     vpfs_in : in std_logic_vector (MXSBITS*c_NUM_VFATS -1 downto 0);
     cnts_in : in std_logic_vector (MXSBITS*c_NUM_VFATS*3-1 downto 0);
 
-    clusters_o : out sbit_cluster_array_t (NUM_FOUND_CLUSTERS_PER_BX-1 downto 0);
+    clusters_o : out sbit_cluster_array_t (NUM_FOUND_CLUSTERS-1 downto 0);
 
     latch_out : out std_logic           -- this should go high when new vpfs are ready and stay high for just 1 clock
     );
@@ -31,7 +31,7 @@ architecture behavioral of find_clusters is
 
   function to_address (is_ge11 : boolean; encoder : integer; adr : std_logic_vector) return std_logic_vector is
   begin
-    if (is_ge11 and int(adr) > 191) then
+    if (is_ge11) then
       if (int(adr) > 191) then
         return std_logic_vector(to_unsigned(int(adr)-192, adr'length));
       else
@@ -48,6 +48,7 @@ architecture behavioral of find_clusters is
         end if;
       else
         assert false report "Invalid encoder size selected for GE21" severity error;
+        return adr;
       end if;
     end if;
   end to_address;
@@ -84,7 +85,7 @@ architecture behavioral of find_clusters is
   -- Signals
   --------------------------------------------------------------------------------
 
-  signal clusters_s1  : sbit_cluster_array_t (NUM_FOUND_CLUSTERS_PER_BX-1 downto 0);
+  signal clusters_s1  : sbit_cluster_array_t (NUM_FOUND_CLUSTERS-1 downto 0);
   signal latch_out_s1 : std_logic_vector (NUM_ENCODERS-1 downto 0);
 
 begin
@@ -238,7 +239,7 @@ begin
   -- we get up to 16 clusters / bx but only get to send a few so we put them in order of priority
   -- (should choose lowest addr first--- highest addr is invalid)
 
-  sort_ge21 : if (NUM_FOUND_CLUSTERS_PER_BX <= 8) generate
+  sort_ge21 : if (NUM_FOUND_CLUSTERS <= 8) generate
 
     component sorter8
       generic (
@@ -280,14 +281,14 @@ begin
         cnt_in6 : in std_logic_vector;
         cnt_in7 : in std_logic_vector;
 
-        vpf_in0 : in std_logic;
-        vpf_in1 : in std_logic;
-        vpf_in2 : in std_logic;
-        vpf_in3 : in std_logic;
-        vpf_in4 : in std_logic;
-        vpf_in5 : in std_logic;
-        vpf_in6 : in std_logic;
-        vpf_in7 : in std_logic;
+        vpf_in0 : in std_logic_vector;
+        vpf_in1 : in std_logic_vector;
+        vpf_in2 : in std_logic_vector;
+        vpf_in3 : in std_logic_vector;
+        vpf_in4 : in std_logic_vector;
+        vpf_in5 : in std_logic_vector;
+        vpf_in6 : in std_logic_vector;
+        vpf_in7 : in std_logic_vector;
 
         prt_out0 : out std_logic_vector;
         prt_out1 : out std_logic_vector;
@@ -316,14 +317,14 @@ begin
         cnt_out6 : out std_logic_vector;
         cnt_out7 : out std_logic_vector;
 
-        vpf_out0 : out std_logic;
-        vpf_out1 : out std_logic;
-        vpf_out2 : out std_logic;
-        vpf_out3 : out std_logic;
-        vpf_out4 : out std_logic;
-        vpf_out5 : out std_logic;
-        vpf_out6 : out std_logic;
-        vpf_out7 : out std_logic
+        vpf_out0 : out std_logic_vector;
+        vpf_out1 : out std_logic_vector;
+        vpf_out2 : out std_logic_vector;
+        vpf_out3 : out std_logic_vector;
+        vpf_out4 : out std_logic_vector;
+        vpf_out5 : out std_logic_vector;
+        vpf_out6 : out std_logic_vector;
+        vpf_out7 : out std_logic_vector
         );
     end component;
 
@@ -359,14 +360,14 @@ begin
         cnt_in6 => clusters_s1(6).cnt,
         cnt_in7 => clusters_s1(7).cnt,
 
-        vpf_in0 => clusters_s1(0).vpf,
-        vpf_in1 => clusters_s1(1).vpf,
-        vpf_in2 => clusters_s1(2).vpf,
-        vpf_in3 => clusters_s1(3).vpf,
-        vpf_in4 => clusters_s1(4).vpf,
-        vpf_in5 => clusters_s1(5).vpf,
-        vpf_in6 => clusters_s1(6).vpf,
-        vpf_in7 => clusters_s1(7).vpf,
+        vpf_in0(0) => clusters_s1(0).vpf,
+        vpf_in1(0) => clusters_s1(1).vpf,
+        vpf_in2(0) => clusters_s1(2).vpf,
+        vpf_in3(0) => clusters_s1(3).vpf,
+        vpf_in4(0) => clusters_s1(4).vpf,
+        vpf_in5(0) => clusters_s1(5).vpf,
+        vpf_in6(0) => clusters_s1(6).vpf,
+        vpf_in7(0) => clusters_s1(7).vpf,
 
         prt_in0 => clusters_s1(0).prt,
         prt_in1 => clusters_s1(1).prt,
@@ -396,14 +397,14 @@ begin
         prt_out6 => clusters_o(6).prt,
         prt_out7 => clusters_o(7).prt,
 
-        vpf_out0 => clusters_o(0).vpf,
-        vpf_out1 => clusters_o(1).vpf,
-        vpf_out2 => clusters_o(2).vpf,
-        vpf_out3 => clusters_o(3).vpf,
-        vpf_out4 => clusters_o(4).vpf,
-        vpf_out5 => clusters_o(5).vpf,
-        vpf_out6 => clusters_o(6).vpf,
-        vpf_out7 => clusters_o(7).vpf,
+        vpf_out0(0) => clusters_o(0).vpf,
+        vpf_out1(0) => clusters_o(1).vpf,
+        vpf_out2(0) => clusters_o(2).vpf,
+        vpf_out3(0) => clusters_o(3).vpf,
+        vpf_out4(0) => clusters_o(4).vpf,
+        vpf_out5(0) => clusters_o(5).vpf,
+        vpf_out6(0) => clusters_o(6).vpf,
+        vpf_out7(0) => clusters_o(7).vpf,
 
         cnt_out0 => clusters_o(0).cnt,
         cnt_out1 => clusters_o(1).cnt,
@@ -419,7 +420,7 @@ begin
         );
   end generate;
 
-  sort_16 : if (NUM_FOUND_CLUSTERS_PER_BX >= 8) generate
+  sort_16 : if (NUM_FOUND_CLUSTERS >= 8) generate
 
     component sorter16
       generic (
@@ -485,22 +486,22 @@ begin
         cnt_in14 : in std_logic_vector;
         cnt_in15 : in std_logic_vector;
 
-        vpf_in0  : in std_logic;
-        vpf_in1  : in std_logic;
-        vpf_in2  : in std_logic;
-        vpf_in3  : in std_logic;
-        vpf_in4  : in std_logic;
-        vpf_in5  : in std_logic;
-        vpf_in6  : in std_logic;
-        vpf_in7  : in std_logic;
-        vpf_in8  : in std_logic;
-        vpf_in9  : in std_logic;
-        vpf_in10 : in std_logic;
-        vpf_in11 : in std_logic;
-        vpf_in12 : in std_logic;
-        vpf_in13 : in std_logic;
-        vpf_in14 : in std_logic;
-        vpf_in15 : in std_logic;
+        vpf_in0  : in std_logic_vector;
+        vpf_in1  : in std_logic_vector;
+        vpf_in2  : in std_logic_vector;
+        vpf_in3  : in std_logic_vector;
+        vpf_in4  : in std_logic_vector;
+        vpf_in5  : in std_logic_vector;
+        vpf_in6  : in std_logic_vector;
+        vpf_in7  : in std_logic_vector;
+        vpf_in8  : in std_logic_vector;
+        vpf_in9  : in std_logic_vector;
+        vpf_in10 : in std_logic_vector;
+        vpf_in11 : in std_logic_vector;
+        vpf_in12 : in std_logic_vector;
+        vpf_in13 : in std_logic_vector;
+        vpf_in14 : in std_logic_vector;
+        vpf_in15 : in std_logic_vector;
 
         prt_out0  : out std_logic_vector;
         prt_out1  : out std_logic_vector;
@@ -553,22 +554,22 @@ begin
         cnt_out14 : out std_logic_vector;
         cnt_out15 : out std_logic_vector;
 
-        vpf_out0  : out std_logic;
-        vpf_out1  : out std_logic;
-        vpf_out2  : out std_logic;
-        vpf_out3  : out std_logic;
-        vpf_out4  : out std_logic;
-        vpf_out5  : out std_logic;
-        vpf_out6  : out std_logic;
-        vpf_out7  : out std_logic;
-        vpf_out8  : out std_logic;
-        vpf_out9  : out std_logic;
-        vpf_out10 : out std_logic;
-        vpf_out11 : out std_logic;
-        vpf_out12 : out std_logic;
-        vpf_out13 : out std_logic;
-        vpf_out14 : out std_logic;
-        vpf_out15 : out std_logic
+        vpf_out0  : out std_logic_vector;
+        vpf_out1  : out std_logic_vector;
+        vpf_out2  : out std_logic_vector;
+        vpf_out3  : out std_logic_vector;
+        vpf_out4  : out std_logic_vector;
+        vpf_out5  : out std_logic_vector;
+        vpf_out6  : out std_logic_vector;
+        vpf_out7  : out std_logic_vector;
+        vpf_out8  : out std_logic_vector;
+        vpf_out9  : out std_logic_vector;
+        vpf_out10 : out std_logic_vector;
+        vpf_out11 : out std_logic_vector;
+        vpf_out12 : out std_logic_vector;
+        vpf_out13 : out std_logic_vector;
+        vpf_out14 : out std_logic_vector;
+        vpf_out15 : out std_logic_vector
         );
     end component;
 
@@ -620,22 +621,22 @@ begin
         cnt_in14 => clusters_s1(14).cnt,
         cnt_in15 => clusters_s1(15).cnt,
 
-        vpf_in0 => clusters_s1(0).vpf,
-        vpf_in1 => clusters_s1(1).vpf,
-        vpf_in2 => clusters_s1(2).vpf,
-        vpf_in3 => clusters_s1(3).vpf,
-        vpf_in4 => clusters_s1(4).vpf,
-        vpf_in5 => clusters_s1(5).vpf,
-        vpf_in6 => clusters_s1(6).vpf,
-        vpf_in7  => clusters_s1(7).vpf,
-        vpf_in8  => clusters_s1(8).vpf,
-        vpf_in9  => clusters_s1(9).vpf,
-        vpf_in10 => clusters_s1(10).vpf,
-        vpf_in11 => clusters_s1(11).vpf,
-        vpf_in12 => clusters_s1(12).vpf,
-        vpf_in13 => clusters_s1(13).vpf,
-        vpf_in14 => clusters_s1(14).vpf,
-        vpf_in15 => clusters_s1(15).vpf,
+        vpf_in0(0) => clusters_s1(0).vpf,
+        vpf_in1(0) => clusters_s1(1).vpf,
+        vpf_in2(0) => clusters_s1(2).vpf,
+        vpf_in3(0) => clusters_s1(3).vpf,
+        vpf_in4(0) => clusters_s1(4).vpf,
+        vpf_in5(0) => clusters_s1(5).vpf,
+        vpf_in6(0) => clusters_s1(6).vpf,
+        vpf_in7(0)  => clusters_s1(7).vpf,
+        vpf_in8(0)  => clusters_s1(8).vpf,
+        vpf_in9(0)  => clusters_s1(9).vpf,
+        vpf_in10(0) => clusters_s1(10).vpf,
+        vpf_in11(0) => clusters_s1(11).vpf,
+        vpf_in12(0) => clusters_s1(12).vpf,
+        vpf_in13(0) => clusters_s1(13).vpf,
+        vpf_in14(0) => clusters_s1(14).vpf,
+        vpf_in15(0) => clusters_s1(15).vpf,
 
         prt_in0 => clusters_s1(0).prt,
         prt_in1 => clusters_s1(1).prt,
@@ -689,22 +690,22 @@ begin
         prt_out14 => clusters_o(14).prt,
         prt_out15 => clusters_o(15).prt,
 
-        vpf_out0  => clusters_o(0).vpf,
-        vpf_out1  => clusters_o(1).vpf,
-        vpf_out2  => clusters_o(2).vpf,
-        vpf_out3  => clusters_o(3).vpf,
-        vpf_out4  => clusters_o(4).vpf,
-        vpf_out5  => clusters_o(5).vpf,
-        vpf_out6  => clusters_o(6).vpf,
-        vpf_out7  => clusters_o(7).vpf,
-        vpf_out8  => clusters_o(8).vpf,
-        vpf_out9  => clusters_o(9).vpf,
-        vpf_out10 => clusters_o(10).vpf,
-        vpf_out11 => clusters_o(11).vpf,
-        vpf_out12 => clusters_o(12).vpf,
-        vpf_out13 => clusters_o(13).vpf,
-        vpf_out14 => clusters_o(14).vpf,
-        vpf_out15 => clusters_o(15).vpf,
+        vpf_out0(0)  => clusters_o(0).vpf,
+        vpf_out1(0)  => clusters_o(1).vpf,
+        vpf_out2(0)  => clusters_o(2).vpf,
+        vpf_out3(0)  => clusters_o(3).vpf,
+        vpf_out4(0)  => clusters_o(4).vpf,
+        vpf_out5(0)  => clusters_o(5).vpf,
+        vpf_out6(0)  => clusters_o(6).vpf,
+        vpf_out7(0)  => clusters_o(7).vpf,
+        vpf_out8(0)  => clusters_o(8).vpf,
+        vpf_out9(0)  => clusters_o(9).vpf,
+        vpf_out10(0) => clusters_o(10).vpf,
+        vpf_out11(0) => clusters_o(11).vpf,
+        vpf_out12(0) => clusters_o(12).vpf,
+        vpf_out13(0) => clusters_o(13).vpf,
+        vpf_out14(0) => clusters_o(14).vpf,
+        vpf_out15(0) => clusters_o(15).vpf,
 
         cnt_out0  => clusters_o(0).cnt,
         cnt_out1  => clusters_o(1).cnt,

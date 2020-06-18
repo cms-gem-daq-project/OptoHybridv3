@@ -44,9 +44,20 @@ end clocking;
 
 architecture Behavioral of clocking is
 
-  signal clk40     : std_logic;  -- 40 MHz phase shiftable frame clock from GBT
-  signal clk160_0  : std_logic;  -- 160 MHz phase shiftable frame clock from GBT
-  signal clk160_90 : std_logic;  -- 160 MHz phase shiftable frame clock from GBT
+  component logic_clocking
+    port (
+      clk_in1     : in  std_logic;
+      clk40_o     : out std_logic;
+      clk160_o    : out std_logic;
+      clk160_90_o : out std_logic;
+      clk200_o    : out std_logic;
+      locked_o    : out std_logic
+      );
+  end component;
+
+  signal clk40     : std_logic;         -- 40 MHz phase shiftable frame clock from GBT
+  signal clk160_0  : std_logic;         -- 160 MHz phase shiftable frame clock from GBT
+  signal clk160_90 : std_logic;         -- 160 MHz phase shiftable frame clock from GBT
   signal clk200    : std_logic;
 
   signal mmcm_locked : std_logic;
@@ -79,7 +90,7 @@ begin
       IB => clock_n
       );
 
-  logic_clocking : entity xil_defaultlib.logic_clocking
+  logic_clocking_inst : logic_clocking
     port map(
 
       clk_in1 => clock_i,

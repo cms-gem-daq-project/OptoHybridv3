@@ -173,7 +173,7 @@ begin
   link_request : entity work.link_request
     port map(
       -- clocks
-      fabric_clock_i => clock,          -- 40 MHz logic clock
+      clock => clock,          -- 40 MHz logic clock
 
       -- reset
       reset_i => reset,

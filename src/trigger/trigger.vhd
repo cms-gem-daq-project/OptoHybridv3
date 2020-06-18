@@ -32,7 +32,7 @@ entity trigger is
     clocks : in clocks_t;
     ttc    : in ttc_t;
 
-    sbit_clusters_o : out sbit_cluster_array_t (NUM_FOUND_CLUSTERS_PER_BX-1 downto 0);
+    sbit_clusters_o : out sbit_cluster_array_t (NUM_FOUND_CLUSTERS-1 downto 0);
 
     trigger_reset_i : in std_logic;
     core_reset_i    : in std_logic;
@@ -71,9 +71,9 @@ architecture Behavioral of trigger is
   signal sbitmon_l1a_delay : std_logic_vector (31 downto 0);
 
   signal sbit_overflow   : std_logic;
-  signal sbit_clusters   : sbit_cluster_array_t (NUM_FOUND_CLUSTERS_PER_BX-1 downto 0);
-  signal frozen_clusters : sbit_cluster_array_t (NUM_FOUND_CLUSTERS_PER_BX-1 downto 0);
-  signal valid_clusters  : std_logic_vector (NUM_FOUND_CLUSTERS_PER_BX downto 0);
+  signal sbit_clusters   : sbit_cluster_array_t (NUM_FOUND_CLUSTERS-1 downto 0);
+  signal frozen_clusters : sbit_cluster_array_t (NUM_FOUND_CLUSTERS-1 downto 0);
+  signal valid_clusters  : std_logic_vector (NUM_FOUND_CLUSTERS downto 0);
 
   signal valid_clusters_or : std_logic;
 
@@ -333,7 +333,7 @@ begin
 
   valid_clusters_or <= or_reduce (valid_clusters);
 
-  validmap : for I in 0 to NUM_FOUND_CLUSTERS_PER_BX-1 generate
+  validmap : for I in 0 to NUM_FOUND_CLUSTERS-1 generate
     valid_clusters (I) <= sbit_clusters(I).vpf;
   end generate validmap;
 

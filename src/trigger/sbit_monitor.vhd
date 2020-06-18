@@ -27,10 +27,10 @@ entity sbit_monitor is
     l1a_i     : in std_logic;
 
     -- Sbit cluster inputs
-    clusters_i : in sbit_cluster_array_t (NUM_FOUND_CLUSTERS_PER_BX-1 downto 0);
+    clusters_i : in sbit_cluster_array_t (NUM_FOUND_CLUSTERS-1 downto 0);
 
     -- output
-    frozen_clusters_o : out sbit_cluster_array_t (NUM_FOUND_CLUSTERS_PER_BX-1 downto 0);
+    frozen_clusters_o : out sbit_cluster_array_t (NUM_FOUND_CLUSTERS-1 downto 0);
 
     l1a_delay_o : out std_logic_vector(31 downto 0)
 
@@ -39,7 +39,7 @@ end sbit_monitor;
 
 architecture sbit_monitor_arch of sbit_monitor is
 
-  signal cluster_valid : std_logic_vector (NUM_FOUND_CLUSTERS_PER_BX-1 downto 0);
+  signal cluster_valid : std_logic_vector (NUM_FOUND_CLUSTERS-1 downto 0);
   signal armed         : std_logic := '1';
   signal link_trigger  : std_logic;
 
@@ -50,14 +50,14 @@ begin
 
   l1a_delay_o <= std_logic_vector(l1a_delay);
 
-  validmap : for I in 0 to NUM_FOUND_CLUSTERS_PER_BX-1 generate
+  validmap : for I in 0 to NUM_FOUND_CLUSTERS-1 generate
     cluster_valid (I) <= clusters_i(I).vpf;
   end generate validmap;
 
   link_trigger <= or_reduce(cluster_valid);
 
   -- freeze the sbits on the output when a trigger comes
-  freezeloop : for I in 0 to NUM_FOUND_CLUSTERS_PER_BX-1 generate
+  freezeloop : for I in 0 to NUM_FOUND_CLUSTERS-1 generate
     process(ttc_clk_i)
     begin
       if (rising_edge(ttc_clk_i)) then

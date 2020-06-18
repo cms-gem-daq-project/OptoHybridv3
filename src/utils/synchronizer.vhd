@@ -6,7 +6,7 @@ library work;
 
 entity synchronizer is
   generic (
-    N_STAGES : integer := 2
+    N_STAGES : integer := 1
     );
   port (
     async_i : in  std_logic;
@@ -23,7 +23,6 @@ architecture synchronizer_arch of synchronizer is
   attribute ASYNC_REG of s_resync     : signal is "TRUE";
   attribute SHREG_EXTRACT             : string;
   attribute SHREG_EXTRACT of s_resync : signal is "NO";
-
 
 begin
 

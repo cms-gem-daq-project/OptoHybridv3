@@ -1,7 +1,7 @@
 ##############################################################
 #
 # Xilinx Core Generator version 14.7
-# Date: Fri Jul 19 07:23:19 2019
+# Date: Thu Jun 18 17:17:49 2020
 #
 ##############################################################
 #
@@ -64,32 +64,32 @@ CSET clkfb_out_n_port=CLKFB_OUT_N
 CSET clkfb_out_p_port=CLKFB_OUT_P
 CSET clkfb_out_port=CLKFB_OUT
 CSET clkfb_stopped_port=CLKFB_STOPPED
-CSET clkin1_jitter_ps=6.18
+CSET clkin1_jitter_ps=6.25
 CSET clkin1_ui_jitter=0.002
 CSET clkin2_jitter_ps=100.0
 CSET clkin2_ui_jitter=0.010
 CSET clkout1_drives=BUFG
 CSET clkout1_requested_duty_cycle=50.000
-CSET clkout1_requested_out_freq=40.453
+CSET clkout1_requested_out_freq=40.0
 CSET clkout1_requested_phase=0.000
 CSET clkout2_drives=BUFG
 CSET clkout2_requested_duty_cycle=50.000
-CSET clkout2_requested_out_freq=80.906
+CSET clkout2_requested_out_freq=80.0
 CSET clkout2_requested_phase=0.000
 CSET clkout2_used=true
 CSET clkout3_drives=BUFG
 CSET clkout3_requested_duty_cycle=50.000
-CSET clkout3_requested_out_freq=160.812
+CSET clkout3_requested_out_freq=160.0
 CSET clkout3_requested_phase=0.000
 CSET clkout3_used=true
 CSET clkout4_drives=BUFG
 CSET clkout4_requested_duty_cycle=50.000
-CSET clkout4_requested_out_freq=160.812
+CSET clkout4_requested_out_freq=160.0
 CSET clkout4_requested_phase=90
 CSET clkout4_used=true
 CSET clkout5_drives=BUFG
 CSET clkout5_requested_duty_cycle=50.000
-CSET clkout5_requested_out_freq=202.265
+CSET clkout5_requested_out_freq=200.0
 CSET clkout5_requested_phase=0
 CSET clkout5_used=true
 CSET clkout6_drives=BUFG
@@ -151,7 +151,7 @@ CSET mmcm_bandwidth=LOW
 CSET mmcm_clkfbout_mult_f=5.000
 CSET mmcm_clkfbout_phase=0.000
 CSET mmcm_clkfbout_use_fine_ps=false
-CSET mmcm_clkin1_period=3.090
+CSET mmcm_clkin1_period=3.125
 CSET mmcm_clkin2_period=10.0
 CSET mmcm_clkout0_divide_f=20.000
 CSET mmcm_clkout0_duty_cycle=0.5
@@ -223,7 +223,7 @@ CSET pll_divclk_divide=1
 CSET pll_notes=None
 CSET pll_ref_jitter=0.010
 CSET power_down_port=POWER_DOWN
-CSET prim_in_freq=323.620
+CSET prim_in_freq=320.0
 CSET prim_in_jitter=0.002
 CSET prim_source=No_buffer
 CSET primary_port=clk_in1
@@ -266,4 +266,4 @@ CSET use_status=false
 MISC pkg_timestamp=2012-05-10T12:44:55Z
 # END Extra information
 GENERATE
-# CRC: daa15b7b
+# CRC: ea21301c

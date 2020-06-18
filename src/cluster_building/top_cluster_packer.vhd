@@ -26,7 +26,7 @@ entity cluster_packer is
 
     sbits_i : in sbits_array_t (c_NUM_VFATS-1 downto 0);
 
-    clusters_o : out sbit_cluster_array_t (NUM_FOUND_CLUSTERS_PER_BX-1 downto 0);
+    clusters_o : out sbit_cluster_array_t (NUM_FOUND_CLUSTERS-1 downto 0);
 
     clusters_ena_o : out std_logic;
 
@@ -53,7 +53,7 @@ architecture behavioral of cluster_packer is
 
   signal cluster_latch : std_logic;
 
-  signal clusters : sbit_cluster_array_t (NUM_FOUND_CLUSTERS_PER_BX-1 downto 0);
+  signal clusters : sbit_cluster_array_t (NUM_FOUND_CLUSTERS-1 downto 0);
 
   component count_clusters
     port (
