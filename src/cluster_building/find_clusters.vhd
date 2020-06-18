@@ -79,7 +79,6 @@ architecture behavioral of find_clusters is
     return std_logic_vector(to_unsigned(prt, MXPRTB));
   end to_partition;
 
-  constant NUM_CYCLES   : integer := 4;  -- number of clocks (4 for 160MHz, 5 for 200MHz)
 
   --------------------------------------------------------------------------------
   -- Signals

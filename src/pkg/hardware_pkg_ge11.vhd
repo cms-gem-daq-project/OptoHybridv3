@@ -7,47 +7,60 @@ use work.types_pkg.all;
 
 package hardware_pkg is
 
-  constant GE11            : boolean := true;
-  constant FPGA_TYPE       : string  := "V6";
-  constant FPGA_TYPE_IS_V6 : integer := 1;
-  constant FPGA_TYPE_IS_A7 : integer := 0;
+  -- Configuration
+  constant GE21      : integer := 0;
+  constant GE11      : integer := 1;
+  constant FPGA_TYPE : string  := "V6";
 
-  constant MXELINKS : integer := 0;
-  constant MXLED    : integer := 16;
-  constant MXRESET  : integer := 12;
-  constant MXREADY  : integer := 1;
-  constant MXEXT    : integer := 8;
-  constant MXADC    : integer := 1;
+  -- I/O Settings
+  constant HAS_ELINK_OUTPUTS : boolean := false;
+  constant MXELINKS          : integer := 0;
+  constant MXLED             : integer := 16;
+  constant MXRESET           : integer := 12;
+  constant MXREADY           : integer := 1;
+  constant MXEXT             : integer := 8;
+  constant MXADC             : integer := 1;
+  constant NUM_GT_TX         : integer := 4;
+  constant NUM_GT_REFCLK     : integer := 2;
 
-  constant NUM_ENCODERS       : integer                        := 4;
-  constant REMAP_STRIPS       : boolean                        := false;
-  constant REVERSE_VFAT_SBITS : std_logic_vector (23 downto 0) := x"000000";
-  constant MXSBITS            : integer                        := 64;
-
+  -- Chamber Parameters
+  constant MXSBITS          : integer := 64;
   constant c_ENCODER_SIZE   : integer := 384;
   constant c_PARTITION_SIZE : integer := 3;
   constant c_NUM_PARTITIONS : integer := 8;
   constant c_NUM_VFATS      : integer := c_PARTITION_SIZE * c_NUM_PARTITIONS;
+  constant MXSBITS_CHAMBER  : integer := c_NUM_VFATS*MXSBITS;
 
-  constant MXSBITS_CHAMBER : integer := c_NUM_VFATS*MXSBITS;
+  -- Cluster finding Settings
 
-  constant INVERT_PARTITIONS : boolean := true;
+  constant REMAP_STRIPS      : boolean := false;
+  constant INVERT_PARTITIONS : boolean := false;
 
-  constant MXADRB : integer := 8;
-  constant MXCNTB : integer := 3;
-  constant MXPRTB : integer := 3;       --
+  constant REVERSE_VFAT_SBITS : std_logic_vector (c_NUM_VFATS-1 downto 0) := x"000000";
 
-  constant NUM_GT_TX     : integer := 4;
-  constant NUM_GT_REFCLK : integer := 2;
+  constant MXADRB : integer := 8;       -- bits for addr in partition
+  constant MXCNTB : integer := 3;       -- bits for size of cluster
+  constant MXPRTB : integer := 3;       -- bits for # of partitions
 
-  constant INVALID_SBIT_ADR : std_logic_vector (MXADRB-1 downto 0) := "111" & x"FE";
-
-  constant cluster_pad : std_logic := '0';
-
-  constant NUME_LINK_PACKETS          : integer := 0;
-  constant MXCLUSTERS                 : integer := 16;
+  constant NUM_ENCODERS               : integer := 4;
+  constant NUM_CYCLES                 : integer := 4;                            -- number of clocks (4 for 160MHz, 5 for 200MHz)
+  constant NUM_FOUND_CLUSTERS_PER_BX  : integer := NUM_ENCODERS * NUM_CLUSTERS;  -- 16
   constant NUM_OUTPUT_CLUSTERS_PER_BX : integer := 10;
-  constant NUM_OVERFLOW_CLUSTERS      : integer := 10;
-  constant NUM_OPTICAL_PACKETS        : integer := 2;
+
+  constant NUM_OPTICAL_PACKETS        : integer := 2; -- # of different optical link packets
+  constant NUM_ELINK_PACKETS          : integer := 0; -- # of different copper link packets
+
+  -- TMR Enables
+  constant USE_TMR_RESET              : integer := 1;
+  constant USE_TMR_TTC                : integer := 1;
+  constant USE_TMR_MGT_CONTROL        : integer := 1;
+  constant USE_TMR_MGT_DATA           : integer := 1;
+  constant USE_TMR_GBT_LINK           : integer := 1;
+  constant USE_TMR_IPB_SWITCH         : integer := 1;
+  constant USE_TMR_IPB_SLAVE_TRIGGER  : integer := 1;
+  constant USE_TMR_IPB_SLAVE_CONTROL  : integer := 1;
+  constant USE_TMR_IPB_SLAVE_GBT      : integer := 1;
+  constant USE_TMR_IPB_SLAVE_ADC      : integer := 1;
+  constant USE_TMR_IPB_SLAVE_CLOCKING : integer := 1;
 
 end hardware_pkg;
