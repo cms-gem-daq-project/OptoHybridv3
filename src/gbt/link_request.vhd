@@ -88,7 +88,7 @@ begin
     end if;
   end process;
 
-  fifo_request_rx_inst : entity work.fifo
+  fifo_request_rx_inst : fifo
     port map(
       rst                => reset_i,
       clk                => clock,
@@ -105,7 +105,7 @@ begin
       dbiterr            => open
       );
 
-  fifo_request_tx_inst : entity work.fifo
+  fifo_request_tx_inst : fifo
     port map(
       rst                => reset_i,
       clk                => clock,

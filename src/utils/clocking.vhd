@@ -117,7 +117,7 @@ begin
 
   clocks.locked <= mmcm_locked;
   clocks.sysclk <= sysclk;
-  clocks.clk40  <= clk40,
+  clocks.clk40  <= clk40;
   clocks.clk160_0 <= clk160_0;
   clocks.clk160_90 <= clk160_90;
   clocks.clk200    <= clk200;

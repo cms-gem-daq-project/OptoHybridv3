@@ -1303,56 +1303,13 @@ package registers is
     -- tranceivers
     --============================================================================
 
-    constant REG_MGT_NUM_REGS : integer := 2;
+    constant REG_MGT_NUM_REGS : integer := 1;
     constant REG_MGT_ADDRESS_MSB : integer := 3;
     constant REG_MGT_ADDRESS_LSB : integer := 0;
-    constant REG_MGT_RESET_ADDR    : std_logic_vector(3 downto 0) := x"0";
-    constant REG_MGT_RESET_BIT    : integer := 0;
-
-    constant REG_MGT_TX_PLL_LOCKED_ADDR    : std_logic_vector(3 downto 0) := x"1";
-    constant REG_MGT_TX_PLL_LOCKED_BIT    : integer := 0;
-
-    constant REG_MGT_TX_RESET_DONE_ADDR    : std_logic_vector(3 downto 0) := x"1";
-    constant REG_MGT_TX_RESET_DONE_BIT    : integer := 4;
-
-    constant REG_MGT_TX_PRBS_MODE_ADDR    : std_logic_vector(3 downto 0) := x"1";
-    constant REG_MGT_TX_PRBS_MODE_MSB    : integer := 10;
-    constant REG_MGT_TX_PRBS_MODE_LSB     : integer := 8;
-    constant REG_MGT_TX_PRBS_MODE_DEFAULT : std_logic_vector(10 downto 8) := "000";
-
-    constant REG_MGT_TX_PLL_RESET_ADDR    : std_logic_vector(3 downto 0) := x"1";
-    constant REG_MGT_TX_PLL_RESET_BIT    : integer := 11;
-    constant REG_MGT_TX_PLL_RESET_DEFAULT : std_logic := '0';
-
-    constant REG_MGT_MGT_RESET_ADDR    : std_logic_vector(3 downto 0) := x"1";
-    constant REG_MGT_MGT_RESET_MSB    : integer := 15;
-    constant REG_MGT_MGT_RESET_LSB     : integer := 12;
-    constant REG_MGT_MGT_RESET_DEFAULT : std_logic_vector(15 downto 12) := x"0";
-
-    constant REG_MGT_GTXTEST_START_ADDR    : std_logic_vector(3 downto 0) := x"1";
-    constant REG_MGT_GTXTEST_START_BIT    : integer := 16;
-    constant REG_MGT_GTXTEST_START_DEFAULT : std_logic := '0';
-
-    constant REG_MGT_TXRESET_ADDR    : std_logic_vector(3 downto 0) := x"1";
-    constant REG_MGT_TXRESET_BIT    : integer := 17;
-    constant REG_MGT_TXRESET_DEFAULT : std_logic := '0';
-
-    constant REG_MGT_MGT_REALIGN_ADDR    : std_logic_vector(3 downto 0) := x"1";
-    constant REG_MGT_MGT_REALIGN_BIT    : integer := 18;
-    constant REG_MGT_MGT_REALIGN_DEFAULT : std_logic := '0';
-
-    constant REG_MGT_TXPOWERDOWN_ADDR    : std_logic_vector(3 downto 0) := x"1";
-    constant REG_MGT_TXPOWERDOWN_BIT    : integer := 19;
-    constant REG_MGT_TXPOWERDOWN_DEFAULT : std_logic := '0';
-
-    constant REG_MGT_TXPOWERDOWN_MODE_ADDR    : std_logic_vector(3 downto 0) := x"1";
-    constant REG_MGT_TXPOWERDOWN_MODE_MSB    : integer := 21;
-    constant REG_MGT_TXPOWERDOWN_MODE_LSB     : integer := 20;
-    constant REG_MGT_TXPOWERDOWN_MODE_DEFAULT : std_logic_vector(21 downto 20) := "01";
-
-    constant REG_MGT_TXPLLPOWERDOWN_ADDR    : std_logic_vector(3 downto 0) := x"1";
-    constant REG_MGT_TXPLLPOWERDOWN_BIT    : integer := 22;
-    constant REG_MGT_TXPLLPOWERDOWN_DEFAULT : std_logic := '0';
+    constant REG_MGT_TX_PRBS_MODE_ADDR    : std_logic_vector(3 downto 0) := x"0";
+    constant REG_MGT_TX_PRBS_MODE_MSB    : integer := 1;
+    constant REG_MGT_TX_PRBS_MODE_LSB     : integer := 0;
+    constant REG_MGT_TX_PRBS_MODE_DEFAULT : std_logic_vector(1 downto 0) := "00";
 
 
 end registers;

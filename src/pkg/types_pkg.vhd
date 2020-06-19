@@ -189,10 +189,10 @@ package body types_pkg is
 
   function cluster_to_vector (a : sbit_cluster_t; size : integer)
     return std_logic_vector is
-    variable tmp : std_logic_vector (a.cnt'length + a.prt'length + a.adr'length-1 downto 0);
+    variable tmp  : std_logic_vector (a.cnt'length + a.prt'length + a.adr'length-1 downto 0);
     variable tmp2 : std_logic_vector (size-1 downto 0);
   begin
-    tmp :=a.cnt & a.prt & a.adr ;
+    tmp  := a.cnt & a.prt & a.adr;
     tmp2 := std_logic_vector(resize(unsigned(tmp), size));
     return tmp2;
   end function;

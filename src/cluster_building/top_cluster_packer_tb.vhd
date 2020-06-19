@@ -32,7 +32,7 @@ architecture behave of top_cluster_packer_tb is
   signal trig_stop_i     : std_logic                              := '0';
   signal cluster_count_o : std_logic_vector (10 downto 0);
   signal sbits_i         : sbits_array_t (c_NUM_VFATS-1 downto 0) := (others => (others => '0'));
-  signal clusters_o      : sbit_cluster_array_t (NUM_FOUND_CLUSTERS_PER_BX-1 downto 0);
+  signal clusters_o      : sbit_cluster_array_t (NUM_FOUND_CLUSTERS-1 downto 0);
   signal clusters_ena_o  : std_logic;
   signal overflow_o      : std_logic;
 

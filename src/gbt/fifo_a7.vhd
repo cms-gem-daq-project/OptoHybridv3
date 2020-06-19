@@ -23,10 +23,10 @@ entity fifo is
     rst     : in  std_logic;
     clk     : in  std_logic;
     wr_en   : in  std_logic;
-    din     : in  std_logic_vector(WR_WIDTH-1 downto 0);
     rd_en   : in  std_logic;
-    valid   : out std_logic;
+    din     : in  std_logic_vector(WR_WIDTH-1 downto 0);
     dout    : out std_logic_vector(RD_WIDTH-1 downto 0);
+    valid   : out std_logic;
     full    : out std_logic;
     empty   : out std_logic;
     sbiterr : out std_logic;

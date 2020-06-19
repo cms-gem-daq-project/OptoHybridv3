@@ -32,7 +32,6 @@ src/pkg/version_pkg.vhd
 # GBT
 src/ip_cores_a7/logic_clocking/logic_clocking.xci
 src/ip_cores_a7/sem_a7/sem_a7.xci
-#src/ip_cores_a7/to_gbt_ser/to_gbt_ser.xci
 src/ip_cores_a7/xadc_a7/xadc_a7.xci
 
 # Cluster packer
@@ -68,17 +67,16 @@ src/trigger/link/gtp/gtp_sync_block.vhd
 src/trigger/link/gtp/gtp_sync_pulse.vhd
 src/trigger/link/gtp/gtp_tx_manual_phase_align.vhd
 src/trigger/link/gtp/gtp_tx_startup_fsm.vhd
-src/trigger/link/gtp/gtp.vhd
 src/trigger/link/gtp/gtp_wrapper.vhd
 
 # Utils
-src/utils/clock_strobe.vhd
 src/utils/6b8b.vhd
 src/utils/6b8b_pkg.vhd
 src/utils/8b6b.vhd
-src/utils/DRU.vhd
-src/utils/OVERSAMPLE.vhd
+src/utils/dru.vhd
+src/utils/oversample.vhd
 src/utils/bitslip.vhd
+src/utils/clock_strobe.vhd
 src/utils/clocking.vhd
 src/utils/counter_snap.vhd
 src/utils/cylon.v
