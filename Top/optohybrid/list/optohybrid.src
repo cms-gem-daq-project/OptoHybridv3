@@ -50,14 +50,26 @@ src/cluster_building/x_oneshot.v
 # Trigger
 src/trigger/active_vfats.vhd
 src/trigger/channel_to_strip.vhd
-src/trigger/link/trigger_data_formatter.vhd
-src/trigger/link/trigger_data_phy.vhd
+src/trigger/trigger_data_formatter.vhd
+src/trigger/trigger_data_phy.vhd
 src/trigger/sbit_monitor.vhd
 src/trigger/sbits.vhd
 src/trigger/sbits_hitmap.vhd
 src/trigger/trig_alignment/frame_aligner.v
 src/trigger/trig_alignment/trig_alignment.vhd
 src/trigger/trigger.vhd
+
+# GTP
+src/trigger/link/gtp/gtp_common.vhd
+src/trigger/link/gtp/gtp_common_reset.vhd
+src/trigger/link/gtp/gtp_cpll_railing.vhd
+src/trigger/link/gtp/gtp_gt.vhd
+src/trigger/link/gtp/gtp_sync_block.vhd
+src/trigger/link/gtp/gtp_sync_pulse.vhd
+src/trigger/link/gtp/gtp_tx_manual_phase_align.vhd
+src/trigger/link/gtp/gtp_tx_startup_fsm.vhd
+src/trigger/link/gtp/gtp.vhd
+src/trigger/link/gtp/gtp_wrapper.vhd
 
 # Utils
 src/utils/clock_strobe.vhd

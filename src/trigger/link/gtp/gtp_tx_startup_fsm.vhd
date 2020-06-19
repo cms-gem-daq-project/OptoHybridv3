@@ -71,8 +71,8 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
-entity gtp_TX_STARTUP_FSM is
-  Generic(
+entity gtp_tx_startup_fsm is
+  generic(
            EXAMPLE_SIMULATION       : integer := 0; 
            STABLE_CLOCK_PERIOD      : integer range 4 to 250 := 8; --Period of the stable clock driving this state-machine, unit is [ns]
            RETRY_COUNTER_BITWIDTH   : integer range 2 to 8  := 8; 
@@ -82,7 +82,7 @@ entity gtp_TX_STARTUP_FSM is
                                                                   -- is enough. For single-lane applications the automatic alignment is 
                                                                   -- sufficient              
          );     
-    Port ( STABLE_CLOCK             : in  STD_LOGIC;              --Stable Clock, either a stable clock from the PCB
+    port ( STABLE_CLOCK             : in  STD_LOGIC;              --Stable Clock, either a stable clock from the PCB
                                                                   --or reference-clock present at startup.
            TXUSERCLK                : in  STD_LOGIC;              --TXUSERCLK as used in the design
            SOFT_RESET               : in  STD_LOGIC;              --User Reset, can be pulled any time
@@ -105,7 +105,7 @@ entity gtp_TX_STARTUP_FSM is
            RETRY_COUNTER            : out  STD_LOGIC_VECTOR (RETRY_COUNTER_BITWIDTH-1 downto 0):=(others=>'0')-- Number of 
                                                             -- Retries it took to get the transceiver up and running
            );
-end gtp_TX_STARTUP_FSM;
+end gtp_tx_startup_fsm;
 
 --Interdependencies:
 -- * Timing depends on the frequency of the stable clock. Hence counters-sizes

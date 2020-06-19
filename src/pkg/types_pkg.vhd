@@ -28,24 +28,56 @@ package types_pkg is
   type t_elink_packet_array is array(integer range <>) of std_logic_vector(8*11-1 downto 0);
   type t_fiber_packet_array is array(integer range <>) of std_logic_vector(16*5-1 downto 0);
 
+  type drp_i_t is record
+    addr : std_logic_vector(8 downto 0);
+    clk  : std_logic;
+    di   : std_logic_vector(15 downto 0);
+    en   : std_logic;
+    we   : std_logic;
+  end record;
+
+  type drp_o_t is record
+    do  : std_logic_vector(15 downto 0);
+    rdy : std_logic;
+  end record;
+
+  type drp_i_array is array(integer range <>) of drp_i_t;
+  type drp_o_array is array(integer range <>) of drp_o_t;
+
   type mgt_status_t is record
-    txfsm_done : std_logic;
-    pll_lock   : std_logic;
-    ready      : std_logic;
+    txfsm_reset_done : std_logic;
+    txfsm_done       : std_logic;
+    txreset_done     : std_logic;
+    rxprbserr        : std_logic;
+    txpmaresetdone   : std_logic;
   end record;
 
   type mgt_control_t is record
-    tx_prbs_mode     : std_logic_vector (2 downto 0);
-    pll_reset        : std_logic;
-    mgt_reset        : std_logic_vector (3 downto 0);
-    gtxtest_start    : std_logic;
-    txreset          : std_logic;
-    mgt_realign      : std_logic;
-    txpowerdown      : std_logic;
-    txpowerdown_mode : std_logic_vector (1 downto 0);
-    txpllpowerdown   : std_logic;
-    force_not_ready  : std_logic;
+    txdiffctrl     : std_logic_vector (3 downto 0);
+    txloopback     : std_logic_vector (2 downto 0);
+    gttxreset      : std_logic;
+    txuserrdy      : std_logic;
+    rxprbssel      : std_logic_vector (2 downto 0);
+    txprbssel      : std_logic_vector (2 downto 0);
+    txprbsforceerr : std_logic;
+    rxprbscntreset : std_logic;
+    txpcsreset     : std_logic;
+    txpmareset     : std_logic;
+
+  --force_not_ready  : std_logic;
+  --gtxtest_start    : std_logic;
+  --mgt_realign      : std_logic;
+  --mgt_reset        : std_logic_vector (3 downto 0);
+  --pll_reset        : std_logic;
+  --tx_prbs_mode     : std_logic_vector (2 downto 0);
+  --txpllpowerdown   : std_logic;
+  --txpowerdown      : std_logic;
+  --txpowerdown_mode : std_logic_vector (1 downto 0);
+  --txreset          : std_logic;
   end record;
+
+  type mgt_status_array is array(integer range <>) of mgt_status_t;
+  type mgt_control_array is array(integer range <>) of mgt_control_t;
 
   type ttc_t is record
     resync : std_logic;
@@ -54,6 +86,8 @@ package types_pkg is
   end record;
 
   type clocks_t is record
+    locked    : std_logic;
+    sysclk    : std_logic;
     clk40     : std_logic;
     clk160_0  : std_logic;
     clk160_90 : std_logic;

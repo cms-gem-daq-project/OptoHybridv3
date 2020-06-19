@@ -118,6 +118,7 @@ architecture Behavioral of top_optohybrid is
   signal idlyrdy     : std_logic;
   signal mmcm_locked : std_logic;
   signal clocks      : clocks_t;
+  signal mgt_mmcm_reset : std_logic_vector (3 downto 0);
   signal ttc         : ttc_t;
   signal soft_reset  : std_logic;
 
@@ -196,6 +197,8 @@ begin
 
   clocking_inst : entity work.clocking
     port map(
+
+      mgt_mmcm_reset_i  => mgt_mmcm_reset,
 
       clock_p => clock_p,               -- phase shiftable 40MHz ttc clocks
       clock_n => clock_n,               --
@@ -422,6 +425,7 @@ begin
         ipb_mosi_i      => ipb_mosi_slaves(IPB_SLAVE.MGT),
         ipb_miso_o      => ipb_miso_slaves(IPB_SLAVE.MGT),
         clocks          => clocks,
+        mgt_mmcm_reset_o          => mgt_mmcm_reset,
         reset_i         => core_reset,
         ipb_reset_i     => core_reset,
         trg_tx_p        => open,

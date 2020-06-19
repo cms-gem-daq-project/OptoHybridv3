@@ -27,6 +27,8 @@ entity clocking is
 
     clocks : out clocks_t;
 
+    mgt_mmcm_reset_i : in std_logic_vector (3 downto 0);
+
     -- mmcm locked status monitors
     mmcm_locked_o : out std_logic;
 
@@ -46,6 +48,7 @@ architecture Behavioral of clocking is
 
   component logic_clocking
     port (
+      reset       : in  std_logic;
       clk_in1     : in  std_logic;
       clk40_o     : out std_logic;
       clk160_o    : out std_logic;
@@ -55,9 +58,10 @@ architecture Behavioral of clocking is
       );
   end component;
 
-  signal clk40     : std_logic;         -- 40 MHz phase shiftable frame clock from GBT
-  signal clk160_0  : std_logic;         -- 160 MHz phase shiftable frame clock from GBT
-  signal clk160_90 : std_logic;         -- 160 MHz phase shiftable frame clock from GBT
+  signal sysclk    : std_logic;
+  signal clk40     : std_logic;
+  signal clk160_0  : std_logic;
+  signal clk160_90 : std_logic;
   signal clk200    : std_logic;
 
   signal mmcm_locked : std_logic;
@@ -90,8 +94,16 @@ begin
       IB => clock_n
       );
 
+  sysclk_bufg : BUFG
+    port map (
+      I => clock_i,
+      O => sysclk
+      );
+
   logic_clocking_inst : logic_clocking
     port map(
+
+      reset => mgt_mmcm_reset_i(0),
 
       clk_in1 => clock_i,
 
@@ -103,8 +115,10 @@ begin
       locked_o => mmcm_locked
       );
 
-  clocks.clk40     <= clk40;
-  clocks.clk160_0  <= clk160_0;
+  clocks.locked <= mmcm_locked;
+  clocks.sysclk <= sysclk;
+  clocks.clk40  <= clk40,
+  clocks.clk160_0 <= clk160_0;
   clocks.clk160_90 <= clk160_90;
   clocks.clk200    <= clk200;
 
@@ -124,10 +138,10 @@ begin
        )
        port map(
            ipb_reset_i            => ipb_reset_i,
-           ipb_clk_i              => clock,
+           ipb_clk_i              => clk40,
            ipb_mosi_i             => ipb_mosi_i,
            ipb_miso_o             => ipb_miso_o,
-           usr_clk_i              => clock,
+           usr_clk_i              => sysclk,
            regs_read_arr_i        => regs_read_arr,
            regs_write_arr_o       => regs_write_arr,
            read_pulse_arr_o       => regs_read_pulse_arr,
@@ -161,7 +175,7 @@ begin
         g_COUNTER_WIDTH  => 8
     )
     port map (
-        ref_clk_i => clock,
+        ref_clk_i => sysclk,
         reset_i   => ipb_reset_i,
         en_i      => not mmcm_locked,
         snap_i    => '1',

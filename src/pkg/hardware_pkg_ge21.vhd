@@ -39,13 +39,13 @@ package hardware_pkg is
   constant MXCNTB : integer := 3;       -- bits for size of cluster
   constant MXPRTB : integer := 1;       -- bits for # of partitions
 
-  constant NUM_ENCODERS               : integer := 4;
-  constant NUM_CYCLES                 : integer := 4;                          -- number of clocks (4 for 160MHz, 5 for 200MHz)
+  constant NUM_ENCODERS        : integer := 4;
+  constant NUM_CYCLES          : integer := 4;                          -- number of clocks (4 for 160MHz, 5 for 200MHz)
   constant NUM_FOUND_CLUSTERS  : integer := NUM_ENCODERS * NUM_CYCLES;  -- 16
-  constant NUM_OUTPUT_CLUSTERS : integer := 5;
+  constant NUM_OUTPUT_CLUSTERS : integer := 10;
 
-  constant NUM_OPTICAL_PACKETS        : integer := 1; -- # of different optical link packets
-  constant NUM_ELINK_PACKETS          : integer := 1; -- # of different copper link packets
+  constant NUM_OPTICAL_PACKETS : integer := 2;  -- # of different optical link packets
+  constant NUM_ELINK_PACKETS   : integer := 1;  -- # of different copper link packets
 
   -- TMR Enables
   constant USE_TMR_RESET              : integer := 1;

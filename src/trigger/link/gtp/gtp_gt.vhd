@@ -101,6 +101,11 @@ port
     -------------------------- RX Margin Analysis Ports ------------------------
     eyescandataerror_out                    : out  std_logic;
     eyescantrigger_in                       : in   std_logic;
+    ------------------- Receive Ports - Pattern Checker Ports ------------------
+    rxprbserr_out                           : out  std_logic;
+    rxprbssel_in                            : in   std_logic_vector(2 downto 0);
+    ------------------- Receive Ports - Pattern Checker ports ------------------
+    rxprbscntreset_in                       : in   std_logic;
     ------------ Receive Ports - RX Decision Feedback Equalizer(DFE) -----------
     dmonitorout_out                         : out  std_logic_vector(14 downto 0);
     ------------- Receive Ports - RX Initialization and Reset Ports ------------
@@ -113,6 +118,8 @@ port
     txdata_in                               : in   std_logic_vector(15 downto 0);
     txusrclk_in                             : in   std_logic;
     txusrclk2_in                            : in   std_logic;
+    ------------------ Transmit Ports - Pattern Generator Ports ----------------
+    txprbsforceerr_in                       : in   std_logic;
     ------------------ Transmit Ports - TX 8B/10B Encoder Ports ----------------
     txcharisk_in                            : in   std_logic_vector(1 downto 0);
     ------------------ Transmit Ports - TX Buffer Bypass Ports -----------------
@@ -136,7 +143,9 @@ port
     ------------- Transmit Ports - TX Initialization and Reset Ports -----------
     txpcsreset_in                           : in   std_logic;
     txpmareset_in                           : in   std_logic;
-    txresetdone_out                         : out  std_logic
+    txresetdone_out                         : out  std_logic;
+    ------------------ Transmit Ports - pattern Generator Ports ----------------
+    txprbssel_in                            : in   std_logic_vector(2 downto 0)
 
 
 );
@@ -594,10 +603,10 @@ begin
         RXUSRCLK                        =>      tied_to_ground_i,
         RXUSRCLK2                       =>      tied_to_ground_i,
         ------------------- Receive Ports - Pattern Checker Ports ------------------
-        RXPRBSERR                       =>      open,
-        RXPRBSSEL                       =>      tied_to_ground_vec_i(2 downto 0),
+        RXPRBSERR                       =>      rxprbserr_out,
+        RXPRBSSEL                       =>      rxprbssel_in,
         ------------------- Receive Ports - Pattern Checker ports ------------------
-        RXPRBSCNTRESET                  =>      tied_to_ground_i,
+        RXPRBSCNTRESET                  =>      rxprbscntreset_in,
         ------------------ Receive Ports - RX 8B/10B Decoder Ports -----------------
         RXCHARISCOMMA                   =>      open,
         RXCHARISK                       =>      open,
@@ -741,7 +750,7 @@ begin
         TXRATE                          =>      tied_to_ground_vec_i(2 downto 0),
         TXSWING                         =>      tied_to_ground_i,
         ------------------ Transmit Ports - Pattern Generator Ports ----------------
-        TXPRBSFORCEERR                  =>      tied_to_ground_i,
+        TXPRBSFORCEERR                  =>      txprbsforceerr_in,
         ------------------ Transmit Ports - TX 8B/10B Encoder Ports ----------------
         TX8B10BBYPASS                   =>      tied_to_ground_vec_i(3 downto 0),
         TXCHARDISPMODE                  =>      tied_to_ground_vec_i(3 downto 0),
@@ -808,7 +817,7 @@ begin
         --------------- Transmit Ports - TX Receiver Detection Ports  --------------
         TXDETECTRX                      =>      tied_to_ground_i,
         ------------------ Transmit Ports - pattern Generator Ports ----------------
-        TXPRBSSEL                       =>      tied_to_ground_vec_i(2 downto 0)
+        TXPRBSSEL                       =>      txprbssel_in
 
     );
 

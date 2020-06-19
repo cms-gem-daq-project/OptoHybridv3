@@ -1,528 +1,315 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
-library UNISIM;
-use UNISIM.VCOMPONENTS.all;
+use ieee.std_logic_unsigned.all;
+use ieee.std_logic_misc.all;
+
+library unisim;
+use unisim.vcomponents.all;
+
+library work;
+use work.types_pkg.all;
+use work.hardware_pkg.all;
 
 --***********************************Entity Declaration************************
 
 entity gtp_wrapper is
-  generic (
-    NUM_GTS : integer := 4
-    );
+  generic
+    (
+      NUM_GTS                     : integer := 4;
+      WRAPPER_SIM_GTRESET_SPEEDUP : string  := "TRUE";  -- simulation setting for GT SecureIP model
+      WRAPPER_SIMULATION          : integer := 0;       -- Set to 1 for simulation
+      STABLE_CLOCK_PERIOD         : integer := 25
+      );
   port
     (
       refclk_in_p : in std_logic_vector(1 downto 0);
       refclk_in_n : in std_logic_vector(1 downto 0);
 
+      -- gtp/gtx
+      gtptxn_out : out std_logic_vector(NUM_GTS-1 downto 0);
+      gtptxp_out : out std_logic_vector(NUM_GTS-1 downto 0);
+
       sysclk_in        : in  std_logic;
       soft_reset_tx_in : in  std_logic;
       pll_lock_out     : out std_logic;
 
-      status_o  : in mgt_status_array (NUM_GTS-1 downto 0);
-      control_i : out mgt_control_array (NUM_GTS-1 downto 0);
+      status_o  : out mgt_status_array (NUM_GTS-1 downto 0);
+      control_i : in  mgt_control_array (NUM_GTS-1 downto 0);
 
-      tx_usrclk_out : out std_logic_vector (NUM_GTS-1 downto 0);
-      txcharisk_i   : in  t_std2_array (NUM_GTS-1 downto 0);
-      txdata_i      : in  t_std16_array (NUM_GTS-1 downto 0)
+      drp_i : in  drp_i_array (NUM_GTS-1 downto 0);
+      drp_o : out drp_o_array (NUM_GTS-1 downto 0);
+
+      common_drp_i : in  drp_i_t ;
+      common_drp_o : out drp_o_t ;
+
+      mmcm_lock_i  : in  std_logic;
+      mmcm_reset_o : out std_logic_vector(NUM_GTS-1 downto 0);
+
+      txusrclk_in : in std_logic;
+      txcharisk_i : in t_std2_array (NUM_GTS-1 downto 0);
+      txdata_i    : in t_std16_array (NUM_GTS-1 downto 0)
       );
 
 end gtp_wrapper;
 
 architecture RTL of gtp_wrapper is
 
-  signal std_logic0 : std_logic := '0';
-  signal std_logic1 : std_logic := '1';
+  constant zero : std_logic := '0';
+  constant one  : std_logic := '1';
 
-  component gtp
-    port
-      (
-        soft_reset_tx_in            : in std_logic;
-        dont_reset_on_data_error_in : in std_logic;
-        q0_clk0_gtrefclk_pad_n_in   : in std_logic;
-        q0_clk0_gtrefclk_pad_p_in   : in std_logic;
-        q0_clk1_gtrefclk_pad_n_in   : in std_logic;
-        q0_clk1_gtrefclk_pad_p_in   : in std_logic;
+  signal refclk       : std_logic;
 
-        gt0_tx_fsm_reset_done_out : out std_logic;
-        gt0_rx_fsm_reset_done_out : out std_logic;
-        gt0_data_valid_in         : in  std_logic;
-        gt0_tx_mmcm_lock_out      : out std_logic;
-        gt1_tx_fsm_reset_done_out : out std_logic;
-        gt1_rx_fsm_reset_done_out : out std_logic;
-        gt1_data_valid_in         : in  std_logic;
-        gt1_tx_mmcm_lock_out      : out std_logic;
-        gt2_tx_fsm_reset_done_out : out std_logic;
-        gt2_rx_fsm_reset_done_out : out std_logic;
-        gt2_data_valid_in         : in  std_logic;
-        gt2_tx_mmcm_lock_out      : out std_logic;
-        gt3_tx_fsm_reset_done_out : out std_logic;
-        gt3_rx_fsm_reset_done_out : out std_logic;
-        gt3_data_valid_in         : in  std_logic;
-        gt3_tx_mmcm_lock_out      : out std_logic;
+  signal common_reset : std_logic;
+  signal cpll_pd      : std_logic;
+  signal cpll_reset   : std_logic;
+  signal gttxreset   : std_logic_vector(3 downto 0);
 
-        gt0_txusrclk_out  : out std_logic;
-        gt0_txusrclk2_out : out std_logic;
+  signal txresetdone : std_logic_vector(3 downto 0);
+  signal txuserrdy   : std_logic_vector(3 downto 0);
 
-        gt1_txusrclk_out  : out std_logic;
-        gt1_txusrclk2_out : out std_logic;
+  --------------------------- TX Buffer Bypass Signals --------------------
 
-        gt2_txusrclk_out  : out std_logic;
-        gt2_txusrclk2_out : out std_logic;
+  signal rst_tx_phalignment       : std_logic;
+  signal rst_tx_phalignment_array : std_logic_vector(3 downto 0);
+  signal run_tx_phalignment       : std_logic;
+  signal run_tx_phalignment_array : std_logic_vector(3 downto 0);
 
-        gt3_txusrclk_out  : out std_logic;
-        gt3_txusrclk2_out : out std_logic;
+  signal tx_phalignment_done : std_logic;
+  signal txdlyen             : std_logic_vector(3 downto 0);
+  signal txdlysreset         : std_logic_vector(3 downto 0);
+  signal txdlysresetdone     : std_logic_vector(3 downto 0);
+  signal txphalign           : std_logic_vector(3 downto 0);
+  signal txphaligndone       : std_logic_vector(3 downto 0);
+  signal txphalignen         : std_logic_vector(3 downto 0) := (others => '1');
+  signal txphdlyreset        : std_logic_vector(3 downto 0) := (others => '0');
+  signal txphinit            : std_logic_vector(3 downto 0);
+  signal txphinitdone        : std_logic_vector(3 downto 0);
 
-        --_________________________________________________________________________
-        --gt0  (x0y0)
-        --____________________________channel ports________________________________
-        ---------------------------- channel - drp ports  --------------------------
-        gt0_drpaddr_in           : in  std_logic_vector(8 downto 0);
-        gt0_drpdi_in             : in  std_logic_vector(15 downto 0);
-        gt0_drpdo_out            : out std_logic_vector(15 downto 0);
-        gt0_drpen_in             : in  std_logic;
-        gt0_drprdy_out           : out std_logic;
-        gt0_drpwe_in             : in  std_logic;
-        ------------------------------- loopback ports -----------------------------
-        gt0_loopback_in          : in  std_logic_vector(2 downto 0);
-        --------------------- rx initialization and reset ports --------------------
-        gt0_eyescanreset_in      : in  std_logic;
-        -------------------------- rx margin analysis ports ------------------------
-        gt0_eyescandataerror_out : out std_logic;
-        gt0_eyescantrigger_in    : in  std_logic;
-        ------------------- receive ports - pattern checker ports ------------------
-        gt0_rxprbserr_out        : out std_logic;
-        gt0_rxprbssel_in         : in  std_logic_vector(2 downto 0);
-        ------------------- receive ports - pattern checker ports ------------------
-        gt0_rxprbscntreset_in    : in  std_logic;
-        ------------------- receive ports - rx buffer bypass ports -----------------
-        gt0_rxphmonitor_out      : out std_logic_vector(4 downto 0);
-        gt0_rxphslipmonitor_out  : out std_logic_vector(4 downto 0);
-        ------------ receive ports - rx decision feedback equalizer(dfe) -----------
-        gt0_dmonitorout_out      : out std_logic_vector(14 downto 0);
-        ------------- receive ports - rx initialization and reset ports ------------
-        gt0_gtrxreset_in         : in  std_logic;
-        gt0_rxlpmreset_in        : in  std_logic;
-        --------------------- tx initialization and reset ports --------------------
-        gt0_gttxreset_in         : in  std_logic;
-        gt0_txuserrdy_in         : in  std_logic;
-        ------------------ transmit ports - fpga tx interface ports ----------------
-        gt0_txdata_in            : in  std_logic_vector(15 downto 0);
-        ------------------ transmit ports - tx 8b/10b encoder ports ----------------
-        gt0_txcharisk_in         : in  std_logic_vector(1 downto 0);
-        --------------- transmit ports - tx configurable driver ports --------------
-        gt0_gtptxn_out           : out std_logic;
-        gt0_gtptxp_out           : out std_logic;
-        gt0_txdiffctrl_in        : in  std_logic_vector(3 downto 0);
-        ----------- transmit ports - tx fabric clock output control ports ----------
-        gt0_txoutclkfabric_out   : out std_logic;
-        gt0_txoutclkpcs_out      : out std_logic;
-        ------------- transmit ports - tx initialization and reset ports -----------
-        gt0_txpcsreset_in        : in  std_logic;
-        gt0_txpmareset_in        : in  std_logic;
-        gt0_txresetdone_out      : out std_logic;
-        ------------------ transmit ports - pattern generator ports ----------------
-        gt0_txprbssel_in         : in  std_logic_vector(2 downto 0);
-
-        --gt1  (x0y1)
-        --____________________________channel ports________________________________
-        ---------------------------- channel - drp ports  --------------------------
-        gt1_drpaddr_in           : in  std_logic_vector(8 downto 0);
-        gt1_drpdi_in             : in  std_logic_vector(15 downto 0);
-        gt1_drpdo_out            : out std_logic_vector(15 downto 0);
-        gt1_drpen_in             : in  std_logic;
-        gt1_drprdy_out           : out std_logic;
-        gt1_drpwe_in             : in  std_logic;
-        ------------------------------- loopback ports -----------------------------
-        gt1_loopback_in          : in  std_logic_vector(2 downto 0);
-        --------------------- rx initialization and reset ports --------------------
-        gt1_eyescanreset_in      : in  std_logic;
-        -------------------------- rx margin analysis ports ------------------------
-        gt1_eyescandataerror_out : out std_logic;
-        gt1_eyescantrigger_in    : in  std_logic;
-        ------------------- receive ports - pattern checker ports ------------------
-        gt1_rxprbserr_out        : out std_logic;
-        gt1_rxprbssel_in         : in  std_logic_vector(2 downto 0);
-        ------------------- receive ports - pattern checker ports ------------------
-        gt1_rxprbscntreset_in    : in  std_logic;
-        ------------------- receive ports - rx buffer bypass ports -----------------
-        gt1_rxphmonitor_out      : out std_logic_vector(4 downto 0);
-        gt1_rxphslipmonitor_out  : out std_logic_vector(4 downto 0);
-        ------------ receive ports - rx decision feedback equalizer(dfe) -----------
-        gt1_dmonitorout_out      : out std_logic_vector(14 downto 0);
-        ------------- receive ports - rx initialization and reset ports ------------
-        gt1_gtrxreset_in         : in  std_logic;
-        gt1_rxlpmreset_in        : in  std_logic;
-        --------------------- tx initialization and reset ports --------------------
-        gt1_gttxreset_in         : in  std_logic;
-        gt1_txuserrdy_in         : in  std_logic;
-        ------------------ transmit ports - fpga tx interface ports ----------------
-        gt1_txdata_in            : in  std_logic_vector(15 downto 0);
-        ------------------ transmit ports - tx 8b/10b encoder ports ----------------
-        gt1_txcharisk_in         : in  std_logic_vector(1 downto 0);
-        --------------- transmit ports - tx configurable driver ports --------------
-        gt1_gtptxn_out           : out std_logic;
-        gt1_gtptxp_out           : out std_logic;
-        gt1_txdiffctrl_in        : in  std_logic_vector(3 downto 0);
-        ----------- transmit ports - tx fabric clock output control ports ----------
-        gt1_txoutclkfabric_out   : out std_logic;
-        gt1_txoutclkpcs_out      : out std_logic;
-        ------------- transmit ports - tx initialization and reset ports -----------
-        gt1_txpcsreset_in        : in  std_logic;
-        gt1_txpmareset_in        : in  std_logic;
-        gt1_txresetdone_out      : out std_logic;
-        ------------------ transmit ports - pattern generator ports ----------------
-        gt1_txprbssel_in         : in  std_logic_vector(2 downto 0);
-
-        --gt2  (x0y2)
-        --____________________________channel ports________________________________
-        ---------------------------- channel - drp ports  --------------------------
-        gt2_drpaddr_in           : in  std_logic_vector(8 downto 0);
-        gt2_drpdi_in             : in  std_logic_vector(15 downto 0);
-        gt2_drpdo_out            : out std_logic_vector(15 downto 0);
-        gt2_drpen_in             : in  std_logic;
-        gt2_drprdy_out           : out std_logic;
-        gt2_drpwe_in             : in  std_logic;
-        ------------------------------- loopback ports -----------------------------
-        gt2_loopback_in          : in  std_logic_vector(2 downto 0);
-        --------------------- rx initialization and reset ports --------------------
-        gt2_eyescanreset_in      : in  std_logic;
-        -------------------------- rx margin analysis ports ------------------------
-        gt2_eyescandataerror_out : out std_logic;
-        gt2_eyescantrigger_in    : in  std_logic;
-        ------------------- receive ports - pattern checker ports ------------------
-        gt2_rxprbserr_out        : out std_logic;
-        gt2_rxprbssel_in         : in  std_logic_vector(2 downto 0);
-        ------------------- receive ports - pattern checker ports ------------------
-        gt2_rxprbscntreset_in    : in  std_logic;
-        ------------------- receive ports - rx buffer bypass ports -----------------
-        gt2_rxphmonitor_out      : out std_logic_vector(4 downto 0);
-        gt2_rxphslipmonitor_out  : out std_logic_vector(4 downto 0);
-        ------------ receive ports - rx decision feedback equalizer(dfe) -----------
-        gt2_dmonitorout_out      : out std_logic_vector(14 downto 0);
-        ------------- receive ports - rx initialization and reset ports ------------
-        gt2_gtrxreset_in         : in  std_logic;
-        gt2_rxlpmreset_in        : in  std_logic;
-        --------------------- tx initialization and reset ports --------------------
-        gt2_gttxreset_in         : in  std_logic;
-        gt2_txuserrdy_in         : in  std_logic;
-        ------------------ transmit ports - fpga tx interface ports ----------------
-        gt2_txdata_in            : in  std_logic_vector(15 downto 0);
-        ------------------ transmit ports - tx 8b/10b encoder ports ----------------
-        gt2_txcharisk_in         : in  std_logic_vector(1 downto 0);
-        --------------- transmit ports - tx configurable driver ports --------------
-        gt2_gtptxn_out           : out std_logic;
-        gt2_gtptxp_out           : out std_logic;
-        gt2_txdiffctrl_in        : in  std_logic_vector(3 downto 0);
-        ----------- transmit ports - tx fabric clock output control ports ----------
-        gt2_txoutclkfabric_out   : out std_logic;
-        gt2_txoutclkpcs_out      : out std_logic;
-        ------------- transmit ports - tx initialization and reset ports -----------
-        gt2_txpcsreset_in        : in  std_logic;
-        gt2_txpmareset_in        : in  std_logic;
-        gt2_txresetdone_out      : out std_logic;
-        ------------------ transmit ports - pattern generator ports ----------------
-        gt2_txprbssel_in         : in  std_logic_vector(2 downto 0);
-
-        --gt3  (x0y3)
-        --____________________________channel ports________________________________
-        ---------------------------- channel - drp ports  --------------------------
-        gt3_drpaddr_in           : in  std_logic_vector(8 downto 0);
-        gt3_drpdi_in             : in  std_logic_vector(15 downto 0);
-        gt3_drpdo_out            : out std_logic_vector(15 downto 0);
-        gt3_drpen_in             : in  std_logic;
-        gt3_drprdy_out           : out std_logic;
-        gt3_drpwe_in             : in  std_logic;
-        ------------------------------- loopback ports -----------------------------
-        gt3_loopback_in          : in  std_logic_vector(2 downto 0);
-        --------------------- rx initialization and reset ports --------------------
-        gt3_eyescanreset_in      : in  std_logic;
-        -------------------------- rx margin analysis ports ------------------------
-        gt3_eyescandataerror_out : out std_logic;
-        gt3_eyescantrigger_in    : in  std_logic;
-        ------------------- receive ports - pattern checker ports ------------------
-        gt3_rxprbserr_out        : out std_logic;
-        gt3_rxprbssel_in         : in  std_logic_vector(2 downto 0);
-        ------------------- receive ports - pattern checker ports ------------------
-        gt3_rxprbscntreset_in    : in  std_logic;
-        ------------------- receive ports - rx buffer bypass ports -----------------
-        gt3_rxphmonitor_out      : out std_logic_vector(4 downto 0);
-        gt3_rxphslipmonitor_out  : out std_logic_vector(4 downto 0);
-        ------------ receive ports - rx decision feedback equalizer(dfe) -----------
-        gt3_dmonitorout_out      : out std_logic_vector(14 downto 0);
-        ------------- receive ports - rx initialization and reset ports ------------
-        gt3_gtrxreset_in         : in  std_logic;
-        gt3_rxlpmreset_in        : in  std_logic;
-        --------------------- tx initialization and reset ports --------------------
-        gt3_gttxreset_in         : in  std_logic;
-        gt3_txuserrdy_in         : in  std_logic;
-        ------------------ transmit ports - fpga tx interface ports ----------------
-        gt3_txdata_in            : in  std_logic_vector(15 downto 0);
-        ------------------ transmit ports - tx 8b/10b encoder ports ----------------
-        gt3_txcharisk_in         : in  std_logic_vector(1 downto 0);
-        --------------- transmit ports - tx configurable driver ports --------------
-        gt3_gtptxn_out           : out std_logic;
-        gt3_gtptxp_out           : out std_logic;
-        gt3_txdiffctrl_in        : in  std_logic_vector(3 downto 0);
-        ----------- transmit ports - tx fabric clock output control ports ----------
-        gt3_txoutclkfabric_out   : out std_logic;
-        gt3_txoutclkpcs_out      : out std_logic;
-        ------------- transmit ports - tx initialization and reset ports -----------
-        gt3_txpcsreset_in        : in  std_logic;
-        gt3_txpmareset_in        : in  std_logic;
-        gt3_txresetdone_out      : out std_logic;
-        ------------------ transmit ports - pattern generator ports ----------------
-        gt3_txprbssel_in         : in  std_logic_vector(2 downto 0);
-
-        gt0_pll0pd_in          : in  std_logic;
-        gt0_drpaddr_common_in  : in  std_logic_vector(7 downto 0);
-        gt0_drpdi_common_in    : in  std_logic_vector(15 downto 0);
-        gt0_drpdo_common_out   : out std_logic_vector(15 downto 0);
-        gt0_drpen_common_in    : in  std_logic;
-        gt0_drprdy_common_out  : out std_logic;
-        gt0_drpwe_common_in    : in  std_logic;
-        --____________________________common ports________________________________
-        gt0_pll0outclk_out     : out std_logic;
-        gt0_pll0outrefclk_out  : out std_logic;
-        gt0_pll0lock_out       : out std_logic;
-        gt0_pll0refclklost_out : out std_logic;
-        gt0_pll1outclk_out     : out std_logic;
-        gt0_pll1outrefclk_out  : out std_logic;
-
-        sysclk_in : in std_logic
-
-        );
-
-  end component;
+  signal pll0_clk         : std_logic;
+  signal pll0_lock        : std_logic;
+  signal pll0_refclk      : std_logic;
+  signal pll0_refclklost  : std_logic;
+  signal pll0_reset       : std_logic;
+  signal pll0_reset_array : std_logic_vector(3 downto 0);
+  signal pll1_clk         : std_logic;
+  signal pll1_refclk      : std_logic;
 
 begin
 
-  ------------ optional Ports assignments --------------
-  --gt0_txdiffctrl_i <= "1100";
-  ------------------------------------------------------
+  gtp_gt_gen : for I in 0 to 3 generate
+  begin
 
-  ----------------------------- The GT Wrapper -----------------------------
+    gtp_GT_inst : entity work.gtp_GT
+      generic map (
+        -- Simulation attributes
+        GT_SIM_GTRESET_SPEEDUP => WRAPPER_SIM_GTRESET_SPEEDUP,
+        EXAMPLE_SIMULATION     => WRAPPER_SIMULATION,
+        TXSYNC_OVRD_IN         => ('1'),
+        TXSYNC_MULTILANE_IN    => ('0')
+        )
+      port map (
+        drpclk_in  => sysclk_in,
+        drpaddr_in => drp_i(I).addr (8 downto 0),
+        drpdi_in   => drp_i(I).di,
+        drpen_in   => drp_i(I).en,
+        drpwe_in   => drp_i(I).we,
+        drpdo_out  => drp_o(I).do,
+        drprdy_out => drp_o(I).rdy,
 
-  -- Use the instantiation template in the example directory to add the GT wrapper to your design.
-  -- In this example, the wrapper is wired up for basic operation with a frame generator and frame
-  -- checker. The GTs will reset, then attempt to align and transmit data. If channel bonding is
-  -- enabled, bonding should occur after alignment
-  -- While connecting the GT TX/RX Reset ports below, please add a delay of
-  -- minimum 500ns as mentioned in AR 43482.
+        pll0clk_in    => pll0_clk,
+        pll0refclk_in => pll0_refclk,
+        pll1clk_in    => pll1_clk,
+        pll1refclk_in => pll1_refclk,
 
-  gtp_inst : gtp
+        -- eyescan
+        eyescanreset_in      => zero,
+        eyescandataerror_out => open,
+        eyescantrigger_in    => zero,
+        dmonitorout_out      => open,
+
+        gtrxreset_in => one,            -- rx disabled
+
+        txdata_in    => txdata_i(I),
+        txcharisk_in => txcharisk_i(I),
+
+        rxlpmreset_in => zero,
+
+        txusrclk_in  => txusrclk_in,
+        txusrclk2_in => txusrclk_in,
+        txdlyen_in   => txdlyen(I),
+
+        txdlysreset_in      => txdlysreset(I),      --
+        txdlysresetdone_out => txdlysresetdone(I),  --
+        txphalign_in        => txphalign(I),        --
+        txphaligndone_out   => txphaligndone(I),
+        txphalignen_in      => txphalignen(I),
+        txphdlyreset_in     => txphdlyreset(I),
+        txphinit_in         => txphinit(I),
+        txphinitdone_out    => txphinitdone(I),
+
+        gtptxn_out => gtptxn_out(I),
+        gtptxp_out => gtptxp_out(I),
+
+
+        txprbsforceerr_in => control_i(I).txprbsforceerr,
+
+        txuserrdy_in      => txuserrdy(I),
+        txprbssel_in      => control_i(I).txprbssel,
+        txpcsreset_in     => control_i(I).txpcsreset,
+        txpmareset_in     => control_i(I).txpmareset,
+        gttxreset_in      => gttxreset(I),
+        loopback_in       => control_i(I).txloopback,
+        rxprbscntreset_in => control_i(I).rxprbscntreset,
+        rxprbssel_in      => control_i(I).rxprbssel,
+        txdiffctrl_in     => control_i(I).txdiffctrl,
+
+        rxprbserr_out   => status_o(I).rxprbserr,
+        txpmaresetdone  => status_o(I).txpmaresetdone,
+        txresetdone_out => txresetdone(I),
+
+
+        txoutclk_out       => open,
+        txoutclkfabric_out => open,
+        txoutclkpcs_out    => open
+        );
+
+    status_o(I).txreset_done <= txresetdone(I);
+
+  end generate;
+
+  startup_fsm_gen : for I in 0 to 3 generate
+  begin
+    txresetfsm_i : entity work.gtp_tx_startup_fsm
+
+      generic map (
+        EXAMPLE_SIMULATION     => WRAPPER_SIMULATION,
+        STABLE_CLOCK_PERIOD    => STABLE_CLOCK_PERIOD,  -- period of the stable clock driving this state-machine, unit is [ns]
+        retry_counter_bitwidth => 8,
+        tx_pll0_used           => true,                 -- the tx and rx reset fsms must
+        rx_pll0_used           => false,                -- share these two generic values
+        phase_alignment_manual => true                  -- decision if a manual phase-alignment is necessary or the automatic
+                                                        -- is enough. for single-lane applications the automatic alignment is
+                                                        -- sufficient
+        )
+      port map (
+
+        stable_clock => sysclk_in,
+        txuserclk    => txusrclk_in,
+        soft_reset   => soft_reset_tx_in,
+
+        pll0refclklost => pll0_refclklost,
+        pll0lock       => pll0_lock,
+
+        pll0_reset        => pll0_reset_array(I),
+        txuserrdy         => txuserrdy(I),
+        txresetdone       => txresetdone(I),
+        mmcm_lock         => mmcm_lock_i,
+        mmcm_reset        => mmcm_reset_o(I),
+        gttxreset         => gttxreset(I),
+        tx_fsm_reset_done => status_o(I).txfsm_reset_done,
+        run_phalignment   => run_tx_phalignment_array(I),
+        reset_phalignment => rst_tx_phalignment_array(I),
+        phalignment_done  => tx_phalignment_done,
+
+        pll1refclklost => zero,
+        pll1lock       => one,
+        pll1_reset     => open,
+        retry_counter  => open
+        );
+  end generate;
+
+  cpll_reset_inst : entity work.gtp_cpll_railing
+    generic map(USE_BUFG => 0)
     port map (
-
-      soft_reset_tx_in => soft_reset_tx_in,
-
-      DONT_RESET_ON_DATA_ERROR_IN => std_logic0,
-
-      Q0_CLK0_GTREFCLK_PAD_N_IN => refclk_in_n(0),
-      Q0_CLK0_GTREFCLK_PAD_P_IN => refclk_in_p(0),
-      --Q0_CLK1_GTREFCLK_PAD_N_IN   => refclk_in_n(1),
-      --Q0_CLK1_GTREFCLK_PAD_P_IN   => refclk_in_p(1),
-
-      GT0_TX_FSM_RESET_DONE_OUT => status_o(0).txfsm_reset_done,
-      GT1_TX_FSM_RESET_DONE_OUT => status_o(0).txfsm_reset_done,
-      GT2_TX_FSM_RESET_DONE_OUT => status_o(0).txfsm_reset_done,
-      GT3_TX_FSM_RESET_DONE_OUT => status_o(0).txfsm_reset_done,
-
-      GT0_DATA_VALID_IN => std_logic1,
-      GT1_DATA_VALID_IN => std_logic1,
-      GT2_DATA_VALID_IN => std_logic1,
-      GT3_DATA_VALID_IN => std_logic1,
-
-      GT0_RX_FSM_RESET_DONE_OUT => open,
-      GT1_RX_FSM_RESET_DONE_OUT => open,
-      GT2_RX_FSM_RESET_DONE_OUT => open,
-      GT3_RX_FSM_RESET_DONE_OUT => open,
-
-      GT0_TXUSRCLK_OUT => tx_usrclk_out(0),
-      GT1_TXUSRCLK_OUT => tx_usrclk_out(1),
-      GT2_TXUSRCLK_OUT => tx_usrclk_out(2),
-      GT3_TXUSRCLK_OUT => tx_usrclk_out(3),
-
-      --------------------------------------------------------------------------------
-      -- Common ports
-      --------------------------------------------------------------------------------
-
-      gt0_pll0outclk_out     => open,
-      gt0_pll0outrefclk_out  => open,
-      gt0_pll0lock_out       => pll_lock_out,
-      gt0_pll0refclklost_out => open,
-      gt0_pll1outclk_out     => open,
-      gt0_pll1outrefclk_out  => open,
-      sysclk_in              => sysclk_in,
-
-      --------------------------------------------------------------------------------
-      -- DRP
-      --------------------------------------------------------------------------------
-      gt0_drpaddr_in => drp_i(0).addr,
-      gt0_drpdi_in   => drp_i(0).di,
-      gt0_drpen_in   => drp_i(0).en,
-      gt0_drpwe_in   => drp_i(0).we,
-      gt0_drpdo_out  => drp_o(0).do,
-      gt0_drprdy_out => drp_o(0).rdy,
-
-      ---------------------------- Channel - DRP Ports  --------------------------
-      gt1_drpaddr_in => drp_i(1).addr,
-      gt1_drpdi_in   => drp_i(1).di,
-      gt1_drpen_in   => drp_i(1).en,
-      gt1_drpwe_in   => drp_i(1).we,
-      gt1_drpdo_out  => drp_o(1).do,
-      gt1_drprdy_out => drp_o(1).rdy,
-
-      ---------------------------- Channel - DRP Ports  --------------------------
-      gt2_drpaddr_in => drp_i(2).addr,
-      gt2_drpdi_in   => drp_i(2).di,
-      gt2_drpen_in   => drp_i(2).en,
-      gt2_drpwe_in   => drp_i(2).we,
-      gt2_drpdo_out  => drp_o(2).do,
-      gt2_drprdy_out => drp_o(2).rdy,
-
-      ---------------------------- Channel - DRP Ports  --------------------------
-      gt3_drpaddr_in => drp_i(3).addr,
-      gt3_drpdi_in   => drp_i(3).di,
-      gt3_drpen_in   => drp_i(3).en,
-      gt3_drpwe_in   => drp_i(3).we,
-      gt3_drpdo_out  => drp_o(3).do,
-      gt3_drprdy_out => drp_o(3).rdy,
-
-
-      -- The user should drive TXUSERRDY High after these conditions are met:
-      --   (1) The user interface is ready to transmit data to the GTX/GTH transceiver.
-      --   (2) All clocks used by the application including TXUSRCLK/TXUSRCLK2 are shown as stable or locked when the
-      --       PLL or MMCM is use
-      gt0_txuserrdy_in => control_i(0).txuserrdy,
-      gt1_txuserrdy_in => control_i(1).txuserrdy,
-      gt2_txuserrdy_in => control_i(2).txuserrdy,
-      gt3_txuserrdy_in => control_i(3).txuserrdy,
-
-      gt0_txprbssel_in => control_i(0).txprbssel,
-      gt1_txprbssel_in => control_i(1).txprbssel,
-      gt2_txprbssel_in => control_i(2).txprbssel,
-      gt3_txprbssel_in => control_i(3).txprbssel,
-
-      gt0_txpcsreset_in => control_i(0).txpcsreset,
-      gt1_txpcsreset_in => control_i(1).txpcsreset,
-      gt2_txpcsreset_in => control_i(2).txpcsreset,
-      gt3_txpcsreset_in => control_i(3).txpcsreset,
-
-      gt0_txpmareset_in => control_i(0).txpmareset,
-      gt1_txpmareset_in => control_i(1).txpmareset,
-      gt2_txpmareset_in => control_i(2).txpmareset,
-      gt3_txpmareset_in => control_i(3).txpmareset,
-
-      gt0_gttxreset_in => control_i(0).gttxreset,
-      gt1_gttxreset_in => control_i(1).gttxreset,
-      gt2_gttxreset_in => control_i(2).gttxreset,
-      gt3_gttxreset_in => control_i(3).gttxreset,
-
-      gt0_loopback_in => control_i(0).loopback,
-      gt1_loopback_in => control_i(1).loopback,
-      gt2_loopback_in => control_i(2).loopback,
-      gt3_loopback_in => control_i(3).loopback,
-
-      gt0_rxprbscntreset_in => control_i(0).rxprbscntreset,
-      gt1_rxprbscntreset_in => control_i(1).rxprbscntreset,
-      gt2_rxprbscntreset_in => control_i(2).rxprbscntreset,
-      gt3_rxprbscntreset_in => control_i(3).rxprbscntreset,
-
-      gt0_rxprbsprbssel_in => control_i(0).rxprbsprbssel,
-      gt1_rxprbsprbssel_in => control_i(1).rxprbsprbssel,
-      gt2_rxprbsprbssel_in => control_i(2).rxprbsprbssel,
-      gt3_rxprbsprbssel_in => control_i(3).rxprbsprbssel,
-
-      gt0_rxprbsprbserr_in => status_o(0).rxprbsprbserr,
-      gt1_rxprbsprbserr_in => status_o(1).rxprbsprbserr,
-      gt2_rxprbsprbserr_in => status_o(2).rxprbsprbserr,
-      gt3_rxprbsprbserr_in => status_o(3).rxprbsprbserr,
-
-      gt0_rxphmonitor_out => open,
-      gt1_rxphmonitor_out => open,
-      gt2_rxphmonitor_out => open,
-      gt3_rxphmonitor_out => open,
-
-      gt0_rxphslipmonitor_out => open,
-      gt1_rxphslipmonitor_out => open,
-      gt2_rxphslipmonitor_out => open,
-      gt3_rxphslipmonitor_out => open,
-
-
-      --------------------------------------------------------------------------------
-      --
-      --------------------------------------------------------------------------------
-
-      gt0_txdata_in => txdata_i (0),
-      gt1_txdata_in => txdata_i (1),
-      gt3_txdata_in => txdata_i (3),
-      gt2_txdata_in => txdata_i (2),
-
-      gt0_txcharisk_in => txcharisk_i(0),
-      gt1_txcharisk_in => txcharisk_i(1),
-      gt3_txcharisk_in => txcharisk_i(3),
-      gt2_txcharisk_in => txcharisk_i(2),
-
-      gt0_gtptxn_out => open,
-      gt0_gtptxp_out => open,
-      gt1_gtptxn_out => open,
-      gt1_gtptxp_out => open,
-      gt2_gtptxn_out => open,
-      gt2_gtptxp_out => open,
-      gt3_gtptxn_out => open,
-      gt3_gtptxp_out => open,
-
-      gt0_txdiffctrl_in => control_i(0).txdiffctrl,
-      gt1_txdiffctrl_in => control_i(1).txdiffctrl,
-      gt2_txdiffctrl_in => control_i(2).txdiffctrl,
-      gt3_txdiffctrl_in => control_i(3).txdiffctrl,
-
-      gt0_txresetdone_out => status_o(0).txreset_done,
-      gt1_txresetdone_out => status_o(1).txreset_done,
-      gt2_txresetdone_out => status_o(2).txreset_done,
-      gt3_txresetdone_out => status_o(3).txreset_done,
-
-      gt0_txoutclkpcs_out => open,
-      gt1_txoutclkpcs_out => open,
-      gt2_txoutclkpcs_out => open,
-      gt3_txoutclkpcs_out => open,
-
-      gt0_txoutclkfabric_out => open,
-      gt1_txoutclkfabric_out => open,
-      gt2_txoutclkfabric_out => open,
-      gt3_txoutclkfabric_out => open,
-
-      gt0_rxlpmreset_in => std_logic0,  -- TX Initialization and Reset Ports
-      gt1_rxlpmreset_in => std_logic0,  -- TX Initialization and Reset Ports
-      gt2_rxlpmreset_in => std_logic0,  -- TX Initialization and Reset Ports
-      gt3_rxlpmreset_in => std_logic0,  -- TX Initialization and Reset Ports
-
-      -- unused eyescan ports
-      gt0_eyescanreset_in      => std_logic0,  -- RX Initialization and Reset Ports
-      gt0_eyescandataerror_out => open,        -- RX Margin Analysis Ports
-      gt0_eyescantrigger_in    => std_logic0,  -- RX Margin Analysis Ports
-      gt0_dmonitorout_out      => open,        -- Receive Ports
-      gt0_gtrxreset_in         => std_logic0,  -- Receive Ports - RX Initialization and Reset Ports
-
-      gt1_eyescanreset_in      => std_logic0,  -- RX Initialization and Reset Ports
-      gt1_eyescandataerror_out => open,        -- RX Margin Analysis Ports
-      gt1_eyescantrigger_in    => std_logic0,  -- RX Margin Analysis Ports
-      gt1_dmonitorout_out      => open,        -- Receive Ports
-      gt1_gtrxreset_in         => std_logic0,  -- Receive Ports - RX Initialization and Reset Ports
-
-      gt2_eyescanreset_in      => std_logic0,  -- RX Initialization and Reset Ports
-      gt2_eyescandataerror_out => open,        -- RX Margin Analysis Ports
-      gt2_eyescantrigger_in    => std_logic0,  -- RX Margin Analysis Ports
-      gt2_dmonitorout_out      => open,        -- Receive Ports
-      gt2_gtrxreset_in         => std_logic0,  -- Receive Ports - RX Initialization and Reset Ports
-
-      gt3_eyescanreset_in      => std_logic0,  -- RX Initialization and Reset Ports
-      gt3_eyescandataerror_out => open,        -- RX Margin Analysis Ports
-      gt3_eyescantrigger_in    => std_logic0,  -- RX Margin Analysis Ports
-      gt3_dmonitorout_out      => open,        -- Receive Ports
-      gt3_gtrxreset_in         => std_logic0   -- Receive Ports - RX Initialization and Reset Ports
-
+      cpll_reset_out => cpll_reset,
+      cpll_pd_out    => cpll_pd,
+      refclk_out     => open,
+      refclk_in      => refclk
       );
 
+  --IBUFDS_GTE2
+  refclk_ibufds : IBUFDS_GTE2
+    port map (
+      O     => refclk,
+      ODIV2 => open,
+      CEB   => zero,
+      I     => refclk_in_p(0),
+      IB    => refclk_in_n(0)
+      );
+
+  gtp_common_inst : entity work.gtp_common
+    generic map
+    (
+      wrapper_sim_gtreset_speedup => WRAPPER_SIM_GTRESET_SPEEDUP,
+      sim_pll0refclk_sel          => "001",
+      sim_pll1refclk_sel          => "001"
+      )
+    port map
+    (
+      drpclk_common_in  => sysclk_in,
+      drpaddr_common_in => common_drp_i.addr (7 downto 0),
+      drpdi_common_in   => common_drp_i.di,
+      drpen_common_in   => common_drp_i.en,
+      drpwe_common_in   => common_drp_i.we,
+      drpdo_common_out  => common_drp_o.do,
+      drprdy_common_out => common_drp_o.rdy,
+
+      pll0outclk_out    => pll0_clk,
+      pll0outrefclk_out => pll0_refclk,
+      pll1outclk_out    => pll1_clk,
+      pll1outrefclk_out => pll1_refclk,
+
+      pll0lockdetclk_in  => sysclk_in,
+      pll0lock_out       => pll0_lock,
+      pll0refclklost_out => pll0_refclklost,
+      pll0reset_in       => pll0_reset,
+
+      pll0refclksel_in => "001",
+
+      pll0pd_in => cpll_pd,
+
+      gtrefclk0_in => refclk,
+      gtrefclk1_in => zero
+      );
+
+  pll_lock_out <= pll0_lock;
+  pll0_reset   <= common_reset or pll0_reset_array(0) or cpll_reset;
+
+  common_reset_inst : entity work.gtp_common_reset
+    generic map (
+      STABLE_CLOCK_PERIOD => STABLE_CLOCK_PERIOD  -- Period of the stable clock driving this state-machine, unit is [ns]
+      )
+    port map (
+      STABLE_CLOCK => sysclk_in,                  --Stable Clock, either a stable clock from the PCB
+      SOFT_RESET   => soft_reset_tx_in,           --User Reset, can be pulled any time
+      COMMON_RESET => common_reset                --Reset QPLL
+      );
+
+  --------------------------- TX Buffer Bypass Logic --------------------
+  -- The TX SYNC Module drives the ports needed to Bypass the TX Buffer.
+  -- Include the TX SYNC module in your own design if TX Buffer is bypassed.
+
+  run_tx_phalignment <= and_reduce(run_tx_phalignment_array);
+  rst_tx_phalignment <= and_reduce(rst_tx_phalignment_array);
+
+  tx_manual_phase_inst : entity work.gtp_tx_manual_phase_align
+    generic map (
+      number_of_lanes => 4,
+      master_lane_id  => 0
+      )
+    port map (
+      stable_clock         => sysclk_in,
+      reset_phalignment    => rst_tx_phalignment,
+      run_phalignment      => run_tx_phalignment,
+      phase_alignment_done => tx_phalignment_done,
+      txdlysreset          => txdlysreset,
+      txdlysresetdone      => txdlysresetdone,
+      txphinit             => txphinit,
+      txphinitdone         => txphinitdone,
+      txphalign            => txphalign,
+      txphaligndone        => txphaligndone,
+      txdlyen              => txdlyen
+      );
 
 end RTL;
