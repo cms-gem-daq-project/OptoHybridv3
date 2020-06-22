@@ -36,6 +36,16 @@ package types_pkg is
     we   : std_logic;
   end record;
 
+  constant drp_i_null  : drp_i_t :=
+    (
+    addr => (others => '0'),
+    di   => (others => '0'),
+    clk  => '0',
+    en   => '0',
+    we   => '0'
+
+);
+
   type drp_o_t is record
     do  : std_logic_vector(15 downto 0);
     rdy : std_logic;
@@ -50,6 +60,7 @@ package types_pkg is
     txreset_done     : std_logic;
     rxprbserr        : std_logic;
     txpmaresetdone   : std_logic;
+    txphaligndone    : std_logic;
   end record;
 
   type mgt_control_t is record
@@ -118,7 +129,7 @@ package types_pkg is
     adr : std_logic_vector (MXADRB-1 downto 0);
     cnt : std_logic_vector (MXCNTB-1 downto 0);
     prt : std_logic_vector (MXPRTB-1 downto 0);
-    vpf : std_logic; -- high for full 25ns
+    vpf : std_logic;                    -- high for full 25ns
   end record;
 
   constant NULL_CLUSTER : sbit_cluster_t := (

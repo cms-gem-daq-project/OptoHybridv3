@@ -30,7 +30,7 @@ src/pkg/types_pkg.vhd
 src/pkg/version_pkg.vhd
 
 # GBT
-src/ip_cores_a7/logic_clocking/logic_clocking.xci
+src/ip_cores_a7/clocks/clocks.xci
 src/ip_cores_a7/sem_a7/sem_a7.xci
 src/ip_cores_a7/xadc_a7/xadc_a7.xci
 
@@ -59,15 +59,15 @@ src/trigger/trig_alignment/trig_alignment.vhd
 src/trigger/trigger.vhd
 
 # GTP
-src/trigger/link/gtp/gtp_common.vhd
-src/trigger/link/gtp/gtp_common_reset.vhd
-src/trigger/link/gtp/gtp_cpll_railing.vhd
-src/trigger/link/gtp/gtp_gt.vhd
-src/trigger/link/gtp/gtp_sync_block.vhd
-src/trigger/link/gtp/gtp_sync_pulse.vhd
-src/trigger/link/gtp/gtp_tx_manual_phase_align.vhd
-src/trigger/link/gtp/gtp_tx_startup_fsm.vhd
-src/trigger/link/gtp/gtp_wrapper.vhd
+src/mgt/gtp/gtp_common.vhd
+src/mgt/gtp/gtp_common_reset.vhd
+src/mgt/gtp/gtp_cpll_railing.vhd
+src/mgt/gtp/gtp_gt.vhd
+src/mgt/gtp/gtp_sync_block.vhd
+src/mgt/gtp/gtp_sync_pulse.vhd
+src/mgt/gtp/gtp_tx_manual_phase_align.vhd
+src/mgt/gtp/gtp_tx_startup_fsm.vhd
+src/mgt/mgt_wrapper.vhd
 
 # Utils
 src/utils/6b8b.vhd

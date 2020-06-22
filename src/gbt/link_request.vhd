@@ -21,8 +21,8 @@ use work.hardware_pkg.all;
 entity link_request is
   port(
 
-    clock : in std_logic;
-    reset_i        : in std_logic;
+    clock   : in std_logic;
+    reset_i : in std_logic;
 
     ipb_mosi_o : out ipb_wbus;
     ipb_miso_i : in  ipb_rbus;
@@ -43,6 +43,12 @@ architecture Behavioral of link_request is
   signal rd_data      : std_logic_vector(IPB_REQ_BITS-1 downto 0);
   signal tx_dout_sump : std_logic_vector(64-32-1 downto 0);
   signal rx_dout_sump : std_logic_vector(64-49-1 downto 0);
+
+  signal rx_din : std_logic_vector (63 downto 0);
+  signal tx_din : std_logic_vector (63 downto 0);
+
+  signal rx_dout : std_logic_vector (63 downto 0);
+  signal tx_dout : std_logic_vector (63 downto 0);
 
   component fifo is
     port (
@@ -88,38 +94,42 @@ begin
     end if;
   end process;
 
+  rx_din(63 downto 49) <= (others => '0');
+  rx_din(48 downto 0)  <= rx_data_i;
+  rd_data <= rx_dout(48 downto 0);
+
   fifo_request_rx_inst : fifo
     port map(
-      rst                => reset_i,
-      clk                => clock,
-      din(48 downto 0)   => rx_data_i,
-      din(63 downto 49)  => (others => '0'),
-      dout(48 downto 0)  => rd_data,
-      dout(63 downto 49) => rx_dout_sump,
-      rd_en              => '1',
-      wr_en              => rx_en_i,
-      valid              => rd_valid,
-      full               => open,
-      empty              => open,
-      sbiterr            => open,
-      dbiterr            => open
+      rst     => reset_i,
+      clk     => clock,
+      din     => rx_din,
+      dout    => rx_dout,
+      rd_en   => '1',
+      wr_en   => rx_en_i,
+      valid   => rd_valid,
+      full    => open,
+      empty   => open,
+      sbiterr => open,
+      dbiterr => open
       );
 
   fifo_request_tx_inst : fifo
     port map(
-      rst                => reset_i,
-      clk                => clock,
-      wr_en              => ipb_miso_i.ipb_ack,
-      din(31 downto 0)   => ipb_miso_i.ipb_rdata,
-      din(63 downto 32)  => (others => '0'),
-      dout(31 downto 0)  => tx_data_o,
-      dout(63 downto 32) => tx_dout_sump,
-      rd_en              => tx_en_i,
-      valid              => tx_valid_o,
-      full               => open,
-      empty              => open,
-      sbiterr            => open,
-      dbiterr            => open
+      rst     => reset_i,
+      clk     => clock,
+      wr_en   => ipb_miso_i.ipb_ack,
+      din     => tx_din,
+      dout    => tx_dout,
+      rd_en   => tx_en_i,
+      valid   => tx_valid_o,
+      full    => open,
+      empty   => open,
+      sbiterr => open,
+      dbiterr => open
       );
+
+  tx_data_o <= tx_dout(31 downto 0);
+  tx_din(31 downto 0)  <= ipb_miso_i.ipb_rdata;
+  tx_din(63 downto 32) <= (others => '0');
 
 end Behavioral;

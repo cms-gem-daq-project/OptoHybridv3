@@ -25,7 +25,7 @@ entity clocking is
     clock_p : in std_logic;
     clock_n : in std_logic;
 
-    clocks : out clocks_t;
+    clocks_o : out clocks_t;
 
     mgt_mmcm_reset_i : in std_logic_vector (3 downto 0);
 
@@ -46,7 +46,7 @@ end clocking;
 
 architecture Behavioral of clocking is
 
-  component logic_clocking
+  component clocks
     port (
       reset       : in  std_logic;
       clk_in1     : in  std_logic;
@@ -100,7 +100,7 @@ begin
       O => sysclk
       );
 
-  logic_clocking_inst : logic_clocking
+  clocks_inst : clocks
     port map(
 
       reset => mgt_mmcm_reset_i(0),
@@ -115,12 +115,12 @@ begin
       locked_o => mmcm_locked
       );
 
-  clocks.locked <= mmcm_locked;
-  clocks.sysclk <= sysclk;
-  clocks.clk40  <= clk40;
-  clocks.clk160_0 <= clk160_0;
-  clocks.clk160_90 <= clk160_90;
-  clocks.clk200    <= clk200;
+  clocks_o.locked <= mmcm_locked;
+  clocks_o.sysclk <= sysclk;
+  clocks_o.clk40  <= clk40;
+  clocks_o.clk160_0 <= clk160_0;
+  clocks_o.clk160_90 <= clk160_90;
+  clocks_o.clk200    <= clk200;
 
   mmcm_locked_o <= mmcm_locked;
 

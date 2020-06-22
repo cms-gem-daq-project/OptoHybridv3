@@ -1,7 +1,7 @@
 ##############################################################
 #
 # Xilinx Core Generator version 14.7
-# Date: Thu Jun 18 17:17:49 2020
+# Date: Mon Jun 22 18:40:34 2020
 #
 ##############################################################
 #
@@ -43,11 +43,11 @@ CSET calc_done=DONE
 CSET clk_in_sel_port=CLK_IN_SEL
 CSET clk_out1_port=clk40_o
 CSET clk_out1_use_fine_ps_gui=false
-CSET clk_out2_port=clk80_o
+CSET clk_out2_port=clk160_o
 CSET clk_out2_use_fine_ps_gui=false
-CSET clk_out3_port=clk160_o
+CSET clk_out3_port=clk160_90_o
 CSET clk_out3_use_fine_ps_gui=false
-CSET clk_out4_port=clk160_90_o
+CSET clk_out4_port=clk200_o
 CSET clk_out4_use_fine_ps_gui=false
 CSET clk_out5_port=clk200_o
 CSET clk_out5_use_fine_ps_gui=false
@@ -74,24 +74,24 @@ CSET clkout1_requested_out_freq=40.0
 CSET clkout1_requested_phase=0.000
 CSET clkout2_drives=BUFG
 CSET clkout2_requested_duty_cycle=50.000
-CSET clkout2_requested_out_freq=80.0
+CSET clkout2_requested_out_freq=160
 CSET clkout2_requested_phase=0.000
 CSET clkout2_used=true
 CSET clkout3_drives=BUFG
 CSET clkout3_requested_duty_cycle=50.000
-CSET clkout3_requested_out_freq=160.0
-CSET clkout3_requested_phase=0.000
+CSET clkout3_requested_out_freq=160
+CSET clkout3_requested_phase=90
 CSET clkout3_used=true
 CSET clkout4_drives=BUFG
 CSET clkout4_requested_duty_cycle=50.000
-CSET clkout4_requested_out_freq=160.0
-CSET clkout4_requested_phase=90
+CSET clkout4_requested_out_freq=200
+CSET clkout4_requested_phase=0
 CSET clkout4_used=true
 CSET clkout5_drives=BUFG
 CSET clkout5_requested_duty_cycle=50.000
 CSET clkout5_requested_out_freq=200.0
 CSET clkout5_requested_phase=0
-CSET clkout5_used=true
+CSET clkout5_used=false
 CSET clkout6_drives=BUFG
 CSET clkout6_requested_duty_cycle=50.000
 CSET clkout6_requested_out_freq=40.08
@@ -103,7 +103,7 @@ CSET clkout7_requested_out_freq=160.321
 CSET clkout7_requested_phase=0
 CSET clkout7_used=false
 CSET clock_mgr_type=MANUAL
-CSET component_name=logic_clocking
+CSET component_name=clocking
 CSET daddr_port=DADDR
 CSET dclk_port=DCLK
 CSET dcm_clk_feedback=1X
@@ -157,17 +157,17 @@ CSET mmcm_clkout0_divide_f=20.000
 CSET mmcm_clkout0_duty_cycle=0.5
 CSET mmcm_clkout0_phase=0.000
 CSET mmcm_clkout0_use_fine_ps=false
-CSET mmcm_clkout1_divide=10
+CSET mmcm_clkout1_divide=5
 CSET mmcm_clkout1_duty_cycle=0.5
 CSET mmcm_clkout1_phase=0.000
 CSET mmcm_clkout1_use_fine_ps=false
 CSET mmcm_clkout2_divide=5
 CSET mmcm_clkout2_duty_cycle=0.5
-CSET mmcm_clkout2_phase=0.000
+CSET mmcm_clkout2_phase=90.000
 CSET mmcm_clkout2_use_fine_ps=false
-CSET mmcm_clkout3_divide=5
+CSET mmcm_clkout3_divide=4
 CSET mmcm_clkout3_duty_cycle=0.5
-CSET mmcm_clkout3_phase=90.000
+CSET mmcm_clkout3_phase=0.000
 CSET mmcm_clkout3_use_fine_ps=false
 CSET mmcm_clkout4_cascade=false
 CSET mmcm_clkout4_divide=4
@@ -189,7 +189,7 @@ CSET mmcm_notes=None
 CSET mmcm_ref_jitter1=0.002
 CSET mmcm_ref_jitter2=0.010
 CSET mmcm_startup_wait=false
-CSET num_out_clks=5
+CSET num_out_clks=4
 CSET override_dcm=false
 CSET override_dcm_clkgen=false
 CSET override_mmcm=false
@@ -234,7 +234,7 @@ CSET psdone_port=PSDONE
 CSET psen_port=PSEN
 CSET psincdec_port=PSINCDEC
 CSET relative_inclk=REL_PRIMARY
-CSET reset_port=RESET
+CSET reset_port=reset
 CSET secondary_in_freq=100.000
 CSET secondary_in_jitter=0.010
 CSET secondary_port=CLK_IN2
@@ -257,7 +257,7 @@ CSET use_min_o_jitter=false
 CSET use_min_power=true
 CSET use_phase_alignment=true
 CSET use_power_down=false
-CSET use_reset=false
+CSET use_reset=true
 CSET use_spread_spectrum=false
 CSET use_spread_spectrum_1=false
 CSET use_status=false
@@ -266,4 +266,4 @@ CSET use_status=false
 MISC pkg_timestamp=2012-05-10T12:44:55Z
 # END Extra information
 GENERATE
-# CRC: ea21301c
+# CRC: b7bb85dd

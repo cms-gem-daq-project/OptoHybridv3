@@ -4,6 +4,9 @@
 -- Optohybrid Firmware -- Top Logic
 -- E. Juska, T. Lenzi, A. Peck, L. Petre
 ----------------------------------------------------------------------------------
+-- TODO: STARTUP_WAIT ?
+-- TODO: connect transceivers
+-- TODO:
 
 library ieee;
 use ieee.std_logic_1164.all;
@@ -211,7 +214,7 @@ begin
 
       mmcm_locked_o => mmcm_locked,
 
-      clocks => clocks
+      clocks_o => clocks
       );
 
   --------------------------------------------------------------------------------

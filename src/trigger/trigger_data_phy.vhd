@@ -174,7 +174,7 @@ begin
     begin
       if (rising_edge(tx_usrclk)) then
         mgt_words (I) <= fiber_packets_i(I)((cnt+1)*16-1 downto cnt*16);
-        is_kchar  (I)  <= fiber_kchars_i (I)((cnt+1)*2 -1 downto cnt*2);
+        is_kchar (I)  <= fiber_kchars_i (I)((cnt+1)*2 -1 downto cnt*2);
       end if;
     end process;
   end generate;
@@ -183,18 +183,19 @@ begin
   -- A7 MGT
   --------------------------------------------------------------------------------
 
-  a7_optics_gen : if (FPGA_TYPE = "A7") generate
-    constant NUM_GTS     : integer := 4;
+  optics_gen : if (true) generate
+    constant NUM_GTS     : integer   := 4;
     signal soft_reset_tx : std_logic := '0';
     signal pll_lock      : std_logic;
     signal status        : mgt_status_array (3 downto 0);
     signal control       : mgt_control_array (3 downto 0);
-    signal drp_i         : drp_i_array (NUM_GTS-1 downto 0);
+    signal drp_i         : drp_i_array (NUM_GTS-1 downto 0) := (others => drp_i_null);
     signal drp_o         : drp_o_array (NUM_GTS-1 downto 0);
     signal common_drp_i  : drp_i_t;
     signal common_drp_o  : drp_o_t;
   begin
-    gtp_wrapper_inst : entity work.gtp_wrapper
+
+    mgt_wrapper_inst : entity work.mgt_wrapper
       port map (
 
         refclk_in_p => refclk_p,
@@ -211,8 +212,8 @@ begin
 
         txusrclk_in => clocks.clk200,
 
-        gtptxp_out => trg_tx_p,
-        gtptxn_out => trg_tx_n,
+        txp_out => trg_tx_p,
+        txn_out => trg_tx_n,
 
         drp_i => drp_i,
         drp_o => drp_o,
@@ -232,16 +233,7 @@ begin
         txdata_i(1) => mgt_words(0),
         txdata_i(2) => mgt_words(1),
         txdata_i(3) => mgt_words(1)
-
         );
-  end generate;
-
-  --------------------------------------------------------------------------------
-  -- V6 MGT
-  --------------------------------------------------------------------------------
-
-  v6_optics_gen : if (FPGA_TYPE = "V6") generate
-  begin
   end generate;
 
   --===============================================================================================
