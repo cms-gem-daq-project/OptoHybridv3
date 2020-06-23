@@ -9,6 +9,7 @@ use unisim.vcomponents.all;
 
 entity oversample is
   generic (
+    g_ENABLE_TMR_DRU     : integer := 0;
     g_PHASE_SEL_EXTERNAL : boolean := false;
     g_NUM_TAPS_45        : integer := 10
     );
@@ -157,8 +158,9 @@ begin
   -- Data Recovery Unit
   ----------------------------------------------------------------------------------------------------------------------
 
-  dru : entity work.dru
+  dru : entity work.dru_tmr
     generic map(
+      g_ENABLE_TMR         => g_ENABLE_TMR_DRU,
       g_PHASE_SEL_EXTERNAL => g_PHASE_SEL_EXTERNAL
       )
     port map(

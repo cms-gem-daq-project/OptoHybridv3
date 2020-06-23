@@ -117,6 +117,7 @@ begin
 
   gbt_oversample : entity work.oversample
     generic map (
+      g_ENABLE_TMR_DRU => EN_TMR_GBT_DRU,
       g_PHASE_SEL_EXTERNAL => false
       )
     port map (

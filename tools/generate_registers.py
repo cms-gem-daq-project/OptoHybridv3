@@ -879,8 +879,9 @@ def updateModuleFile(module):
         # slave section
         if VHDL_REG_SLAVE_MARKER_START in line:
             slaveSectionFound = True
-            slaveDeclaration =  '    ipbus_slave_inst : entity work.ipbus_slave\n'\
+            slaveDeclaration =  '    ipbus_slave_inst : entity work.ipbus_slave_tmr\n'\
                                 '        generic map(\n'\
+                                '           g_ENABLE_TMR           => %s,\n' % ('EN_TMR_IPB_SLAVE_'     + module.getVhdlName()) + \
                                 '           g_NUM_REGS             => %s,\n' % (VHDL_REG_CONSTANT_PREFIX + module.getVhdlName() + '_NUM_REGS') + \
                                 '           g_ADDR_HIGH_BIT        => %s,\n' % (VHDL_REG_CONSTANT_PREFIX + module.getVhdlName() + '_ADDRESS_MSB') + \
                                 '           g_ADDR_LOW_BIT         => %s,\n' % (VHDL_REG_CONSTANT_PREFIX + module.getVhdlName() + '_ADDRESS_LSB') + \

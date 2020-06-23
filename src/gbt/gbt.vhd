@@ -80,7 +80,6 @@ architecture Behavioral of gbt is
   signal bc0_gbt    : std_logic;
   signal resync_gbt : std_logic;
 
-  signal reset     : std_logic;
   signal cnt_reset : std_logic;
 
   signal tx_delay : std_logic_vector (4 downto 0);
@@ -112,12 +111,9 @@ begin
   ipb_mosi_o <= ipb_mosi;
   ipb_miso   <= ipb_miso_i;
 
-  -- fanout reset tree
-
   process (clocks.clk40)
   begin
     if (rising_edge(clocks.clk40)) then
-      reset     <= reset_i;
       cnt_reset <= (reset_i or resync_gbt or resync_force);
     end if;
   end process;
@@ -138,11 +134,8 @@ begin
   -- at 320 MHz performs ser-des on incoming
   gbt_serdes : entity work.gbt_serdes
     port map(
-      -- reset
-      rst_i => reset,
-
-      -- input clocks
-
+      -- clocks and reset
+      rst_i => reset_i,
       clk_1x    => clocks.clk40,  -- 40 MHz phase shiftable frame clock from GBT
       clk_4x    => clocks.clk160_0,        --
       clk_4x_90 => clocks.clk160_90,       --
@@ -166,14 +159,12 @@ begin
   -- GBT Link
   --------------------------------------------------------------------------------------------------------------------
 
-  gbt_link : entity work.gbt_link
+  gbt_link : entity work.gbt_link_tmr
+    generic map (g_ENABLE_TMR => EN_TMR_GBT_LINK)
     port map(
-
-      -- reset
-      reset_i => reset,
-
-      -- clock inputs
+      -- clock and reset
       clock => clocks.clk40,                 -- 40 MHz ttc fabric clock
+      reset_i => reset_i,
 
       -- parallel data
       data_i => gbt_rx_data,
@@ -205,8 +196,9 @@ begin
   --==== Registers begin ==========================================================================
 
     -- IPbus slave instanciation
-    ipbus_slave_inst : entity work.ipbus_slave
+    ipbus_slave_inst : entity work.ipbus_slave_tmr
         generic map(
+           g_ENABLE_TMR           => EN_TMR_IPB_SLAVE_GBT,
            g_NUM_REGS             => REG_GBT_NUM_REGS,
            g_ADDR_HIGH_BIT        => REG_GBT_ADDRESS_MSB,
            g_ADDR_LOW_BIT         => REG_GBT_ADDRESS_LSB,

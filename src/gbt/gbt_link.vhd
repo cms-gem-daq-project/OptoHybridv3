@@ -29,6 +29,7 @@ library work;
 use work.ipbus_pkg.all;
 
 entity gbt_link is
+  generic (g_TMR_INSTANCE : integer := 0);
   port(
 
     -- reset

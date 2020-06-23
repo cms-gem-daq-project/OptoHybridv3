@@ -32,7 +32,7 @@ begin
         IDELAY_TYPE           => "VAR_LOADABLE",
         IDELAY_VALUE          => 0,     -- ignored in var_loadable
         HIGH_PERFORMANCE_MODE => true,
-        REFCLK_FREQUENCY      => 200.401)
+        REFCLK_FREQUENCY      => 200.803)
       port map(
         c           => clock,
         t           => '1',

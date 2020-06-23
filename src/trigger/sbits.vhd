@@ -31,8 +31,6 @@ entity sbits is
 
     trig_stop_i : in std_logic;
 
-    clusters_o : out sbit_cluster_array_t (NUM_FOUND_CLUSTERS-1 downto 0);
-
     vfat_mask_i : in std_logic_vector (c_NUM_VFATS-1 downto 0);
 
     sbits_mux_sel_i : in  std_logic_vector (4 downto 0);
@@ -44,7 +42,6 @@ entity sbits is
 
     aligned_count_to_ready : in std_logic_vector (11 downto 0);
 
-    cluster_count_o : out std_logic_vector (10 downto 0);
 
     trigger_deadtime_i : in std_logic_vector (3 downto 0);
 
@@ -57,7 +54,9 @@ entity sbits is
 
     active_vfats_o : out std_logic_vector (c_NUM_VFATS-1 downto 0);
 
-    overflow_o : out std_logic;
+    clusters_o      : out sbit_cluster_array_t (NUM_FOUND_CLUSTERS-1 downto 0);
+    cluster_count_o : out std_logic_vector (10 downto 0);
+    overflow_o      : out std_logic;
 
     sot_is_aligned_o      : out std_logic_vector (c_NUM_VFATS-1 downto 0);
     sot_unstable_o        : out std_logic_vector (c_NUM_VFATS-1 downto 0);
@@ -184,7 +183,7 @@ begin
 
   sbit_reverse : for I in 0 to (c_NUM_VFATS-1) generate
   begin
-    vfat_sbits (I) <= sbits ((I+1)*MXSBITS-1 downto (I)*MXSBITS) when REVERSE_VFAT_SBITS(0) = '0' else reverse_vector(sbits ((I+1)*MXSBITS-1 downto (I)*MXSBITS));
+    vfat_sbits (I) <= sbits ((I+1)*MXSBITS-1 downto (I)*MXSBITS) when REVERSE_VFAT_SBITS(I) = '0' else reverse_vector(sbits ((I+1)*MXSBITS-1 downto (I)*MXSBITS));
   end generate;
 
   channel_to_strip_inst : entity work.channel_to_strip
@@ -238,20 +237,56 @@ begin
   -- Cluster Packer
   --------------------------------------------------------------------------------------------------------------------
 
-  cluster_packer_inst : entity work.cluster_packer
-    generic map (
-      DEADTIME => 0,
-      ONESHOT  => false
-      )
-    port map (
-      clocks          => clocks,
-      reset           => reset_i,
-      trig_stop_i     => trig_stop_i,
-      sbits_i         => vfat_sbits_strip_mapped,
-      cluster_count_o => cluster_count_o,
-      clusters_o      => clusters_o,
-      clusters_ena_o  => open,
-      overflow_o      => overflow_o
-      );
+  cluster_packer_tmr : if (true) generate
+    signal clusters      : sbit_cluster_array_array_t (2 downto 0);
+    signal cluster_count : t_std11_array (2 downto 0);
+    signal overflow      : std_logic_vector (2 downto 0);
+
+    attribute DONT_TOUCH                  : string;
+    attribute DONT_TOUCH of clusters      : signal is "true";
+    attribute DONT_TOUCH of cluster_count : signal is "true";
+    attribute DONT_TOUCH of overflow      : signal is "true";
+  begin
+
+    cluster_packer_loop : for I in 0 to 2*EN_TMR_CLUSTER_PACKER generate
+    begin
+
+      cluster_packer_inst : entity work.cluster_packer
+        generic map (
+          DEADTIME => 0,
+          ONESHOT  => false
+          )
+        port map (
+          clocks      => clocks,
+          reset       => reset_i,
+          trig_stop_i => trig_stop_i,
+          sbits_i     => vfat_sbits_strip_mapped,
+
+          cluster_count_o => cluster_count(I),
+          clusters_o      => clusters(I),
+          clusters_ena_o  => open,
+          overflow_o      => overflow(I)
+          );
+    end generate;
+
+    tmr_gen : if (EN_TMR = 1) generate
+    begin
+      cluster_assign_loop : for I in 0 to NUM_FOUND_CLUSTERS-1 generate
+        clusters_o(I).adr <= majority (clusters(0)(I).adr, clusters(1)(I).adr, clusters(2)(I).adr);
+        clusters_o(I).cnt <= majority (clusters(0)(I).cnt, clusters(1)(I).cnt, clusters(2)(I).cnt);
+        clusters_o(I).prt <= majority (clusters(0)(I).prt, clusters(1)(I).prt, clusters(2)(I).prt);
+        clusters_o(I).vpf <= majority (clusters(0)(I).vpf, clusters(1)(I).vpf, clusters(2)(I).vpf);
+      end generate;
+      overflow_o      <= majority (overflow(0), overflow(1), overflow(2));
+      cluster_count_o <= majority (cluster_count(0), cluster_count(1), cluster_count(2));
+    end generate;
+
+    notmr_gen : if (EN_TMR /= 1) generate
+      clusters_o      <= clusters(0);
+      overflow_o      <= overflow(0);
+      cluster_count_o <= cluster_count(0);
+    end generate;
+
+  end generate;
 
 end Behavioral;

@@ -24,8 +24,7 @@ use unisim.vcomponents.all;
 entity top_optohybrid is
   generic (
 
-    -- turn off to disable the MGTs
-
+    -- turn off to disable the MGTs (for simulation and such)
     GEN_TRIG_PHY : boolean := true;
 
     -- these generics get set by hog at synthesis
@@ -118,12 +117,12 @@ architecture Behavioral of top_optohybrid is
   signal sbit_clusters : sbit_cluster_array_t (NUM_FOUND_CLUSTERS-1 downto 0);
 
   -- Global signals
-  signal idlyrdy     : std_logic;
-  signal mmcm_locked : std_logic;
-  signal clocks      : clocks_t;
+  signal idlyrdy        : std_logic;
+  signal mmcm_locked    : std_logic;
+  signal clocks         : clocks_t;
   signal mgt_mmcm_reset : std_logic_vector (3 downto 0);
-  signal ttc         : ttc_t;
-  signal soft_reset  : std_logic;
+  signal ttc            : ttc_t;
+  signal soft_reset     : std_logic;
 
   --
   signal vtrx_mabs : std_logic_vector (1 downto 0);
@@ -189,6 +188,11 @@ architecture Behavioral of top_optohybrid is
 
 begin
 
+  assert_fpga_type :
+  if (FPGA_TYPE /= "V6" and FPGA_TYPE /= "A7") generate
+    assert false report "Unknown FPGA TYPE" severity error;
+  end generate assert_fpga_type;
+
   gbt_request_received <= ipb_mosi_gbt.ipb_strobe;
   ext_reset_o          <= ext_reset(MXRESET-1 downto 0);
   ext_sbits_o          <= ext_sbits (MXEXT-1 downto 0);
@@ -201,7 +205,7 @@ begin
   clocking_inst : entity work.clocking
     port map(
 
-      mgt_mmcm_reset_i  => mgt_mmcm_reset,
+      mgt_mmcm_reset_i => mgt_mmcm_reset,
 
       clock_p => clock_p,               -- phase shiftable 40MHz ttc clocks
       clock_n => clock_n,               --
@@ -281,7 +285,8 @@ begin
   ipb_mosi_masters(0) <= ipb_mosi_gbt;
   ipb_miso_gbt        <= ipb_miso_masters(0);
 
-  ipb_switch_inst : entity work.ipb_switch
+  ipb_switch_inst : entity work.ipb_switch_tmr
+    generic map (g_ENABLE_TMR => EN_TMR_IPB_SWITCH)
     port map(
       clock_i => clocks.clk40,
       reset_i => core_reset,
@@ -403,19 +408,64 @@ begin
   -- Trigger Data Formatter
   --------------------------------------------------------------------------------
 
-  trigger_data_formatter_inst : entity work.trigger_data_formatter
-    port map (
-      clocks          => clocks,
-      reset_i         => core_reset,
-      ttc_i           => ttc,
-      clusters_i      => sbit_clusters,
-      overflow_i      => sbit_overflow,
-      bxn_counter_i   => bxn_counter,
-      error_i         => '0',
-      fiber_packets_o => fiber_packets,
-      fiber_kchars_o  => fiber_kchars,
-      elink_packets_o => elink_packets
-      );
+
+  trigger_data_foratter_tmr : if (true) generate
+    signal clusters      : sbit_cluster_array_array_t (2 downto 0);
+    signal cluster_count : t_std11_array (2 downto 0);
+    signal overflow      : std_logic_vector (2 downto 0);
+
+    type t_fiber_packets_tmr is array (2 downto 0) of t_fiber_packet_array (NUM_OPTICAL_PACKETS-1 downto 0);
+    type t_elink_packets_tmr is array (2 downto 0) of t_elink_packet_array (NUM_ELINK_PACKETS-1 downto 0);
+    type t_fiber_kchars_tmr is array (2 downto 0) of t_std10_array (NUM_OPTICAL_PACKETS-1 downto 0);
+
+    signal fiber_packets_tmr : t_fiber_packets_tmr;
+    signal elink_packets_tmr : t_elink_packets_tmr;
+    signal fiber_kchars_tmr  : t_fiber_kchars_tmr;
+
+    attribute DONT_TOUCH                      : string;
+    attribute DONT_TOUCH of fiber_packets_tmr : signal is "true";
+    attribute DONT_TOUCH of elink_packets_tmr : signal is "true";
+    attribute DONT_TOUCH of fiber_kchars_tmr  : signal is "true";
+
+  begin
+
+    formatter_loop : for I in 0 to 2*EN_TMR_TRIG_FORMATTER generate
+    begin
+
+      trigger_data_formatter_inst : entity work.trigger_data_formatter
+        port map (
+          clocks          => clocks,
+          reset_i         => core_reset,
+          ttc_i           => ttc,
+          clusters_i      => sbit_clusters,
+          overflow_i      => sbit_overflow,
+          bxn_counter_i   => bxn_counter,
+          error_i         => '0',
+          fiber_packets_o => fiber_packets_tmr(I),
+          fiber_kchars_o  => fiber_kchars_tmr(I),
+          elink_packets_o => elink_packets_tmr(I)
+          );
+
+      tmr_gen : if (EN_TMR = 1) generate
+      begin
+        fiber_assign_loop : for I in 0 to NUM_OPTICAL_PACKETS-1 generate
+          fiber_packets(I) <= majority (fiber_packets_tmr(0)(I), fiber_packets_tmr(1)(I), fiber_packets_tmr(2)(I));
+          fiber_kchars(I)  <= majority (fiber_kchars_tmr(0)(I), fiber_kchars_tmr(1)(I), fiber_kchars_tmr(2)(I));
+        end generate;
+        elink_assign_loop : for I in 0 to NUM_ELINK_PACKETS-1 generate
+          elink_packets(I) <= majority (elink_packets_tmr(0)(I), elink_packets_tmr(1)(I), elink_packets_tmr(2)(I));
+        end generate;
+
+      end generate;
+
+      notmr_gen : if (EN_TMR /= 1) generate
+        fiber_packets <= fiber_packets_tmr(0);
+        elink_packets <= elink_packets_tmr(0);
+        fiber_kchars  <= fiber_kchars_tmr(0);
+      end generate;
+
+    end generate;
+  end generate;
 
   --------------------------------------------------------------------------------
   -- Trigger Link Physical Interface
@@ -425,21 +475,21 @@ begin
     trigger_data_phy_inst : entity work.trigger_data_phy
       port map (
         -- wishbone
-        ipb_mosi_i      => ipb_mosi_slaves(IPB_SLAVE.MGT),
-        ipb_miso_o      => ipb_miso_slaves(IPB_SLAVE.MGT),
-        clocks          => clocks,
-        mgt_mmcm_reset_o          => mgt_mmcm_reset,
-        reset_i         => core_reset,
-        ipb_reset_i     => core_reset,
-        trg_tx_p        => open,
-        trg_tx_n        => open,
-        refclk_p        => mgt_clk_p_i,
-        refclk_n        => mgt_clk_n_i,
-        gbt_trig_p      => gbt_trig_o_p,
-        gbt_trig_n      => gbt_trig_o_n,
-        fiber_packets_i => fiber_packets,
-        fiber_kchars_i  => fiber_kchars,
-        elink_packets_i => elink_packets
+        ipb_mosi_i       => ipb_mosi_slaves(IPB_SLAVE.MGT),
+        ipb_miso_o       => ipb_miso_slaves(IPB_SLAVE.MGT),
+        clocks           => clocks,
+        mgt_mmcm_reset_o => mgt_mmcm_reset,
+        reset_i          => core_reset,
+        ipb_reset_i      => core_reset,
+        trg_tx_p         => open,
+        trg_tx_n         => open,
+        refclk_p         => mgt_clk_p_i,
+        refclk_n         => mgt_clk_n_i,
+        gbt_trig_p       => gbt_trig_o_p,
+        gbt_trig_n       => gbt_trig_o_n,
+        fiber_packets_i  => fiber_packets,
+        fiber_kchars_i   => fiber_kchars,
+        elink_packets_i  => elink_packets
         );
   end generate;
 

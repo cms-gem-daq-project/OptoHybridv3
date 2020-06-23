@@ -21,6 +21,7 @@ package types_pkg is
   type t_std5_array is array(integer range <>) of std_logic_vector(4 downto 0);
   type t_std8_array is array(integer range <>) of std_logic_vector(7 downto 0);
   type t_std10_array is array(integer range <>) of std_logic_vector(9 downto 0);
+  type t_std11_array is array(integer range <>) of std_logic_vector(10 downto 0);
   type t_std16_array is array(integer range <>) of std_logic_vector(15 downto 0);
   type t_std32_array is array(integer range <>) of std_logic_vector(31 downto 0);
   type t_std64_array is array(integer range <>) of std_logic_vector(63 downto 0);
@@ -139,6 +140,8 @@ package types_pkg is
     vpf => '0');
 
   type sbit_cluster_array_t is array(integer range<>) of sbit_cluster_t;
+  type sbit_cluster_array_array_t is array(integer range<>)
+    of sbit_cluster_array_t (NUM_FOUND_CLUSTERS-1 downto 0);
 
   subtype partition_t is std_logic_vector(c_PARTITION_SIZE*MXSBITS-1 downto 0);
   type partition_array_t is array(integer range <>) of partition_t;

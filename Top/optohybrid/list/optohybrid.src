@@ -15,6 +15,7 @@ src/control/ttc.v
 # GBT
 src/gbt/gbt.vhd
 src/gbt/gbt_link.vhd
+src/gbt/gbt_link_tmr.vhd
 src/gbt/gbt_rx.vhd
 src/gbt/gbt_serdes.vhd
 src/gbt/gbt_tx.vhd
@@ -55,6 +56,7 @@ src/trigger/sbit_monitor.vhd
 src/trigger/sbits.vhd
 src/trigger/sbits_hitmap.vhd
 src/trigger/trig_alignment/frame_aligner.v
+src/trigger/trig_alignment/frame_aligner_tmr.vhd
 src/trigger/trig_alignment/trig_alignment.vhd
 src/trigger/trigger.vhd
 
@@ -74,6 +76,7 @@ src/utils/6b8b.vhd
 src/utils/6b8b_pkg.vhd
 src/utils/8b6b.vhd
 src/utils/dru.vhd
+src/utils/dru_tmr.vhd
 src/utils/oversample.vhd
 src/utils/bitslip.vhd
 src/utils/clock_strobe.vhd
@@ -88,6 +91,10 @@ src/utils/progress_bar.vhd
 src/utils/sem_mon.vhd
 src/utils/synchronizer.vhd
 src/utils/x_flashsm.v
+
+# Wishbone
+src/wb/ipb_switch_tmr.vhd
+src/wb/ipbus_slave_tmr.vhd
 src/wb/ipb_switch.vhd
 src/wb/ipbus_slave.vhd
 src/wb/wb_switch.vhd

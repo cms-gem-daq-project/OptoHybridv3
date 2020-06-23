@@ -342,8 +342,9 @@ begin
   --==== Registers begin ==========================================================================
 
     -- IPbus slave instanciation
-    ipbus_slave_inst : entity work.ipbus_slave
+    ipbus_slave_inst : entity work.ipbus_slave_tmr
         generic map(
+           g_ENABLE_TMR           => EN_TMR_IPB_SLAVE_TRIG,
            g_NUM_REGS             => REG_TRIG_NUM_REGS,
            g_ADDR_HIGH_BIT        => REG_TRIG_ADDRESS_MSB,
            g_ADDR_LOW_BIT         => REG_TRIG_ADDRESS_LSB,

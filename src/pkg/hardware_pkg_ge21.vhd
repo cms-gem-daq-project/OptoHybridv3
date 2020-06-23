@@ -48,16 +48,21 @@ package hardware_pkg is
   constant NUM_ELINK_PACKETS   : integer := 1;  -- # of different copper link packets
 
   -- TMR Enables
-  constant USE_TMR_RESET              : integer := 1;
-  constant USE_TMR_TTC                : integer := 1;
-  constant USE_TMR_MGT_CONTROL        : integer := 1;
-  constant USE_TMR_MGT_DATA           : integer := 1;
-  constant USE_TMR_GBT_LINK           : integer := 1;
-  constant USE_TMR_IPB_SWITCH         : integer := 1;
-  constant USE_TMR_IPB_SLAVE_TRIGGER  : integer := 1;
-  constant USE_TMR_IPB_SLAVE_CONTROL  : integer := 1;
-  constant USE_TMR_IPB_SLAVE_GBT      : integer := 1;
-  constant USE_TMR_IPB_SLAVE_ADC      : integer := 1;
-  constant USE_TMR_IPB_SLAVE_CLOCKING : integer := 1;
+  constant EN_TMR : integer := 1;
+
+  constant EN_TMR_TRIG_FORMATTER     : integer := 1*EN_TMR;
+  constant EN_TMR_GBT_DRU            : integer := 1*EN_TMR;
+  constant EN_TMR_SBIT_DRU           : integer := 1*EN_TMR;
+  constant EN_TMR_SOT_DRU            : integer := 1*EN_TMR;
+  constant EN_TMR_CLUSTER_PACKER     : integer := 1*EN_TMR;
+  constant EN_TMR_FRAME_ALIGNER      : integer := 1*EN_TMR;
+  constant EN_TMR_GBT_LINK           : integer := 1*EN_TMR;
+  constant EN_TMR_IPB_SWITCH         : integer := 1*EN_TMR;
+  constant EN_TMR_IPB_SLAVE_TRIG     : integer := 1*EN_TMR;
+  constant EN_TMR_IPB_SLAVE_CONTROL  : integer := 1*EN_TMR;
+  constant EN_TMR_IPB_SLAVE_GBT      : integer := 1*EN_TMR;
+  constant EN_TMR_IPB_SLAVE_ADC      : integer := 1*EN_TMR;
+  constant EN_TMR_IPB_SLAVE_CLOCKING : integer := 1*EN_TMR;
+  constant EN_TMR_IPB_SLAVE_MGT      : integer := 1*EN_TMR;
 
 end hardware_pkg;

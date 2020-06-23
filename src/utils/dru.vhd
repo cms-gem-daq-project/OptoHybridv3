@@ -7,6 +7,7 @@ use ieee.numeric_std.all;
 entity dru is
 
   generic (
+    g_TMR_INSTANCE       : integer := 0;
     g_PHASE_SEL_EXTERNAL : boolean := false
     );
   port(
