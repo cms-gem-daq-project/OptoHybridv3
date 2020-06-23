@@ -403,10 +403,10 @@ begin
       signal resetdone, resetdone_r, resetdone_r2 : std_logic;
       signal sync_done                            : std_logic;
 
-      constant GTX_SIM_GTXRESET_SPEEDUP : integer          := 1;             -- Set to 1 to speed up sim reset
-      constant GTX_TX_CLK_SOURCE        : string           := "TXPLL";       -- Share RX PLL parameter
-      constant GTX_POWER_SAVE           : bit_vector       := "0000110000";  -- Save power parameter
-      constant GTXTEST_IN               : std_logic_vector := (others => '0');
+      constant GTX_SIM_GTXRESET_SPEEDUP : integer                        := 1;             -- Set to 1 to speed up sim reset
+      constant GTX_TX_CLK_SOURCE        : string                         := "TXPLL";       -- Share RX PLL parameter
+      constant GTX_POWER_SAVE           : bit_vector                     := "0000110000";  -- Save power parameter
+      constant GTXTEST_IN               : std_logic_vector (12 downto 0) := (others => '0');
 
     begin
       gtx_inst : entity work.mgt_gtx
