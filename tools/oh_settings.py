@@ -12,7 +12,7 @@ firmware_version_minor   = "02"
 firmware_release_version = "09"
 firmware_year            = 2020
 firmware_month           = 6
-firmware_day             = 19
+firmware_day             = 23
 # END: OH_VERSION
 
 if (gem_version == "ge21"):

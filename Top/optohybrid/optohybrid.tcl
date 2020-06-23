@@ -32,6 +32,7 @@ set PROPERTIES [dict create \
                     impl_1 [dict create \
                                 STEPS.OPT_DESIGN.ARGS.DIRECTIVE Default \
                                 STEPS.POST_ROUTE_PHYS_OPT_DESIGN.ARGS.DIRECTIVE AggressiveExplore \
+                                BITSTREAM.GENERAL.COMPRESS TRUE \
                                ]\
                    ]
 

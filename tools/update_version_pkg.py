@@ -16,7 +16,6 @@ def main():
 
     insert_code (ADDRESS_TABLE_TOP, ADDRESS_TABLE_TOP, MARKER_START, MARKER_END, write_version_pkg)
 
-
 def write_version_pkg (file_handle):
 
     f = file_handle

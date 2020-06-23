@@ -12,3 +12,5 @@ echo "Setting OH version..." \
     && cd ../doc/latex/ \
     && pdflatex address_table.tex \
     && cd - \
+
+rm *.pyc
