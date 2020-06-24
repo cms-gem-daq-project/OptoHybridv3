@@ -1,10 +1,10 @@
-create_clock -period 24.9 -name clock [get_ports clock_p]
-#create_clock -period 10.000 -name {control/led_control/fader_cnt_reg[0]_0} -waveform {0.000 5.000} [get_pins control/led_control_inst/prescaler_reg[0]
+create_clock -period 24.9 -name clock   [get_ports clock_p]
+create_clock -period 10.0 -name cfgmclk [get_pins control/led_control_inst/prescaler_reg[0]]
 
-set_property MAX_FANOUT 128 [get_nets trigger/ipbus_slave_inst/i_ipb_reset_sync_usr_clk/s_resync[0]]
-set_property MAX_FANOUT 128 [get_nets trigger/ipbus_slave_inst/i_ipb_reset_sync_usr_clk/s_resync[1]]
+set_property MAX_FANOUT 128 [get_nets -hierarchical -filter {name =~ "*i_ipb_reset_sync_usr_clk/s_resync[0]"}]
 
-set_false_path -from [get_pins {gbt/gbt_serdes/to_gbt_ser_gen_a7.i_to_gbt_ser/inst/pins[0].oserdese2_master/CLK}] -to [get_ports elink_o_p]
+set_false_path -from [get_clocks] -to [get_ports elink_o_p]
+
 set_false_path -from [get_ports {vfat_sot_*}] -to [get_pins -hierarchical -filter { NAME =~  "*trig_alignment/*oversample*/*ise1*/DDLY" }]
 set_false_path -from [get_ports {vfat_sbits_*}] -to [get_pins -hierarchical -filter { NAME =~  "*trig_alignment/*oversample*/*ise1*/DDLY" }]
 set_false_path -from [get_ports {elink_i_*}] -to [get_pins -hierarchical -filter { NAME =~  "*/*ise1*/DDLY" }]

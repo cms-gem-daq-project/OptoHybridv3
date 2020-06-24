@@ -231,8 +231,8 @@ def main():
         print('============================================================================')
         print(module.toString())
         print('============================================================================')
-        for reg in module.regs:
-            print(reg.toString())
+        #for reg in module.regs:
+        #    print(reg.toString())
 
     print('Writing documentation file to ' + DOC_FILE)
     writeDocFile (modules, DOC_FILE)
@@ -271,7 +271,7 @@ def findRegisters(node, baseName, baseAddress, modules, currentModule, vars, isG
 
             vars[generateIdxVar] = i
             vars[generateIdxVar + "_STEP_SIZE"] = generateAddressStep
-            print('generate base_addr = ' + hex(baseAddress + generateAddressStep * i) + ' for node ' + node.get('id'))
+            #print('generate base_addr = ' + hex(baseAddress + generateAddressStep * i) + ' for node ' + node.get('id'))
 
             findRegisters(node, baseName, baseAddress + generateAddressStep * i, modules, currentModule, vars, True, num_of_oh)
         return
@@ -781,7 +781,7 @@ def writeConstantsFile(modules, filename):
         #f.write('    type T_' + VHDL_REG_CONSTANT_PREFIX + module.getVhdlName() + '_ADDRESS_ARR is array(integer range <>) of std_logic_vector(%s downto %s);\n\n' % (VHDL_REG_CONSTANT_PREFIX + module.getVhdlName() + '_ADDRESS_MSB', VHDL_REG_CONSTANT_PREFIX + module.getVhdlName() + '_ADDRESS_LSB')) # cannot use that because we need to be able to pass it as a generic type to the generic IPBus slave module
 
         for reg in module.regs:
-            print('Writing register constants for ' + reg.name)
+            #print('Writing register constants for ' + reg.name)
             f.write('    constant ' + VHDL_REG_CONSTANT_PREFIX + reg.getVhdlName() + '_ADDR    : '\
                         'std_logic_vector(' + str(module.regAddressMsb) + ' downto ' + str(module.regAddressLsb) + ') := ' + \
                         vhdlHexPadded(reg.address, module.regAddressMsb - module.regAddressLsb + 1)  + ';\n')

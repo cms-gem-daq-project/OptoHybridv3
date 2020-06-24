@@ -151,8 +151,12 @@ package types_pkg is
 
   function if_then_else (bool : boolean; a : integer; b : integer)
     return integer;
+  function if_then_else (bool : boolean; a : boolean; b : boolean)
+    return boolean;
   function if_then_else (bool : boolean; a : std_logic; b : std_logic)
     return std_logic;
+  function if_then_else (bool : boolean; a : std_logic_vector; b : std_logic_vector)
+    return std_logic_vector;
 
   ---------------------------------------------------------------------------------
   -- Wishbone
@@ -221,6 +225,24 @@ package body types_pkg is
   end if_then_else;
 
   function if_then_else (bool : boolean; a : integer; b : integer) return integer is
+  begin
+    if (bool) then
+      return a;
+    else
+      return b;
+    end if;
+  end if_then_else;
+
+  function if_then_else (bool : boolean; a : boolean; b : boolean) return boolean is
+  begin
+    if (bool) then
+      return a;
+    else
+      return b;
+    end if;
+  end if_then_else;
+
+  function if_then_else (bool : boolean; a : std_logic_vector; b : std_logic_vector) return std_logic_vector is
   begin
     if (bool) then
       return a;

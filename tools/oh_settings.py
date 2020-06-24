@@ -8,11 +8,11 @@ oh_version  = ""
 geb_version = ""
 geb_length  = ""
 firmware_version_major   = "03"
-firmware_version_minor   = "02"
-firmware_release_version = "09"
+firmware_version_minor   = "03"
+firmware_release_version = "00"
 firmware_year            = 2020
 firmware_month           = 6
-firmware_day             = 23
+firmware_day             = 24
 # END: OH_VERSION
 
 if (gem_version == "ge21"):
