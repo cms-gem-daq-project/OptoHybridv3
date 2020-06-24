@@ -254,34 +254,29 @@ begin
   comma <= x"DC" when ttc_i.bc0 = '1' else x"BC";
 
   elink_outputs : for I in 0 to (NUM_OPTICAL_PACKETS-1) generate
-    signal ecc8               : std_logic_vector (7 downto 0);
-    signal vpf_r            : std_logic;
-    signal vpf_r2           : std_logic;
-    signal comma_r            : std_logic_vector (7 downto 0);
-    signal comma_r2           : std_logic_vector (7 downto 0);
-    signal cluster4_r         : std_logic_vector (15 downto 0);
-    signal cluster4_r2        : std_logic_vector (15 downto 0);
-    signal word4              : std_logic_vector (15 downto 0);
-    signal fiber_kchars_r     : std_logic_vector (9 downto 0);
-    signal fiber_kchars_r2    : std_logic_vector (9 downto 0);
-    signal frame              : std_logic_vector (79 downto 0);
-    signal packet_i, packet_o : std_logic_vector (5*16-1 downto 0);
+    signal ecc8                        : std_logic_vector (7 downto 0);
+    signal vpf_r, vpf_r2               : std_logic;
+    signal comma_r, comma_r2           : std_logic_vector (7 downto 0);
+    signal cluster4_r, cluster4_r2     : std_logic_vector (15 downto 0);
+    signal word4                       : std_logic_vector (15 downto 0);
+    signal kchars, kchars_r, kchars_r2 : std_logic_vector (9 downto 0);
+    signal frame                       : std_logic_vector (79 downto 0);
+    signal packet_i, packet_o          : std_logic_vector (4*16-1 downto 0);
   begin
 
-    -- word 4 is a special case since it holds the comma / ecc... the others are simple
-    -- put the when else in a separate assignment since it is not allowed in a process until VHDL2008... uhg..
+
     process (clocks.clk160_0)
     begin
       if (rising_edge(clocks.clk160_0)) then
-        comma_r         <= comma;
-        cluster4_r      <= cluster_words(4+5*I);
-        vpf_r           <= clusters(4+5*I).vpf;
-        fiber_kchars_r  <= "0000000000" when (clusters(4+5*I).vpf = '1') else "0100000000";
+        comma_r    <= comma;
+        cluster4_r <= cluster_words(4+5*I);
+        vpf_r      <= clusters(4+5*I).vpf;
 
-        comma_r2        <= comma_r;
-        cluster4_r2     <= cluster4_r;
-        vpf_r2          <= vpf_r;
-        fiber_kchars_r2 <= fiber_kchars_r;
+        comma_r2    <= comma_r;
+        cluster4_r2 <= cluster4_r;
+        vpf_r2      <= vpf_r;
+        kchars_r    <= kchars;
+        kchars_r2   <= kchars_r;
       end if;
     end process;
 
@@ -295,7 +290,10 @@ begin
       end if;
     end process;
 
-    word4 <= cluster4_r2 when (vpf_r2 = '1') else (comma & ecc8);
+    -- word 4 is a special case since it holds the comma / ecc... the others are simple
+    -- put the when else in a separate assignment since it is not allowed in a process until VHDL2008... uhg..
+    word4  <= cluster4_r2  when (vpf_r2 = '1')              else (comma & ecc8);
+    kchars <= "0000000000" when (clusters(4+5*I).vpf = '1') else "0100000000";
 
     -- copy onto 40MHz clock so it can be copied onto the 200MHz clock easily
     -- (160 --> 200 MHz transfer requires proper CDC)
@@ -303,12 +301,12 @@ begin
     begin
       if (rising_edge(clocks.clk40)) then
         fiber_packets_o(I) <= word4 & packet_o;
-        fiber_kchars_o(I)  <= fiber_kchars_r2;
+        fiber_kchars_o(I)  <= kchars_r2;
       end if;
     end process;
 
     noecc_gen : if (ENABLE_ECC = 0) generate
-      ecc8     <= x"00";
+      ecc8 <= x"00";
       process (clocks.clk160_0)
       begin
         if (rising_edge(clocks.clk160_0)) then
