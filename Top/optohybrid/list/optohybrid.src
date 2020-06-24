@@ -36,7 +36,6 @@ src/ip_cores_a7/sem_a7/sem_a7.xci
 src/ip_cores_a7/xadc_a7/xadc_a7.xci
 
 # Cluster packer
-src/cluster_building/x_oneshot.v
 src/cluster_building/consecutive_count.v
 src/cluster_building/count768.v
 src/cluster_building/find_cluster_primaries.v
@@ -72,6 +71,12 @@ src/mgt/gtp/gtp_tx_startup_fsm.vhd
 src/mgt/mgt_wrapper.vhd
 
 # Utils
+#src/utils/yahamm/yahamm.src
+src/utils/yahamm/matrix_pkg.vhd
+src/utils/yahamm/yahamm_dec.vhd
+src/utils/yahamm/yahamm_enc.vhd
+src/utils/yahamm/yahamm_pkg.vhd
+
 src/utils/6b8b.vhd
 src/utils/6b8b_pkg.vhd
 src/utils/8b6b.vhd

@@ -156,9 +156,7 @@ architecture Behavioral of trigger_data_formatter is
   signal clusters          : sbit_cluster_array_t (NUM_OUTPUT_CLUSTERS-1 downto 0);
   signal late_cluster_flag : std_logic_vector (NUM_OUTPUT_CLUSTERS-1 downto 0) := (others => '0');
 
-  signal ecc8     : std_logic_vector (7 downto 0);
-  signal ecc8_2nd : std_logic_vector (7 downto 0);
-  signal comma    : std_logic_vector (7 downto 0);
+  signal comma : std_logic_vector (7 downto 0);
 
   signal special_bits : std_logic_vector (NUM_OUTPUT_CLUSTERS-1 downto 0) := (others => '0');
 
@@ -256,29 +254,87 @@ begin
   comma <= x"DC" when ttc_i.bc0 = '1' else x"BC";
 
   elink_outputs : for I in 0 to (NUM_OPTICAL_PACKETS-1) generate
-    signal word4 : std_logic_vector (15 downto 0);
-    signal frame : std_logic_vector (79 downto 0);
+    signal ecc8               : std_logic_vector (7 downto 0);
+    signal vpf_r            : std_logic;
+    signal vpf_r2           : std_logic;
+    signal comma_r            : std_logic_vector (7 downto 0);
+    signal comma_r2           : std_logic_vector (7 downto 0);
+    signal cluster4_r         : std_logic_vector (15 downto 0);
+    signal cluster4_r2        : std_logic_vector (15 downto 0);
+    signal word4              : std_logic_vector (15 downto 0);
+    signal fiber_kchars_r     : std_logic_vector (9 downto 0);
+    signal fiber_kchars_r2    : std_logic_vector (9 downto 0);
+    signal frame              : std_logic_vector (79 downto 0);
+    signal packet_i, packet_o : std_logic_vector (5*16-1 downto 0);
   begin
 
     -- word 4 is a special case since it holds the comma / ecc... the others are simple
     -- put the when else in a separate assignment since it is not allowed in a process until VHDL2008... uhg..
-    word4             <= cluster_words(4+5*I) when (clusters(4+5*I).vpf = '1') else (comma & ecc8);
-    fiber_kchars_o(I) <= "0000000000"         when (clusters(4+5*I).vpf = '1') else "0100000000";
+    process (clocks.clk160_0)
+    begin
+      if (rising_edge(clocks.clk160_0)) then
+        comma_r         <= comma;
+        cluster4_r      <= cluster_words(4+5*I);
+        vpf_r           <= clusters(4+5*I).vpf;
+        fiber_kchars_r  <= "0000000000" when (clusters(4+5*I).vpf = '1') else "0100000000";
+
+        comma_r2        <= comma_r;
+        cluster4_r2     <= cluster4_r;
+        vpf_r2          <= vpf_r;
+        fiber_kchars_r2 <= fiber_kchars_r;
+      end if;
+    end process;
+
+    process (clocks.clk160_0)
+    begin
+      if (rising_edge(clocks.clk160_0)) then
+        packet_i(15 downto 0)  <= cluster_words(0+5*I);
+        packet_i(31 downto 16) <= cluster_words(1+5*I);
+        packet_i(47 downto 32) <= cluster_words(2+5*I);
+        packet_i(63 downto 48) <= cluster_words(3+5*I);
+      end if;
+    end process;
+
+    word4 <= cluster4_r2 when (vpf_r2 = '1') else (comma & ecc8);
 
     -- copy onto 40MHz clock so it can be copied onto the 200MHz clock easily
     -- (160 --> 200 MHz transfer requires proper CDC)
     process (clocks.clk40)
     begin
       if (rising_edge(clocks.clk40)) then
-        frame(15 downto 0)  <= cluster_words(0+5*I);
-        frame(31 downto 16) <= cluster_words(1+5*I);
-        frame(47 downto 32) <= cluster_words(2+5*I);
-        frame(63 downto 48) <= cluster_words(3+5*I);
-        frame(79 downto 64) <= word4;
+        fiber_packets_o(I) <= word4 & packet_o;
+        fiber_kchars_o(I)  <= fiber_kchars_r2;
       end if;
     end process;
 
-    fiber_packets_o(I) <= frame;
+    noecc_gen : if (ENABLE_ECC = 0) generate
+      ecc8     <= x"00";
+      process (clocks.clk160_0)
+      begin
+        if (rising_edge(clocks.clk160_0)) then
+          packet_o <= packet_i;
+        end if;
+      end process;
+    end generate;
+
+    ecc_gen : if (ENABLE_ECC = 1) generate
+
+      yahamm_enc_1 : entity work.yahamm_enc
+        generic map (
+          MESSAGE_LENGTH   => packet_i'length,
+          EXTRA_PARITY_BIT => 1,
+          ONE_PARITY_BIT   => false
+          )
+        port map (
+          clk_i        => clocks.clk160_0,
+          rst_i        => reset_i,
+          en_i         => not reset_i,
+          data_i       => packet_i,
+          data_o       => packet_o,
+          data_valid_o => open,
+          parity_o     => ecc8
+          );
+    end generate;
 
   end generate;
 
@@ -287,20 +343,48 @@ begin
   --------------------------------------------------------------------------------
 
   ge21_elink_gen : if (GE21 = 1) and HAS_ELINK_OUTPUTS generate
+    signal ecc8               : std_logic_vector (7 downto 0);
+    signal packet_i, packet_o : std_logic_vector (5*16-1 downto 0);
   begin
+
+    elink_packets_o(0) <= ecc8 & packet_o;
 
     process (clocks.clk160_0)
     begin
       if (rising_edge(clocks.clk160_0)) then
-        elink_packets_o(0) <= ecc8 & cluster_words(4) & cluster_words(3) & cluster_words(2) & cluster_words(1) & cluster_words(0);
+        packet_i <= cluster_words(4) & cluster_words(3) & cluster_words(2) & cluster_words(1) & cluster_words(0);
       end if;
     end process;
+
+    noecc_gen : if (ENABLE_ECC = 0) generate
+      ecc8     <= x"00";
+      packet_o <= packet_i;
+    end generate;
+
+    ecc_gen : if (ENABLE_ECC = 1) generate
+      yahamm_enc_1 : entity work.yahamm_enc
+        generic map (
+          MESSAGE_LENGTH   => packet_i'length,
+          EXTRA_PARITY_BIT => 1,
+          ONE_PARITY_BIT   => false
+          )
+        port map (
+          clk_i        => clocks.clk160_0,
+          rst_i        => reset_i,
+          en_i         => not reset_i,
+          data_i       => packet_i,
+          data_o       => packet_o,
+          data_valid_o => open,
+          parity_o     => ecc8
+          );
+    end generate;
 
   end generate;
 
   --------------------------------------------------------------------------------
   -- ECC
   --------------------------------------------------------------------------------
+
 
   --  ecc64_inst : entity work.ecc64
   --    port map (

@@ -409,7 +409,7 @@ begin
   --------------------------------------------------------------------------------
 
 
-  trigger_data_foratter_tmr : if (true) generate
+  trigger_data_formatter_tmr : if (true) generate
     signal clusters      : sbit_cluster_array_array_t (2 downto 0);
     signal cluster_count : t_std11_array (2 downto 0);
     signal overflow      : std_logic_vector (2 downto 0);

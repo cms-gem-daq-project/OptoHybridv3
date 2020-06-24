@@ -47,6 +47,8 @@ package hardware_pkg is
   constant NUM_OPTICAL_PACKETS        : integer := 2; -- # of different optical link packets
   constant NUM_ELINK_PACKETS          : integer := 0; -- # of different copper link packets
 
+  constant ENABLE_ECC          : integer := 1;
+
   -- TMR Enables
   constant EN_TMR : integer := 1;
 
