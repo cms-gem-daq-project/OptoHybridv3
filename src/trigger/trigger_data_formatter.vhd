@@ -1,13 +1,10 @@
 -- https://gitlab.cern.ch/tdr/notes/DN-20-016/blob/master/temp/DN-20-016_temp.pdf
 --
--- TODO: Only empty clusters are sent for 4 orbits following a resync signal, thus guaranteeing that the comma/bc0
---       symbols will not be replaced by CL WORD4 during this time
---
--- TODO: Whenever the number of clusters reaches the limit of the bandwidth provided by CL WORD0
---       CL WORD3 (8 clusters in 2 link OHs, and 4 cluster in 1 link OHs), the CL WORD4 is used,
---       and replaces the ECC8 + Comma/bc0 word, however a maximum delay of 100 BXs is guaran-
---       teed between consecutive comma characters (the number 100 can be tuned later)
---
+-- TODO: ge21 will have 10 clusters max on the optical links in stations M1 and M5
+--       otherwise it will have 5 clusters max  on the optical links
+--       in all cases there are 5 clusters max on the copper links
+--       this is so annoying and stupid :( just ignore it for now...
+
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.std_logic_misc.all;
@@ -139,14 +136,14 @@ architecture Behavioral of trigger_data_formatter is
 
     for I in 0 to num_clst-1 loop
       -- consider the zero case separately to avoid looking at 0-1
-      if (I=0) then
-        if (mask(I)='1') then
+      if (I = 0) then
+        if (mask(I) = '1') then
           ret (I) := clst (I);
         else
           ret (I) := ovfl (I);
         end if;
       -- if the Ith cluster is valid, return it
-      elsif (I >= max or mask(I)='1') then --'1' = and_reduce(mask(I downto 0))) then
+      elsif (I >= max or mask(I) = '1') then  --'1' = and_reduce(mask(I downto 0))) then
         ret (I) := clst (I);
       -- else pick one of the overflow clusters
       else
@@ -175,7 +172,52 @@ architecture Behavioral of trigger_data_formatter is
 
   signal cluster_words : t_std16_array (NUM_OUTPUT_CLUSTERS-1 downto 0);
 
+  constant resync_idle_period : integer                               := 4*3564-1;
+  signal resync_counter       : integer range 0 to resync_idle_period := 0;
+  signal syncing              : std_logic                             := '0';
+
+  constant force_comma_period : integer   := 127;
+  signal force_comma_counter  : integer range 0 to force_comma_period;
+  signal force_comma          : std_logic := '0';
+
 begin
+
+  -- Only empty clusters are sent for 4 orbits following a resync signal, thus guaranteeing that the comma/bc0
+  -- symbols will not be replaced by CL WORD4 during this time
+  process (clocks.clk40)
+  begin
+    if (rising_edge(clocks.clk40)) then
+      if (ttc_i.resync = '1' or reset_i='1') then
+        resync_counter <= 0;
+        syncing        <= '1';
+      elsif (resync_counter < resync_idle_period) then
+        resync_counter <= resync_counter + 1;
+        syncing        <= '1';
+      else
+        syncing <= '0';
+      end if;
+    end if;
+  end process;
+
+  -- Whenever the number of clusters reaches the limit of the bandwidth provided by CL WORD0
+  -- CL WORD3 (8 clusters in 2 link OHs, and 4 cluster in 1 link OHs), the CL WORD4 is used,
+  -- and replaces the ECC8 + Comma/bc0 word, however a maximum delay of 100 BXs is guaran-
+  -- teed between consecutive comma characters (the number 100 can be tuned later)
+  process (clocks.clk40)
+  begin
+    if (rising_edge(clocks.clk40)) then
+      if (clusters(4).vpf = '1') then
+        force_comma_counter <= 0;
+        force_comma         <= '0';
+      elsif (force_comma_counter < force_comma_period) then
+        force_comma_counter <= force_comma_counter + 1;
+        force_comma         <= '0';
+      elsif (force_comma_counter = force_comma_period) then
+        force_comma_counter <= 0;
+        force_comma         <= '1';
+      end if;
+    end if;
+  end process;
 
   --------------------------------------------------------------------------------
   -- Cluster assignment
@@ -186,9 +228,9 @@ begin
   begin
     if (rising_edge(clocks.clk160_0)) then
       overflow_clusters(NUM_FOUND_CLUSTERS-1 - NUM_OUTPUT_CLUSTERS downto 0) <= clusters_i (NUM_FOUND_CLUSTERS-1 downto NUM_OUTPUT_CLUSTERS);
-      overflow_clusters_r1 <= overflow_clusters;
-      overflow_clusters_r2 <= overflow_clusters_r1;
-      overflow_clusters_r3 <= overflow_clusters_r2;
+      overflow_clusters_r1                                                   <= overflow_clusters;
+      overflow_clusters_r2                                                   <= overflow_clusters_r1;
+      overflow_clusters_r3                                                   <= overflow_clusters_r2;
     end if;
   end process;
 
@@ -196,7 +238,11 @@ begin
   process (clocks.clk160_0)
   begin
     if (rising_edge(clocks.clk160_0)) then
-      clusters <= cluster_ovf_selector (c_NUM_OVERFLOW, clusters_i, overflow_clusters_r3);
+      if (syncing = '1') then
+        clusters <= (others => NULL_CLUSTER);
+      else
+        clusters <= cluster_ovf_selector (c_NUM_OVERFLOW, clusters_i, overflow_clusters_r3);
+      end if;
     end if;
   end process;
 
@@ -270,14 +316,14 @@ begin
   comma <= x"DC" when ttc_i.bc0 = '1' else x"BC";
 
   elink_outputs : for I in 0 to (NUM_OPTICAL_PACKETS-1) generate
-    signal ecc8                        : std_logic_vector (7 downto 0);
-    signal vpf_r, vpf_r2               : std_logic;
-    signal comma_r, comma_r2           : std_logic_vector (7 downto 0);
-    signal cluster4_r, cluster4_r2     : std_logic_vector (15 downto 0);
-    signal word4                       : std_logic_vector (15 downto 0);
-    signal kchars, kchars_r, kchars_r2 : std_logic_vector (9 downto 0);
-    signal frame                       : std_logic_vector (79 downto 0);
-    signal packet_i, packet_o          : std_logic_vector (4*16-1 downto 0);
+    signal ecc8                    : std_logic_vector (7 downto 0);
+    signal vpf_r, vpf_r2           : std_logic;
+    signal comma_r, comma_r2       : std_logic_vector (7 downto 0);
+    signal cluster4_r, cluster4_r2 : std_logic_vector (15 downto 0);
+    signal word4                   : std_logic_vector (15 downto 0);
+    signal kchars                  : std_logic_vector (9 downto 0);
+    signal frame                   : std_logic_vector (79 downto 0);
+    signal packet_i, packet_o      : std_logic_vector (4*16-1 downto 0);
   begin
 
 
@@ -291,8 +337,6 @@ begin
         comma_r2    <= comma_r;
         cluster4_r2 <= cluster4_r;
         vpf_r2      <= vpf_r;
-        kchars_r    <= kchars;
-        kchars_r2   <= kchars_r;
       end if;
     end process;
 
@@ -308,8 +352,8 @@ begin
 
     -- word 4 is a special case since it holds the comma / ecc... the others are simple
     -- put the when else in a separate assignment since it is not allowed in a process until VHDL2008... uhg..
-    word4  <= cluster4_r2  when (vpf_r2 = '1')              else (comma & ecc8);
-    kchars <= "0000000000" when (clusters(4+5*I).vpf = '1') else "0100000000";
+    word4  <= cluster4_r2  when (vpf_r2 = '1' or force_comma='1') else (comma & ecc8);
+    kchars <= "0000000000" when (vpf_r2 = '1' or force_comma='1') else "1000000000";
 
     -- copy onto 40MHz clock so it can be copied onto the 200MHz clock easily
     -- (160 --> 200 MHz transfer requires proper CDC)
@@ -317,7 +361,7 @@ begin
     begin
       if (rising_edge(clocks.clk40)) then
         fiber_packets_o(I) <= word4 & packet_o;
-        fiber_kchars_o(I)  <= kchars_r2;
+        fiber_kchars_o(I)  <= kchars;
       end if;
     end process;
 
