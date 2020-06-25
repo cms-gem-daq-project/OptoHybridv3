@@ -1,12 +1,3 @@
--- https://gitlab.cern.ch/tdr/notes/DN-20-016/blob/master/temp/DN-20-016_temp.pdf
--- TODO: Only empty clusters are sent for 4 orbits following a resync signal, thus guaranteeing that the comma/bc0
---       symbols will not be replaced by CL WORD4 during this time
--- TODO: Whenever the number of clusters reaches the limit of the bandwidth provided by CL WORD0
---       CL WORD3 (8 clusters in 2 link OHs, and 4 cluster in 1 link OHs), the CL WORD4 is used,
---       and replaces the ECC8 + Comma/bc0 word, however a maximum delay of 100 BXs is guaran-
---       teed between consecutive comma characters (the number 100 can be tuned later)
--- TODO:
-
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.std_logic_misc.all;
@@ -71,8 +62,8 @@ architecture Behavioral of trigger_data_phy is
   signal is_kchar  : t_std2_array (NUM_OPTICAL_PACKETS-1 downto 0);
   signal mgt_words : t_std16_array (NUM_OPTICAL_PACKETS-1 downto 0);
 
-  signal link_frame_cnt         : unsigned (2 downto 0) := (others => '0');
-  constant c_LINK_FRAME_CNT_MAX : unsigned (2 downto 0) := to_unsigned (4, 3);
+  constant c_LINK_FRAME_CNT_MAX : integer := 4;
+  signal link_frame_cnt         : integer range 0 to c_LINK_FRAME_CNT_MAX := 0;
 
   signal tx_prbs_mode : std_logic_vector (1 downto 0);
 
@@ -146,6 +137,8 @@ begin
   --
   -- cnt        < 0 >< 1 >< 2 >< 3 >< 4 >< 5 >< 0>
 
+  tx_usrclk <= clocks.clk200;
+
   clock_strobe_200_inst : entity work.clock_strobe
     port map (
       fast_clk_i => tx_usrclk,
@@ -157,9 +150,9 @@ begin
   begin
     if (rising_edge(tx_usrclk)) then
       if (strobe = '1') then
-        link_frame_cnt <= (others => '1');
+        link_frame_cnt <= 1;
       elsif (link_frame_cnt = c_LINK_FRAME_CNT_MAX) then
-        link_frame_cnt <= (others => '0');
+        link_frame_cnt <= 0;
       else
         link_frame_cnt <= link_frame_cnt + 1;
       end if;
@@ -169,12 +162,12 @@ begin
   elink_outputs : for I in 0 to (NUM_OPTICAL_PACKETS-1) generate
     signal cnt : integer;
   begin
-    cnt <= to_integer(link_frame_cnt);
+    cnt <= link_frame_cnt;
     process (tx_usrclk)
     begin
       if (rising_edge(tx_usrclk)) then
         mgt_words (I) <= fiber_packets_i(I)((cnt+1)*16-1 downto cnt*16);
-        is_kchar (I)  <= fiber_kchars_i (I)((cnt+1)*2 -1 downto cnt*2);
+        is_kchar  (I) <= fiber_kchars_i (I)((cnt+1)*2 -1 downto cnt*2);
       end if;
     end process;
   end generate;

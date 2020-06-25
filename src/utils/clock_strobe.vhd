@@ -43,7 +43,7 @@ begin
   process (slow_clk_i)
   begin
     if (rising_edge(slow_clk_i)) then
-      reg <= not reg;
+      reg <= not reg after 0.1 ns; -- need delay in simulation to prevent race condition
     end if;
   end process;
 

@@ -147,8 +147,6 @@ architecture Behavioral of trigger_data_formatter is
         ret (I) := clst (I);
       -- else pick one of the overflow clusters
       else
-        assert false report "counting zeroes of" & integer'image(to_integer(unsigned(mask))) severity note;
-        assert false report "length = " & integer'image(I) severity note;
         ret (I) := ovfl (count_zeros(mask(I-1 downto 0)));
       end if;
     end loop;
@@ -158,7 +156,7 @@ architecture Behavioral of trigger_data_formatter is
 
   constant c_NUM_OVERFLOW : integer := NUM_FOUND_CLUSTERS-NUM_OUTPUT_CLUSTERS;
 
-  signal overflow_clusters    : sbit_cluster_array_t (c_NUM_OVERFLOW-1 downto 0);
+  signal overflow_clusters    : sbit_cluster_array_t (c_NUM_OVERFLOW-1 downto 0) := (others => NULL_CLUSTER);
   signal overflow_clusters_r1 : sbit_cluster_array_t (c_NUM_OVERFLOW-1 downto 0);
   signal overflow_clusters_r2 : sbit_cluster_array_t (c_NUM_OVERFLOW-1 downto 0);
   signal overflow_clusters_r3 : sbit_cluster_array_t (c_NUM_OVERFLOW-1 downto 0);
@@ -173,7 +171,7 @@ architecture Behavioral of trigger_data_formatter is
   signal cluster_words : t_std16_array (NUM_OUTPUT_CLUSTERS-1 downto 0);
 
   constant resync_idle_period : integer                               := 4*3564-1;
-  signal resync_counter       : integer range 0 to resync_idle_period := 0;
+  signal resync_counter       : integer range 0 to resync_idle_period := resync_idle_period;
   signal syncing              : std_logic                             := '0';
 
   constant force_comma_period : integer   := 127;
@@ -187,7 +185,7 @@ begin
   process (clocks.clk40)
   begin
     if (rising_edge(clocks.clk40)) then
-      if (ttc_i.resync = '1' or reset_i='1') then
+      if (ttc_i.resync = '1') then
         resync_counter <= 0;
         syncing        <= '1';
       elsif (resync_counter < resync_idle_period) then
@@ -206,7 +204,7 @@ begin
   process (clocks.clk40)
   begin
     if (rising_edge(clocks.clk40)) then
-      if (clusters(4).vpf = '1') then
+      if (clusters(4).vpf = '0') then
         force_comma_counter <= 0;
         force_comma         <= '0';
       elsif (force_comma_counter < force_comma_period) then
@@ -315,7 +313,7 @@ begin
 
   comma <= x"DC" when ttc_i.bc0 = '1' else x"BC";
 
-  elink_outputs : for I in 0 to (NUM_OPTICAL_PACKETS-1) generate
+  optical_outputs : for I in 0 to (NUM_OPTICAL_PACKETS-1) generate
     signal ecc8                    : std_logic_vector (7 downto 0);
     signal vpf_r, vpf_r2           : std_logic;
     signal comma_r, comma_r2       : std_logic_vector (7 downto 0);

@@ -248,6 +248,7 @@ begin
 
 
       status_o(I).txphaligndone <= txphaligndone(I);
+      status_o(I).txfsm_done    <= txresetdone(I);
       status_o(I).txreset_done  <= txresetdone(I);
 
     end generate;
