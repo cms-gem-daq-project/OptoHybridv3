@@ -129,7 +129,6 @@ architecture Behavioral of trigger_data_formatter is
     )
     return sbit_cluster_array_t is
     variable num_clst : integer := NUM_OUTPUT_CLUSTERS;
-    variable num_ovfl : integer := ovfl'length;
     variable mask     : std_logic_vector (clst'length-1 downto 0);
     variable ret      : sbit_cluster_array_t (NUM_OUTPUT_CLUSTERS-1 downto 0);
   begin
@@ -139,9 +138,20 @@ architecture Behavioral of trigger_data_formatter is
     end loop;  -- I
 
     for I in 0 to num_clst-1 loop
-      if (I > max or '1' = and_reduce(mask(I downto 0))) then
+      -- consider the zero case separately to avoid looking at 0-1
+      if (I=0) then
+        if (mask(I)='1') then
+          ret (I) := clst (I);
+        else
+          ret (I) := ovfl (I);
+        end if;
+      -- if the Ith cluster is valid, return it
+      elsif (I >= max or mask(I)='1') then --'1' = and_reduce(mask(I downto 0))) then
         ret (I) := clst (I);
+      -- else pick one of the overflow clusters
       else
+        assert false report "counting zeroes of" & integer'image(to_integer(unsigned(mask))) severity note;
+        assert false report "length = " & integer'image(I) severity note;
         ret (I) := ovfl (count_zeros(mask(I-1 downto 0)));
       end if;
     end loop;
@@ -151,7 +161,10 @@ architecture Behavioral of trigger_data_formatter is
 
   constant c_NUM_OVERFLOW : integer := NUM_FOUND_CLUSTERS-NUM_OUTPUT_CLUSTERS;
 
-  signal overflow_clusters : sbit_cluster_array_t (c_NUM_OVERFLOW - 1 downto 0);
+  signal overflow_clusters    : sbit_cluster_array_t (c_NUM_OVERFLOW-1 downto 0);
+  signal overflow_clusters_r1 : sbit_cluster_array_t (c_NUM_OVERFLOW-1 downto 0);
+  signal overflow_clusters_r2 : sbit_cluster_array_t (c_NUM_OVERFLOW-1 downto 0);
+  signal overflow_clusters_r3 : sbit_cluster_array_t (c_NUM_OVERFLOW-1 downto 0);
 
   signal clusters          : sbit_cluster_array_t (NUM_OUTPUT_CLUSTERS-1 downto 0);
   signal late_cluster_flag : std_logic_vector (NUM_OUTPUT_CLUSTERS-1 downto 0) := (others => '0');
@@ -172,7 +185,10 @@ begin
   process (clocks.clk160_0)
   begin
     if (rising_edge(clocks.clk160_0)) then
-      overflow_clusters <= clusters_i (NUM_FOUND_CLUSTERS-1 downto NUM_OUTPUT_CLUSTERS);
+      overflow_clusters(NUM_FOUND_CLUSTERS-1 - NUM_OUTPUT_CLUSTERS downto 0) <= clusters_i (NUM_FOUND_CLUSTERS-1 downto NUM_OUTPUT_CLUSTERS);
+      overflow_clusters_r1 <= overflow_clusters;
+      overflow_clusters_r2 <= overflow_clusters_r1;
+      overflow_clusters_r3 <= overflow_clusters_r2;
     end if;
   end process;
 
@@ -180,7 +196,7 @@ begin
   process (clocks.clk160_0)
   begin
     if (rising_edge(clocks.clk160_0)) then
-      clusters <= cluster_ovf_selector (c_NUM_OVERFLOW, clusters_i, overflow_clusters);
+      clusters <= cluster_ovf_selector (c_NUM_OVERFLOW, clusters_i, overflow_clusters_r3);
     end if;
   end process;
 
@@ -378,24 +394,5 @@ begin
     end generate;
 
   end generate;
-
-  --------------------------------------------------------------------------------
-  -- ECC
-  --------------------------------------------------------------------------------
-
-
-  --  ecc64_inst : entity work.ecc64
-  --    port map (
-  --      enc_in     => (cluster_words(3) & cluster_output(2) & cluster_output(1) & cluster_output(0)),
-  --      parity_out => ecc8
-  --      );
-  --
-  --  ge11_ecc8_2nd : if (GE11 = 1) generate
-  --    ecc64_inst : entity work.ecc64
-  --      port map (
-  --        enc_in     => (cluster_words(7) & cluster_output(6) & cluster_output(5) & cluster_output(4)),
-  --        parity_out => ecc8_2nd
-  --        );
-  --  end generate;
 
 end Behavioral;
