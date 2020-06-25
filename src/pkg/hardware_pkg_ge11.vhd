@@ -48,16 +48,16 @@ package hardware_pkg is
   constant NUM_ELINK_PACKETS          : integer := 0; -- # of different copper link packets
 
   constant ENABLE_ECC          : integer := 1;
-
+ 
   -- TMR Enables
   constant EN_TMR : integer := 1;
 
-  constant EN_TMR_TRIG_FORMATTER     : integer := 1*EN_TMR;
-  constant EN_TMR_GBT_DRU            : integer := 1*EN_TMR;
-  constant EN_TMR_SBIT_DRU           : integer := 1*EN_TMR;
-  constant EN_TMR_SOT_DRU            : integer := 1*EN_TMR;
-  constant EN_TMR_CLUSTER_PACKER     : integer := 1*EN_TMR;
-  constant EN_TMR_FRAME_ALIGNER      : integer := 1*EN_TMR;
+  constant EN_TMR_TRIG_FORMATTER     : integer := 0*EN_TMR;
+  constant EN_TMR_GBT_DRU            : integer := 0*EN_TMR;
+  constant EN_TMR_SBIT_DRU           : integer := 0*EN_TMR;
+  constant EN_TMR_SOT_DRU            : integer := 0*EN_TMR;
+  constant EN_TMR_CLUSTER_PACKER     : integer := 0*EN_TMR;
+  constant EN_TMR_FRAME_ALIGNER      : integer := 0*EN_TMR;
   constant EN_TMR_GBT_LINK           : integer := 1*EN_TMR;
   constant EN_TMR_IPB_SWITCH         : integer := 1*EN_TMR;
   constant EN_TMR_IPB_SLAVE_TRIG     : integer := 1*EN_TMR;

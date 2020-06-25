@@ -28,18 +28,29 @@ entity top_optohybrid is
     GEN_TRIG_PHY : boolean := true;
 
     -- these generics get set by hog at synthesis
-    GLOBAL_FWDATE       : std_logic_vector (31 downto 0) := x"00000000";
-    GLOBAL_FWTIME       : std_logic_vector (31 downto 0) := x"00000000";
-    OFFICIAL            : std_logic_vector (31 downto 0) := x"00000000";
-    GLOBAL_FWHASH       : std_logic_vector (31 downto 0) := x"00000000";
-    TOP_FWHASH          : std_logic_vector (31 downto 0) := x"00000000";
-    XML_HASH            : std_logic_vector (31 downto 0) := x"00000000";
-    GLOBAL_FWVERSION    : std_logic_vector (31 downto 0) := x"00000000";
-    TOP_FWVERSION       : std_logic_vector (31 downto 0) := x"00000000";
-    XML_VERSION         : std_logic_vector (31 downto 0) := x"00000000";
-    HOG_FWHASH          : std_logic_vector (31 downto 0) := x"00000000";
-    FRAMEWORK_FWVERSION : std_logic_vector (31 downto 0) := x"00000000";
-    FRAMEWORK_FWHASH    : std_logic_vector (31 downto 0) := x"00000000";
+    GLOBAL_DATE         : std_logic_vector (31 downto 0) := x"00000000";
+    GLOBAL_TIME         : std_logic_vector (31 downto 0) := x"00000000";
+    GLOBAL_VER          : std_logic_vector (31 downto 0) := x"00000000";
+    GLOBAL_SHA          : std_logic_vector (31 downto 0) := x"00000000";
+
+    TOP_SHA       : std_logic_vector (31 downto 0) := x"00000000";
+    TOP_VER       : std_logic_vector (31 downto 0) := x"00000000";
+
+    HOG_SHA             : std_logic_vector (31 downto 0) := x"00000000";
+    HOG_VER             : std_logic_vector (31 downto 0) := x"00000000";
+
+    OPTOHYBRID_VER             : std_logic_vector (31 downto 0) := x"00000000";
+    OPTOHYBRID_SHA             : std_logic_vector (31 downto 0) := x"00000000";
+
+    --GLOBAL_FWHASH       : std_logic_vector (31 downto 0) := x"00000000";
+    --TOP_FWHASH          : std_logic_vector (31 downto 0) := x"00000000";
+    --XML_HASH            : std_logic_vector (31 downto 0) := x"00000000";
+    --GLOBAL_FWVERSION    : std_logic_vector (31 downto 0) := x"00000000";
+    --TOP_FWVERSION       : std_logic_vector (31 downto 0) := x"00000000";
+    --XML_VERSION         : std_logic_vector (31 downto 0) := x"00000000";
+    --HOG_FWHASH          : std_logic_vector (31 downto 0) := x"00000000";
+    --FRAMEWORK_FWVERSION : std_logic_vector (31 downto 0) := x"00000000";
+    --FRAMEWORK_FWHASH    : std_logic_vector (31 downto 0) := x"00000000";
     FLAVOUR             : integer                        := 0
     );
   port(

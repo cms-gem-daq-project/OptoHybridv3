@@ -117,8 +117,8 @@ begin
   -- Wire systematic code signal code_sys on data_o and parity_o output ports.
   -- Because of the form of the code generator matrix G, data are the LSB part
   -- of code and parity the MSB part.
-  parity_o <= to_slv(code_sys(code_sys'high downto code_sys'high - (EXTRA_PARITY_BIT + NPARITY_BITS) + 1));
-  data_o <= to_slv(code_sys(MESSAGE_LENGTH - 1 downto 0));
+  parity_o <= To_StdLogicVector(code_sys(code_sys'high downto code_sys'high - (EXTRA_PARITY_BIT + NPARITY_BITS) + 1));
+  data_o <= To_StdLogicVector(code_sys(MESSAGE_LENGTH - 1 downto 0));
   
   -- purpose: Sequentially encode input with output enable.
   -- type   : sequential
