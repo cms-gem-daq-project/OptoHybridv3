@@ -271,12 +271,6 @@
                 fw_signal="cnt_snap_disable"/>
         </node> <!--CNT_SNAP-->
 
-        <node id="SOFT_RESET" address="0x16" permission="w"
-                description = "Write to set the soft logic reset of the Optohybrid FPGA"
-                mask="0x1"
-                fw_write_pulse_signal="soft_reset_o">
-        </node> <!--Soft Reset-->
-
         <node id="DNA" address="0x17" description = "57 Bit FPGA-specific device identifier">
             <node id="DNA_LSBS" address="0x0" permission="r"
                 description = "Device DNA bits 31 downto 0"
@@ -287,6 +281,7 @@
                 mask="0x01ffffff"
                 fw_signal="dna(56 downto 32)"/>
         </node> <!--DNA-->
+
         <node id="UPTIME" address="0x19" description="Uptime in seconds">
             <node id="SECONDS" address="0x0" permission="r"
                 description="Device uptime in seconds (20 bits)"

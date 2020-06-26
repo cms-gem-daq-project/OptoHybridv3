@@ -34,8 +34,7 @@ entity trigger is
 
     sbit_clusters_o : out sbit_cluster_array_t (NUM_FOUND_CLUSTERS-1 downto 0);
 
-    trigger_reset_i : in std_logic;
-    core_reset_i    : in std_logic;
+    reset_i    : in std_logic;
 
     -- ttc
 
@@ -92,13 +91,10 @@ architecture Behavioral of trigger is
 
   signal aligned_count_to_ready : std_logic_vector (11 downto 0);
 
-
-  signal trigger_reset : std_logic;
   signal reset_monitor : std_logic;
   signal ipb_reset     : std_logic;
 
   attribute EQUIVALENT_REGISTER_REMOVAL                  : string;
-  attribute EQUIVALENT_REGISTER_REMOVAL of trigger_reset : signal is "NO";
   attribute EQUIVALENT_REGISTER_REMOVAL of ipb_reset     : signal is "NO";
 
   signal sot_is_aligned      : std_logic_vector (NUM_VFATS-1 downto 0);
@@ -177,19 +173,13 @@ begin
   -- Resets
   --------------------------------------------------------------------------------------------------------------------
 
-  process (clocks.clk40)
-  begin
-    if (rising_edge(clocks.clk40)) then
-      trigger_reset <= trigger_reset_i;
-      ipb_reset     <= core_reset_i;
-    end if;
-  end process;
+  ipb_reset     <= reset_i;
 
   process (clocks.clk40)
   begin
     if (rising_edge(clocks.clk40)) then
-      cnt_reset         <= trigger_reset or ttc.resync or reset_counters;
-      cnt_reset_strobed <= trigger_reset or ttc.resync or reset_counters or (sbit_timer_reset and not sbit_cnt_persist);
+      cnt_reset         <= reset_i or ttc.resync or reset_counters;
+      cnt_reset_strobed <= reset_i or ttc.resync or reset_counters or (sbit_timer_reset and not sbit_cnt_persist);
     end if;
   end process;
 
@@ -211,7 +201,7 @@ begin
 
       sbit_cnt_snap <= (sbit_timer_snap or sbit_cnt_persist);
 
-      if (trigger_reset = '1' or reset_counters = '1') then
+      if (reset_i = '1' or reset_counters = '1') then
         sbit_time_counter <= (others => '0');
         sbit_timer_reset  <= '1';
         sbit_timer_snap   <= '1';
@@ -267,7 +257,7 @@ begin
 
       -- clock and reset
       clocks      => clocks,
-      reset_i     => trigger_reset,
+      reset_i     => reset_i,
       trig_stop_i => trig_stop_i,
 
       -- sbit inputs
@@ -317,7 +307,7 @@ begin
       g_NUM_OF_OHs => 1
       )
     port map (
-      reset_i           => (trigger_reset or reset_monitor),
+      reset_i           => (reset_i or reset_monitor),
       ttc_clk_i         => clocks.clk40,
       l1a_i             => ttc.l1a,
       clusters_i        => sbit_clusters,

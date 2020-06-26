@@ -28,19 +28,19 @@ entity top_optohybrid is
     GEN_TRIG_PHY : boolean := true;
 
     -- these generics get set by hog at synthesis
-    GLOBAL_DATE         : std_logic_vector (31 downto 0) := x"00000000";
-    GLOBAL_TIME         : std_logic_vector (31 downto 0) := x"00000000";
-    GLOBAL_VER          : std_logic_vector (31 downto 0) := x"00000000";
-    GLOBAL_SHA          : std_logic_vector (31 downto 0) := x"00000000";
+    GLOBAL_DATE : std_logic_vector (31 downto 0) := x"00000000";
+    GLOBAL_TIME : std_logic_vector (31 downto 0) := x"00000000";
+    GLOBAL_VER  : std_logic_vector (31 downto 0) := x"00000000";
+    GLOBAL_SHA  : std_logic_vector (31 downto 0) := x"00000000";
 
-    TOP_SHA       : std_logic_vector (31 downto 0) := x"00000000";
-    TOP_VER       : std_logic_vector (31 downto 0) := x"00000000";
+    TOP_SHA : std_logic_vector (31 downto 0) := x"00000000";
+    TOP_VER : std_logic_vector (31 downto 0) := x"00000000";
 
-    HOG_SHA             : std_logic_vector (31 downto 0) := x"00000000";
-    HOG_VER             : std_logic_vector (31 downto 0) := x"00000000";
+    HOG_SHA : std_logic_vector (31 downto 0) := x"00000000";
+    HOG_VER : std_logic_vector (31 downto 0) := x"00000000";
 
-    OPTOHYBRID_VER             : std_logic_vector (31 downto 0) := x"00000000";
-    OPTOHYBRID_SHA             : std_logic_vector (31 downto 0) := x"00000000";
+    OPTOHYBRID_VER : std_logic_vector (31 downto 0) := x"00000000";
+    OPTOHYBRID_SHA : std_logic_vector (31 downto 0) := x"00000000";
 
     --GLOBAL_FWHASH       : std_logic_vector (31 downto 0) := x"00000000";
     --TOP_FWHASH          : std_logic_vector (31 downto 0) := x"00000000";
@@ -51,7 +51,7 @@ entity top_optohybrid is
     --HOG_FWHASH          : std_logic_vector (31 downto 0) := x"00000000";
     --FRAMEWORK_FWVERSION : std_logic_vector (31 downto 0) := x"00000000";
     --FRAMEWORK_FWHASH    : std_logic_vector (31 downto 0) := x"00000000";
-    FLAVOUR             : integer                        := 0
+    FLAVOUR : integer := 0
     );
   port(
 
@@ -133,9 +133,7 @@ architecture Behavioral of top_optohybrid is
   signal clocks         : clocks_t;
   signal mgt_mmcm_reset : std_logic_vector (3 downto 0);
   signal ttc            : ttc_t;
-  signal soft_reset     : std_logic;
 
-  --
   signal vtrx_mabs : std_logic_vector (1 downto 0);
 
   -- GBT Link
@@ -148,7 +146,7 @@ architecture Behavioral of top_optohybrid is
   signal txfsm_done : std_logic;
 
   signal trigger_reset : std_logic;
-  signal core_reset    : std_logic;
+  signal system_reset  : std_logic;
   signal cnt_snap      : std_logic;
 
   -- TTC
@@ -179,12 +177,9 @@ architecture Behavioral of top_optohybrid is
   signal ipb_mosi_slaves : ipb_wbus_array (WB_SLAVES-1 downto 0);
   signal ipb_miso_slaves : ipb_rbus_array (WB_SLAVES-1 downto 0);
 
-
   component reset port (
 
     clock_i : in std_logic;
-
-    soft_reset : in std_logic;
 
     mmcms_locked_i : in std_logic;
     idlyrdy_i      : in std_logic;
@@ -192,8 +187,7 @@ architecture Behavioral of top_optohybrid is
     gbt_rxvalid_i  : in std_logic;
     gbt_txready_i  : in std_logic;
 
-    core_reset_o : out std_logic;
-    reset_o      : out std_logic
+    reset_o : out std_logic
     );
   end component;
 
@@ -223,7 +217,7 @@ begin
 
       ipb_mosi_i  => ipb_mosi_slaves (IPB_SLAVE.CLOCKING),
       ipb_miso_o  => ipb_miso_slaves (IPB_SLAVE.CLOCKING),
-      ipb_reset_i => core_reset,
+      ipb_reset_i => system_reset,
 
       cnt_snap => cnt_snap,
 
@@ -239,14 +233,12 @@ begin
   reset_inst : reset
     port map (
       clock_i        => clocks.clk40,
-      soft_reset     => soft_reset,
       mmcms_locked_i => mmcm_locked,
       gbt_rxready_i  => gbt_rxready_i(0),
       gbt_rxvalid_i  => gbt_rxvalid_i(0),
       gbt_txready_i  => gbt_txready_i(0),
       idlyrdy_i      => idlyrdy,
-      core_reset_o   => core_reset,
-      reset_o        => trigger_reset
+      reset_o        => system_reset
       );
 
   --------------------------------------------------------------------------------
@@ -256,7 +248,7 @@ begin
   gbt_inst : entity work.gbt
     port map(
       -- clock and reset
-      reset_i => core_reset,
+      reset_i => system_reset,
       clocks  => clocks,
 
       -- wishbone
@@ -266,7 +258,7 @@ begin
       -- wishbone slave
       ipb_mosi_i  => ipb_mosi_slaves (IPB_SLAVE.GBT),
       ipb_miso_o  => ipb_miso_slaves (IPB_SLAVE.GBT),
-      ipb_reset_i => core_reset,
+      ipb_reset_i => system_reset,
 
       cnt_snap => cnt_snap,
 
@@ -300,7 +292,7 @@ begin
     generic map (g_ENABLE_TMR => EN_TMR_IPB_SWITCH)
     port map(
       clock_i => clocks.clk40,
-      reset_i => core_reset,
+      reset_i => system_reset,
 
       -- connect to master
       mosi_masters => ipb_mosi_masters,
@@ -320,13 +312,13 @@ begin
 
   adc_inst : entity work.adc port map(
     clock_i => clocks.clk40,
-    reset_i => core_reset,
+    reset_i => system_reset,
 
     cnt_snap => cnt_snap,
 
     ipb_mosi_i  => ipb_mosi_slaves (IPB_SLAVE.ADC),
     ipb_miso_o  => ipb_miso_slaves (IPB_SLAVE.ADC),
-    ipb_reset_i => core_reset,
+    ipb_reset_i => system_reset,
     ipb_clk_i   => clocks.clk40,
 
     adc_vp => adc_vp_int,
@@ -346,7 +338,7 @@ begin
 
       -- clock and reset
       clocks  => clocks,
-      reset_i => core_reset,
+      reset_i => system_reset,
       ttc_i   => ttc,
 
       -- to drive LED controller only
@@ -376,7 +368,6 @@ begin
       vfat_reset_o  => ext_reset,
       ext_sbits_o   => ext_sbits,
       led_o         => led,
-      soft_reset_o  => soft_reset,
       cnt_snap_o    => cnt_snap
       );
 
@@ -391,9 +382,8 @@ begin
       ipb_miso_o => ipb_miso_slaves(IPB_SLAVE.TRIG),
 
       -- clock and reset
-      clocks          => clocks,
-      core_reset_i    => core_reset,
-      trigger_reset_i => trigger_reset,
+      clocks  => clocks,
+      reset_i => system_reset,
 
       -- ttc
       bxn_counter_i => bxn_counter,
@@ -446,7 +436,7 @@ begin
       trigger_data_formatter_inst : entity work.trigger_data_formatter
         port map (
           clocks          => clocks,
-          reset_i         => core_reset,
+          reset_i         => system_reset,
           ttc_i           => ttc,
           clusters_i      => sbit_clusters,
           overflow_i      => sbit_overflow,
@@ -490,8 +480,8 @@ begin
         ipb_miso_o       => ipb_miso_slaves(IPB_SLAVE.MGT),
         clocks           => clocks,
         mgt_mmcm_reset_o => mgt_mmcm_reset,
-        reset_i          => core_reset,
-        ipb_reset_i      => core_reset,
+        reset_i          => system_reset,
+        ipb_reset_i      => system_reset,
         trg_tx_p         => open,
         trg_tx_n         => open,
         refclk_p         => mgt_clk_p_i,

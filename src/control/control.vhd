@@ -77,8 +77,6 @@ entity control is
     -- freeze high to make counters transparent (asynchronous readout)
     cnt_snap_o : out std_logic;
 
-    soft_reset_o : out std_logic;
-
     -------------
     -- outputs --
     -------------
@@ -555,10 +553,9 @@ begin
     regs_addresses(19)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "01" & x"3";
     regs_addresses(20)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "01" & x"4";
     regs_addresses(21)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "01" & x"5";
-    regs_addresses(22)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "01" & x"6";
-    regs_addresses(23)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "01" & x"7";
-    regs_addresses(24)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "01" & x"8";
-    regs_addresses(25)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "01" & x"9";
+    regs_addresses(22)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "01" & x"7";
+    regs_addresses(23)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "01" & x"8";
+    regs_addresses(24)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "01" & x"9";
 
     -- Connect read signals
     regs_read_arr(0)(REG_CONTROL_LOOPBACK_DATA_MSB downto REG_CONTROL_LOOPBACK_DATA_LSB) <= loopback;
@@ -599,9 +596,9 @@ begin
     regs_read_arr(19)(REG_CONTROL_HDMI_SBIT_MODE6_MSB downto REG_CONTROL_HDMI_SBIT_MODE6_LSB) <= sbit_mode6;
     regs_read_arr(19)(REG_CONTROL_HDMI_SBIT_MODE7_MSB downto REG_CONTROL_HDMI_SBIT_MODE7_LSB) <= sbit_mode7;
     regs_read_arr(21)(REG_CONTROL_CNT_SNAP_DISABLE_BIT) <= cnt_snap_disable;
-    regs_read_arr(23)(REG_CONTROL_DNA_DNA_LSBS_MSB downto REG_CONTROL_DNA_DNA_LSBS_LSB) <= dna(31 downto 0);
-    regs_read_arr(24)(REG_CONTROL_DNA_DNA_MSBS_MSB downto REG_CONTROL_DNA_DNA_MSBS_LSB) <= dna(56 downto 32);
-    regs_read_arr(25)(REG_CONTROL_UPTIME_SECONDS_MSB downto REG_CONTROL_UPTIME_SECONDS_LSB) <= std_logic_vector(uptime);
+    regs_read_arr(22)(REG_CONTROL_DNA_DNA_LSBS_MSB downto REG_CONTROL_DNA_DNA_LSBS_LSB) <= dna(31 downto 0);
+    regs_read_arr(23)(REG_CONTROL_DNA_DNA_MSBS_MSB downto REG_CONTROL_DNA_DNA_MSBS_LSB) <= dna(56 downto 32);
+    regs_read_arr(24)(REG_CONTROL_UPTIME_SECONDS_MSB downto REG_CONTROL_UPTIME_SECONDS_LSB) <= std_logic_vector(uptime);
 
     -- Connect write signals
     loopback <= regs_write_arr(0)(REG_CONTROL_LOOPBACK_DATA_MSB downto REG_CONTROL_LOOPBACK_DATA_LSB);
@@ -628,7 +625,6 @@ begin
 
     -- Connect write pulse signals
     cnt_snap_pulse <= regs_write_pulse_arr(20);
-    soft_reset_o <= regs_write_pulse_arr(22);
 
     -- Connect write done signals
 
