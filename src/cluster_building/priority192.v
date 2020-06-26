@@ -59,11 +59,11 @@ reg [2:0] cnt;
 // choose here to specify pipeline register stages
 `define always_in  always @(*)
 `define always_s0  always @(*)
-`define always_s1  always @(*)
+`define always_s1  always @(posedge clock)
 `define always_s2  always @(*)
 `define always_s3  always @(*)
 `define always_s4  always @(*)
-`define always_s5  always @(*)
+`define always_s5  always @(posedge clock)
 `define always_s6  always @(*)
 `define always_out always @(*)
 

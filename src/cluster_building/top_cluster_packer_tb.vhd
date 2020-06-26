@@ -36,6 +36,7 @@ architecture behave of top_cluster_packer_tb is
   signal clusters_ena_o  : std_logic;
   signal overflow_o      : std_logic;
 
+  signal run     : std_logic;
   signal special : std_logic;
   signal adr_err : std_logic;
   signal prt_err : std_logic;
@@ -83,7 +84,7 @@ begin
           partitions(iprt)(256) <= '1';
           partitions(iprt)(288) <= '1';
           partitions(iprt)(320) <= '1';
-        elsif (prt_sel = iprt) then
+        elsif (run = '1' and prt_sel = iprt) then
           partitions(iprt)          <= (others => '0');
           partitions(iprt)(adr_sel) <= '1';
         else
@@ -159,15 +160,16 @@ begin
 -- Toggle the resets.
   resetproc : process
   begin
-    special <= '1';
+    run <= '0';
+    special <= '0';
     reset   <= '1';
     wait for 400 ns;
+    special <= '1';
     reset   <= '0';
     wait for 25 ns;
     special <= '0';
-    reset   <= '1';
     wait for 100 ns;
-    reset   <= '0';
+    run   <= '1';
     wait;                               -- process hangs forever.
   end process;
 

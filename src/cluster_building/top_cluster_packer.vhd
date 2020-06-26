@@ -47,8 +47,8 @@ architecture behavioral of cluster_packer is
   signal vpfs     : std_logic_vector (NUM_VFATS*MXSBITS-1 downto 0);
   signal cnts     : std_logic_vector (NUM_VFATS*MXSBITS*MXCNTB-1 downto 0);
 
-  signal overflow_out       : std_logic;
-  signal overflow_dly       : std_logic;
+  signal overflow           : std_logic;
+  signal cluster_count      : std_logic_vector (10 downto 0);
   constant OVERFLOW_LATENCY : std_logic_vector (3 downto 0) := x"1";
 
   signal cluster_latch : std_logic;
@@ -159,8 +159,8 @@ begin
     invert_gen : if (INVERT_PARTITIONS) generate
       partitions(0) <= sbits_os(5) & sbits_os(4) & sbits_os(3) & sbits_os(2) & sbits_os(1) & sbits_os(0);
       partitions(1) <= sbits_os(11) & sbits_os(10) & sbits_os(9) & sbits_os(8) & sbits_os(7) & sbits_os(6);
-      --partitions(0) <= sbits_os(0) & sbits_os(1) & sbits_os(2) & sbits_os(3) & sbits_os(4) & sbits_os(5);
-      --partitions(1) <= sbits_os(6) & sbits_os(7) & sbits_os(8) & sbits_os(9) & sbits_os(10) & sbits_os(11);
+    --partitions(0) <= sbits_os(0) & sbits_os(1) & sbits_os(2) & sbits_os(3) & sbits_os(4) & sbits_os(5);
+    --partitions(1) <= sbits_os(6) & sbits_os(7) & sbits_os(8) & sbits_os(9) & sbits_os(10) & sbits_os(11);
     end generate;
     noninvert_gen : if (not INVERT_PARTITIONS) generate
       --partitions(1) <= sbits_os(0) & sbits_os(1) & sbits_os(2) & sbits_os(3) & sbits_os(4) & sbits_os(5);
@@ -224,24 +224,45 @@ begin
   -- separator to flag this to the receiving devices
   ----------------------------------------------------------------------------------
 
+  -- NOTE: need to align overflow and cluster count to data
+  -- the output of the overflow flag should be delayed to lineup with the
+  -- outputs from the priority encoding modules
+  --
+  -- You should be able to just tweak the # of pipelines stages in the counter module
+  --
+  -- Timed in for on 2020/06/26
   count_clusters_inst : count_clusters
+    generic map (
+      overflow_thresh => NUM_OUTPUT_CLUSTERS
+      )
     port map (
       clock      => clocks.clk160_0,
       vpfs_i     => vpfs,
-      cnt_o      => cluster_count_o,
-      overflow_o => overflow_out
+      cnt_o      => cluster_count,
+      overflow_o => overflow
       );
 
-  -- FIXME: need to align overflow and cluster count to data
-  -- the output of the overflow flag should be delayed to lineup with the
-  -- outputs from the priority encoding modules
+  cluster_count_dly : for i in cluster_count'range generate
+    count_delay_inst : SRL16E
+      port map (
+        CLK => clocks.clk160_0,
+        CE  => '1',
+        D   => cluster_count(I),
+        Q   => cluster_count_o(I),
+        A0  => OVERFLOW_LATENCY(0),
+        A1  => OVERFLOW_LATENCY(1),
+        A2  => OVERFLOW_LATENCY(2),
+        A3  => OVERFLOW_LATENCY(3)
+        );
+  end generate;
 
+  -- keep a template for an SRL incase we need to delay the overflow more
   overflow_delay_inst : SRL16E
     port map (
       CLK => clocks.clk160_0,
       CE  => '1',
-      D   => overflow_out,
-      Q   => overflow_dly,
+      D   => overflow,
+      Q   => overflow_o,
       A0  => OVERFLOW_LATENCY(0),
       A1  => OVERFLOW_LATENCY(1),
       A2  => OVERFLOW_LATENCY(2),
@@ -275,7 +296,6 @@ begin
         clusters_o <= clusters;
       end if;
     end if;
-    overflow_o     <= overflow_dly;
     clusters_ena_o <= cluster_latch;
   end process;
 

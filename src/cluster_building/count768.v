@@ -5,6 +5,8 @@ module count_clusters (
     output reg overflow_o
 );
 
+  parameter OVERFLOW_THRESH = 0;
+
   reg [2 : 0] cnt_s1  [127 : 0]; // count to 6
   reg [3 : 0] cnt_s2  [63 : 0];  // count to 12
   reg [4 : 0] cnt_s3  [31 : 0];  // count to 24
@@ -76,7 +78,7 @@ module count_clusters (
   always @(posedge clock) begin
     cnt <= cnt_s7[0] + cnt_s7[1];
     cnt_o <= cnt;
-    overflow_o <= (cnt > 8);
+    overflow_o <= (cnt > OVERFLOW_THRESH);
   end
 
   `include "count1s.v"
