@@ -219,13 +219,13 @@ begin
 
         txcharisk_i(0) => is_kchar(0),
         txcharisk_i(1) => is_kchar(0),
-        txcharisk_i(2) => is_kchar(1),
-        txcharisk_i(3) => is_kchar(1),
+        txcharisk_i(2) => is_kchar(NUM_OPTICAL_PACKETS-1),
+        txcharisk_i(3) => is_kchar(NUM_OPTICAL_PACKETS-1),
 
         txdata_i(0) => mgt_words(0),
         txdata_i(1) => mgt_words(0),
-        txdata_i(2) => mgt_words(1),
-        txdata_i(3) => mgt_words(1)
+        txdata_i(2) => mgt_words(NUM_OPTICAL_PACKETS-1),
+        txdata_i(3) => mgt_words(NUM_OPTICAL_PACKETS-1)
         );
   end generate;
 
