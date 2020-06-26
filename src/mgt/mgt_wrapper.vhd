@@ -214,7 +214,7 @@ begin
           txdlysreset_in      => txdlysreset(I),      --
           txdlysresetdone_out => txdlysresetdone(I),  --
           txphalign_in        => txphalign(I),        --
-          txphaligndone_out   => txphaligndone(I),
+          txphaligndone_out   => txphaligndone(I),    --out
           txphalignen_in      => txphalignen(I),
           txphdlyreset_in     => txphdlyreset(I),
           txphinit_in         => txphinit(I),
@@ -248,7 +248,6 @@ begin
 
 
       status_o(I).txphaligndone <= txphaligndone(I);
-      status_o(I).txfsm_done    <= txresetdone(I);
       status_o(I).txreset_done  <= txresetdone(I);
 
     end generate;
@@ -320,17 +319,17 @@ begin
         master_lane_id  => 0
         )
       port map (
-        stable_clock         => sysclk_in,
-        reset_phalignment    => rst_tx_phalignment,
-        run_phalignment      => run_tx_phalignment,
-        phase_alignment_done => tx_phalignment_done,
-        txdlysreset          => txdlysreset,
-        txdlysresetdone      => txdlysresetdone,
-        txphinit             => txphinit,
-        txphinitdone         => txphinitdone,
-        txphalign            => txphalign,
-        txphaligndone        => txphaligndone,
-        txdlyen              => txdlyen
+        stable_clock         => sysclk_in,            -- in
+        reset_phalignment    => rst_tx_phalignment,   -- in
+        run_phalignment      => run_tx_phalignment,   -- in
+        txdlysresetdone      => txdlysresetdone,      -- in
+        txphinitdone         => txphinitdone,         -- in
+        txphaligndone        => txphaligndone,        -- in
+        phase_alignment_done => tx_phalignment_done,  --out
+        txdlysreset          => txdlysreset,          -- out
+        txphinit             => txphinit,             -- out
+        txphalign            => txphalign,            -- out
+        txdlyen              => txdlyen               -- out
         );
 
     pll_lock_out <= pll0_lock;

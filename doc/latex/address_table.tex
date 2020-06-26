@@ -814,7 +814,99 @@
     \hline
     \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
     \nopagebreak
-    TX\_PRBS\_MODE & \texttt{0x5000} & \texttt{[1:0]} & rw & \texttt{0x0} & 000: Standard \\ & & & & & 001: PRBS-7 \\ & & & & & 010: PRBS-15 \\ & & & & & 011: PRBS-23 \\ & & & & & 100: PRBS-31 \\\hline
+    PLL\_LOCK & \texttt{0x5000} & \texttt{[0:0]} & r & \texttt{} &  \\\hline
+    \end{tabularx}
+    \vspace{5mm}
+
+
+    \noindent
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.MGT.CONTROL\$\{GT\}}}}
+
+    \vspace{4mm}
+    \noindent
+    MGT \$\{GT\} Control
+    \noindent
+
+    \noindent
+    \keepXColumns
+    \begin{tabularx}{\linewidth}{  l  l  l  r   X }
+    Generated range of & GT & is & \texttt{[3:0]} & adr\_step=0x5 (5) \\ 
+    \end{tabularx}
+    \keepXColumns
+    \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
+    \hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \nopagebreak
+    TX\_PRBS\_MODE0 & \texttt{0x5001} & \texttt{[2:0]} & rw & \texttt{0x0} & 0: Standard \\ & & & & & 1: PRBS-7 \\ & & & & & 2: PRBS-15 \\ & & & & & 3: PRBS-23 \\ & & & & & 4: PRBS-31 \\\hline
+    RX\_PRBS\_MODE0 & \texttt{0x5001} & \texttt{[5:3]} & rw & \texttt{0x0} & 0: Standard \\ & & & & & 1: PRBS-7 \\ & & & & & 2: PRBS-15 \\ & & & & & 3: PRBS-23 \\ & & & & & 4: PRBS-31 \\\hline
+    LOOPBACK\_MODE0 & \texttt{0x5001} & \texttt{[8:6]} & rw & \texttt{0x0} & GT Loopback Mode \\ & & & & & 0 = normal \\ & & & & & 1 = near end pcs \\ & & & & & 2 = near end pma \\ & & & & &4 = far end pma \\ & & & & & 6 = far end pcs \\\hline
+    TX\_DIFFCTRL0 & \texttt{0x5001} & \texttt{[15:12]} & rw & \texttt{0xC} & TX Differential Swing Control \\\hline
+    GTTXRESET0 & \texttt{0x5002} & \texttt{[31:0]} & w & Pulsed & GT TX Reset \\\hline
+    TXPRBS\_FORCE\_ERR0 & \texttt{0x5003} & \texttt{[31:0]} & w & Pulsed & GT TX Reset \\\hline
+    TXPCSRESET0 & \texttt{0x5004} & \texttt{[31:0]} & w & Pulsed & TX PCS Reset \\\hline
+    TXPMARESET0 & \texttt{0x5005} & \texttt{[31:0]} & w & Pulsed & TX PMA Reset \\\hline
+    TX\_PRBS\_MODE1 & \texttt{0x5006} & \texttt{[2:0]} & rw & \texttt{0x0} & 0: Standard \\ & & & & & 1: PRBS-7 \\ & & & & & 2: PRBS-15 \\ & & & & & 3: PRBS-23 \\ & & & & & 4: PRBS-31 \\\hline
+    RX\_PRBS\_MODE1 & \texttt{0x5006} & \texttt{[5:3]} & rw & \texttt{0x0} & 0: Standard \\ & & & & & 1: PRBS-7 \\ & & & & & 2: PRBS-15 \\ & & & & & 3: PRBS-23 \\ & & & & & 4: PRBS-31 \\\hline
+    LOOPBACK\_MODE1 & \texttt{0x5006} & \texttt{[8:6]} & rw & \texttt{0x0} & GT Loopback Mode \\ & & & & & 0 = normal \\ & & & & & 1 = near end pcs \\ & & & & & 2 = near end pma \\ & & & & &4 = far end pma \\ & & & & & 6 = far end pcs \\\hline
+    TX\_DIFFCTRL1 & \texttt{0x5006} & \texttt{[15:12]} & rw & \texttt{0xC} & TX Differential Swing Control \\\hline
+    GTTXRESET1 & \texttt{0x5007} & \texttt{[31:0]} & w & Pulsed & GT TX Reset \\\hline
+    TXPRBS\_FORCE\_ERR1 & \texttt{0x5008} & \texttt{[31:0]} & w & Pulsed & GT TX Reset \\\hline
+    TXPCSRESET1 & \texttt{0x5009} & \texttt{[31:0]} & w & Pulsed & TX PCS Reset \\\hline
+    TXPMARESET1 & \texttt{0x500a} & \texttt{[31:0]} & w & Pulsed & TX PMA Reset \\\hline
+    TX\_PRBS\_MODE2 & \texttt{0x500b} & \texttt{[2:0]} & rw & \texttt{0x0} & 0: Standard \\ & & & & & 1: PRBS-7 \\ & & & & & 2: PRBS-15 \\ & & & & & 3: PRBS-23 \\ & & & & & 4: PRBS-31 \\\hline
+    RX\_PRBS\_MODE2 & \texttt{0x500b} & \texttt{[5:3]} & rw & \texttt{0x0} & 0: Standard \\ & & & & & 1: PRBS-7 \\ & & & & & 2: PRBS-15 \\ & & & & & 3: PRBS-23 \\ & & & & & 4: PRBS-31 \\\hline
+    LOOPBACK\_MODE2 & \texttt{0x500b} & \texttt{[8:6]} & rw & \texttt{0x0} & GT Loopback Mode \\ & & & & & 0 = normal \\ & & & & & 1 = near end pcs \\ & & & & & 2 = near end pma \\ & & & & &4 = far end pma \\ & & & & & 6 = far end pcs \\\hline
+    TX\_DIFFCTRL2 & \texttt{0x500b} & \texttt{[15:12]} & rw & \texttt{0xC} & TX Differential Swing Control \\\hline
+    GTTXRESET2 & \texttt{0x500c} & \texttt{[31:0]} & w & Pulsed & GT TX Reset \\\hline
+    TXPRBS\_FORCE\_ERR2 & \texttt{0x500d} & \texttt{[31:0]} & w & Pulsed & GT TX Reset \\\hline
+    TXPCSRESET2 & \texttt{0x500e} & \texttt{[31:0]} & w & Pulsed & TX PCS Reset \\\hline
+    TXPMARESET2 & \texttt{0x500f} & \texttt{[31:0]} & w & Pulsed & TX PMA Reset \\\hline
+    TX\_PRBS\_MODE3 & \texttt{0x5010} & \texttt{[2:0]} & rw & \texttt{0x0} & 0: Standard \\ & & & & & 1: PRBS-7 \\ & & & & & 2: PRBS-15 \\ & & & & & 3: PRBS-23 \\ & & & & & 4: PRBS-31 \\\hline
+    RX\_PRBS\_MODE3 & \texttt{0x5010} & \texttt{[5:3]} & rw & \texttt{0x0} & 0: Standard \\ & & & & & 1: PRBS-7 \\ & & & & & 2: PRBS-15 \\ & & & & & 3: PRBS-23 \\ & & & & & 4: PRBS-31 \\\hline
+    LOOPBACK\_MODE3 & \texttt{0x5010} & \texttt{[8:6]} & rw & \texttt{0x0} & GT Loopback Mode \\ & & & & & 0 = normal \\ & & & & & 1 = near end pcs \\ & & & & & 2 = near end pma \\ & & & & &4 = far end pma \\ & & & & & 6 = far end pcs \\\hline
+    TX\_DIFFCTRL3 & \texttt{0x5010} & \texttt{[15:12]} & rw & \texttt{0xC} & TX Differential Swing Control \\\hline
+    GTTXRESET3 & \texttt{0x5011} & \texttt{[31:0]} & w & Pulsed & GT TX Reset \\\hline
+    TXPRBS\_FORCE\_ERR3 & \texttt{0x5012} & \texttt{[31:0]} & w & Pulsed & GT TX Reset \\\hline
+    TXPCSRESET3 & \texttt{0x5013} & \texttt{[31:0]} & w & Pulsed & TX PCS Reset \\\hline
+    TXPMARESET3 & \texttt{0x5014} & \texttt{[31:0]} & w & Pulsed & TX PMA Reset \\\hline
+    \end{tabularx}
+    \vspace{5mm}
+
+
+    \noindent
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.MGT.STATUS\$\{GT\}}}}
+
+    \vspace{4mm}
+    \noindent
+    MGT \$\{GT\} Status
+    \noindent
+
+    \noindent
+    \keepXColumns
+    \begin{tabularx}{\linewidth}{  l  l  l  r   X }
+    Generated range of & GT & is & \texttt{[3:0]} & adr\_step=0x1 (1) \\ 
+    \end{tabularx}
+    \keepXColumns
+    \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
+    \hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \nopagebreak
+    TXFSM\_RESET\_DONE0 & \texttt{0x5015} & \texttt{[0:0]} & r & \texttt{} &  \\\hline
+    TXRESET\_DONE0 & \texttt{0x5015} & \texttt{[1:1]} & r & \texttt{} &  \\\hline
+    TX\_PMA\_RESET\_DONE0 & \texttt{0x5015} & \texttt{[2:2]} & r & \texttt{} &  \\\hline
+    TX\_PHALIGN\_DONE0 & \texttt{0x5015} & \texttt{[3:3]} & r & \texttt{} &  \\\hline
+    TXFSM\_RESET\_DONE1 & \texttt{0x5016} & \texttt{[0:0]} & r & \texttt{} &  \\\hline
+    TXRESET\_DONE1 & \texttt{0x5016} & \texttt{[1:1]} & r & \texttt{} &  \\\hline
+    TX\_PMA\_RESET\_DONE1 & \texttt{0x5016} & \texttt{[2:2]} & r & \texttt{} &  \\\hline
+    TX\_PHALIGN\_DONE1 & \texttt{0x5016} & \texttt{[3:3]} & r & \texttt{} &  \\\hline
+    TXFSM\_RESET\_DONE2 & \texttt{0x5017} & \texttt{[0:0]} & r & \texttt{} &  \\\hline
+    TXRESET\_DONE2 & \texttt{0x5017} & \texttt{[1:1]} & r & \texttt{} &  \\\hline
+    TX\_PMA\_RESET\_DONE2 & \texttt{0x5017} & \texttt{[2:2]} & r & \texttt{} &  \\\hline
+    TX\_PHALIGN\_DONE2 & \texttt{0x5017} & \texttt{[3:3]} & r & \texttt{} &  \\\hline
+    TXFSM\_RESET\_DONE3 & \texttt{0x5018} & \texttt{[0:0]} & r & \texttt{} &  \\\hline
+    TXRESET\_DONE3 & \texttt{0x5018} & \texttt{[1:1]} & r & \texttt{} &  \\\hline
+    TX\_PMA\_RESET\_DONE3 & \texttt{0x5018} & \texttt{[2:2]} & r & \texttt{} &  \\\hline
+    TX\_PHALIGN\_DONE3 & \texttt{0x5018} & \texttt{[3:3]} & r & \texttt{} &  \\\hline
     \end{tabularx}
     \vspace{5mm}
 

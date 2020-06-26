@@ -57,7 +57,6 @@ package types_pkg is
 
   type mgt_status_t is record
     txfsm_reset_done : std_logic;
-    txfsm_done       : std_logic;
     txreset_done     : std_logic;
     rxprbserr        : std_logic;
     txpmaresetdone   : std_logic;

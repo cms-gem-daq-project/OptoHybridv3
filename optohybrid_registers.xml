@@ -602,18 +602,18 @@
 
             <node id="CNT" address="0x17" description = "S-BIT Counters \\  Set CNT_PERSIST to 1 to accumulate. Otherwise the counters will automatically reset after a programmable time (default is 1 second). By default this time is 1 second, making these counters a rate counter in Hertz">
 
-            <node id="VFAT${VFAT_CNT_IDX}_SBITS" address="0x0" permission="r"
-                mask="0xffffffff"
-                description="VFAT ${VFAT_CNT_IDX} Counter"
-                fw_cnt_en_signal="active_vfats(${VFAT_CNT_IDX})"
-                fw_cnt_snap_signal="sbit_cnt_snap"
-                fw_cnt_reset_signal="cnt_reset_strobed"
-                fw_cnt_clk_signal="clk_40_sbit"
-                fw_signal="cnt_vfat${VFAT_CNT_IDX}"
-                generate="true"
-                generate_size="&NUM_VFATS_PER_OH;"
-                generate_address_step="0x1"
-                generate_idx_var="VFAT_CNT_IDX"/>
+                <node id="VFAT${VFAT_CNT_IDX}_SBITS" address="0x0" permission="r"
+                    mask="0xffffffff"
+                    description="VFAT ${VFAT_CNT_IDX} Counter"
+                    fw_cnt_en_signal="active_vfats(${VFAT_CNT_IDX})"
+                    fw_cnt_snap_signal="sbit_cnt_snap"
+                    fw_cnt_reset_signal="cnt_reset_strobed"
+                    fw_cnt_clk_signal="clk_40_sbit"
+                    fw_signal="cnt_vfat${VFAT_CNT_IDX}"
+                    generate="true"
+                    generate_size="&NUM_VFATS_PER_OH;"
+                    generate_address_step="0x1"
+                    generate_idx_var="VFAT_CNT_IDX"/>
 
                 <node id="RESET" address="0x18" permission="w"
                     mask="0x1"
@@ -1340,94 +1340,102 @@
         fw_bus_reset_signal="ipb_reset_i"
         fw_master_bus_signal="ipb_mosi_i"
         fw_slave_bus_signal="ipb_miso_o"
-        fw_reg_addr_msb="3"
+        fw_reg_addr_msb="4"
         fw_reg_addr_lsb="0">
 
-        <node id="TX_PRBS_MODE" address="0x0" permission="rw"
-            mask="0x3"
-            description="000: Standard \n 001: PRBS-7 \n 010: PRBS-15 \n 011: PRBS-23 \n 100: PRBS-31"
-            fw_default="0x0"
-            fw_signal="tx_prbs_mode"/>
+        <node id="PLL_LOCK" address="0x0" permission="r"
+            mask = "0x1"
+            description=""
+            fw_signal="pll_lock"/>
 
-        <!--
-        <node id="LOOPBACK_MODE" address="0x0" permission="rw"
-            mask="0x30"
-            description="GT Loopback Mode; 0 = normal, 1 = near end pcs, 2 = near end pma, 4 = far end pma, 6 = far end pcs"
-            fw_default="0x0"
-            fw_signal="loopback_mode"/>
-
-        <node id="TX_DIFFCTRL" address="0x0" permission="rw"
-            mask="0xf00"
-            description="TX Differential Swing Control"
-            fw_default="0xC"
-            fw_signal="txdiffctrl"/>
-
-        <node id="RESET" address="0x0" permission="w"
-            mask="0x1"
-            description="Reset trigger links"
-            fw_write_pulse_signal="reset_links"/>
-        <node id="TX_PLL_LOCKED" address="0x1" permission="r"
-            mask="0x00000001"
-            description="Transmit PLLs are Locked"
-            fw_signal="tx_pll_lock_i"/>
-        <node id="TX_RESET_DONE" address="0x1" permission="r"
-            mask="0x00000010"
-            description="Transmit Resets are Done"
-            fw_signal="tx_reset_done_i"/>
-        <node id="TX_PLL_RESET" address="0x1" permission="rw"
-            mask="0x00000800"
-            description="This port resets the TX PLL of the GTX transceiver when driven High. It affects the clock generated from the TX PMA. When this reset is asserted or deasserted, TXRESET must also be asserted or deasserted."
-            fw_default="0x0"
-            fw_signal="pll_reset"/>
-        <node id="MGT_RESET" address="0x1" permission="rw"
-            mask="0x0000f000"
-            description="Asserts the MGT reset (GTXTXRESET). This sequence takes about 120 us to complete and systematically resets all subcomponents of the GTX transceiver TX. "
-            fw_default="0x0"
-            fw_signal="mgt_reset"/>
-        <node id="GTXTEST_START" address="0x1" permission="rw"
-            mask="0x00010000"
-            description="Initiates a double reset of the TX output clock dividers"
-            fw_default="0x0"
-            fw_signal="gtxtest_start"/>
-        <node id="TXRESET" address="0x1" permission="rw"
-            mask="0x00020000"
-            description="PCS TX system reset. Resets the TX FIFO, 8B/10B encoder and other transmitter registers. This reset is a subset of GTXTXRESET."
-            fw_default="0x0"
-            fw_signal="txreset"/>
-        <node id="MGT_REALIGN" address="0x1" permission="rw"
-            mask="0x00040000"
-            description="Resets the TX_SYNC module to realign the buf_bypass alignment FSM"
-            fw_default="0x0"
-            fw_signal="mgt_realign"/>
-        -->
-
-        <!--        <node id="CONTROL${GT}" address="0x1" permission="r"
-            mask="0xffffffff"
+        <node id="CONTROL${GT}" address="0x1"
             description="MGT ${GT} Control"
+            generate="true"
+            generate_size="4"
+            generate_address_step="0x5"
+            generate_idx_var="GT">
+
+            <node id="TX_PRBS_MODE${GT}" address="0x0" permission="rw"
+                mask="0x00000007"
+                description="0: Standard \n 1: PRBS-7 \n 2: PRBS-15 \n 3: PRBS-23 \n 4: PRBS-31"
+                fw_default="0x0"
+                fw_signal="control(${GT}).txprbssel"/>
+
+            <node id="RX_PRBS_MODE${GT}" address="0x0" permission="rw"
+                mask="0x00000038"
+                description="0: Standard \n 1: PRBS-7 \n 2: PRBS-15 \n 3: PRBS-23 \n 4: PRBS-31"
+                fw_default="0x0"
+                fw_signal="control(${GT}).rxprbssel"/>
+
+            <node id="LOOPBACK_MODE${GT}" address="0x0" permission="rw"
+                mask="0x000001c0"
+                description="GT Loopback Mode \n 0 = normal \n 1 = near end pcs \n 2 = near end pma \n4 = far end pma \n 6 = far end pcs"
+                fw_default="0x0"
+                fw_signal="control(${GT}).txloopback"/>
+
+            <node id="TX_DIFFCTRL${GT}" address="0x0" permission="rw"
+                mask="0x0000f000"
+                description="TX Differential Swing Control"
+                fw_default="0xC"
+                fw_signal="control(${GT}).txdiffctrl"/>
+
+            <node id="GTTXRESET${GT}" address="0x1" permission="w"
+                description="GT TX Reset"
+                fw_write_pulse_signal="control(${GT}).gttxreset"/>
+
+            <node id="TXPRBS_FORCE_ERR${GT}" address="0x2" permission="w"
+                description="GT TX Reset"
+                fw_write_pulse_signal="control(${GT}).gttxreset"/>
+
+            <node id="TXPCSRESET${GT}" address="0x3" permission="w"
+                description="TX PCS Reset"
+                fw_write_pulse_signal="control(${GT}).txpcsreset"/>
+
+            <node id="TXPMARESET${GT}" address="0x4" permission="w"
+                description="TX PMA Reset"
+                fw_write_pulse_signal="control(${GT}).txpmareset"/>
+        </node> <!--Control-->
+
+        <node id="STATUS${GT}" address="0x15"
+            description="MGT ${GT} Status"
             generate="true"
             generate_size="4"
             generate_address_step="0x1"
             generate_idx_var="GT">
 
-            <node id="GTTXRESET" address="0x0" permission="rw"
-                mask="0x80"
-                description="GT TX Reset"
-                fw_default="0x0"
-                fw_signal="control(${GT}).gttxreset"/>
+            <node id="TXFSM_RESET_DONE${GT}" address="0x0" permission="r"
+                mask="0x00000001"
+                description=""
+                fw_signal="status(${GT}).txfsm_reset_done"/>
 
-            <node id="RXPRBSSEL" address="0x0" permission="rw"
-                mask="0x700"
-                description="0=standard, 1=prbs7, 2=prbs15, 3=prbs23, 4=prbs31"
-                fw_default="0x0"
-                fw_signal="control(${GT}).rxprbssel"/>
+            <node id="TXRESET_DONE${GT}" address="0x0" permission="r"
+                mask="0x00000002"
+                description=""
+                fw_signal="status(${GT}).txreset_done"/>
 
-            <node id="RXPRBSSEL" address="0x0" permission="rw"
-                mask="0x700"
-                description="0=standard, 1=prbs7, 2=prbs15, 3=prbs23, 4=prbs31"
-                fw_default="0x0"
-                fw_signal="control(${GT}).rxprbssel"/>
+            <node id="TX_PMA_RESET_DONE${GT}" address="0x0" permission="r"
+                mask="0x00000004"
+                description=""
+                fw_signal="status(${GT}).txpmaresetdone"/>
 
-        </node>
+            <node id="TX_PHALIGN_DONE${GT}" address="0x0" permission="r"
+                mask="0x00000008"
+                description=""
+                fw_signal="status(${GT}).txphaligndone"/>
+        </node> <!--Status-->
+
+        <!--<node id="RX{GT}_PRBS_ERR_CNT" address="0xf" permission="r"
+            mask="0xff"
+            description="VFAT ${GT} Counter"
+            fw_cnt_en_signal="active_vfats(${GT})"
+            fw_cnt_snap_signal="sbit_cnt_snap"
+            fw_cnt_reset_signal="reset_prbs_err_cnt"
+            fw_cnt_clk_signal="clocks.sysclk"
+            fw_signal="cnt_rxprbserr{GT}"
+            generate="true"
+            generate_size="4"
+            generate_address_step="0x1"
+            generate_idx_var="GT"/>
         -->
 
     </node> <!--MGT-->

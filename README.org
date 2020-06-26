@@ -29,14 +29,19 @@ Many parameters and settings inside of the Optohybrid firmware are compile-time 
 
 #+BEGIN_SRC bash
 cd tools
-sh update_oh_firmware.sh ge11 v3c v3c long 03.01.06
+sh update_oh_firmware.sh ge11 v3c v3c long 3.1.6
+#+END_SRC
+
+If you only want to change the firmware flavor from GE2/1 to GE1/1 you can run without the version argument.
+#+BEGIN_SRC bash
+sh update_oh_firmware.sh ge11 v3c v3c long
 #+END_SRC
 
 *** GE21
 
 #+BEGIN_SRC bash
 cd tools
-sh update_oh_firmware.sh ge21 03.01.06
+sh update_oh_firmware.sh ge21 3.1.6
 #+END_SRC
 
 You should make sure to run this. All firmware development is done with GE2/1 firmware as the "master" with commits done there, and the GE2/1 firmware branch mirroring it only as a clone.. development should not be committed directly to the GE1/1 firmware branch.
