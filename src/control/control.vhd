@@ -23,6 +23,24 @@ use work.version_pkg.all;
 use work.registers.all;
 
 entity control is
+  generic (
+    -- these generics get set by hog at synthesis
+    GLOBAL_DATE : std_logic_vector (31 downto 0) := x"00000000";
+    GLOBAL_TIME : std_logic_vector (31 downto 0) := x"00000000";
+    GLOBAL_VER  : std_logic_vector (31 downto 0) := x"00000000";
+    GLOBAL_SHA  : std_logic_vector (31 downto 0) := x"00000000";
+
+    TOP_SHA : std_logic_vector (31 downto 0) := x"00000000";
+    TOP_VER : std_logic_vector (31 downto 0) := x"00000000";
+
+    HOG_SHA : std_logic_vector (31 downto 0) := x"00000000";
+    HOG_VER : std_logic_vector (31 downto 0) := x"00000000";
+
+    OPTOHYBRID_VER : std_logic_vector (31 downto 0) := x"00000000";
+    OPTOHYBRID_SHA : std_logic_vector (31 downto 0) := x"00000000";
+
+    FLAVOUR : integer := 0
+  );
   port(
 
     mgts_ready : in std_logic;
@@ -556,6 +574,14 @@ begin
     regs_addresses(22)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "01" & x"7";
     regs_addresses(23)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "01" & x"8";
     regs_addresses(24)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "01" & x"9";
+    regs_addresses(25)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "10" & x"0";
+    regs_addresses(26)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "10" & x"1";
+    regs_addresses(27)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "10" & x"2";
+    regs_addresses(28)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "10" & x"3";
+    regs_addresses(29)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "10" & x"4";
+    regs_addresses(30)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "10" & x"5";
+    regs_addresses(31)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "10" & x"6";
+    regs_addresses(32)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "10" & x"7";
 
     -- Connect read signals
     regs_read_arr(0)(REG_CONTROL_LOOPBACK_DATA_MSB downto REG_CONTROL_LOOPBACK_DATA_LSB) <= loopback;
@@ -598,7 +624,18 @@ begin
     regs_read_arr(21)(REG_CONTROL_CNT_SNAP_DISABLE_BIT) <= cnt_snap_disable;
     regs_read_arr(22)(REG_CONTROL_DNA_DNA_LSBS_MSB downto REG_CONTROL_DNA_DNA_LSBS_LSB) <= dna(31 downto 0);
     regs_read_arr(23)(REG_CONTROL_DNA_DNA_MSBS_MSB downto REG_CONTROL_DNA_DNA_MSBS_LSB) <= dna(56 downto 32);
-    regs_read_arr(24)(REG_CONTROL_UPTIME_SECONDS_MSB downto REG_CONTROL_UPTIME_SECONDS_LSB) <= std_logic_vector(uptime);
+    regs_read_arr(24)(REG_CONTROL_UPTIME_MSB downto REG_CONTROL_UPTIME_LSB) <= std_logic_vector(uptime);
+    regs_read_arr(25)(REG_CONTROL_HOG_GLOBAL_DATE_MSB downto REG_CONTROL_HOG_GLOBAL_DATE_LSB) <= GLOBAL_DATE;
+    regs_read_arr(26)(REG_CONTROL_HOG_GLOBAL_TIME_MSB downto REG_CONTROL_HOG_GLOBAL_TIME_LSB) <= GLOBAL_TIME;
+    regs_read_arr(27)(REG_CONTROL_HOG_GLOBAL_VER_MSB downto REG_CONTROL_HOG_GLOBAL_VER_LSB) <= GLOBAL_VER;
+    regs_read_arr(27)(REG_CONTROL_HOG_TOP_VER_MSB downto REG_CONTROL_HOG_TOP_VER_LSB) <= TOP_VER;
+    regs_read_arr(28)(REG_CONTROL_HOG_GLOBAL_SHA_MSB downto REG_CONTROL_HOG_GLOBAL_SHA_LSB) <= GLOBAL_SHA;
+    regs_read_arr(28)(REG_CONTROL_HOG_TOP_SHA_MSB downto REG_CONTROL_HOG_TOP_SHA_LSB) <= TOP_SHA;
+    regs_read_arr(28)(REG_CONTROL_HOG_HOG_SHA_MSB downto REG_CONTROL_HOG_HOG_SHA_LSB) <= HOG_SHA;
+    regs_read_arr(29)(REG_CONTROL_HOG_HOG_VER_MSB downto REG_CONTROL_HOG_HOG_VER_LSB) <= HOG_VER;
+    regs_read_arr(30)(REG_CONTROL_HOG_OH_SHA_MSB downto REG_CONTROL_HOG_OH_SHA_LSB) <= OPTOHYBRID_SHA;
+    regs_read_arr(31)(REG_CONTROL_HOG_OH_VER_MSB downto REG_CONTROL_HOG_OH_VER_LSB) <= OPTOHYBRID_VER;
+    regs_read_arr(32)(REG_CONTROL_HOG_FLAVOUR_MSB downto REG_CONTROL_HOG_FLAVOUR_LSB) <= std_logic_vector(to_unsigned(FLAVOUR,32));
 
     -- Connect write signals
     loopback <= regs_write_arr(0)(REG_CONTROL_LOOPBACK_DATA_MSB downto REG_CONTROL_LOOPBACK_DATA_LSB);

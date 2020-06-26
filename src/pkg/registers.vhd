@@ -10,7 +10,7 @@ package registers is
     -- Implements various control and monitoring functions of the Optohybrid
     --============================================================================
 
-    constant REG_CONTROL_NUM_REGS : integer := 25;
+    constant REG_CONTROL_NUM_REGS : integer := 33;
     constant REG_CONTROL_ADDRESS_MSB : integer := 5;
     constant REG_CONTROL_ADDRESS_LSB : integer := 0;
     constant REG_CONTROL_LOOPBACK_DATA_ADDR    : std_logic_vector(5 downto 0) := "00" & x"0";
@@ -192,9 +192,53 @@ package registers is
     constant REG_CONTROL_DNA_DNA_MSBS_MSB    : integer := 24;
     constant REG_CONTROL_DNA_DNA_MSBS_LSB     : integer := 0;
 
-    constant REG_CONTROL_UPTIME_SECONDS_ADDR    : std_logic_vector(5 downto 0) := "01" & x"9";
-    constant REG_CONTROL_UPTIME_SECONDS_MSB    : integer := 19;
-    constant REG_CONTROL_UPTIME_SECONDS_LSB     : integer := 0;
+    constant REG_CONTROL_UPTIME_ADDR    : std_logic_vector(5 downto 0) := "01" & x"9";
+    constant REG_CONTROL_UPTIME_MSB    : integer := 19;
+    constant REG_CONTROL_UPTIME_LSB     : integer := 0;
+
+    constant REG_CONTROL_HOG_GLOBAL_DATE_ADDR    : std_logic_vector(5 downto 0) := "10" & x"0";
+    constant REG_CONTROL_HOG_GLOBAL_DATE_MSB    : integer := 31;
+    constant REG_CONTROL_HOG_GLOBAL_DATE_LSB     : integer := 0;
+
+    constant REG_CONTROL_HOG_GLOBAL_TIME_ADDR    : std_logic_vector(5 downto 0) := "10" & x"1";
+    constant REG_CONTROL_HOG_GLOBAL_TIME_MSB    : integer := 31;
+    constant REG_CONTROL_HOG_GLOBAL_TIME_LSB     : integer := 0;
+
+    constant REG_CONTROL_HOG_GLOBAL_VER_ADDR    : std_logic_vector(5 downto 0) := "10" & x"2";
+    constant REG_CONTROL_HOG_GLOBAL_VER_MSB    : integer := 31;
+    constant REG_CONTROL_HOG_GLOBAL_VER_LSB     : integer := 0;
+
+    constant REG_CONTROL_HOG_TOP_VER_ADDR    : std_logic_vector(5 downto 0) := "10" & x"2";
+    constant REG_CONTROL_HOG_TOP_VER_MSB    : integer := 31;
+    constant REG_CONTROL_HOG_TOP_VER_LSB     : integer := 0;
+
+    constant REG_CONTROL_HOG_GLOBAL_SHA_ADDR    : std_logic_vector(5 downto 0) := "10" & x"3";
+    constant REG_CONTROL_HOG_GLOBAL_SHA_MSB    : integer := 31;
+    constant REG_CONTROL_HOG_GLOBAL_SHA_LSB     : integer := 0;
+
+    constant REG_CONTROL_HOG_TOP_SHA_ADDR    : std_logic_vector(5 downto 0) := "10" & x"3";
+    constant REG_CONTROL_HOG_TOP_SHA_MSB    : integer := 31;
+    constant REG_CONTROL_HOG_TOP_SHA_LSB     : integer := 0;
+
+    constant REG_CONTROL_HOG_HOG_SHA_ADDR    : std_logic_vector(5 downto 0) := "10" & x"3";
+    constant REG_CONTROL_HOG_HOG_SHA_MSB    : integer := 31;
+    constant REG_CONTROL_HOG_HOG_SHA_LSB     : integer := 0;
+
+    constant REG_CONTROL_HOG_HOG_VER_ADDR    : std_logic_vector(5 downto 0) := "10" & x"4";
+    constant REG_CONTROL_HOG_HOG_VER_MSB    : integer := 31;
+    constant REG_CONTROL_HOG_HOG_VER_LSB     : integer := 0;
+
+    constant REG_CONTROL_HOG_OH_SHA_ADDR    : std_logic_vector(5 downto 0) := "10" & x"5";
+    constant REG_CONTROL_HOG_OH_SHA_MSB    : integer := 31;
+    constant REG_CONTROL_HOG_OH_SHA_LSB     : integer := 0;
+
+    constant REG_CONTROL_HOG_OH_VER_ADDR    : std_logic_vector(5 downto 0) := "10" & x"6";
+    constant REG_CONTROL_HOG_OH_VER_MSB    : integer := 31;
+    constant REG_CONTROL_HOG_OH_VER_LSB     : integer := 0;
+
+    constant REG_CONTROL_HOG_FLAVOUR_ADDR    : std_logic_vector(5 downto 0) := "10" & x"7";
+    constant REG_CONTROL_HOG_FLAVOUR_MSB    : integer := 31;
+    constant REG_CONTROL_HOG_FLAVOUR_LSB     : integer := 0;
 
 
     --============================================================================

@@ -330,6 +330,18 @@ begin
   --------------------------------------------------------------------------------
 
   control_inst : entity work.control
+    generic map (
+      GLOBAL_DATE    => GLOBAL_DATE,
+      GLOBAL_TIME    => GLOBAL_TIME,
+      GLOBAL_VER     => GLOBAL_VER,
+      GLOBAL_SHA     => GLOBAL_SHA,
+      TOP_SHA        => TOP_SHA,
+      TOP_VER        => TOP_VER,
+      HOG_SHA        => HOG_SHA,
+      HOG_VER        => HOG_VER,
+      OPTOHYBRID_VER => OPTOHYBRID_VER,
+      OPTOHYBRID_SHA => OPTOHYBRID_SHA,
+      FLAVOUR        => FLAVOUR)
     port map (
 
       -- wishbone
