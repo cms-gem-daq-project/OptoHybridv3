@@ -115,10 +115,10 @@ begin
       locked_o => mmcm_locked
       );
 
-  clocks_o.locked <= mmcm_locked;
-  clocks_o.sysclk <= sysclk;
-  clocks_o.clk40  <= clk40;
-  clocks_o.clk160_0 <= clk160_0;
+  clocks_o.locked    <= mmcm_locked;
+  clocks_o.sysclk    <= clk40;
+  clocks_o.clk40     <= clk40;
+  clocks_o.clk160_0  <= clk160_0;
   clocks_o.clk160_90 <= clk160_90;
   clocks_o.clk200    <= clk200;
 

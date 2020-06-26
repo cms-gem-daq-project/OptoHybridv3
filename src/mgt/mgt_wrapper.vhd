@@ -20,7 +20,7 @@ entity mgt_wrapper is
       NUM_GTS                     : integer := 4;
       WRAPPER_SIM_GTRESET_SPEEDUP : string  := "TRUE";  -- simulation setting for GT SecureIP model
       WRAPPER_SIMULATION          : integer := 1;       -- Set to 1 for simulation
-      STABLE_CLOCK_PERIOD         : integer := 25
+      STABLE_CLOCK_PERIOD         : integer := 5
       );
   port
     (
@@ -61,17 +61,25 @@ architecture behavior of mgt_wrapper is
 
   signal refclk       : std_logic;
   signal common_reset : std_logic;
+  signal txoutclk_buf : std_logic;
 
   signal gttxreset : std_logic_vector(3 downto 0);
+  signal txoutclk  : std_logic_vector(3 downto 0);
 
 begin
+
+  sysclk_bufg : BUFG
+    port map (
+      I => txoutclk(0),
+      O => txoutclk_buf
+      );
 
   common_reset_inst : entity work.gtp_common_reset
     generic map (
       STABLE_CLOCK_PERIOD => STABLE_CLOCK_PERIOD  -- Period of the stable clock driving this state-machine, unit is [ns]
       )
     port map (
-      STABLE_CLOCK => sysclk_in,                  --Stable Clock, either a stable clock from the PCB
+      STABLE_CLOCK => txoutclk(0),                --Stable Clock, either a stable clock from the PCB
       SOFT_RESET   => soft_reset_tx_in,           --User Reset, can be pulled any time
       COMMON_RESET => common_reset                --Reset QPLL
       );
@@ -241,7 +249,7 @@ begin
           txresetdone_out => txresetdone(I),
 
 
-          txoutclk_out       => open,
+          txoutclk_out       => txoutclk(I),
           txoutclkfabric_out => open,
           txoutclkpcs_out    => open
           );
@@ -319,7 +327,7 @@ begin
         master_lane_id  => 0
         )
       port map (
-        stable_clock         => sysclk_in,            -- in
+        stable_clock         => txoutclk_buf,         --stable clock, either a stable clock from the pcb
         reset_phalignment    => rst_tx_phalignment,   -- in
         run_phalignment      => run_tx_phalignment,   -- in
         txdlysresetdone      => txdlysresetdone,      -- in
@@ -351,7 +359,7 @@ begin
           )
         port map (
 
-          stable_clock => sysclk_in,
+          stable_clock => txoutclk_buf,            --stable clock, either a stable clock from the pcb
           txuserclk    => txusrclk_in,
           soft_reset   => soft_reset_tx_in,
 
@@ -451,7 +459,7 @@ begin
 
           -- transmit ports - tx data path interface
           txdata_in    => txdata_i(I),
-          txoutclk_out => open,
+          txoutclk_out => txoutclk(I),
           txreset_in   => not mmcm_lock_i,  -- Hold the TX in reset till the TX user clocks are stable
           txusrclk2_in => txusrclk_in,
 
@@ -487,7 +495,7 @@ begin
         generic map
         (
           example_simulation     => wrapper_simulation,
-          stable_clock_period    => stable_clock_period,  -- period of the stable clock driving this state-machine, unit is [ns]
+          STABLE_CLOCK_PERIOD    => STABLE_CLOCK_PERIOD,  -- period of the stable clock driving this state-machine, unit is [ns]
           retry_counter_bitwidth => 8,
           tx_pll0_used           => true,                 -- the tx and rx reset fsms must
           rx_pll0_used           => false,                -- share these two generic values
@@ -497,7 +505,7 @@ begin
           )
         port map (
 
-          stable_clock => sysclk_in,
+          stable_clock => txoutclk_buf,            --stable clock, either a stable clock from the pcb
           txuserclk    => txusrclk_in,
           soft_reset   => soft_reset_tx_in,
 
