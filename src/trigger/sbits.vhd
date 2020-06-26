@@ -31,59 +31,59 @@ entity sbits is
 
     trig_stop_i : in std_logic;
 
-    vfat_mask_i : in std_logic_vector (c_NUM_VFATS-1 downto 0);
+    vfat_mask_i : in std_logic_vector (NUM_VFATS-1 downto 0);
 
     sbits_mux_sel_i : in  std_logic_vector (4 downto 0);
     sbits_mux_o     : out std_logic_vector (63 downto 0);
 
-    sot_invert_i : in std_logic_vector (c_NUM_VFATS-1 downto 0);    -- 24 or 12
-    tu_invert_i  : in std_logic_vector (c_NUM_VFATS*8-1 downto 0);  -- 192 or 96
-    tu_mask_i    : in std_logic_vector (c_NUM_VFATS*8-1 downto 0);  -- 192 or 96
+    sot_invert_i : in std_logic_vector (NUM_VFATS-1 downto 0);    -- 24 or 12
+    tu_invert_i  : in std_logic_vector (NUM_VFATS*8-1 downto 0);  -- 192 or 96
+    tu_mask_i    : in std_logic_vector (NUM_VFATS*8-1 downto 0);  -- 192 or 96
 
     aligned_count_to_ready : in std_logic_vector (11 downto 0);
 
 
     trigger_deadtime_i : in std_logic_vector (3 downto 0);
 
-    sbits_p : in std_logic_vector (c_NUM_VFATS*8-1 downto 0);
-    sbits_n : in std_logic_vector (c_NUM_VFATS*8-1 downto 0);
+    sbits_p : in std_logic_vector (NUM_VFATS*8-1 downto 0);
+    sbits_n : in std_logic_vector (NUM_VFATS*8-1 downto 0);
 
-    start_of_frame_p : in std_logic_vector (c_NUM_VFATS-1 downto 0);
-    start_of_frame_n : in std_logic_vector (c_NUM_VFATS-1 downto 0);
+    start_of_frame_p : in std_logic_vector (NUM_VFATS-1 downto 0);
+    start_of_frame_n : in std_logic_vector (NUM_VFATS-1 downto 0);
 
 
-    active_vfats_o : out std_logic_vector (c_NUM_VFATS-1 downto 0);
+    active_vfats_o : out std_logic_vector (NUM_VFATS-1 downto 0);
 
     clusters_o      : out sbit_cluster_array_t (NUM_FOUND_CLUSTERS-1 downto 0);
     cluster_count_o : out std_logic_vector (10 downto 0);
     overflow_o      : out std_logic;
 
-    sot_is_aligned_o      : out std_logic_vector (c_NUM_VFATS-1 downto 0);
-    sot_unstable_o        : out std_logic_vector (c_NUM_VFATS-1 downto 0);
-    sot_invalid_bitskip_o : out std_logic_vector (c_NUM_VFATS-1 downto 0);
+    sot_is_aligned_o      : out std_logic_vector (NUM_VFATS-1 downto 0);
+    sot_unstable_o        : out std_logic_vector (NUM_VFATS-1 downto 0);
+    sot_invalid_bitskip_o : out std_logic_vector (NUM_VFATS-1 downto 0);
 
-    sot_tap_delay  : in t_std5_array (c_NUM_VFATS-1 downto 0);
-    trig_tap_delay : in t_std5_array (c_NUM_VFATS*8-1 downto 0);
+    sot_tap_delay  : in t_std5_array (NUM_VFATS-1 downto 0);
+    trig_tap_delay : in t_std5_array (NUM_VFATS*8-1 downto 0);
 
     hitmap_reset_i   : in  std_logic;
     hitmap_acquire_i : in  std_logic;
-    hitmap_sbits_o   : out sbits_array_t(c_NUM_VFATS-1 downto 0)
+    hitmap_sbits_o   : out sbits_array_t(NUM_VFATS-1 downto 0)
 
     );
 end sbits;
 
 architecture Behavioral of sbits is
 
-  signal vfat_sbits_strip_mapped : sbits_array_t(c_NUM_VFATS-1 downto 0);
-  signal vfat_sbits              : sbits_array_t(c_NUM_VFATS-1 downto 0);
+  signal vfat_sbits_strip_mapped : sbits_array_t(NUM_VFATS-1 downto 0);
+  signal vfat_sbits              : sbits_array_t(NUM_VFATS-1 downto 0);
 
   constant empty_vfat : std_logic_vector (63 downto 0) := x"0000000000000000";
 
-  signal active_vfats : std_logic_vector (c_NUM_VFATS-1 downto 0);
+  signal active_vfats : std_logic_vector (NUM_VFATS-1 downto 0);
 
   signal sbits : std_logic_vector (MXSBITS_CHAMBER-1 downto 0);
 
-  signal active_vfats_s1 : std_logic_vector (c_NUM_VFATS*8-1 downto 0);
+  signal active_vfats_s1 : std_logic_vector (NUM_VFATS*8-1 downto 0);
 
   signal sbits_mux_s0 : std_logic_vector (63 downto 0);
   signal sbits_mux_s1 : std_logic_vector (63 downto 0);
@@ -128,7 +128,7 @@ begin
   process (clocks.clk40)
   begin
     if (rising_edge(clocks.clk40)) then
-      if (unsigned(sbits_mux_sel_i) > to_unsigned(c_NUM_VFATS, sbits_mux_sel_i'length)-1) then
+      if (unsigned(sbits_mux_sel_i) > to_unsigned(NUM_VFATS, sbits_mux_sel_i'length)-1) then
         sbits_mux_sel <= (others => '0');
       else
         sbits_mux_sel <= sbits_mux_sel_i;
@@ -181,7 +181,7 @@ begin
   -- Channel to Strip Mapping
   --------------------------------------------------------------------------------------------------------------------
 
-  sbit_reverse : for I in 0 to (c_NUM_VFATS-1) generate
+  sbit_reverse : for I in 0 to (NUM_VFATS-1) generate
   begin
     vfat_sbits (I) <= sbits ((I+1)*MXSBITS-1 downto (I)*MXSBITS) when REVERSE_VFAT_SBITS(I) = '0' else reverse_vector(sbits ((I+1)*MXSBITS-1 downto (I)*MXSBITS));
   end generate;

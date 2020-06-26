@@ -21,7 +21,7 @@ architecture behave of top_cluster_packer_tb is
   signal prt_sel_dly : integer := 0;
   signal adr_sel_dly : integer := 0;
 
-  signal partitions : partition_array_t (c_NUM_PARTITIONS-1 downto 0);
+  signal partitions : partition_array_t (NUM_PARTITIONS-1 downto 0);
 
 -- Instantiate Constants
   constant clk_PERIOD    : time := 25.0 ns;
@@ -31,7 +31,7 @@ architecture behave of top_cluster_packer_tb is
   signal reset           : std_logic                              := '0';
   signal trig_stop_i     : std_logic                              := '0';
   signal cluster_count_o : std_logic_vector (10 downto 0);
-  signal sbits_i         : sbits_array_t (c_NUM_VFATS-1 downto 0) := (others => (others => '0'));
+  signal sbits_i         : sbits_array_t (NUM_VFATS-1 downto 0) := (others => (others => '0'));
   signal clusters_o      : sbit_cluster_array_t (NUM_FOUND_CLUSTERS-1 downto 0);
   signal clusters_ena_o  : std_logic;
   signal overflow_o      : std_logic;
@@ -64,7 +64,7 @@ begin
       clusters_ena_o  => clusters_ena_o,
       overflow_o      => overflow_o);
 
-  assign_partitions : for iprt in 0 to c_NUM_PARTITIONS-1 generate
+  assign_partitions : for iprt in 0 to NUM_PARTITIONS-1 generate
     initial : process (clocks.clk40)
     begin
       if (rising_edge(clocks.clk40)) then
@@ -145,9 +145,9 @@ begin
         adr_sel <= 0;
         prt_sel <= 0;
     else
-      if (prt_sel = c_NUM_PARTITIONS-1 and adr_sel = c_PARTITION_SIZE*MXSBITS) then
+      if (prt_sel = NUM_PARTITIONS-1 and adr_sel = PARTITION_SIZE*MXSBITS) then
         wait;                           -- done
-      elsif (adr_sel < c_PARTITION_SIZE*MXSBITS-1) then
+      elsif (adr_sel < PARTITION_SIZE*MXSBITS-1) then
         adr_sel <= adr_sel + 1;
       else
         adr_sel <= 0;

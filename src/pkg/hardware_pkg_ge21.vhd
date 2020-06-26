@@ -21,19 +21,19 @@ package hardware_pkg is
   constant NUM_GT_REFCLK     : integer := 2;
 
   -- Chamber Parameters
-  constant MXSBITS          : integer := 64;
-  constant c_ENCODER_SIZE   : integer := 192;
-  constant c_PARTITION_SIZE : integer := 6;
-  constant c_NUM_PARTITIONS : integer := 2;
-  constant c_NUM_VFATS      : integer := c_PARTITION_SIZE * c_NUM_PARTITIONS;  --12
-  constant MXSBITS_CHAMBER  : integer := c_NUM_VFATS*MXSBITS;
+  constant MXSBITS         : integer := 64;
+  constant ENCODER_SIZE    : integer := 192;
+  constant PARTITION_SIZE  : integer := 6;
+  constant NUM_PARTITIONS  : integer := 2;
+  constant NUM_VFATS       : integer := PARTITION_SIZE * NUM_PARTITIONS;  --12
+  constant MXSBITS_CHAMBER : integer := NUM_VFATS*MXSBITS;
 
   -- Cluster finding Settings
 
   constant REMAP_STRIPS      : boolean := false;
   constant INVERT_PARTITIONS : boolean := false;
 
-  constant REVERSE_VFAT_SBITS : std_logic_vector (c_NUM_VFATS-1 downto 0) := x"000";
+  constant REVERSE_VFAT_SBITS : std_logic_vector (NUM_VFATS-1 downto 0) := x"000";
 
   constant MXADRB : integer := 9;       -- bits for addr in partition
   constant MXCNTB : integer := 3;       -- bits for size of cluster
@@ -44,10 +44,11 @@ package hardware_pkg is
   constant NUM_FOUND_CLUSTERS  : integer := NUM_ENCODERS * NUM_CYCLES;  -- 16
   constant NUM_OUTPUT_CLUSTERS : integer := 10;
 
-  constant NUM_OPTICAL_PACKETS : integer := 2;  -- # of different optical link packets
+  constant PACKET_SIZE         : integer := 5;  -- # of clusters per packet
+  constant NUM_OPTICAL_PACKETS : integer := 1;  -- # of different optical link packets
   constant NUM_ELINK_PACKETS   : integer := 1;  -- # of different copper link packets
 
-  constant ENABLE_ECC          : integer := 1;
+  constant ENABLE_ECC : integer := 1;
 
   -- TMR Enables
   constant EN_TMR : integer := 1;

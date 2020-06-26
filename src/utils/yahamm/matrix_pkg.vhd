@@ -181,7 +181,7 @@ package body matrix_pkg is
 
       for col in matrix'range(2) loop
         write(l, matrix(row, col));
-        swrite(l, " ");
+        --swrite(l, " ");
       end loop;  -- col
 
       writeline(output, l);
@@ -198,13 +198,13 @@ package body matrix_pkg is
 
   begin  -- procedure pretty_print_matrix
 
-    swrite(l, integer'image(vin'left));
-    swrite(l, " to/downto ");
-    swrite(l, integer'image(vin'right));
-    swrite(l, ": ");
+    --swrite(l, integer'image(vin'left));
+    --swrite(l, " to/downto ");
+    --swrite(l, integer'image(vin'right));
+    --swrite(l, ": ");
     for i in vin'range loop
       write(l, vin(i));
-      swrite(l, " ");
+      --swrite(l, " ");
     end loop;  -- i
 
     writeline(output, l);

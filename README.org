@@ -1,0 +1,114 @@
+* Optohybrid v3 Firmware
+
+** Building the firmware
+
+This firmware is using the HOG framework as a build system:
+ - HOG Documentation: http://hog-user-docs.web.cern.ch
+ - HOG Source Code: https://gitlab.cern.ch/hog/Hog
+
+From scratch, the firmware can be built as:
+
+#+BEGIN_SRC  bash
+git clone https://github.com/cms-gem-daq-project/OptoHybridv3
+git submodule update --init --recursive
+Hog/CreateProject.sh oh21
+Hog/LaunchSynthesis.sh oh21
+Hog/LaunchImplementation.sh oh21
+#+END_SRC
+
+** Changing firmware flavors
+
+Many parameters and settings inside of the Optohybrid firmware are compile-time programmed.  These can be updated with a single bash script, which is run by
+
+#+BEGIN_SRC bash
+./update_oh_firmware.sh <gem_station> <oh_version> <geb_version> <geb_length> <firmware_version>
+#+END_SRC
+
+*** GE11
+
+#+BEGIN_SRC bash
+cd tools
+sh update_oh_firmware.sh ge11 v3c v3c long 03.01.06
+#+END_SRC
+
+*** GE21
+
+#+BEGIN_SRC bash
+cd tools
+sh update_oh_firmware.sh ge21 03.01.06
+#+END_SRC
+
+You should make sure to run this. All firmware development is done with GE2/1 firmware as the "master" with commits done there, and the GE2/1 firmware branch mirroring it only as a clone.. development should not be committed directly to the GE1/1 firmware branch.
+
+This script also generates PDF latex documentation, so you should make sure it runs appropriately and you have a latex compiler installed if you are releasing firmware.
+
+** Versioning
+
+Releases are labeled as =version_major.version_minor.version_patch.hardware_id=
+
+i.e. in HARDWARE_VERSION XY
+
+x=chamber type (0=GE11 short, 1=GE11 long, 2=GE21)
+y=hardware generation
+
+Specifically:
+
+| Station | OH Version | Chamber Variant | Tag |
+|---------+------------+-----------------+-----|
+| GE1/1   | v3B        | Short           | 0B  |
+| GE1/1   | v3C        | Short           | 0C  |
+| GE1/1   | v3C        | Long            | 1C  |
+| GE2/1   | v1         |                 | 2A  |
+| GE2/1   | v2         |                 | 2B  |
+
+
+** LED Indicators
+
+| Optohybrid v3 LED Assignments  |                                        |
+|--------------------------------+----------------------------------------|
+| led[15] = (rsvrd, always on)   | led[7] = Cluster Rate >= 10,000,000 Hz |
+| led[14] = Clock, divided       | led[6] = Cluster Rate >= 1,000,000 Hz  |
+| led[13] = MGTS ready, blinking | led[5] = Cluster Rate >= 100,000 Hz    |
+| led[12] = GBT Ready, blinking  | led[4] = Cluster Rate >= 10,000 Hz     |
+| led[11] = GBT Request flash    | led[3] = Cluster Rate >= 1,000 Hz      |
+| led[10] = L1A Flash            | led[2] = Cluster Rate >= 100 Hz        |
+| led[9] = Resync Flash          | led[1] = Cluster Rate >= 10 Hz         |
+| led[8] = BC0 Flash             | led[0] = Cluster Rate >= 1 Hz          |
+
+The “right side” LED indicators provide a logarithmic progress bar indicator which provides a convenient way to monitor the rate of incoming clusters received by the Optohybrid.
+
+Prior to the receipt of the first S-bit (after a reset or resync), the progress bar will show a strobing “cylon” pattern to indicate an idle state.
+
+** HDMI Output
+
+The Optohybrid has an HDMI connector connected to differential pairs of the FPGA.
+
+The functionality is programmable by changing firmware, but in the current configuration they provide a programmable way to output S-bits for use in the cosmic ray test stand.
+
+Each conductor can be individually programmed into one of 4 modes:
+
+| Mode   | Description                                                               |
+|--------+---------------------------------------------------------------------------|
+| Mode 0 | Each signal was a single VFAT (set by selN)                               |
+| Mode 1 | Each signal was the OR of three VFATs in an ieta row (row is set by selN) |
+| Mode 2 | Each signal was the OR of four VFATs in an iphi half column               |
+|        | (e.g. 0-3, 4-7, 8-11, 12 15, 16-19, 20-23) (phi half is set by selN)      |
+| Mode 3 | Disabled (all outputs driven to zero)                                     |
+
+The registers you will want to use to control the HDMI output are:
+
+- GEM_AMC.OH.OH{X}.FPGA.CONTROL.HDMI.SBIT_SEL{0-7}
+- GEM_AMC.OH.OH{X}.FPGA.CONTROL.HDMI.SBIT_MODE{0-7}
+
+The assignments of these signals in the HDMI cable are:
+
+#+BEGIN_SRC  tcl
+NET "ext_sbits_o[0]" LOC = H17; # tmds clk p
+NET "ext_sbits_o[1]" LOC = G17; # tmds clk n
+NET "ext_sbits_o[2]" LOC = J16; # tmds d2  p
+NET "ext_sbits_o[3]" LOC = J17; # tmds d2  n
+NET "ext_sbits_o[4]" LOC = L14; # tmds d1  p
+NET "ext_sbits_o[5]" LOC = L15; # tmds d1  n
+NET "ext_sbits_o[6]" LOC = M17; # tmds d0  p
+NET "ext_sbits_o[7]" LOC = M18; # tmds d0  n
+#+END_SRC

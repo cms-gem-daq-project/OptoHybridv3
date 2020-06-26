@@ -159,7 +159,7 @@ begin
     end if;
   end process;
 
-  elink_outputs : for I in 0 to (NUM_OPTICAL_PACKETS-1) generate
+  optical_outputs : for I in 0 to (NUM_OPTICAL_PACKETS-1) generate
     signal cnt : integer;
   begin
     cnt <= link_frame_cnt;
@@ -176,7 +176,7 @@ begin
   -- A7 MGT
   --------------------------------------------------------------------------------
 
-  optics_gen : if (true) generate
+  optics_gen : if (NUM_OPTICAL_PACKETS>0) generate
     constant NUM_GTS     : integer   := 4;
     signal soft_reset_tx : std_logic := '0';
     signal pll_lock      : std_logic;

@@ -101,6 +101,7 @@ begin
   begin
     clusters_i  <= (others => NULL_CLUSTER);
     --wait for wait_time;
+    wait until reset_i = '0';
     wait until rising_edge(clocks.clk40);
     clusters_i(0)  <= (adr => slv(0, MXADRB), cnt => "000", vpf => '1', prt => (others => '0'));
     clusters_i(1)  <= (adr => slv(1, MXADRB), cnt => "000", vpf => '1', prt => (others => '0'));

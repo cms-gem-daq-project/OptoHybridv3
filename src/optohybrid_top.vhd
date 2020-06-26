@@ -105,11 +105,11 @@ entity top_optohybrid is
 
     -- VFAT Trigger Data
 
-    vfat_sot_p : in std_logic_vector (c_NUM_VFATS-1 downto 0);
-    vfat_sot_n : in std_logic_vector (c_NUM_VFATS-1 downto 0);
+    vfat_sot_p : in std_logic_vector (NUM_VFATS-1 downto 0);
+    vfat_sot_n : in std_logic_vector (NUM_VFATS-1 downto 0);
 
-    vfat_sbits_p : in std_logic_vector ((c_NUM_VFATS*8)-1 downto 0);
-    vfat_sbits_n : in std_logic_vector ((c_NUM_VFATS*8)-1 downto 0)
+    vfat_sbits_p : in std_logic_vector ((NUM_VFATS*8)-1 downto 0);
+    vfat_sbits_n : in std_logic_vector ((NUM_VFATS*8)-1 downto 0)
 
     );
 end top_optohybrid;
@@ -124,7 +124,7 @@ architecture Behavioral of top_optohybrid is
   -- Clusters
   signal sbit_overflow : std_logic;
   signal cluster_count : std_logic_vector (10 downto 0);
-  signal active_vfats  : std_logic_vector (c_NUM_VFATS-1 downto 0);
+  signal active_vfats  : std_logic_vector (NUM_VFATS-1 downto 0);
   signal sbit_clusters : sbit_cluster_array_t (NUM_FOUND_CLUSTERS-1 downto 0);
 
   -- Global signals

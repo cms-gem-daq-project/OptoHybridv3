@@ -13,8 +13,8 @@ entity find_clusters is
 
     latch_in : in std_logic;            -- this should go high when new vpfs are ready and stay high for just 1 clock
 
-    vpfs_in : in std_logic_vector (MXSBITS*c_NUM_VFATS -1 downto 0);
-    cnts_in : in std_logic_vector (MXSBITS*c_NUM_VFATS*3-1 downto 0);
+    vpfs_in : in std_logic_vector (MXSBITS*NUM_VFATS -1 downto 0);
+    cnts_in : in std_logic_vector (MXSBITS*NUM_VFATS*3-1 downto 0);
 
     clusters_o : out sbit_cluster_array_t (NUM_FOUND_CLUSTERS-1 downto 0);
 
@@ -38,9 +38,9 @@ architecture behavioral of find_clusters is
         return adr;
       end if;
     else -- ge21
-      if (c_ENCODER_SIZE=384) then
+      if (ENCODER_SIZE=384) then
         return adr;
-      elsif (c_ENCODER_SIZE=192) then
+      elsif (ENCODER_SIZE=192) then
         if (encoder=1 or encoder=3) then
             return std_logic_vector(to_unsigned(int(adr)+192, adr'length));
         else
@@ -58,9 +58,9 @@ architecture behavioral of find_clusters is
     variable prt : integer;
   begin
     if (not is_ge11) then
-      if (c_ENCODER_SIZE=384) then
+      if (ENCODER_SIZE=384) then
         prt := encoder;
-      elsif (c_ENCODER_SIZE=192) then
+      elsif (ENCODER_SIZE=192) then
         if (encoder=0 or encoder=1) then
           prt := 0;
         else
@@ -127,9 +127,9 @@ begin
     signal cnt_enc : std_logic_vector(MXCNTB-1 downto 0);
     signal vpf_enc : std_logic;
 
-    signal vpfs_truncated : std_logic_vector (c_ENCODER_SIZE-1 downto 0);
+    signal vpfs_truncated : std_logic_vector (ENCODER_SIZE-1 downto 0);
 
-    signal cnts_dly : std_logic_vector (c_ENCODER_SIZE*3-1 downto 0);
+    signal cnts_dly : std_logic_vector (ENCODER_SIZE*3-1 downto 0);
 
     component truncate_clusters
       generic (
@@ -166,7 +166,7 @@ begin
     process (clock)
     begin
       if (rising_edge(clock)) then
-        cnts_dly <= cnts_in (c_ENCODER_SIZE*MXCNTB*(I+1)-1 downto c_ENCODER_SIZE*MXCNTB*I);
+        cnts_dly <= cnts_in (ENCODER_SIZE*MXCNTB*(I+1)-1 downto ENCODER_SIZE*MXCNTB*I);
       end if;
     end process;
 
@@ -174,14 +174,14 @@ begin
     ----------------------------
     truncate_clusters_inst : truncate_clusters
       generic map (
-        MXVPF  => c_ENCODER_SIZE,
+        MXVPF  => ENCODER_SIZE,
         MXSEGS => 12
         )
       port map (
         clock       => clock,
         latch_pulse => latch_in,
-        vpfs_in     => vpfs_in (c_ENCODER_SIZE*(I+1)-1 downto c_ENCODER_SIZE*I),
-        vpfs_out    => vpfs_truncated (c_ENCODER_SIZE-1 downto 0),
+        vpfs_in     => vpfs_in (ENCODER_SIZE*(I+1)-1 downto ENCODER_SIZE*I),
+        vpfs_out    => vpfs_truncated (ENCODER_SIZE-1 downto 0),
         pass_o      => truncator_cycle
         );
 

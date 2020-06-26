@@ -28,26 +28,26 @@ use work.hardware_pkg.all;
 entity trig_alignment is
   port(
 
-    sbits_p : in std_logic_vector (c_NUM_VFATS*8-1 downto 0);
-    sbits_n : in std_logic_vector (c_NUM_VFATS*8-1 downto 0);
+    sbits_p : in std_logic_vector (NUM_VFATS*8-1 downto 0);
+    sbits_n : in std_logic_vector (NUM_VFATS*8-1 downto 0);
 
     reset_i : in std_logic;
 
-    sot_invert_i : in std_logic_vector (c_NUM_VFATS-1 downto 0);
-    tu_invert_i  : in std_logic_vector (c_NUM_VFATS*8-1 downto 0);
+    sot_invert_i : in std_logic_vector (NUM_VFATS-1 downto 0);
+    tu_invert_i  : in std_logic_vector (NUM_VFATS*8-1 downto 0);
 
-    vfat_mask_i : in std_logic_vector (c_NUM_VFATS-1 downto 0);
-    tu_mask_i   : in std_logic_vector (c_NUM_VFATS*8-1 downto 0);
+    vfat_mask_i : in std_logic_vector (NUM_VFATS-1 downto 0);
+    tu_mask_i   : in std_logic_vector (NUM_VFATS*8-1 downto 0);
 
-    start_of_frame_p : in std_logic_vector (c_NUM_VFATS-1 downto 0);
-    start_of_frame_n : in std_logic_vector (c_NUM_VFATS-1 downto 0);
+    start_of_frame_p : in std_logic_vector (NUM_VFATS-1 downto 0);
+    start_of_frame_n : in std_logic_vector (NUM_VFATS-1 downto 0);
 
-    sot_tap_delay  : in t_std5_array (c_NUM_VFATS-1 downto 0);
-    trig_tap_delay : in t_std5_array (c_NUM_VFATS*8-1 downto 0);
+    sot_tap_delay  : in t_std5_array (NUM_VFATS-1 downto 0);
+    trig_tap_delay : in t_std5_array (NUM_VFATS*8-1 downto 0);
 
-    sot_is_aligned      : out std_logic_vector (c_NUM_VFATS-1 downto 0);
-    sot_unstable        : out std_logic_vector (c_NUM_VFATS-1 downto 0);
-    sot_invalid_bitskip : out std_logic_vector (c_NUM_VFATS-1 downto 0);
+    sot_is_aligned      : out std_logic_vector (NUM_VFATS-1 downto 0);
+    sot_unstable        : out std_logic_vector (NUM_VFATS-1 downto 0);
+    sot_invalid_bitskip : out std_logic_vector (NUM_VFATS-1 downto 0);
 
     aligned_count_to_ready : in std_logic_vector (11 downto 0);
 
@@ -61,19 +61,19 @@ end trig_alignment;
 
 architecture Behavioral of trig_alignment is
 
-  signal start_of_frame_8b  : t_std8_array (c_NUM_VFATS-1 downto 0);
-  signal vfat_phase_sel     : t_std2_array (c_NUM_VFATS-1 downto 0);
-  signal vfat_e4            : t_std4_array (c_NUM_VFATS-1 downto 0);
+  signal start_of_frame_8b  : t_std8_array (NUM_VFATS-1 downto 0);
+  signal vfat_phase_sel     : t_std2_array (NUM_VFATS-1 downto 0);
+  signal vfat_e4            : t_std4_array (NUM_VFATS-1 downto 0);
   signal sbits_unaligned    : std_logic_vector ((MXSBITS_CHAMBER - 1) downto 0);
-  signal sot_invert         : std_logic_vector (c_NUM_VFATS-1 downto 0);
-  signal tu_invert          : std_logic_vector (c_NUM_VFATS*8-1 downto 0);
-  signal vfat_mask          : std_logic_vector (c_NUM_VFATS-1 downto 0);
-  signal tu_mask            : std_logic_vector (c_NUM_VFATS*8-1 downto 0);
-  signal sot_is_aligned_int : std_logic_vector (c_NUM_VFATS-1 downto 0);
+  signal sot_invert         : std_logic_vector (NUM_VFATS-1 downto 0);
+  signal tu_invert          : std_logic_vector (NUM_VFATS*8-1 downto 0);
+  signal vfat_mask          : std_logic_vector (NUM_VFATS-1 downto 0);
+  signal tu_mask            : std_logic_vector (NUM_VFATS*8-1 downto 0);
+  signal sot_is_aligned_int : std_logic_vector (NUM_VFATS-1 downto 0);
 
   -- fanout reset to help with timing
-  signal sot_reset : std_logic_vector (c_NUM_VFATS-1 downto 0);
-  signal tu_reset  : std_logic_vector (c_NUM_VFATS*8-1 downto 0);
+  signal sot_reset : std_logic_vector (NUM_VFATS-1 downto 0);
+  signal tu_reset  : std_logic_vector (NUM_VFATS*8-1 downto 0);
 
   attribute EQUIVALENT_REGISTER_REMOVAL              : string;
   attribute EQUIVALENT_REGISTER_REMOVAL of sot_reset : signal is "NO";
@@ -99,7 +99,7 @@ begin
   -- SOT Oversampler
   --------------------------------------------------------------------------------------------------------------------
 
-  sot_loop : for I in 0 to c_NUM_VFATS-1 generate
+  sot_loop : for I in 0 to NUM_VFATS-1 generate
   begin
 
     process (clock) is
@@ -138,7 +138,7 @@ begin
   -- S-bit Oversamplers
   --------------------------------------------------------------------------------------------------------------------
 
-  trig_loop : for I in 0 to (c_NUM_VFATS*8-1) generate
+  trig_loop : for I in 0 to (NUM_VFATS*8-1) generate
   begin
 
     process (clock) is
@@ -177,7 +177,7 @@ begin
   -- Frame alignment
   --------------------------------------------------------------------------------------------------------------------
 
-  aligner_loop : for I in 0 to c_NUM_VFATS-1 generate
+  aligner_loop : for I in 0 to NUM_VFATS-1 generate
   begin
 
     frame_aligner_inst : entity work.frame_aligner_tmr

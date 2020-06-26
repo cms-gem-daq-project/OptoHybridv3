@@ -24,7 +24,7 @@ entity cluster_packer is
     cluster_count_o : out std_logic_vector (10 downto 0);
     trig_stop_i     : in  std_logic;
 
-    sbits_i : in sbits_array_t (c_NUM_VFATS-1 downto 0);
+    sbits_i : in sbits_array_t (NUM_VFATS-1 downto 0);
 
     clusters_o : out sbit_cluster_array_t (NUM_FOUND_CLUSTERS-1 downto 0);
 
@@ -39,13 +39,13 @@ architecture behavioral of cluster_packer is
   signal latch_pulse_s0 : std_logic;
   signal latch_pulse_s1 : std_logic;
 
-  signal sbits_os : sbits_array_t (c_NUM_VFATS-1 downto 0);
+  signal sbits_os : sbits_array_t (NUM_VFATS-1 downto 0);
 
-  signal partitions : partition_array_t (c_NUM_PARTITIONS-1 downto 0);
+  signal partitions : partition_array_t (NUM_PARTITIONS-1 downto 0);
 
-  signal sbits_s0 : std_logic_vector (c_NUM_VFATS*MXSBITS-1 downto 0);
-  signal vpfs     : std_logic_vector (c_NUM_VFATS*MXSBITS-1 downto 0);
-  signal cnts     : std_logic_vector (c_NUM_VFATS*MXSBITS*MXCNTB-1 downto 0);
+  signal sbits_s0 : std_logic_vector (NUM_VFATS*MXSBITS-1 downto 0);
+  signal vpfs     : std_logic_vector (NUM_VFATS*MXSBITS-1 downto 0);
+  signal cnts     : std_logic_vector (NUM_VFATS*MXSBITS*MXCNTB-1 downto 0);
 
   signal overflow_out       : std_logic;
   signal overflow_dly       : std_logic;
@@ -56,6 +56,9 @@ architecture behavioral of cluster_packer is
   signal clusters : sbit_cluster_array_t (NUM_FOUND_CLUSTERS-1 downto 0);
 
   component count_clusters
+    generic (
+      overflow_thresh : integer
+      );
     port (
       clock      : in  std_logic;
       vpfs_i     : in  std_logic_vector;
@@ -124,7 +127,7 @@ begin
   -- Oneshot
   --------------------------------------------------------------------------------
 
-  os_vfatloop : for os_vfat in 0 to (c_NUM_VFATS - 1) generate
+  os_vfatloop : for os_vfat in 0 to (NUM_VFATS - 1) generate
     os_sbitloop : for os_sbit in 0 to (MXSBITS - 1) generate
 
       -- Optional oneshot to keep VFATs from re-firing the same channel
@@ -190,8 +193,8 @@ begin
     end generate;
   end generate;
 
-  flatten_partitions : for iprt in 0 to c_NUM_PARTITIONS-1 generate
-    sbits_s0 ((iprt+1)*c_PARTITION_SIZE*MXSBITS-1 downto iprt*c_PARTITION_SIZE*MXSBITS) <= partitions(iprt);
+  flatten_partitions : for iprt in 0 to NUM_PARTITIONS-1 generate
+    sbits_s0 ((iprt+1)*PARTITION_SIZE*MXSBITS-1 downto iprt*PARTITION_SIZE*MXSBITS) <= partitions(iprt);
   end generate;
 
   ----------------------------------------------------------------------------------
@@ -200,9 +203,9 @@ begin
 
   find_cluster_primaries_inst : find_cluster_primaries
     generic map (
-      MXPADS         => c_NUM_VFATS*MXSBITS,
-      MXROWS         => c_NUM_PARTITIONS,
-      MXKEYS         => c_PARTITION_SIZE*MXSBITS,
+      MXPADS         => NUM_VFATS*MXSBITS,
+      MXROWS         => NUM_PARTITIONS,
+      MXKEYS         => PARTITION_SIZE*MXSBITS,
       SPLIT_CLUSTERS => g_SPLIT_CLUSTERS  -- 1=long clusters will be split in two (0=the tails are dropped)
      -- resource usage will be quite a bit less if you just truncate clusters
       )

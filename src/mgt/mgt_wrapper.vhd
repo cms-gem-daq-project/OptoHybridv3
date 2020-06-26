@@ -19,7 +19,7 @@ entity mgt_wrapper is
     (
       NUM_GTS                     : integer := 4;
       WRAPPER_SIM_GTRESET_SPEEDUP : string  := "TRUE";  -- simulation setting for GT SecureIP model
-      WRAPPER_SIMULATION          : integer := 0;       -- Set to 1 for simulation
+      WRAPPER_SIMULATION          : integer := 1;       -- Set to 1 for simulation
       STABLE_CLOCK_PERIOD         : integer := 25
       );
   port

@@ -20,15 +20,15 @@ use work.hardware_pkg.all;
 
 entity channel_to_strip is
   port(
-    channels_in : in  sbits_array_t(c_NUM_VFATS-1 downto 0);
-    strips_out  : out sbits_array_t(c_NUM_VFATS-1 downto 0)
+    channels_in : in  sbits_array_t(NUM_VFATS-1 downto 0);
+    strips_out  : out sbits_array_t(NUM_VFATS-1 downto 0)
     );
 end channel_to_strip;
 
 architecture Behavioral of channel_to_strip is
 begin
 
-  vfat_loop : for I in 0 to (c_NUM_VFATS-1) generate
+  vfat_loop : for I in 0 to (NUM_VFATS-1) generate
   begin
 
     remap_ge11 : if (GE11 = 1 and REMAP_STRIPS) generate

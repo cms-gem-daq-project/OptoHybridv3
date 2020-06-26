@@ -1,6 +1,6 @@
 #planahead
 ############# modify these to match project ################
-set bin_file 1
+set bin_file 0
 set use_questa_simulator 0
 
 #set FPGA xc7a75tfgg484-3

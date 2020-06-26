@@ -143,7 +143,7 @@ package types_pkg is
   type sbit_cluster_array_array_t is array(integer range<>)
     of sbit_cluster_array_t (NUM_FOUND_CLUSTERS-1 downto 0);
 
-  subtype partition_t is std_logic_vector(c_PARTITION_SIZE*MXSBITS-1 downto 0);
+  subtype partition_t is std_logic_vector(PARTITION_SIZE*MXSBITS-1 downto 0);
   type partition_array_t is array(integer range <>) of partition_t;
 
   function cluster_to_vector (a : sbit_cluster_t; size : integer)

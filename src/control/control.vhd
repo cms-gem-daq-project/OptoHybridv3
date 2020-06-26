@@ -54,7 +54,7 @@ entity control is
 
     -- Trigger
 
-    active_vfats_i  : in std_logic_vector (c_NUM_VFATS-1 downto 0);
+    active_vfats_i  : in std_logic_vector (NUM_VFATS-1 downto 0);
     sbit_overflow_i : in std_logic;
     cluster_count_i : in std_logic_vector (10 downto 0);
 
@@ -135,13 +135,13 @@ architecture Behavioral of control is
 
   component external
     generic (GE21        : integer;
-             c_NUM_VFATS : integer);
+             NUM_VFATS : integer);
     port (
       clock : in std_logic;
 
       reset_i : in std_logic;
 
-      active_vfats_i : in std_logic_vector (c_NUM_VFATS-1 downto 0);
+      active_vfats_i : in std_logic_vector (NUM_VFATS-1 downto 0);
 
       sbit_mode0 : in std_logic_vector (1 downto 0);
       sbit_mode1 : in std_logic_vector (1 downto 0);
@@ -405,7 +405,7 @@ begin
   -- This module handles the external signals: the input trigger and the output SBits.
 
   external_inst : external
-    generic map (GE21 => GE21, c_NUM_VFATS => c_NUM_VFATS)
+    generic map (GE21 => GE21, NUM_VFATS => NUM_VFATS)
     port map(
       clock => clocks.clk40,
 

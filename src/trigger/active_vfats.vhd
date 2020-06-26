@@ -22,14 +22,14 @@ entity active_vfats is
   port(
     clock          : in  std_logic;
     sbits_i        : in  std_logic_vector (MXSBITS_CHAMBER-1 downto 0);
-    active_vfats_o : out std_logic_vector (c_NUM_VFATS-1 downto 0)
+    active_vfats_o : out std_logic_vector (NUM_VFATS-1 downto 0)
     );
 end active_vfats;
 
 architecture Behavioral of active_vfats is
 
   signal sbits           : std_logic_vector (MXSBITS_CHAMBER-1 downto 0);
-  signal active_vfats_s1 : std_logic_vector (c_NUM_VFATS*8-1 downto 0);
+  signal active_vfats_s1 : std_logic_vector (NUM_VFATS*8-1 downto 0);
 
 begin
 
@@ -49,7 +49,7 @@ begin
 
   -- I don't want to do 64 bit reduction in 1 clock... split it over 2 to add slack to PAR and timing
 
-  active_vfat_s1 : for I in 0 to (c_NUM_VFATS*8-1) generate
+  active_vfat_s1 : for I in 0 to (NUM_VFATS*8-1) generate
   begin
     process (clock)
     begin
@@ -59,7 +59,7 @@ begin
     end process;
   end generate;
 
-  active_vfat_s2 : for I in 0 to (c_NUM_VFATS-1) generate
+  active_vfat_s2 : for I in 0 to (NUM_VFATS-1) generate
   begin
     process (clock)
     begin
