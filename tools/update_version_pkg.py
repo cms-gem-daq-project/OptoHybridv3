@@ -26,9 +26,9 @@ def write_version_pkg (file_handle):
 
     padding = "    " #spaces for indentation
 
-    f.write ('%sconstant MAJOR_VERSION          : std_logic_vector(7 downto 0) := x"%s";\n'     %  (padding, firmware_version_major))
-    f.write ('%sconstant MINOR_VERSION          : std_logic_vector(7 downto 0) := x"%s";\n'     %  (padding, firmware_version_minor))
-    f.write ('%sconstant RELEASE_VERSION        : std_logic_vector(7 downto 0) := x"%s";\n'     %  (padding, firmware_release_version))
+    f.write ('%sconstant MAJOR_VERSION          : std_logic_vector(7 downto 0) := x"%02x";\n'     %  (padding, firmware_version_major))
+    f.write ('%sconstant MINOR_VERSION          : std_logic_vector(7 downto 0) := x"%02x";\n'     %  (padding, firmware_version_minor))
+    f.write ('%sconstant RELEASE_VERSION        : std_logic_vector(7 downto 0) := x"%02x";\n'     %  (padding, firmware_release_version))
     f.write ('\n')
     f.write ('%sconstant RELEASE_YEAR           : std_logic_vector(15 downto 0) := x"%04d";\n'  %  (padding, firmware_year))
     f.write ('%sconstant RELEASE_MONTH          : std_logic_vector(7 downto  0) := x"%02d";\n'  %  (padding, firmware_month))

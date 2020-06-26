@@ -66,7 +66,10 @@ def write_timing_delays (file_handle):
     trig_tap_delays= []
     sot_tap_delays = []
 
-    if (geb_version=="v3a" and geb_length=="short" and gem_version=="ge11"):
+    if (gem_version=="ge21"):
+        trig_tap_delays = ge21_null_trig_tap_delays
+        sot_tap_delays = ge21_null_sot_tap_delays
+    elif (geb_version=="v3a" and geb_length=="short" and gem_version=="ge11"):
         trig_tap_delays = v3a_short_trig_tap_delays
         sot_tap_delays = v3a_short_sot_tap_delays
     elif (geb_version=="v3b" and geb_length=="short" and gem_version=="ge11"):
@@ -78,9 +81,6 @@ def write_timing_delays (file_handle):
     elif (geb_version=="v3c" and geb_length=="long" and gem_version=="ge11"):
         trig_tap_delays = v3c_long_trig_tap_delays
         sot_tap_delays = v3c_long_sot_tap_delays
-    elif (gem_version=="ge21"):
-        trig_tap_delays = ge21_null_trig_tap_delays
-        sot_tap_delays = ge21_null_sot_tap_delays
     else:
         trig_tap_delays = []
         sot_tap_delays = []

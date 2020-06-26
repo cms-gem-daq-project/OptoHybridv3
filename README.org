@@ -10,6 +10,7 @@ From scratch, the firmware can be built as:
 
 #+BEGIN_SRC  bash
 git clone https://github.com/cms-gem-daq-project/OptoHybridv3
+cd OptoHybridv3
 git submodule update --init --recursive
 Hog/CreateProject.sh oh21
 Hog/LaunchSynthesis.sh oh21
