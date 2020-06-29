@@ -708,32 +708,6 @@
 
 
     \pagebreak
-    \section{Module: FPGA.CLOCKING \hfill \texttt{0x3000}}
-
-    Controls and monitors the status of the Optohybrid clocks\\
-
-    \renewcommand{\arraystretch}{1.3}
-    \noindent
-    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.CLOCKING}}}
-
-    \vspace{4mm}
-    \noindent
-    Controls and monitors the status of the Optohybrid clocks
-    \noindent
-
-    \keepXColumns
-    \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
-    \hline
-    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
-    \nopagebreak
-    MMCM\_LOCKED & \texttt{0x3000} & \texttt{[0:0]} & r & \texttt{} & MMCM locked \\\hline
-    MMCM\_UNLOCKED\_CNT & \texttt{0x3000} & \texttt{[23:16]} & r & \texttt{} & MMCM unlocked cnt \\\hline
-    \end{tabularx}
-    \vspace{5mm}
-
-
-
-    \pagebreak
     \section{Module: FPGA.GBT \hfill \texttt{0x4000}}
 
     Contains functionality for controlling and monitoring the bidirectional GBTx to FPGA link\\

@@ -185,7 +185,7 @@ begin
         refclk_in_p => refclk_p,
         refclk_in_n => refclk_n,
 
-        sysclk_in => clocks.sysclk,
+        sysclk_in => clocks.clk40,
 
         soft_reset_tx_in => '0',
 
@@ -206,7 +206,6 @@ begin
         common_drp_o => common_drp_o,
 
         mmcm_lock_i  => clocks.locked,
-        mmcm_reset_o => mgt_mmcm_reset_o,
 
         txcharisk_i(0) => is_kchar(0),
         txcharisk_i(1) => is_kchar(0),

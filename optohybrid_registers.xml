@@ -1247,30 +1247,6 @@
 
     </node> <!--TRIG-->
 
-    <!--Clocking module -->
-    <node id="CLOCKING"  address="0x3000"
-            description="Controls and monitors the status of the Optohybrid clocks"
-            fw_is_module="true"
-            fw_module_file="../src/utils/clocking.vhd"
-            fw_user_clock_signal="sysclk"
-            fw_bus_clock_signal="clk40"
-            fw_bus_reset_signal="ipb_reset_i"
-            fw_master_bus_signal="ipb_mosi_i"
-            fw_slave_bus_signal="ipb_miso_o"
-            fw_reg_addr_msb="1"
-            fw_reg_addr_lsb="0">
-
-            <node id="MMCM_LOCKED" address="0x0" permission="r"
-                mask="0x00000001"
-                description="MMCM locked"
-                fw_signal="mmcm_locked"/>
-            <node id="MMCM_UNLOCKED_CNT" address="0x0" permission="r"
-                mask="0x00ff0000"
-                description="MMCM unlocked cnt"
-                fw_cnt_en_signal="not mmcm_locked"
-                fw_signal="mmcm_unlocked"/>
-    </node>
-
     <!--GBT module -->
     <node id="GBT"  address="0x4000"
             description="Contains functionality for controlling and monitoring the bidirectional GBTx to FPGA link"

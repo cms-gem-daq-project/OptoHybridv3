@@ -1277,23 +1277,6 @@ package registers is
 
 
     --============================================================================
-    --       >>> CLOCKING Module <<<    base address: 0x00003000
-    --
-    -- Controls and monitors the status of the Optohybrid clocks
-    --============================================================================
-
-    constant REG_CLOCKING_NUM_REGS : integer := 1;
-    constant REG_CLOCKING_ADDRESS_MSB : integer := 1;
-    constant REG_CLOCKING_ADDRESS_LSB : integer := 0;
-    constant REG_CLOCKING_MMCM_LOCKED_ADDR    : std_logic_vector(1 downto 0) := "00";
-    constant REG_CLOCKING_MMCM_LOCKED_BIT    : integer := 0;
-
-    constant REG_CLOCKING_MMCM_UNLOCKED_CNT_ADDR    : std_logic_vector(1 downto 0) := "00";
-    constant REG_CLOCKING_MMCM_UNLOCKED_CNT_MSB    : integer := 23;
-    constant REG_CLOCKING_MMCM_UNLOCKED_CNT_LSB     : integer := 16;
-
-
-    --============================================================================
     --       >>> GBT Module <<<    base address: 0x00004000
     --
     -- Contains functionality for controlling and monitoring the bidirectional

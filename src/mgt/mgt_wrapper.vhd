@@ -20,7 +20,7 @@ entity mgt_wrapper is
       NUM_GTS                     : integer := 4;
       WRAPPER_SIM_GTRESET_SPEEDUP : string  := "TRUE";  -- simulation setting for GT SecureIP model
       WRAPPER_SIMULATION          : integer := 1;       -- Set to 1 for simulation
-      STABLE_CLOCK_PERIOD         : integer := 5
+      STABLE_CLOCK_PERIOD         : integer := 6        -- 160MHz reference clock
       );
   port
     (
@@ -44,8 +44,7 @@ entity mgt_wrapper is
       common_drp_i : in  drp_i_t;
       common_drp_o : out drp_o_t;
 
-      mmcm_lock_i  : in  std_logic;
-      mmcm_reset_o : out std_logic_vector(NUM_GTS-1 downto 0);
+      mmcm_lock_i : in std_logic;
 
       txusrclk_in : in std_logic;
       txcharisk_i : in t_std2_array (NUM_GTS-1 downto 0);
@@ -66,22 +65,28 @@ architecture behavior of mgt_wrapper is
   signal gttxreset : std_logic_vector(3 downto 0);
   signal txoutclk  : std_logic_vector(3 downto 0);
 
+  -- use if we are taking the TXOUTCLK --> MMCM
+  signal mmcm_reset : std_logic_vector(NUM_GTS-1 downto 0);
+
 begin
 
-  sysclk_bufg : BUFG
+
+  -- 160MHz outclk
+  outclk_bufg : BUFG
     port map (
       I => txoutclk(0),
       O => txoutclk_buf
       );
 
+  -- waits 500ns at startup, asserting common_reset
   common_reset_inst : entity work.gtp_common_reset
     generic map (
       STABLE_CLOCK_PERIOD => STABLE_CLOCK_PERIOD  -- Period of the stable clock driving this state-machine, unit is [ns]
       )
     port map (
-      STABLE_CLOCK => txoutclk(0),                --Stable Clock, either a stable clock from the PCB
-      SOFT_RESET   => soft_reset_tx_in,           --User Reset, can be pulled any time
-      COMMON_RESET => common_reset                --Reset QPLL
+      STABLE_CLOCK => txoutclk_buf,               -- IN:  Stable Clock, either a stable clock from the PCB
+      SOFT_RESET   => soft_reset_tx_in,           -- IN:  User Reset, can be pulled any time
+      COMMON_RESET => common_reset                -- OUT: Reset QPLL
       );
 
   a7gen : if (FPGA_TYPE = "A7") generate
@@ -301,7 +306,7 @@ begin
         pll1outclk_out    => pll1_clk,
         pll1outrefclk_out => pll1_refclk,
 
-        pll0lockdetclk_in  => sysclk_in,
+        pll0lockdetclk_in  => txoutclk_buf,
         pll0lock_out       => pll0_lock,
         pll0refclklost_out => pll0_refclklost,
         pll0reset_in       => pll0_reset,
@@ -327,7 +332,7 @@ begin
         master_lane_id  => 0
         )
       port map (
-        stable_clock         => txoutclk_buf,         --stable clock, either a stable clock from the pcb
+        stable_clock         => txoutclk_buf,         -- stable clock, either a stable clock from the pcb
         reset_phalignment    => rst_tx_phalignment,   -- in
         run_phalignment      => run_tx_phalignment,   -- in
         txdlysresetdone      => txdlysresetdone,      -- in
@@ -359,7 +364,7 @@ begin
           )
         port map (
 
-          stable_clock => txoutclk_buf,            --stable clock, either a stable clock from the pcb
+          stable_clock => txoutclk_buf,  --stable clock, either a stable clock from the pcb
           txuserclk    => txusrclk_in,
           soft_reset   => soft_reset_tx_in,
 
@@ -370,7 +375,7 @@ begin
           txuserrdy         => txuserrdy(I),
           txresetdone       => txresetdone(I),
           mmcm_lock         => mmcm_lock_i,
-          mmcm_reset        => mmcm_reset_o(I),
+          mmcm_reset        => mmcm_reset(I),
           gttxreset         => gttxreset(I),
           tx_fsm_reset_done => status_o(I).txfsm_reset_done,
           run_phalignment   => run_tx_phalignment_array(I),
@@ -505,27 +510,27 @@ begin
           )
         port map (
 
-          stable_clock => txoutclk_buf,            --stable clock, either a stable clock from the pcb
-          txuserclk    => txusrclk_in,
-          soft_reset   => soft_reset_tx_in,
+          stable_clock => txoutclk_buf,      --stable clock, either a stable clock from the pcb or reference-clock present at startup.
+          txuserclk    => txusrclk_in,       --TXUSERCLK as used in the design
+          soft_reset   => soft_reset_tx_in,  --User Reset, can be pulled any time
 
-          pll0refclklost => '0',
-          pll0lock       => pll_lock(i),
+          pll0refclklost => '0',          --PLL0 Reference-clock for the GT is lost
+          pll0lock       => pll_lock(i),  --Lock Detect from the PLL0 of the GT
 
-          pll0_reset        => pll_txreset(I),
+          pll0_reset        => pll_txreset(I),                --Reset PLL0
           txuserrdy         => open,
           txresetdone       => resetdone,
           mmcm_lock         => mmcm_lock_i,
-          mmcm_reset        => mmcm_reset_o(I),
+          mmcm_reset        => mmcm_reset(I),
           gttxreset         => gttxreset(I),
-          tx_fsm_reset_done => status_o(I).txfsm_reset_done,
+          tx_fsm_reset_done => status_o(I).txfsm_reset_done,  --Reset-sequence has sucessfully been finished.
           run_phalignment   => open,
           reset_phalignment => open,
-          phalignment_done  => '1',
+          phalignment_done  => sync_done,
 
-          pll1refclklost => zero,
-          pll1lock       => one,
-          pll1_reset     => open,
+          pll1refclklost => zero,       --PLL1 Reference-clock for the GT is lost,
+          pll1lock       => one,        --Lock Detect from the PLL0 of the GT
+          pll1_reset     => open,       --Reset PLL0
           retry_counter  => open
           );
 
