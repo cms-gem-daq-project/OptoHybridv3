@@ -286,7 +286,11 @@
                 mask="0xfffff"
                 fw_signal="std_logic_vector(uptime)"/>
 
-        <node id="HOG" address="0x20" description = "">
+        <node id="USR_ACCESS" address="0x20" description="Git hash read from USR_ACCESS field" permission="r"
+                mask="0xffffffff"
+                fw_signal="usr_access"/>
+
+        <node id="HOG" address="0x21" description = "">
             <node id="GLOBAL_DATE" permission="r" address="0x0" description="HOG Global Date"    fw_signal="GLOBAL_DATE"/>
             <node id="GLOBAL_TIME" permission="r" address="0x1" description="HOG Global Time"    fw_signal="GLOBAL_TIME"/>
             <node id="GLOBAL_VER"  permission="r" address="0x2" description="HOG Global Version" fw_signal="GLOBAL_VER"/>

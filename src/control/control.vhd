@@ -12,8 +12,10 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.std_logic_misc.all;
+use ieee.numeric_std.all;
 
-use IEEE.Numeric_STD.all;
+library unisim;
+use unisim.vcomponents.all;
 
 library work;
 use work.types_pkg.all;
@@ -40,7 +42,7 @@ entity control is
     OPTOHYBRID_SHA : std_logic_vector (31 downto 0) := x"00000000";
 
     FLAVOUR : integer := 0
-  );
+    );
   port(
 
     mgts_ready : in std_logic;
@@ -115,6 +117,22 @@ architecture Behavioral of control is
       );
   end component;
 
+  component USR_ACCESSE2
+    port (
+      cfgclk    : out std_logic;
+      datavalid : out std_logic;
+      data      : out std_logic_vector (31 downto 0)
+      );
+  end component;
+
+  component USR_ACCESS_VIRTEX6
+    port (
+      cfgclk    : out std_logic;
+      datavalid : out std_logic;
+      data      : out std_logic_vector (31 downto 0)
+      );
+  end component;
+
   component fmm
     port (
       clock : in std_logic;
@@ -150,7 +168,7 @@ architecture Behavioral of control is
   end component;
 
   component external
-    generic (GE21        : integer;
+    generic (GE21      : integer;
              NUM_VFATS : integer);
     port (
       clock : in std_logic;
@@ -244,6 +262,7 @@ architecture Behavioral of control is
 
   signal dna : std_logic_vector (56 downto 0);
 
+  signal usr_access : std_logic_vector (31 downto 0);
 
   component led_control
     port(
@@ -354,7 +373,7 @@ begin
     variable uptime_cnt : unsigned (29 downto 0) := (others => '0');
   begin
     if (rising_edge(clocks.clk40)) then
-      if (reset_i='1') then
+      if (reset_i = '1') then
         uptime_cnt := (others => '0');
         uptime     <= (others => '0');
       elsif (uptime_cnt < x"2638e98") then
@@ -402,6 +421,25 @@ begin
       -- led outputs
       led_out => led_o
       );
+
+  --------------------------------------------------------------------------------------------------------------------
+  -- USR_ACCESS Readout
+  --------------------------------------------------------------------------------------------------------------------
+
+  ge11_usr_access: if (ge11=1) generate
+    usr_access_inst : USR_ACCESS_VIRTEX6 port map (
+      CFGCLK    => open,                  -- Not utilized in the static use case in this application note
+      DATA      => usr_access,            -- 32-bit output Configuration Data output
+      DATAVALID => open                   -- Not utilized in the static use case in this application note
+      );
+  end generate;
+  ge21_usr_access: if (ge21=1) generate
+    usr_access_inst : USR_ACCESSE2 port map (
+      CFGCLK    => open,                  -- Not utilized in the static use case in this application note
+      DATA      => usr_access,            -- 32-bit output Configuration Data output
+      DATAVALID => open                   -- Not utilized in the static use case in this application note
+      );
+  end generate;
 
   --------------------------------------------------------------------------------------------------------------------
   -- Device DNA
@@ -582,6 +620,10 @@ begin
     regs_addresses(30)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "10" & x"5";
     regs_addresses(31)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "10" & x"6";
     regs_addresses(32)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "10" & x"7";
+    regs_addresses(33)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "10" & x"8";
+    regs_addresses(34)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "10" & x"9";
+    regs_addresses(35)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "10" & x"a";
+    regs_addresses(36)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "10" & x"b";
 
     -- Connect read signals
     regs_read_arr(0)(REG_CONTROL_LOOPBACK_DATA_MSB downto REG_CONTROL_LOOPBACK_DATA_LSB) <= loopback;
@@ -625,17 +667,18 @@ begin
     regs_read_arr(22)(REG_CONTROL_DNA_DNA_LSBS_MSB downto REG_CONTROL_DNA_DNA_LSBS_LSB) <= dna(31 downto 0);
     regs_read_arr(23)(REG_CONTROL_DNA_DNA_MSBS_MSB downto REG_CONTROL_DNA_DNA_MSBS_LSB) <= dna(56 downto 32);
     regs_read_arr(24)(REG_CONTROL_UPTIME_MSB downto REG_CONTROL_UPTIME_LSB) <= std_logic_vector(uptime);
-    regs_read_arr(25)(REG_CONTROL_HOG_GLOBAL_DATE_MSB downto REG_CONTROL_HOG_GLOBAL_DATE_LSB) <= GLOBAL_DATE;
-    regs_read_arr(26)(REG_CONTROL_HOG_GLOBAL_TIME_MSB downto REG_CONTROL_HOG_GLOBAL_TIME_LSB) <= GLOBAL_TIME;
-    regs_read_arr(27)(REG_CONTROL_HOG_GLOBAL_VER_MSB downto REG_CONTROL_HOG_GLOBAL_VER_LSB) <= GLOBAL_VER;
-    regs_read_arr(27)(REG_CONTROL_HOG_TOP_VER_MSB downto REG_CONTROL_HOG_TOP_VER_LSB) <= TOP_VER;
-    regs_read_arr(28)(REG_CONTROL_HOG_GLOBAL_SHA_MSB downto REG_CONTROL_HOG_GLOBAL_SHA_LSB) <= GLOBAL_SHA;
-    regs_read_arr(28)(REG_CONTROL_HOG_TOP_SHA_MSB downto REG_CONTROL_HOG_TOP_SHA_LSB) <= TOP_SHA;
-    regs_read_arr(28)(REG_CONTROL_HOG_HOG_SHA_MSB downto REG_CONTROL_HOG_HOG_SHA_LSB) <= HOG_SHA;
-    regs_read_arr(29)(REG_CONTROL_HOG_HOG_VER_MSB downto REG_CONTROL_HOG_HOG_VER_LSB) <= HOG_VER;
-    regs_read_arr(30)(REG_CONTROL_HOG_OH_SHA_MSB downto REG_CONTROL_HOG_OH_SHA_LSB) <= OPTOHYBRID_SHA;
-    regs_read_arr(31)(REG_CONTROL_HOG_OH_VER_MSB downto REG_CONTROL_HOG_OH_VER_LSB) <= OPTOHYBRID_VER;
-    regs_read_arr(32)(REG_CONTROL_HOG_FLAVOUR_MSB downto REG_CONTROL_HOG_FLAVOUR_LSB) <= std_logic_vector(to_unsigned(FLAVOUR,32));
+    regs_read_arr(25)(REG_CONTROL_USR_ACCESS_MSB downto REG_CONTROL_USR_ACCESS_LSB) <= usr_access;
+    regs_read_arr(26)(REG_CONTROL_HOG_GLOBAL_DATE_MSB downto REG_CONTROL_HOG_GLOBAL_DATE_LSB) <= GLOBAL_DATE;
+    regs_read_arr(27)(REG_CONTROL_HOG_GLOBAL_TIME_MSB downto REG_CONTROL_HOG_GLOBAL_TIME_LSB) <= GLOBAL_TIME;
+    regs_read_arr(28)(REG_CONTROL_HOG_GLOBAL_VER_MSB downto REG_CONTROL_HOG_GLOBAL_VER_LSB) <= GLOBAL_VER;
+    regs_read_arr(29)(REG_CONTROL_HOG_GLOBAL_SHA_MSB downto REG_CONTROL_HOG_GLOBAL_SHA_LSB) <= GLOBAL_SHA;
+    regs_read_arr(30)(REG_CONTROL_HOG_TOP_SHA_MSB downto REG_CONTROL_HOG_TOP_SHA_LSB) <= TOP_SHA;
+    regs_read_arr(31)(REG_CONTROL_HOG_TOP_VER_MSB downto REG_CONTROL_HOG_TOP_VER_LSB) <= TOP_VER;
+    regs_read_arr(32)(REG_CONTROL_HOG_HOG_SHA_MSB downto REG_CONTROL_HOG_HOG_SHA_LSB) <= HOG_SHA;
+    regs_read_arr(33)(REG_CONTROL_HOG_HOG_VER_MSB downto REG_CONTROL_HOG_HOG_VER_LSB) <= HOG_VER;
+    regs_read_arr(34)(REG_CONTROL_HOG_OH_SHA_MSB downto REG_CONTROL_HOG_OH_SHA_LSB) <= OPTOHYBRID_SHA;
+    regs_read_arr(35)(REG_CONTROL_HOG_OH_VER_MSB downto REG_CONTROL_HOG_OH_VER_LSB) <= OPTOHYBRID_VER;
+    regs_read_arr(36)(REG_CONTROL_HOG_FLAVOUR_MSB downto REG_CONTROL_HOG_FLAVOUR_LSB) <= std_logic_vector(to_unsigned(FLAVOUR,32));
 
     -- Connect write signals
     loopback <= regs_write_arr(0)(REG_CONTROL_LOOPBACK_DATA_MSB downto REG_CONTROL_LOOPBACK_DATA_LSB);
