@@ -332,19 +332,19 @@ begin
 
     -- Connect write pulse signals
     control(0).gttxreset <= regs_write_pulse_arr(2);
-    control(0).gttxreset <= regs_write_pulse_arr(3);
+    control(0).txprbsforceerr <= regs_write_pulse_arr(3);
     control(0).txpcsreset <= regs_write_pulse_arr(4);
     control(0).txpmareset <= regs_write_pulse_arr(5);
     control(1).gttxreset <= regs_write_pulse_arr(7);
-    control(1).gttxreset <= regs_write_pulse_arr(8);
+    control(1).txprbsforceerr <= regs_write_pulse_arr(8);
     control(1).txpcsreset <= regs_write_pulse_arr(9);
     control(1).txpmareset <= regs_write_pulse_arr(10);
     control(2).gttxreset <= regs_write_pulse_arr(12);
-    control(2).gttxreset <= regs_write_pulse_arr(13);
+    control(2).txprbsforceerr <= regs_write_pulse_arr(13);
     control(2).txpcsreset <= regs_write_pulse_arr(14);
     control(2).txpmareset <= regs_write_pulse_arr(15);
     control(3).gttxreset <= regs_write_pulse_arr(17);
-    control(3).gttxreset <= regs_write_pulse_arr(18);
+    control(3).txprbsforceerr <= regs_write_pulse_arr(18);
     control(3).txpcsreset <= regs_write_pulse_arr(19);
     control(3).txpmareset <= regs_write_pulse_arr(20);
 

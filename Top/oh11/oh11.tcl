@@ -3,11 +3,9 @@
 set bin_file 0
 set use_questa_simulator 0
 
-#set FPGA xc7a75tfgg484-3
 set FPGA xc6vlx130tff1156-1
 
-## FPGA and Vivado strategies and flows
-#regexp -- {Vivado v([0-9]{4})\.[0-9]} [version] -> VIVADO_YEAR
+## FPGA and PlanAhead strategies and flows
 set SYNTH_FLOW "XST 14"
 set SYNTH_STRATEGY "PlanAhead Defaults"
 set IMPL_FLOW "ISE 14"
@@ -27,15 +25,15 @@ set PROPERTIES [dict create \
     synth_1 [dict create \
         steps.xst.args.equivalent_register_removal no \
     ] \
+    impl_1 [dict create \
+        steps.map.args.pr b \
+        steps.map.args.logic_opt on \
+        steps.par.args.mt 4  \
+        steps.map.args.register_duplication true \
+        steps.bitgen.args.More\ Options {{-g CRC:enable -g ConfigRate:33 -g StartUpClk:CCLK -g DonePipe:yes}} \
+    ]\
 ]
-
-#                                 STEPS.SYNTH_DESIGN.ARGS.KEEP_EQUIVALENT_REGISTERS true \
-#                                 STEPS.SYNTH_DESIGN.ARGS.RETIMING false \
-#                    impl_1 [dict create \
-#                                STEPS.OPT_DESIGN.ARGS.DIRECTIVE Default \
-#                                STEPS.POST_ROUTE_PHYS_OPT_DESIGN.ARGS.DIRECTIVE AggressiveExplore \
-#                               ]\
-#                   ]
+# please see https://www.xilinx.com/support/documentation/sw_manuals/xilinx14_7/devref.pdf for documentation on the "More Options"
 
 ############################################################
 
