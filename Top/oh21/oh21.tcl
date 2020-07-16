@@ -1,10 +1,14 @@
 #vivado
 ############# modify these to match project ################
-set bin_file 1
-set use_questa_simulator 0
+set BIN_FILE 0
+set USE_QUESTA_SIMULATOR 0
 
+source fpga.tcl
 #set FPGA xc7a75tfgg484-3
-set FPGA xc7a200tfbg484-3
+#set FPGA xc7a200tfbg484-3
+
+set SYNTH_TOP_MODULE  top_optohybrid
+set SIMULATOR  xsim
 
 ## FPGA and Vivado strategies and flows
 regexp -- {Vivado v([0-9]{4})\.[0-9]} [version] -> VIVADO_YEAR
@@ -24,16 +28,16 @@ set IMPL_FLOW "Vivado Implementation $VIVADO_YEAR"
 # Then copy and paste the name and the values from the Vivado Tcl console into the lines below.
 
 set PROPERTIES [dict create \
-                    synth_1 [dict create \
-                                 STEPS.SYNTH_DESIGN.ARGS.ASSERT true \
-                                 STEPS.SYNTH_DESIGN.ARGS.KEEP_EQUIVALENT_REGISTERS true \
-                                 STEPS.SYNTH_DESIGN.ARGS.RETIMING false \
-                                ] \
-                    impl_1 [dict create \
-                                STEPS.OPT_DESIGN.ARGS.DIRECTIVE Default \
-                                STEPS.POST_ROUTE_PHYS_OPT_DESIGN.ARGS.DIRECTIVE AggressiveExplore \
-                               ]\
-                   ]
+synth_1 [dict create \
+    STEPS.SYNTH_DESIGN.ARGS.ASSERT true \
+    STEPS.SYNTH_DESIGN.ARGS.KEEP_EQUIVALENT_REGISTERS true \
+    STEPS.SYNTH_DESIGN.ARGS.RETIMING false \
+  ] \
+impl_1 [dict create \
+  STEPS.OPT_DESIGN.ARGS.DIRECTIVE Default \
+  STEPS.POST_ROUTE_PHYS_OPT_DESIGN.ARGS.DIRECTIVE AggressiveExplore \
+  ]\
+]
 
 ############################################################
 
