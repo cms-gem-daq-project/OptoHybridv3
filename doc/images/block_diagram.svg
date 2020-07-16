@@ -1,0 +1,1186 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   sodipodi:docname="block_diagram.svg"
+   inkscape:version="1.0 (4035a4fb49, 2020-05-01)"
+   id="svg839"
+   version="1.1"
+   viewBox="0 0 203.2 76.2"
+   height="3in"
+   width="8in">
+  <defs
+     id="defs833">
+    <rect
+       id="rect1434"
+       height="13.44014"
+       width="40.382549"
+       y="42.882454"
+       x="39.948833" />
+    <rect
+       id="rect1428"
+       height="19.979412"
+       width="32.793911"
+       y="15.039722"
+       x="24.609886" />
+    <rect
+       x="39.948833"
+       y="42.882454"
+       width="22.304335"
+       height="6.0395041"
+       id="rect1434-3" />
+    <rect
+       x="39.948833"
+       y="42.882454"
+       width="40.382549"
+       height="13.44014"
+       id="rect1451" />
+    <rect
+       id="rect1434-3-5"
+       height="6.0395041"
+       width="22.304335"
+       y="42.882454"
+       x="39.948833" />
+    <rect
+       id="rect1482"
+       height="6.0395041"
+       width="22.304335"
+       y="42.882454"
+       x="39.948833" />
+    <rect
+       x="39.948833"
+       y="42.882454"
+       width="20.569115"
+       height="11.304946"
+       id="rect1434-3-5-6" />
+    <rect
+       x="39.948833"
+       y="42.882454"
+       width="22.304335"
+       height="6.0395041"
+       id="rect1515" />
+    <rect
+       id="rect1434-3-5-6-1"
+       height="10.192957"
+       width="17.217575"
+       y="42.882454"
+       x="39.948833" />
+    <rect
+       id="rect1548"
+       height="6.0395041"
+       width="22.304335"
+       y="42.882454"
+       x="39.948833" />
+    <rect
+       x="39.948833"
+       y="42.882454"
+       width="22.304335"
+       height="6.0395041"
+       id="rect1434-3-5-6-1-0" />
+    <rect
+       x="39.948833"
+       y="42.882454"
+       width="22.304335"
+       height="6.0395041"
+       id="rect1581" />
+    <rect
+       id="rect1434-3-5-6-1-0-6"
+       height="6.0395041"
+       width="22.304335"
+       y="42.882454"
+       x="39.948833" />
+    <rect
+       id="rect1614"
+       height="6.0395041"
+       width="22.304335"
+       y="42.882454"
+       x="39.948833" />
+    <rect
+       id="rect1434-3-2"
+       height="46.962341"
+       width="23.606239"
+       y="42.882454"
+       x="39.948833" />
+    <rect
+       id="rect1647"
+       height="6.0395041"
+       width="22.304335"
+       y="42.882454"
+       x="39.948833" />
+    <rect
+       x="39.948833"
+       y="42.882454"
+       width="22.304335"
+       height="6.0395041"
+       id="rect1434-3-5-61" />
+    <rect
+       x="39.948833"
+       y="42.882454"
+       width="22.304335"
+       height="6.0395041"
+       id="rect1650" />
+    <rect
+       id="rect1434-3-5-6-8"
+       height="11.304946"
+       width="20.569115"
+       y="42.882454"
+       x="39.948833" />
+    <rect
+       id="rect1653"
+       height="11.304946"
+       width="20.569115"
+       y="42.882454"
+       x="39.948833" />
+    <rect
+       x="39.948833"
+       y="42.882454"
+       width="17.217575"
+       height="10.192957"
+       id="rect1434-3-5-6-1-7" />
+    <rect
+       x="39.948833"
+       y="42.882454"
+       width="17.217575"
+       height="10.192957"
+       id="rect1656" />
+    <rect
+       id="rect1434-3-5-6-1-0-9"
+       height="6.0395041"
+       width="22.304335"
+       y="42.882454"
+       x="39.948833" />
+    <rect
+       id="rect1659"
+       height="6.0395041"
+       width="22.304335"
+       y="42.882454"
+       x="39.948833" />
+    <rect
+       x="39.948833"
+       y="42.882454"
+       width="22.304335"
+       height="6.0395041"
+       id="rect1434-3-5-6-1-0-6-2" />
+    <rect
+       x="39.948833"
+       y="42.882454"
+       width="22.304335"
+       height="6.0395041"
+       id="rect1662" />
+    <rect
+       x="39.948833"
+       y="42.882454"
+       width="23.606239"
+       height="46.962341"
+       id="rect1434-3-2-6" />
+    <rect
+       x="39.948833"
+       y="42.882454"
+       width="23.606239"
+       height="46.962341"
+       id="rect1806" />
+    <rect
+       id="rect1434-3-2-6-2"
+       height="46.962341"
+       width="23.606239"
+       y="42.882454"
+       x="39.948833" />
+    <rect
+       id="rect1841"
+       height="46.962341"
+       width="23.606239"
+       y="42.882454"
+       x="39.948833" />
+    <rect
+       x="39.948833"
+       y="42.882454"
+       width="23.606239"
+       height="46.962341"
+       id="rect1434-3-2-6-2-3" />
+    <rect
+       x="39.948833"
+       y="42.882454"
+       width="23.606239"
+       height="46.962341"
+       id="rect1879" />
+    <rect
+       x="39.948833"
+       y="42.882454"
+       width="23.606239"
+       height="46.962341"
+       id="rect1434-3-2-6-2-9" />
+    <rect
+       x="39.948833"
+       y="42.882454"
+       width="23.606239"
+       height="46.962341"
+       id="rect1879-4" />
+    <rect
+       x="39.948833"
+       y="42.882454"
+       width="23.606239"
+       height="46.962341"
+       id="rect1434-3-2-6-2-8" />
+    <rect
+       x="39.948833"
+       y="42.882454"
+       width="23.606239"
+       height="46.962341"
+       id="rect1879-45" />
+    <rect
+       x="39.948833"
+       y="42.882454"
+       width="23.606239"
+       height="46.962341"
+       id="rect1434-3-2-6-2-36" />
+    <rect
+       x="39.948833"
+       y="42.882454"
+       width="23.606239"
+       height="46.962341"
+       id="rect1879-1" />
+    <rect
+       x="39.948833"
+       y="42.882454"
+       width="40.382549"
+       height="13.44014"
+       id="rect1434-2" />
+    <rect
+       x="39.948833"
+       y="42.882454"
+       width="40.382549"
+       height="13.44014"
+       id="rect2112" />
+    <rect
+       id="rect1434-3-7"
+       height="6.0395041"
+       width="22.304335"
+       y="42.882454"
+       x="39.948833" />
+    <rect
+       id="rect2115"
+       height="6.0395041"
+       width="22.304335"
+       y="42.882454"
+       x="39.948833" />
+    <rect
+       x="39.948833"
+       y="42.882454"
+       width="22.304335"
+       height="6.0395041"
+       id="rect1434-3-5-613" />
+    <rect
+       x="39.948833"
+       y="42.882454"
+       width="22.304335"
+       height="6.0395041"
+       id="rect2118" />
+    <rect
+       id="rect1434-3-5-6-2"
+       height="11.304946"
+       width="20.569115"
+       y="42.882454"
+       x="39.948833" />
+    <rect
+       id="rect2121"
+       height="11.304946"
+       width="20.569115"
+       y="42.882454"
+       x="39.948833" />
+    <rect
+       x="39.948833"
+       y="42.882454"
+       width="17.217575"
+       height="10.192957"
+       id="rect1434-3-5-6-1-1" />
+    <rect
+       x="39.948833"
+       y="42.882454"
+       width="17.217575"
+       height="10.192957"
+       id="rect2124" />
+    <rect
+       id="rect1434-3-5-6-1-0-5"
+       height="6.0395041"
+       width="22.304335"
+       y="42.882454"
+       x="39.948833" />
+    <rect
+       id="rect2127"
+       height="6.0395041"
+       width="22.304335"
+       y="42.882454"
+       x="39.948833" />
+    <rect
+       x="39.948833"
+       y="42.882454"
+       width="22.304335"
+       height="6.0395041"
+       id="rect1434-3-5-6-1-0-6-9" />
+    <rect
+       x="39.948833"
+       y="42.882454"
+       width="22.304335"
+       height="6.0395041"
+       id="rect2130" />
+    <rect
+       x="39.948833"
+       y="42.882454"
+       width="23.606239"
+       height="46.962341"
+       id="rect1434-3-2-9" />
+    <rect
+       x="39.948833"
+       y="42.882454"
+       width="23.606239"
+       height="46.962341"
+       id="rect2133" />
+    <rect
+       id="rect1434-3-2-6-1"
+       height="46.962341"
+       width="23.606239"
+       y="42.882454"
+       x="39.948833" />
+    <rect
+       id="rect2136"
+       height="46.962341"
+       width="23.606239"
+       y="42.882454"
+       x="39.948833" />
+    <rect
+       x="39.948833"
+       y="42.882454"
+       width="23.606239"
+       height="46.962341"
+       id="rect1434-3-2-6-2-4" />
+    <rect
+       x="39.948833"
+       y="42.882454"
+       width="23.606239"
+       height="46.962341"
+       id="rect2139" />
+    <rect
+       id="rect1434-3-2-6-2-3-9"
+       height="46.962341"
+       width="23.606239"
+       y="42.882454"
+       x="39.948833" />
+    <rect
+       id="rect2142"
+       height="46.962341"
+       width="23.606239"
+       y="42.882454"
+       x="39.948833" />
+    <rect
+       id="rect1434-3-2-6-2-9-1"
+       height="46.962341"
+       width="23.606239"
+       y="42.882454"
+       x="39.948833" />
+    <rect
+       id="rect2145"
+       height="46.962341"
+       width="23.606239"
+       y="42.882454"
+       x="39.948833" />
+    <rect
+       id="rect1434-3-2-6-2-8-0"
+       height="46.962341"
+       width="23.606239"
+       y="42.882454"
+       x="39.948833" />
+    <rect
+       id="rect2148"
+       height="46.962341"
+       width="23.606239"
+       y="42.882454"
+       x="39.948833" />
+    <rect
+       id="rect1434-3-2-6-2-36-7"
+       height="46.962341"
+       width="23.606239"
+       y="42.882454"
+       x="39.948833" />
+    <rect
+       id="rect2151"
+       height="46.962341"
+       width="23.606239"
+       y="42.882454"
+       x="39.948833" />
+    <filter
+       id="filter2721"
+       inkscape:label="Drop Shadow"
+       style="color-interpolation-filters:sRGB;">
+      <feFlood
+         id="feFlood2711"
+         result="flood"
+         flood-color="rgb(0,0,0)"
+         flood-opacity="0.498039" />
+      <feComposite
+         id="feComposite2713"
+         result="composite1"
+         operator="in"
+         in2="SourceGraphic"
+         in="flood" />
+      <feGaussianBlur
+         id="feGaussianBlur2715"
+         result="blur"
+         stdDeviation="0.4"
+         in="composite1" />
+      <feOffset
+         id="feOffset2717"
+         result="offset"
+         dy="0.5"
+         dx="0.5" />
+      <feComposite
+         id="feComposite2719"
+         result="fbSourceGraphic"
+         operator="over"
+         in2="offset"
+         in="SourceGraphic" />
+      <feColorMatrix
+         id="feColorMatrix2723"
+         values="0 0 0 -1 0 0 0 0 -1 0 0 0 0 -1 0 0 0 0 1 0"
+         in="fbSourceGraphic"
+         result="fbSourceGraphicAlpha" />
+      <feFlood
+         in="fbSourceGraphic"
+         result="flood"
+         flood-color="rgb(0,0,0)"
+         flood-opacity="0.498039"
+         id="feFlood2725" />
+      <feComposite
+         result="composite1"
+         operator="in"
+         in="flood"
+         id="feComposite2727"
+         in2="fbSourceGraphic" />
+      <feGaussianBlur
+         result="blur"
+         stdDeviation="0.4"
+         in="composite1"
+         id="feGaussianBlur2729" />
+      <feOffset
+         result="offset"
+         dy="0.5"
+         dx="0.5"
+         id="feOffset2731" />
+      <feComposite
+         result="composite2"
+         operator="over"
+         in="fbSourceGraphic"
+         id="feComposite2733"
+         in2="offset" />
+    </filter>
+    <filter
+       id="filter2745"
+       inkscape:label="Drop Shadow"
+       style="color-interpolation-filters:sRGB;">
+      <feFlood
+         id="feFlood2735"
+         result="flood"
+         flood-color="rgb(0,0,0)"
+         flood-opacity="0.498039" />
+      <feComposite
+         id="feComposite2737"
+         result="composite1"
+         operator="in"
+         in2="SourceGraphic"
+         in="flood" />
+      <feGaussianBlur
+         id="feGaussianBlur2739"
+         result="blur"
+         stdDeviation="0.4"
+         in="composite1" />
+      <feOffset
+         id="feOffset2741"
+         result="offset"
+         dy="0.5"
+         dx="0.5" />
+      <feComposite
+         id="feComposite2743"
+         result="composite2"
+         operator="over"
+         in2="offset"
+         in="SourceGraphic" />
+    </filter>
+    <filter
+       id="filter2757"
+       inkscape:label="Drop Shadow"
+       style="color-interpolation-filters:sRGB;">
+      <feFlood
+         id="feFlood2747"
+         result="flood"
+         flood-color="rgb(0,0,0)"
+         flood-opacity="0.498039" />
+      <feComposite
+         id="feComposite2749"
+         result="composite1"
+         operator="in"
+         in2="SourceGraphic"
+         in="flood" />
+      <feGaussianBlur
+         id="feGaussianBlur2751"
+         result="blur"
+         stdDeviation="0.4"
+         in="composite1" />
+      <feOffset
+         id="feOffset2753"
+         result="offset"
+         dy="0.5"
+         dx="0.5" />
+      <feComposite
+         id="feComposite2755"
+         result="composite2"
+         operator="over"
+         in2="offset"
+         in="SourceGraphic" />
+    </filter>
+    <filter
+       id="filter2769"
+       inkscape:label="Drop Shadow"
+       style="color-interpolation-filters:sRGB;">
+      <feFlood
+         id="feFlood2759"
+         result="flood"
+         flood-color="rgb(0,0,0)"
+         flood-opacity="0.498039" />
+      <feComposite
+         id="feComposite2761"
+         result="composite1"
+         operator="in"
+         in2="SourceGraphic"
+         in="flood" />
+      <feGaussianBlur
+         id="feGaussianBlur2763"
+         result="blur"
+         stdDeviation="0.4"
+         in="composite1" />
+      <feOffset
+         id="feOffset2765"
+         result="offset"
+         dy="0.5"
+         dx="0.5" />
+      <feComposite
+         id="feComposite2767"
+         result="composite2"
+         operator="over"
+         in2="offset"
+         in="SourceGraphic" />
+    </filter>
+    <filter
+       id="filter2781"
+       inkscape:label="Drop Shadow"
+       style="color-interpolation-filters:sRGB;">
+      <feFlood
+         id="feFlood2771"
+         result="flood"
+         flood-color="rgb(0,0,0)"
+         flood-opacity="0.498039" />
+      <feComposite
+         id="feComposite2773"
+         result="composite1"
+         operator="in"
+         in2="SourceGraphic"
+         in="flood" />
+      <feGaussianBlur
+         id="feGaussianBlur2775"
+         result="blur"
+         stdDeviation="0.4"
+         in="composite1" />
+      <feOffset
+         id="feOffset2777"
+         result="offset"
+         dy="0.5"
+         dx="0.5" />
+      <feComposite
+         id="feComposite2779"
+         result="composite2"
+         operator="over"
+         in2="offset"
+         in="SourceGraphic" />
+    </filter>
+    <filter
+       id="filter2793"
+       inkscape:label="Drop Shadow"
+       style="color-interpolation-filters:sRGB;">
+      <feFlood
+         id="feFlood2783"
+         result="flood"
+         flood-color="rgb(0,0,0)"
+         flood-opacity="0.498039" />
+      <feComposite
+         id="feComposite2785"
+         result="composite1"
+         operator="in"
+         in2="SourceGraphic"
+         in="flood" />
+      <feGaussianBlur
+         id="feGaussianBlur2787"
+         result="blur"
+         stdDeviation="0.4"
+         in="composite1" />
+      <feOffset
+         id="feOffset2789"
+         result="offset"
+         dy="0.5"
+         dx="0.5" />
+      <feComposite
+         id="feComposite2791"
+         result="composite2"
+         operator="over"
+         in2="offset"
+         in="SourceGraphic" />
+    </filter>
+    <filter
+       id="filter2805"
+       inkscape:label="Drop Shadow"
+       style="color-interpolation-filters:sRGB;">
+      <feFlood
+         id="feFlood2795"
+         result="flood"
+         flood-color="rgb(0,0,0)"
+         flood-opacity="0.498039" />
+      <feComposite
+         id="feComposite2797"
+         result="composite1"
+         operator="in"
+         in2="SourceGraphic"
+         in="flood" />
+      <feGaussianBlur
+         id="feGaussianBlur2799"
+         result="blur"
+         stdDeviation="0.4"
+         in="composite1" />
+      <feOffset
+         id="feOffset2801"
+         result="offset"
+         dy="0.5"
+         dx="0.5" />
+      <feComposite
+         id="feComposite2803"
+         result="composite2"
+         operator="over"
+         in2="offset"
+         in="SourceGraphic" />
+    </filter>
+    <filter
+       id="filter2817"
+       inkscape:label="Drop Shadow"
+       style="color-interpolation-filters:sRGB;">
+      <feFlood
+         id="feFlood2807"
+         result="flood"
+         flood-color="rgb(0,0,0)"
+         flood-opacity="0.498039" />
+      <feComposite
+         id="feComposite2809"
+         result="composite1"
+         operator="in"
+         in2="SourceGraphic"
+         in="flood" />
+      <feGaussianBlur
+         id="feGaussianBlur2811"
+         result="blur"
+         stdDeviation="0.4"
+         in="composite1" />
+      <feOffset
+         id="feOffset2813"
+         result="offset"
+         dy="0.5"
+         dx="0.5" />
+      <feComposite
+         id="feComposite2815"
+         result="composite2"
+         operator="over"
+         in2="offset"
+         in="SourceGraphic" />
+    </filter>
+    <filter
+       id="filter2829"
+       inkscape:label="Drop Shadow"
+       style="color-interpolation-filters:sRGB;">
+      <feFlood
+         id="feFlood2819"
+         result="flood"
+         flood-color="rgb(0,0,0)"
+         flood-opacity="0.498039" />
+      <feComposite
+         id="feComposite2821"
+         result="composite1"
+         operator="in"
+         in2="SourceGraphic"
+         in="flood" />
+      <feGaussianBlur
+         id="feGaussianBlur2823"
+         result="blur"
+         stdDeviation="0.4"
+         in="composite1" />
+      <feOffset
+         id="feOffset2825"
+         result="offset"
+         dy="0.5"
+         dx="0.5" />
+      <feComposite
+         id="feComposite2827"
+         result="composite2"
+         operator="over"
+         in2="offset"
+         in="SourceGraphic" />
+    </filter>
+    <filter
+       id="filter2841"
+       inkscape:label="Drop Shadow"
+       style="color-interpolation-filters:sRGB;">
+      <feFlood
+         id="feFlood2831"
+         result="flood"
+         flood-color="rgb(0,0,0)"
+         flood-opacity="0.498039" />
+      <feComposite
+         id="feComposite2833"
+         result="composite1"
+         operator="in"
+         in2="SourceGraphic"
+         in="flood" />
+      <feGaussianBlur
+         id="feGaussianBlur2835"
+         result="blur"
+         stdDeviation="0.4"
+         in="composite1" />
+      <feOffset
+         id="feOffset2837"
+         result="offset"
+         dy="0.5"
+         dx="0.5" />
+      <feComposite
+         id="feComposite2839"
+         result="composite2"
+         operator="over"
+         in2="offset"
+         in="SourceGraphic" />
+    </filter>
+    <filter
+       id="filter2853"
+       inkscape:label="Drop Shadow"
+       style="color-interpolation-filters:sRGB;">
+      <feFlood
+         id="feFlood2843"
+         result="flood"
+         flood-color="rgb(0,0,0)"
+         flood-opacity="0.498039" />
+      <feComposite
+         id="feComposite2845"
+         result="composite1"
+         operator="in"
+         in2="SourceGraphic"
+         in="flood" />
+      <feGaussianBlur
+         id="feGaussianBlur2847"
+         result="blur"
+         stdDeviation="0.4"
+         in="composite1" />
+      <feOffset
+         id="feOffset2849"
+         result="offset"
+         dy="0.5"
+         dx="0.5" />
+      <feComposite
+         id="feComposite2851"
+         result="composite2"
+         operator="over"
+         in2="offset"
+         in="SourceGraphic" />
+    </filter>
+    <filter
+       id="filter2865"
+       inkscape:label="Drop Shadow"
+       style="color-interpolation-filters:sRGB;">
+      <feFlood
+         id="feFlood2855"
+         result="flood"
+         flood-color="rgb(0,0,0)"
+         flood-opacity="0.498039" />
+      <feComposite
+         id="feComposite2857"
+         result="composite1"
+         operator="in"
+         in2="SourceGraphic"
+         in="flood" />
+      <feGaussianBlur
+         id="feGaussianBlur2859"
+         result="blur"
+         stdDeviation="0.4"
+         in="composite1" />
+      <feOffset
+         id="feOffset2861"
+         result="offset"
+         dy="0.5"
+         dx="0.5" />
+      <feComposite
+         id="feComposite2863"
+         result="composite2"
+         operator="over"
+         in2="offset"
+         in="SourceGraphic" />
+    </filter>
+    <filter
+       id="filter2877"
+       inkscape:label="Drop Shadow"
+       style="color-interpolation-filters:sRGB;">
+      <feFlood
+         id="feFlood2867"
+         result="flood"
+         flood-color="rgb(0,0,0)"
+         flood-opacity="0.498039" />
+      <feComposite
+         id="feComposite2869"
+         result="composite1"
+         operator="in"
+         in2="SourceGraphic"
+         in="flood" />
+      <feGaussianBlur
+         id="feGaussianBlur2871"
+         result="blur"
+         stdDeviation="0.4"
+         in="composite1" />
+      <feOffset
+         id="feOffset2873"
+         result="offset"
+         dy="0.5"
+         dx="0.5" />
+      <feComposite
+         id="feComposite2875"
+         result="composite2"
+         operator="over"
+         in2="offset"
+         in="SourceGraphic" />
+    </filter>
+  </defs>
+  <sodipodi:namedview
+     units="in"
+     inkscape:window-maximized="1"
+     inkscape:window-y="0"
+     inkscape:window-x="1920"
+     inkscape:window-height="1019"
+     inkscape:window-width="1920"
+     showgrid="false"
+     inkscape:document-rotation="0"
+     inkscape:current-layer="layer1"
+     inkscape:document-units="mm"
+     inkscape:cy="196.20071"
+     inkscape:cx="344.18528"
+     inkscape:zoom="1.4"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     borderopacity="1.0"
+     bordercolor="#666666"
+     pagecolor="#ffffff"
+     id="base" />
+  <metadata
+     id="metadata836">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1"
+     inkscape:groupmode="layer"
+     inkscape:label="Layer 1">
+    <rect
+       style="fill:#ffffff;stroke:#1c2224;stroke-width:0.364;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter2721)"
+       id="rect1422"
+       width="39.497135"
+       height="12.111013"
+       x="82.67231"
+       y="2.598176" />
+    <text
+       xml:space="preserve"
+       id="text1432"
+       style="font-style:normal;font-weight:normal;font-size:4.08213763px;line-height:1.25;font-family:Arial;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect1434-2);fill:#000000;fill-opacity:1;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;-inkscape-font-specification:'Arial, Normal';font-stretch:normal;font-variant:normal;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;"
+       transform="translate(48.078677,-36.399968)"><tspan
+         x="39.949219"
+         y="46.559816"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.08214px;font-family:Arial;-inkscape-font-specification:'Arial, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none">Optohybrid Top</tspan></tspan></text>
+    <rect
+       y="26.723135"
+       x="1.4166491"
+       height="11.551355"
+       width="29.177118"
+       id="rect1422-6"
+       style="fill:#ffffff;stroke:#1c2224;stroke-width:0.364;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter2745)" />
+    <text
+       transform="translate(-32.894359,-12.961618)"
+       style="font-style:normal;font-weight:normal;font-size:4.08213763px;line-height:1.25;font-family:Arial;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect1434-3-7);fill:#000000;fill-opacity:1;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;-inkscape-font-specification:'Arial, Normal';font-stretch:normal;font-variant:normal;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;"
+       id="text1432-7"
+       xml:space="preserve"><tspan
+         x="39.949219"
+         y="46.559816"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.08214px;font-family:Arial;-inkscape-font-specification:'Arial, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none">Clocking</tspan></tspan></text>
+    <rect
+       style="fill:#ffffff;stroke:#1c2224;stroke-width:0.364;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter2781)"
+       id="rect1422-6-3"
+       width="29.177118"
+       height="11.551355"
+       x="35.948112"
+       y="26.723135" />
+    <text
+       xml:space="preserve"
+       id="text1432-7-5"
+       style="font-style:normal;font-weight:normal;font-size:4.08213763px;line-height:1.25;font-family:Arial;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect1434-3-5-613);fill:#000000;fill-opacity:1;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;-inkscape-font-specification:'Arial, Normal';font-stretch:normal;font-variant:normal;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;"
+       transform="translate(6.0771398,-12.588514)"><tspan
+         x="39.949219"
+         y="46.559816"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.08214px;font-family:Arial;-inkscape-font-specification:'Arial, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none">GBT</tspan></tspan></text>
+    <rect
+       y="26.723135"
+       x="71.024269"
+       height="11.551355"
+       width="29.177118"
+       id="rect1422-6-3-2"
+       style="fill:#ffffff;stroke:#1c2224;stroke-width:0.364;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter2793)" />
+    <text
+       transform="translate(37.47807,-15.234346)"
+       style="font-style:normal;font-weight:normal;font-size:4.08213763px;line-height:1.25;font-family:Arial;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect1434-3-5-6-2);fill:#000000;fill-opacity:1;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;-inkscape-font-specification:'Arial, Normal';font-stretch:normal;font-variant:normal;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;"
+       id="text1432-7-5-9"
+       xml:space="preserve"><tspan
+         x="39.949219"
+         y="46.559816"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.08214px;font-family:Arial;-inkscape-font-specification:'Arial, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none">System 
+</tspan></tspan><tspan
+         x="39.949219"
+         y="51.662489"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.08214px;font-family:Arial;-inkscape-font-specification:'Arial, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none">Monitor</tspan></tspan></text>
+    <rect
+       style="fill:#ffffff;stroke:#1c2224;stroke-width:0.364;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter2829)"
+       id="rect1422-6-3-2-2"
+       width="29.177118"
+       height="11.551355"
+       x="105.21227"
+       y="26.723135" />
+    <text
+       xml:space="preserve"
+       id="text1432-7-5-9-7"
+       style="font-style:normal;font-weight:normal;font-size:4.08213763px;line-height:1.25;font-family:Arial;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect1434-3-5-6-1-1);fill:#000000;fill-opacity:1;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;-inkscape-font-specification:'Arial, Normal';font-stretch:normal;font-variant:normal;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;"
+       transform="translate(71.83972,-15.234346)"><tspan
+         x="39.949219"
+         y="46.559816"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.08214px;font-family:Arial;-inkscape-font-specification:'Arial, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none">System </tspan></tspan><tspan
+         x="39.949219"
+         y="51.662489"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.08214px;font-family:Arial;-inkscape-font-specification:'Arial, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none">Control</tspan></tspan></text>
+    <rect
+       y="26.723135"
+       x="138.20651"
+       height="11.551355"
+       width="29.177118"
+       id="rect1422-6-3-2-2-9"
+       style="fill:#ffffff;stroke:#1c2224;stroke-width:0.364;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter2841)" />
+    <text
+       transform="translate(105.55223,-12.961618)"
+       style="font-style:normal;font-weight:normal;font-size:4.08213763px;line-height:1.25;font-family:Arial;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect1434-3-5-6-1-0-5);fill:#000000;fill-opacity:1;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;-inkscape-font-specification:'Arial, Normal';font-stretch:normal;font-variant:normal;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;"
+       id="text1432-7-5-9-7-3"
+       xml:space="preserve"><tspan
+         x="39.949219"
+         y="46.559816"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.08214px;font-family:Arial;-inkscape-font-specification:'Arial, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none">Trigger</tspan></tspan></text>
+    <rect
+       style="fill:#ffffff;stroke:#1c2224;stroke-width:0.364;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter2877)"
+       id="rect1422-6-3-2-2-9-0"
+       width="29.177118"
+       height="11.551355"
+       x="171.8806"
+       y="26.723135" />
+    <text
+       xml:space="preserve"
+       id="text1432-7-5-9-7-3-6"
+       style="font-style:normal;font-weight:normal;font-size:4.08213763px;line-height:1.25;font-family:Arial;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect1434-3-5-6-1-0-6-9);fill:#000000;fill-opacity:1;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;-inkscape-font-specification:'Arial, Normal';font-stretch:normal;font-variant:normal;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;"
+       transform="translate(141.62202,-12.588514)"><tspan
+         x="39.949219"
+         y="46.559816"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.08214px;font-family:Arial;-inkscape-font-specification:'Arial, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none">MGT</tspan></tspan></text>
+    <rect
+       transform="matrix(0.99907034,0,0,1.0699219,0.09408782,-2.9342716)"
+       style="fill:#ffffff;stroke:#1c2224;stroke-width:0.26146;stroke-opacity:1;filter:url(#filter2757)"
+       id="rect1422-6-0"
+       width="29.164492"
+       height="25.778162"
+       x="1.4289629"
+       y="43.129826" />
+    <rect
+       transform="matrix(0.99907034,0,0,1.0699219,0.09408782,-2.9342716)"
+       y="43.129826"
+       x="35.945488"
+       height="25.778162"
+       width="29.164492"
+       id="rect1422-6-3-3"
+       style="fill:#ffffff;stroke:#1c2224;stroke-width:0.26146;stroke-opacity:1;filter:url(#filter2769)" />
+    <rect
+       transform="matrix(0.99907034,0,0,1.0699219,0.09408782,-2.9342716)"
+       style="fill:#ffffff;stroke:#1c2224;stroke-width:0.26146;stroke-opacity:1;filter:url(#filter2805)"
+       id="rect1422-6-3-2-5"
+       width="29.164492"
+       height="25.778162"
+       x="71.006447"
+       y="43.129826" />
+    <rect
+       transform="matrix(0.99907034,0,0,1.0699219,0.09408782,-2.9342716)"
+       y="43.129826"
+       x="105.1797"
+       height="25.778162"
+       width="29.164492"
+       id="rect1422-6-3-2-2-2"
+       style="fill:#ffffff;stroke:#1c2224;stroke-width:0.26146;stroke-opacity:1;filter:url(#filter2817)" />
+    <rect
+       transform="matrix(0.99907034,0,0,1.0699219,0.09408782,-2.9342716)"
+       style="fill:#ffffff;stroke:#1c2224;stroke-width:0.26146;stroke-opacity:1;filter:url(#filter2853)"
+       id="rect1422-6-3-2-2-9-8"
+       width="29.164492"
+       height="25.778162"
+       x="138.15962"
+       y="43.129826" />
+    <rect
+       transform="matrix(0.99907034,0,0,1.0699219,0.09408782,-2.9342716)"
+       y="43.129826"
+       x="171.81914"
+       height="25.778162"
+       width="29.164492"
+       id="rect1422-6-3-2-2-9-0-7"
+       style="fill:#ffffff;stroke:#1c2224;stroke-width:0.26146;stroke-opacity:1;filter:url(#filter2865)" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 16.79916,25.331141 c 84.85533,-9.962028 84.85533,-9.962028 84.85533,-9.962028"
+       id="path1785" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 56.00076,25.886594 C 101.65449,15.369113 101.65449,15.369113 101.65449,15.369113"
+       id="path1787" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 85.55368,25.547583 c 16.10081,-10.17847 16.10081,-10.17847 16.10081,-10.17847"
+       id="path1789" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 120.40976,25.518561 C 101.7924,15.703372 101.65449,15.369113 101.65449,15.369113"
+       id="path1791" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 153.3061,25.511415 C 101.65449,15.369113 101.65449,15.369113 101.65449,15.369113"
+       id="path1793" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 188.14824,25.398038 C 101.65449,15.369113 101.65449,15.369113 101.65449,15.369113"
+       id="path1795" />
+    <text
+       transform="translate(-37.15613,2.3802166)"
+       style="font-style:normal;font-weight:normal;font-size:3.175px;line-height:1.25;font-family:Arial;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect1434-3-2-6-1);fill:#000000;fill-opacity:1;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;-inkscape-font-specification:'Arial, Normal';font-stretch:normal;font-variant:normal;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;"
+       id="text1432-7-2-1"
+       xml:space="preserve"><tspan
+         x="39.949219"
+         y="45.742708"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;font-family:Arial;-inkscape-font-specification:'Arial, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none">Clock synthesis </tspan></tspan><tspan
+         x="39.949219"
+         y="49.711458"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;font-family:Arial;-inkscape-font-specification:'Arial, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none">and monitoring</tspan></tspan></text>
+    <text
+       xml:space="preserve"
+       id="text1432-7-2-1-9"
+       style="font-style:normal;font-weight:normal;font-size:3.175px;line-height:1.25;font-family:Arial;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect1434-3-2-6-2-4);fill:#000000;fill-opacity:1;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;-inkscape-font-specification:'Arial, Normal';font-stretch:normal;font-variant:normal;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;"
+       transform="translate(-1.9110002,2.9087236)"><tspan
+         x="39.949219"
+         y="45.742708"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;font-family:Arial;-inkscape-font-specification:'Arial, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;shape-inside:url(#rect1434-3-2-6-2-4);stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none">GBT SerDes
+</tspan></tspan><tspan
+         x="39.949219"
+         y="49.711458"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;font-family:Arial;-inkscape-font-specification:'Arial, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;shape-inside:url(#rect1434-3-2-6-2-4);stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none">Wishbone </tspan></tspan><tspan
+         x="39.949219"
+         y="53.680208"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;font-family:Arial;-inkscape-font-specification:'Arial, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;shape-inside:url(#rect1434-3-2-6-2-4);stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none">Master
+</tspan></tspan><tspan
+         x="39.949219"
+         y="57.648958"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;font-family:Arial;-inkscape-font-specification:'Arial, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;shape-inside:url(#rect1434-3-2-6-2-4);stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none">TTC Decoding</tspan></tspan></text>
+    <text
+       transform="translate(32.58057,2.8462526)"
+       style="font-style:normal;font-weight:normal;font-size:3.175px;line-height:1.25;font-family:Arial;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect1434-3-2-6-2-3-9);fill:#000000;fill-opacity:1;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;-inkscape-font-specification:'Arial, Normal';font-stretch:normal;font-variant:normal;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;"
+       id="text1432-7-2-1-9-1"
+       xml:space="preserve"><tspan
+         x="39.949219"
+         y="45.742708"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;font-family:Arial;-inkscape-font-specification:'Arial, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;shape-inside:url(#rect1434-3-2-6-2-3-9);stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none">Temperature
+</tspan></tspan><tspan
+         x="39.949219"
+         y="49.711458"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;font-family:Arial;-inkscape-font-specification:'Arial, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;shape-inside:url(#rect1434-3-2-6-2-3-9);stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none">Voltages
+</tspan></tspan></text>
+    <text
+       transform="translate(67.43384,2.4171996)"
+       style="font-style:normal;font-weight:normal;font-size:3.175px;line-height:1.25;font-family:Arial;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect1434-3-2-6-2-9-1);fill:#000000;fill-opacity:1;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;-inkscape-font-specification:'Arial, Normal';font-stretch:normal;font-variant:normal;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;"
+       id="text1432-7-2-1-9-7"
+       xml:space="preserve"><tspan
+         x="39.949219"
+         y="45.742708"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;font-family:Arial;-inkscape-font-specification:'Arial, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;shape-inside:url(#rect1434-3-2-6-2-9-1);stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none">External S-bits
+</tspan></tspan><tspan
+         x="39.949219"
+         y="49.711458"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;font-family:Arial;-inkscape-font-specification:'Arial, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;shape-inside:url(#rect1434-3-2-6-2-9-1);stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none">LED Control
+</tspan></tspan><tspan
+         x="39.949219"
+         y="53.680208"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;font-family:Arial;-inkscape-font-specification:'Arial, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;shape-inside:url(#rect1434-3-2-6-2-9-1);stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none">Uptime
+</tspan></tspan><tspan
+         x="39.949219"
+         y="57.648958"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;font-family:Arial;-inkscape-font-specification:'Arial, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;shape-inside:url(#rect1434-3-2-6-2-9-1);stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none">Device DNA
+</tspan></tspan><tspan
+         x="39.949219"
+         y="61.617708"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;font-family:Arial;-inkscape-font-specification:'Arial, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;shape-inside:url(#rect1434-3-2-6-2-9-1);stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none">TTC
+</tspan></tspan><tspan
+         x="39.949219"
+         y="65.586458"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;font-family:Arial;-inkscape-font-specification:'Arial, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;shape-inside:url(#rect1434-3-2-6-2-9-1);stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none">SEU Correction</tspan></tspan></text>
+    <text
+       transform="translate(99.8512,2.1148696)"
+       style="font-style:normal;font-weight:normal;font-size:3.175px;line-height:1.25;font-family:Arial;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect1434-3-2-6-2-8-0);fill:#000000;fill-opacity:1;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;-inkscape-font-specification:'Arial, Normal';font-stretch:normal;font-variant:normal;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;"
+       id="text1432-7-2-1-9-0"
+       xml:space="preserve"><tspan
+         x="39.949219"
+         y="45.742708"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;font-family:Arial;-inkscape-font-specification:'Arial, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;shape-inside:url(#rect1434-3-2-6-2-8-0);stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none">S-bit Control
+</tspan></tspan><tspan
+         x="39.949219"
+         y="49.711458"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;font-family:Arial;-inkscape-font-specification:'Arial, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;shape-inside:url(#rect1434-3-2-6-2-8-0);stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none">Cluster Monitor
+</tspan></tspan><tspan
+         x="39.949219"
+         y="53.680208"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;font-family:Arial;-inkscape-font-specification:'Arial, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;shape-inside:url(#rect1434-3-2-6-2-8-0);stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none">Hitmap
+</tspan></tspan></text>
+    <text
+       transform="translate(133.95211,1.2929256)"
+       style="font-style:normal;font-weight:normal;font-size:3.175px;line-height:1.25;font-family:Arial;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect1434-3-2-6-2-36-7);fill:#000000;fill-opacity:1;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;-inkscape-font-specification:'Arial, Normal';font-stretch:normal;font-variant:normal;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;"
+       id="text1432-7-2-1-9-06"
+       xml:space="preserve"><tspan
+         x="39.949219"
+         y="45.742708"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;font-family:Arial;-inkscape-font-specification:'Arial, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;shape-inside:url(#rect1434-3-2-6-2-36-7);stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none">MGT Control </tspan></tspan><tspan
+         x="39.949219"
+         y="49.711458"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;font-family:Arial;-inkscape-font-specification:'Arial, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;shape-inside:url(#rect1434-3-2-6-2-36-7);stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none">and </tspan><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;font-family:Arial;-inkscape-font-specification:'Arial, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;shape-inside:url(#rect1434-3-2-6-2-36-7);stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none">Monitoring</tspan></tspan></text>
+  </g>
+</svg>

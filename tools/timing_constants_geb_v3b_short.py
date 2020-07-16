@@ -1,3 +1,4 @@
+#/usr/env python2
 # these should be in "hardware" ordering-- the software will invert it for you
 v3b_short_trig_tap_delays = [
    3         , # TU_OFFSET[0][0]

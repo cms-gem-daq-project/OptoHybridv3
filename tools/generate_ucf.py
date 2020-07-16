@@ -1,3 +1,4 @@
+#/usr/env python2
 import re
 from polarity_swaps import *
 from insert_code import *

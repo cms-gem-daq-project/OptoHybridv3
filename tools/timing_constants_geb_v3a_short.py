@@ -1,3 +1,4 @@
+#/usr/env python2
 v3a_short_trig_tap_delays = [   3    , # TU_OFFSET[0][0]
     3    , # TU_OFFSET[0][1]
     3    , # TU_OFFSET[0][2]

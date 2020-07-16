@@ -1,3 +1,4 @@
+#/usr/env python2
 from __future__ import unicode_literals
 from oh_settings import *
 from insert_code import *
@@ -32,7 +33,7 @@ def write_latex_version (file_handle):
 
     padding = "    " #spaces for indentation
 
-    f.write ('%s\\author{\\textbf{%s} \\\\  \\\\ v%s.%s.%s.%s \\\\ %04d%02d%02d}\n' % (padding, chamber_type, firmware_version_major, firmware_version_minor, firmware_release_version, release_hardware, firmware_year, firmware_month, firmware_day))
+    f.write ('%s\\author{\\textbf{%s} \\\\  \\\\ v%02x.%02x.%02x.%s \\\\ %04d%02d%02d}\n' % (padding, chamber_type, firmware_version_major, firmware_version_minor, firmware_release_version, release_hardware, firmware_year, firmware_month, firmware_day))
 
 if __name__ == '__main__':
     main()

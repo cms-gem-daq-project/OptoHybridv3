@@ -1,3 +1,4 @@
+#!/usr/bin/python2
 from __future__ import unicode_literals
 
 __author__ = 'evka'
@@ -230,8 +231,8 @@ def main():
         print('============================================================================')
         print(module.toString())
         print('============================================================================')
-        for reg in module.regs:
-            print(reg.toString())
+        #for reg in module.regs:
+        #    print(reg.toString())
 
     print('Writing documentation file to ' + DOC_FILE)
     writeDocFile (modules, DOC_FILE)
@@ -270,7 +271,7 @@ def findRegisters(node, baseName, baseAddress, modules, currentModule, vars, isG
 
             vars[generateIdxVar] = i
             vars[generateIdxVar + "_STEP_SIZE"] = generateAddressStep
-            print('generate base_addr = ' + hex(baseAddress + generateAddressStep * i) + ' for node ' + node.get('id'))
+            #print('generate base_addr = ' + hex(baseAddress + generateAddressStep * i) + ' for node ' + node.get('id'))
 
             findRegisters(node, baseName, baseAddress + generateAddressStep * i, modules, currentModule, vars, True, num_of_oh)
         return
@@ -780,7 +781,7 @@ def writeConstantsFile(modules, filename):
         #f.write('    type T_' + VHDL_REG_CONSTANT_PREFIX + module.getVhdlName() + '_ADDRESS_ARR is array(integer range <>) of std_logic_vector(%s downto %s);\n\n' % (VHDL_REG_CONSTANT_PREFIX + module.getVhdlName() + '_ADDRESS_MSB', VHDL_REG_CONSTANT_PREFIX + module.getVhdlName() + '_ADDRESS_LSB')) # cannot use that because we need to be able to pass it as a generic type to the generic IPBus slave module
 
         for reg in module.regs:
-            print('Writing register constants for ' + reg.name)
+            #print('Writing register constants for ' + reg.name)
             f.write('    constant ' + VHDL_REG_CONSTANT_PREFIX + reg.getVhdlName() + '_ADDR    : '\
                         'std_logic_vector(' + str(module.regAddressMsb) + ' downto ' + str(module.regAddressLsb) + ') := ' + \
                         vhdlHexPadded(reg.address, module.regAddressMsb - module.regAddressLsb + 1)  + ';\n')
@@ -878,8 +879,9 @@ def updateModuleFile(module):
         # slave section
         if VHDL_REG_SLAVE_MARKER_START in line:
             slaveSectionFound = True
-            slaveDeclaration =  '    ipbus_slave_inst : entity work.ipbus_slave\n'\
+            slaveDeclaration =  '    ipbus_slave_inst : entity work.ipbus_slave_tmr\n'\
                                 '        generic map(\n'\
+                                '           g_ENABLE_TMR           => %s,\n' % ('EN_TMR_IPB_SLAVE_'     + module.getVhdlName()) + \
                                 '           g_NUM_REGS             => %s,\n' % (VHDL_REG_CONSTANT_PREFIX + module.getVhdlName() + '_NUM_REGS') + \
                                 '           g_ADDR_HIGH_BIT        => %s,\n' % (VHDL_REG_CONSTANT_PREFIX + module.getVhdlName() + '_ADDRESS_MSB') + \
                                 '           g_ADDR_LOW_BIT         => %s,\n' % (VHDL_REG_CONSTANT_PREFIX + module.getVhdlName() + '_ADDRESS_LSB') + \
@@ -1195,16 +1197,16 @@ def printNodeToUHALFile(node, file, level, baseAddress, baseName, addrOffset, nu
 
     if (num_of_oh == None and "%s.%s"%(baseName,name) in amcTopNodesToSkip):
         # only for writing the AMC specific file
-        print 'Not writing node "%s" to AMC uHAL address table file'%(name)
+        print('Not writing node "%s" to AMC uHAL address table file'%(name))
         return
 
     if num_of_oh in range(0,12):
         # only for writing the OH specific file
         if "%s.%s"%(baseName,name) in ohTopNodesToSkip:
-            print 'Not writing node "%s" to OH uHAL address table file'%(name)
+            print('Not writing node "%s" to OH uHAL address table file'%(name))
             return
         if name in ["OH%d"%(oh) for oh in range(0,12) if oh != num_of_oh]:
-            print 'Not writing node "%s" to OH%d uHAL address table file'%(name,num_of_oh)
+            print('Not writing node "%s" to OH%d uHAL address table file'%(name,num_of_oh))
             return
     for i in range(level):
         file.write('  ')
@@ -1359,4 +1361,6 @@ def substituteVars(string, vars):
     return ret
 
 if __name__ == '__main__':
+    if sys.version_info[0] >= 3:
+        raise Exception("Python 2 required.")
     main()

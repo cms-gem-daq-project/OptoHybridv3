@@ -6,15 +6,10 @@ module led_control (
   input pll_lock,
 
   input mmcm_locked,
-  input elink_mmcm_locked,
-  input logic_mmcm_locked,
-
-  input gbt_eclk,
 
   input ttc_l1a,
   input ttc_bc0,
   input ttc_resync,
-  input vfat_reset,
 
   input gbt_rxready,
   input gbt_rxvalid,
@@ -55,10 +50,7 @@ module led_control (
       led_out <= {led_logic[15:8],{8{fader_led}}};
 
     else if (!mmcm_locked)
-      led_out <= {
-        led_logic[15:8],
-        (led_err[7:0] |  { {4{elink_mmcm_locked}},{4{logic_mmcm_locked}}})
-      };
+      led_out <= {led_logic[15:8], (led_err[7:0] |  {8{mmcm_locked}})};
 
     else if (cylon_mode)
       led_out <= led_cylon;
@@ -83,19 +75,6 @@ module led_control (
 
     if (clk_cnt==0)
       clk_led <= ~ clk_led;
-  end
-
-  // count to 21 bits for 40 MHz clock to divide to 2 Hz
-
-  wire eclk = gbt_eclk;
-
-  reg [20:0] eclk_cnt=0;
-  reg        eclk_led=0;
-  always @(posedge eclk) begin
-    eclk_cnt <= eclk_cnt + 1'b1;
-
-    if (eclk_cnt==0)
-      eclk_led <= ~ eclk_led;
   end
 
   // count to 27 bits , ~3.5 second period
@@ -166,12 +145,11 @@ module led_control (
 // TTC Flash
 //----------------------------------------------------------------------------------------------------------------------
 
-  wire bc0_flash, resync_flash, l1a_flash, vfat_reset_flash;
+  wire bc0_flash, resync_flash, l1a_flash;
 
   x_flashsm flash_l1a        (ttc_l1a,    1'b0, clock, l1a_flash);
   x_flashsm flash_bc0        (ttc_bc0,    1'b0, clock, bc0_flash);
   x_flashsm flash_resync     (ttc_resync, 1'b0, clock, resync_flash);
-  x_flashsm flash_vfat_reset (vfat_reset, 1'b0, clock, vfat_reset_flash);
 
 //----------------------------------------------------------------------------------------------------------------------
 // Logic LED Assignments
@@ -179,7 +157,7 @@ module led_control (
 
   assign led_logic [7:0] = progress_bar;
 
-  assign led_logic [15] = eclk_led;
+  assign led_logic [15] = 1'b1;
   assign led_logic [14] = clk_led;
   assign led_logic [13] = mgts_ready & clk_led;
   assign led_logic [12] = gbt_link_ready & clk_led;

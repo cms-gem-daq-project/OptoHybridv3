@@ -32,16 +32,16 @@ package ipbus_pkg is
                 CONTROL   : integer;
                     ADC   : integer;
                    TRIG   : integer;
-               CLOCKING   : integer;
                     GBT   : integer;
+                    MGT   : integer;
     end record;
     -- IPbus slave index definition
     constant IPB_SLAVE : t_ipb_slv := (
                 CONTROL  => 0,
                     ADC  => 1,
                    TRIG  => 2,
-               CLOCKING  => 3,
-                    GBT  => 4    );
+                    GBT  => 3,
+                    MGT  => 4    );
     -- END: IPBUS_SLAVES :: DO NOT EDIT
 
     constant IPB_REQ_BITS        : integer := 49;
@@ -90,8 +90,8 @@ package body ipbus_pkg is
         if   (std_match(addr, std_logic_vector(to_unsigned(IPB_SLAVE.        CONTROL,     4))  & "------------")) then sel := IPB_SLAVE.CONTROL;
         elsif(std_match(addr, std_logic_vector(to_unsigned(IPB_SLAVE.            ADC,     4))  & "------------")) then sel := IPB_SLAVE.ADC;
         elsif(std_match(addr, std_logic_vector(to_unsigned(IPB_SLAVE.           TRIG,     4))  & "------------")) then sel := IPB_SLAVE.TRIG;
-        elsif(std_match(addr, std_logic_vector(to_unsigned(IPB_SLAVE.       CLOCKING,     4))  & "------------")) then sel := IPB_SLAVE.CLOCKING;
         elsif(std_match(addr, std_logic_vector(to_unsigned(IPB_SLAVE.            GBT,     4))  & "------------")) then sel := IPB_SLAVE.GBT;
+        elsif(std_match(addr, std_logic_vector(to_unsigned(IPB_SLAVE.            MGT,     4))  & "------------")) then sel := IPB_SLAVE.MGT;
         -- END: IPBUS_ADDR_SEL :: DO NOT EDIT
 
         else sel := 99;

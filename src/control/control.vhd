@@ -12,18 +12,38 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.std_logic_misc.all;
+use ieee.numeric_std.all;
 
-use IEEE.Numeric_STD.all;
+library unisim;
+use unisim.vcomponents.all;
 
 library work;
 use work.types_pkg.all;
-use work.trig_pkg.all;
 use work.ipbus_pkg.all;
-use work.param_pkg.all;
+use work.hardware_pkg.all;
+use work.version_pkg.all;
 use work.registers.all;
 
 entity control is
-port(
+  generic (
+    -- these generics get set by hog at synthesis
+    GLOBAL_DATE : std_logic_vector (31 downto 0) := x"00000000";
+    GLOBAL_TIME : std_logic_vector (31 downto 0) := x"00000000";
+    GLOBAL_VER  : std_logic_vector (31 downto 0) := x"00000000";
+    GLOBAL_SHA  : std_logic_vector (31 downto 0) := x"00000000";
+
+    TOP_SHA : std_logic_vector (31 downto 0) := x"00000000";
+    TOP_VER : std_logic_vector (31 downto 0) := x"00000000";
+
+    HOG_SHA : std_logic_vector (31 downto 0) := x"00000000";
+    HOG_VER : std_logic_vector (31 downto 0) := x"00000000";
+
+    OPTOHYBRID_VER : std_logic_vector (31 downto 0) := x"00000000";
+    OPTOHYBRID_SHA : std_logic_vector (31 downto 0) := x"00000000";
+
+    FLAVOUR : integer := 0
+    );
+  port(
 
     mgts_ready : in std_logic;
     pll_lock   : in std_logic;
@@ -31,13 +51,9 @@ port(
 
     --== TTC ==--
 
-    clock_i            : in std_logic;
-    gbt_clock_i        : in std_logic;
-    reset_i            : in std_logic;
-
-    ttc_l1a    : in std_logic;
-    ttc_bc0    : in std_logic;
-    ttc_resync : in std_logic;
+    clocks  : in clocks_t;
+    ttc_i   : in ttc_t;
+    reset_i : in std_logic;
 
     ipb_mosi_i : in  ipb_wbus;
     ipb_miso_o : out ipb_rbus;
@@ -47,9 +63,7 @@ port(
     -------------------
 
     -- MMCM
-    mmcms_locked_i     : in std_logic;
-    dskw_mmcm_locked_i : in std_logic;
-    eprt_mmcm_locked_i : in std_logic;
+    mmcms_locked_i : in std_logic;
 
     -- GBT
 
@@ -60,17 +74,13 @@ port(
 
     -- Trigger
 
-    active_vfats_i  : in std_logic_vector (MXVFATS-1 downto 0);
+    active_vfats_i  : in std_logic_vector (NUM_VFATS-1 downto 0);
     sbit_overflow_i : in std_logic;
     cluster_count_i : in std_logic_vector (10 downto 0);
 
     -- GBT
     gbt_link_error_i       : in std_logic;
     gbt_request_received_i : in std_logic;
-
-    -- Analog input
-    adc_vp : in  std_logic;
-    adc_vn : in  std_logic;
 
     --------------------
     -- config outputs --
@@ -81,13 +91,11 @@ port(
     ext_sbits_o  : out std_logic_vector(7 downto 0);
 
     -- LEDs
-    led_o              : out std_logic_vector(15 downto 0);
+    led_o : out std_logic_vector(15 downto 0);
 
     -- pulse to synchronously snap all counters for readout
     -- freeze high to make counters transparent (asynchronous readout)
     cnt_snap_o : out std_logic;
-
-    soft_reset_o : out std_logic;
 
     -------------
     -- outputs --
@@ -95,102 +103,189 @@ port(
 
     trig_stop_o   : out std_logic;
     bxn_counter_o : out std_logic_vector (11 downto 0)
-
-);
+    );
 
 end control;
 
 architecture Behavioral of control is
 
+  component device_dna
+    port (
+      clock : in  std_logic;
+      reset : in  std_logic;
+      dna   : out std_logic_vector (56 downto 0)
+      );
+  end component;
 
-    --== SEM ==--
+  component USR_ACCESSE2
+    port (
+      cfgclk    : out std_logic;
+      datavalid : out std_logic;
+      data      : out std_logic_vector (31 downto 0)
+      );
+  end component;
 
-    signal sem_correction : std_logic;
-    signal sem_critical   : std_logic;
-    --== Sbits ==--
+  component USR_ACCESS_VIRTEX6
+    port (
+      cfgclk    : out std_logic;
+      datavalid : out std_logic;
+      data      : out std_logic_vector (31 downto 0)
+      );
+  end component;
 
-    signal sbit_sel0    : std_logic_vector(4 downto 0);
-    signal sbit_sel1    : std_logic_vector(4 downto 0);
-    signal sbit_sel2    : std_logic_vector(4 downto 0);
-    signal sbit_sel3    : std_logic_vector(4 downto 0);
-    signal sbit_sel4    : std_logic_vector(4 downto 0);
-    signal sbit_sel5    : std_logic_vector(4 downto 0);
-    signal sbit_sel6    : std_logic_vector(4 downto 0);
-    signal sbit_sel7    : std_logic_vector(4 downto 0);
+  component fmm
+    port (
+      clock : in std_logic;
 
-    signal sbit_mode0   : std_logic_vector(1  downto 0);
-    signal sbit_mode1   : std_logic_vector(1  downto 0);
-    signal sbit_mode2   : std_logic_vector(1  downto 0);
-    signal sbit_mode3   : std_logic_vector(1  downto 0);
-    signal sbit_mode4   : std_logic_vector(1  downto 0);
-    signal sbit_mode5   : std_logic_vector(1  downto 0);
-    signal sbit_mode6   : std_logic_vector(1  downto 0);
-    signal sbit_mode7   : std_logic_vector(1  downto 0);
+      reset_i : in std_logic;
 
-    signal cluster_rate : std_logic_vector(31  downto 0);
+      ttc_bx0    : in std_logic;
+      ttc_resync : in std_logic;
+      dont_wait  : in std_logic;
 
-    --== Loopback ==--
+      fmm_trig_stop : out std_logic
+      );
+  end component;
 
-    signal loopback  : std_logic_vector(31  downto 0);
+  component ttc
+    port (
+      clock : in std_logic;
 
-    --== TTC FMM ==--
+      reset : in std_logic;
 
-    signal fmm_dont_wait : std_logic;
-    signal fmm_trig_stop : std_logic;
+      ttc_bx0   : in  std_logic;
+      bx0_local : out std_logic;
 
-    --== TTC Sync ==--
+      ttc_resync : in std_logic;
 
-    signal bx0_local : std_logic;
-    attribute mark_debug : string;
-    attribute mark_debug of bx0_local : signal is "TRUE";
+      bxn_offset : in std_logic_vector (11 downto 0);
 
-    signal cnt_snap         : std_logic;
-    signal cnt_snap_pulse   : std_logic;
-    signal cnt_snap_disable : std_logic;
+      bxn_counter : in std_logic_vector (11 downto 0);
 
-    signal ttc_bxn_offset  : std_logic_vector (11 downto 0);
-    signal ttc_bxn_counter : std_logic_vector (11 downto 0);
+      bx0_sync_err : in std_logic;
+      bxn_sync_err : in std_logic
+      );
+  end component;
 
-    signal ttc_bx0_sync_err : std_logic;
-    signal ttc_bxn_sync_err : std_logic;
+  component external
+    generic (GE21      : integer;
+             NUM_VFATS : integer);
+    port (
+      clock : in std_logic;
 
-    signal vfat_startup_reset : std_logic_vector (11 downto 0);
-    signal vfat_startup_reset_timer : unsigned (31 downto 0);
-    signal vfat_startup_reset_timer_max : natural := 32;
-    signal vfat_reset : std_logic_vector (11 downto 0);
+      reset_i : in std_logic;
 
-    signal reset : std_logic;
-    signal cnt_reset : std_logic;
+      active_vfats_i : in std_logic_vector (NUM_VFATS-1 downto 0);
 
-    signal dna : std_logic_vector (56 downto 0);
+      sbit_mode0 : in std_logic_vector (1 downto 0);
+      sbit_mode1 : in std_logic_vector (1 downto 0);
+      sbit_mode2 : in std_logic_vector (1 downto 0);
+      sbit_mode3 : in std_logic_vector (1 downto 0);
+      sbit_mode4 : in std_logic_vector (1 downto 0);
+      sbit_mode5 : in std_logic_vector (1 downto 0);
+      sbit_mode6 : in std_logic_vector (1 downto 0);
+      sbit_mode7 : in std_logic_vector (1 downto 0);
+      sbit_sel0  : in std_logic_vector (4 downto 0);
+      sbit_sel1  : in std_logic_vector (4 downto 0);
+      sbit_sel2  : in std_logic_vector (4 downto 0);
+      sbit_sel3  : in std_logic_vector (4 downto 0);
+      sbit_sel4  : in std_logic_vector (4 downto 0);
+      sbit_sel5  : in std_logic_vector (4 downto 0);
+      sbit_sel6  : in std_logic_vector (4 downto 0);
+      sbit_sel7  : in std_logic_vector (4 downto 0);
+
+      ext_sbits_o : out std_logic_vector (7 downto 0)
+      );
+  end component;
 
 
-    COMPONENT led_control
-    PORT(
-        mgts_ready           : IN std_logic;
-        txfsm_done           : IN std_logic;
-        pll_lock             : IN std_logic;
-        clock                : IN std_logic;
-        mmcm_locked          : IN std_logic;
-        elink_mmcm_locked    : IN std_logic;
-        logic_mmcm_locked    : IN std_logic;
-        gbt_eclk             : IN std_logic;
-        ttc_l1a              : IN std_logic;
-        ttc_bc0              : IN std_logic;
-        ttc_resync           : IN std_logic;
-        vfat_reset           : IN std_logic;
-        gbt_rxready          : IN std_logic;
-        gbt_rxvalid          : IN std_logic;
-        gbt_link_ready       : IN std_logic;
-        gbt_request_received : IN std_logic;
-        reset                : IN std_logic;
-        cluster_count_i      : IN std_logic_vector(10 downto 0);
-        cluster_rate         : OUT std_logic_vector(31 downto 0);
-        led_out              : OUT std_logic_vector(15 downto 0)
-        );
-    end component;
+  signal uptime : unsigned (19 downto 0);
 
-    ------ Register signals begin (this section is generated by <optohybrid_top>/tools/generate_registers.py -- do not edit)
+  --== SEM ==--
+
+  signal sem_correction : std_logic;
+  signal sem_critical   : std_logic;
+  --== Sbits ==--
+
+  signal sbit_sel0 : std_logic_vector(4 downto 0);
+  signal sbit_sel1 : std_logic_vector(4 downto 0);
+  signal sbit_sel2 : std_logic_vector(4 downto 0);
+  signal sbit_sel3 : std_logic_vector(4 downto 0);
+  signal sbit_sel4 : std_logic_vector(4 downto 0);
+  signal sbit_sel5 : std_logic_vector(4 downto 0);
+  signal sbit_sel6 : std_logic_vector(4 downto 0);
+  signal sbit_sel7 : std_logic_vector(4 downto 0);
+
+  signal sbit_mode0 : std_logic_vector(1 downto 0);
+  signal sbit_mode1 : std_logic_vector(1 downto 0);
+  signal sbit_mode2 : std_logic_vector(1 downto 0);
+  signal sbit_mode3 : std_logic_vector(1 downto 0);
+  signal sbit_mode4 : std_logic_vector(1 downto 0);
+  signal sbit_mode5 : std_logic_vector(1 downto 0);
+  signal sbit_mode6 : std_logic_vector(1 downto 0);
+  signal sbit_mode7 : std_logic_vector(1 downto 0);
+
+  signal cluster_rate : std_logic_vector(31 downto 0);
+
+  --== Loopback ==--
+
+  signal loopback : std_logic_vector(31 downto 0);
+
+  --== TTC FMM ==--
+
+  signal fmm_dont_wait : std_logic;
+  signal fmm_trig_stop : std_logic;
+
+  --== TTC Sync ==--
+
+  signal bx0_local                  : std_logic;
+  attribute mark_debug              : string;
+  attribute mark_debug of bx0_local : signal is "TRUE";
+
+  signal cnt_snap         : std_logic;
+  signal cnt_snap_pulse   : std_logic;
+  signal cnt_snap_disable : std_logic;
+
+  signal ttc_bxn_offset  : std_logic_vector (11 downto 0);
+  signal ttc_bxn_counter : std_logic_vector (11 downto 0);
+
+  signal ttc_bx0_sync_err : std_logic;
+  signal ttc_bxn_sync_err : std_logic;
+
+  signal vfat_startup_reset           : std_logic_vector (11 downto 0);
+  signal vfat_startup_reset_timer     : unsigned (31 downto 0);
+  signal vfat_startup_reset_timer_max : natural := 32;
+  signal vfat_reset                   : std_logic_vector (11 downto 0);
+
+  signal reset     : std_logic;
+  signal cnt_reset : std_logic;
+
+  signal dna : std_logic_vector (56 downto 0);
+
+  signal usr_access : std_logic_vector (31 downto 0);
+
+  component led_control
+    port(
+      mgts_ready           : in  std_logic;
+      txfsm_done           : in  std_logic;
+      pll_lock             : in  std_logic;
+      clock                : in  std_logic;
+      mmcm_locked          : in  std_logic;
+      ttc_l1a              : in  std_logic;
+      ttc_bc0              : in  std_logic;
+      ttc_resync           : in  std_logic;
+      gbt_rxready          : in  std_logic;
+      gbt_rxvalid          : in  std_logic;
+      gbt_link_ready       : in  std_logic;
+      gbt_request_received : in  std_logic;
+      reset                : in  std_logic;
+      cluster_count_i      : in  std_logic_vector(10 downto 0);
+      cluster_rate         : out std_logic_vector(31 downto 0);
+      led_out              : out std_logic_vector(15 downto 0)
+      );
+  end component;
+
+  ------ Register signals begin (this section is generated by <optohybrid_top>/tools/generate_registers.py -- do not edit)
     signal regs_read_arr        : t_std32_array(REG_CONTROL_NUM_REGS - 1 downto 0) := (others => (others => '0'));
     signal regs_write_arr       : t_std32_array(REG_CONTROL_NUM_REGS - 1 downto 0) := (others => (others => '0'));
     signal regs_addresses       : t_std32_array(REG_CONTROL_NUM_REGS - 1 downto 0) := (others => (others => '0'));
@@ -208,231 +303,267 @@ architecture Behavioral of control is
     signal cnt_l1a : std_logic_vector (23 downto 0) := (others => '0');
     signal cnt_bxn_sync_err : std_logic_vector (15 downto 0) := (others => '0');
     signal cnt_bx0_sync_err : std_logic_vector (15 downto 0) := (others => '0');
-    ------ Register signals end ----------------------------------------------
+  ------ Register signals end ----------------------------------------------
 
 begin
 
-    --------------------------------------------------------------------------------------------------------------------
-    -- Outputs
-    --------------------------------------------------------------------------------------------------------------------
+  --------------------------------------------------------------------------------------------------------------------
+  -- Outputs
+  --------------------------------------------------------------------------------------------------------------------
 
-    trig_stop_o   <= fmm_trig_stop;
-    vfat_reset_o  <= vfat_reset or vfat_startup_reset;
-    bxn_counter_o <= ttc_bxn_counter;
-    cnt_snap_o    <= cnt_snap;
+  trig_stop_o   <= fmm_trig_stop;
+  vfat_reset_o  <= vfat_reset or vfat_startup_reset;
+  bxn_counter_o <= ttc_bxn_counter;
+  cnt_snap_o    <= cnt_snap;
 
-    --------------------------------------------------------------------------------------------------------------------
-    -- Startup
-    --------------------------------------------------------------------------------------------------------------------
+  --------------------------------------------------------------------------------------------------------------------
+  -- Startup
+  --------------------------------------------------------------------------------------------------------------------
 
-    process (clock_i) begin
-        if (rising_edge(clock_i)) then
+  process (clocks.clk40)
+  begin
+    if (rising_edge(clocks.clk40)) then
 
-            -- startup timer; count to max then deassert the startup reset
-            if (reset_i = '1') then
-                vfat_startup_reset_timer <= (others => '0');
-            elsif (vfat_startup_reset_timer < vfat_startup_reset_timer_max) then
-                vfat_startup_reset_timer <= vfat_startup_reset_timer + 1;
-            end if;
+      -- startup timer; count to max then deassert the startup reset
+      if (reset_i = '1') then
+        vfat_startup_reset_timer <= (others => '0');
+      elsif (vfat_startup_reset_timer < vfat_startup_reset_timer_max) then
+        vfat_startup_reset_timer <= vfat_startup_reset_timer + 1;
+      end if;
 
-            if (vfat_startup_reset_timer < vfat_startup_reset_timer_max) then
-                vfat_startup_reset <= (others => '1');
-            else
-                vfat_startup_reset <= (others => '0');
-            end if;
+      if (vfat_startup_reset_timer < vfat_startup_reset_timer_max) then
+        vfat_startup_reset <= (others => '1');
+      else
+        vfat_startup_reset <= (others => '0');
+      end if;
 
-        end if;
-    end process;
+    end if;
+  end process;
 
-    --------------------------------------------------------------------------------------------------------------------
-    -- Reset
-    --------------------------------------------------------------------------------------------------------------------
+  --------------------------------------------------------------------------------------------------------------------
+  -- Reset
+  --------------------------------------------------------------------------------------------------------------------
 
-    process (clock_i) begin
-        if (rising_edge(clock_i)) then
-            reset <= reset_i;
-            cnt_reset <= reset_i or ttc_resync;
-        end if;
-    end process;
+  process (clocks.clk40)
+  begin
+    if (rising_edge(clocks.clk40)) then
+      reset     <= reset_i;
+      cnt_reset <= reset_i or ttc_i.resync;
+    end if;
+  end process;
 
 
-    --------------------------------------------------------------------------------------------------------------------
-    -- Count Snap
-    --------------------------------------------------------------------------------------------------------------------
+  --------------------------------------------------------------------------------------------------------------------
+  -- Count Snap
+  --------------------------------------------------------------------------------------------------------------------
 
-    -- clock the OR for fanout
-    process (clock_i) begin
-        if (rising_edge(clock_i)) then
-            cnt_snap <= cnt_snap_pulse or cnt_snap_disable;
-        end if;
-    end process;
+  -- clock the OR for fanout
+  process (clocks.clk40)
+  begin
+    if (rising_edge(clocks.clk40)) then
+      cnt_snap <= cnt_snap_pulse or cnt_snap_disable;
+    end if;
+  end process;
 
-    --------------------------------------------------------------------------------------------------------------------
-    -- LED Control
-    --------------------------------------------------------------------------------------------------------------------
+  --------------------------------------------------------------------------------------------------------------------
+  -- Uptime
+  --------------------------------------------------------------------------------------------------------------------
 
-    led_control_inst : led_control
+  process (clocks.clk40) is
+    variable uptime_cnt : unsigned (29 downto 0) := (others => '0');
+  begin
+    if (rising_edge(clocks.clk40)) then
+      if (reset_i = '1') then
+        uptime_cnt := (others => '0');
+        uptime     <= (others => '0');
+      elsif (uptime_cnt < x"2638e98") then
+        uptime_cnt := uptime_cnt + 1;
+      else
+        uptime_cnt := (others => '0');
+        uptime     <= uptime + 1;
+      end if;
+    end if;
+  end process;
+
+  --------------------------------------------------------------------------------------------------------------------
+  -- LED Control
+  --------------------------------------------------------------------------------------------------------------------
+
+  led_control_inst : led_control
     port map (
-        clock         => clock_i,
 
-        mgts_ready    => mgts_ready,
+      -- clock
+      clock       => clocks.clk40,
+      mmcm_locked => mmcms_locked_i,
+      reset       => reset,
 
-        pll_lock      => pll_lock,
+      -- mgt
+      mgts_ready => mgts_ready,
+      pll_lock   => pll_lock,
+      txfsm_done => txfsm_done,
 
-        txfsm_done    => txfsm_done,
+      -- ttc commands
 
-        mmcm_locked       => mmcms_locked_i,
-        elink_mmcm_locked => eprt_mmcm_locked_i,
-        logic_mmcm_locked => dskw_mmcm_locked_i,
+      ttc_l1a    => ttc_i.l1a,
+      ttc_bc0    => ttc_i.bc0,
+      ttc_resync => ttc_i.resync,
 
-        -- reset
-        reset         => reset,
+      -- signals
+      gbt_rxready          => gbt_rxready_i,
+      gbt_rxvalid          => gbt_rxvalid_i,
+      gbt_link_ready       => gbt_link_ready_i,
+      gbt_request_received => gbt_request_received_i,
 
-        gbt_eclk      => gbt_clock_i,
+      cluster_count_i => cluster_count_i (10 downto 0),
 
-        -- ttc commands
+      cluster_rate => cluster_rate (31 downto 0),
 
-        ttc_l1a => ttc_l1a,
-        ttc_bc0 => ttc_bc0,
-        ttc_resync => ttc_resync,
-        vfat_reset => or_reduce(vfat_reset),
+      -- led outputs
+      led_out => led_o
+      );
 
-        -- signals
-        gbt_rxready          => gbt_rxready_i,
-        gbt_rxvalid          => gbt_rxvalid_i,
-        gbt_link_ready       => gbt_link_ready_i,
-        gbt_request_received => gbt_request_received_i,
+  --------------------------------------------------------------------------------------------------------------------
+  -- USR_ACCESS Readout
+  --------------------------------------------------------------------------------------------------------------------
 
-        cluster_count_i      => cluster_count_i (10 downto 0),
+  ge11_usr_access: if (ge11=1) generate
+    usr_access_inst : USR_ACCESS_VIRTEX6 port map (
+      CFGCLK    => open,                  -- Not utilized in the static use case in this application note
+      DATA      => usr_access,            -- 32-bit output Configuration Data output
+      DATAVALID => open                   -- Not utilized in the static use case in this application note
+      );
+  end generate;
+  ge21_usr_access: if (ge21=1) generate
+    usr_access_inst : USR_ACCESSE2 port map (
+      CFGCLK    => open,                  -- Not utilized in the static use case in this application note
+      DATA      => usr_access,            -- 32-bit output Configuration Data output
+      DATAVALID => open                   -- Not utilized in the static use case in this application note
+      );
+  end generate;
 
-        cluster_rate  => cluster_rate (31 downto 0),
+  --------------------------------------------------------------------------------------------------------------------
+  -- Device DNA
+  --------------------------------------------------------------------------------------------------------------------
 
-        -- led outputs
-        led_out       => led_o
-    );
-
-    --------------------------------------------------------------------------------------------------------------------
-    -- Device DNA
-    --------------------------------------------------------------------------------------------------------------------
-
-    device_dna : entity work.device_dna
+  device_dna_inst : device_dna
     port map (
-        clock => clock_i,
-        reset => reset_i,
-        dna   => dna
-    );
+      clock => clocks.clk40,
+      reset => reset_i,
+      dna   => dna
+      );
 
-    --------------------------------------------------------------------------------------------------------------------
-    -- HDMI Signals
-    --------------------------------------------------------------------------------------------------------------------
+  --------------------------------------------------------------------------------------------------------------------
+  -- HDMI Signals
+  --------------------------------------------------------------------------------------------------------------------
 
-    -- This module handles the external signals: the input trigger and the output SBits.
+  -- This module handles the external signals: the input trigger and the output SBits.
 
-    external_inst : entity work.external
-    generic map (oh_lite => OH_LITE, MXVFATS => MXVFATS)
+  external_inst : external
+    generic map (GE21 => GE21, NUM_VFATS => NUM_VFATS)
     port map(
-        clock               => clock_i,
+      clock => clocks.clk40,
 
-        reset_i             => reset,
+      reset_i => reset,
 
-        active_vfats_i      => active_vfats_i,
+      active_vfats_i => active_vfats_i,
 
-        sbit_mode0 => sbit_mode0,
-        sbit_mode1 => sbit_mode1,
-        sbit_mode2 => sbit_mode2,
-        sbit_mode3 => sbit_mode3,
-        sbit_mode4 => sbit_mode4,
-        sbit_mode5 => sbit_mode5,
-        sbit_mode6 => sbit_mode6,
-        sbit_mode7 => sbit_mode7,
+      sbit_mode0 => sbit_mode0,
+      sbit_mode1 => sbit_mode1,
+      sbit_mode2 => sbit_mode2,
+      sbit_mode3 => sbit_mode3,
+      sbit_mode4 => sbit_mode4,
+      sbit_mode5 => sbit_mode5,
+      sbit_mode6 => sbit_mode6,
+      sbit_mode7 => sbit_mode7,
 
-        sbit_sel0 => sbit_sel0,
-        sbit_sel1 => sbit_sel1,
-        sbit_sel2 => sbit_sel2,
-        sbit_sel3 => sbit_sel3,
-        sbit_sel4 => sbit_sel4,
-        sbit_sel5 => sbit_sel5,
-        sbit_sel6 => sbit_sel6,
-        sbit_sel7 => sbit_sel7,
+      sbit_sel0 => sbit_sel0,
+      sbit_sel1 => sbit_sel1,
+      sbit_sel2 => sbit_sel2,
+      sbit_sel3 => sbit_sel3,
+      sbit_sel4 => sbit_sel4,
+      sbit_sel5 => sbit_sel5,
+      sbit_sel6 => sbit_sel6,
+      sbit_sel7 => sbit_sel7,
 
-        ext_sbits_o         => ext_sbits_o
-    );
+      ext_sbits_o => ext_sbits_o
+      );
 
-    --------------------------------------------------------------------------------------------------------------------
-    -- TTC
-    --------------------------------------------------------------------------------------------------------------------
+  --------------------------------------------------------------------------------------------------------------------
+  -- TTC
+  --------------------------------------------------------------------------------------------------------------------
 
-    ttc_inst : entity work.ttc
+  ttc_inst : ttc
 
     port map (
 
-        -- clock & reset
-        clock => clock_i,
-        reset => reset,
+      -- clock & reset
+      clock => clocks.clk40,
+      reset => reset,
 
-        -- ttc commands
-        ttc_bx0     => ttc_bc0,
-        bx0_local   => bx0_local,
-        ttc_resync  => ttc_resync,
+      -- ttc commands
+      ttc_bx0    => ttc_i.bc0,
+      bx0_local  => bx0_local,
+      ttc_resync => ttc_i.resync,
 
-        -- control
-        bxn_offset => ttc_bxn_offset,
+      -- control
+      bxn_offset => ttc_bxn_offset,
 
-        -- output
-       bxn_counter     => ttc_bxn_counter,
-       bx0_sync_err    => ttc_bx0_sync_err,
-       bxn_sync_err    => ttc_bxn_sync_err
+      -- output
+      bxn_counter  => ttc_bxn_counter,
+      bx0_sync_err => ttc_bx0_sync_err,
+      bxn_sync_err => ttc_bxn_sync_err
 
-    );
+      );
 
-    --------------------------------------------------------------------------------------------------------------------
-    -- Trigger Start/Stop Control
-    --------------------------------------------------------------------------------------------------------------------
+  --------------------------------------------------------------------------------------------------------------------
+  -- Trigger Start/Stop Control
+  --------------------------------------------------------------------------------------------------------------------
 
-    fmm_inst : entity work.fmm
+  fmm_inst : fmm
     port map (
 
-        -- clock & reset
-        clock   => clock_i,
-        reset_i => reset,
+      -- clock & reset
+      clock   => clocks.clk40,
+      reset_i => reset,
 
-        -- ttc commands
-        ttc_bx0    => ttc_bc0,
-        ttc_resync => ttc_resync,
+      -- ttc commands
+      ttc_bx0    => ttc_i.bc0,
+      ttc_resync => ttc_i.resync,
 
-        -- control
+      -- control
 
-        dont_wait  => fmm_dont_wait,
+      dont_wait => fmm_dont_wait,
 
-        -- output
-        fmm_trig_stop => fmm_trig_stop
+      -- output
+      fmm_trig_stop => fmm_trig_stop
 
-    );
+      );
 
-    --------------------------------------------------------------------------------------------------------------------
-    -- SEU Monitoring
-    --------------------------------------------------------------------------------------------------------------------
+  --------------------------------------------------------------------------------------------------------------------
+  -- SEU Monitoring
+  --------------------------------------------------------------------------------------------------------------------
 
-    sem_mon_inst : entity work.sem_mon
+  sem_mon_inst : entity work.sem_mon
     port map(
-        clk_i               => clock_i,
-        heartbeat_o         => open,
-        initialization_o    => open,
-        observation_o       => open,
-        correction_o        => sem_correction,
-        classification_o    => open,
-        injection_o         => open,
-        essential_o         => open,
-        uncorrectable_o     => sem_critical
-    );
+      clk_i            => clocks.clk40,
+      heartbeat_o      => open,
+      initialization_o => open,
+      observation_o    => open,
+      correction_o     => sem_correction,
+      classification_o => open,
+      injection_o      => open,
+      essential_o      => open,
+      uncorrectable_o  => sem_critical
+      );
 
-    --===============================================================================================
-    -- (this section is generated by <optohybrid_top>/tools/generate_registers.py -- do not edit)
-    --==== Registers begin ==========================================================================
+  --===============================================================================================
+  -- (this section is generated by <optohybrid_top>/tools/generate_registers.py -- do not edit)
+  --==== Registers begin ==========================================================================
 
     -- IPbus slave instanciation
-    ipbus_slave_inst : entity work.ipbus_slave
+    ipbus_slave_inst : entity work.ipbus_slave_tmr
         generic map(
+           g_ENABLE_TMR           => EN_TMR_IPB_SLAVE_CONTROL,
            g_NUM_REGS             => REG_CONTROL_NUM_REGS,
            g_ADDR_HIGH_BIT        => REG_CONTROL_ADDRESS_MSB,
            g_ADDR_LOW_BIT         => REG_CONTROL_ADDRESS_LSB,
@@ -440,10 +571,10 @@ begin
        )
        port map(
            ipb_reset_i            => reset,
-           ipb_clk_i              => clock_i,
+           ipb_clk_i              => clocks.clk40,
            ipb_mosi_i             => ipb_mosi_i,
            ipb_miso_o             => ipb_miso_o,
-           usr_clk_i              => clock_i,
+           usr_clk_i              => clocks.clk40,
            regs_read_arr_i        => regs_read_arr,
            regs_write_arr_o       => regs_write_arr,
            read_pulse_arr_o       => regs_read_pulse_arr,
@@ -478,9 +609,21 @@ begin
     regs_addresses(19)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "01" & x"3";
     regs_addresses(20)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "01" & x"4";
     regs_addresses(21)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "01" & x"5";
-    regs_addresses(22)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "01" & x"6";
-    regs_addresses(23)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "01" & x"7";
-    regs_addresses(24)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "01" & x"8";
+    regs_addresses(22)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "01" & x"7";
+    regs_addresses(23)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "01" & x"8";
+    regs_addresses(24)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "01" & x"9";
+    regs_addresses(25)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "10" & x"0";
+    regs_addresses(26)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "10" & x"1";
+    regs_addresses(27)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "10" & x"2";
+    regs_addresses(28)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "10" & x"3";
+    regs_addresses(29)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "10" & x"4";
+    regs_addresses(30)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "10" & x"5";
+    regs_addresses(31)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "10" & x"6";
+    regs_addresses(32)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "10" & x"7";
+    regs_addresses(33)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "10" & x"8";
+    regs_addresses(34)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "10" & x"9";
+    regs_addresses(35)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "10" & x"a";
+    regs_addresses(36)(REG_CONTROL_ADDRESS_MSB downto REG_CONTROL_ADDRESS_LSB) <= "10" & x"b";
 
     -- Connect read signals
     regs_read_arr(0)(REG_CONTROL_LOOPBACK_DATA_MSB downto REG_CONTROL_LOOPBACK_DATA_LSB) <= loopback;
@@ -521,8 +664,21 @@ begin
     regs_read_arr(19)(REG_CONTROL_HDMI_SBIT_MODE6_MSB downto REG_CONTROL_HDMI_SBIT_MODE6_LSB) <= sbit_mode6;
     regs_read_arr(19)(REG_CONTROL_HDMI_SBIT_MODE7_MSB downto REG_CONTROL_HDMI_SBIT_MODE7_LSB) <= sbit_mode7;
     regs_read_arr(21)(REG_CONTROL_CNT_SNAP_DISABLE_BIT) <= cnt_snap_disable;
-    regs_read_arr(23)(REG_CONTROL_DNA_DNA_LSBS_MSB downto REG_CONTROL_DNA_DNA_LSBS_LSB) <= dna(31 downto 0);
-    regs_read_arr(24)(REG_CONTROL_DNA_DNA_MSBS_MSB downto REG_CONTROL_DNA_DNA_MSBS_LSB) <= dna(56 downto 32);
+    regs_read_arr(22)(REG_CONTROL_DNA_DNA_LSBS_MSB downto REG_CONTROL_DNA_DNA_LSBS_LSB) <= dna(31 downto 0);
+    regs_read_arr(23)(REG_CONTROL_DNA_DNA_MSBS_MSB downto REG_CONTROL_DNA_DNA_MSBS_LSB) <= dna(56 downto 32);
+    regs_read_arr(24)(REG_CONTROL_UPTIME_MSB downto REG_CONTROL_UPTIME_LSB) <= std_logic_vector(uptime);
+    regs_read_arr(25)(REG_CONTROL_USR_ACCESS_MSB downto REG_CONTROL_USR_ACCESS_LSB) <= usr_access;
+    regs_read_arr(26)(REG_CONTROL_HOG_GLOBAL_DATE_MSB downto REG_CONTROL_HOG_GLOBAL_DATE_LSB) <= GLOBAL_DATE;
+    regs_read_arr(27)(REG_CONTROL_HOG_GLOBAL_TIME_MSB downto REG_CONTROL_HOG_GLOBAL_TIME_LSB) <= GLOBAL_TIME;
+    regs_read_arr(28)(REG_CONTROL_HOG_GLOBAL_VER_MSB downto REG_CONTROL_HOG_GLOBAL_VER_LSB) <= GLOBAL_VER;
+    regs_read_arr(29)(REG_CONTROL_HOG_GLOBAL_SHA_MSB downto REG_CONTROL_HOG_GLOBAL_SHA_LSB) <= GLOBAL_SHA;
+    regs_read_arr(30)(REG_CONTROL_HOG_TOP_SHA_MSB downto REG_CONTROL_HOG_TOP_SHA_LSB) <= TOP_SHA;
+    regs_read_arr(31)(REG_CONTROL_HOG_TOP_VER_MSB downto REG_CONTROL_HOG_TOP_VER_LSB) <= TOP_VER;
+    regs_read_arr(32)(REG_CONTROL_HOG_HOG_SHA_MSB downto REG_CONTROL_HOG_HOG_SHA_LSB) <= HOG_SHA;
+    regs_read_arr(33)(REG_CONTROL_HOG_HOG_VER_MSB downto REG_CONTROL_HOG_HOG_VER_LSB) <= HOG_VER;
+    regs_read_arr(34)(REG_CONTROL_HOG_OH_SHA_MSB downto REG_CONTROL_HOG_OH_SHA_LSB) <= OPTOHYBRID_SHA;
+    regs_read_arr(35)(REG_CONTROL_HOG_OH_VER_MSB downto REG_CONTROL_HOG_OH_VER_LSB) <= OPTOHYBRID_VER;
+    regs_read_arr(36)(REG_CONTROL_HOG_FLAVOUR_MSB downto REG_CONTROL_HOG_FLAVOUR_LSB) <= std_logic_vector(to_unsigned(FLAVOUR,32));
 
     -- Connect write signals
     loopback <= regs_write_arr(0)(REG_CONTROL_LOOPBACK_DATA_MSB downto REG_CONTROL_LOOPBACK_DATA_LSB);
@@ -549,7 +705,6 @@ begin
 
     -- Connect write pulse signals
     cnt_snap_pulse <= regs_write_pulse_arr(20);
-    soft_reset_o <= regs_write_pulse_arr(22);
 
     -- Connect write done signals
 
@@ -562,7 +717,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clock_i,
+        ref_clk_i => clocks.clk40,
         reset_i   => reset,
         en_i      => sem_critical,
         snap_i    => cnt_snap,
@@ -575,7 +730,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clock_i,
+        ref_clk_i => clocks.clk40,
         reset_i   => reset,
         en_i      => sem_correction,
         snap_i    => cnt_snap,
@@ -588,7 +743,7 @@ begin
         g_COUNTER_WIDTH  => 24
     )
     port map (
-        ref_clk_i => clock_i,
+        ref_clk_i => clocks.clk40,
         reset_i   => cnt_reset,
         en_i      => bx0_local,
         snap_i    => cnt_snap,
@@ -601,9 +756,9 @@ begin
         g_COUNTER_WIDTH  => 24
     )
     port map (
-        ref_clk_i => clock_i,
+        ref_clk_i => clocks.clk40,
         reset_i   => cnt_reset,
-        en_i      => ttc_bc0,
+        en_i      => ttc_i.bc0,
         snap_i    => cnt_snap,
         count_o   => cnt_bx0_rxd
     );
@@ -614,9 +769,9 @@ begin
         g_COUNTER_WIDTH  => 24
     )
     port map (
-        ref_clk_i => clock_i,
+        ref_clk_i => clocks.clk40,
         reset_i   => cnt_reset,
-        en_i      => ttc_l1a,
+        en_i      => ttc_i.l1a,
         snap_i    => cnt_snap,
         count_o   => cnt_l1a
     );
@@ -627,7 +782,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clock_i,
+        ref_clk_i => clocks.clk40,
         reset_i   => cnt_reset,
         en_i      => ttc_bxn_sync_err,
         snap_i    => cnt_snap,
@@ -640,7 +795,7 @@ begin
         g_COUNTER_WIDTH  => 16
     )
     port map (
-        ref_clk_i => clock_i,
+        ref_clk_i => clocks.clk40,
         reset_i   => cnt_reset,
         en_i      => ttc_bx0_sync_err,
         snap_i    => cnt_snap,
@@ -684,6 +839,6 @@ begin
     regs_writable_arr(19) <= '1';
     regs_writable_arr(21) <= '1';
 
-    --==== Registers end ============================================================================
+  --==== Registers end ============================================================================
 
 end Behavioral;

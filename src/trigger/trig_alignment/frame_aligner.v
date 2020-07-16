@@ -19,17 +19,17 @@ module frame_aligner (
   input  [MXSBITS-1:0] sbits_i,
   output [MXSBITS-1:0] sbits_o,
 
-  input [FRAME_SIZE-1:0] start_of_frame,
+  input [FRAME_SIZE-1:0] start_of_frame_i,
 
   input reset_i,
-  input mask,
+  input mask_i,
 
   input clock,
 
-  input [11:0] aligned_count_to_ready,
+  input [11:0] aligned_count_to_ready_i,
 
-  output reg sot_unstable,
-  output reg sot_is_aligned
+  output reg sot_unstable_o,
+  output reg sot_is_aligned_o
 );
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -55,7 +55,7 @@ module frame_aligner (
 
   reg [FRAME_SIZE-1:0] start_of_frame_reg;
   always @(posedge clock) begin
-    start_of_frame_reg <= start_of_frame;
+    start_of_frame_reg <= start_of_frame_i;
   end
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -73,7 +73,7 @@ module frame_aligner (
 
   bitslip data_bitslip (
     .fabric_clk   (clock),
-    .reset        (1'b0), //(reset || mask || ~sot_is_aligned),
+    .reset        (1'b0), //(reset || mask_i || ~sot_is_aligned),
     .bitslip_cnt  (bitslip_cnt),
     .din          (sbits_i[8*(I+1)-1 : 8*I]),
     .dout         (sbits_o[8*(I+1)-1 : 8*I])
@@ -132,8 +132,8 @@ module frame_aligner (
 
   always @(posedge clock) begin
     if (sot_good) begin
-      if (stable_counts == aligned_count_to_ready) stable_counts <= stable_counts;
-      else                                         stable_counts <= stable_counts + 1'b1;
+      if (stable_counts == aligned_count_to_ready_i) stable_counts <= stable_counts;
+      else                                          stable_counts <= stable_counts + 1'b1;
     end
     else begin
       stable_counts <= 0;
@@ -141,12 +141,12 @@ module frame_aligner (
   end
 
   always @(posedge clock) begin
-    if      (reset)                       sot_unstable <= 1'b0;
-    else if (sot_is_aligned && !sot_good) sot_unstable <= 1'b1;
+    if      (reset)                        sot_unstable_o <= 1'b0;
+    else if (sot_is_aligned_o && !sot_good) sot_unstable_o <= 1'b1;
   end
 
   always @(posedge clock) begin
-    sot_is_aligned <= (stable_counts == aligned_count_to_ready);
+    sot_is_aligned_o <= (stable_counts == aligned_count_to_ready_i);
   end
 
 

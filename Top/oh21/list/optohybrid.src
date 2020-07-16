@@ -1,0 +1,28 @@
+# -*- mode: TCL;-*-
+
+src/optohybrid.src
+
+src/gbt/fifo_a7.vhd
+
+# Pkg
+src/pkg/hardware_pkg_ge21.vhd
+
+# IP
+src/ip_cores_a7/clocks/clocks.xci
+src/ip_cores_a7/sem_a7/sem_a7.xci
+src/ip_cores_a7/xadc_a7/xadc_a7.xci
+
+# Cluster Building
+src/cluster_building/count768.v
+src/cluster_building/priority192.v
+
+# GTP
+src/mgt/gtp/gtp_common.vhd
+src/mgt/gtp/gtp_common_reset.vhd
+src/mgt/gtp/gtp_cpll_railing.vhd
+src/mgt/gtp/gtp_gt.vhd
+src/mgt/gtp/gtp_sync_block.vhd
+src/mgt/gtp/gtp_sync_pulse.vhd
+src/mgt/gtp/gtp_tx_manual_phase_align.vhd
+src/mgt/gtp/gtp_tx_startup_fsm.vhd
+src/mgt/mgt_wrapper.vhd

@@ -1,3 +1,4 @@
+#/usr/env python2
 def sot_polarity_swap (sector, hw_version, gem_version):
 
     if (gem_version=="ge11"):

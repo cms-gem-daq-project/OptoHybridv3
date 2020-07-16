@@ -1,0 +1,30 @@
+# -*- mode: TCL;-*-
+
+src/optohybrid.src
+
+# IP
+#src/ip_cores/mgt/mgt.xco
+src/ip_cores/clocks/clocks.xco
+src/ip_cores/xadc/xadc.xco
+src/ip_cores/sem/sem.xco
+src/ip_cores/fifo/fifo.xco
+
+# GT
+src/ip_cores/mgt/mgt_gtx.vhd 93
+src/mgt/gtx/gtx_tx_sync.vhd 93
+
+src/pkg/hardware_pkg_ge11.vhd 93
+
+src/cluster_building/count1536.v
+src/cluster_building/priority384.v
+
+# GTP
+src/mgt/gtp/gtp_common.vhd 93
+src/mgt/gtp/gtp_common_reset.vhd 93
+src/mgt/gtp/gtp_cpll_railing.vhd 93
+src/mgt/gtp/gtp_gt.vhd 93
+src/mgt/gtp/gtp_sync_block.vhd 93
+src/mgt/gtp/gtp_sync_pulse.vhd 93
+src/mgt/gtp/gtp_tx_manual_phase_align.vhd 93
+src/mgt/gtp/gtp_tx_startup_fsm.vhd 93
+src/mgt/mgt_wrapper.vhd 93
