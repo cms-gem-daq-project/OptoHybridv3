@@ -22,6 +22,7 @@ package types_pkg is
   type t_std8_array is array(integer range <>) of std_logic_vector(7 downto 0);
   type t_std10_array is array(integer range <>) of std_logic_vector(9 downto 0);
   type t_std11_array is array(integer range <>) of std_logic_vector(10 downto 0);
+  type t_std12_array is array(integer range <>) of std_logic_vector(11 downto 0);
   type t_std16_array is array(integer range <>) of std_logic_vector(15 downto 0);
   type t_std32_array is array(integer range <>) of std_logic_vector(31 downto 0);
   type t_std64_array is array(integer range <>) of std_logic_vector(63 downto 0);

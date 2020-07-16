@@ -4,19 +4,6 @@
 // Optohybrid v3 Firmware -- TTC
 // A. Peck
 //--------------------------------------------------------------------------------
-// Description:
-//
-//    Bunch Crossing Counter:
-//      Increments by 1 every clock cycle, runs from 0 to 3563.
-//      Resets to bxn_preset value when resync or bxreset is received.
-//      Bxn_preset is likely to be the L0 latency of 160 cycles.
-//      If bunch crossing 0 (bx0) does not arrive when the count is bxn_preset, the sync_err bit is set.
-//      Latch BXN at pre-trigger and again at L1A for DMB header.
-//
-//--------------------------------------------------------------------------------
-// 2017/08/03 -- Initial port from TMB sequencer
-// 2017/08/07 -- Add bc0 counters (local and received)
-//--------------------------------------------------------------------------------
 
 module ttc #(
   parameter HOLD_UNTIL_BX0 = 0,

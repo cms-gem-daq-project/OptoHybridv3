@@ -132,22 +132,6 @@ architecture Behavioral of control is
       );
   end component;
 
-  component ttc
-    port (
-      clock : in std_logic;
-      reset : in std_logic;
-
-      ttc_bx0   : in  std_logic;
-      ttc_resync : in std_logic;
-      bxn_offset : in std_logic_vector (11 downto 0);
-
-      bx0_local : out std_logic;
-      bxn_counter : out std_logic_vector (11 downto 0);
-      bx0_sync_err : out std_logic;
-      bxn_sync_err : out std_logic
-      );
-  end component;
-
   component external
     generic (GE21      : integer;
              NUM_VFATS : integer);
@@ -467,7 +451,7 @@ begin
   -- TTC
   --------------------------------------------------------------------------------------------------------------------
 
-  ttc_inst : ttc
+  ttc_inst : entity work.ttc_tmr
 
     port map (
 

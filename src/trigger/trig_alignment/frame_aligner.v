@@ -67,11 +67,13 @@ module frame_aligner (
 
   (* KEEP = "TRUE" *) wire sot_mon;
 
+  parameter EN_BITSLIP_TMR = 0;
+
   genvar I;
   generate
   for (I=0; I<8; I=I+1'b1) begin  : Iloop
 
-  bitslip data_bitslip (
+  bitslip #(.g_EN_TMR (EN_BITSLIP_TMR)) data_bitslip (
     .fabric_clk   (clock),
     .reset        (1'b0), //(reset || mask_i || ~sot_is_aligned),
     .bitslip_cnt  (bitslip_cnt),
@@ -82,7 +84,7 @@ module frame_aligner (
   end
   endgenerate
 
-  bitslip sot_bitslip (
+  bitslip #(.g_EN_TMR (EN_BITSLIP_TMR)) sot_bitslip (
     .fabric_clk   (clock),
     .reset        (reset),
     .bitslip_cnt  (bitslip_cnt),

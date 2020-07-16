@@ -7,9 +7,10 @@ src/control/control.vhd 93
 src/control/device_dna.v
 src/control/external.v
 src/control/led_control.v
-src/control/reset.v
+src/control/startup_reset.vhd 93
 src/control/startup.vhd 93
 src/control/ttc.v
+src/control/ttc_tmr.vhd 93
 
 # GBT
 src/gbt/gbt.vhd 93

@@ -38,9 +38,9 @@ entity gbt_serdes is
 
     -- input clocks
 
-    clk_1x    : in std_logic;  -- 40 MHz phase shiftable frame clock from GBT
-    clk_4x    : in std_logic;  -- 160 MHz phase shiftable frame clock from GBT
-    clk_4x_90 : in std_logic;  -- 160 MHz phase shiftable frame clock from GBT
+    clk_1x    : in std_logic;           -- 40 MHz phase shiftable frame clock from GBT
+    clk_4x    : in std_logic;           -- 160 MHz phase shiftable frame clock from GBT
+    clk_4x_90 : in std_logic;           -- 160 MHz phase shiftable frame clock from GBT
 
     -- serial data to/from GBTx
     elink_o_p : out std_logic;
@@ -117,7 +117,7 @@ begin
 
   gbt_oversample : entity work.oversample
     generic map (
-      g_ENABLE_TMR_DRU => EN_TMR_GBT_DRU,
+      g_ENABLE_TMR_DRU     => EN_TMR_GBT_DRU,
       g_PHASE_SEL_EXTERNAL => false
       )
     port map (
@@ -141,6 +141,8 @@ begin
   --------------------------------------------------------------------------------------------------------------------
   -- Bitslip
   --------------------------------------------------------------------------------------------------------------------
+
+  -- TODO: add TMR
 
   process (clk_1x)
   begin
@@ -176,7 +178,9 @@ begin
 
   i_gbt_rx_bitslip : entity work.bitslip
     generic map(
-      g_WORD_SIZE => MXBITS
+      g_WORD_SIZE => MXBITS,
+      g_EN_TMR    => 1
+
       )
     port map(
       fabric_clk  => clk_1x,
@@ -227,4 +231,3 @@ begin
       );
 
 end Behavioral;
-

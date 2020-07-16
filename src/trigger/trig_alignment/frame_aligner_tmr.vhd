@@ -32,6 +32,9 @@ end frame_aligner_tmr;
 
 architecture Behavioral of frame_aligner_tmr is
   component frame_aligner
+    generic (
+      EN_BITSLIP_TMR : integer
+      );
     port (
 
       sbits_i : in  std_logic_vector (MXSBITS-1 downto 0);
@@ -54,6 +57,7 @@ begin
   NO_TMR : if (g_ENABLE_TMR = 0) generate
 
     frame_aligner_inst : frame_aligner
+      generic map (EN_BITSLIP_TMR => EN_TMR_FRAME_BITSLIP)
       port map (
         clock                    => clock,
         sbits_i                  => sbits_i,
@@ -86,6 +90,7 @@ begin
     begin
 
       frame_aligner_inst : frame_aligner
+        generic map (EN_BITSLIP_TMR => EN_TMR_FRAME_BITSLIP)
         port map (
           clock                    => clock,
           sbits_i                  => sbits_i,

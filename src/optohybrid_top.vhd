@@ -175,20 +175,6 @@ architecture Behavioral of top_optohybrid is
   signal ipb_mosi_slaves : ipb_wbus_array (WB_SLAVES-1 downto 0);
   signal ipb_miso_slaves : ipb_rbus_array (WB_SLAVES-1 downto 0);
 
-  component reset port (
-
-    clock_i : in std_logic;
-
-    mmcms_locked_i : in std_logic;
-    idlyrdy_i      : in std_logic;
-    gbt_rxready_i  : in std_logic;
-    gbt_rxvalid_i  : in std_logic;
-    gbt_txready_i  : in std_logic;
-
-    reset_o : out std_logic
-    );
-  end component;
-
 begin
 
   assert_fpga_type :
@@ -217,7 +203,7 @@ begin
   -- Reset
   --------------------------------------------------------------------------------
 
-  reset_inst : reset
+  reset_inst : entity work.startup_reset
     port map (
       clock_i        => clocks.clk40,
       mmcms_locked_i => mmcm_locked,

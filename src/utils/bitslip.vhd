@@ -7,18 +7,16 @@
 -- Description:
 --   This module slips bits to accomodate different tx frame alignments
 ----------------------------------------------------------------------------------
--- 2017/07/27 -- Adaptation from v2 electronics
--- 2018/10/11 -- Change integer input to std_logic_vector for verilog compatibility
-----------------------------------------------------------------------------------
 
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
-
+use work.types_pkg.all;
 
 entity bitslip is
   generic (
-    g_WORD_SIZE : integer := 8
+    g_WORD_SIZE : integer := 8;
+    g_EN_TMR    : integer := 0
     );
   port(
     fabric_clk  : in  std_logic;
@@ -31,19 +29,39 @@ end bitslip;
 
 architecture behavioral of bitslip is
 
-  signal buf  : std_logic_vector(g_WORD_SIZE*2-1 downto 0) := (others => '0');
-  signal data : std_logic_vector(g_WORD_SIZE-1 downto 0)   := (others => '0');
+  type buf_array_t is array(integer range <>) of std_logic_vector(g_WORD_SIZE*2-1 downto 0);
+  type data_array_t is array(integer range <>) of std_logic_vector(g_WORD_SIZE-1 downto 0);
+
+  signal buf : buf_array_t (2*g_EN_TMR downto 0);
+
+  signal data     : data_array_t (2*g_EN_TMR downto 0);
+  signal dout_tmr : data_array_t (2*g_EN_TMR downto 0);
+
+  signal cnt : integer;
 
 begin
 
-  process(fabric_clk)
-  begin
-    if (rising_edge(fabric_clk)) then
-      buf  <= buf(g_WORD_SIZE-1 downto 0) & din(g_WORD_SIZE-1 downto 0);
-      data <= buf(g_WORD_SIZE-1 + to_integer(unsigned(bitslip_cnt)) downto to_integer(unsigned(bitslip_cnt)));
-    end if;
-  end process;
+  cnt <= to_integer(unsigned(bitslip_cnt));
 
-  dout <= (others => '0') when reset = '1' else data;
+  cluster_packer_loop : for I in 0 to 2*g_EN_TMR generate
+  begin
+    process(fabric_clk)
+    begin
+      if (rising_edge(fabric_clk)) then
+
+        buf(I) <= buf(I)(g_WORD_SIZE-1 downto 0) & din(g_WORD_SIZE-1 downto 0);
+
+        if (reset = '1') then
+          data(I) <= (others => '0');
+        else
+          data(I) <= buf(I)(g_WORD_SIZE-1 + cnt downto cnt);
+        end if;
+
+      end if;
+    end process;
+
+  end generate;
+
+  dout <= majority (data(0), data(1), data(2));
 
 end behavioral;

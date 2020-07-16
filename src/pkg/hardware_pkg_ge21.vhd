@@ -59,6 +59,7 @@ package hardware_pkg is
   constant EN_TMR_SOT_DRU            : integer := 1*EN_TMR;
   constant EN_TMR_CLUSTER_PACKER     : integer := 1*EN_TMR;
   constant EN_TMR_FRAME_ALIGNER      : integer := 1*EN_TMR;
+  constant EN_TMR_FRAME_BITSLIP      : integer := 1*EN_TMR;
   constant EN_TMR_GBT_LINK           : integer := 1*EN_TMR;
   constant EN_TMR_IPB_SWITCH         : integer := 1*EN_TMR;
   constant EN_TMR_IPB_SLAVE_TRIG     : integer := 1*EN_TMR;
