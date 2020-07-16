@@ -157,6 +157,8 @@ package types_pkg is
     return std_logic;
   function if_then_else (bool : boolean; a : std_logic_vector; b : std_logic_vector)
     return std_logic_vector;
+  function reverse_vector (a : in std_logic_vector)
+    return std_logic_vector;
 
   ---------------------------------------------------------------------------------
   -- Wishbone
@@ -250,5 +252,16 @@ package body types_pkg is
       return b;
     end if;
   end if_then_else;
+
+  function reverse_vector (a : in std_logic_vector)
+    return std_logic_vector is
+    variable result : std_logic_vector(a'range);
+    alias aa        : std_logic_vector(a'reverse_range) is a;
+  begin
+    for i in aa'range loop
+      result(i) := aa(i);
+    end loop;
+    return result;
+  end;  -- function reverse_vector
 
 end package body;

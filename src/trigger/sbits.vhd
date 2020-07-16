@@ -97,31 +97,7 @@ architecture Behavioral of sbits is
   attribute mark_debug of sbits_mux : signal is "TRUE";
   attribute mark_debug of aff_mux   : signal is "TRUE";
 
-  signal reset : std_logic;
-
-  attribute EQUIVALENT_REGISTER_REMOVAL          : string;
-  attribute EQUIVALENT_REGISTER_REMOVAL of reset : signal is "NO";
-
-  function reverse_vector (a : in std_logic_vector)
-    return std_logic_vector is
-    variable result : std_logic_vector(a'range);
-    alias aa        : std_logic_vector(a'reverse_range) is a;
-  begin
-    for i in aa'range loop
-      result(i) := aa(i);
-    end loop;
-    return result;
-  end;  -- function reverse_vector
 begin
-
-  -- reset fanout
-
-  process (clocks.clk40)
-  begin
-    if (rising_edge(clocks.clk40)) then
-      reset <= reset_i;
-    end if;
-  end process;
 
   process (clocks.clk40)
   begin
@@ -147,7 +123,7 @@ begin
 
       vfat_mask_i => vfat_mask_i,
 
-      reset_i => reset,
+      reset_i => reset_i,
 
       sbits_p => sbits_p,
       sbits_n => sbits_n,

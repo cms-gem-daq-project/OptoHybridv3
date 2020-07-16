@@ -148,6 +148,9 @@ architecture Behavioral of top_optohybrid is
   signal system_reset  : std_logic;
   signal cnt_snap      : std_logic;
 
+  attribute MAX_FANOUT : string;
+  attribute MAX_FANOUT of system_reset : signal is "300";
+
   -- TTC
   signal bxn_counter : std_logic_vector(11 downto 0);
 
@@ -322,8 +325,8 @@ begin
       ipb_miso_o => ipb_miso_slaves (IPB_SLAVE.CONTROL),
 
       -- clock and reset
-      clocks  => clocks,
-      reset_i => system_reset,
+      clocks => clocks,
+      reset  => system_reset,
       ttc_i   => ttc,
 
       -- to drive LED controller only

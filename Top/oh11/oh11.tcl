@@ -1,7 +1,9 @@
 #planahead
 ############# modify these to match project ################
-set bin_file 0
-set use_questa_simulator 0
+set BIN_FILE 0
+set USE_QUESTA_SIMULATOR 0
+set SYNTH_TOP_MODULE  top_optohybrid
+set SIMULATOR  xsim
 
 set FPGA xc6vlx130tff1156-1
 

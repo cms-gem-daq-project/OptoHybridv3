@@ -55,7 +55,7 @@ Convert to GE11 long:
 
 #+BEGIN_SRC bash
 cd tools
-sh update_oh_firmware.sh ge11 -l long
+sh update_oh_firmware.sh ge11 -l long 
 #+END_SRC
 
 Convert to GE11 long and bump the firmware version:
@@ -102,6 +102,21 @@ Specifically:
 | GE2/1   | v1         |                 | 2A  |
 | GE2/1   | v2         |                 | 2B  |
 
+** TMR
+
+TMR for different modules can be configured on and off to allow for customization between GE2/1 and GE1/1.
+
+It is controlled by the platform specific hardware package, viz. hardware_pkg_ge11.vhd and hardware_pkg_ge21.vhd
+
+For example:
+
+#+BEGIN_SRC vhdl
+constant EN_TMR_TRIG_FORMATTER     : integer := 1*EN_TMR;
+constant EN_TMR_GBT_DRU            : integer := 1*EN_TMR;
+constant EN_TMR_SBIT_DRU           : integer := 1*EN_TMR;
+constant EN_TMR_SOT_DRU            : integer := 1*EN_TMR;
+constant EN_TMR_CLUSTER_PACKER     : integer := 1*EN_TMR;
+#+END_SRC
 
 ** LED Indicators
 

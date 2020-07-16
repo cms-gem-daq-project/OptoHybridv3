@@ -53,7 +53,7 @@ entity control is
 
     clocks  : in clocks_t;
     ttc_i   : in ttc_t;
-    reset_i : in std_logic;
+    reset : in std_logic;
 
     ipb_mosi_i : in  ipb_wbus;
     ipb_miso_o : out ipb_rbus;
@@ -217,7 +217,6 @@ architecture Behavioral of control is
   signal vfat_startup_reset_timer_max : natural := 32;
   signal vfat_reset                   : std_logic_vector (11 downto 0);
 
-  signal reset     : std_logic;
   signal cnt_reset : std_logic;
 
   signal dna : std_logic_vector (56 downto 0);
@@ -284,7 +283,7 @@ begin
     if (rising_edge(clocks.clk40)) then
 
       -- startup timer; count to max then deassert the startup reset
-      if (reset_i = '1') then
+      if (reset = '1') then
         vfat_startup_reset_timer <= (others => '0');
       elsif (vfat_startup_reset_timer < vfat_startup_reset_timer_max) then
         vfat_startup_reset_timer <= vfat_startup_reset_timer + 1;
@@ -306,11 +305,9 @@ begin
   process (clocks.clk40)
   begin
     if (rising_edge(clocks.clk40)) then
-      reset     <= reset_i;
-      cnt_reset <= reset_i or ttc_i.resync;
+      cnt_reset <= reset or ttc_i.resync;
     end if;
   end process;
-
 
   --------------------------------------------------------------------------------------------------------------------
   -- Count Snap
@@ -332,7 +329,7 @@ begin
     variable uptime_cnt : unsigned (29 downto 0) := (others => '0');
   begin
     if (rising_edge(clocks.clk40)) then
-      if (reset_i = '1') then
+      if (reset = '1') then
         uptime_cnt := (others => '0');
         uptime     <= (others => '0');
       elsif (uptime_cnt < x"2638e98") then
@@ -407,7 +404,7 @@ begin
   device_dna_inst : device_dna
     port map (
       clock => clocks.clk40,
-      reset => reset_i,
+      reset => reset,
       dna   => dna
       );
 
