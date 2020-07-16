@@ -23,7 +23,7 @@
 
 \title{Optohybrid v3 Address Table}
 % START: ADDRESS_TABLE_VERSION :: DO NOT EDIT
-    \author{\textbf{GE2/1} \\  \\ v03.03.00.2A \\ 20200626}
+    \author{\textbf{GE2/1} \\  \\ v03.04.00.2A \\ 20200716}
 % END: ADDRESS_TABLE_VERSION :: DO NOT EDIT
 \begin{document}
 
@@ -128,25 +128,6 @@
     \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
     \nopagebreak
     RESET & \texttt{0x5} & \texttt{[11:0]} & rw & \texttt{0x0} & Mask of VFAT Reset Outputs; 1=reset 0=enable \\\hline
-    \end{tabularx}
-    \vspace{5mm}
-
-
-    \noindent
-    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.CONTROL.FMM}}}
-
-    \vspace{4mm}
-    \noindent
-    FMM Run Control Module
-    \noindent
-
-    \keepXColumns
-    \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
-    \hline
-    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
-    \nopagebreak
-    DONT\_WAIT & \texttt{0x6} & \texttt{[0:0]} & rw & \texttt{0x1} & OH won't wait for bc0 to start sending trigger \\\hline
-    STOP\_TRIGGER & \texttt{0x7} & \texttt{[1:1]} & r & \texttt{} & OH trigger is stopped waiting for bc0 \\\hline
     \end{tabularx}
     \vspace{5mm}
 
@@ -822,7 +803,7 @@
     LOOPBACK\_MODE0 & \texttt{0x5001} & \texttt{[8:6]} & rw & \texttt{0x0} & GT Loopback Mode \\ & & & & & 0 = normal \\ & & & & & 1 = near end pcs \\ & & & & & 2 = near end pma \\ & & & & &4 = far end pma \\ & & & & & 6 = far end pcs \\\hline
     TX\_DIFFCTRL0 & \texttt{0x5001} & \texttt{[15:12]} & rw & \texttt{0xC} & TX Differential Swing Control \\\hline
     GTTXRESET0 & \texttt{0x5002} & \texttt{[31:0]} & w & Pulsed & GT TX Reset \\\hline
-    TXPRBS\_FORCE\_ERR0 & \texttt{0x5003} & \texttt{[31:0]} & w & Pulsed & GT TX Reset \\\hline
+    TXPRBS\_FORCE\_ERR0 & \texttt{0x5003} & \texttt{[31:0]} & w & Pulsed & TX PRBS Force Error \\\hline
     TXPCSRESET0 & \texttt{0x5004} & \texttt{[31:0]} & w & Pulsed & TX PCS Reset \\\hline
     TXPMARESET0 & \texttt{0x5005} & \texttt{[31:0]} & w & Pulsed & TX PMA Reset \\\hline
     TX\_PRBS\_MODE1 & \texttt{0x5006} & \texttt{[2:0]} & rw & \texttt{0x0} & 0: Standard \\ & & & & & 1: PRBS-7 \\ & & & & & 2: PRBS-15 \\ & & & & & 3: PRBS-23 \\ & & & & & 4: PRBS-31 \\\hline
@@ -830,7 +811,7 @@
     LOOPBACK\_MODE1 & \texttt{0x5006} & \texttt{[8:6]} & rw & \texttt{0x0} & GT Loopback Mode \\ & & & & & 0 = normal \\ & & & & & 1 = near end pcs \\ & & & & & 2 = near end pma \\ & & & & &4 = far end pma \\ & & & & & 6 = far end pcs \\\hline
     TX\_DIFFCTRL1 & \texttt{0x5006} & \texttt{[15:12]} & rw & \texttt{0xC} & TX Differential Swing Control \\\hline
     GTTXRESET1 & \texttt{0x5007} & \texttt{[31:0]} & w & Pulsed & GT TX Reset \\\hline
-    TXPRBS\_FORCE\_ERR1 & \texttt{0x5008} & \texttt{[31:0]} & w & Pulsed & GT TX Reset \\\hline
+    TXPRBS\_FORCE\_ERR1 & \texttt{0x5008} & \texttt{[31:0]} & w & Pulsed & TX PRBS Force Error \\\hline
     TXPCSRESET1 & \texttt{0x5009} & \texttt{[31:0]} & w & Pulsed & TX PCS Reset \\\hline
     TXPMARESET1 & \texttt{0x500a} & \texttt{[31:0]} & w & Pulsed & TX PMA Reset \\\hline
     TX\_PRBS\_MODE2 & \texttt{0x500b} & \texttt{[2:0]} & rw & \texttt{0x0} & 0: Standard \\ & & & & & 1: PRBS-7 \\ & & & & & 2: PRBS-15 \\ & & & & & 3: PRBS-23 \\ & & & & & 4: PRBS-31 \\\hline
@@ -838,7 +819,7 @@
     LOOPBACK\_MODE2 & \texttt{0x500b} & \texttt{[8:6]} & rw & \texttt{0x0} & GT Loopback Mode \\ & & & & & 0 = normal \\ & & & & & 1 = near end pcs \\ & & & & & 2 = near end pma \\ & & & & &4 = far end pma \\ & & & & & 6 = far end pcs \\\hline
     TX\_DIFFCTRL2 & \texttt{0x500b} & \texttt{[15:12]} & rw & \texttt{0xC} & TX Differential Swing Control \\\hline
     GTTXRESET2 & \texttt{0x500c} & \texttt{[31:0]} & w & Pulsed & GT TX Reset \\\hline
-    TXPRBS\_FORCE\_ERR2 & \texttt{0x500d} & \texttt{[31:0]} & w & Pulsed & GT TX Reset \\\hline
+    TXPRBS\_FORCE\_ERR2 & \texttt{0x500d} & \texttt{[31:0]} & w & Pulsed & TX PRBS Force Error \\\hline
     TXPCSRESET2 & \texttt{0x500e} & \texttt{[31:0]} & w & Pulsed & TX PCS Reset \\\hline
     TXPMARESET2 & \texttt{0x500f} & \texttt{[31:0]} & w & Pulsed & TX PMA Reset \\\hline
     TX\_PRBS\_MODE3 & \texttt{0x5010} & \texttt{[2:0]} & rw & \texttt{0x0} & 0: Standard \\ & & & & & 1: PRBS-7 \\ & & & & & 2: PRBS-15 \\ & & & & & 3: PRBS-23 \\ & & & & & 4: PRBS-31 \\\hline
@@ -846,7 +827,7 @@
     LOOPBACK\_MODE3 & \texttt{0x5010} & \texttt{[8:6]} & rw & \texttt{0x0} & GT Loopback Mode \\ & & & & & 0 = normal \\ & & & & & 1 = near end pcs \\ & & & & & 2 = near end pma \\ & & & & &4 = far end pma \\ & & & & & 6 = far end pcs \\\hline
     TX\_DIFFCTRL3 & \texttt{0x5010} & \texttt{[15:12]} & rw & \texttt{0xC} & TX Differential Swing Control \\\hline
     GTTXRESET3 & \texttt{0x5011} & \texttt{[31:0]} & w & Pulsed & GT TX Reset \\\hline
-    TXPRBS\_FORCE\_ERR3 & \texttt{0x5012} & \texttt{[31:0]} & w & Pulsed & GT TX Reset \\\hline
+    TXPRBS\_FORCE\_ERR3 & \texttt{0x5012} & \texttt{[31:0]} & w & Pulsed & TX PRBS Force Error \\\hline
     TXPCSRESET3 & \texttt{0x5013} & \texttt{[31:0]} & w & Pulsed & TX PCS Reset \\\hline
     TXPMARESET3 & \texttt{0x5014} & \texttt{[31:0]} & w & Pulsed & TX PMA Reset \\\hline
     \end{tabularx}

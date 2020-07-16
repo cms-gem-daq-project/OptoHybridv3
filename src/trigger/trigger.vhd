@@ -38,7 +38,6 @@ entity trigger is
 
     -- ttc
 
-    trig_stop_i   : in std_logic;
     bxn_counter_i : in std_logic_vector(11 downto 0);
 
     -- cluster packer
@@ -258,7 +257,6 @@ begin
       -- clock and reset
       clocks      => clocks,
       reset_i     => reset_i,
-      trig_stop_i => trig_stop_i,
 
       -- sbit inputs
       sbits_p => vfat_sbits_p,

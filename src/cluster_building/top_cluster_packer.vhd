@@ -22,7 +22,6 @@ entity cluster_packer is
     clocks          : in  clocks_t;
     reset           : in  std_logic;
     cluster_count_o : out std_logic_vector (10 downto 0);
-    trig_stop_i     : in  std_logic;
 
     sbits_i : in sbits_array_t (NUM_VFATS-1 downto 0);
 
@@ -290,7 +289,7 @@ begin
   process (clocks.clk160_0)
   begin
     if (rising_edge(clocks.clk160_0)) then
-      if (trig_stop_i = '1' or reset = '1') then
+      if (reset = '1') then
         clusters_o <= (others => NULL_CLUSTER);
       else
         clusters_o <= clusters;

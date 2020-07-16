@@ -29,8 +29,6 @@ entity sbits is
 
     reset_i : in std_logic;
 
-    trig_stop_i : in std_logic;
-
     vfat_mask_i : in std_logic_vector (NUM_VFATS-1 downto 0);
 
     sbits_mux_sel_i : in  std_logic_vector (4 downto 0);
@@ -259,7 +257,6 @@ begin
         port map (
           clocks      => clocks,
           reset       => reset_i,
-          trig_stop_i => trig_stop_i,
           sbits_i     => vfat_sbits_strip_mapped,
 
           cluster_count_o => cluster_count(I),

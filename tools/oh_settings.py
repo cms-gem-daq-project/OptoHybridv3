@@ -4,15 +4,15 @@ now = datetime.datetime.now()
 
 # START: OH_VERSION
 gem_version = "ge21"
-oh_version  = "ge21"
-geb_version = ""
+oh_version  = "v3c"
+geb_version = "v3c"
 geb_length  = ""
 firmware_version_major   = 3
-firmware_version_minor   = 3
+firmware_version_minor   = 4
 firmware_release_version = 0
 firmware_year            = 2020
-firmware_month           = 6
-firmware_day             = 26
+firmware_month           = 7
+firmware_day             = 16
 # END: OH_VERSION
 
 if (gem_version == "ge21"):

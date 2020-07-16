@@ -6,7 +6,6 @@ src/control/adc.vhd 93
 src/control/control.vhd 93
 src/control/device_dna.v
 src/control/external.v
-src/control/fmm.v
 src/control/led_control.v
 src/control/reset.v
 src/control/startup.vhd 93

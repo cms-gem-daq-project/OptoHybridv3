@@ -84,18 +84,6 @@
                 fw_default="0x0"/>
         </node> <!--VFAT-->
 
-        <node id="FMM" address="0x6" description = "FMM Run Control Module">
-            <node id="DONT_WAIT" address="0x0" permission="rw"
-                mask="0x00000001"
-                description="OH won't wait for bc0 to start sending trigger"
-                fw_signal="fmm_dont_wait"
-                fw_default="0x1"/>
-            <node id="STOP_TRIGGER" address="0x1" permission="r"
-                mask="0x00000002"
-                description="OH trigger is stopped waiting for bc0"
-                fw_signal="fmm_trig_stop"/>
-        </node> <!--FMM-->
-
         <node id="TTC" address="0x8" description = "TTC Status and Control">
             <node id="BX0_CNT_LOCAL" address="0x0" permission="r"
                 mask="0x00ffffff"

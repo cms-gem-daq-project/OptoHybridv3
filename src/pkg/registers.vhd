@@ -10,7 +10,7 @@ package registers is
     -- Implements various control and monitoring functions of the Optohybrid
     --============================================================================
 
-    constant REG_CONTROL_NUM_REGS : integer := 37;
+    constant REG_CONTROL_NUM_REGS : integer := 35;
     constant REG_CONTROL_ADDRESS_MSB : integer := 5;
     constant REG_CONTROL_ADDRESS_LSB : integer := 0;
     constant REG_CONTROL_LOOPBACK_DATA_ADDR    : std_logic_vector(5 downto 0) := "00" & x"0";
@@ -50,13 +50,6 @@ package registers is
     constant REG_CONTROL_VFAT_RESET_MSB    : integer := 11;
     constant REG_CONTROL_VFAT_RESET_LSB     : integer := 0;
     constant REG_CONTROL_VFAT_RESET_DEFAULT : std_logic_vector(11 downto 0) := x"000";
-
-    constant REG_CONTROL_FMM_DONT_WAIT_ADDR    : std_logic_vector(5 downto 0) := "00" & x"6";
-    constant REG_CONTROL_FMM_DONT_WAIT_BIT    : integer := 0;
-    constant REG_CONTROL_FMM_DONT_WAIT_DEFAULT : std_logic := '1';
-
-    constant REG_CONTROL_FMM_STOP_TRIGGER_ADDR    : std_logic_vector(5 downto 0) := "00" & x"7";
-    constant REG_CONTROL_FMM_STOP_TRIGGER_BIT    : integer := 1;
 
     constant REG_CONTROL_TTC_BX0_CNT_LOCAL_ADDR    : std_logic_vector(5 downto 0) := "00" & x"8";
     constant REG_CONTROL_TTC_BX0_CNT_LOCAL_MSB    : integer := 23;

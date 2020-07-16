@@ -150,7 +150,6 @@ architecture Behavioral of top_optohybrid is
 
   -- TTC
   signal bxn_counter : std_logic_vector(11 downto 0);
-  signal trig_stop   : std_logic;
 
   -- Outputs
   signal ext_sbits : std_logic_vector (7 downto 0);
@@ -364,7 +363,6 @@ begin
 
       -- Outputs
       bxn_counter_o => bxn_counter,
-      trig_stop_o   => trig_stop,
       vfat_reset_o  => ext_reset,
       ext_sbits_o   => ext_sbits,
       led_o         => led,
@@ -388,7 +386,6 @@ begin
       -- ttc
       bxn_counter_i => bxn_counter,
       ttc           => ttc,
-      trig_stop_i   => trig_stop,
 
       cnt_snap => cnt_snap,
 
