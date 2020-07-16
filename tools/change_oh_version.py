@@ -1,9 +1,10 @@
 #/usr/env python2
 from __future__ import unicode_literals
-from insert_code import *
 import sys
 import datetime
+import argparse
 import oh_settings
+import insert_code as ins
 
 OH_SETTINGS_FILE = './oh_settings.py'
 MARKER_START     = '# START: OH_VERSION'
@@ -11,26 +12,37 @@ MARKER_END       = '# END: OH_VERSION'
 
 def main():
 
-    print (sys.argv[0])
-    print (sys.argv[1])
+    parser = argparse.ArgumentParser()
 
-    if (len(sys.argv) != 6 and len(sys.argv) != 5 and len(sys.argv) != 2 and len(sys.argv) != 3):
-        print('Arguments: <gem_station> <oh_version> <geb_version> <geb_length> <firmware_version> [<date>]')
-        print('e.g.: for GE11: sh update_oh_firmware.sh ge11 v3c v3c short <03.02.04>')
-        print('      for GE21: sh update_oh_firmware.sh ge21 <03.02.04>')
-        print('The version code is optional.')
-        print('If omitted the script will not update the date or version... ')
-        print('useful for just switching between hardwares')
-        sys.exit(1)
-    else:
-        print('%d arguments received'%len(sys.argv))
+    parser.add_argument('-l',
+                        '--length',
+                        dest='length',
+                        help="GEB length for GE1/1 (long or short)")
 
+    parser.add_argument('station',
+                        help="GEM station (ge11 or ge21)")
+
+    parser.add_argument('-g',
+                        '--generation',
+                        dest='generation',
+                        help="GEB generation (v3a or v3b or v3c)")
+
+    parser.add_argument('-v',
+                        '--version',
+                        dest='version',
+                        help="Optohybrid firmware version (e.g. 03.02.04)")
+
+    #parser.add_argument('station', help="")
+
+    args = parser.parse_args()
+
+    print(args)
     new_version=False
-    gem_version = sys.argv[1].lower()
-    geb_version = ""
+    gem_version = args.station.lower()
+    geb_version = "v3c"
     geb_length = ""
-    oh_version=""
-    version=["","",""]
+    oh_version="v3c"
+    version=["", "", ""]
     firmware_year               = 0
     firmware_month              = 0
     firmware_day                = 0
@@ -38,25 +50,24 @@ def main():
     firmware_version_minor      = 0
     firmware_release_version    = 0
 
-    if (gem_version=="ge11"):
-        print ("Chamber type = GE11")
-        oh_version               = sys.argv[1]
-        geb_version              = sys.argv[3]
-        geb_length               = sys.argv[4]
-        if (len(sys.argv)==6):
-            print ("Bumping version number...")
-            new_version=True
-            version = sys.argv[5].split('.')
-    elif (gem_version=="ge21"):
-        print ("Chamber type = GE21")
-        if (len(sys.argv)==3):
-            new_version=True
-            version = sys.argv[2].split('.')
-        oh_version               = sys.argv[1]
-        geb_version              = ""
-        geb_length               = ""
-    else:
-        print ("Unknown Chamber type %s" % gem_version)
+    if args.length != None:
+        print ("Geb length:")
+        geb_length = args.length
+        print (geb_length)
+    if args.generation != None:
+        print ("Geb version:")
+        geb_version = args.generation
+        print (geb_version)
+    if args.version != None:
+        print ("Bumping version number...")
+        new_version=True
+        version = args.version.split('.')
+
+    if gem_version not in ("ge21", "ge11"):
+        print("Unknown GEM station %s" % gem_version)
+        return sys.exit(1)
+    if (gem_version == "ge11" and geb_length == ""):
+        print("Please specify a length for the GEB (-l long or -l short)")
         return sys.exit(1)
 
     if (new_version):
@@ -77,7 +88,7 @@ def main():
 
     print(version)
     if (len(version) != 3):
-        print ("Problem with OH version in change_oh_version.py")
+        print ("Problem with OH version formatting in change_oh_version.py")
         sys.exit(1)
 
     def write_oh_version (file_handle):
@@ -97,7 +108,7 @@ def main():
         f.write ('firmware_month           = %d\n' % (firmware_month))
         f.write ('firmware_day             = %d\n' % (firmware_day  ))
 
-    insert_code (OH_SETTINGS_FILE, OH_SETTINGS_FILE, MARKER_START, MARKER_END, write_oh_version)
+    ins.insert_code (OH_SETTINGS_FILE, OH_SETTINGS_FILE, MARKER_START, MARKER_END, write_oh_version)
 
 if __name__ == '__main__':
     main()
