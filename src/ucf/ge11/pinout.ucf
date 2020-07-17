@@ -1,3 +1,126 @@
+########################################################################################################################
+# Resync
+########################################################################################################################
+
+# create a closed group around the mgts to keep out extra trigger logic
+INST "trigger/trigger_data_phy*" AREA_GROUP=MGT_GROUP;
+AREA_GROUP "MGT_GROUP" RANGE=SLICE_X98Y120:SLICE_X105Y179;
+AREA_GROUP "MGT_GROUP" GROUP=CLOSED;
+AREA_GROUP "MGT_GROUP" PLACE=CLOSED;
+
+
+INST "*/s_resync_1" TNM = "resync_grp";
+TIMESPEC TS_SYNC = FROM  FFS TO "resync_grp" TIG ;
+
+# This file constraints miscellaneous signals
+## HDMI
+
+#NET "TMDS_CLK_p" = H17; # v_diff_m_4_p
+#NET "TMDS_CLK_n" = G17; # v_diff_m_4_n
+#NET "TMDS_D2_p"  = J16; # v_diff_m_15_n
+#NET "TMDS_D2_n"  = J17; # v_diff_m_15_p
+#NET "TMDS_D1_p"  = L14; # v_diff_m_11_n
+#NET "TMDS_D1_n"  = L15; # v_diff_m_11_p
+#NET "TMDS_D0_p"  = M17; # v_diff_m_8_n
+#NET "TMDS_D0_n"  = M18; # v_diff_m_8_p
+
+NET "ext_sbits_o[0]" LOC = H17; # tmds clk p
+NET "ext_sbits_o[1]" LOC = G17; # tmds clk n
+NET "ext_sbits_o[2]" LOC = J16; # tmds d2 p
+NET "ext_sbits_o[3]" LOC = J17; # tmds d2 n
+NET "ext_sbits_o[4]" LOC = L14; # tmds d1 p
+NET "ext_sbits_o[5]" LOC = L15; # tmds d1 n
+NET "ext_sbits_o[6]" LOC = M17; # tmds d0 p
+NET "ext_sbits_o[7]" LOC = M18; # tmds d0 n
+
+## Header
+# INST "led_o" IOB=TRUE;
+
+NET "led_o<0>"  LOC = H27  ; # vdiff_e_13_p
+NET "led_o<1>"  LOC = G28  ; # vdiff_e_13_n
+NET "led_o<2>"  LOC = B25  ; # vdiff_e_4_p
+NET "led_o<3>"  LOC = A25  ; # vdiff_e_4_n
+NET "led_o<4>"  LOC = B26  ; # vdiff_e_6_p
+NET "led_o<5>"  LOC = A26  ; # vdiff_e_6_n
+NET "led_o<6>"  LOC = C27  ; # vdiff_e_8_n
+NET "led_o<7>"  LOC = B27  ; # vdiff_e_8_p
+NET "led_o<8>"  LOC = C14  ; # vdiff_l_2_n
+NET "led_o<9>"  LOC = D14  ; # vdiff_l_2_p
+NET "led_o<10>" LOC = C13  ; # vdiff_l_12_p
+NET "led_o<11>" LOC = C12  ; # vdiff_l_12_n
+NET "led_o<12>" LOC = B15  ; # vdiff_m_16_n
+NET "led_o<13>" LOC = A15  ; # vdiff_m_16_p
+NET "led_o<14>" LOC = G26  ; # vdiff_e_7_p
+NET "led_o<15>" LOC = G27  ; # vdiff_e_7_n
+
+INST "led_o<0>" TNM = led_o;
+INST "led_o<1>" TNM = led_o;
+INST "led_o<2>" TNM = led_o;
+INST "led_o<3>" TNM = led_o;
+INST "led_o<4>" TNM = led_o;
+INST "led_o<5>" TNM = led_o;
+INST "led_o<6>" TNM = led_o;
+INST "led_o<7>" TNM = led_o;
+INST "led_o<8>" TNM = led_o;
+INST "led_o<9>" TNM = led_o;
+INST "led_o<10>" TNM = led_o;
+INST "led_o<11>" TNM = led_o;
+INST "led_o<12>" TNM = led_o;
+INST "led_o<13>" TNM = led_o;
+INST "led_o<14>" TNM = led_o;
+INST "led_o<15>" TNM = led_o;
+
+INST "ext_sbits_o<0>" TNM = ext_sbits_o;
+INST "ext_sbits_o<1>" TNM = ext_sbits_o;
+INST "ext_sbits_o<2>" TNM = ext_sbits_o;
+INST "ext_sbits_o<3>" TNM = ext_sbits_o;
+INST "ext_sbits_o<4>" TNM = ext_sbits_o;
+INST "ext_sbits_o<5>" TNM = ext_sbits_o;
+
+TIMEGRP "led_o"       OFFSET = OUT 12.5 ns VALID 25 ns AFTER "clock_p" RISING;
+TIMEGRP "ext_sbits_o" OFFSET = OUT 12.5 ns VALID 25 ns AFTER "clock_p" RISING;
+
+# GBT
+# NET "gbt_txvalid_o" LOC =      ; # hardwired, apparently
+NET "gbt_txready_i<0>" LOC = AF13 ; # v_diff_k_13_p
+NET "gbt_rxvalid_i<0>" LOC = AJ9  ; # R_side_2_n
+NET "gbt_rxready_i<0>" LOC = AH9  ; # R_side_2_p
+
+################################################################################
+# VFAT resets
+################################################################################
+#### START: AUTO GENERATED RESETS UCF -- DO NOT EDIT ####
+NET "ext_reset_o<5>" LOC="Y27";
+NET "ext_reset_o<11>" LOC="AP24";
+NET "ext_reset_o<10>" LOC="AL23";
+NET "ext_reset_o<3>" LOC="W26";
+NET "ext_reset_o<8>" LOC="AL30";
+NET "ext_reset_o<7>" LOC="AL31";
+NET "ext_reset_o<6>" LOC="AK31";
+NET "ext_reset_o<4>" LOC="W27";
+NET "ext_reset_o<2>" LOC="C15";
+NET "ext_reset_o<0>" LOC="A16";
+NET "ext_reset_o<1>" LOC="D15";
+NET "ext_reset_o<9>" LOC="AM23";
+#### END: AUTO GENERATED RESETS UCF -- DO NOT EDIT ####
+
+NET "mgt_clk_p_i<0>" LOC = H6; #
+NET "mgt_clk_n_i<0>" LOC = H5; #
+NET "mgt_clk_p_i<1>" LOC = F6; #
+NET "mgt_clk_n_i<1>" LOC = F5; #
+
+NET "mgt_tx_p_o<0>" LOC = M1; #
+NET "mgt_tx_n_o<0>" LOC = M2; #
+NET "mgt_tx_p_o<1>" LOC = K1; #
+NET "mgt_tx_n_o<1>" LOC = K2; #
+NET "mgt_tx_p_o<2>" LOC = H1; #
+NET "mgt_tx_n_o<2>" LOC = H2; #
+NET "mgt_tx_p_o<3>" LOC = F1; #
+NET "mgt_tx_n_o<3>" LOC = F2; #
+
+NET "adc_vp" LOC=U18;
+NET "adc_vn" LOC=V17;
+
 ################################################################################
 # VFAT Trigger Data
 ################################################################################
@@ -446,3 +569,53 @@ NET vfat_sbits_p<6>    IOSTANDARD=LVDS_25 | LOC = "AB28"; # polarity swap
 NET vfat_sbits_n<6>    IOSTANDARD=LVDS_25 | LOC = "AC28"; # polarity swap
 NET vfat_sbits_n<7>    IOSTANDARD=LVDS_25 | LOC = "AA31";
 NET vfat_sbits_p<7>    IOSTANDARD=LVDS_25 | LOC = "AA30";
+
+########################################################################################################################
+# GBT Status
+########################################################################################################################
+# v_diff_k_13_p
+# R_side_2_n
+# R_side_2_p
+NET "gbt_txready_i[0]" TNM = "gbt_status_grp";
+NET "gbt_rxvalid_i[0]" TNM = "gbt_status_grp";
+NET "gbt_rxready_i[0]" TNM = "gbt_status_grp";
+
+TIMEGRP "gbt_status_grp" OFFSET = IN 12.5 ns VALID 25 ns BEFORE "clock_p" RISING;
+
+########################################################################################################################
+# E-links
+########################################################################################################################
+
+# inputs
+# 320 MHz e-link
+# GBTx DIN 36
+NET "elink_i_p" IOSTANDARD = LVDS_25;
+NET "elink_i_p" DIFF_TERM = "FALSE";
+
+NET "elink_i_n" IOSTANDARD = LVDS_25;
+NET "elink_i_n" DIFF_TERM = "FALSE";
+
+NET "elink_o_p" LOC = L19;
+NET "elink_o_n" LOC = L18;
+
+NET "elink_i_p" LOC = AD24;
+NET "elink_i_n" LOC = AE24;
+
+
+########################################################################################################################
+# GBT TIG
+########################################################################################################################
+
+# Output
+INST "elink_o_p" TNM = "elink_o_grp";
+INST "elink_o_n" TNM = "elink_o_grp";
+INST "gbt/gbt_serdes*/to_gbt_ser*/*" TNM = "elink_o_serdes_grp";
+
+TIMESPEC TS_ELINK_O_TIG = FROM "elink_o_serdes_grp" TO "elink_o_grp" TIG ;
+
+# Input
+INST "elink_i_p" TNM = "elink_i_grp";
+INST "elink_i_n" TNM = "elink_i_grp";
+INST "gbt/gbt_serdes*/*oversample/ise1*/*" TNM = "elink_i_serdes_grp";
+
+TIMESPEC TS_GBT_IOTIG = FROM "elink_i_grp" TO "elink_i_serdes_grp" TIG ;
