@@ -45,6 +45,13 @@ Hog/LaunchSynthesis.sh oh21
 Hog/LaunchImplementation.sh oh21
 #+END_SRC
 
+Alternatively, a Makefile is provided that should make firmware building more straightforward. You can run for example:
+#+BEGIN_SRC bash
+make ge21-200    # builds the 200t version of the  ge21 firmware
+make ge21-75     # builds the 75t version of the ge21 firmware
+make ge21        # builds both versions of the firmware
+#+END_SRC
+
 Support for GE1/1 through a planAhead wrapper is in development (but still experimental).
 
 ** Updating the address table or firmware version
