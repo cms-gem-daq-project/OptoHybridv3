@@ -4,6 +4,7 @@
 # Only keep important files in the `prj`directory
 prj/*
 
+tools/oh_settings.py
 *.bit
 *.mcs
 *.*bak
@@ -46,7 +47,6 @@ src/ip_cores_a7/*/*
 src/ip_cores/*/*
 !src/ip_cores/*/*.xco
 !src/ip_cores/*/*.xco
-
 
 tags
 

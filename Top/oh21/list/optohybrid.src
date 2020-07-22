@@ -2,10 +2,18 @@
 
 src/optohybrid.src
 
-src/gbt/fifo_a7.vhd
+src/control/adc_ge21.vhd 93
+src/control/control_ge21.vhd 93
+src/trigger/trigger_ge21.vhd 93
+src/gbt/gbt_ge21.vhd 93
+src/trigger/trigger_data_phy_ge21.vhd 93
+src/pkg/registers_ge21.vhd 93
 
 # Pkg
 src/pkg/hardware_pkg_ge21.vhd
+src/pkg/generation_pkg_2b.vhd
+
+src/gbt/fifo_a7.vhd
 
 # IP
 src/ip_cores_a7/clocks/clocks.xci

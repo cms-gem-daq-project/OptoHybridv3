@@ -45,43 +45,17 @@ Hog/LaunchSynthesis.sh oh21
 Hog/LaunchImplementation.sh oh21
 #+END_SRC
 
-** Changing firmware flavors
+Support for GE1/1 through a planAhead wrapper is in development (but still experimental).
 
-Many parameters and settings inside of the Optohybrid firmware are compile-time programmed.  These can be updated with a single bash script.
+** Updating the address table or firmware version
 
-*** Examples
+The firmware can be updated from the address table by running ```make update``` from the root of the repository.
 
-Convert to GE11 long:
+If you want to increment the version, just run make with an argument, e.g.
 
-#+BEGIN_SRC bash
-cd tools
-sh update_oh_firmware.sh ge11 -l long 
-#+END_SRC
-
-Convert to GE11 long and bump the firmware version:
-
-#+BEGIN_SRC bash
-cd tools
-sh update_oh_firmware.sh ge11 -l long -v 03.02.01
-#+END_SRC
-
-Set constants for a legacy version of the GEB:
-
-#+BEGIN_SRC bash
-cd tools
-sh update_oh_firmware.sh ge11 -g v3a
-#+END_SRC
-
-Convert to GE21:
-
-#+BEGIN_SRC bash
-cd tools
-sh update_oh_firmware.sh ge21
-#+END_SRC
-
-You should make sure to run this. All firmware development is done with GE2/1 firmware as the "master" with commits done there, and the GE2/1 firmware branch mirroring it only as a clone.. development should not be committed directly to the GE1/1 firmware branch.
-
-This script also generates PDF latex documentation, so you should make sure it runs appropriately and you have a latex compiler installed if you are releasing firmware.
+```
+make update version=03.04.01
+```
 
 ** Versioning
 
@@ -111,12 +85,16 @@ It is controlled by the platform specific hardware package, viz. hardware_pkg_ge
 For example:
 
 #+BEGIN_SRC vhdl
+constant EN_TMR : integer := 1;
+
 constant EN_TMR_TRIG_FORMATTER     : integer := 1*EN_TMR;
 constant EN_TMR_GBT_DRU            : integer := 1*EN_TMR;
 constant EN_TMR_SBIT_DRU           : integer := 1*EN_TMR;
 constant EN_TMR_SOT_DRU            : integer := 1*EN_TMR;
-constant EN_TMR_CLUSTER_PACKER     : integer := 1*EN_TMR;
+constant EN_TMR_CLUSTER_PACKER     : integer := 0*EN_TMR;
 #+END_SRC
+
+You can change a 1 to a 0 to to disable TMR for that module, or =EN_TMR= from 1 to 0 to disable TMR entirely.
 
 ** LED Indicators
 

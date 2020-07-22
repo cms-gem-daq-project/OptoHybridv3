@@ -4,7 +4,7 @@ import sys
 import datetime
 import argparse
 import oh_settings
-import insert_code as ins
+import io
 
 OH_SETTINGS_FILE = './oh_settings.py'
 MARKER_START     = '# START: OH_VERSION'
@@ -51,9 +51,10 @@ def main():
     firmware_release_version    = 0
 
     if args.length != None:
-        print ("Geb length:")
-        geb_length = args.length
-        print (geb_length)
+        if (gem_version=="ge11"):
+            print ("Geb length:")
+            geb_length = args.length
+            print (geb_length)
     if args.generation != None:
         print ("Geb version:")
         geb_version = args.generation
@@ -95,11 +96,23 @@ def main():
 
         f = file_handle
 
-        f.write ('gem_version = "%s"\n' % (gem_version))
+        f.write('#/usr/env python2\n')
+        f.write('import datetime\n')
+        f.write('now = datetime.datetime.now()\n')
+        f.write('\n')
 
-        f.write ('oh_version  = "%s"\n' % (oh_version ))
-        f.write ('geb_version = "%s"\n' % (geb_version))
-        f.write ('geb_length  = "%s"\n' % (geb_length ))
+        file_suffix = "_"+gem_version
+
+        if geb_length != "":
+            file_suffix = file_suffix + "-" + str(geb_length)
+
+        f.write ('file_suffix = "%s"\n' % file_suffix)
+
+        f.write ('gem_version = "%s"\n' % gem_version)
+
+        f.write ('oh_version  = "%s"\n' % oh_version )
+        f.write ('geb_version = "%s"\n' % geb_version)
+        f.write ('geb_length  = "%s"\n' % geb_length )
 
         f.write ('firmware_version_major   = %d\n' % (firmware_version_major   ))
         f.write ('firmware_version_minor   = %d\n' % (firmware_version_minor   ))
@@ -107,8 +120,29 @@ def main():
         f.write ('firmware_year            = %d\n' % (firmware_year ))
         f.write ('firmware_month           = %d\n' % (firmware_month))
         f.write ('firmware_day             = %d\n' % (firmware_day  ))
+        f.write ('\n')
+        f.write ('if (gem_version == "ge21"):\n')
+        f.write ('     num_vfats = 12\n')
+        f.write ('     num_sbits = 8*num_vfats\n')
+        f.write ('     USE_INVERTED_NUMBERING = False\n')
+        f.write ('     release_hardware        = "2A"\n')
+        f.write ('elif (gem_version == "ge11"):\n')
+        f.write ('     num_vfats = 24\n')
+        f.write ('     num_sbits = 8*num_vfats\n')
+        f.write ('     USE_INVERTED_NUMBERING = True\n')
+        f.write ('     if (geb_version=="v3c" and geb_length == "long"):\n')
+        f.write ('         release_hardware        = "1C"\n')
+        f.write ('     if (geb_version=="v3c" and geb_length == "short"):\n')
+        f.write ('         release_hardware        = "0C"\n')
+        f.write ('     if (geb_version=="v3b" and geb_length == "short"):\n')
+        f.write ('         release_hardware        = "0B"\n')
+        f.write ('else:\n')
+        f.write ('     num_vfats = -1\n')
+        f.write ('     num_sbits = -1\n')
 
-    ins.insert_code (OH_SETTINGS_FILE, OH_SETTINGS_FILE, MARKER_START, MARKER_END, write_oh_version)
+    f = io.open (OH_SETTINGS_FILE, "w+", newline='')
+    write_oh_version(f)
+    f.close()
 
 if __name__ == '__main__':
     main()

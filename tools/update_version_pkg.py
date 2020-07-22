@@ -34,8 +34,6 @@ def write_version_pkg (file_handle):
     f.write ('%sconstant RELEASE_MONTH          : std_logic_vector(7 downto  0) := x"%02d";\n'  %  (padding, firmware_month))
     f.write ('%sconstant RELEASE_DAY            : std_logic_vector(7 downto  0) := x"%02d";\n'  %  (padding, firmware_day))
     f.write ('\n')
-    f.write ('%sconstant RELEASE_HARDWARE       : std_logic_vector(7 downto  0) := x"%s";\n'    %  (padding, release_hardware))
-    f.write ('\n')
 
 if __name__ == '__main__':
     main()

@@ -6,11 +6,11 @@ echo "Setting OH version..." \
 && echo "Updating version_pkg..." \
     && python2 ./update_version_pkg.py \
 && echo "Regenerating registers and documentation..." \
-    && python2 generate_registers.py oh \
+&& SUFFIX=$(grep -E "file_suffix\s+=" oh_settings.py | awk -F"\"" '{print $2}') \
+    && python2 generate_registers.py oh -s $SUFFIX \
     && python2 update_latex_version.py oh \
 && echo "Regenerating pdf documentation..." \
     && cd ../doc/latex/ \
-    && pdflatex address_table.tex \
-    && cd - \
-
-rm *.pyc
+    && pdflatex address_table.tex $SUFFIX \
+    && cd -
+rm "*.pyc"

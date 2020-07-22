@@ -6,12 +6,14 @@ __author__ = 'evka'
 import io
 import xml.etree.ElementTree as xml
 import textwrap as tw
+import argparse
 import sys
 import rw_reg
 import shutil
 import tempfile
 from insert_code import *
 
+SUFFIX                        =  ''
 ADDRESS_TABLE_TOP             =  ''
 CONSTANTS_FILE                =  ''
 DOC_FILE                      =  ''
@@ -175,31 +177,38 @@ def main():
     num_of_oh = 4
     CONFIG = CONFIG_AMC
 
-    if (len(sys.argv) < 2 and sys.argv[1] != 'oh'):
-        print('Usage: generate_registers.py <board_type> [num_of_oh]')
-        print('board_type can be: ctp7 or glib')
-        print('num_of_oh is optional. if supplied, the script will substitute generate_size with this value when generating registers in the firmware. Note that this is not affecting the uHAL xml file generation.')
-        return sys.exit(1)
+    parser = argparse.ArgumentParser()
 
+    parser.add_argument('-s',
+                        '--suffix',
+                        dest='suffix',
+                        help="Specify an optional suffix to copy the file onto")
+
+    parser.add_argument('-n',
+                        '--num_ohs',
+                        dest='num_ohs',
+                        help="Number of optohybrids to build for")
+
+    parser.add_argument('board_type',
+                        help="Choose board type (ctp7 or glib or oh)")
+
+    args = parser.parse_args()
+
+    board_type = args.board_type
+
+    if board_type != 'oh':
+        CONFIG = CONFIG_AMC
+        if args.num_ohs != None:
+            num_of_oh = args.num_ohs
+            print('Generating address table with num_of_oh = %d'%(num_of_oh))
+        elif board_type == 'ctp7':
+            num_of_oh = 4
+        elif board_type == 'glib':
+            num_of_oh = 2
     else:
-        if sys.argv[1] != 'ctp7' and sys.argv[1] != 'glib' and sys.argv[1] != 'oh':
-            print('Unsupported board type. Use "ctp7" or "glib" or "oh"')
-        else:
-            board_type = sys.argv[1]
+        num_of_oh = 0
+        CONFIG = CONFIG_OH
 
-        if sys.argv[1] != 'oh':
-            CONFIG = CONFIG_AMC
-            if len(sys.argv) > 2:
-                num_of_oh = parseInt(sys.argv[2])
-                print('Generating address table with num_of_oh = %d'%(num_of_oh))
-            elif board_type == 'ctp7':
-                num_of_oh = 4
-            elif board_type == 'glib':
-                num_of_oh = 2
-        else:
-            board_type='oh'
-            num_of_oh = 0
-            CONFIG = CONFIG_OH
 
     global ADDRESS_TABLE_TOP
     global CONSTANTS_FILE
@@ -207,6 +216,13 @@ def main():
     global PACKAGE_FILE
     global TOP_NODE_NAME
     global VHDL_REG_GENERATED_DISCLAIMER
+    global SUFFIX
+
+    if args.suffix is not None:
+        SUFFIX = args.suffix;
+    elif (board_type == "oh"):
+        "Please specify a suffix when running on oh (i.e. -s _ge21)"
+        sys.exit(1)
 
     ADDRESS_TABLE_TOP             = CONFIG['ADDRESS_TABLE_TOP']
     CONSTANTS_FILE                = CONFIG['CONSTANTS_FILE']
@@ -215,6 +231,7 @@ def main():
     TOP_NODE_NAME                 = CONFIG['TOP_NODE_NAME']
     VHDL_REG_GENERATED_DISCLAIMER = CONFIG['VHDL_REG_GENERATED_DISCLAIMER']
 
+    ADDRESS_TABLE_TOP = ADDRESS_TABLE_TOP.replace(".xml",SUFFIX+".xml")
     print('Hi, parsing this top address table file: ' + ADDRESS_TABLE_TOP)
 
     tree = xml.parse(ADDRESS_TABLE_TOP)
@@ -234,11 +251,11 @@ def main():
         #for reg in module.regs:
         #    print(reg.toString())
 
-    print('Writing documentation file to ' + DOC_FILE)
+    print('Writing documentation file to ' + DOC_FILE.replace(".tex",SUFFIX+".tex"))
     writeDocFile (modules, DOC_FILE)
 
-    print('Writing constants file to ' + CONSTANTS_FILE)
-    writeConstantsFile(modules, CONSTANTS_FILE)
+    print('Writing constants file to ' + CONSTANTS_FILE.replace(".vhd",SUFFIX+".vhd"))
+    writeConstantsFile(modules, CONSTANTS_FILE.replace(".vhd",SUFFIX+".vhd"))
 
     if (PACKAGE_FILE!=''):
         print('Writing package file to ' + PACKAGE_FILE)
@@ -250,7 +267,6 @@ def main():
 
     if board_type == 'ctp7':
         writeStatusBashScript(modules, BASH_STATUS_SCRIPT_FILE)
-        #writeRegReadBashScript(modules, BASH_REG_READ_SCRIPT_FILE)
         writeUHalAddressTable(modules, UHAL_ADDRESS_TABLE_FILE_CTP7, 0, num_of_oh)
     elif board_type == 'glib':
         writeUHalAddressTable(modules, UHAL_ADDRESS_TABLE_FILE_GLIB, GLIB_IPB_BASE_ADDRESS, num_of_oh)
@@ -476,22 +492,6 @@ def writeDocFile (modules, filename):
             string=""
         return string.replace('\\n','\\\\ & & & & &')
 
-    def write_preamble_latex (f):
-
-        f.write('\\documentclass[9pt,letterpaper]{article}\n')
-        f.write('\\usepackage[left=1cm, right=1cm, top=1cm]{geometry}\n')
-        f.write('\\usepackage{ltablex}\n')
-        f.write('\\usepackage{tabularx}\n')
-        f.write('\\renewcommand\\familydefault{\sfdefault}\n')
-        f.write('\\usepackage[T1]{fontenc}\n')
-        f.write('\\usepackage[usenames, dvipsnames]{color}\n')
-        f.write('\\definecolor{parentcolor}{rgb}{0.325, 0.408, 0.584}\n')
-        f.write('\\definecolor{modulecolor}{rgb}{1.000, 1.000, 1.000}\n')
-        f.write('\n')
-        f.write('\n')
-        f.write('\\begin{document}\n')
-
-
     def write_module_name_latex (f, module):
         padding = "    "
         module_name = module.name
@@ -552,32 +552,31 @@ def writeDocFile (modules, filename):
 
         f.write('%s%s & \\texttt{0x%x} & \\texttt{[%d:%d]} & %s & %s & %s \\\\\hline\n' % (padding,latexify(endpoint_name), address, bithi, bitlo, permission, default, convert_newlines(latexify(description))))
 
-    def write_end_document_latex (f):
-        f.write('\end{document}\n')
-
     def writeDoc (filename):
 
         f = filename
 
-        #write_preamble_latex (f)
-
         padding = "    "
+
 
         for module in modules:
 
+            print ("    > writing documentation for " + module.name)
             ################################################################################
             # Nodes to skip from documentation
             ################################################################################
+
             if module.name=="GEM_AMC.GLIB_SYSTEM":
                 continue
 
             ################################################################################
             # Write module name
             ################################################################################
+
             write_module_name_latex (f, module)
 
-
             ################################################################################
+
             # only want to write the table header and parent name once
             name_of_last_parent_node = ""
 
@@ -662,7 +661,10 @@ def writeDocFile (modules, filename):
                 reg_default=""
 
                 if (reg.default!=None):
-                    reg_default = "0x%X" % reg.default
+                    if (reg.default==-1):
+                        reg_default = ""
+                    else:
+                        reg_default = "0x%X" % reg.default
                 if (reg.write_pulse_signal!=None):
                     reg_default = "Pulsed"
 
@@ -679,12 +681,13 @@ def writeDocFile (modules, filename):
 
             write_end_of_table_latex (f)
 
-        #write_end_document_latex(f);
+        print ("    > finished writing all documentation...")
 
     MARKER_START = "% START: ADDRESS_TABLE :: DO NOT EDIT"
     MARKER_END   = "% END: ADDRESS_TABLE :: DO NOT EDIT"
 
-    insert_code (filename, filename, MARKER_START, MARKER_END, writeDoc)
+    outfile = filename.replace(".tex",SUFFIX+".tex")
+    insert_code (filename, outfile, MARKER_START, MARKER_END, writeDoc)
 
 def writePackageFile (modules, filename):
 
@@ -762,7 +765,7 @@ def writeConstantsFile(modules, filename):
         # check if we have enough address bits for the max reg address (recall that the reg list is sorted by address)
         topAddressBinary = "{0:#0b}".format(module.regs[-1].address)
         numAddressBitsNeeded = len(topAddressBinary) - 2
-        print('Top address of the module ' + module.getVhdlName() + ' is ' + hex(module.regs[-1].address) + ' (' + topAddressBinary + '), need ' + str(numAddressBitsNeeded) + ' bits and have ' + str(module.regAddressMsb - module.regAddressLsb + 1) + ' bits available')
+        print('    > Top address of the module ' + module.getVhdlName() + ' is ' + hex(module.regs[-1].address) + ' (' + topAddressBinary + '), need ' + str(numAddressBitsNeeded) + ' bits and have ' + str(module.regAddressMsb - module.regAddressLsb + 1) + ' bits available')
         if numAddressBitsNeeded > module.regAddressMsb - module.regAddressLsb + 1:
             raise ValueError('There is not enough bits in the module address space to accomodate all registers (see above for details). Please modify fw_reg_addr_msb and/or fw_reg_addr_lsb attributes in the xml file')
 
@@ -793,7 +796,9 @@ def writeConstantsFile(modules, filename):
                             'integer := ' + str(reg.msb) + ';\n')
                 f.write('    constant ' + VHDL_REG_CONSTANT_PREFIX + reg.getVhdlName() + '_LSB     : '\
                             'integer := ' + str(reg.lsb) + ';\n')
-            if reg.default is not None and reg.msb - reg.lsb > 0:
+            if (reg.default==-1):
+                f.write('  --constant ' + VHDL_REG_CONSTANT_PREFIX + reg.getVhdlName() + '_DEFAULT should be supplied externally\n')
+            elif reg.default is not None and reg.msb - reg.lsb > 0:
                 f.write('    constant ' + VHDL_REG_CONSTANT_PREFIX + reg.getVhdlName() + '_DEFAULT : '\
                             'std_logic_vector(' + str(reg.msb) + ' downto ' + str(reg.lsb) + ') := ' + \
                             vhdlHexPadded(reg.default, reg.msb - reg.lsb + 1)  + ';\n')
@@ -808,6 +813,7 @@ def writeConstantsFile(modules, filename):
     f.close()
 
 def updateModuleFile(module):
+
     if module.isExternal:
         return
 
@@ -1091,7 +1097,8 @@ def updateModuleFile(module):
             f.write('\n')
 
     f.close()
-    shutil.copy (tempname, module.file)
+    print((module.file).replace(".vhd",SUFFIX+".vhd"))
+    shutil.copy (tempname, (module.file).replace(".vhd",SUFFIX+".vhd"))
 
     if not signalSectionFound or not signalSectionDone:
         print('--> ERROR <-- Could not find a signal section in the file.. Please include "' + VHDL_REG_SIGNAL_MARKER_START + '" and "' + VHDL_REG_SIGNAL_MARKER_END + '" comments denoting the area where the generated code will be inserted')

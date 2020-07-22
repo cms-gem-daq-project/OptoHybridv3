@@ -9,7 +9,8 @@ MARKER_END='% END: ADDRESS_TABLE_VERSION :: DO NOT EDIT'
 
 def main():
 
-    insert_code (LATEX_FILE, LATEX_FILE, MARKER_START, MARKER_END, write_latex_version)
+    outfile = LATEX_FILE.replace(".tex",file_suffix+".tex")
+    insert_code (outfile, outfile, MARKER_START, MARKER_END, write_latex_version)
 
 
 def write_latex_version (file_handle):

@@ -2,6 +2,16 @@
 
 src/optohybrid.src
 
+src/control/adc_ge21-long.vhd 93
+src/control/control_ge21-long.vhd 93
+src/trigger/trigger_ge21-long.vhd 93
+src/gbt/gbt_ge21-long.vhd 93
+src/trigger/trigger_data_phy_ge11-long.vhd 93
+src/pkg/registers_ge11-long.vhd 93
+
+src/pkg/hardware_pkg_ge11.vhd 93
+src/pkg/generation_pkg_1c.vhd
+
 # IP
 #src/ip_cores/mgt/mgt.xco
 src/ip_cores/clocks/clocks.xco
@@ -13,7 +23,6 @@ src/ip_cores/fifo/fifo.xco
 src/ip_cores/mgt/mgt_gtx.vhd 93
 src/mgt/gtx/gtx_tx_sync.vhd 93
 
-src/pkg/hardware_pkg_ge11.vhd 93
 
 src/cluster_building/count1536.v
 src/cluster_building/priority384.v

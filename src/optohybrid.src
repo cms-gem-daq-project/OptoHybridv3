@@ -2,8 +2,6 @@
 src/optohybrid_top.vhd 93
 
 # Control
-src/control/adc.vhd 93
-src/control/control.vhd 93
 src/control/device_dna.v
 src/control/external.v
 src/control/led_control.v
@@ -13,7 +11,6 @@ src/control/ttc.v
 src/control/ttc_tmr.vhd 93
 
 # GBT
-src/gbt/gbt.vhd 93
 src/gbt/gbt_link.vhd 93
 src/gbt/gbt_link_tmr.vhd 93
 src/gbt/gbt_rx.vhd 93
@@ -24,7 +21,6 @@ src/gbt/to_gbt_ser.vhd 93
 
 # Pkg
 src/pkg/ipbus_pkg.vhd 93
-src/pkg/registers.vhd 93
 src/pkg/types_pkg.vhd 93
 src/pkg/version_pkg.vhd 93
 
@@ -41,14 +37,12 @@ src/cluster_building/x_oneshot.v
 src/trigger/active_vfats.vhd 93
 src/trigger/channel_to_strip.vhd 93
 src/trigger/trigger_data_formatter.vhd 93
-src/trigger/trigger_data_phy.vhd 93
 src/trigger/sbit_monitor.vhd 93
 src/trigger/sbits.vhd 93
 src/trigger/sbits_hitmap.vhd 93
 src/trigger/trig_alignment/frame_aligner.v
 src/trigger/trig_alignment/frame_aligner_tmr.vhd 93
 src/trigger/trig_alignment/trig_alignment.vhd 93
-src/trigger/trigger.vhd 93
 
 # Utils
 src/utils/yahamm/matrix_pkg.vhd 93

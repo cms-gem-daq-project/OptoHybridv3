@@ -19,21 +19,23 @@ def main():
     trig_tap_delays = 0
     sot_tap_delays = 0
 
+    outfile = ADDRESS_TABLE_TOP.replace(".xml",file_suffix+".xml")
+
     MARKER_START='<!-- START: GLOBALS DO NOT EDIT -->'
     MARKER_END="<!-- END: GLOBALS DO NOT EDIT -->"
-    insert_code (ADDRESS_TABLE_TOP, ADDRESS_TABLE_TOP, MARKER_START, MARKER_END, write_globals)
+    insert_code (ADDRESS_TABLE_TOP, outfile, MARKER_START, MARKER_END, write_globals)
 
     MARKER_START='<!-- START: INVERT_REGS DO NOT EDIT -->'
     MARKER_END="<!-- END: INVERT_REGS DO NOT EDIT -->"
-    insert_code (ADDRESS_TABLE_TOP, ADDRESS_TABLE_TOP, MARKER_START, MARKER_END, write_xml_invert_map)
+    insert_code (outfile, outfile, MARKER_START, MARKER_END, write_xml_invert_map)
 
     MARKER_START='<!-- START: TIMING_DELAYS DO NOT EDIT -->'
     MARKER_END="<!-- END: TIMING_DELAYS DO NOT EDIT -->"
-    insert_code (ADDRESS_TABLE_TOP, ADDRESS_TABLE_TOP, MARKER_START, MARKER_END, write_timing_delays)
+    insert_code (outfile, outfile, MARKER_START, MARKER_END, write_timing_delays)
 
     MARKER_START='<!-- START: TU_MASK DO NOT EDIT -->'
     MARKER_END="<!-- END: TU_MASK DO NOT EDIT -->"
-    insert_code (ADDRESS_TABLE_TOP, ADDRESS_TABLE_TOP, MARKER_START, MARKER_END, write_tu_mask)
+    insert_code (outfile, outfile, MARKER_START, MARKER_END, write_tu_mask)
 
 def write_tu_mask (file_handle):
 

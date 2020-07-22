@@ -1,0 +1,1058 @@
+\documentclass[9pt,letterpaper]{article}
+\usepackage[left=1.5cm, right=1.5cm, top=2cm]{geometry}
+\usepackage{ltablex}
+\usepackage{makecell}
+\usepackage{tabularx}
+\renewcommand\familydefault{\sfdefault}
+\usepackage[T1]{fontenc}
+\usepackage[usenames, dvipsnames]{color}
+\definecolor{parentcolor}{rgb}{0.325, 0.408, 0.584}
+\definecolor{modulecolor}{rgb}{1.000, 1.000, 1.000}
+
+\date{}
+
+\renewcommand{\contentsname}{Modules}
+
+\usepackage{hyperref}
+\setcounter{tocdepth}{3}
+\hypersetup{
+    colorlinks=true, %set true if you want colored links
+    linktoc=all,     %set to all if you want both sections and subsections linked
+    linkcolor=black, %choose some color if you want links to stand out
+}
+
+\title{Optohybrid v3 Address Table}
+% START: ADDRESS_TABLE_VERSION :: DO NOT EDIT
+    \author{\textbf{GE1/1 Long} \\  \\ v03.04.01.1C \\ 20200722}
+% END: ADDRESS_TABLE_VERSION :: DO NOT EDIT
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+% START: ADDRESS_TABLE :: DO NOT EDIT
+
+    \pagebreak
+    \section{Module: FPGA.CONTROL \hfill \texttt{0x0}}
+
+    Implements various control and monitoring functions of the Optohybrid\\
+
+    \renewcommand{\arraystretch}{1.3}
+    \noindent
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.CONTROL.LOOPBACK}}}
+
+    \vspace{4mm}
+    \noindent
+    Loopback data register for testing read/write communication with the Optohybrid FPGA
+    \noindent
+
+    \keepXColumns
+    \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
+    \hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \nopagebreak
+    DATA & \texttt{0x0} & \texttt{[31:0]} & rw & \texttt{0x1234567} & Write/Read Data Port \\\hline
+    \end{tabularx}
+    \vspace{5mm}
+
+
+    \noindent
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.CONTROL.RELEASE}}}
+
+    \vspace{4mm}
+    \noindent
+    Optohybrid Firmware Release Date and Version
+    \noindent
+
+    \keepXColumns
+    \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
+    \hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \nopagebreak
+    DATE & \texttt{0x1} & \texttt{[31:0]} & r & \texttt{} & Release YYYY/MM/DD \\\hline
+    \end{tabularx}
+    \vspace{5mm}
+
+
+    \noindent
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.CONTROL.RELEASE.VERSION}}}
+
+    \vspace{4mm}
+    \noindent
+    Optohybrid Release Version (XX.YY.ZZ.AA)                                                           \\\\ XX indicates the firmware major version                                                           \\\\ YY indicates the firmware minor version                                                           \\\\ ZZ indicates the firmware patch                                                           \\\\ AA indicates the hardware generation (0C = GE1/1 v3C short, 1C = GE1/1 v3C long, 2A = GE2/1 v1)                                                           
+    \noindent
+
+    \keepXColumns
+    \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
+    \hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \nopagebreak
+    MAJOR & \texttt{0x2} & \texttt{[7:0]} & r & \texttt{} & Release semantic version major \\\hline
+    MINOR & \texttt{0x2} & \texttt{[15:8]} & r & \texttt{} & Release semantic version minor \\\hline
+    BUILD & \texttt{0x2} & \texttt{[23:16]} & r & \texttt{} & Release semantic version build \\\hline
+    GENERATION & \texttt{0x2} & \texttt{[31:24]} & r & \texttt{} & Release semantic version build \\\hline
+    \end{tabularx}
+    \vspace{5mm}
+
+
+    \noindent
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.CONTROL.SEM}}}
+
+    \vspace{4mm}
+    \noindent
+    Connects to Outputs of the FPGA's built-in single event upset monitoring system
+    \noindent
+
+    \keepXColumns
+    \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
+    \hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \nopagebreak
+    CNT\_SEM\_CRITICAL & \texttt{0x3} & \texttt{[15:0]} & r & \texttt{} & Counts of critical single event upsets \\\hline
+    CNT\_SEM\_CORRECTION & \texttt{0x4} & \texttt{[31:16]} & r & \texttt{} & Counts of corrected single event upsets \\\hline
+    \end{tabularx}
+    \vspace{5mm}
+
+
+    \noindent
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.CONTROL.VFAT}}}
+
+    \vspace{4mm}
+    \noindent
+    Controls the 12 VFAT reset outputs from the FPGA
+    \noindent
+
+    \keepXColumns
+    \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
+    \hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \nopagebreak
+    RESET & \texttt{0x5} & \texttt{[11:0]} & rw & \texttt{0x0} & Mask of VFAT Reset Outputs; 1=reset 0=enable \\\hline
+    \end{tabularx}
+    \vspace{5mm}
+
+
+    \noindent
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.CONTROL.TTC}}}
+
+    \vspace{4mm}
+    \noindent
+    TTC Status and Control
+    \noindent
+
+    \keepXColumns
+    \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
+    \hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \nopagebreak
+    BX0\_CNT\_LOCAL & \texttt{0x8} & \texttt{[23:0]} & r & \texttt{} & TTC BX0 Local Counter \\\hline
+    BX0\_CNT\_TTC & \texttt{0x9} & \texttt{[23:0]} & r & \texttt{} & TTC BX0 Received Counter \\\hline
+    BXN\_CNT\_LOCAL & \texttt{0xa} & \texttt{[11:0]} & r & \texttt{} & TTC BXN Counter \\\hline
+    BXN\_SYNC\_ERR & \texttt{0xb} & \texttt{[12:12]} & r & \texttt{} & BXN Synchronization Error; Local BXN and received BXN do not match \\\hline
+    BX0\_SYNC\_ERR & \texttt{0xc} & \texttt{[13:13]} & r & \texttt{} & BX0 Synchronization Error \\\hline
+    BXN\_OFFSET & \texttt{0xd} & \texttt{[27:16]} & rw & \texttt{0x0} & Local BXN counter offset (starting value at resync) \\\hline
+    L1A\_CNT & \texttt{0xe} & \texttt{[23:0]} & r & \texttt{} & L1A Received Counter \\\hline
+    BXN\_SYNC\_ERR\_CNT & \texttt{0xf} & \texttt{[15:0]} & r & \texttt{} & BXN Sync Error Counter \\\hline
+    BX0\_SYNC\_ERR\_CNT & \texttt{0x10} & \texttt{[31:16]} & r & \texttt{} & BX0 Sync Error Counter \\\hline
+    \end{tabularx}
+    \vspace{5mm}
+
+
+    \noindent
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.CONTROL.SBITS}}}
+
+    \vspace{4mm}
+    \noindent
+    S-bit and Cluster Packing Rate
+    \noindent
+
+    \keepXColumns
+    \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
+    \hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \nopagebreak
+    CLUSTER\_RATE & \texttt{0x11} & \texttt{[31:0]} & r & \texttt{} & Trigger cluster rate measured in Hz \\\hline
+    \end{tabularx}
+    \vspace{5mm}
+
+
+    \noindent
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.CONTROL.HDMI}}}
+
+    \vspace{4mm}
+    \noindent
+    HDMI Connector Control:                                                       \\\\ Mode=0: Each signal is a single VFAT. The VFAT of interest is chosen by SBIT\_SEL                                                       \\\\ Mode=1: Each signal is the OR of three VFATs in an ieta row. The row of interest is configured by SBIT\_SEL                                                       \\\\ Mode=2: Each signal is the OR of four VFATs in an iphi half column (e.g. 0-3, 4-7, 8-11, 12-15, 16-19, 20-23)
+    \noindent
+
+    \keepXColumns
+    \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
+    \hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \nopagebreak
+    SBIT\_SEL0 & \texttt{0x12} & \texttt{[4:0]} & rw & \texttt{0x0} & HDMI Output 0 S-bit select \\\hline
+    SBIT\_SEL1 & \texttt{0x12} & \texttt{[9:5]} & rw & \texttt{0x0} & HDMI Output 1 S-bit select \\\hline
+    SBIT\_SEL2 & \texttt{0x12} & \texttt{[14:10]} & rw & \texttt{0x0} & HDMI Output 2 S-bit select \\\hline
+    SBIT\_SEL3 & \texttt{0x12} & \texttt{[19:15]} & rw & \texttt{0x0} & HDMI Output 3 S-bit select \\\hline
+    SBIT\_SEL4 & \texttt{0x12} & \texttt{[24:20]} & rw & \texttt{0x0} & HDMI Output 4 S-bit select \\\hline
+    SBIT\_SEL5 & \texttt{0x12} & \texttt{[29:25]} & rw & \texttt{0x0} & HDMI Output 5 S-bit select \\\hline
+    SBIT\_SEL6 & \texttt{0x13} & \texttt{[4:0]} & rw & \texttt{0x0} & HDMI Output 6 S-bit select \\\hline
+    SBIT\_SEL7 & \texttt{0x13} & \texttt{[9:5]} & rw & \texttt{0x0} & HDMI Output 7 S-bit select \\\hline
+    SBIT\_MODE0 & \texttt{0x13} & \texttt{[11:10]} & rw & \texttt{0x0} & HDMI Output 0 S-bit mode \\\hline
+    SBIT\_MODE1 & \texttt{0x13} & \texttt{[13:12]} & rw & \texttt{0x0} & HDMI Output 1 S-bit mode \\\hline
+    SBIT\_MODE2 & \texttt{0x13} & \texttt{[15:14]} & rw & \texttt{0x0} & HDMI Output 2 S-bit mode \\\hline
+    SBIT\_MODE3 & \texttt{0x13} & \texttt{[17:16]} & rw & \texttt{0x0} & HDMI Output 3 S-bit mode \\\hline
+    SBIT\_MODE4 & \texttt{0x13} & \texttt{[19:18]} & rw & \texttt{0x0} & HDMI Output 4 S-bit mode \\\hline
+    SBIT\_MODE5 & \texttt{0x13} & \texttt{[21:20]} & rw & \texttt{0x0} & HDMI Output 5 S-bit mode \\\hline
+    SBIT\_MODE6 & \texttt{0x13} & \texttt{[23:22]} & rw & \texttt{0x0} & HDMI Output 6 S-bit mode \\\hline
+    SBIT\_MODE7 & \texttt{0x13} & \texttt{[25:24]} & rw & \texttt{0x0} & HDMI Output 7 S-bit mode \\\hline
+    \end{tabularx}
+    \vspace{5mm}
+
+
+    \noindent
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.CONTROL.CNT\_SNAP}}}
+
+    \vspace{4mm}
+    \noindent
+    Control the global counter snapshot
+    \noindent
+
+    \keepXColumns
+    \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
+    \hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \nopagebreak
+    PULSE & \texttt{0x14} & \texttt{[0:0]} & w & Pulsed & Pulse to take a counter snapshot \\\hline
+    DISABLE & \texttt{0x15} & \texttt{[1:1]} & rw & \texttt{0x1} & 0=enable snapshots (counters freeze synchronously and need a snapshot to update) \\\hline
+    \end{tabularx}
+    \vspace{5mm}
+
+
+    \noindent
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.CONTROL.DNA}}}
+
+    \vspace{4mm}
+    \noindent
+    57 Bit FPGA-specific device identifier
+    \noindent
+
+    \keepXColumns
+    \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
+    \hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \nopagebreak
+    DNA\_LSBS & \texttt{0x17} & \texttt{[31:0]} & r & \texttt{} & Device DNA bits 31 downto 0 \\\hline
+    DNA\_MSBS & \texttt{0x18} & \texttt{[24:0]} & r & \texttt{} & Device DNA bits 56 downto 32 \\\hline
+    \end{tabularx}
+    \vspace{5mm}
+
+
+    \noindent
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.CONTROL}}}
+
+    \vspace{4mm}
+    \noindent
+    Implements various control and monitoring functions of the Optohybrid
+    \noindent
+
+    \keepXColumns
+    \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
+    \hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \nopagebreak
+    UPTIME & \texttt{0x19} & \texttt{[19:0]} & r & \texttt{} & Uptime in seconds \\\hline
+    USR\_ACCESS & \texttt{0x20} & \texttt{[31:0]} & r & \texttt{} & Git hash read from USR\_ACCESS field \\\hline
+    \end{tabularx}
+    \vspace{5mm}
+
+
+    \noindent
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.CONTROL.HOG}}}
+
+    \keepXColumns
+    \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
+    \hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \nopagebreak
+    GLOBAL\_DATE & \texttt{0x21} & \texttt{[31:0]} & r & \texttt{} & HOG Global Date \\\hline
+    GLOBAL\_TIME & \texttt{0x22} & \texttt{[31:0]} & r & \texttt{} & HOG Global Time \\\hline
+    GLOBAL\_VER & \texttt{0x23} & \texttt{[31:0]} & r & \texttt{} & HOG Global Version \\\hline
+    GLOBAL\_SHA & \texttt{0x24} & \texttt{[31:0]} & r & \texttt{} & HOG Global SHA \\\hline
+    TOP\_SHA & \texttt{0x25} & \texttt{[31:0]} & r & \texttt{} & HOG Top SHA \\\hline
+    TOP\_VER & \texttt{0x26} & \texttt{[31:0]} & r & \texttt{} & HOG Top Version \\\hline
+    HOG\_SHA & \texttt{0x27} & \texttt{[31:0]} & r & \texttt{} & HOG SHA \\\hline
+    HOG\_VER & \texttt{0x28} & \texttt{[31:0]} & r & \texttt{} & HOG Version \\\hline
+    OH\_SHA & \texttt{0x29} & \texttt{[31:0]} & r & \texttt{} & OH SHA \\\hline
+    OH\_VER & \texttt{0x2a} & \texttt{[31:0]} & r & \texttt{} & OH Version \\\hline
+    FLAVOUR & \texttt{0x2b} & \texttt{[31:0]} & r & \texttt{} & Flavor \\\hline
+    \end{tabularx}
+    \vspace{5mm}
+
+
+
+    \pagebreak
+    \section{Module: FPGA.ADC \hfill \texttt{0x1000}}
+
+    Connects to the Virtex-6 XADC and allows for reading of temperature, VCCINT, and VCCAUX voltages\\
+
+    \renewcommand{\arraystretch}{1.3}
+    \noindent
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.ADC.CTRL}}}
+
+    \keepXColumns
+    \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
+    \hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \nopagebreak
+    OVERTEMP & \texttt{0x1000} & \texttt{[0:0]} & r & \texttt{} & FPGA over temperature \\\hline
+    VCCAUX\_ALARM & \texttt{0x1000} & \texttt{[1:1]} & r & \texttt{} & FPGA VCCAUX Alarm \\\hline
+    VCCINT\_ALARM & \texttt{0x1000} & \texttt{[2:2]} & r & \texttt{} & FPGA VCCINT Alarm \\\hline
+    ADR\_IN & \texttt{0x1000} & \texttt{[9:3]} & rw & \texttt{0x0} & XADC Addr In \\\hline
+    ENABLE & \texttt{0x1000} & \texttt{[10:10]} & rw & \texttt{0x1} & XADC Data In \\\hline
+    CNT\_OVERTEMP & \texttt{0x1000} & \texttt{[17:11]} & r & \texttt{} & Overtemperature counter \\\hline
+    CNT\_VCCAUX\_ALARM & \texttt{0x1000} & \texttt{[24:18]} & r & \texttt{} & VCCAUX Alarm Counter \\\hline
+    CNT\_VCCINT\_ALARM & \texttt{0x1000} & \texttt{[31:25]} & r & \texttt{} & VCCINT Alarm Counter \\\hline
+    DATA\_IN & \texttt{0x1001} & \texttt{[15:0]} & rw & \texttt{0x0} & XADC Data In \\\hline
+    DATA\_OUT & \texttt{0x1001} & \texttt{[31:16]} & r & \texttt{} & XADC Data Out \\\hline
+    RESET & \texttt{0x1002} & \texttt{[0:0]} & w & Pulsed & XADC Reset \\\hline
+    WR\_EN & \texttt{0x1003} & \texttt{[0:0]} & w & Pulsed & XADC Write Enable \\\hline
+    \end{tabularx}
+    \vspace{5mm}
+
+
+
+    \pagebreak
+    \section{Module: FPGA.TRIG \hfill \texttt{0x2000}}
+
+    Connects to the trigger control module\\
+
+    \renewcommand{\arraystretch}{1.3}
+    \noindent
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.TRIG.CTRL}}}
+
+    \vspace{4mm}
+    \noindent
+    Controls and monitors various parameters of the S-bit deserialization and cluster building.
+    \noindent
+
+    \keepXColumns
+    \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
+    \hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \nopagebreak
+    VFAT\_MASK & \texttt{0x2000} & \texttt{[23:0]} & rw & \texttt{0x0} & 24 bit mask of VFATs (1=off) \\\hline
+    SBIT\_DEADTIME & \texttt{0x2000} & \texttt{[27:24]} & rw & \texttt{0x7} & Set programmable oneshot deadtime which applies to retriggers on individual VFAT channels \\\hline
+    ACTIVE\_VFATS & \texttt{0x2001} & \texttt{[23:0]} & r & \texttt{} & 24 bit list of VFATs with hits in this BX \\\hline
+    CNT\_OVERFLOW & \texttt{0x2002} & \texttt{[15:0]} & r & \texttt{} & Overflow Counter (more than 8 clusters in a bx) \\\hline
+    ALIGNED\_COUNT\_TO\_READY & \texttt{0x2002} & \texttt{[27:16]} & rw & \texttt{0x1FF} & Number of link consecutive good frames required before the transmission unit is marked as good and S-bits can be produced \\\hline
+    SBIT\_SOT\_READY & \texttt{0x2003} & \texttt{[23:0]} & r & \texttt{} & 24 bit list of VFATs with stable Start-of-frame pulses (in sync for a number of clock cycles) \\\hline
+    SBIT\_SOT\_UNSTABLE & \texttt{0x2004} & \texttt{[23:0]} & r & \texttt{} & 24 bit list of VFATs with unstable Start-of-frame pulses (became misaligned after already achieving lock) \\\hline
+    \end{tabularx}
+    \vspace{5mm}
+
+
+    \noindent
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.TRIG.CTRL.INVERT}}}
+
+    \vspace{4mm}
+    \noindent
+    Controls the polarity of S-bit signals to account for polarity swaps on the GEB or OH
+    \noindent
+
+    \keepXColumns
+    \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
+    \hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \nopagebreak
+    SOT\_INVERT & \texttt{0x2005} & \texttt{[23:0]} & rw & \texttt{0xF99286} & 1=invert pair \\\hline
+    VFAT0\_TU\_INVERT & \texttt{0x2006} & \texttt{[7:0]} & rw & \texttt{0x45} & 1=invert pair \\\hline
+    VFAT1\_TU\_INVERT & \texttt{0x2006} & \texttt{[15:8]} & rw & \texttt{0x67} & 1=invert pair \\\hline
+    VFAT2\_TU\_INVERT & \texttt{0x2006} & \texttt{[23:16]} & rw & \texttt{0x46} & 1=invert pair \\\hline
+    VFAT3\_TU\_INVERT & \texttt{0x2006} & \texttt{[31:24]} & rw & \texttt{0xE7} & 1=invert pair \\\hline
+    VFAT4\_TU\_INVERT & \texttt{0x2007} & \texttt{[7:0]} & rw & \texttt{0x2D} & 1=invert pair \\\hline
+    VFAT5\_TU\_INVERT & \texttt{0x2007} & \texttt{[15:8]} & rw & \texttt{0xBD} & 1=invert pair \\\hline
+    VFAT6\_TU\_INVERT & \texttt{0x2007} & \texttt{[23:16]} & rw & \texttt{0x8} & 1=invert pair \\\hline
+    VFAT7\_TU\_INVERT & \texttt{0x2007} & \texttt{[31:24]} & rw & \texttt{0x32} & 1=invert pair \\\hline
+    VFAT8\_TU\_INVERT & \texttt{0x2008} & \texttt{[7:0]} & rw & \texttt{0x71} & 1=invert pair \\\hline
+    VFAT9\_TU\_INVERT & \texttt{0x2008} & \texttt{[15:8]} & rw & \texttt{0x7} & 1=invert pair \\\hline
+    VFAT10\_TU\_INVERT & \texttt{0x2008} & \texttt{[23:16]} & rw & \texttt{0xDC} & 1=invert pair \\\hline
+    VFAT11\_TU\_INVERT & \texttt{0x2008} & \texttt{[31:24]} & rw & \texttt{0xEE} & 1=invert pair \\\hline
+    VFAT12\_TU\_INVERT & \texttt{0x2009} & \texttt{[7:0]} & rw & \texttt{0xAD} & 1=invert pair \\\hline
+    VFAT13\_TU\_INVERT & \texttt{0x2009} & \texttt{[15:8]} & rw & \texttt{0x17} & 1=invert pair \\\hline
+    VFAT14\_TU\_INVERT & \texttt{0x2009} & \texttt{[23:16]} & rw & \texttt{0xE5} & 1=invert pair \\\hline
+    VFAT15\_TU\_INVERT & \texttt{0x2009} & \texttt{[31:24]} & rw & \texttt{0x8F} & 1=invert pair \\\hline
+    VFAT16\_TU\_INVERT & \texttt{0x200a} & \texttt{[7:0]} & rw & \texttt{0xE2} & 1=invert pair \\\hline
+    VFAT17\_TU\_INVERT & \texttt{0x200a} & \texttt{[15:8]} & rw & \texttt{0x6} & 1=invert pair \\\hline
+    VFAT18\_TU\_INVERT & \texttt{0x200a} & \texttt{[23:16]} & rw & \texttt{0x30} & 1=invert pair \\\hline
+    VFAT19\_TU\_INVERT & \texttt{0x200a} & \texttt{[31:24]} & rw & \texttt{0x5D} & 1=invert pair \\\hline
+    VFAT20\_TU\_INVERT & \texttt{0x200b} & \texttt{[7:0]} & rw & \texttt{0x60} & 1=invert pair \\\hline
+    VFAT21\_TU\_INVERT & \texttt{0x200b} & \texttt{[15:8]} & rw & \texttt{0x73} & 1=invert pair \\\hline
+    VFAT22\_TU\_INVERT & \texttt{0x200b} & \texttt{[23:16]} & rw & \texttt{0xA} & 1=invert pair \\\hline
+    VFAT23\_TU\_INVERT & \texttt{0x200b} & \texttt{[31:24]} & rw & \texttt{0x14} & 1=invert pair \\\hline
+    \end{tabularx}
+    \vspace{5mm}
+
+
+    \noindent
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.TRIG.CTRL.SBITS\_MUX}}}
+
+    \vspace{4mm}
+    \noindent
+    Multiplexed copy of Sbits from a selected VFAT
+    \noindent
+
+    \keepXColumns
+    \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
+    \hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \nopagebreak
+    SBIT\_MUX\_SEL & \texttt{0x200e} & \texttt{[8:4]} & rw & \texttt{0x10} & Select a VFAT which will connect to the S-bit multiplexer \\\hline
+    SBITS\_MUX\_LSB & \texttt{0x200f} & \texttt{[31:0]} & r & \texttt{} & Multiplexed S-bits 31 to 0 \\\hline
+    SBITS\_MUX\_MSB & \texttt{0x2010} & \texttt{[31:0]} & r & \texttt{} & Multiplexed S-bits 63 to 32 \\\hline
+    \end{tabularx}
+    \vspace{5mm}
+
+
+    \noindent
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.TRIG.CTRL.TU\_MASK}}}
+
+    \vspace{4mm}
+    \noindent
+    VFAT Trigger Unit Mask \\\\ Set a pair to 1 to invert it
+    \noindent
+
+    \keepXColumns
+    \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
+    \hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \nopagebreak
+    VFAT0\_TU\_MASK & \texttt{0x2011} & \texttt{[7:0]} & rw & \texttt{0x0} & 1 = mask the differential pair \\\hline
+    VFAT1\_TU\_MASK & \texttt{0x2011} & \texttt{[15:8]} & rw & \texttt{0x0} & 1 = mask the differential pair \\\hline
+    VFAT2\_TU\_MASK & \texttt{0x2011} & \texttt{[23:16]} & rw & \texttt{0x0} & 1 = mask the differential pair \\\hline
+    VFAT3\_TU\_MASK & \texttt{0x2011} & \texttt{[31:24]} & rw & \texttt{0x0} & 1 = mask the differential pair \\\hline
+    VFAT4\_TU\_MASK & \texttt{0x2012} & \texttt{[7:0]} & rw & \texttt{0x0} & 1 = mask the differential pair \\\hline
+    VFAT5\_TU\_MASK & \texttt{0x2012} & \texttt{[15:8]} & rw & \texttt{0x0} & 1 = mask the differential pair \\\hline
+    VFAT6\_TU\_MASK & \texttt{0x2012} & \texttt{[23:16]} & rw & \texttt{0x0} & 1 = mask the differential pair \\\hline
+    VFAT7\_TU\_MASK & \texttt{0x2012} & \texttt{[31:24]} & rw & \texttt{0x0} & 1 = mask the differential pair \\\hline
+    VFAT8\_TU\_MASK & \texttt{0x2013} & \texttt{[7:0]} & rw & \texttt{0x0} & 1 = mask the differential pair \\\hline
+    VFAT9\_TU\_MASK & \texttt{0x2013} & \texttt{[15:8]} & rw & \texttt{0x0} & 1 = mask the differential pair \\\hline
+    VFAT10\_TU\_MASK & \texttt{0x2013} & \texttt{[23:16]} & rw & \texttt{0x0} & 1 = mask the differential pair \\\hline
+    VFAT11\_TU\_MASK & \texttt{0x2013} & \texttt{[31:24]} & rw & \texttt{0x0} & 1 = mask the differential pair \\\hline
+    VFAT12\_TU\_MASK & \texttt{0x2014} & \texttt{[7:0]} & rw & \texttt{0x0} & 1 = mask the differential pair \\\hline
+    VFAT13\_TU\_MASK & \texttt{0x2014} & \texttt{[15:8]} & rw & \texttt{0x0} & 1 = mask the differential pair \\\hline
+    VFAT14\_TU\_MASK & \texttt{0x2014} & \texttt{[23:16]} & rw & \texttt{0x0} & 1 = mask the differential pair \\\hline
+    VFAT15\_TU\_MASK & \texttt{0x2014} & \texttt{[31:24]} & rw & \texttt{0x0} & 1 = mask the differential pair \\\hline
+    VFAT16\_TU\_MASK & \texttt{0x2015} & \texttt{[7:0]} & rw & \texttt{0x0} & 1 = mask the differential pair \\\hline
+    VFAT17\_TU\_MASK & \texttt{0x2015} & \texttt{[15:8]} & rw & \texttt{0x0} & 1 = mask the differential pair \\\hline
+    VFAT18\_TU\_MASK & \texttt{0x2015} & \texttt{[23:16]} & rw & \texttt{0x0} & 1 = mask the differential pair \\\hline
+    VFAT19\_TU\_MASK & \texttt{0x2015} & \texttt{[31:24]} & rw & \texttt{0x0} & 1 = mask the differential pair \\\hline
+    VFAT20\_TU\_MASK & \texttt{0x2016} & \texttt{[7:0]} & rw & \texttt{0x0} & 1 = mask the differential pair \\\hline
+    VFAT21\_TU\_MASK & \texttt{0x2016} & \texttt{[15:8]} & rw & \texttt{0x0} & 1 = mask the differential pair \\\hline
+    VFAT22\_TU\_MASK & \texttt{0x2016} & \texttt{[23:16]} & rw & \texttt{0x0} & 1 = mask the differential pair \\\hline
+    VFAT23\_TU\_MASK & \texttt{0x2016} & \texttt{[31:24]} & rw & \texttt{0x0} & 1 = mask the differential pair \\\hline
+    \end{tabularx}
+    \vspace{5mm}
+
+
+    \noindent
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.TRIG.CNT}}}
+
+    \vspace{4mm}
+    \noindent
+    S-BIT Counters \\\\  Set CNT\_PERSIST to 1 to accumulate. Otherwise the counters will automatically reset after a programmable time (default is 1 second). By default this time is 1 second, making these counters a rate counter in Hertz
+    \noindent
+
+    \keepXColumns
+    \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
+    \hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \nopagebreak
+    VFAT0\_SBITS & \texttt{0x2017} & \texttt{[31:0]} & r & \texttt{} & VFAT 0 Counter \\\hline
+    VFAT1\_SBITS & \texttt{0x2018} & \texttt{[31:0]} & r & \texttt{} & VFAT 1 Counter \\\hline
+    VFAT2\_SBITS & \texttt{0x2019} & \texttt{[31:0]} & r & \texttt{} & VFAT 2 Counter \\\hline
+    VFAT3\_SBITS & \texttt{0x201a} & \texttt{[31:0]} & r & \texttt{} & VFAT 3 Counter \\\hline
+    VFAT4\_SBITS & \texttt{0x201b} & \texttt{[31:0]} & r & \texttt{} & VFAT 4 Counter \\\hline
+    VFAT5\_SBITS & \texttt{0x201c} & \texttt{[31:0]} & r & \texttt{} & VFAT 5 Counter \\\hline
+    VFAT6\_SBITS & \texttt{0x201d} & \texttt{[31:0]} & r & \texttt{} & VFAT 6 Counter \\\hline
+    VFAT7\_SBITS & \texttt{0x201e} & \texttt{[31:0]} & r & \texttt{} & VFAT 7 Counter \\\hline
+    VFAT8\_SBITS & \texttt{0x201f} & \texttt{[31:0]} & r & \texttt{} & VFAT 8 Counter \\\hline
+    VFAT9\_SBITS & \texttt{0x2020} & \texttt{[31:0]} & r & \texttt{} & VFAT 9 Counter \\\hline
+    VFAT10\_SBITS & \texttt{0x2021} & \texttt{[31:0]} & r & \texttt{} & VFAT 10 Counter \\\hline
+    VFAT11\_SBITS & \texttt{0x2022} & \texttt{[31:0]} & r & \texttt{} & VFAT 11 Counter \\\hline
+    VFAT12\_SBITS & \texttt{0x2023} & \texttt{[31:0]} & r & \texttt{} & VFAT 12 Counter \\\hline
+    VFAT13\_SBITS & \texttt{0x2024} & \texttt{[31:0]} & r & \texttt{} & VFAT 13 Counter \\\hline
+    VFAT14\_SBITS & \texttt{0x2025} & \texttt{[31:0]} & r & \texttt{} & VFAT 14 Counter \\\hline
+    VFAT15\_SBITS & \texttt{0x2026} & \texttt{[31:0]} & r & \texttt{} & VFAT 15 Counter \\\hline
+    VFAT16\_SBITS & \texttt{0x2027} & \texttt{[31:0]} & r & \texttt{} & VFAT 16 Counter \\\hline
+    VFAT17\_SBITS & \texttt{0x2028} & \texttt{[31:0]} & r & \texttt{} & VFAT 17 Counter \\\hline
+    VFAT18\_SBITS & \texttt{0x2029} & \texttt{[31:0]} & r & \texttt{} & VFAT 18 Counter \\\hline
+    VFAT19\_SBITS & \texttt{0x202a} & \texttt{[31:0]} & r & \texttt{} & VFAT 19 Counter \\\hline
+    VFAT20\_SBITS & \texttt{0x202b} & \texttt{[31:0]} & r & \texttt{} & VFAT 20 Counter \\\hline
+    VFAT21\_SBITS & \texttt{0x202c} & \texttt{[31:0]} & r & \texttt{} & VFAT 21 Counter \\\hline
+    VFAT22\_SBITS & \texttt{0x202d} & \texttt{[31:0]} & r & \texttt{} & VFAT 22 Counter \\\hline
+    VFAT23\_SBITS & \texttt{0x202e} & \texttt{[31:0]} & r & \texttt{} & VFAT 23 Counter \\\hline
+    RESET & \texttt{0x202f} & \texttt{[0:0]} & w & Pulsed & Reset S-bit counters \\\hline
+    SBIT\_CNT\_PERSIST & \texttt{0x2030} & \texttt{[0:0]} & rw & \texttt{0x0} & 1=counters will persist until manually reset; \\ & & & & &                                0=counters will automatically reset at CNT\_TIME \\\hline
+    SBIT\_CNT\_TIME\_MAX & \texttt{0x2031} & \texttt{[31:0]} & rw & \texttt{0x2638E98} & Number of BX that the VFAT S-bit counters will count to before automatically resetting to zero \\\hline
+    CLUSTER\_COUNT & \texttt{0x2032} & \texttt{[31:0]} & r & \texttt{} & VFAT Cluster Counter (chamber) \\\hline
+    SBITS\_OVER\_64x0 & \texttt{0x2036} & \texttt{[15:0]} & r & \texttt{} & More than 64 * 0 Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x1 & \texttt{0x2037} & \texttt{[15:0]} & r & \texttt{} & More than 64 * 1 Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x2 & \texttt{0x2038} & \texttt{[15:0]} & r & \texttt{} & More than 64 * 2 Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x3 & \texttt{0x2039} & \texttt{[15:0]} & r & \texttt{} & More than 64 * 3 Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x4 & \texttt{0x203a} & \texttt{[15:0]} & r & \texttt{} & More than 64 * 4 Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x5 & \texttt{0x203b} & \texttt{[15:0]} & r & \texttt{} & More than 64 * 5 Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x6 & \texttt{0x203c} & \texttt{[15:0]} & r & \texttt{} & More than 64 * 6 Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x7 & \texttt{0x203d} & \texttt{[15:0]} & r & \texttt{} & More than 64 * 7 Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x8 & \texttt{0x203e} & \texttt{[15:0]} & r & \texttt{} & More than 64 * 8 Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x9 & \texttt{0x203f} & \texttt{[15:0]} & r & \texttt{} & More than 64 * 9 Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x10 & \texttt{0x2040} & \texttt{[15:0]} & r & \texttt{} & More than 64 * 10 Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x11 & \texttt{0x2041} & \texttt{[15:0]} & r & \texttt{} & More than 64 * 11 Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x12 & \texttt{0x2042} & \texttt{[15:0]} & r & \texttt{} & More than 64 * 12 Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x13 & \texttt{0x2043} & \texttt{[15:0]} & r & \texttt{} & More than 64 * 13 Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x14 & \texttt{0x2044} & \texttt{[15:0]} & r & \texttt{} & More than 64 * 14 Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x15 & \texttt{0x2045} & \texttt{[15:0]} & r & \texttt{} & More than 64 * 15 Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x16 & \texttt{0x2046} & \texttt{[15:0]} & r & \texttt{} & More than 64 * 16 Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x17 & \texttt{0x2047} & \texttt{[15:0]} & r & \texttt{} & More than 64 * 17 Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x18 & \texttt{0x2048} & \texttt{[15:0]} & r & \texttt{} & More than 64 * 18 Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x19 & \texttt{0x2049} & \texttt{[15:0]} & r & \texttt{} & More than 64 * 19 Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x20 & \texttt{0x204a} & \texttt{[15:0]} & r & \texttt{} & More than 64 * 20 Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x21 & \texttt{0x204b} & \texttt{[15:0]} & r & \texttt{} & More than 64 * 21 Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x22 & \texttt{0x204c} & \texttt{[15:0]} & r & \texttt{} & More than 64 * 22 Sbits in a bx Counter \\\hline
+    SBITS\_OVER\_64x23 & \texttt{0x204d} & \texttt{[15:0]} & r & \texttt{} & More than 64 * 23 Sbits in a bx Counter \\\hline
+    \end{tabularx}
+    \vspace{5mm}
+
+
+    \noindent
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.TRIG.TIMING}}}
+
+    \vspace{4mm}
+    \noindent
+    Controls the tap delay settings of the S-bit trigger unit inputs.                              Phase shifts the inputs in 78 ps increments                              \\\\ The delay of each S-bit in a VFAT should be increased to match the longest delay incurred by the GEB + Optohybrid routing on that VFAT
+    \noindent
+
+    \keepXColumns
+    \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
+    \hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \nopagebreak
+    TAP\_DELAY\_VFAT0\_BIT0 & \texttt{0x2053} & \texttt{[4:0]} & rw & \texttt{0x0} & VFAT 0 S-bit 0 tap delay \\\hline
+    TAP\_DELAY\_VFAT0\_BIT1 & \texttt{0x2053} & \texttt{[9:5]} & rw & \texttt{0x0} & VFAT 0 S-bit 1 tap delay \\\hline
+    TAP\_DELAY\_VFAT0\_BIT2 & \texttt{0x2053} & \texttt{[14:10]} & rw & \texttt{0x6} & VFAT 0 S-bit 2 tap delay \\\hline
+    TAP\_DELAY\_VFAT0\_BIT3 & \texttt{0x2053} & \texttt{[19:15]} & rw & \texttt{0x2} & VFAT 0 S-bit 3 tap delay \\\hline
+    TAP\_DELAY\_VFAT0\_BIT4 & \texttt{0x2053} & \texttt{[24:20]} & rw & \texttt{0x4} & VFAT 0 S-bit 4 tap delay \\\hline
+    TAP\_DELAY\_VFAT0\_BIT5 & \texttt{0x2053} & \texttt{[29:25]} & rw & \texttt{0x2} & VFAT 0 S-bit 5 tap delay \\\hline
+    TAP\_DELAY\_VFAT0\_BIT6 & \texttt{0x2054} & \texttt{[4:0]} & rw & \texttt{0x2} & VFAT 0 S-bit 6 tap delay \\\hline
+    TAP\_DELAY\_VFAT0\_BIT7 & \texttt{0x2054} & \texttt{[9:5]} & rw & \texttt{0x0} & VFAT 0 S-bit 7 tap delay \\\hline
+    TAP\_DELAY\_VFAT1\_BIT0 & \texttt{0x2054} & \texttt{[14:10]} & rw & \texttt{0x0} & VFAT 1 S-bit 0 tap delay \\\hline
+    TAP\_DELAY\_VFAT1\_BIT1 & \texttt{0x2054} & \texttt{[19:15]} & rw & \texttt{0x5} & VFAT 1 S-bit 1 tap delay \\\hline
+    TAP\_DELAY\_VFAT1\_BIT2 & \texttt{0x2054} & \texttt{[24:20]} & rw & \texttt{0x2} & VFAT 1 S-bit 2 tap delay \\\hline
+    TAP\_DELAY\_VFAT1\_BIT3 & \texttt{0x2054} & \texttt{[29:25]} & rw & \texttt{0x5} & VFAT 1 S-bit 3 tap delay \\\hline
+    TAP\_DELAY\_VFAT1\_BIT4 & \texttt{0x2055} & \texttt{[4:0]} & rw & \texttt{0x5} & VFAT 1 S-bit 4 tap delay \\\hline
+    TAP\_DELAY\_VFAT1\_BIT5 & \texttt{0x2055} & \texttt{[9:5]} & rw & \texttt{0x5} & VFAT 1 S-bit 5 tap delay \\\hline
+    TAP\_DELAY\_VFAT1\_BIT6 & \texttt{0x2055} & \texttt{[14:10]} & rw & \texttt{0x6} & VFAT 1 S-bit 6 tap delay \\\hline
+    TAP\_DELAY\_VFAT1\_BIT7 & \texttt{0x2055} & \texttt{[19:15]} & rw & \texttt{0x0} & VFAT 1 S-bit 7 tap delay \\\hline
+    TAP\_DELAY\_VFAT2\_BIT0 & \texttt{0x2055} & \texttt{[24:20]} & rw & \texttt{0x4} & VFAT 2 S-bit 0 tap delay \\\hline
+    TAP\_DELAY\_VFAT2\_BIT1 & \texttt{0x2055} & \texttt{[29:25]} & rw & \texttt{0x3} & VFAT 2 S-bit 1 tap delay \\\hline
+    TAP\_DELAY\_VFAT2\_BIT2 & \texttt{0x2056} & \texttt{[4:0]} & rw & \texttt{0x3} & VFAT 2 S-bit 2 tap delay \\\hline
+    TAP\_DELAY\_VFAT2\_BIT3 & \texttt{0x2056} & \texttt{[9:5]} & rw & \texttt{0x3} & VFAT 2 S-bit 3 tap delay \\\hline
+    TAP\_DELAY\_VFAT2\_BIT4 & \texttt{0x2056} & \texttt{[14:10]} & rw & \texttt{0x3} & VFAT 2 S-bit 4 tap delay \\\hline
+    TAP\_DELAY\_VFAT2\_BIT5 & \texttt{0x2056} & \texttt{[19:15]} & rw & \texttt{0x3} & VFAT 2 S-bit 5 tap delay \\\hline
+    TAP\_DELAY\_VFAT2\_BIT6 & \texttt{0x2056} & \texttt{[24:20]} & rw & \texttt{0x2} & VFAT 2 S-bit 6 tap delay \\\hline
+    TAP\_DELAY\_VFAT2\_BIT7 & \texttt{0x2056} & \texttt{[29:25]} & rw & \texttt{0x2} & VFAT 2 S-bit 7 tap delay \\\hline
+    TAP\_DELAY\_VFAT3\_BIT0 & \texttt{0x2057} & \texttt{[4:0]} & rw & \texttt{0x2} & VFAT 3 S-bit 0 tap delay \\\hline
+    TAP\_DELAY\_VFAT3\_BIT1 & \texttt{0x2057} & \texttt{[9:5]} & rw & \texttt{0x2} & VFAT 3 S-bit 1 tap delay \\\hline
+    TAP\_DELAY\_VFAT3\_BIT2 & \texttt{0x2057} & \texttt{[14:10]} & rw & \texttt{0x1} & VFAT 3 S-bit 2 tap delay \\\hline
+    TAP\_DELAY\_VFAT3\_BIT3 & \texttt{0x2057} & \texttt{[19:15]} & rw & \texttt{0x1} & VFAT 3 S-bit 3 tap delay \\\hline
+    TAP\_DELAY\_VFAT3\_BIT4 & \texttt{0x2057} & \texttt{[24:20]} & rw & \texttt{0x1} & VFAT 3 S-bit 4 tap delay \\\hline
+    TAP\_DELAY\_VFAT3\_BIT5 & \texttt{0x2057} & \texttt{[29:25]} & rw & \texttt{0x1} & VFAT 3 S-bit 5 tap delay \\\hline
+    TAP\_DELAY\_VFAT3\_BIT6 & \texttt{0x2058} & \texttt{[4:0]} & rw & \texttt{0x0} & VFAT 3 S-bit 6 tap delay \\\hline
+    TAP\_DELAY\_VFAT3\_BIT7 & \texttt{0x2058} & \texttt{[9:5]} & rw & \texttt{0x0} & VFAT 3 S-bit 7 tap delay \\\hline
+    TAP\_DELAY\_VFAT4\_BIT0 & \texttt{0x2058} & \texttt{[14:10]} & rw & \texttt{0x3} & VFAT 4 S-bit 0 tap delay \\\hline
+    TAP\_DELAY\_VFAT4\_BIT1 & \texttt{0x2058} & \texttt{[19:15]} & rw & \texttt{0x4} & VFAT 4 S-bit 1 tap delay \\\hline
+    TAP\_DELAY\_VFAT4\_BIT2 & \texttt{0x2058} & \texttt{[24:20]} & rw & \texttt{0x4} & VFAT 4 S-bit 2 tap delay \\\hline
+    TAP\_DELAY\_VFAT4\_BIT3 & \texttt{0x2058} & \texttt{[29:25]} & rw & \texttt{0x4} & VFAT 4 S-bit 3 tap delay \\\hline
+    TAP\_DELAY\_VFAT4\_BIT4 & \texttt{0x2059} & \texttt{[4:0]} & rw & \texttt{0x5} & VFAT 4 S-bit 4 tap delay \\\hline
+    TAP\_DELAY\_VFAT4\_BIT5 & \texttt{0x2059} & \texttt{[9:5]} & rw & \texttt{0x5} & VFAT 4 S-bit 5 tap delay \\\hline
+    TAP\_DELAY\_VFAT4\_BIT6 & \texttt{0x2059} & \texttt{[14:10]} & rw & \texttt{0x5} & VFAT 4 S-bit 6 tap delay \\\hline
+    TAP\_DELAY\_VFAT4\_BIT7 & \texttt{0x2059} & \texttt{[19:15]} & rw & \texttt{0x6} & VFAT 4 S-bit 7 tap delay \\\hline
+    TAP\_DELAY\_VFAT5\_BIT0 & \texttt{0x2059} & \texttt{[24:20]} & rw & \texttt{0x6} & VFAT 5 S-bit 0 tap delay \\\hline
+    TAP\_DELAY\_VFAT5\_BIT1 & \texttt{0x2059} & \texttt{[29:25]} & rw & \texttt{0x6} & VFAT 5 S-bit 1 tap delay \\\hline
+    TAP\_DELAY\_VFAT5\_BIT2 & \texttt{0x205a} & \texttt{[4:0]} & rw & \texttt{0x6} & VFAT 5 S-bit 2 tap delay \\\hline
+    TAP\_DELAY\_VFAT5\_BIT3 & \texttt{0x205a} & \texttt{[9:5]} & rw & \texttt{0x7} & VFAT 5 S-bit 3 tap delay \\\hline
+    TAP\_DELAY\_VFAT5\_BIT4 & \texttt{0x205a} & \texttt{[14:10]} & rw & \texttt{0x7} & VFAT 5 S-bit 4 tap delay \\\hline
+    TAP\_DELAY\_VFAT5\_BIT5 & \texttt{0x205a} & \texttt{[19:15]} & rw & \texttt{0x7} & VFAT 5 S-bit 5 tap delay \\\hline
+    TAP\_DELAY\_VFAT5\_BIT6 & \texttt{0x205a} & \texttt{[24:20]} & rw & \texttt{0x8} & VFAT 5 S-bit 6 tap delay \\\hline
+    TAP\_DELAY\_VFAT5\_BIT7 & \texttt{0x205a} & \texttt{[29:25]} & rw & \texttt{0x8} & VFAT 5 S-bit 7 tap delay \\\hline
+    TAP\_DELAY\_VFAT6\_BIT0 & \texttt{0x205b} & \texttt{[4:0]} & rw & \texttt{0x1} & VFAT 6 S-bit 0 tap delay \\\hline
+    TAP\_DELAY\_VFAT6\_BIT1 & \texttt{0x205b} & \texttt{[9:5]} & rw & \texttt{0x0} & VFAT 6 S-bit 1 tap delay \\\hline
+    TAP\_DELAY\_VFAT6\_BIT2 & \texttt{0x205b} & \texttt{[14:10]} & rw & \texttt{0x2} & VFAT 6 S-bit 2 tap delay \\\hline
+    TAP\_DELAY\_VFAT6\_BIT3 & \texttt{0x205b} & \texttt{[19:15]} & rw & \texttt{0x3} & VFAT 6 S-bit 3 tap delay \\\hline
+    TAP\_DELAY\_VFAT6\_BIT4 & \texttt{0x205b} & \texttt{[24:20]} & rw & \texttt{0x3} & VFAT 6 S-bit 4 tap delay \\\hline
+    TAP\_DELAY\_VFAT6\_BIT5 & \texttt{0x205b} & \texttt{[29:25]} & rw & \texttt{0x2} & VFAT 6 S-bit 5 tap delay \\\hline
+    TAP\_DELAY\_VFAT6\_BIT6 & \texttt{0x205c} & \texttt{[4:0]} & rw & \texttt{0x2} & VFAT 6 S-bit 6 tap delay \\\hline
+    TAP\_DELAY\_VFAT6\_BIT7 & \texttt{0x205c} & \texttt{[9:5]} & rw & \texttt{0x2} & VFAT 6 S-bit 7 tap delay \\\hline
+    TAP\_DELAY\_VFAT7\_BIT0 & \texttt{0x205c} & \texttt{[14:10]} & rw & \texttt{0x8} & VFAT 7 S-bit 0 tap delay \\\hline
+    TAP\_DELAY\_VFAT7\_BIT1 & \texttt{0x205c} & \texttt{[19:15]} & rw & \texttt{0x7} & VFAT 7 S-bit 1 tap delay \\\hline
+    TAP\_DELAY\_VFAT7\_BIT2 & \texttt{0x205c} & \texttt{[24:20]} & rw & \texttt{0x6} & VFAT 7 S-bit 2 tap delay \\\hline
+    TAP\_DELAY\_VFAT7\_BIT3 & \texttt{0x205c} & \texttt{[29:25]} & rw & \texttt{0x5} & VFAT 7 S-bit 3 tap delay \\\hline
+    TAP\_DELAY\_VFAT7\_BIT4 & \texttt{0x205d} & \texttt{[4:0]} & rw & \texttt{0x4} & VFAT 7 S-bit 4 tap delay \\\hline
+    TAP\_DELAY\_VFAT7\_BIT5 & \texttt{0x205d} & \texttt{[9:5]} & rw & \texttt{0x3} & VFAT 7 S-bit 5 tap delay \\\hline
+    TAP\_DELAY\_VFAT7\_BIT6 & \texttt{0x205d} & \texttt{[14:10]} & rw & \texttt{0x2} & VFAT 7 S-bit 6 tap delay \\\hline
+    TAP\_DELAY\_VFAT7\_BIT7 & \texttt{0x205d} & \texttt{[19:15]} & rw & \texttt{0x0} & VFAT 7 S-bit 7 tap delay \\\hline
+    TAP\_DELAY\_VFAT8\_BIT0 & \texttt{0x205d} & \texttt{[24:20]} & rw & \texttt{0x4} & VFAT 8 S-bit 0 tap delay \\\hline
+    TAP\_DELAY\_VFAT8\_BIT1 & \texttt{0x205d} & \texttt{[29:25]} & rw & \texttt{0x4} & VFAT 8 S-bit 1 tap delay \\\hline
+    TAP\_DELAY\_VFAT8\_BIT2 & \texttt{0x205e} & \texttt{[4:0]} & rw & \texttt{0x4} & VFAT 8 S-bit 2 tap delay \\\hline
+    TAP\_DELAY\_VFAT8\_BIT3 & \texttt{0x205e} & \texttt{[9:5]} & rw & \texttt{0x4} & VFAT 8 S-bit 3 tap delay \\\hline
+    TAP\_DELAY\_VFAT8\_BIT4 & \texttt{0x205e} & \texttt{[14:10]} & rw & \texttt{0x4} & VFAT 8 S-bit 4 tap delay \\\hline
+    TAP\_DELAY\_VFAT8\_BIT5 & \texttt{0x205e} & \texttt{[19:15]} & rw & \texttt{0x3} & VFAT 8 S-bit 5 tap delay \\\hline
+    TAP\_DELAY\_VFAT8\_BIT6 & \texttt{0x205e} & \texttt{[24:20]} & rw & \texttt{0x3} & VFAT 8 S-bit 6 tap delay \\\hline
+    TAP\_DELAY\_VFAT8\_BIT7 & \texttt{0x205e} & \texttt{[29:25]} & rw & \texttt{0x3} & VFAT 8 S-bit 7 tap delay \\\hline
+    TAP\_DELAY\_VFAT9\_BIT0 & \texttt{0x205f} & \texttt{[4:0]} & rw & \texttt{0x0} & VFAT 9 S-bit 0 tap delay \\\hline
+    TAP\_DELAY\_VFAT9\_BIT1 & \texttt{0x205f} & \texttt{[9:5]} & rw & \texttt{0x6} & VFAT 9 S-bit 1 tap delay \\\hline
+    TAP\_DELAY\_VFAT9\_BIT2 & \texttt{0x205f} & \texttt{[14:10]} & rw & \texttt{0x6} & VFAT 9 S-bit 2 tap delay \\\hline
+    TAP\_DELAY\_VFAT9\_BIT3 & \texttt{0x205f} & \texttt{[19:15]} & rw & \texttt{0x4} & VFAT 9 S-bit 3 tap delay \\\hline
+    TAP\_DELAY\_VFAT9\_BIT4 & \texttt{0x205f} & \texttt{[24:20]} & rw & \texttt{0x4} & VFAT 9 S-bit 4 tap delay \\\hline
+    TAP\_DELAY\_VFAT9\_BIT5 & \texttt{0x205f} & \texttt{[29:25]} & rw & \texttt{0x2} & VFAT 9 S-bit 5 tap delay \\\hline
+    TAP\_DELAY\_VFAT9\_BIT6 & \texttt{0x2060} & \texttt{[4:0]} & rw & \texttt{0x2} & VFAT 9 S-bit 6 tap delay \\\hline
+    TAP\_DELAY\_VFAT9\_BIT7 & \texttt{0x2060} & \texttt{[9:5]} & rw & \texttt{0x1} & VFAT 9 S-bit 7 tap delay \\\hline
+    TAP\_DELAY\_VFAT10\_BIT0 & \texttt{0x2060} & \texttt{[14:10]} & rw & \texttt{0x2} & VFAT 10 S-bit 0 tap delay \\\hline
+    TAP\_DELAY\_VFAT10\_BIT1 & \texttt{0x2060} & \texttt{[19:15]} & rw & \texttt{0x1} & VFAT 10 S-bit 1 tap delay \\\hline
+    TAP\_DELAY\_VFAT10\_BIT2 & \texttt{0x2060} & \texttt{[24:20]} & rw & \texttt{0x1} & VFAT 10 S-bit 2 tap delay \\\hline
+    TAP\_DELAY\_VFAT10\_BIT3 & \texttt{0x2060} & \texttt{[29:25]} & rw & \texttt{0x1} & VFAT 10 S-bit 3 tap delay \\\hline
+    TAP\_DELAY\_VFAT10\_BIT4 & \texttt{0x2061} & \texttt{[4:0]} & rw & \texttt{0x1} & VFAT 10 S-bit 4 tap delay \\\hline
+    TAP\_DELAY\_VFAT10\_BIT5 & \texttt{0x2061} & \texttt{[9:5]} & rw & \texttt{0x1} & VFAT 10 S-bit 5 tap delay \\\hline
+    TAP\_DELAY\_VFAT10\_BIT6 & \texttt{0x2061} & \texttt{[14:10]} & rw & \texttt{0x0} & VFAT 10 S-bit 6 tap delay \\\hline
+    TAP\_DELAY\_VFAT10\_BIT7 & \texttt{0x2061} & \texttt{[19:15]} & rw & \texttt{0x0} & VFAT 10 S-bit 7 tap delay \\\hline
+    TAP\_DELAY\_VFAT11\_BIT0 & \texttt{0x2061} & \texttt{[24:20]} & rw & \texttt{0x2} & VFAT 11 S-bit 0 tap delay \\\hline
+    TAP\_DELAY\_VFAT11\_BIT1 & \texttt{0x2061} & \texttt{[29:25]} & rw & \texttt{0x1} & VFAT 11 S-bit 1 tap delay \\\hline
+    TAP\_DELAY\_VFAT11\_BIT2 & \texttt{0x2062} & \texttt{[4:0]} & rw & \texttt{0x1} & VFAT 11 S-bit 2 tap delay \\\hline
+    TAP\_DELAY\_VFAT11\_BIT3 & \texttt{0x2062} & \texttt{[9:5]} & rw & \texttt{0x1} & VFAT 11 S-bit 3 tap delay \\\hline
+    TAP\_DELAY\_VFAT11\_BIT4 & \texttt{0x2062} & \texttt{[14:10]} & rw & \texttt{0x1} & VFAT 11 S-bit 4 tap delay \\\hline
+    TAP\_DELAY\_VFAT11\_BIT5 & \texttt{0x2062} & \texttt{[19:15]} & rw & \texttt{0x0} & VFAT 11 S-bit 5 tap delay \\\hline
+    TAP\_DELAY\_VFAT11\_BIT6 & \texttt{0x2062} & \texttt{[24:20]} & rw & \texttt{0x0} & VFAT 11 S-bit 6 tap delay \\\hline
+    TAP\_DELAY\_VFAT11\_BIT7 & \texttt{0x2062} & \texttt{[29:25]} & rw & \texttt{0x0} & VFAT 11 S-bit 7 tap delay \\\hline
+    TAP\_DELAY\_VFAT12\_BIT0 & \texttt{0x2063} & \texttt{[4:0]} & rw & \texttt{0x0} & VFAT 12 S-bit 0 tap delay \\\hline
+    TAP\_DELAY\_VFAT12\_BIT1 & \texttt{0x2063} & \texttt{[9:5]} & rw & \texttt{0x0} & VFAT 12 S-bit 1 tap delay \\\hline
+    TAP\_DELAY\_VFAT12\_BIT2 & \texttt{0x2063} & \texttt{[14:10]} & rw & \texttt{0x1} & VFAT 12 S-bit 2 tap delay \\\hline
+    TAP\_DELAY\_VFAT12\_BIT3 & \texttt{0x2063} & \texttt{[19:15]} & rw & \texttt{0x1} & VFAT 12 S-bit 3 tap delay \\\hline
+    TAP\_DELAY\_VFAT12\_BIT4 & \texttt{0x2063} & \texttt{[24:20]} & rw & \texttt{0x1} & VFAT 12 S-bit 4 tap delay \\\hline
+    TAP\_DELAY\_VFAT12\_BIT5 & \texttt{0x2063} & \texttt{[29:25]} & rw & \texttt{0x2} & VFAT 12 S-bit 5 tap delay \\\hline
+    TAP\_DELAY\_VFAT12\_BIT6 & \texttt{0x2064} & \texttt{[4:0]} & rw & \texttt{0x3} & VFAT 12 S-bit 6 tap delay \\\hline
+    TAP\_DELAY\_VFAT12\_BIT7 & \texttt{0x2064} & \texttt{[9:5]} & rw & \texttt{0x3} & VFAT 12 S-bit 7 tap delay \\\hline
+    TAP\_DELAY\_VFAT13\_BIT0 & \texttt{0x2064} & \texttt{[14:10]} & rw & \texttt{0x3} & VFAT 13 S-bit 0 tap delay \\\hline
+    TAP\_DELAY\_VFAT13\_BIT1 & \texttt{0x2064} & \texttt{[19:15]} & rw & \texttt{0x3} & VFAT 13 S-bit 1 tap delay \\\hline
+    TAP\_DELAY\_VFAT13\_BIT2 & \texttt{0x2064} & \texttt{[24:20]} & rw & \texttt{0x4} & VFAT 13 S-bit 2 tap delay \\\hline
+    TAP\_DELAY\_VFAT13\_BIT3 & \texttt{0x2064} & \texttt{[29:25]} & rw & \texttt{0x4} & VFAT 13 S-bit 3 tap delay \\\hline
+    TAP\_DELAY\_VFAT13\_BIT4 & \texttt{0x2065} & \texttt{[4:0]} & rw & \texttt{0x5} & VFAT 13 S-bit 4 tap delay \\\hline
+    TAP\_DELAY\_VFAT13\_BIT5 & \texttt{0x2065} & \texttt{[9:5]} & rw & \texttt{0x5} & VFAT 13 S-bit 5 tap delay \\\hline
+    TAP\_DELAY\_VFAT13\_BIT6 & \texttt{0x2065} & \texttt{[14:10]} & rw & \texttt{0x5} & VFAT 13 S-bit 6 tap delay \\\hline
+    TAP\_DELAY\_VFAT13\_BIT7 & \texttt{0x2065} & \texttt{[19:15]} & rw & \texttt{0x6} & VFAT 13 S-bit 7 tap delay \\\hline
+    TAP\_DELAY\_VFAT14\_BIT0 & \texttt{0x2065} & \texttt{[24:20]} & rw & \texttt{0x1} & VFAT 14 S-bit 0 tap delay \\\hline
+    TAP\_DELAY\_VFAT14\_BIT1 & \texttt{0x2065} & \texttt{[29:25]} & rw & \texttt{0x1} & VFAT 14 S-bit 1 tap delay \\\hline
+    TAP\_DELAY\_VFAT14\_BIT2 & \texttt{0x2066} & \texttt{[4:0]} & rw & \texttt{0x1} & VFAT 14 S-bit 2 tap delay \\\hline
+    TAP\_DELAY\_VFAT14\_BIT3 & \texttt{0x2066} & \texttt{[9:5]} & rw & \texttt{0x1} & VFAT 14 S-bit 3 tap delay \\\hline
+    TAP\_DELAY\_VFAT14\_BIT4 & \texttt{0x2066} & \texttt{[14:10]} & rw & \texttt{0x2} & VFAT 14 S-bit 4 tap delay \\\hline
+    TAP\_DELAY\_VFAT14\_BIT5 & \texttt{0x2066} & \texttt{[19:15]} & rw & \texttt{0x1} & VFAT 14 S-bit 5 tap delay \\\hline
+    TAP\_DELAY\_VFAT14\_BIT6 & \texttt{0x2066} & \texttt{[24:20]} & rw & \texttt{0x2} & VFAT 14 S-bit 6 tap delay \\\hline
+    TAP\_DELAY\_VFAT14\_BIT7 & \texttt{0x2066} & \texttt{[29:25]} & rw & \texttt{0x2} & VFAT 14 S-bit 7 tap delay \\\hline
+    TAP\_DELAY\_VFAT15\_BIT0 & \texttt{0x2067} & \texttt{[4:0]} & rw & \texttt{0x3} & VFAT 15 S-bit 0 tap delay \\\hline
+    TAP\_DELAY\_VFAT15\_BIT1 & \texttt{0x2067} & \texttt{[9:5]} & rw & \texttt{0x2} & VFAT 15 S-bit 1 tap delay \\\hline
+    TAP\_DELAY\_VFAT15\_BIT2 & \texttt{0x2067} & \texttt{[14:10]} & rw & \texttt{0x3} & VFAT 15 S-bit 2 tap delay \\\hline
+    TAP\_DELAY\_VFAT15\_BIT3 & \texttt{0x2067} & \texttt{[19:15]} & rw & \texttt{0x3} & VFAT 15 S-bit 3 tap delay \\\hline
+    TAP\_DELAY\_VFAT15\_BIT4 & \texttt{0x2067} & \texttt{[24:20]} & rw & \texttt{0x3} & VFAT 15 S-bit 4 tap delay \\\hline
+    TAP\_DELAY\_VFAT15\_BIT5 & \texttt{0x2067} & \texttt{[29:25]} & rw & \texttt{0x3} & VFAT 15 S-bit 5 tap delay \\\hline
+    TAP\_DELAY\_VFAT15\_BIT6 & \texttt{0x2068} & \texttt{[4:0]} & rw & \texttt{0x3} & VFAT 15 S-bit 6 tap delay \\\hline
+    TAP\_DELAY\_VFAT15\_BIT7 & \texttt{0x2068} & \texttt{[9:5]} & rw & \texttt{0x3} & VFAT 15 S-bit 7 tap delay \\\hline
+    TAP\_DELAY\_VFAT16\_BIT0 & \texttt{0x2068} & \texttt{[14:10]} & rw & \texttt{0x9} & VFAT 16 S-bit 0 tap delay \\\hline
+    TAP\_DELAY\_VFAT16\_BIT1 & \texttt{0x2068} & \texttt{[19:15]} & rw & \texttt{0x8} & VFAT 16 S-bit 1 tap delay \\\hline
+    TAP\_DELAY\_VFAT16\_BIT2 & \texttt{0x2068} & \texttt{[24:20]} & rw & \texttt{0x7} & VFAT 16 S-bit 2 tap delay \\\hline
+    TAP\_DELAY\_VFAT16\_BIT3 & \texttt{0x2068} & \texttt{[29:25]} & rw & \texttt{0x5} & VFAT 16 S-bit 3 tap delay \\\hline
+    TAP\_DELAY\_VFAT16\_BIT4 & \texttt{0x2069} & \texttt{[4:0]} & rw & \texttt{0x4} & VFAT 16 S-bit 4 tap delay \\\hline
+    TAP\_DELAY\_VFAT16\_BIT5 & \texttt{0x2069} & \texttt{[9:5]} & rw & \texttt{0x3} & VFAT 16 S-bit 5 tap delay \\\hline
+    TAP\_DELAY\_VFAT16\_BIT6 & \texttt{0x2069} & \texttt{[14:10]} & rw & \texttt{0x2} & VFAT 16 S-bit 6 tap delay \\\hline
+    TAP\_DELAY\_VFAT16\_BIT7 & \texttt{0x2069} & \texttt{[19:15]} & rw & \texttt{0x0} & VFAT 16 S-bit 7 tap delay \\\hline
+    TAP\_DELAY\_VFAT17\_BIT0 & \texttt{0x2069} & \texttt{[24:20]} & rw & \texttt{0x2} & VFAT 17 S-bit 0 tap delay \\\hline
+    TAP\_DELAY\_VFAT17\_BIT1 & \texttt{0x2069} & \texttt{[29:25]} & rw & \texttt{0x2} & VFAT 17 S-bit 1 tap delay \\\hline
+    TAP\_DELAY\_VFAT17\_BIT2 & \texttt{0x206a} & \texttt{[4:0]} & rw & \texttt{0x3} & VFAT 17 S-bit 2 tap delay \\\hline
+    TAP\_DELAY\_VFAT17\_BIT3 & \texttt{0x206a} & \texttt{[9:5]} & rw & \texttt{0x3} & VFAT 17 S-bit 3 tap delay \\\hline
+    TAP\_DELAY\_VFAT17\_BIT4 & \texttt{0x206a} & \texttt{[14:10]} & rw & \texttt{0x3} & VFAT 17 S-bit 4 tap delay \\\hline
+    TAP\_DELAY\_VFAT17\_BIT5 & \texttt{0x206a} & \texttt{[19:15]} & rw & \texttt{0x3} & VFAT 17 S-bit 5 tap delay \\\hline
+    TAP\_DELAY\_VFAT17\_BIT6 & \texttt{0x206a} & \texttt{[24:20]} & rw & \texttt{0x3} & VFAT 17 S-bit 6 tap delay \\\hline
+    TAP\_DELAY\_VFAT17\_BIT7 & \texttt{0x206a} & \texttt{[29:25]} & rw & \texttt{0x3} & VFAT 17 S-bit 7 tap delay \\\hline
+    TAP\_DELAY\_VFAT18\_BIT0 & \texttt{0x206b} & \texttt{[4:0]} & rw & \texttt{0x0} & VFAT 18 S-bit 0 tap delay \\\hline
+    TAP\_DELAY\_VFAT18\_BIT1 & \texttt{0x206b} & \texttt{[9:5]} & rw & \texttt{0x0} & VFAT 18 S-bit 1 tap delay \\\hline
+    TAP\_DELAY\_VFAT18\_BIT2 & \texttt{0x206b} & \texttt{[14:10]} & rw & \texttt{0x0} & VFAT 18 S-bit 2 tap delay \\\hline
+    TAP\_DELAY\_VFAT18\_BIT3 & \texttt{0x206b} & \texttt{[19:15]} & rw & \texttt{0x0} & VFAT 18 S-bit 3 tap delay \\\hline
+    TAP\_DELAY\_VFAT18\_BIT4 & \texttt{0x206b} & \texttt{[24:20]} & rw & \texttt{0x1} & VFAT 18 S-bit 4 tap delay \\\hline
+    TAP\_DELAY\_VFAT18\_BIT5 & \texttt{0x206b} & \texttt{[29:25]} & rw & \texttt{0x1} & VFAT 18 S-bit 5 tap delay \\\hline
+    TAP\_DELAY\_VFAT18\_BIT6 & \texttt{0x206c} & \texttt{[4:0]} & rw & \texttt{0x1} & VFAT 18 S-bit 6 tap delay \\\hline
+    TAP\_DELAY\_VFAT18\_BIT7 & \texttt{0x206c} & \texttt{[9:5]} & rw & \texttt{0x1} & VFAT 18 S-bit 7 tap delay \\\hline
+    TAP\_DELAY\_VFAT19\_BIT0 & \texttt{0x206c} & \texttt{[14:10]} & rw & \texttt{0x5} & VFAT 19 S-bit 0 tap delay \\\hline
+    TAP\_DELAY\_VFAT19\_BIT1 & \texttt{0x206c} & \texttt{[19:15]} & rw & \texttt{0x4} & VFAT 19 S-bit 1 tap delay \\\hline
+    TAP\_DELAY\_VFAT19\_BIT2 & \texttt{0x206c} & \texttt{[24:20]} & rw & \texttt{0x4} & VFAT 19 S-bit 2 tap delay \\\hline
+    TAP\_DELAY\_VFAT19\_BIT3 & \texttt{0x206c} & \texttt{[29:25]} & rw & \texttt{0x3} & VFAT 19 S-bit 3 tap delay \\\hline
+    TAP\_DELAY\_VFAT19\_BIT4 & \texttt{0x206d} & \texttt{[4:0]} & rw & \texttt{0x2} & VFAT 19 S-bit 4 tap delay \\\hline
+    TAP\_DELAY\_VFAT19\_BIT5 & \texttt{0x206d} & \texttt{[9:5]} & rw & \texttt{0x2} & VFAT 19 S-bit 5 tap delay \\\hline
+    TAP\_DELAY\_VFAT19\_BIT6 & \texttt{0x206d} & \texttt{[14:10]} & rw & \texttt{0x1} & VFAT 19 S-bit 6 tap delay \\\hline
+    TAP\_DELAY\_VFAT19\_BIT7 & \texttt{0x206d} & \texttt{[19:15]} & rw & \texttt{0x0} & VFAT 19 S-bit 7 tap delay \\\hline
+    TAP\_DELAY\_VFAT20\_BIT0 & \texttt{0x206d} & \texttt{[24:20]} & rw & \texttt{0x3} & VFAT 20 S-bit 0 tap delay \\\hline
+    TAP\_DELAY\_VFAT20\_BIT1 & \texttt{0x206d} & \texttt{[29:25]} & rw & \texttt{0x3} & VFAT 20 S-bit 1 tap delay \\\hline
+    TAP\_DELAY\_VFAT20\_BIT2 & \texttt{0x206e} & \texttt{[4:0]} & rw & \texttt{0x3} & VFAT 20 S-bit 2 tap delay \\\hline
+    TAP\_DELAY\_VFAT20\_BIT3 & \texttt{0x206e} & \texttt{[9:5]} & rw & \texttt{0x2} & VFAT 20 S-bit 3 tap delay \\\hline
+    TAP\_DELAY\_VFAT20\_BIT4 & \texttt{0x206e} & \texttt{[14:10]} & rw & \texttt{0x2} & VFAT 20 S-bit 4 tap delay \\\hline
+    TAP\_DELAY\_VFAT20\_BIT5 & \texttt{0x206e} & \texttt{[19:15]} & rw & \texttt{0x1} & VFAT 20 S-bit 5 tap delay \\\hline
+    TAP\_DELAY\_VFAT20\_BIT6 & \texttt{0x206e} & \texttt{[24:20]} & rw & \texttt{0x1} & VFAT 20 S-bit 6 tap delay \\\hline
+    TAP\_DELAY\_VFAT20\_BIT7 & \texttt{0x206e} & \texttt{[29:25]} & rw & \texttt{0x0} & VFAT 20 S-bit 7 tap delay \\\hline
+    TAP\_DELAY\_VFAT21\_BIT0 & \texttt{0x206f} & \texttt{[4:0]} & rw & \texttt{0x3} & VFAT 21 S-bit 0 tap delay \\\hline
+    TAP\_DELAY\_VFAT21\_BIT1 & \texttt{0x206f} & \texttt{[9:5]} & rw & \texttt{0x2} & VFAT 21 S-bit 1 tap delay \\\hline
+    TAP\_DELAY\_VFAT21\_BIT2 & \texttt{0x206f} & \texttt{[14:10]} & rw & \texttt{0x3} & VFAT 21 S-bit 2 tap delay \\\hline
+    TAP\_DELAY\_VFAT21\_BIT3 & \texttt{0x206f} & \texttt{[19:15]} & rw & \texttt{0x2} & VFAT 21 S-bit 3 tap delay \\\hline
+    TAP\_DELAY\_VFAT21\_BIT4 & \texttt{0x206f} & \texttt{[24:20]} & rw & \texttt{0x2} & VFAT 21 S-bit 4 tap delay \\\hline
+    TAP\_DELAY\_VFAT21\_BIT5 & \texttt{0x206f} & \texttt{[29:25]} & rw & \texttt{0x1} & VFAT 21 S-bit 5 tap delay \\\hline
+    TAP\_DELAY\_VFAT21\_BIT6 & \texttt{0x2070} & \texttt{[4:0]} & rw & \texttt{0x1} & VFAT 21 S-bit 6 tap delay \\\hline
+    TAP\_DELAY\_VFAT21\_BIT7 & \texttt{0x2070} & \texttt{[9:5]} & rw & \texttt{0x0} & VFAT 21 S-bit 7 tap delay \\\hline
+    TAP\_DELAY\_VFAT22\_BIT0 & \texttt{0x2070} & \texttt{[14:10]} & rw & \texttt{0x3} & VFAT 22 S-bit 0 tap delay \\\hline
+    TAP\_DELAY\_VFAT22\_BIT1 & \texttt{0x2070} & \texttt{[19:15]} & rw & \texttt{0x2} & VFAT 22 S-bit 1 tap delay \\\hline
+    TAP\_DELAY\_VFAT22\_BIT2 & \texttt{0x2070} & \texttt{[24:20]} & rw & \texttt{0x2} & VFAT 22 S-bit 2 tap delay \\\hline
+    TAP\_DELAY\_VFAT22\_BIT3 & \texttt{0x2070} & \texttt{[29:25]} & rw & \texttt{0x2} & VFAT 22 S-bit 3 tap delay \\\hline
+    TAP\_DELAY\_VFAT22\_BIT4 & \texttt{0x2071} & \texttt{[4:0]} & rw & \texttt{0x2} & VFAT 22 S-bit 4 tap delay \\\hline
+    TAP\_DELAY\_VFAT22\_BIT5 & \texttt{0x2071} & \texttt{[9:5]} & rw & \texttt{0x1} & VFAT 22 S-bit 5 tap delay \\\hline
+    TAP\_DELAY\_VFAT22\_BIT6 & \texttt{0x2071} & \texttt{[14:10]} & rw & \texttt{0x1} & VFAT 22 S-bit 6 tap delay \\\hline
+    TAP\_DELAY\_VFAT22\_BIT7 & \texttt{0x2071} & \texttt{[19:15]} & rw & \texttt{0x0} & VFAT 22 S-bit 7 tap delay \\\hline
+    TAP\_DELAY\_VFAT23\_BIT0 & \texttt{0x2071} & \texttt{[24:20]} & rw & \texttt{0x2} & VFAT 23 S-bit 0 tap delay \\\hline
+    TAP\_DELAY\_VFAT23\_BIT1 & \texttt{0x2071} & \texttt{[29:25]} & rw & \texttt{0x5} & VFAT 23 S-bit 1 tap delay \\\hline
+    TAP\_DELAY\_VFAT23\_BIT2 & \texttt{0x2072} & \texttt{[4:0]} & rw & \texttt{0x5} & VFAT 23 S-bit 2 tap delay \\\hline
+    TAP\_DELAY\_VFAT23\_BIT3 & \texttt{0x2072} & \texttt{[9:5]} & rw & \texttt{0x3} & VFAT 23 S-bit 3 tap delay \\\hline
+    TAP\_DELAY\_VFAT23\_BIT4 & \texttt{0x2072} & \texttt{[14:10]} & rw & \texttt{0x3} & VFAT 23 S-bit 4 tap delay \\\hline
+    TAP\_DELAY\_VFAT23\_BIT5 & \texttt{0x2072} & \texttt{[19:15]} & rw & \texttt{0x3} & VFAT 23 S-bit 5 tap delay \\\hline
+    TAP\_DELAY\_VFAT23\_BIT6 & \texttt{0x2072} & \texttt{[24:20]} & rw & \texttt{0x1} & VFAT 23 S-bit 6 tap delay \\\hline
+    TAP\_DELAY\_VFAT23\_BIT7 & \texttt{0x2072} & \texttt{[29:25]} & rw & \texttt{0x2} & VFAT 23 S-bit 7 tap delay \\\hline
+    SOT\_TAP\_DELAY\_VFAT0 & \texttt{0x2073} & \texttt{[4:0]} & rw & \texttt{0x2} & VFAT 0 SOT tap delay \\\hline
+    SOT\_TAP\_DELAY\_VFAT1 & \texttt{0x2073} & \texttt{[9:5]} & rw & \texttt{0x2} & VFAT 1 SOT tap delay \\\hline
+    SOT\_TAP\_DELAY\_VFAT2 & \texttt{0x2073} & \texttt{[14:10]} & rw & \texttt{0x0} & VFAT 2 SOT tap delay \\\hline
+    SOT\_TAP\_DELAY\_VFAT3 & \texttt{0x2073} & \texttt{[19:15]} & rw & \texttt{0x0} & VFAT 3 SOT tap delay \\\hline
+    SOT\_TAP\_DELAY\_VFAT4 & \texttt{0x2073} & \texttt{[24:20]} & rw & \texttt{0x0} & VFAT 4 SOT tap delay \\\hline
+    SOT\_TAP\_DELAY\_VFAT5 & \texttt{0x2073} & \texttt{[29:25]} & rw & \texttt{0x0} & VFAT 5 SOT tap delay \\\hline
+    SOT\_TAP\_DELAY\_VFAT6 & \texttt{0x2074} & \texttt{[4:0]} & rw & \texttt{0x1} & VFAT 6 SOT tap delay \\\hline
+    SOT\_TAP\_DELAY\_VFAT7 & \texttt{0x2074} & \texttt{[9:5]} & rw & \texttt{0x6} & VFAT 7 SOT tap delay \\\hline
+    SOT\_TAP\_DELAY\_VFAT8 & \texttt{0x2074} & \texttt{[14:10]} & rw & \texttt{0x0} & VFAT 8 SOT tap delay \\\hline
+    SOT\_TAP\_DELAY\_VFAT9 & \texttt{0x2074} & \texttt{[19:15]} & rw & \texttt{0x7} & VFAT 9 SOT tap delay \\\hline
+    SOT\_TAP\_DELAY\_VFAT10 & \texttt{0x2074} & \texttt{[24:20]} & rw & \texttt{0x1} & VFAT 10 SOT tap delay \\\hline
+    SOT\_TAP\_DELAY\_VFAT11 & \texttt{0x2074} & \texttt{[29:25]} & rw & \texttt{0x2} & VFAT 11 SOT tap delay \\\hline
+    SOT\_TAP\_DELAY\_VFAT12 & \texttt{0x2075} & \texttt{[4:0]} & rw & \texttt{0x2} & VFAT 12 SOT tap delay \\\hline
+    SOT\_TAP\_DELAY\_VFAT13 & \texttt{0x2075} & \texttt{[9:5]} & rw & \texttt{0x0} & VFAT 13 SOT tap delay \\\hline
+    SOT\_TAP\_DELAY\_VFAT14 & \texttt{0x2075} & \texttt{[14:10]} & rw & \texttt{0x0} & VFAT 14 SOT tap delay \\\hline
+    SOT\_TAP\_DELAY\_VFAT15 & \texttt{0x2075} & \texttt{[19:15]} & rw & \texttt{0x0} & VFAT 15 SOT tap delay \\\hline
+    SOT\_TAP\_DELAY\_VFAT16 & \texttt{0x2075} & \texttt{[24:20]} & rw & \texttt{0x4} & VFAT 16 SOT tap delay \\\hline
+    SOT\_TAP\_DELAY\_VFAT17 & \texttt{0x2075} & \texttt{[29:25]} & rw & \texttt{0x0} & VFAT 17 SOT tap delay \\\hline
+    SOT\_TAP\_DELAY\_VFAT18 & \texttt{0x2076} & \texttt{[4:0]} & rw & \texttt{0x4} & VFAT 18 SOT tap delay \\\hline
+    SOT\_TAP\_DELAY\_VFAT19 & \texttt{0x2076} & \texttt{[9:5]} & rw & \texttt{0x2} & VFAT 19 SOT tap delay \\\hline
+    SOT\_TAP\_DELAY\_VFAT20 & \texttt{0x2076} & \texttt{[14:10]} & rw & \texttt{0x0} & VFAT 20 SOT tap delay \\\hline
+    SOT\_TAP\_DELAY\_VFAT21 & \texttt{0x2076} & \texttt{[19:15]} & rw & \texttt{0x2} & VFAT 21 SOT tap delay \\\hline
+    SOT\_TAP\_DELAY\_VFAT22 & \texttt{0x2076} & \texttt{[24:20]} & rw & \texttt{0x0} & VFAT 22 SOT tap delay \\\hline
+    SOT\_TAP\_DELAY\_VFAT23 & \texttt{0x2076} & \texttt{[29:25]} & rw & \texttt{0x0} & VFAT 23 SOT tap delay \\\hline
+    \end{tabularx}
+    \vspace{5mm}
+
+
+    \noindent
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.TRIG.SBIT\_MONITOR}}}
+
+    \vspace{4mm}
+    \noindent
+    sbit monitor module which shows the first valid sbit clusters after a reset on the selected link
+    \noindent
+
+    \keepXColumns
+    \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
+    \hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \nopagebreak
+    RESET & \texttt{0x2090} & \texttt{[31:0]} & w & Pulsed & Reset the sbit monitor module and re-arm for triggering \\\hline
+    CLUSTER0 & \texttt{0x2091} & \texttt{[15:0]} & r & \texttt{} & Last cluster 0 \\\hline
+    CLUSTER1 & \texttt{0x2092} & \texttt{[15:0]} & r & \texttt{} & Last cluster 1 \\\hline
+    CLUSTER2 & \texttt{0x2093} & \texttt{[15:0]} & r & \texttt{} & Last cluster 2 \\\hline
+    CLUSTER3 & \texttt{0x2094} & \texttt{[15:0]} & r & \texttt{} & Last cluster 3 \\\hline
+    CLUSTER4 & \texttt{0x2095} & \texttt{[15:0]} & r & \texttt{} & Last cluster 4 \\\hline
+    CLUSTER5 & \texttt{0x2096} & \texttt{[15:0]} & r & \texttt{} & Last cluster 5 \\\hline
+    CLUSTER6 & \texttt{0x2097} & \texttt{[15:0]} & r & \texttt{} & Last cluster 6 \\\hline
+    CLUSTER7 & \texttt{0x2098} & \texttt{[15:0]} & r & \texttt{} & Last cluster 7 \\\hline
+    L1A\_DELAY & \texttt{0x20a0} & \texttt{[31:0]} & r & \texttt{} & Number of BX between this sbit and the subsequent L1A \\\hline
+    \end{tabularx}
+    \vspace{5mm}
+
+
+    \noindent
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.TRIG.SBIT\_HITMAP}}}
+
+    \vspace{4mm}
+    \noindent
+    The Sbit hitmap module accumulates all incoming Sbits during a period of time
+    \noindent
+
+    \keepXColumns
+    \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
+    \hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \nopagebreak
+    RESET & \texttt{0x20b0} & \texttt{[31:0]} & w & Pulsed & Reset the accumulation registers \\\hline
+    ACQUIRE & \texttt{0x20b1} & \texttt{[0:0]} & rw & \texttt{0x0} & Sbits are accumulated as long as this flag is set \\\hline
+    VFAT0\_MSB & \texttt{0x20b2} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 63 to 32 of VFAT0 \\\hline
+    VFAT0\_LSB & \texttt{0x20b3} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 31 to 0 of VFAT0 \\\hline
+    VFAT1\_MSB & \texttt{0x20b4} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 63 to 32 of VFAT1 \\\hline
+    VFAT1\_LSB & \texttt{0x20b5} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 31 to 0 of VFAT1 \\\hline
+    VFAT2\_MSB & \texttt{0x20b6} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 63 to 32 of VFAT2 \\\hline
+    VFAT2\_LSB & \texttt{0x20b7} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 31 to 0 of VFAT2 \\\hline
+    VFAT3\_MSB & \texttt{0x20b8} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 63 to 32 of VFAT3 \\\hline
+    VFAT3\_LSB & \texttt{0x20b9} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 31 to 0 of VFAT3 \\\hline
+    VFAT4\_MSB & \texttt{0x20ba} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 63 to 32 of VFAT4 \\\hline
+    VFAT4\_LSB & \texttt{0x20bb} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 31 to 0 of VFAT4 \\\hline
+    VFAT5\_MSB & \texttt{0x20bc} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 63 to 32 of VFAT5 \\\hline
+    VFAT5\_LSB & \texttt{0x20bd} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 31 to 0 of VFAT5 \\\hline
+    VFAT6\_MSB & \texttt{0x20be} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 63 to 32 of VFAT6 \\\hline
+    VFAT6\_LSB & \texttt{0x20bf} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 31 to 0 of VFAT6 \\\hline
+    VFAT7\_MSB & \texttt{0x20c0} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 63 to 32 of VFAT7 \\\hline
+    VFAT7\_LSB & \texttt{0x20c1} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 31 to 0 of VFAT7 \\\hline
+    VFAT8\_MSB & \texttt{0x20c2} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 63 to 32 of VFAT8 \\\hline
+    VFAT8\_LSB & \texttt{0x20c3} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 31 to 0 of VFAT8 \\\hline
+    VFAT9\_MSB & \texttt{0x20c4} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 63 to 32 of VFAT9 \\\hline
+    VFAT9\_LSB & \texttt{0x20c5} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 31 to 0 of VFAT9 \\\hline
+    VFAT10\_MSB & \texttt{0x20c6} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 63 to 32 of VFAT10 \\\hline
+    VFAT10\_LSB & \texttt{0x20c7} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 31 to 0 of VFAT10 \\\hline
+    VFAT11\_MSB & \texttt{0x20c8} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 63 to 32 of VFAT11 \\\hline
+    VFAT11\_LSB & \texttt{0x20c9} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 31 to 0 of VFAT11 \\\hline
+    VFAT12\_MSB & \texttt{0x20ca} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 63 to 32 of VFAT12 \\\hline
+    VFAT12\_LSB & \texttt{0x20cb} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 31 to 0 of VFAT12 \\\hline
+    VFAT13\_MSB & \texttt{0x20cc} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 63 to 32 of VFAT13 \\\hline
+    VFAT13\_LSB & \texttt{0x20cd} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 31 to 0 of VFAT13 \\\hline
+    VFAT14\_MSB & \texttt{0x20ce} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 63 to 32 of VFAT14 \\\hline
+    VFAT14\_LSB & \texttt{0x20cf} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 31 to 0 of VFAT14 \\\hline
+    VFAT15\_MSB & \texttt{0x20d0} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 63 to 32 of VFAT15 \\\hline
+    VFAT15\_LSB & \texttt{0x20d1} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 31 to 0 of VFAT15 \\\hline
+    VFAT16\_MSB & \texttt{0x20d2} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 63 to 32 of VFAT16 \\\hline
+    VFAT16\_LSB & \texttt{0x20d3} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 31 to 0 of VFAT16 \\\hline
+    VFAT17\_MSB & \texttt{0x20d4} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 63 to 32 of VFAT17 \\\hline
+    VFAT17\_LSB & \texttt{0x20d5} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 31 to 0 of VFAT17 \\\hline
+    VFAT18\_MSB & \texttt{0x20d6} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 63 to 32 of VFAT18 \\\hline
+    VFAT18\_LSB & \texttt{0x20d7} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 31 to 0 of VFAT18 \\\hline
+    VFAT19\_MSB & \texttt{0x20d8} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 63 to 32 of VFAT19 \\\hline
+    VFAT19\_LSB & \texttt{0x20d9} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 31 to 0 of VFAT19 \\\hline
+    VFAT20\_MSB & \texttt{0x20da} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 63 to 32 of VFAT20 \\\hline
+    VFAT20\_LSB & \texttt{0x20db} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 31 to 0 of VFAT20 \\\hline
+    VFAT21\_MSB & \texttt{0x20dc} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 63 to 32 of VFAT21 \\\hline
+    VFAT21\_LSB & \texttt{0x20dd} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 31 to 0 of VFAT21 \\\hline
+    VFAT22\_MSB & \texttt{0x20de} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 63 to 32 of VFAT22 \\\hline
+    VFAT22\_LSB & \texttt{0x20df} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 31 to 0 of VFAT22 \\\hline
+    VFAT23\_MSB & \texttt{0x20e0} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 63 to 32 of VFAT23 \\\hline
+    VFAT23\_LSB & \texttt{0x20e1} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 31 to 0 of VFAT23 \\\hline
+    \end{tabularx}
+    \vspace{5mm}
+
+
+    \noindent
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.TRIG.CTRL}}}
+
+    \vspace{4mm}
+    \noindent
+    Controls and monitors various parameters of the S-bit deserialization and cluster building.
+    \noindent
+
+    \keepXColumns
+    \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
+    \hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \nopagebreak
+    SBIT\_SOT\_INVALID\_BITSKIP & \texttt{0x20e2} & \texttt{[23:0]} & r & \texttt{} & 24 bit list of VFATs with a invalid bitskip counter for Start-of-frame pulses \\\hline
+    \end{tabularx}
+    \vspace{5mm}
+
+
+
+    \pagebreak
+    \section{Module: FPGA.GBT \hfill \texttt{0x4000}}
+
+    Contains functionality for controlling and monitoring the bidirectional GBTx to FPGA link\\
+
+    \renewcommand{\arraystretch}{1.3}
+    \noindent
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.GBT.TX}}}
+
+    \vspace{4mm}
+    \noindent
+    Controls and monitors the transmit link from the FPGA to the GBTx
+    \noindent
+
+    \keepXColumns
+    \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
+    \hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \nopagebreak
+    CNT\_RESPONSE\_SENT & \texttt{0x4000} & \texttt{[31:8]} & r & \texttt{} & Number of wishbone responses sent back \\\hline
+    TX\_READY & \texttt{0x4001} & \texttt{[0:0]} & r & \texttt{} & GBT TX READY from GBTx Chip \\\hline
+    \end{tabularx}
+    \vspace{5mm}
+
+
+    \noindent
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.GBT.RX}}}
+
+    \vspace{4mm}
+    \noindent
+    Controls and monitors the transmit link from the GBTx to the FPGA
+    \noindent
+
+    \keepXColumns
+    \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
+    \hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \nopagebreak
+    RX\_READY & \texttt{0x4004} & \texttt{[0:0]} & r & \texttt{} & GBT RX READY from GBTx Chip \\\hline
+    RX\_VALID & \texttt{0x4004} & \texttt{[1:1]} & r & \texttt{} & GBT RX VALID from GBTx Chip \\\hline
+    CNT\_REQUEST\_RECEIVED & \texttt{0x4004} & \texttt{[31:8]} & r & \texttt{} & Number of wishbone requests received \\\hline
+    CNT\_LINK\_ERR & \texttt{0x4005} & \texttt{[23:0]} & r & \texttt{} & Number of GBT link errrors detected \\\hline
+    \end{tabularx}
+    \vspace{5mm}
+
+
+    \noindent
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.GBT.TTC}}}
+
+    \vspace{4mm}
+    \noindent
+    Emulates the TTC commands from GBTx through Wishbone
+    \noindent
+
+    \keepXColumns
+    \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
+    \hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \nopagebreak
+    FORCE\_L1A & \texttt{0x4005} & \texttt{[31:0]} & w & Pulsed & GBT Force L1A \\\hline
+    FORCE\_BC0 & \texttt{0x4006} & \texttt{[31:0]} & w & Pulsed & GBT Force BC0 \\\hline
+    FORCE\_RESYNC & \texttt{0x4007} & \texttt{[31:0]} & w & Pulsed & GBT Force Resync \\\hline
+    \end{tabularx}
+    \vspace{5mm}
+
+
+
+    \pagebreak
+    \section{Module: FPGA.MGT \hfill \texttt{0x5000}}
+
+    Controls and monitors the multi-gigabit links that drive the trigger fiber tranceivers\\
+
+    \renewcommand{\arraystretch}{1.3}
+    \noindent
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.MGT}}}
+
+    \vspace{4mm}
+    \noindent
+    Controls and monitors the multi-gigabit links that drive the trigger fiber tranceivers
+    \noindent
+
+    \keepXColumns
+    \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
+    \hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \nopagebreak
+    PLL\_LOCK & \texttt{0x5000} & \texttt{[0:0]} & r & \texttt{} &  \\\hline
+    \end{tabularx}
+    \vspace{5mm}
+
+
+    \noindent
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.MGT.CONTROL\$\{GT\}}}}
+
+    \vspace{4mm}
+    \noindent
+    MGT \$\{GT\} Control
+    \noindent
+
+    \noindent
+    \keepXColumns
+    \begin{tabularx}{\linewidth}{  l  l  l  r   X }
+    Generated range of & GT & is & \texttt{[3:0]} & adr\_step=0x5 (5) \\ 
+    \end{tabularx}
+    \keepXColumns
+    \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
+    \hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \nopagebreak
+    TX\_PRBS\_MODE0 & \texttt{0x5001} & \texttt{[2:0]} & rw & \texttt{0x0} & 0: Standard \\ & & & & & 1: PRBS-7 \\ & & & & & 2: PRBS-15 \\ & & & & & 3: PRBS-23 \\ & & & & & 4: PRBS-31 \\\hline
+    RX\_PRBS\_MODE0 & \texttt{0x5001} & \texttt{[5:3]} & rw & \texttt{0x0} & 0: Standard \\ & & & & & 1: PRBS-7 \\ & & & & & 2: PRBS-15 \\ & & & & & 3: PRBS-23 \\ & & & & & 4: PRBS-31 \\\hline
+    LOOPBACK\_MODE0 & \texttt{0x5001} & \texttt{[8:6]} & rw & \texttt{0x0} & GT Loopback Mode \\ & & & & & 0 = normal \\ & & & & & 1 = near end pcs \\ & & & & & 2 = near end pma \\ & & & & &4 = far end pma \\ & & & & & 6 = far end pcs \\\hline
+    TX\_DIFFCTRL0 & \texttt{0x5001} & \texttt{[15:12]} & rw & \texttt{0xC} & TX Differential Swing Control \\\hline
+    GTTXRESET0 & \texttt{0x5002} & \texttt{[31:0]} & w & Pulsed & GT TX Reset \\\hline
+    TXPRBS\_FORCE\_ERR0 & \texttt{0x5003} & \texttt{[31:0]} & w & Pulsed & TX PRBS Force Error \\\hline
+    TXPCSRESET0 & \texttt{0x5004} & \texttt{[31:0]} & w & Pulsed & TX PCS Reset \\\hline
+    TXPMARESET0 & \texttt{0x5005} & \texttt{[31:0]} & w & Pulsed & TX PMA Reset \\\hline
+    TX\_PRBS\_MODE1 & \texttt{0x5006} & \texttt{[2:0]} & rw & \texttt{0x0} & 0: Standard \\ & & & & & 1: PRBS-7 \\ & & & & & 2: PRBS-15 \\ & & & & & 3: PRBS-23 \\ & & & & & 4: PRBS-31 \\\hline
+    RX\_PRBS\_MODE1 & \texttt{0x5006} & \texttt{[5:3]} & rw & \texttt{0x0} & 0: Standard \\ & & & & & 1: PRBS-7 \\ & & & & & 2: PRBS-15 \\ & & & & & 3: PRBS-23 \\ & & & & & 4: PRBS-31 \\\hline
+    LOOPBACK\_MODE1 & \texttt{0x5006} & \texttt{[8:6]} & rw & \texttt{0x0} & GT Loopback Mode \\ & & & & & 0 = normal \\ & & & & & 1 = near end pcs \\ & & & & & 2 = near end pma \\ & & & & &4 = far end pma \\ & & & & & 6 = far end pcs \\\hline
+    TX\_DIFFCTRL1 & \texttt{0x5006} & \texttt{[15:12]} & rw & \texttt{0xC} & TX Differential Swing Control \\\hline
+    GTTXRESET1 & \texttt{0x5007} & \texttt{[31:0]} & w & Pulsed & GT TX Reset \\\hline
+    TXPRBS\_FORCE\_ERR1 & \texttt{0x5008} & \texttt{[31:0]} & w & Pulsed & TX PRBS Force Error \\\hline
+    TXPCSRESET1 & \texttt{0x5009} & \texttt{[31:0]} & w & Pulsed & TX PCS Reset \\\hline
+    TXPMARESET1 & \texttt{0x500a} & \texttt{[31:0]} & w & Pulsed & TX PMA Reset \\\hline
+    TX\_PRBS\_MODE2 & \texttt{0x500b} & \texttt{[2:0]} & rw & \texttt{0x0} & 0: Standard \\ & & & & & 1: PRBS-7 \\ & & & & & 2: PRBS-15 \\ & & & & & 3: PRBS-23 \\ & & & & & 4: PRBS-31 \\\hline
+    RX\_PRBS\_MODE2 & \texttt{0x500b} & \texttt{[5:3]} & rw & \texttt{0x0} & 0: Standard \\ & & & & & 1: PRBS-7 \\ & & & & & 2: PRBS-15 \\ & & & & & 3: PRBS-23 \\ & & & & & 4: PRBS-31 \\\hline
+    LOOPBACK\_MODE2 & \texttt{0x500b} & \texttt{[8:6]} & rw & \texttt{0x0} & GT Loopback Mode \\ & & & & & 0 = normal \\ & & & & & 1 = near end pcs \\ & & & & & 2 = near end pma \\ & & & & &4 = far end pma \\ & & & & & 6 = far end pcs \\\hline
+    TX\_DIFFCTRL2 & \texttt{0x500b} & \texttt{[15:12]} & rw & \texttt{0xC} & TX Differential Swing Control \\\hline
+    GTTXRESET2 & \texttt{0x500c} & \texttt{[31:0]} & w & Pulsed & GT TX Reset \\\hline
+    TXPRBS\_FORCE\_ERR2 & \texttt{0x500d} & \texttt{[31:0]} & w & Pulsed & TX PRBS Force Error \\\hline
+    TXPCSRESET2 & \texttt{0x500e} & \texttt{[31:0]} & w & Pulsed & TX PCS Reset \\\hline
+    TXPMARESET2 & \texttt{0x500f} & \texttt{[31:0]} & w & Pulsed & TX PMA Reset \\\hline
+    TX\_PRBS\_MODE3 & \texttt{0x5010} & \texttt{[2:0]} & rw & \texttt{0x0} & 0: Standard \\ & & & & & 1: PRBS-7 \\ & & & & & 2: PRBS-15 \\ & & & & & 3: PRBS-23 \\ & & & & & 4: PRBS-31 \\\hline
+    RX\_PRBS\_MODE3 & \texttt{0x5010} & \texttt{[5:3]} & rw & \texttt{0x0} & 0: Standard \\ & & & & & 1: PRBS-7 \\ & & & & & 2: PRBS-15 \\ & & & & & 3: PRBS-23 \\ & & & & & 4: PRBS-31 \\\hline
+    LOOPBACK\_MODE3 & \texttt{0x5010} & \texttt{[8:6]} & rw & \texttt{0x0} & GT Loopback Mode \\ & & & & & 0 = normal \\ & & & & & 1 = near end pcs \\ & & & & & 2 = near end pma \\ & & & & &4 = far end pma \\ & & & & & 6 = far end pcs \\\hline
+    TX\_DIFFCTRL3 & \texttt{0x5010} & \texttt{[15:12]} & rw & \texttt{0xC} & TX Differential Swing Control \\\hline
+    GTTXRESET3 & \texttt{0x5011} & \texttt{[31:0]} & w & Pulsed & GT TX Reset \\\hline
+    TXPRBS\_FORCE\_ERR3 & \texttt{0x5012} & \texttt{[31:0]} & w & Pulsed & TX PRBS Force Error \\\hline
+    TXPCSRESET3 & \texttt{0x5013} & \texttt{[31:0]} & w & Pulsed & TX PCS Reset \\\hline
+    TXPMARESET3 & \texttt{0x5014} & \texttt{[31:0]} & w & Pulsed & TX PMA Reset \\\hline
+    \end{tabularx}
+    \vspace{5mm}
+
+
+    \noindent
+    \subsection*{\textcolor{parentcolor}{\textbf{FPGA.MGT.STATUS\$\{GT\}}}}
+
+    \vspace{4mm}
+    \noindent
+    MGT \$\{GT\} Status
+    \noindent
+
+    \noindent
+    \keepXColumns
+    \begin{tabularx}{\linewidth}{  l  l  l  r   X }
+    Generated range of & GT & is & \texttt{[3:0]} & adr\_step=0x1 (1) \\ 
+    \end{tabularx}
+    \keepXColumns
+    \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
+    \hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \nopagebreak
+    TXFSM\_RESET\_DONE0 & \texttt{0x5015} & \texttt{[0:0]} & r & \texttt{} &  \\\hline
+    TXRESET\_DONE0 & \texttt{0x5015} & \texttt{[1:1]} & r & \texttt{} &  \\\hline
+    TX\_PMA\_RESET\_DONE0 & \texttt{0x5015} & \texttt{[2:2]} & r & \texttt{} &  \\\hline
+    TX\_PHALIGN\_DONE0 & \texttt{0x5015} & \texttt{[3:3]} & r & \texttt{} &  \\\hline
+    TXFSM\_RESET\_DONE1 & \texttt{0x5016} & \texttt{[0:0]} & r & \texttt{} &  \\\hline
+    TXRESET\_DONE1 & \texttt{0x5016} & \texttt{[1:1]} & r & \texttt{} &  \\\hline
+    TX\_PMA\_RESET\_DONE1 & \texttt{0x5016} & \texttt{[2:2]} & r & \texttt{} &  \\\hline
+    TX\_PHALIGN\_DONE1 & \texttt{0x5016} & \texttt{[3:3]} & r & \texttt{} &  \\\hline
+    TXFSM\_RESET\_DONE2 & \texttt{0x5017} & \texttt{[0:0]} & r & \texttt{} &  \\\hline
+    TXRESET\_DONE2 & \texttt{0x5017} & \texttt{[1:1]} & r & \texttt{} &  \\\hline
+    TX\_PMA\_RESET\_DONE2 & \texttt{0x5017} & \texttt{[2:2]} & r & \texttt{} &  \\\hline
+    TX\_PHALIGN\_DONE2 & \texttt{0x5017} & \texttt{[3:3]} & r & \texttt{} &  \\\hline
+    TXFSM\_RESET\_DONE3 & \texttt{0x5018} & \texttt{[0:0]} & r & \texttt{} &  \\\hline
+    TXRESET\_DONE3 & \texttt{0x5018} & \texttt{[1:1]} & r & \texttt{} &  \\\hline
+    TX\_PMA\_RESET\_DONE3 & \texttt{0x5018} & \texttt{[2:2]} & r & \texttt{} &  \\\hline
+    TX\_PHALIGN\_DONE3 & \texttt{0x5018} & \texttt{[3:3]} & r & \texttt{} &  \\\hline
+    \end{tabularx}
+    \vspace{5mm}
+
+
+% END: ADDRESS_TABLE :: DO NOT EDIT
+
+\end{document}
+
