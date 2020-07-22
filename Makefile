@@ -13,68 +13,35 @@ update:
 clean:
 	rm -rf VivadoProject/
 
-all: | update create synth impl
+all:  update create synth impl
 
-create: create_ge21 create_ge11-long create_ge11-short |
-synth: synth_ge21 synth_ge11-long synth_ge11-short |
-impl: impl_ge21 impl_ge11-long impl_ge11-short |
+create: create_oh21-200 create_oh11-long create_oh11-short
+synth: synth_oh21-200 synth_oh11-long synth_oh11-short
+impl: impl_oh21-200 impl_oh11-long impl_oh11-short
 
-ge21: | create_ge21 synth_ge21 impl_ge21
-ge21-200: | create_ge21-200 synth_ge21-200 impl_ge21-200
-ge21-75: | create_ge21-75 synth_ge21-75 impl_ge21-75
-ge11-long: | create_ge11-long synth_ge11-long impl_ge11-long
-ge11-short: | create_ge11-short synth_ge11-short impl_ge11-short
-
-################################################################################
-# Create
-################################################################################
-
-create_ge21: create_ge21-200 create_ge21-75 |
-
-create_ge21-200:
-	time Hog/CreateProject.sh oh21
-
-create_ge21-75:
-	time Hog/CreateProject.sh oh21-75
-
-create_ge11-long:
-	time Hog/CreateProject.sh oh11-long
-
-create_ge11-short:
-	time Hog/CreateProject.sh oh11-short
+oh21:  oh21-200 oh21-75
+oh21-200:  create_oh21-200 synth_oh21-200 impl_oh21-200
+oh21-75:  create_oh21-75 synth_oh21-75 impl_oh21-75
+oh11-long:  create_oh11-long synth_oh11-long impl_oh11-long
+oh11-short:  create_oh11-short synth_oh11-short impl_oh11-short
 
 ################################################################################
 # Create
 ################################################################################
 
-synth_ge21: synth_ge21-200 synth_ge21-75 |
-
-synth_ge21-200:
-	time Hog/LaunchSynthesis.sh oh21
-
-synth_ge21-75:
-	time Hog/LaunchSynthesis.sh oh21-75
-
-synth_ge11-long:
-	time Hog/LaunchSynthesis.sh oh11-long
-
-synth_ge11-short:
-	time Hog/LaunchSynthesis.sh oh11-short
+create_oh21: create_oh21-200 create_oh21-75
+synth_oh21: synth_oh21-200 synth_oh21-75
+impl_oh21: impl_oh21-200 impl_oh21-75
 
 ################################################################################
-# Implementation
+# Ohnerics
 ################################################################################
 
-impl_ge21: impl_ge21-200 impl_ge21-75 |
+create_%:
+	time Hog/CreateProject.sh $(patsubst create_%,%,$@)
 
-impl_ge21-75:
-	time Hog/LaunchImplementation.sh oh21-75
+synth_%: create_%
+	time Hog/LaunchSynthesis.sh $(patsubst synth_%,%,$@)
 
-impl_ge21-200:
-	time Hog/LaunchImplementation.sh oh21
-
-impl_ge11-long:
-	time Hog/LaunchImplementation.sh oh11-long
-
-impl_ge11-short:
-	time Hog/LaunchImplementation.sh oh11-short
+impl_%: create_% synth_%
+	time Hog/LaunchImplementation.sh $(patsubst impl_%,%,$@)
