@@ -254,7 +254,7 @@ def main():
     print('Writing documentation file to ' + DOC_FILE.replace(".tex",SUFFIX+".tex"))
     writeDocFile (modules, DOC_FILE)
 
-    print('Writing orgumentation file to ' + DOC_FILE.replace(".org",SUFFIX+".org"))
+    print('Writing org file to ' + DOC_FILE.replace(".org",SUFFIX+".org"))
     writeOrgFile (modules, DOC_FILE.replace(".tex",".org"))
 
     print('Writing constants file to ' + CONSTANTS_FILE.replace(".vhd",SUFFIX+".vhd"))
@@ -495,7 +495,7 @@ def writeOrgFile (modules, filename):
     def write_module_name (f, module):
         module_name = module.name
         f.write ('\n')
-        f.write ('* Module: %s =0x%x=\n' % (module_name, module.baseAddress))
+        f.write ('* Module %s \t adr = ~0x%x~\n' % (module_name, module.baseAddress))
         f.write ('\n')
         f.write ('%s\n' % (module.description))
         f.write ('\n')
@@ -517,18 +517,26 @@ def writeOrgFile (modules, filename):
             return idx.replace('GBT_IDX','GBT{N}').replace('OH_IDX','OH{X}').replace('VFAT_IDX','VFAT{Y}').replace('CHANNEL_IDX','CHANNEL{Z}')
 
         for varKey in parent.genvars.keys():
-            f.write('Generated range of %s is =[%d:0]= adr_step==0x%X= (%d)\n' % (idx_to_xyz(varKey), parent.gensize[varKey]-1, parent.genstep[varKey], parent.genstep[varKey]))
+            f.write('Generated range of %s is ~[%d:0]~ adr_step = ~0x%X~ (%d)\n' % (idx_to_xyz(varKey), parent.gensize[varKey]-1, parent.genstep[varKey], parent.genstep[varKey]))
 
     def write_start_of_reg_table (f):
-        f.write('|------------+------+---------+-----+-----+----------------------------|\n')
-        f.write('| Node       | Adr  | Bits    | Dir | Def | Description                |\n')
-        f.write('|------------+------+---------+-----+-----+----------------------------|\n')
+        f.write('|------------+------+---------+------+-----+----------------------------|\n')
+        f.write('| Node       | Adr  | Bits    | Perm | Def | Description                |\n')
+        f.write('|------------+------+---------+------+-----+----------------------------|\n')
 
     def write_reg_entry (f, endpoint_name, address, bithi, bitlo, permission, default, description):
+
         if (default!="Pulsed"):
             if (permission!="r"):
-                default = ("=%s=" % default)
-        f.write('|%s | =0x%x= | =[%d:%d]= | %s | %s | %s | \n' % (endpoint_name, address, bithi, bitlo, permission, default, convert_newlines(description)))
+                default = ("~%s~" % default)
+        else:
+            default="Pulse"
+
+        bitstr = ("[%d:%d]" % (bithi, bitlo))
+        if (bithi==bitlo):
+            bitstr = ("%d" % (bithi))
+
+        f.write('|%s | ~0x%x~ | ~%s~ | %s | %s | %s | \n' % (endpoint_name, address, bitstr, permission, default, convert_newlines(description)))
         f.write('|------------+------+---------+-----+-----+----------------------------|\n')
 
     def writeDoc (filename):
@@ -726,7 +734,7 @@ def writeDocFile (modules, filename):
         f.write ('%s\\keepXColumns\n' % (padding))
         f.write ('%s\\begin{tabularx}{\\linewidth}{ | l | l | r | c | l | X | }\n' % (padding))
         f.write('%s\\hline\n' % (padding))
-        f.write('%s\\textbf{Node} & \\textbf{Adr} & \\textbf{Bits} & \\textbf{Dir} & \\textbf{Def} & \\textbf{Description} \\\\\\hline\n' % (padding))
+        f.write('%s\\textbf{Node} & \\textbf{Adr} & \\textbf{Bits} & \\textbf{Perm} & \\textbf{Def} & \\textbf{Description} \\\\\\hline\n' % (padding))
         f.write('%s\\nopagebreak\n' % (padding))
 
     def write_reg_entry_latex (f, endpoint_name, address, bithi, bitlo, permission, default, description):
@@ -734,6 +742,8 @@ def writeDocFile (modules, filename):
         padding = "    "
         if (default!="Pulsed"):
             default = "\\texttt{%s}" % default
+        else:
+            default="Pulse"
 
         f.write('%s%s & \\texttt{0x%x} & \\texttt{[%d:%d]} & %s & %s & %s \\\\\hline\n' % (padding,latexify(endpoint_name), address, bithi, bitlo, permission, default, convert_newlines(latexify(description))))
 

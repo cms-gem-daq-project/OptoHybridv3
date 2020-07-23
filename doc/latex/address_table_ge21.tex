@@ -49,7 +49,7 @@
     \keepXColumns
     \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
     \hline
-    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Perm} & \textbf{Def} & \textbf{Description} \\\hline
     \nopagebreak
     DATA & \texttt{0x0} & \texttt{[31:0]} & rw & \texttt{0x1234567} & Write/Read Data Port \\\hline
     \end{tabularx}
@@ -67,7 +67,7 @@
     \keepXColumns
     \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
     \hline
-    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Perm} & \textbf{Def} & \textbf{Description} \\\hline
     \nopagebreak
     DATE & \texttt{0x1} & \texttt{[31:0]} & r & \texttt{} & Release YYYY/MM/DD \\\hline
     \end{tabularx}
@@ -85,7 +85,7 @@
     \keepXColumns
     \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
     \hline
-    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Perm} & \textbf{Def} & \textbf{Description} \\\hline
     \nopagebreak
     MAJOR & \texttt{0x2} & \texttt{[7:0]} & r & \texttt{} & Release semantic version major \\\hline
     MINOR & \texttt{0x2} & \texttt{[15:8]} & r & \texttt{} & Release semantic version minor \\\hline
@@ -106,7 +106,7 @@
     \keepXColumns
     \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
     \hline
-    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Perm} & \textbf{Def} & \textbf{Description} \\\hline
     \nopagebreak
     CNT\_SEM\_CRITICAL & \texttt{0x3} & \texttt{[15:0]} & r & \texttt{} & Counts of critical single event upsets \\\hline
     CNT\_SEM\_CORRECTION & \texttt{0x4} & \texttt{[31:16]} & r & \texttt{} & Counts of corrected single event upsets \\\hline
@@ -125,7 +125,7 @@
     \keepXColumns
     \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
     \hline
-    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Perm} & \textbf{Def} & \textbf{Description} \\\hline
     \nopagebreak
     RESET & \texttt{0x5} & \texttt{[11:0]} & rw & \texttt{0x0} & Mask of VFAT Reset Outputs; 1=reset 0=enable \\\hline
     \end{tabularx}
@@ -143,7 +143,7 @@
     \keepXColumns
     \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
     \hline
-    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Perm} & \textbf{Def} & \textbf{Description} \\\hline
     \nopagebreak
     BX0\_CNT\_LOCAL & \texttt{0x8} & \texttt{[23:0]} & r & \texttt{} & TTC BX0 Local Counter \\\hline
     BX0\_CNT\_TTC & \texttt{0x9} & \texttt{[23:0]} & r & \texttt{} & TTC BX0 Received Counter \\\hline
@@ -169,7 +169,7 @@
     \keepXColumns
     \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
     \hline
-    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Perm} & \textbf{Def} & \textbf{Description} \\\hline
     \nopagebreak
     CLUSTER\_RATE & \texttt{0x11} & \texttt{[31:0]} & r & \texttt{} & Trigger cluster rate measured in Hz \\\hline
     \end{tabularx}
@@ -187,7 +187,7 @@
     \keepXColumns
     \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
     \hline
-    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Perm} & \textbf{Def} & \textbf{Description} \\\hline
     \nopagebreak
     SBIT\_SEL0 & \texttt{0x12} & \texttt{[4:0]} & rw & \texttt{0x0} & HDMI Output 0 S-bit select \\\hline
     SBIT\_SEL1 & \texttt{0x12} & \texttt{[9:5]} & rw & \texttt{0x0} & HDMI Output 1 S-bit select \\\hline
@@ -220,9 +220,9 @@
     \keepXColumns
     \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
     \hline
-    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Perm} & \textbf{Def} & \textbf{Description} \\\hline
     \nopagebreak
-    PULSE & \texttt{0x14} & \texttt{[0:0]} & w & Pulsed & Pulse to take a counter snapshot \\\hline
+    PULSE & \texttt{0x14} & \texttt{[0:0]} & w & Pulse & Pulse to take a counter snapshot \\\hline
     DISABLE & \texttt{0x15} & \texttt{[1:1]} & rw & \texttt{0x1} & 0=enable snapshots (counters freeze synchronously and need a snapshot to update) \\\hline
     \end{tabularx}
     \vspace{5mm}
@@ -239,7 +239,7 @@
     \keepXColumns
     \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
     \hline
-    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Perm} & \textbf{Def} & \textbf{Description} \\\hline
     \nopagebreak
     DNA\_LSBS & \texttt{0x17} & \texttt{[31:0]} & r & \texttt{} & Device DNA bits 31 downto 0 \\\hline
     DNA\_MSBS & \texttt{0x18} & \texttt{[24:0]} & r & \texttt{} & Device DNA bits 56 downto 32 \\\hline
@@ -258,7 +258,7 @@
     \keepXColumns
     \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
     \hline
-    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Perm} & \textbf{Def} & \textbf{Description} \\\hline
     \nopagebreak
     UPTIME & \texttt{0x19} & \texttt{[19:0]} & r & \texttt{} & Uptime in seconds \\\hline
     USR\_ACCESS & \texttt{0x20} & \texttt{[31:0]} & r & \texttt{} & Git hash read from USR\_ACCESS field \\\hline
@@ -272,7 +272,7 @@
     \keepXColumns
     \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
     \hline
-    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Perm} & \textbf{Def} & \textbf{Description} \\\hline
     \nopagebreak
     GLOBAL\_DATE & \texttt{0x21} & \texttt{[31:0]} & r & \texttt{} & HOG Global Date \\\hline
     GLOBAL\_TIME & \texttt{0x22} & \texttt{[31:0]} & r & \texttt{} & HOG Global Time \\\hline
@@ -302,7 +302,7 @@
     \keepXColumns
     \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
     \hline
-    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Perm} & \textbf{Def} & \textbf{Description} \\\hline
     \nopagebreak
     OVERTEMP & \texttt{0x1000} & \texttt{[0:0]} & r & \texttt{} & FPGA over temperature \\\hline
     VCCAUX\_ALARM & \texttt{0x1000} & \texttt{[1:1]} & r & \texttt{} & FPGA VCCAUX Alarm \\\hline
@@ -314,8 +314,8 @@
     CNT\_VCCINT\_ALARM & \texttt{0x1000} & \texttt{[31:25]} & r & \texttt{} & VCCINT Alarm Counter \\\hline
     DATA\_IN & \texttt{0x1001} & \texttt{[15:0]} & rw & \texttt{0x0} & XADC Data In \\\hline
     DATA\_OUT & \texttt{0x1001} & \texttt{[31:16]} & r & \texttt{} & XADC Data Out \\\hline
-    RESET & \texttt{0x1002} & \texttt{[0:0]} & w & Pulsed & XADC Reset \\\hline
-    WR\_EN & \texttt{0x1003} & \texttt{[0:0]} & w & Pulsed & XADC Write Enable \\\hline
+    RESET & \texttt{0x1002} & \texttt{[0:0]} & w & Pulse & XADC Reset \\\hline
+    WR\_EN & \texttt{0x1003} & \texttt{[0:0]} & w & Pulse & XADC Write Enable \\\hline
     \end{tabularx}
     \vspace{5mm}
 
@@ -338,7 +338,7 @@
     \keepXColumns
     \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
     \hline
-    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Perm} & \textbf{Def} & \textbf{Description} \\\hline
     \nopagebreak
     VFAT\_MASK & \texttt{0x2000} & \texttt{[11:0]} & rw & \texttt{0x0} & 12 bit mask of VFATs (1=off) \\\hline
     SBIT\_DEADTIME & \texttt{0x2000} & \texttt{[27:24]} & rw & \texttt{0x7} & Set programmable oneshot deadtime which applies to retriggers on individual VFAT channels \\\hline
@@ -362,7 +362,7 @@
     \keepXColumns
     \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
     \hline
-    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Perm} & \textbf{Def} & \textbf{Description} \\\hline
     \nopagebreak
     SOT\_INVERT & \texttt{0x2005} & \texttt{[11:0]} & rw & \texttt{0x802} & 1=invert pair \\\hline
     VFAT0\_TU\_INVERT & \texttt{0x2006} & \texttt{[7:0]} & rw & \texttt{0xFF} & 1=invert pair \\\hline
@@ -392,7 +392,7 @@
     \keepXColumns
     \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
     \hline
-    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Perm} & \textbf{Def} & \textbf{Description} \\\hline
     \nopagebreak
     SBIT\_MUX\_SEL & \texttt{0x200e} & \texttt{[8:4]} & rw & \texttt{0x10} & Select a VFAT which will connect to the S-bit multiplexer \\\hline
     SBITS\_MUX\_LSB & \texttt{0x200f} & \texttt{[31:0]} & r & \texttt{} & Multiplexed S-bits 31 to 0 \\\hline
@@ -412,7 +412,7 @@
     \keepXColumns
     \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
     \hline
-    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Perm} & \textbf{Def} & \textbf{Description} \\\hline
     \nopagebreak
     VFAT0\_TU\_MASK & \texttt{0x2011} & \texttt{[7:0]} & rw & \texttt{0x0} & 1 = mask the differential pair \\\hline
     VFAT1\_TU\_MASK & \texttt{0x2011} & \texttt{[15:8]} & rw & \texttt{0x0} & 1 = mask the differential pair \\\hline
@@ -441,7 +441,7 @@
     \keepXColumns
     \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
     \hline
-    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Perm} & \textbf{Def} & \textbf{Description} \\\hline
     \nopagebreak
     VFAT0\_SBITS & \texttt{0x2017} & \texttt{[31:0]} & r & \texttt{} & VFAT 0 Counter \\\hline
     VFAT1\_SBITS & \texttt{0x2018} & \texttt{[31:0]} & r & \texttt{} & VFAT 1 Counter \\\hline
@@ -455,7 +455,7 @@
     VFAT9\_SBITS & \texttt{0x2020} & \texttt{[31:0]} & r & \texttt{} & VFAT 9 Counter \\\hline
     VFAT10\_SBITS & \texttt{0x2021} & \texttt{[31:0]} & r & \texttt{} & VFAT 10 Counter \\\hline
     VFAT11\_SBITS & \texttt{0x2022} & \texttt{[31:0]} & r & \texttt{} & VFAT 11 Counter \\\hline
-    RESET & \texttt{0x202f} & \texttt{[0:0]} & w & Pulsed & Reset S-bit counters \\\hline
+    RESET & \texttt{0x202f} & \texttt{[0:0]} & w & Pulse & Reset S-bit counters \\\hline
     SBIT\_CNT\_PERSIST & \texttt{0x2030} & \texttt{[0:0]} & rw & \texttt{0x0} & 1=counters will persist until manually reset; \\ & & & & &                                0=counters will automatically reset at CNT\_TIME \\\hline
     SBIT\_CNT\_TIME\_MAX & \texttt{0x2031} & \texttt{[31:0]} & rw & \texttt{0x2638E98} & Number of BX that the VFAT S-bit counters will count to before automatically resetting to zero \\\hline
     CLUSTER\_COUNT & \texttt{0x2032} & \texttt{[31:0]} & r & \texttt{} & VFAT Cluster Counter (chamber) \\\hline
@@ -486,7 +486,7 @@
     \keepXColumns
     \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
     \hline
-    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Perm} & \textbf{Def} & \textbf{Description} \\\hline
     \nopagebreak
     TAP\_DELAY\_VFAT0\_BIT0 & \texttt{0x2053} & \texttt{[4:0]} & rw & \texttt{0x0} & VFAT 0 S-bit 0 tap delay \\\hline
     TAP\_DELAY\_VFAT0\_BIT1 & \texttt{0x2053} & \texttt{[9:5]} & rw & \texttt{0x0} & VFAT 0 S-bit 1 tap delay \\\hline
@@ -611,9 +611,9 @@
     \keepXColumns
     \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
     \hline
-    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Perm} & \textbf{Def} & \textbf{Description} \\\hline
     \nopagebreak
-    RESET & \texttt{0x2090} & \texttt{[31:0]} & w & Pulsed & Reset the sbit monitor module and re-arm for triggering \\\hline
+    RESET & \texttt{0x2090} & \texttt{[31:0]} & w & Pulse & Reset the sbit monitor module and re-arm for triggering \\\hline
     CLUSTER0 & \texttt{0x2091} & \texttt{[15:0]} & r & \texttt{} & Last cluster 0 \\\hline
     CLUSTER1 & \texttt{0x2092} & \texttt{[15:0]} & r & \texttt{} & Last cluster 1 \\\hline
     CLUSTER2 & \texttt{0x2093} & \texttt{[15:0]} & r & \texttt{} & Last cluster 2 \\\hline
@@ -638,9 +638,9 @@
     \keepXColumns
     \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
     \hline
-    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Perm} & \textbf{Def} & \textbf{Description} \\\hline
     \nopagebreak
-    RESET & \texttt{0x20b0} & \texttt{[31:0]} & w & Pulsed & Reset the accumulation registers \\\hline
+    RESET & \texttt{0x20b0} & \texttt{[31:0]} & w & Pulse & Reset the accumulation registers \\\hline
     ACQUIRE & \texttt{0x20b1} & \texttt{[0:0]} & rw & \texttt{0x0} & Sbits are accumulated as long as this flag is set \\\hline
     VFAT0\_MSB & \texttt{0x20b2} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 63 to 32 of VFAT0 \\\hline
     VFAT0\_LSB & \texttt{0x20b3} & \texttt{[31:0]} & r & \texttt{} & Accumulator for Sbit 31 to 0 of VFAT0 \\\hline
@@ -681,7 +681,7 @@
     \keepXColumns
     \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
     \hline
-    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Perm} & \textbf{Def} & \textbf{Description} \\\hline
     \nopagebreak
     SBIT\_SOT\_INVALID\_BITSKIP & \texttt{0x20e2} & \texttt{[11:0]} & r & \texttt{} & 12 bit list of VFATs with a invalid bitskip counter for Start-of-frame pulses \\\hline
     \end{tabularx}
@@ -706,7 +706,7 @@
     \keepXColumns
     \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
     \hline
-    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Perm} & \textbf{Def} & \textbf{Description} \\\hline
     \nopagebreak
     CNT\_RESPONSE\_SENT & \texttt{0x4000} & \texttt{[31:8]} & r & \texttt{} & Number of wishbone responses sent back \\\hline
     TX\_READY & \texttt{0x4001} & \texttt{[0:0]} & r & \texttt{} & GBT TX READY from GBTx Chip \\\hline
@@ -725,7 +725,7 @@
     \keepXColumns
     \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
     \hline
-    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Perm} & \textbf{Def} & \textbf{Description} \\\hline
     \nopagebreak
     RX\_READY & \texttt{0x4004} & \texttt{[0:0]} & r & \texttt{} & GBT RX READY from GBTx Chip \\\hline
     RX\_VALID & \texttt{0x4004} & \texttt{[1:1]} & r & \texttt{} & GBT RX VALID from GBTx Chip \\\hline
@@ -746,11 +746,11 @@
     \keepXColumns
     \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
     \hline
-    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Perm} & \textbf{Def} & \textbf{Description} \\\hline
     \nopagebreak
-    FORCE\_L1A & \texttt{0x4005} & \texttt{[31:0]} & w & Pulsed & GBT Force L1A \\\hline
-    FORCE\_BC0 & \texttt{0x4006} & \texttt{[31:0]} & w & Pulsed & GBT Force BC0 \\\hline
-    FORCE\_RESYNC & \texttt{0x4007} & \texttt{[31:0]} & w & Pulsed & GBT Force Resync \\\hline
+    FORCE\_L1A & \texttt{0x4005} & \texttt{[31:0]} & w & Pulse & GBT Force L1A \\\hline
+    FORCE\_BC0 & \texttt{0x4006} & \texttt{[31:0]} & w & Pulse & GBT Force BC0 \\\hline
+    FORCE\_RESYNC & \texttt{0x4007} & \texttt{[31:0]} & w & Pulse & GBT Force Resync \\\hline
     \end{tabularx}
     \vspace{5mm}
 
@@ -773,7 +773,7 @@
     \keepXColumns
     \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
     \hline
-    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Perm} & \textbf{Def} & \textbf{Description} \\\hline
     \nopagebreak
     PLL\_LOCK & \texttt{0x5000} & \texttt{[0:0]} & r & \texttt{} &  \\\hline
     \end{tabularx}
@@ -796,40 +796,40 @@
     \keepXColumns
     \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
     \hline
-    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Perm} & \textbf{Def} & \textbf{Description} \\\hline
     \nopagebreak
     TX\_PRBS\_MODE0 & \texttt{0x5001} & \texttt{[2:0]} & rw & \texttt{0x0} & 0: Standard \\ & & & & & 1: PRBS-7 \\ & & & & & 2: PRBS-15 \\ & & & & & 3: PRBS-23 \\ & & & & & 4: PRBS-31 \\\hline
     RX\_PRBS\_MODE0 & \texttt{0x5001} & \texttt{[5:3]} & rw & \texttt{0x0} & 0: Standard \\ & & & & & 1: PRBS-7 \\ & & & & & 2: PRBS-15 \\ & & & & & 3: PRBS-23 \\ & & & & & 4: PRBS-31 \\\hline
     LOOPBACK\_MODE0 & \texttt{0x5001} & \texttt{[8:6]} & rw & \texttt{0x0} & GT Loopback Mode \\ & & & & & 0 = normal \\ & & & & & 1 = near end pcs \\ & & & & & 2 = near end pma \\ & & & & &4 = far end pma \\ & & & & & 6 = far end pcs \\\hline
     TX\_DIFFCTRL0 & \texttt{0x5001} & \texttt{[15:12]} & rw & \texttt{0xC} & TX Differential Swing Control \\\hline
-    GTTXRESET0 & \texttt{0x5002} & \texttt{[31:0]} & w & Pulsed & GT TX Reset \\\hline
-    TXPRBS\_FORCE\_ERR0 & \texttt{0x5003} & \texttt{[31:0]} & w & Pulsed & TX PRBS Force Error \\\hline
-    TXPCSRESET0 & \texttt{0x5004} & \texttt{[31:0]} & w & Pulsed & TX PCS Reset \\\hline
-    TXPMARESET0 & \texttt{0x5005} & \texttt{[31:0]} & w & Pulsed & TX PMA Reset \\\hline
+    GTTXRESET0 & \texttt{0x5002} & \texttt{[31:0]} & w & Pulse & GT TX Reset \\\hline
+    TXPRBS\_FORCE\_ERR0 & \texttt{0x5003} & \texttt{[31:0]} & w & Pulse & TX PRBS Force Error \\\hline
+    TXPCSRESET0 & \texttt{0x5004} & \texttt{[31:0]} & w & Pulse & TX PCS Reset \\\hline
+    TXPMARESET0 & \texttt{0x5005} & \texttt{[31:0]} & w & Pulse & TX PMA Reset \\\hline
     TX\_PRBS\_MODE1 & \texttt{0x5006} & \texttt{[2:0]} & rw & \texttt{0x0} & 0: Standard \\ & & & & & 1: PRBS-7 \\ & & & & & 2: PRBS-15 \\ & & & & & 3: PRBS-23 \\ & & & & & 4: PRBS-31 \\\hline
     RX\_PRBS\_MODE1 & \texttt{0x5006} & \texttt{[5:3]} & rw & \texttt{0x0} & 0: Standard \\ & & & & & 1: PRBS-7 \\ & & & & & 2: PRBS-15 \\ & & & & & 3: PRBS-23 \\ & & & & & 4: PRBS-31 \\\hline
     LOOPBACK\_MODE1 & \texttt{0x5006} & \texttt{[8:6]} & rw & \texttt{0x0} & GT Loopback Mode \\ & & & & & 0 = normal \\ & & & & & 1 = near end pcs \\ & & & & & 2 = near end pma \\ & & & & &4 = far end pma \\ & & & & & 6 = far end pcs \\\hline
     TX\_DIFFCTRL1 & \texttt{0x5006} & \texttt{[15:12]} & rw & \texttt{0xC} & TX Differential Swing Control \\\hline
-    GTTXRESET1 & \texttt{0x5007} & \texttt{[31:0]} & w & Pulsed & GT TX Reset \\\hline
-    TXPRBS\_FORCE\_ERR1 & \texttt{0x5008} & \texttt{[31:0]} & w & Pulsed & TX PRBS Force Error \\\hline
-    TXPCSRESET1 & \texttt{0x5009} & \texttt{[31:0]} & w & Pulsed & TX PCS Reset \\\hline
-    TXPMARESET1 & \texttt{0x500a} & \texttt{[31:0]} & w & Pulsed & TX PMA Reset \\\hline
+    GTTXRESET1 & \texttt{0x5007} & \texttt{[31:0]} & w & Pulse & GT TX Reset \\\hline
+    TXPRBS\_FORCE\_ERR1 & \texttt{0x5008} & \texttt{[31:0]} & w & Pulse & TX PRBS Force Error \\\hline
+    TXPCSRESET1 & \texttt{0x5009} & \texttt{[31:0]} & w & Pulse & TX PCS Reset \\\hline
+    TXPMARESET1 & \texttt{0x500a} & \texttt{[31:0]} & w & Pulse & TX PMA Reset \\\hline
     TX\_PRBS\_MODE2 & \texttt{0x500b} & \texttt{[2:0]} & rw & \texttt{0x0} & 0: Standard \\ & & & & & 1: PRBS-7 \\ & & & & & 2: PRBS-15 \\ & & & & & 3: PRBS-23 \\ & & & & & 4: PRBS-31 \\\hline
     RX\_PRBS\_MODE2 & \texttt{0x500b} & \texttt{[5:3]} & rw & \texttt{0x0} & 0: Standard \\ & & & & & 1: PRBS-7 \\ & & & & & 2: PRBS-15 \\ & & & & & 3: PRBS-23 \\ & & & & & 4: PRBS-31 \\\hline
     LOOPBACK\_MODE2 & \texttt{0x500b} & \texttt{[8:6]} & rw & \texttt{0x0} & GT Loopback Mode \\ & & & & & 0 = normal \\ & & & & & 1 = near end pcs \\ & & & & & 2 = near end pma \\ & & & & &4 = far end pma \\ & & & & & 6 = far end pcs \\\hline
     TX\_DIFFCTRL2 & \texttt{0x500b} & \texttt{[15:12]} & rw & \texttt{0xC} & TX Differential Swing Control \\\hline
-    GTTXRESET2 & \texttt{0x500c} & \texttt{[31:0]} & w & Pulsed & GT TX Reset \\\hline
-    TXPRBS\_FORCE\_ERR2 & \texttt{0x500d} & \texttt{[31:0]} & w & Pulsed & TX PRBS Force Error \\\hline
-    TXPCSRESET2 & \texttt{0x500e} & \texttt{[31:0]} & w & Pulsed & TX PCS Reset \\\hline
-    TXPMARESET2 & \texttt{0x500f} & \texttt{[31:0]} & w & Pulsed & TX PMA Reset \\\hline
+    GTTXRESET2 & \texttt{0x500c} & \texttt{[31:0]} & w & Pulse & GT TX Reset \\\hline
+    TXPRBS\_FORCE\_ERR2 & \texttt{0x500d} & \texttt{[31:0]} & w & Pulse & TX PRBS Force Error \\\hline
+    TXPCSRESET2 & \texttt{0x500e} & \texttt{[31:0]} & w & Pulse & TX PCS Reset \\\hline
+    TXPMARESET2 & \texttt{0x500f} & \texttt{[31:0]} & w & Pulse & TX PMA Reset \\\hline
     TX\_PRBS\_MODE3 & \texttt{0x5010} & \texttt{[2:0]} & rw & \texttt{0x0} & 0: Standard \\ & & & & & 1: PRBS-7 \\ & & & & & 2: PRBS-15 \\ & & & & & 3: PRBS-23 \\ & & & & & 4: PRBS-31 \\\hline
     RX\_PRBS\_MODE3 & \texttt{0x5010} & \texttt{[5:3]} & rw & \texttt{0x0} & 0: Standard \\ & & & & & 1: PRBS-7 \\ & & & & & 2: PRBS-15 \\ & & & & & 3: PRBS-23 \\ & & & & & 4: PRBS-31 \\\hline
     LOOPBACK\_MODE3 & \texttt{0x5010} & \texttt{[8:6]} & rw & \texttt{0x0} & GT Loopback Mode \\ & & & & & 0 = normal \\ & & & & & 1 = near end pcs \\ & & & & & 2 = near end pma \\ & & & & &4 = far end pma \\ & & & & & 6 = far end pcs \\\hline
     TX\_DIFFCTRL3 & \texttt{0x5010} & \texttt{[15:12]} & rw & \texttt{0xC} & TX Differential Swing Control \\\hline
-    GTTXRESET3 & \texttt{0x5011} & \texttt{[31:0]} & w & Pulsed & GT TX Reset \\\hline
-    TXPRBS\_FORCE\_ERR3 & \texttt{0x5012} & \texttt{[31:0]} & w & Pulsed & TX PRBS Force Error \\\hline
-    TXPCSRESET3 & \texttt{0x5013} & \texttt{[31:0]} & w & Pulsed & TX PCS Reset \\\hline
-    TXPMARESET3 & \texttt{0x5014} & \texttt{[31:0]} & w & Pulsed & TX PMA Reset \\\hline
+    GTTXRESET3 & \texttt{0x5011} & \texttt{[31:0]} & w & Pulse & GT TX Reset \\\hline
+    TXPRBS\_FORCE\_ERR3 & \texttt{0x5012} & \texttt{[31:0]} & w & Pulse & TX PRBS Force Error \\\hline
+    TXPCSRESET3 & \texttt{0x5013} & \texttt{[31:0]} & w & Pulse & TX PCS Reset \\\hline
+    TXPMARESET3 & \texttt{0x5014} & \texttt{[31:0]} & w & Pulse & TX PMA Reset \\\hline
     \end{tabularx}
     \vspace{5mm}
 
@@ -850,7 +850,7 @@
     \keepXColumns
     \begin{tabularx}{\linewidth}{ | l | l | r | c | l | X | }
     \hline
-    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Dir} & \textbf{Def} & \textbf{Description} \\\hline
+    \textbf{Node} & \textbf{Adr} & \textbf{Bits} & \textbf{Perm} & \textbf{Def} & \textbf{Description} \\\hline
     \nopagebreak
     TXFSM\_RESET\_DONE0 & \texttt{0x5015} & \texttt{[0:0]} & r & \texttt{} &  \\\hline
     TXRESET\_DONE0 & \texttt{0x5015} & \texttt{[1:1]} & r & \texttt{} &  \\\hline

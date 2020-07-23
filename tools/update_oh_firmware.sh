@@ -11,6 +11,7 @@ echo "Setting OH version..." \
     && python2 update_latex_version.py oh \
 && echo "Regenerating pdf documentation..." \
     && cd ../doc/latex/ \
+    && make tables \
     && pdflatex address_table"$SUFFIX".tex \
     && cd -
 rm -f "*.pyc"
