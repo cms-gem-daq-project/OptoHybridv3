@@ -34,7 +34,19 @@ This firmware is using the HOG framework as a build system:
  - HOG Documentation: http://hog-user-docs.web.cern.ch
  - HOG Source Code: https://gitlab.cern.ch/hog/Hog
 
-From scratch, the firmware can be built as:
+A Makefile is provided that should make firmware building more straightforward. You can run for example:
+#+BEGIN_SRC bash
+make update      # update from the XML file
+make oh21-200    # builds the 200t version of the  ge21 firmware
+make oh21-75     # builds the 75t version of the ge21 firmware
+make oh21 -j2    # builds both versions of the firmware in parallel with 2 jobs
+make oh11        # builds long and short versions of the GE11 firmware
+make all -j8     # update from the XML file and build all firmware flavors, do it all in parallel :)
+#+END_SRC
+
+*n.b. Support for GE1/1 through a planAhead wrapper is in development (but still experimental)*
+
+Alternatively, you can build the firmware manually, for example, the firmware can be built as:
 
 #+BEGIN_SRC  bash
 git clone https://github.com/cms-gem-daq-project/OptoHybridv3
@@ -45,14 +57,6 @@ Hog/LaunchSynthesis.sh oh21
 Hog/LaunchImplementation.sh oh21
 #+END_SRC
 
-Alternatively, a Makefile is provided that should make firmware building more straightforward. You can run for example:
-#+BEGIN_SRC bash
-make ge21-200    # builds the 200t version of the  ge21 firmware
-make ge21-75     # builds the 75t version of the ge21 firmware
-make ge21        # builds both versions of the firmware
-#+END_SRC
-
-Support for GE1/1 through a planAhead wrapper is in development (but still experimental).
 
 ** Updating the address table or firmware version
 

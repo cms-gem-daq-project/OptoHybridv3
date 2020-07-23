@@ -5,12 +5,19 @@ ifdef version
 VER_ARG = -v $(version)
 endif
 
-update:
-	cd tools && sh update_oh_firmware.sh ge21 $(VER_ARG)
-	cd tools && sh update_oh_firmware.sh ge11 -l long $(VER_ARG)
-	cd tools && sh update_oh_firmware.sh ge11 -l short $(VER_ARG)
+CCZE := $(shell command -v ccze 2> /dev/null)
+ifndef CCZE
+COLORIZE =
+else
+COLORIZE = | ccze -A
+endif
 
-clean:
+update:
+	@cd tools && sh update_oh_firmware.sh ge21 $(VER_ARG)
+	@cd tools && sh update_oh_firmware.sh ge11 -l long $(VER_ARG)
+	@cd tools && sh update_oh_firmware.sh ge11 -l short $(VER_ARG)
+
+clean_projects:
 	rm -rf VivadoProject/
 
 all:  update create synth impl
@@ -22,6 +29,7 @@ impl: impl_oh21-200 impl_oh11-long impl_oh11-short
 oh21:  oh21-200 oh21-75
 oh21-200:  create_oh21-200 synth_oh21-200 impl_oh21-200
 oh21-75:  create_oh21-75 synth_oh21-75 impl_oh21-75
+oh11: oh11-long oh11-short
 oh11-long:  create_oh11-long synth_oh11-long impl_oh11-long
 oh11-short:  create_oh11-short synth_oh11-short impl_oh11-short
 
@@ -38,10 +46,10 @@ impl_oh21: impl_oh21-200 impl_oh21-75
 ################################################################################
 
 create_%:
-	time Hog/CreateProject.sh $(patsubst create_%,%,$@)
+	@time Hog/CreateProject.sh $(patsubst create_%,%,$@) $(COLORIZE)
 
 synth_%: create_%
-	time Hog/LaunchSynthesis.sh $(patsubst synth_%,%,$@)
+	@time Hog/LaunchSynthesis.sh $(patsubst synth_%,%,$@) $(COLORIZE)
 
 impl_%: create_% synth_%
-	time Hog/LaunchImplementation.sh $(patsubst impl_%,%,$@)
+	@time Hog/LaunchImplementation.sh $(patsubst impl_%,%,$@ $(COLORIZE))
