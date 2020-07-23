@@ -60,13 +60,13 @@ Hog/LaunchImplementation.sh oh21
 
 ** Updating the address table or firmware version
 
-The firmware can be updated from the address table by running ```make update``` from the root of the repository.
+The firmware can be updated from the address table by running =make update= from the root of the repository.
 
 If you want to increment the version, just run make with an argument, e.g.
 
-```
+#+BEGIN_SRC
 make update version=03.04.01
-```
+#+END_SRC`
 
 ** Versioning
 

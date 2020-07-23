@@ -50,10 +50,19 @@ impl_oh21: impl_oh21-200 impl_oh21-75
 ################################################################################
 
 create_%:
-	@time Hog/CreateProject.sh $(patsubst create_%,%,$@) $(COLORIZE)
+	@echo -------------------------------------------------------------------------------- $(COLORIZE)
+	@echo Creating Project $(patsubst create_%,%,$@)                                       $(COLORIZE)
+	@echo -------------------------------------------------------------------------------- $(COLORIZE)
+	@time Hog/CreateProject.sh $(patsubst create_%,%,$@)                                   $(COLORIZE)
 
 synth_%: create_%
-	@time Hog/LaunchSynthesis.sh $(patsubst synth_%,%,$@) $(COLORIZE)
+	@echo -------------------------------------------------------------------------------  $(COLORIZE)
+	@echo Launching Synthesis $(patsubst synth_%,%,$@)                                     $(COLORIZE)
+	@echo -------------------------------------------------------------------------------- $(COLORIZE)
+	@time Hog/LaunchSynthesis.sh $(patsubst synth_%,%,$@)                                  $(COLORIZE)
 
 impl_%: create_% synth_%
-	@time Hog/LaunchImplementation.sh $(patsubst impl_%,%,$@ $(COLORIZE))
+	@echo -------------------------------------------------------------------------------- $(COLORIZE)
+	@echo Launching Implementation $(patsubst impl_%,%,$@)                                 $(COLORIZE)
+	@echo -------------------------------------------------------------------------------- $(COLORIZE)
+	@time Hog/LaunchImplementation.sh $(patsubst impl_%,%,$@                               $(COLORIZE))
