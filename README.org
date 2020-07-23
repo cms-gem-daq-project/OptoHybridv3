@@ -175,3 +175,22 @@ This file can be used in the same way as the backend (CTP-7) registers file and 
 -- lowest 12 bits are used by the wishbone splitters as individual register addresses
 
 Thus we can have up to 16 slaves, and 4096 endpoints per slave. Presently we use only 6 slaves with a firmware that is nearly finalized, so it is expected that 16 slaves will not be a limiting factor.
+
+** TTC Synchronization
+
+The Optohybrid has a local accumulator which increments bunch crossing number (bxn) and produces a locally generated bx0 flag.
+
+In order for the two flags, (1) locally generated and (2) received from GBTx, to be in sync a programmable parameter (bxn offset) is provided which allows you to set an “offset” which is the value which will be assumed by the bxn counter after ttc resync.
+
+The synchronization of these two flags can be monitored by checking the status of bxn_sync_error in the OH status register (/n.b. that bx0_sync_error is NOT suitable for this, as it is a 1bx wide pulse useful for internal counters when the bx0 is received, while bxn_sync_error will persist for the entire orbit/).
+
+When the Optohybrid is correctly timed in to the TTC system, bxn_sync_error should be 0. A software routine in the CTP-7 to find the correct bxn offset should be easily designed.
+
+A counter in the counters module counts the number of bx0 sync errors since the last resync or hard-reset.
+
+The anticipated synchronization process is:
+
+1. From the backend electronics, send a BC0 is to all Optohybrids
+2. Inside of the Optohybrid, adjust the BXN offset until bxn_sync_error is read to be 0
+   - This indicates that the local OH bxn counter matches the remote counter
+3. Inside of the backend electronics, adjust the delays of incoming trigger data until the 0x50 (BC0) frame markers are aligned between all Optohybrids
