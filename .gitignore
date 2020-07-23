@@ -5,7 +5,10 @@
 prj/*
 
 tools/oh_settings.py
+VivadoProject/
+Bin/
 *.bit
+
 *.mcs
 *.*bak
 *.*cmd

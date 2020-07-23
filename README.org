@@ -28,6 +28,10 @@ Directory Hierarchy:
 └── README.org               -- This readme
 #+END_SRC
 
+*** [[file:doc/latex/address_table_ge21.org][GE21 Address Table]]
+*** [[file:doc/latex/address_table_ge11-long.org][GE11-Long Address Table]]
+*** [[file:doc/latex/address_table_ge11-short.org][GE11-Short Address Table]]
+
 ** Building the firmware
 
 This firmware is using the HOG framework as a build system:
