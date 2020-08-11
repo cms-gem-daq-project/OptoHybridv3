@@ -42,6 +42,9 @@ entity top_optohybrid is
     OPTOHYBRID_VER : std_logic_vector (31 downto 0) := x"00000000";
     OPTOHYBRID_SHA : std_logic_vector (31 downto 0) := x"00000000";
 
+    CON_VER : std_logic_vector (31 downto 0) := x"00000000";
+    CON_SHA : std_logic_vector (31 downto 0) := x"00000000";
+
     --GLOBAL_FWHASH       : std_logic_vector (31 downto 0) := x"00000000";
     --TOP_FWHASH          : std_logic_vector (31 downto 0) := x"00000000";
     --XML_HASH            : std_logic_vector (31 downto 0) := x"00000000";

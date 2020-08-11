@@ -37,3 +37,12 @@ src/mgt/gtp/gtp_sync_pulse.vhd 93
 src/mgt/gtp/gtp_tx_manual_phase_align.vhd 93
 src/mgt/gtp/gtp_tx_startup_fsm.vhd 93
 src/mgt/mgt_wrapper.vhd 93
+# Legacy Link
+src/mgt/legacy_link/a7_gtp_wrapper.vhd
+src/mgt/legacy_link/gem_data_out.v
+src/mgt/legacy_link/gtx_wizard_4output_v6_gtx_manual.vhd
+src/mgt/legacy_link/gtx_wizard_4output_v6_tx_sync.vhd
+#src/mgt/legacy_link/trg_tx_buf_bypass_gtx.v
+#src/mgt/legacy_link/trg_tx_buf_bypass.v
+#src/mgt/legacy_link/tx_sync.v
+src/mgt/legacy_link/v6_gtx_wrapper.vhd

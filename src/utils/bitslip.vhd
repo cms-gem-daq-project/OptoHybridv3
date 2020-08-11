@@ -62,6 +62,11 @@ begin
 
   end generate;
 
-  dout <= majority (data(0), data(1), data(2));
+  no_tmrout : if (g_EN_TMR = 0) generate
+    dout <= data(0);
+  end generate;
+  tmrout : if (g_EN_TMR = 1) generate
+    dout <= majority (data(0), data(1), data(2));
+  end generate;
 
 end behavioral;

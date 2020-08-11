@@ -35,7 +35,7 @@ architecture behavioral of startup_reset is
 
 begin
 
-  ready <= and_reduce(idlyrdy_i  & mmcms_locked_i  & gbt_rxready_i  & gbt_rxvalid_i  & gbt_txready_i);
+  ready <= (idlyrdy_i  and mmcms_locked_i  and gbt_rxready_i  and gbt_rxvalid_i  and gbt_txready_i);
 
   tmr_loop : for I in 0 to 2 generate
   begin
