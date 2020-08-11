@@ -46,7 +46,7 @@ src/trigger/trig_alignment/trig_alignment.vhd 93
 
 # Utils
 src/utils/yahamm/matrix_pkg.vhd 93
-src/utils/yahamm/yahamm_dec.vhd 93
+#src/utils/yahamm/yahamm_dec.vhd 93
 src/utils/yahamm/yahamm_enc.vhd 93
 src/utils/yahamm/yahamm_pkg.vhd 93
 

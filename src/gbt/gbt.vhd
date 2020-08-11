@@ -7,8 +7,6 @@
 -- Description:
 --   This module implements all functionality required for communicating with GBTx
 ----------------------------------------------------------------------------------
--- 2017/07/24 -- Initial. Wrapper around GBT components to simplify top-level
-----------------------------------------------------------------------------------
 
 library ieee;
 use ieee.std_logic_1164.all;
@@ -39,7 +37,7 @@ entity gbt is
     gbt_link_error_o : out std_logic;
     gbt_link_ready_o : out std_logic;
 
-    ttc_o    : out ttc_t;
+    ttc_o : out ttc_t;
 
     cnt_snap : in std_logic;
 
@@ -117,15 +115,14 @@ begin
   --------------------------------------------------------------------------------------------------------------------
   -- GBT Serdes
   --------------------------------------------------------------------------------------------------------------------
-
   -- at 320 MHz performs ser-des on incoming
   gbt_serdes : entity work.gbt_serdes
     port map(
       -- clocks and reset
-      rst_i => reset_i,
-      clk_1x    => clocks.clk40,  -- 40 MHz phase shiftable frame clock from GBT
-      clk_4x    => clocks.clk160_0,        --
-      clk_4x_90 => clocks.clk160_90,       --
+      rst_i     => reset_i,
+      clk_1x    => clocks.clk40,        -- 40 MHz phase shiftable frame clock from GBT
+      clk_4x    => clocks.clk160_0,     --
+      clk_4x_90 => clocks.clk160_90,    --
 
       -- serial data
       elink_o_p => elink_o_p,           -- output e-links
@@ -150,7 +147,7 @@ begin
     generic map (g_ENABLE_TMR => EN_TMR_GBT_LINK)
     port map(
       -- clock and reset
-      clock => clocks.clk40,                 -- 40 MHz ttc fabric clock
+      clock   => clocks.clk40,          -- 40 MHz ttc fabric clock
       reset_i => reset_i,
 
       -- parallel data
@@ -167,6 +164,7 @@ begin
       bc0_o    => bc0_gbt,
 
       -- outputs
+
       unstable_o => gbt_link_unstable,
       ready_o    => gbt_link_ready,
       error_o    => gbt_link_error
