@@ -128,10 +128,10 @@ architecture Behavioral of top_optohybrid is
   signal sbit_clusters : sbit_cluster_array_t (NUM_FOUND_CLUSTERS-1 downto 0);
 
   -- Global signals
-  signal idlyrdy        : std_logic;
-  signal mmcm_locked    : std_logic;
-  signal clocks         : clocks_t;
-  signal ttc            : ttc_t;
+  signal idlyrdy     : std_logic;
+  signal mmcm_locked : std_logic;
+  signal clocks      : clocks_t;
+  signal ttc         : ttc_t;
 
   signal vtrx_mabs : std_logic_vector (1 downto 0);
 
@@ -148,7 +148,7 @@ architecture Behavioral of top_optohybrid is
   signal system_reset  : std_logic;
   signal cnt_snap      : std_logic;
 
-  attribute MAX_FANOUT : string;
+  attribute MAX_FANOUT                 : string;
   attribute MAX_FANOUT of system_reset : signal is "300";
 
   -- TTC
@@ -196,10 +196,10 @@ begin
 
   clocking_inst : entity work.clocking
     port map(
-      clock_p => clock_p,
-      clock_n => clock_n,
+      clock_p       => clock_p,
+      clock_n       => clock_n,
       mmcm_locked_o => mmcm_locked,
-      clocks_o => clocks
+      clocks_o      => clocks
       );
 
   --------------------------------------------------------------------------------
@@ -327,7 +327,7 @@ begin
       -- clock and reset
       clocks => clocks,
       reset  => system_reset,
-      ttc_i   => ttc,
+      ttc_i  => ttc,
 
       -- to drive LED controller only
       mgts_ready => mgts_ready,
@@ -462,20 +462,28 @@ begin
     trigger_data_phy_inst : entity work.trigger_data_phy
       port map (
         -- wishbone
-        ipb_mosi_i       => ipb_mosi_slaves(IPB_SLAVE.MGT),
-        ipb_miso_o       => ipb_miso_slaves(IPB_SLAVE.MGT),
-        clocks           => clocks,
-        reset_i          => system_reset,
-        ipb_reset_i      => system_reset,
-        trg_tx_p         => open,
-        trg_tx_n         => open,
-        refclk_p         => mgt_clk_p_i,
-        refclk_n         => mgt_clk_n_i,
-        gbt_trig_p       => gbt_trig_o_p,
-        gbt_trig_n       => gbt_trig_o_n,
-        fiber_packets_i  => fiber_packets,
-        fiber_kchars_i   => fiber_kchars,
-        elink_packets_i  => elink_packets
+        ipb_mosi_i      => ipb_mosi_slaves(IPB_SLAVE.MGT),
+        ipb_miso_o      => ipb_miso_slaves(IPB_SLAVE.MGT),
+        clocks          => clocks,
+        reset_i         => system_reset,
+        ipb_reset_i     => system_reset,
+        trg_tx_p        => open,
+        trg_tx_n        => open,
+        refclk_p        => mgt_clk_p_i,
+        refclk_n        => mgt_clk_n_i,
+        gbt_trig_p      => gbt_trig_o_p,
+        gbt_trig_n      => gbt_trig_o_n,
+        fiber_packets_i => fiber_packets,
+        fiber_kchars_i  => fiber_kchars,
+        elink_packets_i => elink_packets,
+
+        -- legacy phy ports
+        clusters_i    => sbit_clusters,
+        overflow_i    => sbit_overflow,
+        bxn_counter_i => bxn_counter,
+        bc0_i         => ttc.bc0,
+        resync_i      => ttc.resync
+
         );
   end generate;
 

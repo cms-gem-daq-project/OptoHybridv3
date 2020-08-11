@@ -2,10 +2,10 @@
 
 src/optohybrid.src
 
-src/control/adc_ge21-long.vhd 93
-src/control/control_ge21-long.vhd 93
-src/trigger/trigger_ge21-long.vhd 93
-src/gbt/gbt_ge21-long.vhd 93
+src/control/adc_ge11-long.vhd 93
+src/control/control_ge11-long.vhd 93
+src/trigger/trigger_ge11-long.vhd 93
+src/gbt/gbt_ge11-long.vhd 93
 src/trigger/trigger_data_phy_ge11-long.vhd 93
 src/pkg/registers_ge11-long.vhd 93
 

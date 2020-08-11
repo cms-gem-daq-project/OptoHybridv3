@@ -1,5 +1,4 @@
 # -*- mode: TCL;-*-
-
 src/optohybrid.src
 
 src/control/adc_ge21.vhd 93
@@ -17,8 +16,10 @@ src/gbt/fifo_a7.vhd
 
 # IP
 src/ip_cores_a7/clocks/clocks.xci
+src/ip_cores_a7/cluster_data_cdc/cluster_data_cdc.xci
 src/ip_cores_a7/sem_a7/sem_a7.xci
 src/ip_cores_a7/xadc_a7/xadc_a7.xci
+src/ip_cores_a7/a7_mgts_with_buffer0/a7_mgts_with_buffer0.xci
 
 # Cluster Building
 src/cluster_building/count768.v
@@ -34,3 +35,12 @@ src/mgt/gtp/gtp_sync_pulse.vhd
 src/mgt/gtp/gtp_tx_manual_phase_align.vhd
 src/mgt/gtp/gtp_tx_startup_fsm.vhd
 src/mgt/mgt_wrapper.vhd
+
+src/mgt/legacy_link/a7_gtp_wrapper.vhd
+src/mgt/legacy_link/gem_data_out.v
+src/mgt/legacy_link/gtx_wizard_4output_v6_gtx_manual.vhd
+src/mgt/legacy_link/gtx_wizard_4output_v6_tx_sync.vhd
+#src/mgt/legacy_link/trg_tx_buf_bypass_gtx.v
+#src/mgt/legacy_link/trg_tx_buf_bypass.v
+#src/mgt/legacy_link/tx_sync.v
+src/mgt/legacy_link/v6_gtx_wrapper.vhd

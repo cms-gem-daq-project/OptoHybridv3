@@ -29,6 +29,16 @@ entity trigger_data_phy is
     ipb_reset_i : in  std_logic;
 
     ----------------------------------------------------------------------------------------------------------------------
+    -- Legacy Ports
+    ----------------------------------------------------------------------------------------------------------------------
+
+    clusters_i    : in sbit_cluster_array_t (NUM_FOUND_CLUSTERS-1 downto 0);
+    overflow_i    : in std_logic;                       -- 1 bit gem has more than 8 clusters
+    bxn_counter_i : in std_logic_vector (11 downto 0);  -- 12 bit bxn counter
+    bc0_i         : in std_logic;                       -- 1  bit bx0 flag
+    resync_i      : in std_logic;                       -- 1  bit bx0 flag
+
+    ----------------------------------------------------------------------------------------------------------------------
     -- Physical
     ----------------------------------------------------------------------------------------------------------------------
 
@@ -57,17 +67,17 @@ end trigger_data_phy;
 
 architecture Behavioral of trigger_data_phy is
 
-  constant NUM_GTS     : integer   := 4;
+  constant NUM_GTS : integer := 4;
 
   signal strobe    : std_logic;         -- 200MHz strobe
   signal tx_usrclk : std_logic;         -- 200MHz userclk
   signal is_kchar  : t_std2_array (NUM_OPTICAL_PACKETS-1 downto 0);
   signal mgt_words : t_std16_array (NUM_OPTICAL_PACKETS-1 downto 0);
 
-  constant c_LINK_FRAME_CNT_MAX : integer := 4;
+  constant c_LINK_FRAME_CNT_MAX : integer                                 := 4;
   signal link_frame_cnt         : integer range 0 to c_LINK_FRAME_CNT_MAX := 0;
 
-  signal soft_reset_tx : std_logic := '0';
+  signal soft_reset_tx : std_logic                := '0';
   signal pll_lock      : std_logic;
   signal status        : mgt_status_array (3 downto 0);
   signal control       : mgt_control_array (3 downto 0);
@@ -156,7 +166,7 @@ begin
     begin
       if (rising_edge(tx_usrclk)) then
         mgt_words (I) <= fiber_packets_i(I)((cnt+1)*16-1 downto cnt*16);
-        is_kchar  (I) <= fiber_kchars_i (I)((cnt+1)*2 -1 downto cnt*2);
+        is_kchar (I)  <= fiber_kchars_i (I)((cnt+1)*2 -1 downto cnt*2);
       end if;
     end process;
   end generate;
@@ -165,9 +175,9 @@ begin
   -- A7 MGT
   --------------------------------------------------------------------------------
 
-  optics_gen : if (NUM_OPTICAL_PACKETS>0) generate
-    signal common_drp_i  : drp_i_t;
-    signal common_drp_o  : drp_o_t;
+  optics_gen : if (NUM_OPTICAL_PACKETS > 0 and not USE_LEGACY_OPTICS) generate
+    signal common_drp_i : drp_i_t;
+    signal common_drp_o : drp_o_t;
   begin
 
     mgt_wrapper_inst : entity work.mgt_wrapper
@@ -196,7 +206,7 @@ begin
         common_drp_i => common_drp_i,
         common_drp_o => common_drp_o,
 
-        mmcm_lock_i  => clocks.locked,
+        mmcm_lock_i => clocks.locked,
 
         txcharisk_i(0) => is_kchar(0),
         txcharisk_i(1) => is_kchar(0),
@@ -207,6 +217,127 @@ begin
         txdata_i(1) => mgt_words(0),
         txdata_i(2) => mgt_words(NUM_OPTICAL_PACKETS-1),
         txdata_i(3) => mgt_words(NUM_OPTICAL_PACKETS-1)
+        );
+
+  end generate;
+
+  legacy_optics_gen : if (NUM_OPTICAL_PACKETS > 0 and USE_LEGACY_OPTICS) generate
+
+    component gem_data_out
+      generic (
+        FPGA_TYPE_IS_VIRTEX6 : integer := 0;
+        FPGA_TYPE_IS_ARTIX7  : integer := 1
+        );
+      port (
+        trg_tx_n : out std_logic_vector (3 downto 0);
+        trg_tx_p : out std_logic_vector (3 downto 0);
+
+        refclk_n : in std_logic_vector (1 downto 0);
+        refclk_p : in std_logic_vector (1 downto 0);
+
+        tx_prbs_mode : in std_logic_vector (2 downto 0);
+
+        gem_data      : in std_logic_vector (111 downto 0);  -- 56 bit gem data
+        overflow_i    : in std_logic;                        -- 1 bit gem has more than 8 clusters
+        bxn_counter_i : in std_logic_vector (11 downto 0);   -- 12 bit bxn counter
+        bc0_i         : in std_logic;                        -- 1  bit bx0 flag
+        resync_i      : in std_logic;                        -- 1  bit bx0 flag
+
+        force_not_ready    : in std_logic;
+        pll_reset_i        : in std_logic;
+        mgt_reset_i        : in std_logic_vector(3 downto 0);
+        gtxtest_start_i    : in std_logic;
+        txreset_i          : in std_logic;
+        mgt_realign_i      : in std_logic;
+        txpowerdown_i      : in std_logic;
+        txpowerdown_mode_i : in std_logic_vector (1 downto 0);
+        txpllpowerdown_i   : in std_logic;
+
+        clock_40  : in std_logic;
+        clock_160 : in std_logic;
+
+        ready_o      : out std_logic;
+        pll_lock_o   : out std_logic;
+        txfsm_done_o : out std_logic;
+
+        reset_i : in std_logic
+        );
+    end component;
+
+    function get_adr (partition : in std_logic_vector; strip : in std_logic_vector)
+      return std_logic_vector is
+      variable s : integer;
+      variable p : integer;
+    begin
+      s := to_integer(unsigned(strip));
+      p := to_integer(unsigned(partition));
+      if (GE21 = 1) then
+        return std_logic_vector(to_unsigned(p*384+s, 11));
+      elsif (GE11 = 1) then
+        return std_logic_vector(to_unsigned(p*192+s, 11));
+      end if;
+    end;
+
+    signal legacy_clusters : t_std14_array (7 downto 0);
+
+  begin
+
+
+    cluster_loop : for I in 0 to 7 generate
+      process (clocks.clk40)
+      begin
+        if (rising_edge(clocks.clk40)) then
+          if (clusters_i(I).vpf = '1') then
+            legacy_clusters(I) <= clusters_i(I).cnt & get_adr(clusters_i(I).adr, clusters_i(I).prt);
+          else
+            legacy_clusters(I) <= (others => '1');
+          end if;
+        end if;
+      end process;
+    end generate;
+
+    gem_data_out_inst : gem_data_out
+      generic map (
+        FPGA_TYPE_IS_VIRTEX6 => GE11,
+        FPGA_TYPE_IS_ARTIX7  => GE21
+        )
+      port map (
+
+        refclk_p => refclk_p,           -- 160 MHz Reference Clock Positive
+        refclk_n => refclk_n,           -- 160 MHz Reference Clock Negative
+
+        clock_40  => clocks.clk40,      -- 40 MHz  Logic Clock
+        clock_160 => clocks.clk160_0,   -- 160 MHz  Logic Clock
+
+        bxn_counter_i => bxn_counter_i,
+        bc0_i         => bc0_i,
+        resync_i      => resync_i,
+
+        reset_i => reset_i,
+
+        force_not_ready => '0',
+
+        ready_o      => open,
+        pll_lock_o   => open,
+        txfsm_done_o => open,
+        tx_prbs_mode => (others => '0'),
+
+
+        pll_reset_i        => '0',
+        mgt_reset_i        => (others => '0'),
+        gtxtest_start_i    => '0',
+        txreset_i          => '0',
+        mgt_realign_i      => '0',
+        txpowerdown_i      => '0',
+        txpowerdown_mode_i => (others => '0'),
+        txpllpowerdown_i   => '0',
+
+        trg_tx_p => trg_tx_p (3 downto 0),
+        trg_tx_n => trg_tx_n (3 downto 0),
+
+        gem_data => legacy_clusters(7) & legacy_clusters(6) & legacy_clusters(5) & legacy_clusters(4) & legacy_clusters(3) & legacy_clusters(2) & legacy_clusters(1) & legacy_clusters(0),
+
+        overflow_i => overflow_i
         );
 
   end generate;

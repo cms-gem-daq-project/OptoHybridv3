@@ -7,7 +7,6 @@ source fpga.tcl
 #set FPGA xc7a75tfgg484-3
 #set FPGA xc7a200tfbg484-3
 
-set SYNTH_TOP_MODULE  top_optohybrid
 set SIMULATOR  xsim
 
 ## FPGA and Vivado strategies and flows
