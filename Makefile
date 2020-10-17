@@ -66,3 +66,4 @@ impl_%: create_% synth_%
 	@echo Launching Implementation $(patsubst impl_%,%,$@)                                 $(COLORIZE)
 	@echo -------------------------------------------------------------------------------- $(COLORIZE)
 	@time Hog/LaunchImplementation.sh $(patsubst impl_%,%,$@                               $(COLORIZE))
+
