@@ -1,0 +1,7 @@
+include:
+    - project: 'hog/Hog'
+      file: '/hog.yml'
+      ref: 'v2.11.0'
+    # - local: '/.before_script.yml'
+    #- local: '/.devel_to_master.yml'
+    - local: '/Top/oh21-200/gitlab-ci.yml'
